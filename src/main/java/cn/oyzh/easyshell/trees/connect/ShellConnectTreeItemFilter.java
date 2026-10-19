@@ -8,7 +8,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
  * 连接节点过滤器
  *
  * @author oyzh
- * @since 2025/05/28
+ * @since 2025-05-28
  */
 public class ShellConnectTreeItemFilter extends RichTreeItemFilter {
 

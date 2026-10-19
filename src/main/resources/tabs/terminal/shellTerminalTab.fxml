@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget?>
+<?import cn.oyzh.easyshell.terminal.ShellProcessTermWidget?>
 <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -10,8 +10,8 @@
         xmlns="http://javafx.com/javafx"
         xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.terminal.ShellTerminalTabController">
-    <ShellDefaultTermWidget fx:id="widget" flexHeight="100% - 30" flexWidth="100%">
-    </ShellDefaultTermWidget>
+    <ShellProcessTermWidget fx:id="widget" flexHeight="100% - 30" flexWidth="100%">
+    </ShellProcessTermWidget>
     <FXHBox flexWidth="100%" realHeight="30">
         <FXText fx:id="termSize">
             <FXHBox.margin>

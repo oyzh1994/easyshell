@@ -19,7 +19,7 @@ import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.trigger.DamengTriggerControl;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTableSpaceComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTableSpaceComboBox;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.listener.DBStatusListener;
@@ -47,7 +47,7 @@ import java.util.List;
  * db表设计业务
  *
  * @author oyzh
- * @since 2024/08/07
+ * @since 2025-11-06
  */
 public class ShellDamengTableDesignTabController extends ParentTabController {
 
@@ -61,7 +61,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
      * 表空间
      */
     @FXML
-    private DamengTableSpaceComboBox tableSpace;
+    private ShellDamengTableSpaceComboBox tableSpace;
 
     /**
      * 注释
@@ -141,10 +141,20 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
     @FXML
     private ShellDamengTableColumnExtraController tableColumnExtraController;
 
+    /**
+     * 初始化建表参数
+     *
+     * @return 建表参数
+     */
     private DamengCreateTableParam initCreateParam() {
         return (DamengCreateTableParam) this.initParam(true);
     }
 
+    /**
+     * 初始化改表参数
+     *
+     * @return 改表参数
+     */
     private DamengAlertTableParam initAlertParam() {
         return (DamengAlertTableParam) this.initParam(false);
     }
@@ -408,7 +418,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
     }
 
     /**
-     * 初始化信息
+     * 初始化新建表信息
      */
     protected void initNew() {
         NodeGroupUtil.display(this.getTab(), "action2");
@@ -416,7 +426,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
     }
 
     /**
-     * 初始化信息
+     * 初始化已有表信息
      */
     protected void initNormal() {
         NodeGroupUtil.disappear(this.getTab(), "action2");
@@ -663,6 +673,9 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         this.initTable();
     }
 
+    /**
+     * 初始化索引表格
+     */
     private void initIndexTable() {
         List list = this.columnTable.getItems();
         for (DamengIndexControl index : this.indexTable.itemList()) {
@@ -670,6 +683,9 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 初始化外键表格
+     */
     private void initForeignKeyTable() {
         List list = this.columnTable.getItems();
         for (DamengForeignKeyControl foreignKey : this.foreignKeyTable.itemList()) {
@@ -708,6 +724,7 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
      *
      * @param table  表信息
      * @param dbItem db库树节点
+     * @throws Exception 异常
      */
     public void init(DamengTable table, ShellDamengSchemaTreeItem dbItem) throws Exception {
         // 获取对象
@@ -854,10 +871,20 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.table.getName();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
         return this.table.getSchema();
     }
@@ -867,10 +894,20 @@ public class ShellDamengTableDesignTabController extends ParentTabController {
         return List.of(this.tableColumnExtraController);
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellDamengSchemaTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

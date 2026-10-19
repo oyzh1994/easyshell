@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -18,25 +17,19 @@ import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.handler.DBDataDumpHandler;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
+ * Dameng数据转储处理器
+ *
  * @author oyzh
- * @since 2024/09/10
+ * @since 2025-11-06
  */
 public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
 
@@ -45,6 +38,12 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
      */
     protected ShellDamengClient dbClient;
 
+    /**
+     * 构造 Dameng数据转储处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellDamengDataDumpHandler(ShellDamengClient dbClient, String dbName) {
         super(dbName, DBDialect.DAMENG);
         this.dbClient = dbClient;
@@ -115,99 +114,42 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
     }
 
     /**
-     * 对表进行排序，被外键引用的父表排在前面，子表排在后面
+     * 转储所有表
      *
-     * @param tables 表列表
+     * @throws InterruptedException 中断异常
+     * @throws Exception          异常
      */
-    private void sortTables(List<DamengTable> tables) throws InterruptedException {
-        // 表名 -> 表对象映射
-        Map<String, DamengTable> tableMap = tables.stream()
-                .collect(Collectors.toMap(DamengTable::getName, t -> t, (a, b) -> a));
-        Set<String> tableNames = tableMap.keySet();
-
-        // 邻接表: 父表 -> 依赖它的子表集合
-        Map<String, Set<String>> dependents = new HashMap<>();
-        // 每个表的入度（被引用次数）
-        Map<String, Integer> inDegree = new HashMap<>();
-        for (DamengTable table : tables) {
-            inDegree.putIfAbsent(table.getName(), 0);
-            dependents.putIfAbsent(table.getName(), new LinkedHashSet<>());
-        }
-
-        // 查询外键，构建依赖图：子表 -> 父表（子表依赖父表）
-        // 查询有外键的表名称
-        List<String> fTables = this.dbClient.selectForeignKeyTables(tables.getFirst().getSchema());
-        for (DamengTable table : tables) {
-            if (!fTables.contains(table.getName())) {
-                continue;
-            }
-            List<DamengForeignKey> foreignKeys = this.dbClient.selectForeignKeys(table.getSchema(), table.getName());
-            for (DamengForeignKey foreignKey : foreignKeys) {
-                this.checkInterrupt();
-                String parentTable = foreignKey.getPrimaryKeyTable();
-                // 仅处理属于当前表列表的引用
-                if (parentTable != null && tableNames.contains(parentTable) && !parentTable.equals(table.getName())) {
-                    dependents.computeIfAbsent(parentTable, k -> new LinkedHashSet<>()).add(table.getName());
-                    inDegree.merge(table.getName(), 1, Integer::sum);
-                }
-                // 更新状态
-                this.processed(0);
-            }
-        }
-
-        // 拓扑排序（BFS / Kahn算法）
-        Queue<String> queue = new LinkedList<>();
-        for (Map.Entry<String, Integer> entry : inDegree.entrySet()) {
-            if (entry.getValue() == 0) {
-                queue.add(entry.getKey());
-            }
-        }
-
-        List<DamengTable> sorted = new ArrayList<>(tables.size());
-        while (!queue.isEmpty()) {
-            String tableName = queue.poll();
-            sorted.add(tableMap.get(tableName));
-            for (String child : dependents.getOrDefault(tableName, Collections.emptySet())) {
-                int newDegree = inDegree.merge(child, -1, Integer::sum);
-                if (newDegree == 0) {
-                    queue.add(child);
-                }
-            }
-        }
-
-        // 存在循环依赖时，将剩余表追加到末尾
-        if (sorted.size() < tables.size()) {
-            Set<String> sortedNames = sorted.stream().map(DamengTable::getName).collect(Collectors.toSet());
-            for (DamengTable table : tables) {
-                if (!sortedNames.contains(table.getName())) {
-                    sorted.add(table);
-                }
-            }
-        }
-
-        // 替换原列表内容
-        tables.clear();
-        tables.addAll(sorted);
-    }
-
-    protected void dumpTable() throws InterruptedException, IOException {
+    protected void dumpTable() throws Exception {
         DamengSelectTableParam selectTableParam = new DamengSelectTableParam();
         selectTableParam.setFull(true);
         selectTableParam.setSchema(this.dbName);
         this.message("select tables");
         List<DamengTable> tables = this.dbClient.selectTables(selectTableParam);
         if (CollectionUtil.isNotEmpty(tables)) {
-            this.message("sort tables");
             // 按外键依赖排序，父表在前
-            this.sortTables(tables);
+            this.message("sort tables");
+            ShellDamengUtil.sortTablesInHandler(tables, this.dbClient, this);
             for (DamengTable table : tables) {
                 this.checkInterrupt();
                 this.dumpTable(table);
                 this.processedIncr();
             }
+            //// 传输表实际业务
+            //ShellDamengUtil.sortTablesByCallback(this.dbClient, tables, (ExceptionConsumer<DamengTable>) t -> {
+            //    this.checkInterrupt();
+            //    this.dumpTable(t);
+            //    this.processedIncr();
+            //});
         }
     }
 
+    /**
+     * 转储指定表
+     *
+     * @param table 表
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpTable(DamengTable table) throws InterruptedException, IOException {
         String line0 = "";
         String line1 = "-- ----------------------------";
@@ -254,18 +196,25 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             this.message("Dumping Records of Table " + table.getName());
             this.dumpRecord(table, columns);
         }
+        this.processedIncr();
     }
 
+    /**
+     * 转储表记录
+     *
+     * @param table   表
+     * @param columns 字段列表
+     * @throws InterruptedException 中断异常
+     * @throws IOException          IO异常
+     */
     protected void dumpRecord(DamengTable table, DamengColumns columns) throws InterruptedException, IOException {
-        String createDefinition = table.getCreateDefinition();
         String tableName = table.getName();
         long start = 0;
         String line0 = "-- ----------------------------";
         String line1 = "-- Records of " + tableName;
         String line2 = "-- ----------------------------";
         this.fileWriter.appendLines(List.of(line0, line1, line2));
-        boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
-        if (hasIdentity) {
+        if (columns.isIdentityAutoIncrementType()) {
             String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
             this.fileWriter.appendLine(line);
         }
@@ -293,12 +242,17 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             start += this.queryLimit;
             this.processed(records.size());
         }
-        if (hasIdentity) {
+        if (columns.isIdentityAutoIncrementType()) {
             String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
             this.fileWriter.appendLine(line);
         }
     }
 
+    /**
+     * 转储视图
+     *
+     * @throws Exception 异常
+     */
     protected void dumpView() throws Exception {
         List<DamengView> views = this.dbClient.selectViews(this.dbName);
         if (CollectionUtil.isNotEmpty(views)) {
@@ -323,6 +277,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储函数
+     *
+     * @throws Exception 异常
+     */
     protected void dumpFunction() throws Exception {
         List<DamengFunction> functions = this.dbClient.selectFunctions(this.dbName);
         if (CollectionUtil.isNotEmpty(functions)) {
@@ -347,6 +306,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储过程
+     *
+     * @throws Exception 异常
+     */
     protected void dumpProcedure() throws Exception {
         List<DamengProcedure> procedures = this.dbClient.selectProcedures(this.dbName);
         if (CollectionUtil.isNotEmpty(procedures)) {
@@ -371,6 +335,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
+    /**
+     * 转储触发器
+     *
+     * @throws Exception 异常
+     */
     protected void dumpTrigger() throws Exception {
         List<DamengTrigger> triggers = this.dbClient.selectTriggers(this.dbName);
         if (CollectionUtil.isNotEmpty(triggers)) {

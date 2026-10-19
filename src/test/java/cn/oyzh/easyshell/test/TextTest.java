@@ -5,9 +5,16 @@ import org.junit.Test;
 
 import java.nio.charset.Charset;
 
+/**
+ * 文本、类路径及字符集处理的测试类
+ *
+ * @author oyzh
+ * @since 2025-03-09
+ */
 public class TextTest {
 
 
+    // 从模块列表中提取模块名并拼接为字符串数组格式
     @Test
     public void test() {
 
@@ -94,6 +101,7 @@ public class TextTest {
         System.out.println(sb.toString());
     }
 
+    // 解析类路径并生成备份目录路径
     @Test
     public void test2() {
         String classPath = System.getProperty("java.class.path");
@@ -113,6 +121,7 @@ public class TextTest {
         System.out.println(appDirBak);
     }
 
+    // 打印当前所有可用字符集
     @Test
     public void test3() {
         Charset.availableCharsets().values().forEach(c -> {

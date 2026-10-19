@@ -2,6 +2,9 @@ package cn.oyzh.easyshell.test.rdp;
 
 /**
  * RDP 数据包类
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPPacket {
     private byte flags;

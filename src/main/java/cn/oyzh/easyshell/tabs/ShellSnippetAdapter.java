@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import java.io.IOException;
 
 /**
+ * shell片段适配器，规范片段列表选择与片段运行能力
+ *
  * @author oyzh
  * @since 2025-07-21
  */
@@ -33,6 +35,7 @@ public interface ShellSnippetAdapter {
      * 运行片段
      *
      * @param content 内容
+     * @throws IOException io异常
      */
     void runSnippet(String content) throws IOException;
 }

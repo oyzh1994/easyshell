@@ -23,7 +23,7 @@ import java.util.Objects;
  * mongodb树查询节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2025-11-06
  */
 public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryTreeItemValue> {
 
@@ -32,10 +32,21 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
      */
     private final ShellQuery value;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery value() {
         return value;
     }
 
+    /**
+     * 构造查询节点
+     *
+     * @param query    查询对象
+     * @param treeView 树视图
+     */
     public ShellMongoQueryTreeItem(ShellQuery query, RichTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
@@ -107,7 +118,7 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
         this.value.setName(name);
         // 修改名称
         if (ShellQueryStore.INSTANCE.update(this.value)) {
-            ShellMongoEventUtil.queryRenamed(this.value.getUid(), oldName, name, this.dbItem());
+            ShellMongoEventUtil.queryRenamed(this, oldName);
             this.refresh();
         } else {
             this.value.setName(oldName);
@@ -115,14 +126,29 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMongoDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取查询名称
+     *
+     * @return 查询名称
+     */
     public String queryName() {
         return this.value.getName();
     }
@@ -132,6 +158,11 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
         ShellMongoEventUtil.queryOpen(this.value, this.dbItem());
     }
 
+    /**
+     * 获取shell连接信息
+     *
+     * @return shell连接信息
+     */
     public ShellConnect shellConnect() {
         return this.client().getShellConnect();
     }

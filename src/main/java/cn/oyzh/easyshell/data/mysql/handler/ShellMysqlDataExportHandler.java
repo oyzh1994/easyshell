@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Mysql数据导出处理器
  *
  * @author oyzh
  * @since 2025-11-26
@@ -46,6 +47,12 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
      */
     private List<ShellMysqlDataExportTable> tables;
 
+    /**
+     * 构造 Mysql数据导出处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMysqlDataExportHandler(ShellMysqlClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
@@ -65,6 +72,14 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         this.message("Export Finished");
     }
 
+    /**
+     * 初始化写入器
+     *
+     * @param filePath 文件路径
+     * @param columns  字段列表
+     * @return 类型文件写入器
+     * @throws IOException IO异常
+     */
     private ShellMysqlTypeFileWriter initWriter(String filePath, MysqlColumns columns) throws IOException {
         if (this.isSqlType()) {
             return new ShellMysqlSqlTypeFileWriter(filePath, this.config, columns);
@@ -155,9 +170,10 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     /**
      * 写入头
      *
+     * @param writer  类型文件写入器
      * @param table   导出表
      * @param columns 字段列表
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private void writeHeader(ShellMysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns) throws Exception {
         writer.writeHeader();
@@ -166,10 +182,11 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     /**
      * 写入记录
      *
+     * @param writer  类型文件写入器
      * @param table   导出表
      * @param columns 字段列表
      * @param records 记录列表
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private void writeRecord(ShellMysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns, List<MysqlRecord> records) throws Exception {
         List<Map<String, Object>> objects = new ArrayList<>();
@@ -182,7 +199,8 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     /**
      * 写入尾
      *
-     * @throws IOException 异常
+     * @param writer 类型文件写入器
+     * @throws Exception 异常
      */
     private void writeTail(ShellMysqlTypeFileWriter writer) throws Exception {
         writer.writeTrial();
@@ -201,50 +219,110 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
         }
     }
 
+    /**
+     * 设置记录分隔符
+     *
+     * @param recordSeparator 记录分隔符
+     */
     public void recordSeparator(String recordSeparator) {
         this.config.setRecordSeparator(recordSeparator);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(String txtIdentifier) {
         this.config.setTxtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置字段分隔符
+     *
+     * @param fieldSeparator 字段分隔符
+     */
     public void fieldSeparator(String fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
+    /**
+     * 设置是否包含字段
+     *
+     * @param includeFields 是否包含字段
+     */
     public void includeFields(boolean includeFields) {
         this.config.setIncludeFields(includeFields);
     }
 
+    /**
+     * 设置属性作为字段
+     *
+     * @param fieldToAttr 属性作为字段
+     */
     public void fieldToAttr(boolean fieldToAttr) {
         this.config.setFieldToAttr(fieldToAttr);
     }
 
+    /**
+     * 设置是否早期版本
+     *
+     * @param earlyVersion 是否早期版本
+     */
     public void earlyVersion(boolean earlyVersion) {
         this.config.setEarlyVersion(earlyVersion);
     }
 
+    /**
+     * 设置是否遇错继续
+     *
+     * @param continueWithError 是否遇错继续
+     */
     public void continueWithError(boolean continueWithError) {
         this.config.setContinueWithError(continueWithError);
     }
 
+    /**
+     * 获取数据库客户端
+     *
+     * @return 数据库客户端
+     */
     public ShellMysqlClient getDbClient() {
         return dbClient;
     }
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellMysqlClient dbClient) {
         this.dbClient = dbClient;
     }
 
+    /**
+     * 获取导出表列表
+     *
+     * @return 导出表列表
+     */
     public List<ShellMysqlDataExportTable> getTables() {
         return tables;
     }
 
+    /**
+     * 设置导出表列表
+     *
+     * @param tables 导出表列表
+     */
     public void setTables(List<ShellMysqlDataExportTable> tables) {
         this.tables = tables;
     }
 
+    /**
+     * 获取导出配置
+     *
+     * @return 导出配置
+     */
     public DBDataExportConfig getConfig() {
         return config;
     }

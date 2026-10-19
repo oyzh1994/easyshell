@@ -10,11 +10,11 @@ import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.JarUtil;
 import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
+import cn.oyzh.easyshell.mariadb.condition.MariadbConditionUtil;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
 import cn.oyzh.easyshell.mysql.condition.MysqlConditionUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -22,6 +22,8 @@ import cn.oyzh.easyshell.store.ShellStoreUtil;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTabController;
 import cn.oyzh.easyshell.terminal.dameng.DamengTerminalManager;
 import cn.oyzh.easyshell.terminal.dameng.DamengTerminalPane;
+import cn.oyzh.easyshell.terminal.mariadb.MariadbTerminalManager;
+import cn.oyzh.easyshell.terminal.mariadb.MariadbTerminalPane;
 import cn.oyzh.easyshell.terminal.mongo.MongoTerminalManager;
 import cn.oyzh.easyshell.terminal.mongo.MongoTerminalPane;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalManager;
@@ -32,6 +34,7 @@ import cn.oyzh.easyshell.terminal.zk.ZKTerminalManager;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
+import cn.oyzh.easyshell.util.mariadb.ShellMariadbColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
@@ -65,7 +68,7 @@ import java.io.File;
  * 程序主入口
  *
  * @author oyzh
- * @since 2023/08/16
+ * @since 2023-08-16
  */
 public class EasyShellApp extends FXApplication implements EventListener {
 
@@ -74,6 +77,11 @@ public class EasyShellApp extends FXApplication implements EventListener {
      */
     private static final Project PROJECT = Project.load();
 
+    /**
+     * 程序主入口
+     *
+     * @param args 启动参数
+     */
     public static void main(String[] args) {
         try {
             //            // 初始化jfx缓存目录
@@ -82,23 +90,56 @@ public class EasyShellApp extends FXApplication implements EventListener {
             System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
             System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
-//            // 开启fx的预览功能
-//            FXUtil.enablePreview();
+            //            // 开启fx的预览功能
+            //            FXUtil.enablePreview();
             // 设置默认异常捕捉器
             Thread.setDefaultUncaughtExceptionHandler((t, ex) -> {
                 if (!ExceptionUtil.hasMessage(ex, "isImageAutoSize")) {
                     ex.printStackTrace();
-                    JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage());
+                    JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage(), ex);
                 }
             });
             SysConst.projectName(PROJECT.getName());
+            //            SysConst.tempDir(ShellConst.getTempPath());
             SysConst.storeDir(ShellConst.getStorePath());
             SysConst.cacheDir(ShellConst.getCachePath());
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("程序启动中...");
-            }
             // 储存初始化
             ShellStoreUtil.init();
+
+            // 配置对象
+            ShellSetting setting = ShellSettingStore.SETTING;
+            // 设置渲染模式
+            String order = System.getProperty("prism.order");
+            // 平衡模式
+            if (setting.getGraphicMode() == 1) {
+                if (OSUtil.isMacOS()) {
+                    order = "es2,mtl,sw";
+                } else if (OSUtil.isLinux()) {
+                    order = "es2,sw";
+                } else if (OSUtil.isWindows()) {
+                    order = "d3d,sw";
+                }
+            } else if (setting.getGraphicMode() == 2) {// 兼容模式
+                if (OSUtil.isMacOS()) {
+                    order = "sw,es2,mtl";
+                } else if (OSUtil.isLinux()) {
+                    order = "sw,es2";
+                } else if (OSUtil.isWindows()) {
+                    order = "sw,d3d";
+                }
+            } else {// 性能模式
+                if (OSUtil.isMacOS()) {
+                    order = "mtl,es2,sw";
+                } else if (OSUtil.isLinux()) {
+                    order = "es2,sw";
+                } else if (OSUtil.isWindows()) {
+                    order = "d3d,sw";
+                }
+            }
+            System.setProperty("prism.order", order);
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("程序启动中，prism.order={}", order);
+            }
             if (OSUtil.isWindows()) {
                 FXConst.appIcon(ShellConst.ICON_32_PATH);
             } else {
@@ -157,16 +198,19 @@ public class EasyShellApp extends FXApplication implements EventListener {
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlTerminalManager::registerHandlers);
+            TerminalManager.setLoadHandler(MariadbTerminalPane.TERMINAL_NAME, MariadbTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MongoTerminalPane.TERMINAL_NAME, MongoTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(DamengTerminalPane.TERMINAL_NAME, DamengTerminalManager::registerHandlers);
             DBConditionManager.registerInitializer(DBDialect.MYSQL, MysqlConditionUtil::init);
+            DBConditionManager.registerInitializer(DBDialect.MARIADB, MariadbConditionUtil::init);
             DBConditionManager.registerInitializer(DBDialect.MONGODB, MongoConditionUtil::init);
             DBConditionManager.registerInitializer(DBDialect.DAMENG, DamengConditionUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MYSQL, ShellMysqlColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.MARIADB, ShellMariadbColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, ShellDamengColumnUtil::init);
             // 正式环境
-            if (JarUtil.isInJar()) {
+            if (SystemUtil.isProd()) {
                 // 开启定期gc
                 SystemUtil.gcInterval(60_000);
                 // 禁用对象观察
@@ -174,6 +218,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 // 打印元数据
                 DBUtil.ENABLE_PRINT_METADATA = false;
             } else {
+                //                // 开启定期gc
+                //                SystemUtil.gcInterval(15_000);
                 // 打印元数据
                 DBUtil.ENABLE_PRINT_METADATA = true;
                 // 启用对象观察
@@ -199,7 +245,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
         // 停止客户端检测
         ShellClientChecker.stop();
         // 关闭x11服务
-        ShellX11Manager.stopXServer();
+        ShellX11Manager.stopXServer_built_in();
         // 储存销毁
         ShellStoreUtil.destroy();
         // 取消注册事件处理

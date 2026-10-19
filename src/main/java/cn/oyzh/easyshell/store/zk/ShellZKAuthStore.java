@@ -15,7 +15,7 @@ import java.util.Map;
  * zk认证存储
  *
  * @author oyzh
- * @since 2024/09/24
+ * @since 2025-09-04
  */
 public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
 
@@ -80,7 +80,7 @@ public class ShellZKAuthStore extends JdbcStandardStore<ShellZKAuth> {
         if (StringUtil.isNotBlank(iid)) {
             DeleteParam param = new DeleteParam();
             param.addQueryParam(new QueryParam("iid", iid));
-            return this.delete(param);
+            return super.delete(param);
         }
         return false;
     }

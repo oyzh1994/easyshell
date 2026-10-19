@@ -8,7 +8,7 @@ import javafx.fxml.FXML;
  * ~/.bashrc信息
  *
  * @author oyzh
- * @since 2025/03/18
+ * @since 2025-03-23
  */
 public class ShellSSHConfigUserBashrcTabController extends ShellSSHBaseConfigTabController {
 

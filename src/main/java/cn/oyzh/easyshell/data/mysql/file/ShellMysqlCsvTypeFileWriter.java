@@ -1,17 +1,18 @@
 package cn.oyzh.easyshell.data.mysql.file;
 
-import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import cn.oyzh.fx.db.data.file.csv.DBDataCsvFileWriter;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Mysql CSV类型文件写入器
+ *
  * @author oyzh
- * @since 2024-09-04
+ * @since 2025-11-06
  */
 public class ShellMysqlCsvTypeFileWriter extends ShellMysqlTypeFileWriter {
 
@@ -26,21 +27,27 @@ public class ShellMysqlCsvTypeFileWriter extends ShellMysqlTypeFileWriter {
     private DBDataExportConfig config;
 
     /**
-     * 文件读取器
+     * CSV 写入器
      */
-    private final LineFileWriter writer;
+    private final DBDataCsvFileWriter writer;
 
-    public ShellMysqlCsvTypeFileWriter(String filePath, DBDataExportConfig config, MysqlColumns columns) throws FileNotFoundException {
+    /**
+     * 构造 Mysql CSV类型文件写入器
+     *
+     * @param filePath 文件路径
+     * @param config   导出配置
+     * @param columns  字段列表
+     * @throws IOException IO 异常
+     */
+    public ShellMysqlCsvTypeFileWriter(String filePath, DBDataExportConfig config, MysqlColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = LineFileWriter.create(filePath, config.getCharset());
+        this.writer = new DBDataCsvFileWriter(filePath, config);
     }
 
     @Override
     public void writeHeader() throws Exception {
-        this.writer.write(this.formatLine(this.columns.columnNames(), ",",
-                this.config.getTxtIdentifier(),
-                this.config.getRecordSeparator()));
+        this.writer.write(this.columns.columnNames());
     }
 
     @Override
@@ -52,9 +59,7 @@ public class ShellMysqlCsvTypeFileWriter extends ShellMysqlTypeFileWriter {
             Object val = this.parameterized(column, entry.getValue(), this.config);
             values[index] = val;
         }
-        this.writer.write(this.formatLine(values, ",",
-                this.config.getTxtIdentifier(),
-                this.config.getRecordSeparator()));
+        this.writer.write(values);
     }
 
     @Override

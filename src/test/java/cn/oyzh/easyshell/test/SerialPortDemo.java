@@ -7,6 +7,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+/**
+ * 演示枚举、打开串口并进行读写通信的示例类
+ *
+ * @author oyzh
+ * @since 2025-04-23
+ */
 public class SerialPortDemo {
     public static void main(String[] args) throws IOException {
         // 获取所有可用串口

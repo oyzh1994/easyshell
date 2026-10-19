@@ -18,7 +18,7 @@ import java.util.List;
  * 终端分屏-tab内容组件
  *
  * @author oyzh
- * @since 2025/05/29
+ * @since 2025-05-29
  */
 public class ShellSplitTabController extends ShellParentTabController {
 
@@ -156,6 +156,7 @@ public class ShellSplitTabController extends ShellParentTabController {
      * 运行片段
      *
      * @param content 内容
+     * @throws IOException io异常
      */
     public void runSnippet(String content) throws IOException {
         for (ShellSplitTermController controller : this.getSubControllers()) {

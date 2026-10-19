@@ -26,7 +26,7 @@ import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
+import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -42,6 +42,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.tty.TtyTerminalUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.FXTerminalPanel;
@@ -54,7 +55,6 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -62,7 +62,7 @@ import java.util.concurrent.Future;
  * shell-效率模式tab内容组件
  *
  * @author oyzh
- * @since 2025/05/23
+ * @since 2025-05-25
  */
 public class ShellSSHEffTabController extends SubTabController implements ShellSnippetAdapter {
 
@@ -119,7 +119,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 隐藏文件
      */
     @FXML
-    private HiddenSVGPane hiddenPane;
+    private HiddenSVGLabel hiddenPane;
 
     /**
      * 文件表格
@@ -193,7 +193,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
     /**
      * 初始化组件
      *
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private void initWidget() throws Exception {
         // // 关闭和移除旧的组件
@@ -228,25 +228,23 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        // 打开会话
         this.widget.openSession(this.initTtyConnector());
-        // 确保光标在重连后可见（旧 emulator 的 disconnected() 回调可能关掉了光标）
-        this.widget.getTerminalPanel().setCursorVisible(true);
-        // // 获取焦点
-        // FXUtil.runLater(this.widget::requestFocus);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
      * 初始化tty连接器
      *
      * @return tty连接器
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private TtyConnector initTtyConnector() throws Exception {
         ShellSSHClient client = this.client();
         ShellConnect connect = client.getShellConnect();
-        Charset charset = client.getCharset();
         TtyConnector ttyConnector;
-        ShellSSHTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellSSHTtyConnector connector = this.widget.createTtyConnector(client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -255,11 +253,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         });
         if (connect.isEnableZModem()) {
             // connector.setResetTtyConnectorCallback(this::openShell);
-            ttyConnector = this.widget.createZModemTtyConnector(connector);
+            //            ttyConnector = this.widget.createZModemTtyConnector(connector);
+            ttyConnector = TtyTerminalUtil.createZModemTtyConnector(this.widget, connector);
         } else {
             ttyConnector = connector;
         }
-        connector.init(client);
         return ttyConnector;
     }
 
@@ -308,7 +306,9 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private ListChangeListener<ShellFileTask> taskSizeListener;
 
-    // 任务类型
+    /**
+     * 任务类型
+     */
     private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
 
     /**
@@ -368,7 +368,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.serverMonitor.setSelected(connect.isServerMonitor());
         this.followTerminalDir.setSelected(connect.isFollowTerminalDir());
         // 显示隐藏文件
-        this.hiddenFile(this.shellConnect().isShowHiddenFile());
+        this.showHiddenFile(this.shellConnect().isShowHiddenFile());
         // 异步加载背景
         ThreadUtil.start(this::initBackground);
     }
@@ -443,17 +443,17 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         super.bindListeners();
     }
 
-//    /**
-//     * 左侧拉伸事件
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void onLeftResized(float newWidth) {
-//        this.leftBox.setRealWidth(newWidth);
-//        this.rightBox.setLayoutX(newWidth);
-//        this.rightBox.setFlexWidth("100% - " + newWidth);
-//        this.rightBox.parentAutosize();
-//    }
+    //    /**
+    //     * 左侧拉伸事件
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void onLeftResized(float newWidth) {
+    //        this.leftBox.setRealWidth(newWidth);
+    //        this.rightBox.setLayoutX(newWidth);
+    //        this.rightBox.setFlexWidth("100% - " + newWidth);
+    //        this.rightBox.parentAutosize();
+    //    }
 
     @Override
     public void onTabClosed(Event event) {
@@ -468,14 +468,29 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         return (ShellSSHTabController) super.parent();
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient client() {
         return this.parent().getClient();
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.parent().shellConnect();
     }
 
+    /**
+     * 获取sftp客户端
+     *
+     * @return sftp客户端
+     */
     public ShellSFTPClient sftpClient() {
         return this.client().sftpClient();
     }
@@ -601,7 +616,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     @FXML
     private void hiddenFile() {
-        this.hiddenFile(this.hiddenPane.isHidden());
+        this.showHiddenFile(this.hiddenPane.isHidden());
     }
 
     /**
@@ -609,7 +624,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      *
      * @param showHidden 是否显示隐藏文件
      */
-    private void hiddenFile(boolean showHidden) {
+    private void showHiddenFile(boolean showHidden) {
         if (!showHidden) {
             this.hiddenPane.hidden();
             this.fileTable.setShowHiddenFile(false);
@@ -746,7 +761,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();
@@ -785,8 +800,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
 
     @Override
     public void destroy() {
-//        this.widget.destroy();
-//        this.fileTable.destroy();
+        //        this.widget.destroy();
+        //        this.fileTable.destroy();
         //        this.widthResizer.destroy();
         this.closeMonitorTask();
         this.sftpClient().removeTaskSizeListener(this.taskSizeListener, this.taskTypes);

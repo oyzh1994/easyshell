@@ -1,13 +1,19 @@
 package cn.oyzh.easyshell.terminal.mysql.basic;
 
+import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane;
+import cn.oyzh.fx.db.util.DBTerminalUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
+import java.util.List;
+
 /**
+ * mysql切换数据库命令处理器
+ *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-16
  */
 public class MysqlUseTerminalCommandHandler extends MysqlTerminalCommandHandler<TerminalCommand> {
 
@@ -31,9 +37,17 @@ public class MysqlUseTerminalCommandHandler extends MysqlTerminalCommandHandler<
 
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, MysqlTerminalPane terminal) {
-        terminal.setDbName(command.getArgs()[1]);
+        terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();
-        result.setResult("Database changed");
+        List<MysqlDatabase> databases = terminal.getClient().databases();
+        List<String> dbs = databases.stream()
+                .map(MysqlDatabase::getName)
+                .toList();
+        if (dbs.contains(terminal.getDbName())) {
+            result.setResult("Database changed");
+        } else {
+            result.setResult("Database invalid");
+        }
         return result;
     }
 }

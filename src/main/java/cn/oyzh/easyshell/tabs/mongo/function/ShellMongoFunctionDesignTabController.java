@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  * mongodb函数设计tab
  *
  * @author oyzh
- * @since 2024/07/08
+ * @since 2026-06-29
  */
 public class ShellMongoFunctionDesignTabController extends RichTabController {
 
@@ -33,6 +33,11 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
      */
     private MongoFunction function;
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public MongoFunction getFunction() {
         return function;
     }
@@ -83,7 +88,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
     /**
      * 执行初始化
      *
-     * @param function 查询对象
+     * @param function 函数对象
      * @param dbItem   mongodb库树节点
      */
     public void init(MongoFunction function, ShellMongoDatabaseTreeItem dbItem) {
@@ -187,24 +192,19 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
             // 创建临时对象
             MongoFunction tempFunction = this.tempData();
 
-            // 函数名称
-            if (this.newData) {
-                functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), functionName);
-                if (functionName == null) {
-                    return;
-                }
-                tempFunction.setName(functionName);
-            } else {
-                functionName = tempFunction.getName();
-            }
-
             // 创建函数
             if (this.newData) {
+                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), this.functionName);
+                if (this.functionName == null) {
+                    return;
+                }
+                tempFunction.setName(this.functionName);
                 this.dbItem.createFunction(tempFunction);
-                MongoFunction function = this.dbItem.selectFunction(functionName);
+                MongoFunction function = this.dbItem.selectFunction(this.functionName);
                 this.dbItem.getFunctionTypeChild().addFunction(function);
                 this.initDBListener();
             } else {// 修改过程
+                this.functionName = tempFunction.getName();
                 this.dbItem.alertFunction(tempFunction);
             }
             // 更新保存标志位
@@ -266,18 +266,38 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         this.preview.text(sql);
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }
 
+    /**
+     * 设置未保存标志
+     *
+     * @param unsaved 未保存标志
+     */
     public void setUnsaved(boolean unsaved) {
         this.unsaved = unsaved;
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 设置数据库树节点
+     *
+     * @param dbItem 数据库树节点
+     */
     public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
     }

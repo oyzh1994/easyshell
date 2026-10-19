@@ -7,10 +7,10 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
 import java.util.List;
 
 /**
- * 终端提示器
+ * zk终端补全处理器
  *
  * @author oyzh
- * @since 2023/7/24
+ * @since 2025-09-04
  */
 public class ZKTerminalCompleteHandler extends BaseTerminalCompleteHandler<ZKTerminalPane> {
 

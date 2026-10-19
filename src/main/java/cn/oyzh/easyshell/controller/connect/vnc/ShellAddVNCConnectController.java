@@ -39,7 +39,7 @@ import javafx.stage.WindowEvent;
  * vnc连接新增业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -245,8 +245,11 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setConnectTimeOut(timeout);
             shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setReadonly(this.readonly.isSelected());
-            shellConnect.putExtra("cursor", this.cursor.getSelectedItem());
-            shellConnect.putExtra("encoding", this.encoding.getSelectedItem());
+            // 扩展信息
+            String cursor = this.cursor.getSelectedItem();
+            String encoding = this.encoding.getSelectedItem();
+            shellConnect.putExtra("cursor", cursor);
+            shellConnect.putExtra("encoding", encoding);
             // 认证信息
             shellConnect.setPassword(this.password.getPassword());
             // 代理
@@ -311,7 +314,7 @@ public class ShellAddVNCConnectController extends StageController {
             shellConnect.setType("vnc");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
+            if (this.connectStore.insert(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.setProp("connect", shellConnect);

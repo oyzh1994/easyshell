@@ -20,7 +20,7 @@ import javafx.stage.WindowEvent;
  * 关于业务
  *
  * @author oyzh
- * @since 2022/06/22
+ * @since 2023-08-16
  */
 @StageAttribute(
         resizable = false,
@@ -30,30 +30,57 @@ import javafx.stage.WindowEvent;
 )
 public class AboutController extends StageController {
 
+    /**
+     * 程序名称
+     */
     @FXML
     private FXText name;
 
+    /**
+     * 程序类型
+     */
     @FXML
     private FXText type;
 
+    /**
+     * 程序版本
+     */
     @FXML
     private FXText version;
 
+    /**
+     * 更新日期
+     */
     @FXML
     private FXText updateDate;
 
+    /**
+     * 版权信息
+     */
     @FXML
     private FXText copyright;
 
+    /**
+     * jdk架构
+     */
     @FXML
     private FXText jdkArch;
 
+    /**
+     * jdk名称
+     */
     @FXML
     private FXText jdkName;
 
+    /**
+     * jdk厂商
+     */
     @FXML
     private FXText jdkVendor;
 
+    /**
+     * jdk版本
+     */
     @FXML
     private FXText jdkVersion;
 

@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * zk客户端工具类
  *
  * @author oyzh
- * @since 2023/04/25
+ * @since 2025-09-04
  */
 public class ShellZKClientUtil {
 
@@ -57,6 +57,12 @@ public class ShellZKClientUtil {
         return builder.build();
     }
 
+    /**
+     * 创建zk客户端
+     *
+     * @param zkConnect zk连接
+     * @return zk客户端
+     */
     public static ShellZKClient newClient(ShellConnect zkConnect) {
         return new ShellZKClient(zkConnect);
     }

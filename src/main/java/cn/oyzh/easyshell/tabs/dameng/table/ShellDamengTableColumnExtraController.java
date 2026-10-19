@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.tabs.dameng.table;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
-import cn.oyzh.easyshell.fx.dameng.table.DamengDefaultValueTextFiled;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengAoutoIncrementTypeComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengDefaultValueTextFiled;
 import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -19,7 +21,7 @@ import java.util.ResourceBundle;
  * 字段配置弹窗
  *
  * @author oyzh
- * @since 2024/07/12
+ * @since 2025-11-06
  */
 public class ShellDamengTableColumnExtraController extends SubTabController {
 
@@ -33,7 +35,7 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
      * 默认值
      */
     @FXML
-    private DamengDefaultValueTextFiled defaultValue;
+    private ShellDamengDefaultValueTextFiled defaultValue;
 
     /**
      * 字段值组件
@@ -70,6 +72,12 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
      */
     @FXML
     private FXCheckBox autoIncrement;
+
+    /**
+     * 自动递增类型
+     */
+    @FXML
+    private ShellDamengAoutoIncrementTypeComboBox autoIncrementType;
 
     /**
      * 无符号组件
@@ -128,6 +136,7 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
             // 自动递增处理
             if (this.autoIncrementBox.isVisible()) {
                 this.column.setAutoIncrement(this.autoIncrement.isSelected());
+                this.column.setAutoIncrementType(this.autoIncrementType.getSelectedItem());
             }
             // 主键长度处理
             if (this.primaryKeySizeBox.isVisible()) {
@@ -142,6 +151,9 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
         }
     }
 
+    /**
+     * 忽略变更标志
+     */
     private boolean ignoreChanged = false;
 
     @Override
@@ -153,6 +165,8 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
         this.value.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
         // 自动递增变化事件
         this.autoIncrement.selectedChanged((observable, oldValue, newValue) -> this.apply());
+        // 自动递增类型变化事件
+        this.autoIncrementType.selectedItemChanged((observable, oldValue, newValue) -> this.apply());
         // 当前时间戳变化事件
         this.currentTimestamp.selectedChanged((observable, oldValue, newValue) -> this.apply());
         // 默认值变化事件
@@ -181,10 +195,20 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
         column.typeProperty().addListener(this::listenColumnTypeChanged);
     }
 
+    /**
+     * 监听列类型变更
+     *
+     * @param observableValue 可观察值
+     * @param s               参数
+     * @param s1              参数
+     */
     private void listenColumnTypeChanged(ObservableValue<? extends String> observableValue, String s, String s1) {
         this.doInit();
     }
 
+    /**
+     * 执行初始化
+     */
     public void doInit() {
         this.ignoreChanged = true;
         // 值
@@ -207,6 +231,11 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
         if (this.column.supportAutoIncrement()) {
             this.autoIncrementBox.display();
             this.autoIncrement.setSelected(this.column.isAutoIncrement());
+            if (StringUtil.isNotBlank(this.column.getAutoIncrementType())) {
+                this.autoIncrementType.select(this.column.getAutoIncrementType());
+            } else {
+                this.autoIncrementType.selectFirst();
+            }
         } else {
             this.autoIncrementBox.disappear();
         }

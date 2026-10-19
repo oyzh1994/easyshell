@@ -22,7 +22,7 @@ import java.util.List;
  * zk认证tab内容组件
  *
  * @author oyzh
- * @since 2025/09/06
+ * @since 2025-09-06
  */
 public class ShellZKAuthTabController extends RichTabController {
 

@@ -9,15 +9,17 @@ import javafx.scene.Cursor;
  * shell消息tab
  *
  * @author oyzh
- * @since 2023/6/24
+ * @since 2023-08-16
  */
 public class ShellMessageTab extends RichTab {
 
-    //public ShellMessageTab() {
-    //    super();
-    //    super.flush();
-    //    ObjectWatcherManager.watch(this);
-    //}
+    /**
+     * 构造消息标签页
+     */
+    public ShellMessageTab() {
+        super();
+        super.flush();
+    }
 
     @Override
     protected String url() {

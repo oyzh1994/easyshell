@@ -8,12 +8,18 @@ import cn.oyzh.easyshell.dameng.condition.DamengCondition;
  * 不包含条件
  *
  * @author oyzh
- * @since 2024/6/27
+ * @since 2026-09-02
  */
 public class DamengNotContainsCondition extends DamengCondition {
 
+    /**
+     * 单例实例
+     */
     public final static DamengNotContainsCondition INSTANCE = new DamengNotContainsCondition();
 
+    /**
+     * 构造不包含条件
+     */
     public DamengNotContainsCondition() {
         super(I18nHelper.notContains(), "NOT LIKE");
     }

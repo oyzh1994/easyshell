@@ -33,7 +33,7 @@ import javafx.stage.WindowEvent;
  * serial连接修改业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -233,13 +233,13 @@ public class ShellUpdateSerialConnectController extends StageController {
             this.shellConnect.setSerialPortName(portName);
             this.shellConnect.setSerialParityBits(parityBits);
             this.shellConnect.setSerialNumDataBits(numDataBits);
-            this.shellConnect.setSerialNumDataBits(numStopBits);
+            this.shellConnect.setSerialNumStopBits(numStopBits);
             this.shellConnect.setSerialFlowControl(flowControl);
 //            // 背景配置
 //            this.shellConnect.setBackgroundImage(backgroundImage);
 //            this.shellConnect.setEnableBackground(enableBackground);
             // 保存数据
-            if (this.connectStore.update(this.shellConnect)) {
+            if (this.connectStore.replace(this.shellConnect)) {
                 ShellEventUtil.connectUpdated(this.shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.closeWindow();

@@ -30,10 +30,10 @@ import javafx.stage.WindowEvent;
 
 
 /**
- * mysql数据传输业务
+ * mongodb数据传输业务
  *
  * @author oyzh
- * @since 2024/09/05
+ * @since 2025-11-06
  */
 @StageAttribute(
         multipliable = true,
@@ -422,12 +422,18 @@ public class ShellMongoDataTransportController extends StageController {
         return I18nHelper.transportTitle();
     }
 
+    /**
+     * 显示第一步
+     */
     @FXML
     private void showStep1() {
         this.step2.disappear();
         this.step1.display();
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         ShellConnect sourceInfo = this.sourceInfo.getSelectedItem();
@@ -471,6 +477,9 @@ public class ShellMongoDataTransportController extends StageController {
         this.step2.display();
     }
 
+    /**
+     * 显示第三步
+     */
     @FXML
     private void showStep3() {
         this.step2.disappear();

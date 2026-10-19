@@ -16,7 +16,7 @@ import javafx.util.Callback;
  * shell光标样式选择框
  *
  * @author oyzh
- * @since 26/03/10
+ * @since 2026-03-10
  */
 public class ShellTermCursorStyleComboBox extends FXComboBox<String> {
 
@@ -71,6 +71,11 @@ public class ShellTermCursorStyleComboBox extends FXComboBox<String> {
         return glyph;
     }
 
+    /**
+     * 获取光标样式
+     *
+     * @return 光标样式
+     */
     public int getCursorStyle() {
         if (this.getSelectedIndex() == 0) {
             return 0;
@@ -84,6 +89,11 @@ public class ShellTermCursorStyleComboBox extends FXComboBox<String> {
         return 0;
     }
 
+    /**
+     * 选择光标样式
+     *
+     * @param cursorStyle 光标样式
+     */
     public void selectCursorStyle(int cursorStyle) {
         this.select(cursorStyle);
     }

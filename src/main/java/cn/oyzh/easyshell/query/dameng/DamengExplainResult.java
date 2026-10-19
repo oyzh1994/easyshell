@@ -10,8 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
+ * 达梦解释结果
+ *
  * @author oyzh
- * @since 2024/08/16
+ * @since 2025-11-06
  */
 public class DamengExplainResult extends DamengQueryResult {
 

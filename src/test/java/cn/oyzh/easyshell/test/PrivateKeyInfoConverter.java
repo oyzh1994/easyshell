@@ -17,6 +17,12 @@ import java.security.Security;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
+/**
+ * 将 PrivateKeyInfo 转换为 KeyPair 的测试工具
+ *
+ * @author oyzh
+ * @since 2025-09-03
+ */
 public class PrivateKeyInfoConverter {
 
     static {

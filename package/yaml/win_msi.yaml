@@ -83,6 +83,7 @@ jlink:
     - java.management
     - java.datatransfer
     - java.security.jgss
+    - jdk.charsets
     - jdk.unsupported
 # jre参数
 jre:
@@ -179,4 +180,3 @@ jar:
     - api-ms-.*.dll
     - msvcp140.*.dll
     - vcruntime140.*.dll
-

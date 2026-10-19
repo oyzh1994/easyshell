@@ -8,8 +8,8 @@ import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengRecordFilter;
 import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordColumn;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordColumn;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordTableView;
 import cn.oyzh.easyshell.popups.dameng.ShellDamengRecordFilterPopupController;
 import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -48,7 +48,7 @@ import java.util.List;
  * db表tab内容组件
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellDamengTableRecordTabController extends RichTabController {
 
@@ -90,7 +90,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private DamengRecordTableView recordTable;
+    private ShellDamengRecordTableView recordTable;
 
     /**
      * 过滤列表
@@ -152,6 +152,11 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellDamengTableTreeItem getItem() {
         return this.itemProperty.get();
     }
@@ -215,7 +220,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         DBStatusColumn<DamengRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (DamengColumn column : columns) {
-            DamengRecordColumn tableColumn = new DamengRecordColumn(column);
+            ShellDamengRecordColumn tableColumn = new ShellDamengRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
@@ -307,10 +312,19 @@ public class ShellDamengTableRecordTabController extends RichTabController {
      */
     private DamengRecordPrimaryKey initPrimaryKey(DamengRecord record) {
         DamengColumn primaryKeyColumn = this.getItem().getPrimaryKey();
+        // 主键
         if (primaryKeyColumn != null) {
             DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
             primaryKey.init(primaryKeyColumn, record);
             return primaryKey;
+        }
+        // 序列
+        for (DamengColumn column : record.getColumns()) {
+            if (column.isDefaultValueSequence()) {
+                DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
+                primaryKey.init(column, record);
+                return primaryKey;
+            }
         }
         return null;
     }
@@ -384,7 +398,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
             // 初始化数据
             this.initDataList(0);
             // 判断是否缺少主键列
-            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey());
+            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey() && !this.columns.isDefaultValueSequence());
             // 设置过滤激活
             this.filter.setActive(CollectionUtil.isNotEmpty(this.enabledFilters()));
             // 禁用组件
@@ -447,6 +461,8 @@ public class ShellDamengTableRecordTabController extends RichTabController {
 
     /**
      * 跳页
+     *
+     * @param event 跳页事件
      */
     @FXML
     private void pageJump(PageEvent.PageJumpEvent event) {
@@ -584,7 +600,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-//        this.recordTable.destroy();
+        //        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 
@@ -659,10 +675,20 @@ public class ShellDamengTableRecordTabController extends RichTabController {
     //     }
     // }
 
+    /**
+     * 获取过滤条件
+     *
+     * @return 过滤条件
+     */
     public List<DamengRecordFilter> getFilters() {
         return filters;
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<DamengRecordFilter> filters) {
         this.filters = filters;
     }
@@ -683,9 +709,9 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         ShellDamengViewFactory.exportData(this.getItem().client(), this.getItem().schema(), this.getItem().tableName());
     }
 
-//    @Override
-//    public void destroy() {
-//        this.recordTable.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.recordTable.destroy();
+    //        super.destroy();
+    //    }
 }

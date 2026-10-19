@@ -11,8 +11,8 @@ import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengUpdateRecordParam;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordColumn;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordColumn;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordTableView;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.fx.db.DBObjectList;
@@ -41,8 +41,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 达梦查询结果标签页控制器，负责查询结果的展示与记录的增删改操作
+ *
  * @author oyzh
- * @since 2024/08/12
+ * @since 2025-11-06
  */
 public class ShellDamengQuerySelectTabController extends RichTabController {
 
@@ -74,7 +76,7 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private DamengRecordTableView recordTable;
+    private ShellDamengRecordTableView recordTable;
 
     /**
      * 数据库树节点
@@ -190,7 +192,7 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
         DBStatusColumn<DamengRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (DamengColumn column : columns) {
-            DamengRecordColumn tableColumn = new DamengRecordColumn(column);
+            ShellDamengRecordColumn tableColumn = new ShellDamengRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }
@@ -285,9 +287,9 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
         } else {// 主键不存在，则根据所有字段更新
             // 变更数据
             DBRecordData changedRecordData = record.getChangedRecordData();
-            // 原始数据
-            DBRecordData originalRecordData = record.getOriginalRecordData();
-            param.setUpdateRecord(originalRecordData);
+//            // 原始数据
+//            DBRecordData originalRecordData = record.getOriginalRecordData();
+//            param.setUpdateRecord(originalRecordData);
             param.setUpdateRecord(changedRecordData);
             // 更新行
             this.dbItem.client().updateRecord(param);
@@ -302,10 +304,19 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
      */
     private DamengRecordPrimaryKey initPrimaryKey(DamengRecord record) {
         DamengColumn primaryKeyColumn = this.result.getPrimaryKey();
+        // 主键
         if (primaryKeyColumn != null) {
             DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
             primaryKey.init(primaryKeyColumn, record);
             return primaryKey;
+        }
+        // 序列
+        for (DamengColumn column : record.getColumns()) {
+            if(column.isDefaultValueSequence()){
+                DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
+                primaryKey.init(column, record);
+                return primaryKey;
+            }
         }
         return null;
     }

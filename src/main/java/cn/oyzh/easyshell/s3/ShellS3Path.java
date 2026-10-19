@@ -5,7 +5,7 @@ package cn.oyzh.easyshell.s3;
  * 格式 /桶/路径
  *
  * @author oyzh
- * @since 2025-06-14
+ * @since 2025-06-15
  */
 public class ShellS3Path {
 
@@ -14,6 +14,11 @@ public class ShellS3Path {
      */
     private final String path;
 
+    /**
+     * 构造s3路径
+     *
+     * @param path 路径
+     */
     public ShellS3Path(String path) {
         // 处理路径
         if ("".equals(path)) {

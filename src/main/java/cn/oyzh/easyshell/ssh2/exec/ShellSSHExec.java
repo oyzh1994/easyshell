@@ -6,16 +6,27 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
+ * ssh执行器，用于获取系统信息与执行shell命令
+ *
  * @author oyzh
- * @since 2023/8/16
+ * @since 2025-03-18
  */
 public class ShellSSHExec implements AutoCloseable {
 
+    /**
+     * ssh客户端
+     */
     private ShellSSHClient client;
 
+    /**
+     * 构造ssh执行器
+     *
+     * @param client ssh客户端
+     */
     public ShellSSHExec(ShellSSHClient client) {
         this.client = client;
     }
@@ -30,15 +41,16 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("sysctl machdep.cpu");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic cpu", 500);
-            String[] lines = output.split("\n");
-            String[] cols1 = lines[0].split("\\s+");
-            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < cols1.length; i++) {
-                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            String output = this.client.exec("wmic cpu", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                return ShellUtil.wmicTableToText(output);
             }
-            return sb.toString();
+            // wmic不可用时，使用powershell替代
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_Processor | Format-List *\"", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
+                return output;
+            }
+            return "N/A";
         }
         if (this.client.isUnix()) {
             return this.client.exec("sysctl hw.model hw.machine hw.ncpu hw.clockrate");
@@ -53,15 +65,22 @@ public class ShellSSHExec implements AutoCloseable {
      */
     public List<ShellSSHDiskInfo> disk_info() {
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName", 500);
-            return ShellSSHExecParser.diskForWindows(output);
-        } else {
-            String output = this.client.exec("df -h");
-            if (this.client.isMacos()) {
-                return ShellSSHExecParser.diskForMacos(output);
+            String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName", 5000);
+            if (!ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                return ShellSSHExecParser.diskForWindows(output);
             }
-            return ShellSSHExecParser.diskForLinux(output);
+            // wmic不可用时，使用powershell替代
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,Size,FreeSpace,VolumeName | ConvertTo-Csv -NoTypeInformation\"", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
+                return ShellSSHExecParser.diskForWindows2(output);
+            }
+            return Collections.emptyList();
         }
+        String output = this.client.exec("df -h");
+        if (this.client.isMacos()) {
+            return ShellSSHExecParser.diskForMacos(output);
+        }
+        return ShellSSHExecParser.diskForLinux(output);
     }
 
     /**
@@ -90,15 +109,16 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("system_profiler SPMemoryDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic memorychip", 500);
-            String[] lines = output.split("\n");
-            String[] cols1 = lines[0].split("\\s+");
-            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < cols1.length; i++) {
-                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            String output = this.client.exec("wmic memorychip", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                return ShellUtil.wmicTableToText(output);
             }
-            return sb.toString();
+            // wmic不可用时，使用powershell替代
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_PhysicalMemory | Format-List *\"", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
+                return output;
+            }
+            return "N/A";
         }
         if (this.client.isUnix()) {
             return this.client.exec("dmesg | grep -i memory");
@@ -120,19 +140,20 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("system_profiler SPDisplaysDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("nvidia-smi", 500);
-            if (!ShellUtil.isCommandNotFound(output)) {
+            String output = this.client.exec("nvidia-smi", 5000);
+            if (!ShellUtil.isWindowsCommandNotFound(output, "nvidia-smi")) {
                 return output;
             }
-            output = this.client.exec("wmic path win32_VideoController", 500);
-            String[] lines = output.split("\n");
-            String[] cols1 = lines[0].split("\\s+");
-            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < cols1.length; i++) {
-                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            output = this.client.exec("wmic path win32_VideoController", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                return ShellUtil.wmicTableToText(output);
             }
-            return sb.toString();
+            // wmic不可用时，使用powershell替代
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_VideoController | Format-List *\"", 5000);
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
+                return output;
+            }
+            return "N/A";
         }
         if (this.client.isUnix()) {
             return this.client.exec("pciconf -lv | grep -i vga");

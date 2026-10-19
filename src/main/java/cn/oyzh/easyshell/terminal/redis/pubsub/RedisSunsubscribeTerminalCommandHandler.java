@@ -5,8 +5,10 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
 
 /**
+ * Redis SUNSUBSCRIBE 命令处理器
+ *
  * @author oyzh
- * @since 2023/08/02
+ * @since 2025-09-01
  */
 
 public class RedisSunsubscribeTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {

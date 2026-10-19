@@ -26,7 +26,7 @@ import java.nio.charset.Charset;
  * 本地终端tab内容组件
  *
  * @author oyzh
- * @since 2025/03/20
+ * @since 2025-04-24
  */
 public class ShellLocalTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
@@ -47,10 +47,20 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      */
     private ShellLocalClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellLocalClient getClient() {
         return client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -60,16 +70,13 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     //  */
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 初始化组件
+     *
+     * @throws IOException 抛出异常
+     */
     private void initWidget() throws IOException {
-        Charset charset = Charset.forName(this.shellConnect().getCharset());
-        // 初始化部分参数
-        if (this.shellConnect().getTermType() != null) {
-            this.widget.putEnvironment("TERM", this.setting.getTermType());
-        }
-        if (this.shellConnect().getCharset() != null) {
-            this.widget.putEnvironment("LANG", "en_US." + charset);
-        }
-        ShellLocalTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellLocalTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -80,9 +87,10 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
-        // this.widget.setAlwaysShowThumbs(true);
+        // 打开会话
         this.widget.openSession(connector);
-        // this.widget.onTermination(exitCode -> this.widget.close());
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
@@ -95,6 +103,12 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
         ShellConnectUtil.initTermBackground(terminalPanel);
     }
 
+    /**
+     * 初始化
+     *
+     * @param shellConnect shell连接
+     * @throws IOException 抛出异常
+     */
     public void init(ShellConnect shellConnect) throws IOException {
         this.client = ShellClientUtil.newClient(shellConnect);
         //        this.shellConnect = shellConnect;
@@ -124,7 +138,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

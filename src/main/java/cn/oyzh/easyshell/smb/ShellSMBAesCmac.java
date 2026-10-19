@@ -13,8 +13,19 @@ import java.util.Arrays;
  */
 public class ShellSMBAesCmac implements Mac {
 
+    /**
+     * 密钥
+     */
     private byte[] key;
+
+    /**
+     * 数据缓冲区
+     */
     private byte[] buffer = new byte[0];
+
+    /**
+     * 是否已初始化
+     */
     private boolean initialized = false;
 
     @Override

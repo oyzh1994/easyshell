@@ -14,9 +14,10 @@ import javafx.stage.Stage;
 import java.net.URISyntaxException;
 
 /**
+ * SVG 图标加载与渲染的测试
  *
  * @author oyzh
- * @since 2026-02-26
+ * @since 2026-08-21
  */
 public class SvgTest extends Application {
 

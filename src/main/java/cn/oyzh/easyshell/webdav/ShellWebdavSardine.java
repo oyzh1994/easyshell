@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.net.ProxySelector;
 
 /**
+ * webdav sardine实现，支持代理与超时配置
  *
  * @author oyzh
  * @since 2025-10-10
@@ -39,6 +40,13 @@ public class ShellWebdavSardine extends SardineImpl implements Closeable {
      */
     private final int timeout;
 
+    /**
+     * 构造webdav sardine
+     *
+     * @param timeout  超时时间
+     * @param user     用户名
+     * @param password 密码
+     */
     public ShellWebdavSardine(int timeout,
                               String user,
                               String password) {
@@ -46,6 +54,14 @@ public class ShellWebdavSardine extends SardineImpl implements Closeable {
         this(timeout, user, password, null);
     }
 
+    /**
+     * 构造webdav sardine
+     *
+     * @param timeout     超时时间
+     * @param user        用户名
+     * @param password    密码
+     * @param proxyConfig 代理配置
+     */
     public ShellWebdavSardine(int timeout,
                               String user,
                               String password,

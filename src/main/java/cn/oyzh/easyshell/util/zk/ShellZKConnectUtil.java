@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.dto.zk.ShellZKConnectInfo;
  * zk连接工具类
  *
  * @author oyzh
- * @since 2022/8/26
+ * @since 2025-09-04
  */
 
 public class ShellZKConnectUtil {

@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import com.github.sardine.DavResource;
 
 /**
+ * webdav工具类
  *
  * @author oyzh
  * @since 2025-10-09

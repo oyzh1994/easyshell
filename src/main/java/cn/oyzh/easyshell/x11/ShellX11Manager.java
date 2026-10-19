@@ -5,24 +5,32 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.ProcessUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.xserver.ServerOptions;
+import cn.oyzh.fx.xserver.XServer;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * x11管理器
  *
  * @author oyzh
- * @since 2025/03/08
+ * @since 2025-03-08
  */
 public class ShellX11Manager {
 
     /**
      * x11进程
      */
+    @Deprecated
     private static Process x11Process;
 
     /**
@@ -31,8 +39,64 @@ public class ShellX11Manager {
     private static final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
+     * x服务
+     */
+    private static XServer xserver;
+
+    /**
+     * 是否内建服务
+     *
+     * @param config x11配置
+     * @return 结果
+     */
+    public static boolean isBuilt_in(ShellX11Config config) {
+        if (config == null) {
+            return false;
+        }
+        return config.isLocal() && config.getPort() == setting.getX11Port();
+    }
+
+    /**
+     * 启动x11服务，内建
+     */
+    public synchronized static void startXServer_built_in() throws Exception {
+        if (xserver != null && xserver.isRunning()) {
+            //throw new RuntimeException("x server is running!");
+            return;
+        }
+        List<Object> list = new ArrayList<>();
+        list.add("--display");
+        list.add((setting.getX11Port() - 6000) + "");
+        if (setting.isX11Glx()) {
+            list.add("--glx");
+        } else {
+            list.add("--no-glx");
+        }
+        if (setting.isX11Local()) {
+            list.add("--local");
+        }
+        if (setting.isX11FocusOnClick()) {
+            list.add("--focus-on-click");
+        }
+        if (setting.isX11SingleWindow()) {
+            list.add("--single-window");
+        }
+        if (StringUtil.isNotBlank(setting.getX11Auth())) {
+            list.add("--xserver-cookie");
+            list.add(setting.getX11Auth());
+        }
+        String[] args = list.toArray(new String[]{});
+        ServerOptions options = ServerOptions.parse(args);
+        options.fitToDisplay();
+        xserver = new XServer(options);
+        xserver.start();
+        xserver.startEventLoop();
+    }
+
+    /**
      * 启动x11服务
      */
+    @Deprecated
     public synchronized static void startXServer() {
         // x11进程存在
         if (x11Process != null && x11Process.isAlive()) {
@@ -53,6 +117,7 @@ public class ShellX11Manager {
     /**
      * windows下启动x-server
      */
+    @Deprecated
     private static void startXServer_windows() {
         // 判断进程是否存在
         String[] processName = setting.x11Binary();
@@ -85,8 +150,8 @@ public class ShellX11Manager {
                 command.append(" -silent-dup-error");
                 // 关闭托盘
                 command.append(" -notrayicon");
-//            // 指定分辨率
-//            command.append(" -screen 1920x1080");
+                //            // 指定分辨率
+                //            command.append(" -screen 1920x1080");
                 // 工作目录
                 File dir = new File(setting.x11WorkDir());
                 // 启动进程
@@ -98,57 +163,58 @@ public class ShellX11Manager {
         });
     }
 
-//    /**
-//     * windows下启动x-server
-//     */
-//    private static void startXServer_windows() {
-//        // 判断进程是否存在
-//        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
-//        if (ProcessUtil.isProcessRunning(processName)) {
-//            return;
-//        }
-//        // 异步启动
-//        ThreadUtil.start(() -> {
-//            StringBuilder command = new StringBuilder("cmd.exe /c start ");
-//            // moba
-//            if (StringUtil.equals(x11_type, "moba")) {
-//                command.append("XWin_MobaX.exe");
-//            } else {// vcxsrv
-//                command.append("vcxsrv.exe");
-//            }
-//            // vcxsrv
-//            // 剪切板互通
-//            command.append(" -clipboard ");
-//            // 鉴权
-//            command.append(" -ac");
-//            // gpu加速
-//            command.append(" -wgl");
-//            // 多窗口
-//            command.append(" -multiwindow");
-//            // 静默处理错误
-//            command.append(" -silent-dup-error");
-//            // 关闭托盘
-//            command.append(" -notrayicon");
-////            // 指定分辨率
-////            command.append(" -screen 1920x1080");
-//            // 工作目录
-//            String dir;
-//            if (StringUtil.equals(x11_type, "moba")) {
-//                dir = ResourceUtil.getResource("/bin/moba/").getFile();
-//            } else {// vcxsrv
-//                dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
-//            }
-//            if (dir.startsWith("/")) {
-//                dir = dir.substring(1);
-//            }
-//            // 启动进程
-//            x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
-//        });
-//    }
+    //    /**
+    //     * windows下启动x-server
+    //     */
+    //    private static void startXServer_windows() {
+    //        // 判断进程是否存在
+    //        String[] processName = {"vcxsrv.exe", "XWin_MobaX.exe"};
+    //        if (ProcessUtil.isProcessRunning(processName)) {
+    //            return;
+    //        }
+    //        // 异步启动
+    //        ThreadUtil.start(() -> {
+    //            StringBuilder command = new StringBuilder("cmd.exe /c start ");
+    //            // moba
+    //            if (StringUtil.equals(x11_type, "moba")) {
+    //                command.append("XWin_MobaX.exe");
+    //            } else {// vcxsrv
+    //                command.append("vcxsrv.exe");
+    //            }
+    //            // vcxsrv
+    //            // 剪切板互通
+    //            command.append(" -clipboard ");
+    //            // 鉴权
+    //            command.append(" -ac");
+    //            // gpu加速
+    //            command.append(" -wgl");
+    //            // 多窗口
+    //            command.append(" -multiwindow");
+    //            // 静默处理错误
+    //            command.append(" -silent-dup-error");
+    //            // 关闭托盘
+    //            command.append(" -notrayicon");
+    ////            // 指定分辨率
+    ////            command.append(" -screen 1920x1080");
+    //            // 工作目录
+    //            String dir;
+    //            if (StringUtil.equals(x11_type, "moba")) {
+    //                dir = ResourceUtil.getResource("/bin/moba/").getFile();
+    //            } else {// vcxsrv
+    //                dir = ResourceUtil.getResource("/bin/vcxsrv/").getFile();
+    //            }
+    //            if (dir.startsWith("/")) {
+    //                dir = dir.substring(1);
+    //            }
+    //            // 启动进程
+    //            x11Process = RuntimeUtil.exec(command.toString(), null, new File(dir));
+    //        });
+    //    }
 
     /**
      * macos下启动x-server
      */
+    @Deprecated
     private static void startXServer_macos() {
         // 判断进程是否存在
         String[] processName = {"XQuartz"};
@@ -178,32 +244,33 @@ public class ShellX11Manager {
         });
     }
 
-//    private static void startXServer_macos_arm64() {
-//        // 判断进程是否存在
-//        String[] processName = {"XQuartz"};
-//        if (ProcessUtil.isProcessRunning(processName)) {
-//            return;
-//        }
-//        // 异步启动
-//        ThreadUtil.start(() -> {
-//            try {
-//                StringBuilder command = new StringBuilder("startx");
-//                // 工作目录
-//                String dir = ResourceUtil.getResource("/bin/xquartz").getFile();
-//                ProcessBuilder processBuilder = new ProcessBuilder(command.toString());
-//                processBuilder.directory(new File(dir));
-//                // 启动进程
-//                x11Process = processBuilder.start();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                MessageBox.exception(ex);
-//            }
-//        });
-//    }
+    //    private static void startXServer_macos_arm64() {
+    //        // 判断进程是否存在
+    //        String[] processName = {"XQuartz"};
+    //        if (ProcessUtil.isProcessRunning(processName)) {
+    //            return;
+    //        }
+    //        // 异步启动
+    //        ThreadUtil.start(() -> {
+    //            try {
+    //                StringBuilder command = new StringBuilder("startx");
+    //                // 工作目录
+    //                String dir = ResourceUtil.getResource("/bin/xquartz").getFile();
+    //                ProcessBuilder processBuilder = new ProcessBuilder(command.toString());
+    //                processBuilder.directory(new File(dir));
+    //                // 启动进程
+    //                x11Process = processBuilder.start();
+    //            } catch (Exception ex) {
+    //                ex.printStackTrace();
+    //                MessageBox.exception(ex);
+    //            }
+    //        });
+    //    }
 
     /**
      * 停止x11服务
      */
+    @Deprecated
     public synchronized static void stopXServer() {
         if (x11Process != null) {
             try {
@@ -220,8 +287,65 @@ public class ShellX11Manager {
         }
     }
 
+    /**
+     * 停止x11服务，内建
+     */
+    public synchronized static void stopXServer_built_in() {
+        if (xserver != null) {
+            if (xserver.isRunning()) {
+                xserver.stop();
+            }
+            xserver = null;
+        }
+    }
+
+    /**
+     * 获取xserver状态
+     *
+     * @return 结果
+     */
+    public synchronized static int xServerStatus() {
+        if (xserver == null) {
+            return 0;
+        }
+        if (xserver.isRunning()) {
+            return 1;
+        }
+        return 2;
+    }
+
+    /**
+     * 获取xserver客户端
+     *
+     * @return 结果
+     */
+    public synchronized static int xServerClients() {
+        if (xserver == null) {
+            return 0;
+        }
+        return CollectionUtil.size(xserver.clients());
+    }
+
+    /**
+     * 获取x11端口
+     *
+     * @return 结果
+     */
+    public static int getX11Port() {
+        return setting.getX11Port();
+    }
+
+    /**
+     * 获取x11认证
+     *
+     * @return 结果
+     */
+    public static String getX11Cookie() {
+        return setting.getX11Auth();
+    }
+
     static {
         // 注册钩子
-        RuntimeUtil.addShutdownHook(new Thread(ShellX11Manager::stopXServer));
+        RuntimeUtil.addShutdownHook(new Thread(ShellX11Manager::stopXServer_built_in));
     }
 }

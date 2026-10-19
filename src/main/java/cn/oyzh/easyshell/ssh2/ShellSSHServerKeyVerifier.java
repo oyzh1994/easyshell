@@ -11,6 +11,7 @@ import java.net.SocketAddress;
 import java.security.PublicKey;
 
 /**
+ * ssh服务端密钥校验器，通过弹窗让用户确认密钥
  *
  * @author oyzh
  * @since 2026-02-11

@@ -7,7 +7,7 @@ import cn.oyzh.i18n.I18nHelper;
  * 进程类型选择框
  *
  * @author oyzh
- * @since 25/03/29
+ * @since 2025-03-29
  */
 public class ShellProcessTypeComboBox extends FXComboBox<String> {
 

@@ -21,7 +21,7 @@ import java.util.List;
  * 片段列表弹窗
  *
  * @author oyzh
- * @since 2025/07/21
+ * @since 2025-06-01
  */
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "/snippet/shellSnippetPopup.fxml",

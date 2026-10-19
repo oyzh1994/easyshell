@@ -4,6 +4,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import com.fazecast.jSerialComm.SerialPort;
 
 /**
+ * 串口流控下拉框
+ *
  * @author oyzh
  * @since 2025-04-24
  */
@@ -16,6 +18,11 @@ public class ShellSerialFlowControlComboBox extends FXComboBox<String> {
         this.selectFirst();
     }
 
+    /**
+     * 获取流控值
+     *
+     * @return 流控值
+     */
     public int getFlowControl() {
         if (this.getSelectedIndex() == 0) {
             return SerialPort.FLOW_CONTROL_DISABLED;
@@ -29,6 +36,11 @@ public class ShellSerialFlowControlComboBox extends FXComboBox<String> {
         return SerialPort.FLOW_CONTROL_DISABLED;
     }
 
+    /**
+     * 初始化流控值
+     *
+     * @param flowControl 流控值
+     */
     public void init(int flowControl) {
         if (flowControl == SerialPort.FLOW_CONTROL_DISABLED) {
             this.select(0);

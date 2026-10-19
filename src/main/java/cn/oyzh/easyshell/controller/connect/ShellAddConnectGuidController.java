@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
  * 连接新增引导业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -83,6 +83,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addWebdavConnect(group);
             } else if (ShellPrototype.MYSQL.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addMysqlConnect(group);
+            } else if (ShellPrototype.MARIADB.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addMariadbConnect(group);
             } else if (ShellPrototype.DAMENG.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addDamengConnect(group);
             } else if (ShellPrototype.MONGO.equalsIgnoreCase(userData)) {

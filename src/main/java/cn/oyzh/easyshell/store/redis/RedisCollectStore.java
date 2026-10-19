@@ -14,7 +14,7 @@ import java.util.Map;
  * redis收藏存储
  *
  * @author oyzh
- * @since 2024/09/26
+ * @since 2025-09-01
  */
 public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
 
@@ -23,22 +23,42 @@ public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
      */
     public static final RedisCollectStore INSTANCE = new RedisCollectStore();
 
+    /**
+     * 根据连接id加载收藏列表
+     *
+     * @param iid 连接id
+     * @return 收藏列表
+     */
     public List<ShellRedisCollect> loadByIid(String iid) {
         QueryParam param = new QueryParam();
         param.setName("iid");
         param.setData(iid);
         return super.selectList(param);
-//        List<ShellRedisCollect> collects = super.selectList(param);
-//        if (CollectionUtil.isNotEmpty(collects)) {
-//            return collects.parallelStream().map(ShellRedisCollect::getKey).collect(Collectors.toList());
-//        }
-//        return Collections.emptyList();
+        //        List<ShellRedisCollect> collects = super.selectList(param);
+        //        if (CollectionUtil.isNotEmpty(collects)) {
+        //            return collects.parallelStream().map(ShellRedisCollect::getKey).collect(Collectors.toList());
+        //        }
+        //        return Collections.emptyList();
     }
 
+    /**
+     * 替换
+     *
+     * @param iid     连接id
+     * @param dbIndex db索引
+     * @param key     键
+     * @return 结果
+     */
     public boolean replace(String iid, int dbIndex, String key) {
         return this.replace(new ShellRedisCollect(iid, dbIndex, key));
     }
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellRedisCollect model) {
         if (model != null && !this.exist(model.getIid(), model.getDbIndex(), model.getKey())) {
             return this.insert(model);
@@ -108,10 +128,14 @@ public class RedisCollectStore extends JdbcStandardStore<ShellRedisCollect> {
      * 根据iid删除
      *
      * @param iid 连接id
+     * @return 结果
      */
-    public void deleteByIid(String iid) {
-        DeleteParam param = new DeleteParam();
-        param.addQueryParam(QueryParam.of("iid", iid));
-        super.delete(param);
+    public boolean deleteByIid(String iid) {
+        if (StringUtil.isNotBlank(iid)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(QueryParam.of("iid", iid));
+            return super.delete(param);
+        }
+        return false;
     }
 }

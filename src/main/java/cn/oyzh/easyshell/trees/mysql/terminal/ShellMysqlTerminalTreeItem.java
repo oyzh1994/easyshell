@@ -10,19 +10,34 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
  * mysql终端树节点
  *
  * @author oyzh
- * @since 2023/1/30
+ * @since 2026-06-16
  */
 public class ShellMysqlTerminalTreeItem extends RichTreeItem<ShellMysqlTerminalTreeItemValue> {
 
+    /**
+     * 构造终端节点
+     *
+     * @param treeView 树视图
+     */
     public ShellMysqlTerminalTreeItem(RichTreeView treeView) {
         super(treeView);
         this.setValue(new ShellMysqlTerminalTreeItemValue());
     }
 
+    /**
+     * 获取父节点
+     *
+     * @return 父节点
+     */
     public ShellMysqlDatabaseTreeItem parent() {
         return (ShellMysqlDatabaseTreeItem) super.parent();
     }
 
+    /**
+     * 获取mysql客户端
+     *
+     * @return mysql客户端
+     */
     public ShellMysqlClient client() {
         return this.parent().client();
     }

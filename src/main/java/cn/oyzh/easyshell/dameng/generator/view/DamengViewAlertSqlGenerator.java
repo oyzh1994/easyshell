@@ -10,11 +10,18 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.List;
 
 /**
+ * 达梦修改视图SQL生成器
+ *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2026-09-02
  */
 public class DamengViewAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改视图参数
+     */
     private void _generate(DamengAlertViewParam param) {
         DamengView view = param.getView();
         String schema = param.getSchema();
@@ -26,7 +33,7 @@ public class DamengViewAlertSqlGenerator extends DBSqlGenerator {
                 .append(viewFullName)
                 .append(" AS \n")
                 .append(view.getDefinition());
-        if (view.getSecurityType() != null) {
+        if (StringUtil.isNotBlank(view.getSecurityType())) {
             this.sqlBuilder.append("\n")
                     .append("BEQUEATH ")
                     .append(view.getSecurityType());
@@ -48,20 +55,44 @@ public class DamengViewAlertSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改视图参数
+     * @return SQL列表
+     */
     public List<String> generate(DamengAlertViewParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改视图参数
+     * @return SQL语句
+     */
     public String generateSingle(DamengAlertViewParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改视图参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(DamengAlertViewParam param) {
         return new DamengViewAlertSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改视图参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(DamengAlertViewParam param) {
         return new DamengViewAlertSqlGenerator().generateSingle(param);
     }

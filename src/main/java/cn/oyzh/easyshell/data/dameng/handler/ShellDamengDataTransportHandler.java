@@ -7,17 +7,22 @@ import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
+import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
+import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
 import cn.oyzh.fx.db.util.DBUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Dameng数据传输处理器
+ *
  * @author oyzh
- * @since 2024/09/06
+ * @since 2025-11-06
  */
 public class ShellDamengDataTransportHandler extends DBDataTransportHandler<String> {
 
@@ -56,6 +61,9 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      */
     protected List<DBDataTransportObject> procedures;
 
+    /**
+     * 构造 Dameng数据传输处理器
+     */
     public ShellDamengDataTransportHandler() {
         super(DBDialect.DAMENG);
     }
@@ -65,9 +73,24 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         this.message("Transport Starting");
         try {
             if (CollectionUtil.isNotEmpty(this.tables)) {
-                for (DBDataTransportObject table : this.tables) {
+                // 全部表
+                List<DamengTable> allTables = new ArrayList<>();
+                for (DBDataTransportObject t : this.tables) {
+                    DamengTable table = new DamengTable();
+                    table.setName(t.getName());
+                    table.setSchema(this.sourceDatabase);
+                    allTables.add(table);
+                }
+                // 按外键依赖排序，父表在前
+                this.message("sort tables");
+                ShellDamengUtil.sortTablesInHandler(allTables, this.sourceClient, this);
+                for (DamengTable table : allTables) {
                     this.transportTable(table.getName());
                 }
+                //// 传输表实际业务
+                //ShellDamengUtil.sortTablesByCallback(this.sourceClient, allTables, (ExceptionConsumer<DamengTable>) t -> {
+                //    this.transportTable(t.getName());
+                //});
             }
             if (CollectionUtil.isNotEmpty(this.views)) {
                 for (DBDataTransportObject view : this.views) {
@@ -100,7 +123,7 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      * 传输表
      *
      * @param tableName 表名称
-     * @throws InterruptedException 异常
+     * @throws Exception 异常
      */
     private void transportTable(String tableName) throws Exception {
         this.checkInterrupt();
@@ -124,7 +147,6 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
         if (hasIdentity) {
             String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
-//            this.getInsertList().add(line0);
             this.addInsert(line0);
         }
         long start = 0;
@@ -141,7 +163,6 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
                 break;
             }
             List<String> list = ShellDamengDataUtil.toInsertSql(columns, records, true);
-//            this.getInsertList().addAll(list);
             this.addInsert(list);
             start += this.selectLimit;
             // 更新状态
@@ -149,13 +170,8 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         }
         if (hasIdentity) {
             String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
-//            this.getInsertList().add(line1);
             this.addInsert(line1);
         }
-//        // 批量插入
-//
-//        this.doBatchInsert(this.getInsertList(), false);
-//        this.getInsertList().clear();
         // 收尾批量插入
         this.doBatchInsert();
         this.message("Transport Table " + tableName + " Finished");
@@ -264,58 +280,128 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         }
     }
 
+    /**
+     * 获取来源客户端
+     *
+     * @return 来源客户端
+     */
     public ShellDamengClient getSourceClient() {
         return sourceClient;
     }
 
+    /**
+     * 设置来源客户端
+     *
+     * @param sourceClient 来源客户端
+     */
     public void setSourceClient(ShellDamengClient sourceClient) {
         this.sourceClient = sourceClient;
     }
 
+    /**
+     * 获取目标客户端
+     *
+     * @return 目标客户端
+     */
     public ShellDamengClient getTargetClient() {
         return targetClient;
     }
 
+    /**
+     * 设置目标客户端
+     *
+     * @param targetClient 目标客户端
+     */
     public void setTargetClient(ShellDamengClient targetClient) {
         this.targetClient = targetClient;
     }
 
+    /**
+     * 获取视图列表
+     *
+     * @return 视图列表
+     */
     public List<DBDataTransportObject> getViews() {
         return views;
     }
 
+    /**
+     * 设置视图列表
+     *
+     * @param views 视图列表
+     */
     public void setViews(List<DBDataTransportObject> views) {
         this.views = views;
     }
 
+    /**
+     * 获取表列表
+     *
+     * @return 表列表
+     */
     public List<DBDataTransportObject> getTables() {
         return tables;
     }
 
+    /**
+     * 设置表列表
+     *
+     * @param tables 表列表
+     */
     public void setTables(List<DBDataTransportObject> tables) {
         this.tables = tables;
     }
 
+    /**
+     * 获取触发器列表
+     *
+     * @return 触发器列表
+     */
     public List<DBDataTransportObject> getTriggers() {
         return triggers;
     }
 
+    /**
+     * 设置触发器列表
+     *
+     * @param triggers 触发器列表
+     */
     public void setTriggers(List<DBDataTransportObject> triggers) {
         this.triggers = triggers;
     }
 
+    /**
+     * 获取函数列表
+     *
+     * @return 函数列表
+     */
     public List<DBDataTransportObject> getFunctions() {
         return functions;
     }
 
+    /**
+     * 设置函数列表
+     *
+     * @param functions 函数列表
+     */
     public void setFunctions(List<DBDataTransportObject> functions) {
         this.functions = functions;
     }
 
+    /**
+     * 获取过程列表
+     *
+     * @return 过程列表
+     */
     public List<DBDataTransportObject> getProcedures() {
         return procedures;
     }
 
+    /**
+     * 设置过程列表
+     *
+     * @param procedures 过程列表
+     */
     public void setProcedures(List<DBDataTransportObject> procedures) {
         this.procedures = procedures;
     }

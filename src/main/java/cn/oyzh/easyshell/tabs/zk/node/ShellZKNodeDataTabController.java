@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * zk节点data组件
  *
  * @author oyzh
- * @since 2025/04/11
+ * @since 2025-09-04
  */
 public class ShellZKNodeDataTabController extends SubTabController {
 
@@ -238,6 +238,8 @@ public class ShellZKNodeDataTabController extends SubTabController {
 
     /**
      * zk节点转二维码
+     *
+     * @param event 事件
      */
     @FXML
     private void node2QRCode(MouseEvent event) {
@@ -413,6 +415,11 @@ public class ShellZKNodeDataTabController extends SubTabController {
     //        this.nodeData.setHighlight(highlight);
     //    }
 
+    /**
+     * 获取当前激活的节点
+     *
+     * @return 当前激活的节点
+     */
     private ShellZKNodeTreeItem activeItem() {
         return this.parent().getActiveItem();
     }

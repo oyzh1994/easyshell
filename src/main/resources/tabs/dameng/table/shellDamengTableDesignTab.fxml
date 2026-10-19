@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.table.DamengTableSpaceComboBox?>
+<?import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTableSpaceComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.db.ui.DBStatusColumn?>
 <?import cn.oyzh.fx.db.ui.DBStatusTableView?>
@@ -128,13 +128,13 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <DamengTableSpaceComboBox tipText="%base.tableSpace" fx:id="tableSpace" realHeight="30"
-                                              flexWidth="100% - 140"
-                                              initIndex="0">
+                    <ShellDamengTableSpaceComboBox tipText="%base.tableSpace" fx:id="tableSpace" realHeight="30"
+                                                   flexWidth="100% - 140"
+                                                   initIndex="0">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </DamengTableSpaceComboBox>
+                    </ShellDamengTableSpaceComboBox>
                 </FXHBox>
             </FXVBox>
         </FixedTab>

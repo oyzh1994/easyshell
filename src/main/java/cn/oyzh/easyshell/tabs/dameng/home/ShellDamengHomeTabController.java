@@ -13,7 +13,7 @@ import javafx.fxml.Initializable;
  * dameng主页内容组件
  *
  * @author oyzh
- * @since 2025/11/10
+ * @since 2025-11-10
  */
 public class ShellDamengHomeTabController extends RichTabController implements Initializable {
 

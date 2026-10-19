@@ -35,6 +35,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
+ * webdav客户端
  *
  * @author oyzh
  * @since 2025-10-09
@@ -66,6 +67,11 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
      */
     private final ShellConnect connect;
 
+    /**
+     * 构造webdav客户端
+     *
+     * @param connect 连接
+     */
     public ShellWebdavClient(ShellConnect connect) {
         this.connect = connect;
         this.state.set(ShellConnState.NOT_INITIALIZED);
@@ -381,6 +387,9 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
         return this.deleteCompetitor;
     }
 
+    /**
+     * 删除任务列表
+     */
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
     @Override
@@ -398,6 +407,9 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
         return uploadCompetitor;
     }
 
+    /**
+     * 上传任务列表
+     */
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
     @Override
@@ -415,6 +427,9 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
         return downloadCompetitor;
     }
 
+    /**
+     * 下载任务列表
+     */
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
     @Override
@@ -432,6 +447,9 @@ public class ShellWebdavClient implements ShellFileClient<ShellWebdavFile> {
         return transportCompetitor;
     }
 
+    /**
+     * 传输任务列表
+     */
     private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
 
     @Override

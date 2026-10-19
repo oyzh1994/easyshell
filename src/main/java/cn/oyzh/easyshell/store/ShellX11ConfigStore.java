@@ -10,7 +10,7 @@ import cn.oyzh.store.jdbc.param.QueryParam;
  * x11配置存储
  *
  * @author oyzh
- * @since 2025/03/08
+ * @since 2025-03-08
  */
 public class ShellX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
 
@@ -53,12 +53,12 @@ public class ShellX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
      * @return 结果
      */
     public boolean deleteByIid(String iid) {
-        if (StringUtil.isEmpty(iid)) {
-            return false;
+        if (StringUtil.isNotBlank(iid)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(new QueryParam("iid", iid));
+            return super.delete(param);
         }
-        DeleteParam param = new DeleteParam();
-        param.addQueryParam(new QueryParam("iid", iid));
-        return super.delete(param);
+        return false;
     }
 
     @Override

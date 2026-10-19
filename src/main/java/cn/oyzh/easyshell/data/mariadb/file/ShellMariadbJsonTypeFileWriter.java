@@ -1,0 +1,124 @@
+package cn.oyzh.easyshell.data.mariadb.file;
+
+import cn.oyzh.common.file.LineFileWriter;
+import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
+import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ * Mariadb Json类型文件写入器
+ *
+ * @author oyzh
+ * @since 2026-10-09
+ */
+public class ShellMariadbJsonTypeFileWriter extends ShellMariadbTypeFileWriter {
+
+    /**
+     * 字段列表
+     */
+    private MariadbColumns columns;
+
+    /**
+     * 导出配置
+     */
+    private DBDataExportConfig config;
+
+    /**
+     * 文件读取器
+     */
+    private LineFileWriter writer;
+
+    /**
+     * 是否首次写入
+     */
+    private boolean firstWrite = true;
+
+    /**
+     * 构造 Mariadb Json类型文件写入器
+     *
+     * @param filePath 文件路径
+     * @param config   导出配置
+     * @param columns  字段列表
+     * @throws FileNotFoundException 文件未找到异常
+     */
+    public ShellMariadbJsonTypeFileWriter(String filePath, DBDataExportConfig config, MariadbColumns columns) throws FileNotFoundException {
+        this.columns = columns;
+        this.config = config;
+        this.writer = LineFileWriter.create(filePath, config.getCharset());
+    }
+
+    @Override
+    public void writeHeader() throws Exception {
+        if (this.config.isEarlyVersion()) {
+            this.writer.writeLine("{");
+            this.writer.writeLine(" \"RECORDS\": [");
+        } else {
+            this.writer.writeLine("[");
+        }
+    }
+
+    @Override
+    public void writeTrial() throws Exception {
+        if (this.config.isEarlyVersion()) {
+            this.writer.write("\n]}");
+        } else {
+            this.writer.write("\n]");
+        }
+    }
+
+    @Override
+    public void writeObject(Map<String, Object> object) throws Exception {
+        if (!this.firstWrite) {
+            this.writer.write(",\n");
+        }
+        int size = object.size();
+        StringBuilder builder = new StringBuilder("  {\n");
+        for (Map.Entry<String, Object> entry : object.entrySet()) {
+            // 名称
+            builder.append("   \"").append(entry.getKey()).append("\" : ");
+            // 值处理
+            MariadbColumn column = this.columns.column(entry.getKey());
+            Object val = this.parameterized(column, entry.getValue(), this.config);
+            if (val != null) {
+                // 数字
+                if (val instanceof Number) {
+                    builder.append(val);
+                } else {// 其他类型
+                    builder.append("\"").append(val).append("\"");
+                }
+            } else {
+                builder.append("null");
+            }
+            if (--size != 0) {
+                builder.append(",\n");
+            } else {
+                builder.append("\n");
+            }
+        }
+        builder.append("  }");
+        this.writer.write(builder.toString());
+        this.firstWrite = false;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (this.writer != null) {
+            this.writer.close();
+            this.writer = null;
+            this.config = null;
+            this.columns = null;
+        }
+    }
+
+//    @Override
+//    public Object parameterized(MariadbColumn column, Object value, DBDataExportConfig config) {
+//        if (value == null) {
+//            return null;
+//        }
+//        return super.parameterized(column, value, config);
+//    }
+}

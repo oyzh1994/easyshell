@@ -38,7 +38,7 @@ import java.io.File;
  * redis数据导入业务
  *
  * @author oyzh
- * @since 2024/11/28
+ * @since 2025-09-01
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -260,6 +260,9 @@ public class ShellRedisImportDataController extends StageController {
         return I18nHelper.importTitle();
     }
 
+    /**
+     * 显示第一步
+     */
     @FXML
     private void showStep1() {
         this.step2.disappear();
@@ -267,6 +270,9 @@ public class ShellRedisImportDataController extends StageController {
         this.step1.display();
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         this.step1.disappear();
@@ -281,6 +287,9 @@ public class ShellRedisImportDataController extends StageController {
         this.step2.display();
     }
 
+    /**
+     * 显示第三步
+     */
     @FXML
     private void showStep3() {
         // 检查文件

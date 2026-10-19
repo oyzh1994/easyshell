@@ -6,8 +6,10 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
 
 /**
+ * Redis BITFIELD 命令处理器
+ *
  * @author oyzh
- * @since 2023/7/27
+ * @since 2025-09-01
  */
 public class RedisBitfieldTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 

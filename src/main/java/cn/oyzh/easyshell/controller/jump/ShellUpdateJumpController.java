@@ -35,7 +35,7 @@ import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocket
  * ssh跳板编辑业务
  *
  * @author oyzh
- * @since 2025/04/15
+ * @since 2025-04-15
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -87,7 +87,7 @@ public class ShellUpdateJumpController extends StageController {
     private ShellKeyComboBox sshKey;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -122,7 +122,7 @@ public class ShellUpdateJumpController extends StageController {
     private FXToggleSwitch enable;
 
     /**
-     * forwardAgent
+     * 转发ssh代理
      */
     @FXML
     private FXCheckBox forwardAgent;

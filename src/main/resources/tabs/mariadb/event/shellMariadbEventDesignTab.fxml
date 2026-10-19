@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.mariadb.event.ShellMariadbEventIntervalTypeCombobox?>
+<?import cn.oyzh.easyshell.fx.mariadb.event.ShellMariadbEventOnCompletionCombobox?>
+<?import cn.oyzh.easyshell.fx.mariadb.event.ShellMariadbEventStatusCombobox?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.DateTimeTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.easyshell.query.mariadb.ShellMariadbQueryEditor?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mariadb.event.ShellMariadbEventDesignTabController" flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
+                         managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+    </FXHBox>
+    <fx:define>
+        <FXToggleGroup fx:id="planType"/>
+    </fx:define>
+    <RichTabPane flexHeight="100% - 25" flexWidth="100%" fx:id="tabPane">
+        <FixedTab text="%base.definition">
+            <ShellMariadbQueryEditor fx:id="definition" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+        <FixedTab text="%base.plan">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXRadioButton text="AT" toggleGroup="$planType" fx:id="onetimeType" realWidth="140"
+                                   userData="ONE TIME">
+                        <HBox.margin>
+                            <Insets left="20" top="15"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                    <DateTimeTextField text="CURRENT_TIMESTAMP" fx:id="onetime" realHeight="30" flexWidth="100% - 315" disable="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DateTimeTextField>
+                </FXHBox>
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXCheckBox text="+INTERVAL" fx:id="onetimeInterval" prefWidth="120" disable="true">
+                        <HBox.margin>
+                            <Insets left="40" top="15"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <NumberTextField fx:id="onetimeIntervalValue" flexWidth="50% - 160" realHeight="30" disable="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <ShellMariadbEventIntervalTypeCombobox fx:id="onetimeIntervalType" realHeight="30" flexWidth="50% - 160"
+                                                         realWidth="30" disable="true" initIndex="0">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEventIntervalTypeCombobox>
+                </FXHBox>
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXRadioButton text="EVERY" toggleGroup="$planType" fx:id="loopType" realWidth="140"
+                                   userData="RECURRING">
+                        <HBox.margin>
+                            <Insets left="20" top="15"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                    <NumberTextField flexWidth="50% - 160" fx:id="loopIntervalValue" realHeight="30" disable="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <ShellMariadbEventIntervalTypeCombobox fx:id="loopIntervalType" realHeight="30" flexWidth="50% - 160"
+                                                         realWidth="30" disable="true" initIndex="0">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEventIntervalTypeCombobox>
+                    <VBox.margin>
+                        <Insets top="30"/>
+                    </VBox.margin>
+                </FXHBox>
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXCheckBox text="STARTS" fx:id="loopStart" prefWidth="120" disable="true">
+                        <HBox.margin>
+                            <Insets left="40" top="15"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <DateTimeTextField fx:id="loopStartTime" realHeight="30" flexWidth="100% - 315" disable="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DateTimeTextField>
+                </FXHBox>
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXCheckBox text="+INTERVAL" fx:id="loopStartInterval" prefWidth="100" disable="true">
+                        <HBox.margin>
+                            <Insets left="60" top="15"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <NumberTextField flexWidth="50% - 160" fx:id="loopStartIntervalValue" realHeight="30"
+                                     disable="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <ShellMariadbEventIntervalTypeCombobox fx:id="loopStartIntervalType" disable="true" realHeight="30"
+                                                         flexWidth="50% - 160" realWidth="30" initIndex="0">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEventIntervalTypeCombobox>
+                </FXHBox>
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXCheckBox text="ENDS" fx:id="loopEnd" prefWidth="120" disable="true">
+                        <HBox.margin>
+                            <Insets left="40" top="15"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <DateTimeTextField fx:id="loopEndTime" realHeight="30" flexWidth="100% - 315">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </DateTimeTextField>
+                </FXHBox>
+                <FXHBox realHeight="40" flexWidth="100%">
+                    <FXCheckBox text="+INTERVAL" fx:id="loopEndInterval" prefWidth="100" disable="true">
+                        <HBox.margin>
+                            <Insets left="60" top="15"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <NumberTextField flexWidth="50% - 160" fx:id="loopEndIntervalValue" realHeight="30" disable="true">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <ShellMariadbEventIntervalTypeCombobox fx:id="loopEndIntervalType" realHeight="30" flexWidth="50% - 160"
+                                                         realWidth="30" disable="true" initIndex="0">
+                        <HBox.margin>
+                            <Insets left="5" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEventIntervalTypeCombobox>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.advanced">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.status" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ShellMariadbEventStatusCombobox initIndex="0" fx:id="status" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEventStatusCombobox>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.onCompletion" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ShellMariadbEventOnCompletionCombobox initIndex="0" fx:id="onCompletion" flexWidth="100% - 140"
+                                                         realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ShellMariadbEventOnCompletionCombobox>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.definer" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ClearableTextField fx:id="definer" flexWidth="100% - 140" realHeight="30">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
+                <FXHBox realHeight="150" flexWidth="100%">
+                    <AccentLabel realWidth="85" text="%base.comment" realHeight="25">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <FXTextArea fx:id="comment" flexWidth="100% - 140" realHeight="120">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </FXTextArea>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.preview">
+            <ShellDataEditor formatType="SQL" editable="false" fx:id="preview" flexWidth="100%"
+                             flexHeight="100%"/>
+        </FixedTab>
+    </RichTabPane>
+</FXVBox>

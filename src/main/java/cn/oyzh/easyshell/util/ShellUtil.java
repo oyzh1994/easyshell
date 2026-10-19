@@ -68,6 +68,34 @@ public class ShellUtil {
         return output.trim();
     }
 
+    /**
+     * 将wmic的两行表格结果（第一行为列名，第二行为值）转换为 "列名 : 值" 文本
+     *
+     * @param output wmic命令结果
+     * @return 文本
+     */
+    public static String wmicTableToText(String output) {
+        if (StringUtil.isBlank(output)) {
+            return "";
+        }
+        try {
+            String[] lines = output.split("\n");
+            if (lines.length < 2) {
+                return output;
+            }
+            String[] cols1 = lines[0].split("\\s+");
+            String[] cols2 = lines[1].splitWithDelimiters("\\s+", -1);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < cols1.length; i++) {
+                sb.append(cols1[i]).append(" : ").append(cols2[i]).append("\n");
+            }
+            return sb.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return output;
+    }
+
     public static List<String> splitWindowsCommandResult(String output) {
         if (StringUtil.isBlank(output)) {
             return Collections.emptyList();

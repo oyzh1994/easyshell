@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.data.dameng.dto;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTableComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTableComboBox;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -12,19 +12,41 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.io.File;
 
 /**
+ * Dameng数据导入文件
+ *
  * @author oyzh
- * @since 2024/08/30
+ * @since 2025-11-06
  */
 public class ShellDamengDataImportFile {
 
+    /**
+     * 模式名称
+     */
     private String schema;
 
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
+    public String getSchema() {
+        return schema;
+    }
+
+    /**
+     * 数据库客户端
+     */
     private ShellDamengClient dbClient;
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellDamengClient dbClient) {
         this.dbClient = dbClient;
     }
@@ -39,6 +61,11 @@ public class ShellDamengDataImportFile {
      */
     private String targetTableName;
 
+    /**
+     * 获取文件属性
+     *
+     * @return 文件属性
+     */
     public ObjectProperty<File> fileProperty() {
         if (fileProperty == null) {
             this.fileProperty = new SimpleObjectProperty<>();
@@ -46,24 +73,49 @@ public class ShellDamengDataImportFile {
         return this.fileProperty;
     }
 
+    /**
+     * 获取文件
+     *
+     * @return 文件
+     */
     public File getFile() {
         return fileProperty == null ? null : fileProperty.get();
     }
 
+    /**
+     * 获取文件路径
+     *
+     * @return 文件路径
+     */
     public String getFilePath() {
         File file = getFile();
         return file == null ? null : file.getPath();
     }
 
+    /**
+     * 获取文件名
+     *
+     * @return 文件名
+     */
     public String getFileName() {
         File file = getFile();
         return file == null ? null : file.getName();
     }
 
+    /**
+     * 设置文件
+     *
+     * @param file 文件
+     */
     public void setFile(File file) {
         this.fileProperty().set(file);
     }
 
+    /**
+     * 获取文件路径控件
+     *
+     * @return 文件路径控件
+     */
     public ChooseFileTextField getFilePathControl() {
         ChooseFileTextField textField = new ChooseFileTextField();
         textField.setText(this.getFilePath());
@@ -73,8 +125,13 @@ public class ShellDamengDataImportFile {
         return textField;
     }
 
-    public DamengTableComboBox getTargetTableControl() {
-        DamengTableComboBox comboBox = new DamengTableComboBox();
+    /**
+     * 获取目标表控件
+     *
+     * @return 目标表控件
+     */
+    public ShellDamengTableComboBox getTargetTableControl() {
+        ShellDamengTableComboBox comboBox = new ShellDamengTableComboBox();
         StageManager.showMask(() -> comboBox.init(this.schema, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
@@ -83,14 +140,27 @@ public class ShellDamengDataImportFile {
         return comboBox;
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String getTableName() {
         String fileName = this.getFileName();
         if (StringUtil.isBlank(fileName)) {
             return fileName;
         }
+        if (!fileName.contains(".")) {
+            return fileName;
+        }
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
+    /**
+     * 获取目标表名称
+     *
+     * @return 目标表名称
+     */
     public String getTargetTableName() {
         if (this.targetTableName == null) {
             return this.getTableName();
@@ -98,6 +168,11 @@ public class ShellDamengDataImportFile {
         return this.targetTableName;
     }
 
+    /**
+     * 设置目标表名称
+     *
+     * @param targetTableName 目标表名称
+     */
     public void setTargetTableName(String targetTableName) {
         this.targetTableName = targetTableName;
     }

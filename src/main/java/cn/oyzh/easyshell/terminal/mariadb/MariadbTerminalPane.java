@@ -1,0 +1,384 @@
+package cn.oyzh.easyshell.terminal.mariadb;
+
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
+import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
+import cn.oyzh.easyshell.query.mariadb.ShellMariadbExecuteResult;
+import cn.oyzh.easyshell.mariadb.record.MariadbRecord;
+import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.db.query.DBQueryResults;
+import cn.oyzh.fx.plus.font.FontManager;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.terminal.TerminalPane;
+import cn.oyzh.fx.terminal.command.TerminalCommand;
+import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
+import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
+import cn.oyzh.fx.terminal.util.TerminalManager;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.text.Font;
+
+import java.util.List;
+
+/**
+ * MariaDB终端文本域
+ *
+ * @author oyzh
+ * @since 2026-10-09
+ */
+public class MariadbTerminalPane extends TerminalPane {
+
+    @Override
+    public Font getEditorFont() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        return FontManager.toFont(setting.terminalFontConfig());
+    }
+
+    /**
+     * MariaDB客户端
+     */
+    private ShellMariadbClient client;
+
+    public ShellMariadbClient getClient() {
+        return client;
+    }
+
+    // /**
+    //  * 客户端连接状态监听器
+    //  */
+    // private ChangeListener<ShellConnState> stateChangeListener;
+
+    @Override
+    public void flushPrompt() {
+        String str = this.dbName;
+        str += "@" + this.shellConnect().getName();
+        if (this.isConnecting()) {
+            str += "(" + I18nHelper.connectIng() + ")> ";
+        } else if (this.isConnected()) {
+            str += "(" + I18nHelper.connected() + ")> ";
+        } else {
+            str += "> ";
+        }
+        this.prompt(str);
+    }
+
+    /**
+     * 终端名称
+     */
+    public static final String TERMINAL_NAME = "mariadb";
+
+    @Override
+    public String terminalName() {
+        return TERMINAL_NAME;
+    }
+
+    /**
+     * 数据库名
+     */
+    private String dbName;
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+        this.flushPrompt();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param client 客户端
+     * @param dbName 数据库名
+     */
+    public void init(ShellMariadbClient client, String dbName) {
+        this.client = client;
+        this.setDbName(dbName);
+        FXUtil.runPulse(() -> {
+            this.disableInput();
+            this.outputLine(ShellI18nHelper.welcome());
+            this.outputLine("Powered By oyzh(2024-2026).");
+            this.flushPrompt();
+            if (this.isTemporary()) {
+                this.initByTemporary();
+            } else {
+                this.initByPermanent();
+            }
+        });
+    }
+
+    /**
+     * 是否临时连接
+     *
+     * @return 结果
+     */
+    public boolean isTemporary() {
+        return this.client == null || this.client.iid() == null;
+    }
+
+    @Override
+    public void outputPrompt() {
+        if (!this.isConnecting()) {
+            super.outputPrompt();
+        }
+    }
+
+    /**
+     * 是否已连接
+     *
+     * @return 结果
+     */
+    public boolean isConnected() {
+        return this.client != null && this.client.isConnected();
+    }
+
+    /**
+     * 是否连接中
+     *
+     * @return 结果
+     */
+    public boolean isConnecting() {
+        return this.client != null && this.client.isConnecting();
+    }
+
+    /**
+     * 是否已关闭
+     *
+     * @return 结果
+     */
+    public boolean isClosed() {
+        return this.client != null && this.client.isClosed();
+    }
+
+    /**
+     * 临时连接处理
+     */
+    private void initByTemporary() {
+        this.outputLine("Please enter connection info or SQL.");
+        this.appendByPrompt("");
+        this.enableInput();
+        this.flushAndMoveCaretEnd();
+    }
+
+    /**
+     * 常驻连接处理
+     */
+    private void initByPermanent() {
+        this.flushPrompt();
+        this.appendByPrompt("");
+        this.enableInput();
+        this.flushAndMoveCaretEnd();
+    }
+
+    // /**
+    //  * 初始化连接状态监听器
+    //  */
+    // private void initStatListener() {
+    //     if (this.stateChangeListener == null) {
+    //         this.stateChangeListener = (observableValue, state, t1) -> {
+    //             this.flushPrompt();
+    //             // 获取连接
+    //             String host = this.shellConnect() != null ? this.shellConnect().getHost() : "";
+    //             if (t1 == ShellConnState.CONNECTED) {
+    //                 this.outputLine(host + I18nHelper.connectSuccess() + " .");
+    //                 this.outputLine(I18nHelper.terminalTip2());
+    //                 this.outputLine(I18nHelper.terminalTip1());
+    //                 this.outputPrompt();
+    //                 this.flushCaret();
+    //                 super.enableInput();
+    //             } else if (t1 == ShellConnState.CLOSED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectionClosed() + ".");
+    //                 this.enableInput();
+    //             } else if (t1 == ShellConnState.CONNECTING) {
+    //                 this.outputLine(host + " " + I18nHelper.connectIng() + "...", false);
+    //             } else if (t1 == ShellConnState.FAILED) {
+    //                 this.outputLine(host + " " + I18nHelper.connectFail() + ".");
+    //                 this.flushAndMoveCaretEnd();
+    //                 this.enableInput();
+    //             }
+    //             JulLog.info("connState={}", t1);
+    //         };
+    //         this.getClient().addStateListener(this.stateChangeListener);
+    //     }
+    // }
+
+    @Override
+    public void enableInput() {
+        if (this.isConnecting()) {
+            return;
+        }
+        if (this.isConnected() || (!this.isConnected() && this.isTemporary())) {
+            super.enableInput();
+        }
+    }
+
+    public ShellConnect shellConnect() {
+        return this.getClient().getShellConnect();
+    }
+
+    @Override
+    public void fontSizeIncr() {
+        super.fontSizeIncr();
+        this.saveFontSize();
+    }
+
+    @Override
+    public void fontSizeDecr() {
+        super.fontSizeDecr();
+        this.saveFontSize();
+    }
+
+    /**
+     * 保存字体大小
+     */
+    private void saveFontSize() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        setting.setTerminalFontSize((byte) this.getFontSize());
+        ShellSettingStore.INSTANCE.replace(setting);
+    }
+
+    /**
+     * 执行SQL
+     *
+     * @param input 输入内容
+     * @return 执行结果
+     */
+    public TerminalExecuteResult eval(String input) {
+        TerminalExecuteResult terminalResult = new TerminalExecuteResult();
+        try {
+            if (this.dbName == null) {
+                terminalResult.setResult("No database selected. Use 'use <database>' to select one.");
+                return terminalResult;
+            }
+            DBQueryResults<ShellMariadbExecuteResult> results = this.client.executeSql(this.dbName, input);
+            if (!results.isSuccess()) {
+                terminalResult.setException(new RuntimeException(results.getErrMsg()));
+            } else if (results.isEmpty()) {
+                terminalResult.setResult("OK");
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (ShellMariadbExecuteResult result : results.getResults()) {
+                    if (result.isSuccess()) {
+                        if (result.getUpdateCount() > 0) {
+                            sb.append("Query OK, ").append(result.getUpdateCount()).append(" rows affected");
+                            long ms = result.getUsedMs();
+                            if (ms > 0) {
+                                sb.append(" (").append(ms).append(" ms)");
+                            }
+                            sb.append(this.lineEndingText());
+                        } else if (result.getRecords() != null && !result.getRecords().isEmpty()) {
+                            sb.append(this.formatResultSet(result));
+                        } else {
+                            sb.append("OK").append(this.lineEndingText());
+                        }
+                    } else {
+                        sb.append("ERROR: ").append(result.getMsg()).append(this.lineEndingText());
+                    }
+                }
+                terminalResult.setResult(sb.toString().trim());
+            }
+        } catch (Exception ex) {
+            terminalResult.setException(ex);
+        }
+        return terminalResult;
+    }
+
+    /**
+     * 格式化结果集
+     *
+     * @param result 执行结果
+     * @return 格式化后的文本
+     */
+    private String formatResultSet(ShellMariadbExecuteResult result) {
+        StringBuilder sb = new StringBuilder();
+        MariadbColumns columns = result.getColumns();
+        List<MariadbRecord> records = result.getRecords();
+        if (columns == null || records == null) {
+            return "";
+        }
+
+        int colCount = columns.size();
+        int[] colWidths = new int[colCount];
+        for (int i = 0; i < colCount; i++) {
+            colWidths[i] = Math.max(colWidths[i], columns.get(i).getName().length());
+        }
+        for (MariadbRecord record : records) {
+            for (int i = 0; i < colCount; i++) {
+                Object val = record.getValue(columns.get(i).getName());
+                String str = val == null ? "NULL" : val.toString();
+                colWidths[i] = Math.max(colWidths[i], str.length());
+            }
+        }
+
+        for (int i = 0; i < colCount; i++) {
+            sb.append(String.format("%-" + (colWidths[i] + 2) + "s", columns.get(i).getName()));
+        }
+        sb.append(this.lineEndingText());
+
+        for (int i = 0; i < colCount; i++) {
+            sb.append("-".repeat(colWidths[i]));
+            sb.append("  ");
+        }
+        sb.append(this.lineEndingText());
+
+        for (MariadbRecord record : records) {
+            for (int i = 0; i < colCount; i++) {
+                Object val = record.getValue(columns.get(i).getName());
+                String str = val == null ? "NULL" : val.toString();
+                sb.append(String.format("%-" + (colWidths[i] + 2) + "s", str));
+            }
+            sb.append(this.lineEndingText());
+        }
+
+        sb.append("#").append(records.size()).append(" row(s) in set");
+
+        long ms = result.getUsedMs();
+        if (ms > 0) {
+            sb.append(" (").append(ms).append(" ms)");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    protected TerminalCommandHandler findHandler(String input) {
+        TerminalCommandHandler<?, ?> handler = TerminalManager.findHandler(MariadbTerminalPane.TERMINAL_NAME, input);
+        if (handler == null) {
+            handler = new MariadbTerminalCommandHandler<>() {
+
+                @Override
+                public String commandName() {
+                    return "";
+                }
+
+                @Override
+                public TerminalExecuteResult execute(TerminalCommand command, MariadbTerminalPane terminal) {
+                    String input = command.getContent();
+                    return terminal.eval(input);
+                }
+            };
+        }
+        return handler;
+    }
+
+    @Override
+    public void initNode() {
+        this.keyHandler(MariadbTerminalKeyHandler.INSTANCE);
+        this.helpHandler(MariadbTerminalHelpHandler.INSTANCE);
+        this.mouseHandler(MariadbTerminalMouseHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
+        this.completeHandler(MariadbTerminalCompleteHandler.INSTANCE);
+        super.initNode();
+    }
+
+    // @Override
+    // public void destroy() {
+    //     if (this.client != null) {
+    //         this.client.stateProperty().unbind();
+    //     }
+    //     this.stateChangeListener = null;
+    //     super.destroy();
+    // }
+}

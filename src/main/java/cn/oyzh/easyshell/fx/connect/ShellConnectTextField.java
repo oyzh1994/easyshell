@@ -92,10 +92,20 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      */
     private String filterMode = "ssh";
 
+    /**
+     * 获取过滤模式
+     *
+     * @return 过滤模式
+     */
     public String getFilterMode() {
         return filterMode;
     }
 
+    /**
+     * 设置过滤模式
+     *
+     * @param filterMode 过滤模式
+     */
     public void setFilterMode(String filterMode) {
         this.filterMode = filterMode;
         if (this.connects != null) {
@@ -120,6 +130,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadZKType();
         } else if (ShellPrototype.MYSQL.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMysqlType();
+        } else if (ShellPrototype.MARIADB.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadMariadbType();
         } else if (ShellPrototype.MONGO.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMongoType();
         } else if (ShellPrototype.DAMENG.equalsIgnoreCase(this.filterMode)) {

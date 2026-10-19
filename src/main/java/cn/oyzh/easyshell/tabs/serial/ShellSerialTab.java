@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * 串口tab
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-03-04
  */
 public class ShellSerialTab extends ShellTermTab {
 
@@ -72,6 +72,12 @@ public class ShellSerialTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建串口标签页
+     *
+     * @param connect 连接
+     * @return 串口标签页
+     */
     public static ShellSerialTab of(ShellConnect connect) {
         ShellSerialTab tab = new ShellSerialTab();
         tab.init(connect);

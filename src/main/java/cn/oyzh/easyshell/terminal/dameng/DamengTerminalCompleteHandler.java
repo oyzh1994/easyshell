@@ -15,10 +15,16 @@ import java.util.List;
  * 终端提示器
  *
  * @author oyzh
- * @since 2023/7/24
+ * @since 2026-06-16
  */
 public class DamengTerminalCompleteHandler extends BaseTerminalCompleteHandler<DamengTerminalPane> {
 
+    /**
+     * 创建指定名称的命令处理器
+     *
+     * @param name 命令名称
+     * @return 命令处理器
+     */
     private DamengTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
         return new DamengTerminalCommandHandler<>() {
 

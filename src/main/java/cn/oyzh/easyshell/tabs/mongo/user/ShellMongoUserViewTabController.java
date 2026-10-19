@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * mongodb函数设计tab
+ * MongoDB 用户视图标签页控制器
  *
  * @author oyzh
- * @since 2024/07/08
+ * @since 2026-07-02
  */
 public class ShellMongoUserViewTabController extends RichTabController {
 
@@ -48,14 +48,30 @@ public class ShellMongoUserViewTabController extends RichTabController {
      */
     private ShellMongoDatabaseTreeItem dbItem;
 
+    /**
+     * 获取MongoDB用户
+     *
+     * @return MongoDB用户
+     */
     public MongoUser getMongoUser() {
         return mongoUser;
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
 
+    /**
+     * 初始化
+     *
+     * @param user 用户
+     * @param dbItem 数据库树节点
+     */
     public void init(MongoUser user, ShellMongoDatabaseTreeItem dbItem) {
         this.dbItem = dbItem;
         this.mongoUser = user;

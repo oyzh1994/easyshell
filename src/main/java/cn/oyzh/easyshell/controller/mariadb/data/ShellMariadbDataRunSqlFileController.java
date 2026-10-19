@@ -1,0 +1,244 @@
+package cn.oyzh.easyshell.controller.mariadb.data;
+
+import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.mariadb.handler.ShellMariadbDataRunSqlFileHandler;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.mariadb.ShellMariadbDatabaseComboBox;
+import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
+import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
+import cn.oyzh.fx.gui.text.area.MsgTextArea;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
+import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.stage.WindowEvent;
+
+import java.io.File;
+
+
+/**
+ * db运行sql业务
+ *
+ * @author oyzh
+ * @since 2026-10-09
+ */
+@StageAttribute(
+        multipliable = true,
+        stageStyle = FXStageStyle.EXTENDED,
+        //        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "mariadb/data/shellMariadbDataRunSqlFile.fxml"
+)
+public class ShellMariadbDataRunSqlFileController extends StageController {
+
+    /**
+     * 连接信息
+     */
+    private ShellConnect dbInfo;
+
+    /**
+     * db客户端
+     */
+    private ShellMariadbClient dbClient;
+
+    /**
+     * 结束运行sql按钮
+     */
+    @FXML
+    private FXButton stopSqlFileBtn;
+
+    /**
+     * 执行状态
+     */
+    @FXML
+    private FXLabel execStatus;
+
+    /**
+     * 执行消息
+     */
+    @FXML
+    private MsgTextArea execMsg;
+
+    /**
+     * 连接
+     */
+    @FXML
+    private ReadOnlyTextField connect;
+
+    /**
+     * 数据库
+     */
+    @FXML
+    private ShellMariadbDatabaseComboBox database;
+
+    /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithErrors;
+
+    /**
+     * 文件
+     */
+    @FXML
+    private ChooseFileTextField file;
+
+    /**
+     * sql操作任务
+     */
+    private Thread execTask;
+
+    /**
+     * 计数器
+     */
+    private final Counter counter = new Counter();
+
+    /**
+     * sql处理器
+     */
+    private DBDataRunFileHandler sqlFileHandler;
+
+    /**
+     * 检查sql文件
+     *
+     * @return 结果
+     */
+    private boolean checkSqlFile() {
+        File sqlFile = this.file.getFile();
+        if (sqlFile == null) {
+            MessageBox.warn(I18nHelper.pleaseSelectFile());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 执行sql
+     */
+    @FXML
+    private void runSqlFile() {
+        // 检查sql文件
+        if (!this.checkSqlFile()) {
+            return;
+        }
+        // 检查数据库
+        String database = this.database.getSelectedItem();
+        if (StringUtil.isBlank(database)) {
+            MessageBox.warn(I18nHelper.pleaseSelectDatabase());
+            return;
+        }
+        // 重置参数
+        this.counter.reset();
+        // 开始处理
+        this.execMsg.clear();
+        // 生成sql处理器
+        if (this.sqlFileHandler == null) {
+            this.sqlFileHandler = new ShellMariadbDataRunSqlFileHandler(this.dbClient, database);
+            this.sqlFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
+                    .setProcessedHandler(count -> {
+                        this.counter.incr(count);
+                        this.updateStatus(I18nHelper.execInProgress());
+                    });
+        } else {
+            this.sqlFileHandler.interrupt(false);
+        }
+        // 设置参数
+        this.sqlFileHandler.file(this.file.getFile())
+                .setContinueWithErrors(this.continueWithErrors.isSelected());
+        NodeGroupUtil.disable(this.stage, "exec");
+        this.stage.appendTitle("===" + I18nHelper.execProcessing() + "===");
+        // 执行sql
+        this.execTask = ThreadUtil.start(() -> {
+            try {
+                this.stopSqlFileBtn.enable();
+                // 更新状态
+                this.updateStatus(I18nHelper.execStarting());
+                // 执行sql
+                this.sqlFileHandler.runFile();
+                // 更新状态
+                this.updateStatus(I18nHelper.execFinished());
+            } catch (Exception e) {
+                if (e.getClass().isAssignableFrom(InterruptedException.class)) {
+                    this.updateStatus(I18nHelper.operationCancel());
+                    MessageBox.okToast(I18nHelper.operationCancel());
+                } else {
+                    e.printStackTrace();
+                    this.updateStatus(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail());
+                }
+            } finally {
+                // 结束处理
+                NodeGroupUtil.enable(this.stage, "exec");
+                this.stopSqlFileBtn.disable();
+                this.stage.restoreTitle();
+                SystemUtil.gcLater();
+            }
+        });
+    }
+
+    /**
+     * 结束sql
+     */
+    @FXML
+    private void stopSqlFile() {
+        ThreadUtil.interrupt(this.execTask);
+        this.execTask = null;
+        if (this.sqlFileHandler != null) {
+            this.sqlFileHandler.interrupt();
+        }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        this.dbClient = this.getProp("dbClient");
+        this.dbInfo = this.dbClient.getShellConnect();
+        String dbName = this.getProp("dbName");
+        this.database.init(this.dbClient, dbName);
+        this.connect.setText(this.dbInfo.getName());
+        this.stage.hideOnEscape();
+    }
+
+    @Override
+    public void onWindowHidden(WindowEvent event) {
+        super.onWindowHidden(event);
+        this.stopSqlFile();
+    }
+
+    /**
+     * 更新状态
+     *
+     * @param extraMsg 额外信息
+     */
+    private void updateStatus(String extraMsg) {
+        if (extraMsg != null) {
+            this.counter.setExtraMsg(extraMsg);
+        }
+        this.execStatus.text(this.counter.unknownFormat());
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nResourceBundle.i18nString("base.runSqlFile");
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.file.setFilter(FXChooser.sqlExtensionFilter());
+    }
+}

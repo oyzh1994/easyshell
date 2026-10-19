@@ -17,7 +17,7 @@ import javafx.stage.WindowEvent;
  * 修改集合记录业务
  *
  * @author oyzh
- * @since 2026/06/03
+ * @since 2026-06-29
  */
 @StageAttribute(
         modality = Modality.APPLICATION_MODAL,

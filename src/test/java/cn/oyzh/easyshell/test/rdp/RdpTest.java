@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test.rdp;
 
 
-import cn.hutool.core.io.FileUtil;
+import cn.oyzh.common.file.FileUtil;
 import com.sun.jna.platform.win32.Crypt32;
 import com.sun.jna.platform.win32.Crypt32Util;
 import com.sun.jna.platform.win32.WinCrypt;
@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Formatter;
 
 /**
+ * RDP 远程桌面连接的测试
+ *
  * @author oyzh
  * @since 2025-09-12
  */

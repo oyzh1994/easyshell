@@ -23,8 +23,10 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
 /**
+ * redis查询tab内容组件
+ *
  * @author oyzh
- * @since 2025/02/06
+ * @since 2025-09-01
  */
 public class ShellRedisQueryTabController extends SubTabController {
 
@@ -73,6 +75,11 @@ public class ShellRedisQueryTabController extends SubTabController {
      */
     private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.shellConnect();
     }

@@ -24,6 +24,7 @@ import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -43,7 +44,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -59,7 +59,7 @@ import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocket
  * ssh连接修改业务
  *
  * @author oyzh
- * @since 2025/03/15
+ * @since 2025-03-03
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -93,7 +93,7 @@ public class ShellUpdateSSHConnectController extends StageController {
     private PasswordTextField certificatePwd;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -194,7 +194,7 @@ public class ShellUpdateSSHConnectController extends StageController {
     private PortTextField x11Port;
 
     /**
-     * x11 cookie
+     * x11认证信息
      */
     @FXML
     private ClearableTextField x11Cookie;
@@ -320,7 +320,7 @@ public class ShellUpdateSSHConnectController extends StageController {
     private FXCheckBox enableZModem;
 
     /**
-     * forwardAgent
+     * 转发ssh代理
      */
     @FXML
     private FXCheckBox forwardAgent;
@@ -722,28 +722,30 @@ public class ShellUpdateSSHConnectController extends StageController {
         return I18nHelper.connectUpdateTitle();
     }
 
-    /**
-     * 下载或者开启x11服务
-     */
-    @FXML
-    private void downloadX11() {
-        String url = "";
-        if (OSUtil.isWindows()) {
-            url = "https://sourceforge.net/projects/vcxsrv/";
-        } else if (OSUtil.isMacOS()) {
-            url = "https://www.xquartz.org/";
-        } else if (OSUtil.isLinux()) {
-            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
-        }
-        FXUtil.showDocument(url);
-    }
+//    /**
+//     * 下载或者开启x11服务
+//     */
+//    @FXML
+//    private void downloadX11() {
+//        String url = "";
+//        if (OSUtil.isWindows()) {
+//            url = "https://sourceforge.net/projects/vcxsrv/";
+//        } else if (OSUtil.isMacOS()) {
+//            url = "https://www.xquartz.org/";
+//        } else if (OSUtil.isLinux()) {
+//            url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
+//        }
+//        FXUtil.showDocument(url);
+//    }
 
     /**
      * 加载x11的cookie
      */
     @FXML
     private void loadX11Cookie() {
-        if (OSUtil.isLinux()) {
+        if (ShellX11Manager.isBuilt_in(this.getX11Config())) {
+            this.x11Cookie.setText(ShellX11Manager.getX11Cookie());
+        } else if (OSUtil.isLinux()) {
             String str = RuntimeUtil.execForStr("xauth list");
             if (StringUtil.isNotBlank(str)) {
                 String[] arr = str.split("\n")[0].split("\\s+");

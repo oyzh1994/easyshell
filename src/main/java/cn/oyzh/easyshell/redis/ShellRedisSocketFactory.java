@@ -14,23 +14,52 @@ import java.net.Proxy;
 import java.net.Socket;
 
 /**
+ * redis的socket工厂
+ *
  * @author oyzh
  * @since 2025-09-03
  */
 public class ShellRedisSocketFactory implements JedisSocketFactory {
 
+    /**
+     * 端口
+     */
     private final int port;
 
+    /**
+     * 主机
+     */
     private final String host;
 
+    /**
+     * 代理
+     */
     private final Proxy proxy;
 
+    /**
+     * socket超时时间
+     */
     private final int socketTimeout;
 
+    /**
+     * 代理配置
+     */
     private final ShellProxyConfig proxyConfig;
 
+    /**
+     * ssl socket工厂
+     */
     private final SSLSocketFactory sslSocketFactory;
 
+    /**
+     * 构造方法
+     *
+     * @param sslSocketFactory ssl socket工厂
+     * @param host             主机
+     * @param port             端口
+     * @param proxyConfig      代理配置
+     * @param socketTimeout    socket超时时间
+     */
     public ShellRedisSocketFactory(SSLSocketFactory sslSocketFactory,
                                    String host,
                                    int port,

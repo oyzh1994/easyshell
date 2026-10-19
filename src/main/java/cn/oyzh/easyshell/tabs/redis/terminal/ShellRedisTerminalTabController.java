@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * redis命令行tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2025-09-01
  */
 public class ShellRedisTerminalTabController extends SubTabController {
 
@@ -51,10 +51,20 @@ public class ShellRedisTerminalTabController extends SubTabController {
         return this.terminal.shellConnect();
     }
 
+    /**
+     * 获取数据库索引
+     *
+     * @return 数据库索引
+     */
     public Integer dbIndex() {
         return this.terminal.getDbIndex();
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return this.terminal.getClient();
     }

@@ -10,8 +10,10 @@ import cn.oyzh.fx.terminal.util.TerminalUtil;
 import java.util.Set;
 
 /**
+ * redis多键命令处理器
+ *
  * @author oyzh
- * @since 2023/7/31
+ * @since 2025-09-01
  */
 public abstract class RedisNKeysTerminalCommandHandler<C extends TerminalCommand> extends RedisTerminalCommandHandler<C> {
 
@@ -39,6 +41,11 @@ public abstract class RedisNKeysTerminalCommandHandler<C extends TerminalCommand
         return false;
     }
 
+    /**
+     * 获取键类型
+     *
+     * @return 键类型
+     */
     protected ShellRedisKeyType getKeyType() {
         return null;
     }

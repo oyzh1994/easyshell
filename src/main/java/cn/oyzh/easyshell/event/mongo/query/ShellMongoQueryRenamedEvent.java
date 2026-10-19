@@ -1,21 +1,23 @@
 package cn.oyzh.easyshell.event.mongo.query;
 
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * mongodb查询已重命名事件
+ *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2025-11-06
  */
-public class ShellMongoQueryRenamedEvent extends Event<String> implements EventFormatter {
+public class ShellMongoQueryRenamedEvent extends Event<ShellMongoQueryTreeItem> implements EventFormatter {
 
-    private ShellMongoDatabaseTreeItem dbItem;
-
+    /**
+     * 查询名称
+     */
     private String queryName;
-
-    private String newQueryName;
 
     public String getQueryName() {
         return queryName;
@@ -25,28 +27,25 @@ public class ShellMongoQueryRenamedEvent extends Event<String> implements EventF
         this.queryName = queryName;
     }
 
-    public String getNewQueryName() {
-        return newQueryName;
+    public String newQueryName() {
+        return this.data().queryName();
     }
 
-    public void setNewQueryName(String newQueryName) {
-        this.newQueryName = newQueryName;
+    public String queryId() {
+        return this.data().value().getUid();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
-        return this.dbItem.dbName();
-    }
-
-    public ShellMongoDatabaseTreeItem getDbItem() {
-        return dbItem;
-    }
-
-    public void setDbItem(ShellMongoDatabaseTreeItem dbItem) {
-        this.dbItem = dbItem;
+        return this.data().dbName();
     }
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.getNewQueryName());
+        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.newQueryName());
     }
 }

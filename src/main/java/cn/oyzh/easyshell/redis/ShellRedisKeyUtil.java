@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * redis键工具类
  *
  * @author oyzh
- * @since 2023/06/30
+ * @since 2025-09-01
  */
 
 public class ShellRedisKeyUtil {
@@ -430,7 +430,7 @@ public class ShellRedisKeyUtil {
     /**
      * 扫描键
      *
-     * @param dbIndex 都不索引
+     * @param dbIndex 数据库索引
      * @param cursor  光标
      * @param params  参数
      * @param client  redis客户端
@@ -474,7 +474,7 @@ public class ShellRedisKeyUtil {
     /**
      * 扫描键，简单模式
      *
-     * @param dbIndex 都不索引
+     * @param dbIndex 数据库索引
      * @param cursor  光标
      * @param params  参数
      * @param client  redis客户端
@@ -498,7 +498,7 @@ public class ShellRedisKeyUtil {
     /**
      * 扫描键，简单限制
      *
-     * @param dbIndex 都不索引
+     * @param dbIndex 数据库索引
      * @param client  redis客户端
      * @param pattern 键模式
      * @param limit   最大限制
@@ -515,7 +515,7 @@ public class ShellRedisKeyUtil {
     /**
      * 统计键
      *
-     * @param dbIndex 都不索引
+     * @param dbIndex 数据库索引
      * @param cursor  光标
      * @param params  参数
      * @param client  redis客户端
@@ -537,7 +537,7 @@ public class ShellRedisKeyUtil {
     /**
      * 删除键
      *
-     * @param dbIndex 都不索引
+     * @param dbIndex 数据库索引
      * @param cursor  光标
      * @param params  参数
      * @param client  redis客户端

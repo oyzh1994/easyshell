@@ -18,7 +18,7 @@ import java.util.Objects;
  * zk认证工具类
  *
  * @author oyzh
- * @since 2023/3/6
+ * @since 2025-09-04
  */
 
 public class ShellZKAuthUtil {

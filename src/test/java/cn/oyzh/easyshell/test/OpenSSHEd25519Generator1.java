@@ -19,6 +19,12 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * 生成 Ed25519 密钥对、OpenSSH 格式公钥以及 PKCS#1、PKCS#8 加密私钥的工具类
+ *
+ * @author oyzh
+ * @since 2025-04-04
+ */
 public class OpenSSHEd25519Generator1 {
 
     public static void main(String[] args) throws Exception {

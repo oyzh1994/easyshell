@@ -1,17 +1,17 @@
 package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.easyshell.fx.s3.ShellS3BucketTableView;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.fxml.FXML;
 
 /**
- * ftp组件
+ * s3桶标签页内容组件
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2025-06-16
  */
 public class ShellS3BucketTabController extends SubTabController {
 
@@ -32,7 +32,12 @@ public class ShellS3BucketTabController extends SubTabController {
         return (ShellS3TabController) super.parent();
     }
 
-    public ShellS3Client client() {
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
+    public ShellS3ClientV2 client() {
         return this.parent().client();
     }
 
@@ -58,16 +63,25 @@ public class ShellS3BucketTabController extends SubTabController {
         }
     }
 
+    /**
+     * 刷新桶
+     */
     @FXML
     private void refreshBucket() {
         this.bucketTable.loadBucket();
     }
 
+    /**
+     * 删除桶
+     */
     @FXML
     private void deleteBucket() {
         this.bucketTable.deleteBucket(this.bucketTable.getSelectedItem(), false);
     }
 
+    /**
+     * 新增桶
+     */
     @FXML
     private void addBucket() {
         this.bucketTable.addBucket();

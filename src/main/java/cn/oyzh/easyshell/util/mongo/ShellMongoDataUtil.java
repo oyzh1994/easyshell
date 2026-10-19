@@ -6,8 +6,6 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
-import dm.jdbc.driver.DmdbBlob;
-import dm.jdbc.driver.DmdbClob;
 import org.bson.BsonBinary;
 import org.bson.BsonObjectId;
 import org.bson.types.Binary;
@@ -19,11 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * @author oyzh
- * @since 2024/08/26
+ * @since 2026-06-29
  */
 public class ShellMongoDataUtil {
 
@@ -116,7 +113,7 @@ public class ShellMongoDataUtil {
         StringBuilder builder = new StringBuilder();
         for (MongoColumn column : record.getColumns()) {
             String colName = column.getName();
-            MongoRecordProperty property = record.getProperty(colName);
+            MongoRecordProperty property = (MongoRecordProperty) record.getProperty(colName);
             if (property == null) {
                 continue;
             }
@@ -168,7 +165,7 @@ public class ShellMongoDataUtil {
             return value;
         }
 
-        if ("obejectid".equalsIgnoreCase(type)) {
+        if ("objectid".equalsIgnoreCase(type)) {
             if (value == null) {
                 return "ObjectId()";
             }

@@ -6,10 +6,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
- * shell片段节点值
+ * shell片段根节点值
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-02-14
  */
 public class ShellSnippetRootTreeItemValue extends RichTreeItemValue {
 

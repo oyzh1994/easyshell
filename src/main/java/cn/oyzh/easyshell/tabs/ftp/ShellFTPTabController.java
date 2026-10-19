@@ -17,7 +17,7 @@ import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
-import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane;
+import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -41,7 +41,7 @@ import java.util.List;
  * ftp组件
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2025-03-05
  */
 public class ShellFTPTabController extends ShellBaseTabController {
 
@@ -79,7 +79,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
      * 隐藏文件
      */
     @FXML
-    private HiddenSVGPane hiddenPane;
+    private HiddenSVGLabel hiddenPane;
 
     /**
      * 文件表格
@@ -115,10 +115,20 @@ public class ShellFTPTabController extends ShellBaseTabController {
      */
     private ShellFTPClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellFTPClient client() {
         return this.client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -129,10 +139,15 @@ public class ShellFTPTabController extends ShellBaseTabController {
     private ListChangeListener<ShellFileTask> taskSizeListener;
 
     // 任务类型
+    /**
+     * 任务类型列表
+     */
     private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
 
     /**
      * 初始化
+     *
+     * @param shellConnect shell连接
      */
     public void init(ShellConnect shellConnect) {
         this.client = ShellClientUtil.newClient(shellConnect);
@@ -155,7 +170,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
                 this.hideLeft();
                 this.fileTable.setClient(this.client);
                 // 显示隐藏文件
-                this.hiddenFile(this.shellConnect().isShowHiddenFile());
+                this.showHiddenFile(this.shellConnect().isShowHiddenFile());
                 // 任务数量监听
                 this.taskSizeListener = this.client.addTaskSizeListener(() -> {
                     if (this.client.isTaskEmpty(this.taskTypes)) {
@@ -221,6 +236,9 @@ public class ShellFTPTabController extends ShellBaseTabController {
         super.bindListeners();
     }
 
+    /**
+     * 刷新文件
+     */
     @FXML
     private void refreshFile() {
         try {
@@ -231,6 +249,9 @@ public class ShellFTPTabController extends ShellBaseTabController {
         }
     }
 
+    /**
+     * 删除文件
+     */
     @FXML
     private void deleteFile() {
         try {
@@ -241,6 +262,9 @@ public class ShellFTPTabController extends ShellBaseTabController {
         }
     }
 
+    /**
+     * 返回上级目录
+     */
     @FXML
     private void returnDir() {
         try {
@@ -264,21 +288,33 @@ public class ShellFTPTabController extends ShellBaseTabController {
         }
     }
 
+    /**
+     * 新建目录
+     */
     @FXML
     private void mkdir() {
         this.fileTable.createDir();
     }
 
+    /**
+     * 新建文件
+     */
     @FXML
     private void touchFile() {
         this.fileTable.touch();
     }
 
+    /**
+     * 上传文件
+     */
     @FXML
     private void uploadFile() {
         this.fileTable.uploadFile();
     }
 
+    /**
+     * 上传文件夹
+     */
     @FXML
     private void uploadFolder() {
         this.fileTable.uploadFolder();
@@ -310,7 +346,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
      */
     @FXML
     private void hiddenFile() {
-        this.hiddenFile(this.hiddenPane.isHidden());
+        this.showHiddenFile(this.hiddenPane.isHidden());
     }
 
     /**
@@ -322,11 +358,11 @@ public class ShellFTPTabController extends ShellBaseTabController {
     }
 
     /**
-     * 隐藏文件
+     * 显示隐藏文件
      *
      * @param showHidden 是否显示隐藏文件
      */
-    private void hiddenFile(boolean showHidden) {
+    private void showHiddenFile(boolean showHidden) {
         if (!showHidden) {
             this.hiddenPane.hidden();
             this.fileTable.setShowHiddenFile(false);
@@ -343,7 +379,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
 
     @Override
     public void destroy() {
-//        this.fileTable.destroy();
+        //        this.fileTable.destroy();
         this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }

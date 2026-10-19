@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * GitHub 代码片段（Gist）增删改查的测试
+ *
+ * @author oyzh
+ * @since 2025-10-13
+ */
 public class GithubGistTest {
 
     private String accessToken = ""; // 在 Gitee 设置中生成

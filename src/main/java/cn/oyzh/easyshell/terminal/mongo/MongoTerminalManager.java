@@ -10,8 +10,10 @@ import cn.oyzh.fx.terminal.standard.HelpTerminalCommandHandler;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 
 /**
+ * mongo终端管理器
+ *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-29
  */
 public class MongoTerminalManager {
 

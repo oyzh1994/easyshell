@@ -2,6 +2,7 @@
 账密 SYSDBA/SYSDBA
 docker run -itd -p 15236:5236 qinchz/dm8-arm64:latest
 docker run -itd -p 15237:5236 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
+docker run -itd -p 15238:5236 -e COMPATIBLE_MODE=4 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
 
 方案2
 注意，这个版本的job有问题

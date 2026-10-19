@@ -10,14 +10,27 @@ import java.util.List;
  * mongodb集合选择框
  *
  * @author oyzh
- * @since 2024/01/25
+ * @since 2026-06-29
  */
 public class ShellMongoCollectionComboBox extends FXComboBox<String> {
 
+    /**
+     * 初始化集合选项
+     *
+     * @param dbName 数据库名称
+     * @param client 客户端
+     */
     public void init(String dbName, ShellMongoClient client) {
         this.init(dbName, null, client);
     }
 
+    /**
+     * 初始化集合并选中指定集合
+     *
+     * @param dbName    数据库名称
+     * @param tableName 集合名称
+     * @param client    客户端
+     */
     public void init(String dbName, String tableName, ShellMongoClient client) {
         List<MongoCollection> list = client.listCollections(dbName);
         this.setItem(list.parallelStream().map(MongoCollection::getName).toList());

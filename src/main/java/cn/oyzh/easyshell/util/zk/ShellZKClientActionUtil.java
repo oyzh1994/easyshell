@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @author oyzh
- * @since 2025-01-02
+ * @since 2025-09-05
  */
 
 public class ShellZKClientActionUtil {
@@ -166,7 +166,7 @@ public class ShellZKClientActionUtil {
             arguments.add(ShellZKClientActionArgument.ofArgument("-v", version));
         }
         arguments.add(ShellZKClientActionArgument.ofArgument(path));
-        ShellZKEventUtil.zkClientAction(connectName, "sync", arguments);
+        ShellZKEventUtil.zkClientAction(connectName, "delete", arguments);
     }
 
     public static void forListQuotaAction(String connectName, String path) {

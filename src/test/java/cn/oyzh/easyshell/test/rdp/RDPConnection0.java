@@ -19,6 +19,9 @@ import java.security.cert.X509Certificate;
 /**
  * RDP 连接修复版 v2
  * 正确处理 MCS 握手流程，包括所有必需的通道连接
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPConnection0 {
     

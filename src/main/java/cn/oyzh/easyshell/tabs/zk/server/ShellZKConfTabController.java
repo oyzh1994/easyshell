@@ -12,7 +12,7 @@ import java.util.List;
  * zk客户端conf信息tab内容组件
  *
  * @author oyzh
- * @since 2024/12/24
+ * @since 2025-09-04
  */
 public class ShellZKConfTabController extends SubTabController {
 
@@ -33,6 +33,9 @@ public class ShellZKConfTabController extends SubTabController {
         return (ShellZKServerTabController) super.parent();
     }
 
+    /**
+     * 刷新配置信息
+     */
     @FXML
     private void refreshConf() {
         // 配置信息

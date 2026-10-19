@@ -12,7 +12,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
  * redis查询提示组件
  *
  * @author oyzh
- * @since 2025/01/21
+ * @since 2025-09-01
  */
 public class ShellRedisQueryPromptListView extends DBQueryPromptListView<ShellRedisQueryPromptItem> {
 

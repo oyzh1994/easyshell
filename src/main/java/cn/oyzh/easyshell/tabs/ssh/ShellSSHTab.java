@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * ssh-组件tab
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-03-04
  */
 public class ShellSSHTab extends ShellTermTab {
 
@@ -87,6 +87,12 @@ public class ShellSSHTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建ssh tab
+     *
+     * @param connect 连接
+     * @return ssh tab
+     */
     public static ShellSSHTab of(ShellConnect connect) {
         ShellSSHTab tab = new ShellSSHTab();
         tab.init(connect);

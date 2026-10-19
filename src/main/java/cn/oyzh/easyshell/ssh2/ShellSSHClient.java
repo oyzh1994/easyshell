@@ -32,7 +32,7 @@ import java.util.List;
  * ssh客户端
  *
  * @author oyzh
- * @since 2025/06/30
+ * @since 2023-08-16
  */
 public class ShellSSHClient extends ShellBaseSSHClient {
 
@@ -134,6 +134,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     //  */
     // private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
+    /**
+     * 构造ssh客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellSSHClient(ShellConnect shellConnect) {
         super(shellConnect);
         this.addStateListener(this.stateListener);
@@ -156,6 +161,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private volatile ShellSFTPClient sftpClient;
 
+    /**
+     * 获取sftp客户端，与ssh共用会话
+     *
+     * @return sftp客户端
+     */
     public ShellSFTPClient sftpClient() {
         try {
             if (this.sftpClient == null) {
@@ -233,7 +243,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      *
      * @param channel 通道
      */
-    private void initChannel(ChannelShell channel) {
+    private void initChannel(ChannelShell channel) throws Exception {
         // 启用x11转发
         if (this.shellConnect.isX11forwarding()) {
             // x11配置
@@ -254,8 +264,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                     channel.setXCookie(cookie);
                 }
                 // 本地转发，启动x11服务
-                if (x11Config.isLocal()) {
-                    ShellX11Manager.startXServer();
+                if (ShellX11Manager.isBuilt_in(x11Config)) {
+//                    ShellX11Manager.startXServer();
+                    ShellX11Manager.startXServer_built_in();
                 }
             } else {
                 throw new RuntimeException("X11forwarding is enable but x11config is null");
@@ -367,6 +378,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private ChannelShell shell;
 
+    /**
+     * 获取shell通道
+     *
+     * @return shell通道
+     */
     public ChannelShell getShell() {
         return shell;
     }
@@ -389,6 +405,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 打开shell通道
      *
      * @return ShellSSHShell
+     * @throws Exception 异常
      */
     public ChannelShell openShell() throws Exception {
         if (this.shell == null || this.shell.isClosed()) {
@@ -432,8 +449,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
+    /**
+     * docker执行器
+     */
     private ShellDockerExec dockerExec;
 
+    /**
+     * 获取docker执行器
+     *
+     * @return docker执行器
+     */
     public ShellDockerExec dockerExec() {
         if (this.dockerExec == null) {
             this.dockerExec = new ShellDockerExec(this);
@@ -464,8 +489,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.dockerExec;
     }
 
+    /**
+     * 服务器执行器
+     */
     private volatile ShellServerExec serverExec;
 
+    /**
+     * 获取服务器执行器
+     *
+     * @return 服务器执行器
+     */
     public ShellServerExec serverExec() {
         if (this.serverExec == null) {
             this.serverExec = new ShellServerExec(this);
@@ -473,8 +506,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.serverExec;
     }
 
+    /**
+     * ssh执行器
+     */
     private volatile ShellSSHExec sshExec;
 
+    /**
+     * 获取ssh执行器
+     *
+     * @return ssh执行器
+     */
     public ShellSSHExec sshExec() {
         if (this.sshExec == null) {
             this.sshExec = new ShellSSHExec(this);
@@ -482,8 +523,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.sshExec;
     }
 
+    /**
+     * 进程执行器
+     */
     private volatile ShellProcessExec processExec;
 
+    /**
+     * 获取进程执行器
+     *
+     * @return 进程执行器
+     */
     public ShellProcessExec processExec() {
         if (this.processExec == null) {
             this.processExec = new ShellProcessExec(this);
@@ -491,6 +540,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.processExec;
     }
 
+    /**
+     * 当前用户名
+     */
     private String whoami;
 
     /**

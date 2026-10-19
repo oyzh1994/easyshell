@@ -7,8 +7,10 @@ import org.junit.Test;
 import java.io.IOException;
 
 /**
+ * ZooKeeper 连接与操作的测试
+ *
  * @author oyzh
- * @since 2024-11-20
+ * @since 2025-12-01
  */
 public class ZKTest {
 

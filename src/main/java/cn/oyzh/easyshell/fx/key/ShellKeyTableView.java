@@ -22,8 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 密钥表格视图
+ *
  * @author oyzh
- * @since 2025-04-03
+ * @since 2025-03-14
  */
 public class ShellKeyTableView extends FXTableView<ShellKey> {
 
@@ -49,7 +51,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
             } else {
                 this.clearContextMenu();
             }

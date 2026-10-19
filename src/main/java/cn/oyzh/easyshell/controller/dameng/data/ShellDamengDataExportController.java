@@ -6,8 +6,8 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataExportHandler;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportColumnListView;
 import cn.oyzh.easyshell.data.dameng.ui.ShellDamengDataExportTableTableView;
@@ -29,6 +29,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -39,20 +40,18 @@ import javafx.stage.WindowEvent;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
  * db数据导出业务
  *
  * @author oyzh
- * @since 2024/08/26
+ * @since 2025-11-06
  */
-@StageAttribute(
-        multipliable = true,
-        stageStyle = FXStageStyle.EXTENDED,
+@StageAttribute(multipliable = true, stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.WINDOW_MODAL,
-        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataExport.fxml"
-)
+        value = FXConst.FXML_PATH + "dameng/data/shellDamengDataExport.fxml")
 public class ShellDamengDataExportController extends StageController {
 
     /**
@@ -240,11 +239,10 @@ public class ShellDamengDataExportController extends StageController {
         // 生成导出处理器
         if (this.exportHandler == null) {
             this.exportHandler = new ShellDamengDataExportHandler(this.dbClient, this.dbName);
-            this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str))
-                    .setProcessedHandler(count -> {
-                        this.counter.incr(count);
-                        this.updateStatus(I18nHelper.exportInProgress());
-                    });
+            this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str)).setProcessedHandler(count -> {
+                this.counter.incr(count);
+                this.updateStatus(I18nHelper.exportInProgress());
+            });
         } else {
             this.exportHandler.interrupt(false);
         }
@@ -389,6 +387,9 @@ public class ShellDamengDataExportController extends StageController {
         return I18nHelper.exportTitle();
     }
 
+    /**
+     * 显示第一步
+     */
     @FXML
     private void showStep1() {
         this.step1.display();
@@ -403,11 +404,18 @@ public class ShellDamengDataExportController extends StageController {
         // 正常导出
         if (this.exportMode == 0) {
             List<DamengTable> tables = this.dbClient.selectTables(this.dbName);
+            AtomicReference<ShellDamengDataExportTable> ref = new AtomicReference<>();
             for (DamengTable table : tables) {
                 ShellDamengDataExportTable exportTable = new ShellDamengDataExportTable();
                 exportTable.setName(table.getName());
                 exportTable.setSelected(StringUtil.equals(table.getName(), this.tableName));
                 this.exportTableView.addItem(exportTable);
+                if (StringUtil.equals(this.tableName, table.getName())) {
+                    ref.set(exportTable);
+                }
+            }
+            if (ref.get() != null) {
+                FXUtil.runWait(() -> this.exportTableView.scrollTo(ref.get()));
             }
         } else {// 查询导出
             this.exportTableView.addItem(this.exportTable);
@@ -418,6 +426,9 @@ public class ShellDamengDataExportController extends StageController {
         }
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         RadioButton button = this.fileType.selectedToggle();
@@ -433,6 +444,9 @@ public class ShellDamengDataExportController extends StageController {
         this.step2.display();
     }
 
+    /**
+     * 显示第三步
+     */
     @FXML
     private void showStep3() {
         if (!this.exportTableView.hasSelectedTable()) {
@@ -452,6 +466,9 @@ public class ShellDamengDataExportController extends StageController {
         this.step3.display();
     }
 
+    /**
+     * 显示第四步
+     */
     @FXML
     private void showStep4() {
         this.step3.disappear();
@@ -521,12 +538,18 @@ public class ShellDamengDataExportController extends StageController {
         this.step4.display();
     }
 
+    /**
+     * 显示第五步
+     */
     @FXML
     private void showStep5() {
         this.step4.disappear();
         this.step5.display();
     }
 
+    /**
+     * 全选表
+     */
     @FXML
     private void selectAllTable() {
         for (ShellDamengDataExportTable item : this.exportTableView.getItems()) {
@@ -534,6 +557,9 @@ public class ShellDamengDataExportController extends StageController {
         }
     }
 
+    /**
+     * 取消全选表
+     */
     @FXML
     private void unselectAllTable() {
         for (ShellDamengDataExportTable item : this.exportTableView.getItems()) {
@@ -541,6 +567,9 @@ public class ShellDamengDataExportController extends StageController {
         }
     }
 
+    /**
+     * 全选字段
+     */
     @FXML
     private void selectAllFiled() {
         for (FXCheckBox item : this.tableColumns.getItems()) {
@@ -548,6 +577,9 @@ public class ShellDamengDataExportController extends StageController {
         }
     }
 
+    /**
+     * 取消全选字段
+     */
     @FXML
     private void unselectAllField() {
         for (FXCheckBox item : this.tableColumns.getItems()) {

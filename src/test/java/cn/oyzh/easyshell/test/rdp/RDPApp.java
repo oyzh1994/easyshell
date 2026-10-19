@@ -12,6 +12,12 @@ import javafx.stage.Stage;
 
 import java.net.URISyntaxException;
 
+/**
+ * RDP 远程桌面客户端测试的 JavaFX 图形界面程序
+ *
+ * @author oyzh
+ * @since 2026-02-25
+ */
 public class RDPApp extends Application {
 
     private Canvas widget = new Canvas();

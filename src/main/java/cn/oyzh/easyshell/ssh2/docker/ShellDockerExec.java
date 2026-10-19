@@ -13,12 +13,25 @@ import cn.oyzh.easyshell.ssh2.ShellSSHClient;
  */
 public class ShellDockerExec implements AutoCloseable {
 
+    /**
+     * ssh客户端
+     */
     private ShellSSHClient client;
 
+    /**
+     * 构造docker执行器
+     *
+     * @param client ssh客户端
+     */
     public ShellDockerExec(ShellSSHClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }

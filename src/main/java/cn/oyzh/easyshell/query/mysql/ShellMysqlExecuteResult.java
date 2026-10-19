@@ -9,8 +9,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 /**
+ * mysql执行结果
+ *
  * @author oyzh
- * @since 2024/02/19
+ * @since 2025-11-06
  */
 public class ShellMysqlExecuteResult extends ShellMysqlQueryResult {
 
@@ -39,10 +41,20 @@ public class ShellMysqlExecuteResult extends ShellMysqlQueryResult {
         }
     }
 
+    /**
+     * 设置是否全字段
+     *
+     * @param fullColumn 是否全字段
+     */
     public void setFullColumn(boolean fullColumn) {
         this.fullColumn = fullColumn;
     }
 
+    /**
+     * 是否全字段
+     *
+     * @return 结果
+     */
     public boolean isFullColumn() {
         return fullColumn;
     }

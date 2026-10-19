@@ -4,8 +4,10 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineSchema;
 
 /**
+ * 达梦存储过程
+ *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2026-09-02
  */
 public class DamengProcedure extends DamengRoutineSchema implements ObjectCopier<DamengProcedure> {
 

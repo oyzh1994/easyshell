@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * db查询文本域
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryEditor extends DBQueryEditor {
 
@@ -34,10 +34,20 @@ public class ShellMysqlQueryEditor extends DBQueryEditor {
      */
     private DBDialect dialect;
 
+    /**
+     * 获取方言
+     *
+     * @return 方言
+     */
     public DBDialect getDialect() {
         return dialect;
     }
 
+    /**
+     * 设置方言
+     *
+     * @param dialect 方言
+     */
     public void setDialect(DBDialect dialect) {
         this.dialect = dialect;
     }
@@ -164,6 +174,11 @@ public class ShellMysqlQueryEditor extends DBQueryEditor {
      */
     private Runnable runCallback;
 
+    /**
+     * 设置运行回调
+     *
+     * @param runCallback 运行回调
+     */
     public void setRunCallback(Runnable runCallback) {
         this.runCallback = runCallback;
     }
@@ -178,7 +193,7 @@ public class ShellMysqlQueryEditor extends DBQueryEditor {
     }
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.editorFontConfig());
     }

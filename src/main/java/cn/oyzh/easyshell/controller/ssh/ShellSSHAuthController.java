@@ -26,7 +26,7 @@ import javafx.stage.WindowEvent;
  * ssh认证业务
  *
  * @author oyzh
- * @since 2026/02/10
+ * @since 2026-02-10
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

@@ -15,7 +15,7 @@ import javafx.scene.Cursor;
  * db视图设计tab
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellDamengViewDesignTab extends ShellDamengBaseTab {
 
@@ -48,6 +48,11 @@ public class ShellDamengViewDesignTab extends ShellDamengBaseTab {
         }
     }
 
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.controller().viewName();
     }
@@ -60,6 +65,7 @@ public class ShellDamengViewDesignTab extends ShellDamengBaseTab {
     /**
      * 初始化
      *
+     * @param view 视图
      * @param item 树键
      */
     public void init(DamengView view, ShellDamengSchemaTreeItem item) {
@@ -73,6 +79,11 @@ public class ShellDamengViewDesignTab extends ShellDamengBaseTab {
         return (ShellDamengViewDesignTabController) super.controller();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }

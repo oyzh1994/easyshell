@@ -50,7 +50,7 @@ import java.io.File;
  * 文件查看业务
  *
  * @author oyzh
- * @since 2025/07/16
+ * @since 2025-07-16
  */
 @StageAttribute(
         multipliable = true,
@@ -353,22 +353,47 @@ public class ShellFileViewController extends StageController {
         }
     }
 
+    /**
+     * 是否为音频类型
+     *
+     * @return 是否为音频类型
+     */
     private boolean isAudioType() {
         return "audio".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否为视频类型
+     *
+     * @return 是否为视频类型
+     */
     private boolean isVideoType() {
         return "video".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否为图片类型
+     *
+     * @return 是否为图片类型
+     */
     private boolean isImageType() {
         return "img".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否为文本类型
+     *
+     * @return 是否为文本类型
+     */
     private boolean isTxtType() {
         return "txt".equalsIgnoreCase(this.type);
     }
 
+    /**
+     * 是否为未知类型
+     *
+     * @return 是否为未知类型
+     */
     private boolean isUnknownType() {
         return "unknown".equalsIgnoreCase(this.type);
     }
@@ -417,7 +442,7 @@ public class ShellFileViewController extends StageController {
     }
 
     /**
-     * hex tab
+     * 十六进制tab
      */
     @FXML
     private FXTab hexTab;

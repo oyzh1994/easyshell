@@ -26,6 +26,12 @@ import java.security.KeyStore;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 
+/**
+ * 使用 PEM 格式的客户端证书与私钥通过 TLS 连接 Redis 的示例
+ *
+ * @author oyzh
+ * @since 2025-09-03
+ */
 public class JedisPEMKeyPairExample {
     // 私钥密码（有密码则填写，无则为null）
     private static final String PRIVATE_KEY_PASSWORD = null;

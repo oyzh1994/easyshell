@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * ZooKeeper 认证表
+ *
  * @author oyzh
- * @since 2024-12-19
+ * @since 2025-09-04
  */
 public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
 
@@ -89,7 +91,7 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY() );
             } else {
                 this.clearContextMenu();
             }

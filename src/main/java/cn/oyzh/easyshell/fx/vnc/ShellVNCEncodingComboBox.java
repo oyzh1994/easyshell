@@ -4,6 +4,8 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import com.glavsoft.rfb.encoding.EncodingType;
 
 /**
+ * VNC 编码类型下拉框
+ *
  * @author oyzh
  * @since 2026-08-29
  */

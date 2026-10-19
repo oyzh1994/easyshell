@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * telnet客户端
+ *
  * @author oyzh
  * @since 2025-04-24
  */
@@ -48,6 +50,11 @@ public class ShellTelnetClient implements ShellBaseClient {
         return this.state;
     }
 
+    /**
+     * 构造telnet客户端
+     *
+     * @param shellConnect 连接
+     */
     public ShellTelnetClient(ShellConnect shellConnect) {
         this.shellConnect = shellConnect;
         this.addStateListener(this.stateListener);
@@ -111,7 +118,7 @@ public class ShellTelnetClient implements ShellBaseClient {
     private WindowSizeOptionHandler sizeHandler;
 
     /**
-     * 设置终端大学
+     * 设置终端大小
      *
      * @param cols 列
      * @param rows 行
@@ -144,6 +151,11 @@ public class ShellTelnetClient implements ShellBaseClient {
         return shellConnect;
     }
 
+    /**
+     * 获取输入流
+     *
+     * @return 输入流
+     */
     public InputStream getInputStream() {
         if (this.client != null) {
             return this.client.getInputStream();
@@ -151,6 +163,11 @@ public class ShellTelnetClient implements ShellBaseClient {
         return null;
     }
 
+    /**
+     * 获取输出流
+     *
+     * @return 输出流
+     */
     public OutputStream getOutputStream() {
         if (this.client != null) {
             return this.client.getOutputStream();

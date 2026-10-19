@@ -18,12 +18,20 @@ import java.util.concurrent.atomic.AtomicReference;
  * 进程执行器
  *
  * @author oyzh
- * @since 25/03/29
+ * @since 2025-03-29
  */
 public class ShellProcessExec implements AutoCloseable {
 
+    /**
+     * ssh客户端
+     */
     private ShellSSHClient client;
 
+    /**
+     * 构造进程执行器
+     *
+     * @param client ssh客户端
+     */
     public ShellProcessExec(ShellSSHClient client) {
         this.client = client;
     }

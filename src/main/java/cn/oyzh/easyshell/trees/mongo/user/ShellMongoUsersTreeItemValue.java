@@ -7,13 +7,18 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.paint.Color;
 
 /**
- * db树表类型值
+ * mongodb用户类型节点值
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMongoUsersTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造用户类型节点值
+     *
+     * @param item 用户类型节点
+     */
     public ShellMongoUsersTreeItemValue(ShellMongoUsersTreeItem item) {
         super(item);
     }
@@ -39,7 +44,7 @@ public class ShellMongoUsersTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCollectionsSize();
+        Integer size = this.item().getUserSize();
         if (size != null) {
             return " (" + size + ")";
         }

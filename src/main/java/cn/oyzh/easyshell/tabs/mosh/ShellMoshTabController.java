@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * shell连接telnet内容组件
+ * shell连接mosh内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellMoshTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
@@ -50,10 +50,20 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      */
     private ShellMoshClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMoshClient getClient() {
         return client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -64,8 +74,7 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      * @throws Exception 异常
      */
     private void initWidget() throws Exception {
-        Charset charset = this.client.getCharset();
-        ShellMoshTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellMoshTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -76,13 +85,12 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
-        // this.widget.setAlwaysShowThumbs(true);
+        // 打开会话
         this.widget.openSession(connector);
-        // this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小
         this.widget.initPtySize();
-        // 初始化
-        connector.init(this.client);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
@@ -146,7 +154,7 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

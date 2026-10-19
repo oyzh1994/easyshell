@@ -6,10 +6,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
- * zk树节点值
+ * zk返回上级节点值
  *
  * @author oyzh
- * @since 2023/4/7
+ * @since 2025-02-14
  */
 public class ShellZKReturnTreeItemValue extends RichTreeItemValue {
 

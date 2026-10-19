@@ -5,6 +5,9 @@ import java.security.SecureRandom;
 
 /**
  * RDP 安全层 - 处理加密、认证和密钥管理
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPSecurityLayer {
     

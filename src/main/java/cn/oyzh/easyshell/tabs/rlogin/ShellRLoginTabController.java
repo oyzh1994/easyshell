@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
  * shell连接rlogin内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellRLoginTabController extends ShellBaseTabController implements ShellSnippetAdapter{
 
@@ -50,10 +50,20 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      */
     private ShellRLoginClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellRLoginClient getClient() {
         return client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -69,8 +79,7 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      * @throws IOException io异常
      */
     private void initWidget() throws IOException {
-        Charset charset = this.client.getCharset();
-        ShellRLoginTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellRLoginTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -81,10 +90,10 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
-        // this.widget.setAlwaysShowThumbs(true);
+        // 打开会话
         this.widget.openSession(connector);
-        // this.widget.onTermination(exitCode -> this.widget.close());
-        connector.init(this.client);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
@@ -156,7 +165,7 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

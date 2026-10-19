@@ -71,6 +71,9 @@ public class ShellSFTPUtil {
 
     /**
      * 将文件属性转换为 10 位权限字符串（含文件类型）
+     *
+     * @param attrs 文件属性
+     * @return 10位权限字符串
      */
     public static String formatPermissions(SftpClient.Attributes attrs) {
         StringBuilder sb = new StringBuilder(10);
@@ -114,6 +117,7 @@ public class ShellSFTPUtil {
      * 将9位权限字符串解析为整数权限位
      *
      * @param permissionString 9位权限字符串，如 "rwxr-xr-x"
+     * @return 整数权限位
      */
     public static int parsePermissions1(String permissionString) {
 

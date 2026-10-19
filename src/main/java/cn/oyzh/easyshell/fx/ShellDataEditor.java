@@ -7,13 +7,15 @@ import cn.oyzh.fx.plus.font.FontManager;
 import javafx.scene.text.Font;
 
 /**
+ * Shell 数据编辑器
+ *
  * @author oyzh
  * @since 2025-03-26
  */
 public class ShellDataEditor extends Editor {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.editorFontConfig());
     }

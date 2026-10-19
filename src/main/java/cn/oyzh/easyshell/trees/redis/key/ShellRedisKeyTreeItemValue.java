@@ -17,10 +17,15 @@ import javafx.scene.paint.Color;
  * Redis 键树节点值
  *
  * @author oyzh
- * @since 2023/07/7
+ * @since 2025-09-01
  */
 public class ShellRedisKeyTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造redis键节点值
+     *
+     * @param item 键节点
+     */
     public ShellRedisKeyTreeItemValue(ShellRedisKeyTreeItem item) {
         super(item);
         this.setRichMode(true);

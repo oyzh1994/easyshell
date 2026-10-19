@@ -10,13 +10,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * shell片段编辑器
+ *
  * @author oyzh
- * @since 2025-03-26
+ * @since 2025-06-11
  */
 public class ShellSnippetEditor extends Editor {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.editorFontConfig());
     }

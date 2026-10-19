@@ -6,36 +6,35 @@ import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
-import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
+import cn.oyzh.easyshell.mosh.ShellMoshClient;
+import cn.oyzh.easyshell.mosh.ShellMoshTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
-import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
-import cn.oyzh.easyshell.serial.ShellSerialTtyConnector;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
 import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetTermWidget;
-import cn.oyzh.easyshell.telnet.ShellTelnetTtyConnector;
-import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.tty.TtyTermWidget;
+import cn.oyzh.fx.tty.TtyTerminalUtil;
 import com.jediterm.terminal.TtyConnector;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * 终端分屏-终端tab内容组件
  *
  * @author oyzh
- * @since 2025/05/29
+ * @since 2025-03-05
  */
 public class ShellSplitTermController extends SubTabController {
 
@@ -47,7 +46,7 @@ public class ShellSplitTermController extends SubTabController {
     /**
      * 终端组件
      */
-    private ShellDefaultTermWidget widget;
+    private TtyTermWidget widget;
 
     /**
      * 终端容器
@@ -64,44 +63,38 @@ public class ShellSplitTermController extends SubTabController {
     /**
      * 初始化组件
      *
-     * @throws IOException 异常
+     * @throws Exception 异常
      */
     private void initWidget() throws Exception {
-        Charset charset = this.client.getCharset();
         TtyConnector ttyConnector = null;
         if (this.client instanceof ShellSSHClient sshClient) {
             ShellSSHTermWidget widget = new ShellSSHTermWidget();
-            ShellSSHTtyConnector connector = widget.createTtyConnector(charset);
-            connector.init(sshClient);
+            ShellSSHTtyConnector connector = widget.createTtyConnector(sshClient);
             if (sshClient.getShellConnect().isEnableZModem()) {
-                ttyConnector = widget.createZModemTtyConnector(connector);
+                ttyConnector = TtyTerminalUtil.createZModemTtyConnector(widget, connector);
             } else {
                 ttyConnector = connector;
             }
             this.widget = widget;
         } else if (this.client instanceof ShellRLoginClient rLoginClient) {
             ShellRLoginTermWidget widget = new ShellRLoginTermWidget();
-            ShellRLoginTtyConnector connector = widget.createTtyConnector(charset);
-            connector.init(rLoginClient);
-            ttyConnector = connector;
+            ttyConnector = widget.createTtyConnector(rLoginClient);
             this.widget = widget;
         } else if (this.client instanceof ShellTelnetClient telnetClient) {
             ShellTelnetTermWidget widget = new ShellTelnetTermWidget();
-            ShellTelnetTtyConnector connector = widget.createTtyConnector(charset);
-            connector.init(telnetClient);
-            ttyConnector = connector;
+            ttyConnector = widget.createTtyConnector(telnetClient);
             this.widget = widget;
         } else if (this.client instanceof ShellSerialClient serialClient) {
             ShellSerialTermWidget widget = new ShellSerialTermWidget();
-            ShellSerialTtyConnector connector = widget.createTtyConnector(charset);
-            connector.init(serialClient);
-            ttyConnector = connector;
+            ttyConnector = widget.createTtyConnector(serialClient);
+            this.widget = widget;
+        } else if (this.client instanceof ShellMoshClient moshClient) {
+            ShellMoshTermWidget widget = new ShellMoshTermWidget();
+            ttyConnector = widget.createTtyConnector(moshClient);
             this.widget = widget;
         } else if (this.client instanceof ShellLocalClient localClient) {
             ShellLocalTermWidget widget = new ShellLocalTermWidget();
-            ShellLocalTtyConnector connector = widget.createTtyConnector(charset);
-            connector.init(localClient);
-            ttyConnector = connector;
+            ttyConnector = widget.createTtyConnector(localClient);
             this.widget = widget;
         }
         // 初始化退格码
@@ -204,17 +197,7 @@ public class ShellSplitTermController extends SubTabController {
             if (this.connect.getSelectedItem() != connect) {
                 this.connect.selectItem(connect);
             }
-            if (connect.isSSHType()) {
-                this.client = new ShellSSHClient(connect);
-            } else if (connect.isRloginType()) {
-                this.client = new ShellRLoginClient(connect);
-            } else if (connect.isSerialType()) {
-                this.client = new ShellSerialClient(connect);
-            } else if (connect.isTelnetType()) {
-                this.client = new ShellTelnetClient(connect);
-            } else if (connect.isLocalType()) {
-                this.client = new ShellLocalClient(connect);
-            }
+            this.client = ShellClientUtil.newClient(connect);
             this.client.start();
             if (this.client.isConnected()) {
                 this.init();
@@ -231,20 +214,26 @@ public class ShellSplitTermController extends SubTabController {
      * 运行片段
      *
      * @param content 内容
+     * @throws IOException io异常
      */
     public void runSnippet(String content) throws IOException {
         this.widget.getTtyConnector().write(content);
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     private ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
 
-//    @Override
-//    public void destroy() {
-//        if (this.widget != null) {
-//            this.widget.destroy();
-//        }
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        if (this.widget != null) {
+    //            this.widget.destroy();
+    //        }
+    //        super.destroy();
+    //    }
 }

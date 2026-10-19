@@ -3,23 +3,22 @@ appIcon = "${projectPath}/resource/app.icns"
 platform = "macos"
 
 [jpackage]
-#java-options = [
-##    "-XX:+UseG1GC"
-#    "-XX:+UseParallelGC"
-#]
+java-options = [
+    "-XX:+UseG1GC"
+]
 type = "app-image"
 mac-package-identifier = "cn.oyzh.easyshell"
 
 [compress]
 type = "zip"
 
-[jar]
-excludes = [
-    ".*.dll",
-    ".*.so",
-    ".*com/pty4j/native/freebsd.*",
-    ".*com/pty4j/native/linux.*",
-    ".*com/pty4j/native/win.*",
-    ".*com/sun/jna/linux.*",
-    ".*com/sun/jna/win32.*"
-]
+#[jar]
+#excludes = [
+#    ".*.dll",
+#    ".*.so",
+#    ".*com/pty4j/native/freebsd.*",
+#    ".*com/pty4j/native/linux.*",
+#    ".*com/pty4j/native/win.*",
+#    ".*com/sun/jna/linux.*",
+#    ".*com/sun/jna/win32.*"
+#]

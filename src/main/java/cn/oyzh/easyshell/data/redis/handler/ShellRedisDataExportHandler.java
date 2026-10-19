@@ -1,11 +1,11 @@
 package cn.oyzh.easyshell.data.redis.handler;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.util.redis.ShellRedisUtil;
 import cn.oyzh.fx.db.data.handler.DataExportHandler;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.store.file.FileColumns;
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * redis数据导出处理器
  *
  * @author oyzh
- * @since 2024/11/26
+ * @since 2025-09-01
  */
 public class ShellRedisDataExportHandler extends DataExportHandler {
 
@@ -35,26 +35,56 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
      */
     private String fileType;
 
+    /**
+     * 获取文件格式
+     *
+     * @return 文件格式
+     */
     public String getFileType() {
         return fileType;
     }
 
+    /**
+     * 设置文件格式
+     *
+     * @param fileType 文件格式
+     */
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取数据库
+     *
+     * @return 数据库
+     */
     public Integer getDatabase() {
         return database;
     }
 
+    /**
+     * 设置数据库
+     *
+     * @param database 数据库
+     */
     public void setDatabase(Integer database) {
         this.database = database;
     }
@@ -67,42 +97,92 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
     //     this.filters = filters;
     // }
 
+    /**
+     * 获取键类型
+     *
+     * @return 键类型
+     */
     public List<String> getKeyTypes() {
         return keyTypes;
     }
 
+    /**
+     * 设置键类型
+     *
+     * @param keyTypes 键类型
+     */
     public void setKeyTypes(List<String> keyTypes) {
         this.keyTypes = keyTypes;
     }
 
+    /**
+     * 是否保留ttl
+     *
+     * @return 结果
+     */
     public boolean isRetainTTL() {
         return retainTTL;
     }
 
+    /**
+     * 设置是否保留ttl
+     *
+     * @param retainTTL 是否保留ttl
+     */
     public void setRetainTTL(boolean retainTTL) {
         this.retainTTL = retainTTL;
     }
 
+    /**
+     * 获取查询模式
+     *
+     * @return 查询模式
+     */
     public String getPattern() {
         return pattern;
     }
 
+    /**
+     * 设置查询模式
+     *
+     * @param pattern 查询模式
+     */
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
 
+    /**
+     * 获取批量处理大小
+     *
+     * @return 批量处理大小
+     */
     public int getBatchSize() {
         return batchSize;
     }
 
+    /**
+     * 设置批量处理大小
+     *
+     * @param batchSize 批量处理大小
+     */
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
     }
 
+    /**
+     * 获取导出配置
+     *
+     * @return 导出配置
+     */
     public FileWriteConfig getConfig() {
         return config;
     }
 
+    /**
+     * 设置导出配置
+     *
+     * @param config 导出配置
+     */
     public void setConfig(FileWriteConfig config) {
         this.config = config;
     }
@@ -187,7 +267,7 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
                         this.processedDecr();
                         return false;
                     }
-                    if (this.isExclude(redisKey)) {
+                    if (ShellRedisUtil.isExclude(this.keyTypes, redisKey)) {
                         this.message("key[" + key + "] is exclude, skip it");
                         this.processedSkip();
                         return false;
@@ -295,36 +375,10 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
     }
 
     /**
-     * 是否被排除
+     * 设置前缀
      *
-     * @param node 键
-     * @return 结果
+     * @param prefix 前缀
      */
-    private boolean isExclude(ShellRedisKey node) {
-        if (CollectionUtil.isEmpty(this.keyTypes)) {
-            return true;
-        }
-        if (!this.keyTypes.contains("list") && node.isListKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("set") && node.isSetKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("zset") && node.isZSetKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("hash") && node.isHashKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("stream") && node.isStreamKey()) {
-            return true;
-        }
-        if (!this.keyTypes.contains("json") && node.isJsonKey()) {
-            return true;
-        }
-        return !this.keyTypes.contains("string") && node.isStringKey();
-    }
-
     public void prefix(String prefix) {
         if (prefix.isBlank()) {
             this.config.prefix(null);
@@ -333,6 +387,11 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
         }
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void charset(String charset) {
         if (StringUtil.isBlank(charset)) {
             this.config.charset(StandardCharsets.UTF_8.name());
@@ -341,18 +400,38 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
         }
     }
 
+    /**
+     * 设置文件路径
+     *
+     * @param filePath 文件路径
+     */
     public void filePath(String filePath) {
         this.config.filePath(filePath);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(Character txtIdentifier) {
         this.config.txtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置是否包含标题
+     *
+     * @param includeTitle 是否包含标题
+     */
     public void includeTitle(boolean includeTitle) {
         this.config.includeTitle(includeTitle);
     }
 
+    /**
+     * 设置是否压缩
+     *
+     * @param compress 是否压缩
+     */
     public void compress(boolean compress) {
         this.config.compress(compress);
     }

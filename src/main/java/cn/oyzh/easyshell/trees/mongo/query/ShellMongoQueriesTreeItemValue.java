@@ -10,10 +10,15 @@ import javafx.scene.paint.Color;
  * mongodb树查询类型值
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMongoQueriesTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造查询类型节点值
+     *
+     * @param item 查询类型节点
+     */
     public ShellMongoQueriesTreeItemValue(ShellMongoQueriesTreeItem item) {
         super(item);
     }

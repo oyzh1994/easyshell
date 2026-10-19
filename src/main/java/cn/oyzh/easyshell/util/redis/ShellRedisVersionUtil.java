@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.exception.redis.ShellRedisUnsupportedCommandException;
  * redis版本工具类
  *
  * @author oyzh
- * @since 2023/07/31
+ * @since 2025-09-01
  */
 
 public class ShellRedisVersionUtil {
@@ -59,7 +59,7 @@ public class ShellRedisVersionUtil {
             try {
                 String[] str1 = serverVersion.split("\\.");
                 String[] str2 = version.split("\\.");
-                if (str2.length != 3 && str1.length != str2.length) {
+                if (str2.length != 3 || str1.length != str2.length) {
                     return false;
                 }
                 String s1 = str1[0];

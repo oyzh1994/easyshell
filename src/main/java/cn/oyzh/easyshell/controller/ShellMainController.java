@@ -21,7 +21,7 @@ import java.util.List;
  * shell主页
  *
  * @author oyzh
- * @since 2025/03/06
+ * @since 2023-08-16
  */
 public class ShellMainController extends ParentStageController {
 
@@ -149,6 +149,8 @@ public class ShellMainController extends ParentStageController {
 
     /**
      * 布局2
+     *
+     * @param event 事件
      */
     @EventSubscribe
     private void layout2(Layout2Event event) {
@@ -166,6 +168,8 @@ public class ShellMainController extends ParentStageController {
 
     /**
      * 布局1
+     *
+     * @param event 事件
      */
     @EventSubscribe
     private void layout1(Layout1Event event) {

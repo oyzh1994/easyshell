@@ -18,6 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * JavaFX 手写绘图应用的演示程序
+ *
+ * @author oyzh
+ * @since 2025-05-27
+ */
 public class HandwritingApp extends Application {
 
     private Canvas canvas;

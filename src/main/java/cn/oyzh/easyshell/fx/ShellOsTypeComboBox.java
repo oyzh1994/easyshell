@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
@@ -45,7 +46,7 @@ import javafx.util.Callback;
  * shell 系统、协议、应用类型选择框
  *
  * @author oyzh
- * @since 2025/03/09
+ * @since 2025-03-27
  */
 public class ShellOsTypeComboBox extends FXComboBox<String> {
 
@@ -78,6 +79,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.ZOOKEEPER);
         this.addItem(ShellPrototype.SERIAL);
         this.addItem(ShellPrototype.MYSQL);
+        this.addItem(ShellPrototype.MARIADB);
         this.addItem(ShellPrototype.MONGO);
         this.addItem(ShellPrototype.MOSH);
         this.addItem(ShellPrototype.DAMENG);
@@ -108,6 +110,11 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         super.initNode();
     }
 
+    /**
+     * 根据类型选择对应项
+     *
+     * @param type 类型
+     */
     public void selectType(String type) {
         if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SFTP)) {
             super.select(ShellPrototype.SFTP);
@@ -137,6 +144,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.WEBDAV);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MYSQL)) {
             super.select(ShellPrototype.MYSQL);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MARIADB)) {
+            super.select(ShellPrototype.MARIADB);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MONGO)) {
             super.select(ShellPrototype.MONGO);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MOSH)) {
@@ -149,6 +158,12 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
     }
 
 
+    /**
+     * 获取指定名称对应的图标
+     *
+     * @param name 名称
+     * @return 对应的图标
+     */
     public static SVGGlyph getGlyph(String name) {
         if (StringUtil.isBlank(name)) {
             return new LinuxSVGGlyph();
@@ -183,6 +198,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "rdp" -> new RDPSVGGlyph();
             case "webdav" -> new WebdavSVGGlyph();
             case "mysql" -> new MysqlSVGGlyph();
+            case "mariadb" -> new MariadbSVGGlyph();
             case "mongodb" -> new MongodbSVGGlyph();
             case "mosh" -> new MoshSVGGlyph();
             case "dameng" -> new DamengSVGGlyph();

@@ -1,15 +1,12 @@
 package cn.oyzh.easyshell.util;
 
 import cn.oyzh.common.network.ProxyUtil;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import software.amazon.awssdk.http.urlconnection.ProxyConfiguration;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
-import java.net.URI;
 
 /**
  * @author oyzh
@@ -44,31 +41,31 @@ public class ShellProxyUtil {
         return proxy;
     }
 
-    /**
-     * 初始化代理2
-     *
-     * @param proxyConfig 代理配置
-     * @return 代理对象
-     */
-    public static ProxyConfiguration initProxy2(ShellProxyConfig proxyConfig) {
-        if (proxyConfig == null) {
-            return ProxyConfiguration.builder().build();
-        }
-        String scheme = "";
-        if (proxyConfig.isHttpProxy()) {
-            scheme = "http://";
-        } else if (proxyConfig.isSocksProxy()) {
-            scheme = "socks://";
-        }
-        scheme = scheme + proxyConfig.getHost() + ":" + proxyConfig.getPort();
-        String user = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
-        String pwd = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword();
-        return ProxyConfiguration.builder()
-                .endpoint(URI.create(scheme))
-                .username(user)
-                .password(pwd)
-                .build();
-    }
+//    /**
+//     * 初始化代理2
+//     *
+//     * @param proxyConfig 代理配置
+//     * @return 代理对象
+//     */
+//    public static ProxyConfiguration initProxy2(ShellProxyConfig proxyConfig) {
+//        if (proxyConfig == null) {
+//            return ProxyConfiguration.builder().build();
+//        }
+//        String scheme = "";
+//        if (proxyConfig.isHttpProxy()) {
+//            scheme = "http://";
+//        } else if (proxyConfig.isSocksProxy()) {
+//            scheme = "socks://";
+//        }
+//        scheme = scheme + proxyConfig.getHost() + ":" + proxyConfig.getPort();
+//        String user = StringUtil.isBlank(proxyConfig.getUser()) ? null : proxyConfig.getUser();
+//        String pwd = StringUtil.isBlank(proxyConfig.getPassword()) ? null : proxyConfig.getPassword();
+//        return ProxyConfiguration.builder()
+//                .endpoint(URI.create(scheme))
+//                .username(user)
+//                .password(pwd)
+//                .build();
+//    }
 
     ///**
     // * 初始化代理3

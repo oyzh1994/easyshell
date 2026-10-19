@@ -8,8 +8,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
+ * zk连接标签页
+ *
  * @author oyzh
- * @since 2024-12-03
+ * @since 2025-09-01
  */
 public class ShellZKTab extends ShellConnectTab {
 
@@ -66,6 +68,12 @@ public class ShellZKTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    /**
+     * 创建zk连接标签页
+     *
+     * @param connect 连接
+     * @return zk连接标签页
+     */
     public static ShellZKTab of(ShellConnect connect) {
         ShellZKTab tab = new ShellZKTab();
         tab.init(connect);

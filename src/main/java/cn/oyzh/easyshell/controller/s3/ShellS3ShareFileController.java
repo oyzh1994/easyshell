@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.s3;
 
 import cn.oyzh.easyshell.fx.s3.ShellS3EffectiveTimeCombobox;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -23,7 +23,7 @@ import java.time.Duration;
  * s3文件分享业务
  *
  * @author oyzh
- * @since 2025/07/03
+ * @since 2025-07-03
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -64,7 +64,7 @@ public class ShellS3ShareFileController extends StageController {
     /**
      * 客户端
      */
-    private ShellS3Client client;
+    private ShellS3ClientV2 client;
 
     /**
      * 生成

@@ -5,6 +5,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.rdp.ShellRdpColorComboBox;
+import cn.oyzh.easyshell.fx.rdp.ShellRdpMethodComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -13,6 +15,7 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -27,7 +30,7 @@ import javafx.stage.WindowEvent;
  * rdp连接新增业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -91,6 +94,42 @@ public class ShellAddRDPConnectController extends StageController {
     private ClearableTextField resolution;
 
     /**
+     * 域
+     */
+    @FXML
+    private ClearableTextField domain;
+
+    /**
+     * 颜色
+     */
+    @FXML
+    private ShellRdpColorComboBox color;
+
+    /**
+     * 方式
+     */
+    @FXML
+    private ShellRdpMethodComboBox method;
+
+    /**
+     * ssl模式
+     */
+    @FXML
+    private FXCheckBox sslMode;
+
+    /**
+     * 远程音频
+     */
+    @FXML
+    private FXCheckBox remoteAudio;
+
+    /**
+     * 剪贴板同步
+     */
+    @FXML
+    private FXCheckBox redirectClipboard;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -129,16 +168,27 @@ public class ShellAddRDPConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             // 创建ssh信息
             ShellConnect shellConnect = new ShellConnect();
             shellConnect.setType("rdp");
             shellConnect.setHost(host);
-//            shellConnect.setConnectTimeOut(3);
+            //            shellConnect.setConnectTimeOut(3);
             // 认证信息
             shellConnect.setUser(this.userName.getTextTrim());
+            shellConnect.setDomain(this.domain.getTextTrim());
+            shellConnect.setSSLMode(this.sslMode.isSelected());
             shellConnect.setPassword(this.password.getPassword());
+            // 扩展信息
+            int color = this.color.getColor();
+            int method = this.method.getMethod();
+            boolean remoteAudio = this.remoteAudio.isSelected();
+            boolean redirectClipboard = this.redirectClipboard.isSelected();
+            shellConnect.putExtra("color", color);
+            shellConnect.putExtra("method", method);
+            shellConnect.putExtra("remoteAudio", remoteAudio);
+            shellConnect.putExtra("redirectClipboard", redirectClipboard);
             // 代理
             ShellConnectUtil.testConnect(this.stage, shellConnect, 3000);
         }
@@ -164,13 +214,25 @@ public class ShellAddRDPConnectController extends StageController {
             String osType = this.osType.getSelectedItem();
             String userName = this.userName.getTextTrim();
             String password = this.password.getPassword();
+            String domain = this.domain.getTextTrim();
+            int color = this.color.getColor();
+            int method = this.method.getMethod();
+            boolean sslMode = this.sslMode.isSelected();
             String resolution = this.resolution.getTextTrim();
+            boolean remoteAudio = this.remoteAudio.isSelected();
+            boolean redirectClipboard = this.redirectClipboard.isSelected();
 
             shellConnect.setName(name);
+            shellConnect.setDomain(domain);
             shellConnect.setOsType(osType);
             shellConnect.setRemark(remark);
+            shellConnect.setSSLMode(sslMode);
             shellConnect.setHost(host.trim());
-            shellConnect.setResolution(resolution);
+            shellConnect.putExtra("color", color);
+            shellConnect.putExtra("method", method);
+            shellConnect.putExtra("resolution", resolution);
+            shellConnect.putExtra("remoteAudio", remoteAudio);
+            shellConnect.putExtra("redirectClipboard", redirectClipboard);
             // 认证信息
             shellConnect.setUser(userName);
             shellConnect.setPassword(password.trim());
@@ -178,7 +240,7 @@ public class ShellAddRDPConnectController extends StageController {
             shellConnect.setType("rdp");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
+            if (this.connectStore.insert(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.setProp("connect", shellConnect);

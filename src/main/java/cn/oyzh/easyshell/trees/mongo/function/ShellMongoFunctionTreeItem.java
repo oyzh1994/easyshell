@@ -23,7 +23,7 @@ import java.util.Objects;
  * mongodb树函数节点
  *
  * @author oyzh
- * @since 2024/06/29
+ * @since 2025-11-06
  */
 public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFunctionTreeItemValue> {
 
@@ -32,6 +32,12 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
      */
     private final MongoFunction value;
 
+    /**
+     * 构造函数节点
+     *
+     * @param function 函数对象
+     * @param treeView 树视图
+     */
     public ShellMongoFunctionTreeItem(MongoFunction function, RichTreeView treeView) {
         super(treeView);
         this.value = function;
@@ -108,16 +114,31 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMongoDatabaseTreeItem dbItem() {
         return this.parent().parent();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
-    public String infoName() {
-        return this.parent().infoName();
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
+    public String connectName() {
+        return this.parent().connectName();
     }
 
     @Override
@@ -125,6 +146,11 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         ShellMongoEventUtil.designFunction(this.value, this.dbItem());
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.value.getName();
     }
@@ -154,15 +180,20 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         }
     }
 
-    @Override
-    public void onPrimarySingleClick() {
-        if (!this.isLoaded()) {
-            super.onPrimarySingleClick();
-        } else {
-            super.onPrimarySingleClick();
-        }
-    }
+//    @Override
+//    public void onPrimarySingleClick() {
+//        if (!this.isLoaded()) {
+//            super.onPrimarySingleClick();
+//        } else {
+//            super.onPrimarySingleClick();
+//        }
+//    }
 
+    /**
+     * 获取函数对象
+     *
+     * @return 函数对象
+     */
     public MongoFunction value() {
         return value;
     }

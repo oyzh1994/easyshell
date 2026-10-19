@@ -9,6 +9,7 @@
 <?import cn.oyzh.fx.gui.text.field.PortTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
@@ -16,9 +17,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.easyshell.fx.rdp.ShellRdpMethodComboBox?>
+<?import cn.oyzh.easyshell.fx.rdp.ShellRdpColorComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController" realWidth="750"
-        realHeight="520">
+        realHeight="580">
     <FXHeaderBar/>
     <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
         <FixedTab text="%base.base">
@@ -80,7 +83,19 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ClearableTextField fx:id="resolution" tipText="%shell.rdp.tip1" maxLen="30" require="true" realHeight="30"
+                <ClearableTextField fx:id="resolution" tipText="%shell.rdp.tip1" maxLen="30" require="true"
+                                    realHeight="30"
+                                    flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.domain">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="domain" tipText="%base.contentTip1" maxLen="30" realHeight="30"
                                     flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -100,11 +115,50 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ShellOsTypeComboBox>
-                <InfoLabel text="%base.charset">
+                <InfoLabel text="%base.method">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
+                <ShellRdpMethodComboBox initIndex="0" fx:id="method" tipText="%base.contentTip2" realHeight="30"
+                                        flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellRdpMethodComboBox>
+                <InfoLabel text="%base.color">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellRdpColorComboBox initIndex="4" fx:id="color" tipText="%base.contentTip2" realHeight="30"
+                                        flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellRdpColorComboBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox selected="true" fx:id="sslMode" text="%base.enableSSL">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox selected="true" fx:id="redirectClipboard" text="%base.redirectClipboard">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox selected="true" fx:id="remoteAudio" text="%base.remoteAudio">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
                 <InfoLabel text="%base.remark">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -120,7 +174,7 @@
         </FixedTab>
     </FXTabPane>
     <FXHBox flexWidth="100%" realHeight="50">
-        <TestButton onAction="#testConnect" >
+        <TestButton onAction="#testConnect">
             <HBox.margin>
                 <Insets left="30" top="10"/>
             </HBox.margin>

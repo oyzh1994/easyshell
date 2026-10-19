@@ -9,12 +9,12 @@ import java.util.List;
  * 连接管理
  *
  * @author oyzh
- * @since 2025/03/12
+ * @since 2025-02-14
  */
 public interface ShellConnectManager {
 
     /**
-     * 分组连接
+     * 添加分组
      *
      * @param group 分组信息
      */

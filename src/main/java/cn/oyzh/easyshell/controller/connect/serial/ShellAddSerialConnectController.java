@@ -35,7 +35,7 @@ import javafx.stage.WindowEvent;
  * serial连接新增业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

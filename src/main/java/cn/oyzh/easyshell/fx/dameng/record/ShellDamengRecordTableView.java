@@ -1,0 +1,59 @@
+package cn.oyzh.easyshell.fx.dameng.record;
+
+import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.easyshell.dameng.record.DamengRecordProperty;
+import cn.oyzh.fx.plus.controls.table.FXTableView;
+import javafx.scene.control.SelectionMode;
+
+/**
+ * 达梦记录表格视图
+ *
+ * @author oyzh
+ * @since 2025-11-06
+ */
+public class ShellDamengRecordTableView extends FXTableView<DamengRecord> {
+
+    {
+        this.setRowFactory(param -> new ShellDamengRecordTableRow());
+    }
+
+    /**
+     * 是否存在记录属性
+     *
+     * @param recordProperty 记录属性
+     * @return 结果
+     */
+    public boolean hasProperty(DamengRecordProperty recordProperty) {
+        if (recordProperty != null) {
+            for (DamengRecord record : this.getItems()) {
+                if (record.hasProperty(recordProperty)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否存在记录
+     *
+     * @param record 记录
+     * @return 结果
+     */
+    public boolean hasRecord(DamengRecord record) {
+        if (record != null) {
+            return this.getItems().contains(record);
+        }
+        return false;
+    }
+
+    @Override
+    public void initNode() {
+        this.setSelectionMode(SelectionMode.MULTIPLE);
+        this.setRowFactory(param -> new ShellDamengRecordTableRow());
+        // 监听移除
+        super.destroyItemsOnRemoved();
+        //        super.fakerMultipleSelection();
+        super.initNode();
+    }
+}

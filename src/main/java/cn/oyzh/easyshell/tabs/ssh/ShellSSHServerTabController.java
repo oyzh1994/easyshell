@@ -23,7 +23,7 @@ import java.util.List;
  * ssh-服务信息tab内容组件
  *
  * @author oyzh
- * @since 2025/04/12
+ * @since 2025-03-15
  */
 public class ShellSSHServerTabController extends ParentTabController {
 
@@ -38,6 +38,11 @@ public class ShellSSHServerTabController extends ParentTabController {
      */
     private ShellSSHClient client;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
@@ -114,6 +119,9 @@ public class ShellSSHServerTabController extends ParentTabController {
         });
     }
 
+    /**
+     * 选中订阅
+     */
     private Subscription subscription;
 
     @Override

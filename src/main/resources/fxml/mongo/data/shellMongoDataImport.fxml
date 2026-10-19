@@ -50,11 +50,11 @@
                     <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXRadioButton>
-            <!-- <FXRadioButton toggleGroup="$fileType" text="%base.csvType" userData="csv"> -->
-            <!--     <VBox.margin> -->
-            <!--         <Insets left="30" top="10"/> -->
-            <!--     </VBox.margin> -->
-            <!-- </FXRadioButton> -->
+            <FXRadioButton toggleGroup="$fileType" text="%base.csvType" userData="csv">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXRadioButton>
             <FXRadioButton toggleGroup="$fileType" text="%base.excelType" userData="excel">
                 <VBox.margin>
                     <Insets left="30" top="10"/>

@@ -20,7 +20,7 @@ import javafx.stage.WindowEvent;
  * docker容器资源业务
  *
  * @author oyzh
- * @since 2025/03/13
+ * @since 2025-03-13
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -96,6 +96,9 @@ public class ShellDockerResourceController extends StageController {
         return I18nHelper.containerResource();
     }
 
+    /**
+     * 保存容器资源限制
+     */
     @FXML
     private void save() {
         try {

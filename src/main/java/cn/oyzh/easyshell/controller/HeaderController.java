@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.event.Layout1Event;
 import cn.oyzh.fx.gui.event.Layout2Event;
-import cn.oyzh.fx.gui.svg.pane.LayoutSVGPane;
+import cn.oyzh.fx.gui.svg.label.LayoutSVGLabel;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.FXHeaderBar;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -35,7 +35,7 @@ import java.util.Locale;
  * 主页头部业务
  *
  * @author oyzh
- * @since 2022/1/26
+ * @since 2023-08-16
  */
 public class HeaderController extends StageController {
 
@@ -59,7 +59,7 @@ public class HeaderController extends StageController {
      * 布局组件
      */
     @FXML
-    private LayoutSVGPane layoutPane;
+    private LayoutSVGLabel layoutPane;
 
     /**
      * 设置

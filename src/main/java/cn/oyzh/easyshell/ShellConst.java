@@ -9,7 +9,7 @@ import java.io.File;
  * shell常量对象
  *
  * @author oyzh
- * @since 2023/08/16
+ * @since 2023-08-16
  */
 public class ShellConst {
 
@@ -34,15 +34,15 @@ public class ShellConst {
      */
     public final static String ICON_32_PATH = "/image/shell_32.png";
 
-    /**
-     * 初始化jfx缓存目录
-     */
-    public static void initJfxCache() {
-        String snapUserData = System.getenv("SNAP_USER_DATA");
-        if (snapUserData != null) {
-            System.setProperty("javafx.cachedir", File.separator + "/jfx");
-        }
-    }
+//    /**
+//     * 初始化jfx缓存目录
+//     */
+//    public static void initJfxCache() {
+//        String snapUserData = System.getenv("SNAP_USER_DATA");
+//        if (snapUserData != null) {
+//            System.setProperty("javafx.cachedir", File.separator + "/jfx");
+//        }
+//    }
 
     /**
      * 获取存储路径
@@ -50,7 +50,7 @@ public class ShellConst {
      * @return 存储路径
      */
     public static String getStorePath() {
-        if (JarUtil.isInJar()) {
+        if (SystemUtil.isProd()) {
 //            String snapUserData = System.getenv("SNAP_USER_DATA");
 //            if (snapUserData != null) {
 //                return snapUserData + File.separator + "easyshell" + File.separator;
@@ -59,6 +59,18 @@ public class ShellConst {
         }
         return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
     }
+
+//    /**
+//     * 获取存储路径
+//     *
+//     * @return 存储路径
+//     */
+//    public static String getTempPath() {
+//        if (SystemUtil.isProd()) {
+//            return SystemUtil.tmpdir() + File.separator + "easyshell" + File.separator;
+//        }
+//        return SystemUtil.tmpdir() + File.separator + "easyshell_dev" + File.separator;
+//    }
 
     /**
      * 获取缓存路径
@@ -75,7 +87,7 @@ public class ShellConst {
      * @return 键缓存路径
      */
     public static String getKeyCachePath() {
-        return getCachePath() + "key_cache" + File.separator;
+        return getStorePath() + "key_cache" + File.separator;
     }
 
     /**
@@ -84,6 +96,6 @@ public class ShellConst {
      * @return 节点缓存路径
      */
     public static String getNodeCachePath() {
-        return getCachePath() + "node_cache" + File.separator;
+        return getStorePath() + "node_cache" + File.separator;
     }
 }

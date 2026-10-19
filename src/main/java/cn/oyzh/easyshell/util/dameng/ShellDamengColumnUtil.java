@@ -7,7 +7,7 @@ import cn.oyzh.fx.db.DBDialect;
 
 /**
  * @author oyzh
- * @since 2024/1/29
+ * @since 2026-09-02
  */
 public class ShellDamengColumnUtil {
 
@@ -36,7 +36,7 @@ public class ShellDamengColumnUtil {
 
         DBColumnField clobField = new DBColumnField("CLOB");
         clobField.supportText = true;
-//        clobField.supportJson = true;
+        //        clobField.supportJson = true;
         clobField.supportString = true;
 
         DBColumnField ncharField = new DBColumnField("NCHAR");
@@ -60,26 +60,31 @@ public class ShellDamengColumnUtil {
         numberField.supportDefaultValue = true;
 
         DBColumnField intField = new DBColumnField("INT");
+//        intField.supportSize = true;
         intField.supportInteger = true;
         intField.supportDefaultValue = true;
         intField.supportAutoIncrement = true;
 
         DBColumnField integerField = new DBColumnField("INTEGER");
+//        integerField.supportSize = true;
         integerField.supportInteger = true;
         integerField.supportDefaultValue = true;
         integerField.supportAutoIncrement = true;
 
         DBColumnField bigintFiled = new DBColumnField("BIGINT");
+//        bigintFiled.supportSize = true;
         bigintFiled.supportInteger = true;
         bigintFiled.supportDefaultValue = true;
         bigintFiled.supportAutoIncrement = true;
 
         DBColumnField smallintFiled = new DBColumnField("SMALLINT");
+//        smallintFiled.supportSize = true;
         smallintFiled.supportInteger = true;
         smallintFiled.supportDefaultValue = true;
         smallintFiled.supportAutoIncrement = true;
 
         DBColumnField tinyintField = new DBColumnField("TINYINT");
+//        tinyintField.supportSize = true;
         tinyintField.supportInteger = true;
         tinyintField.supportDefaultValue = true;
         tinyintField.supportAutoIncrement = true;

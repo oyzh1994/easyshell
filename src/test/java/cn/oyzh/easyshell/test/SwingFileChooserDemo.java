@@ -5,6 +5,12 @@ import java.awt.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * 演示使用 Swing JFileChooser 多选文件并设置文件过滤器的示例类
+ *
+ * @author oyzh
+ * @since 2025-03-28
+ */
 public class SwingFileChooserDemo {
 
     public static void main(String[] args) {

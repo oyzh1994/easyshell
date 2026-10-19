@@ -22,7 +22,7 @@ import java.util.List;
  * ssh-tab内容组件
  *
  * @author oyzh
- * @since 2025/04/16
+ * @since 2025-03-04
  */
 public class ShellSSHTabController extends ShellParentTabController {
 
@@ -36,10 +36,20 @@ public class ShellSSHTabController extends ShellParentTabController {
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -177,6 +187,7 @@ public class ShellSSHTabController extends ShellParentTabController {
      * 运行片段
      *
      * @param content 内容
+     * @throws IOException 异常
      */
     public void runSnippet(String content) throws IOException {
 //        if (this.effTabController != null) {

@@ -5,6 +5,7 @@ import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import cn.oyzh.fx.db.data.file.DBDataTypeFileWriter;
 
 import java.io.Closeable;
 import java.time.LocalDateTime;
@@ -15,14 +16,13 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * Mysql类型文件写入器
+ *
  * @author oyzh
- * @since 2024-09-04
+ * @since 2025-11-06
  */
-public abstract class ShellMysqlTypeFileWriter implements Closeable {
+public abstract class ShellMysqlTypeFileWriter extends DBDataTypeFileWriter {
 
-    protected void init() throws Exception {
-
-    }
 
     /**
      * 参数化
@@ -75,63 +75,4 @@ public abstract class ShellMysqlTypeFileWriter implements Closeable {
         }
         return value.toString();
     }
-
-    /**
-     * 写入头
-     *
-     * @throws Exception 异常
-     */
-    public void writeHeader() throws Exception {
-
-    }
-
-    /**
-     * 写入尾
-     *
-     * @throws Exception 异常
-     */
-    public void writeTrial() throws Exception {
-
-    }
-
-    /**
-     * 写入对象
-     *
-     * @param object 对象
-     * @throws Exception 异常
-     */
-    public abstract void writeObject(Map<String, Object> object) throws Exception;
-
-    /**
-     * 写入多个对象
-     *
-     * @param objects 对象
-     * @throws Exception 异常
-     */
-    public void writeObjects(List<Map<String, Object>> objects) throws Exception {
-        for (Map<String, Object> object : objects) {
-            this.writeObject(object);
-        }
-    }
-
-    protected String formatLine(Object[] objects, String fieldSeparator, String txtIdentifier, String recordSeparator) {
-        List<Object> list = new ArrayList<>();
-        for (Object object : objects) {
-            list.add(Objects.requireNonNullElse(object, ""));
-        }
-        return this.formatLine(list, fieldSeparator, txtIdentifier, recordSeparator);
-    }
-
-    protected String formatLine(List<?> list, String fieldSeparator, String txtIdentifier, String recordSeparator) {
-        StringBuilder sb = new StringBuilder();
-        for (Object val : list) {
-            sb.append(fieldSeparator)
-                    .append(txtIdentifier)
-                    .append(val)
-                    .append(txtIdentifier);
-        }
-        sb.append(recordSeparator);
-        return sb.substring(1);
-    }
-
 }

@@ -32,7 +32,7 @@ import java.util.Objects;
  * string键tab内容组件
  *
  * @author oyzh
- * @since 2023/06/31
+ * @since 2025-09-01
  */
 public class ShellRedisStringKeyController extends ShellRedisKeyController<ShellRedisStringKeyTreeItem> {
 
@@ -343,7 +343,9 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
     }
 
     /**
-     * 健值转二维码
+     * 键值转二维码
+     *
+     * @param event 事件
      */
     @FXML
     private void key2QRCode(MouseEvent event) {

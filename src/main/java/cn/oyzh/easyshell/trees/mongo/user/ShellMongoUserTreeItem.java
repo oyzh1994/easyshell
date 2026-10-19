@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * mongodb树集合节点
+ * mongodb用户节点
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-07-02
  */
 public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTreeItemValue> {
 
@@ -29,6 +29,12 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
      */
     private final MongoUser value;
 
+    /**
+     * 构造用户节点
+     *
+     * @param user     用户对象
+     * @param treeView 树视图
+     */
     public ShellMongoUserTreeItem(MongoUser user, RichTreeView treeView) {
         super(treeView);
         this.value = user;
@@ -40,14 +46,29 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
         return (ShellMongoUsersTreeItem) super.parent();
     }
 
+    /**
+     * 获取mongodb客户端
+     *
+     * @return mongodb客户端
+     */
     public ShellMongoClient client() {
         return this.parent().client();
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String dbName() {
         return this.parent().dbName();
     }
 
+    /**
+     * 获取用户名称
+     *
+     * @return 用户名称
+     */
     public String userName() {
         return this.value.getUser();
     }
@@ -95,6 +116,11 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
         }
     }
 
+    /**
+     * 获取所属数据库节点
+     *
+     * @return 数据库节点
+     */
     public ShellMongoDatabaseTreeItem dbItem() {
         if (this.parent() == null) {
             return null;
@@ -102,8 +128,13 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
         return this.parent().parent();
     }
 
-    public String infoName() {
-        return parent().infoName();
+    /**
+     * 获取连接名称
+     *
+     * @return 连接名称
+     */
+    public String connectName() {
+        return parent().connectName();
     }
 
     @Override
@@ -118,6 +149,11 @@ public class ShellMongoUserTreeItem extends ShellMongoTreeItem<ShellMongoUserTre
         this.loadChild();
     }
 
+    /**
+     * 获取用户对象
+     *
+     * @return 用户对象
+     */
     public MongoUser value() {
         return value;
     }

@@ -11,7 +11,7 @@ import java.util.List;
  * shell 代码片段存储
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 public class ShellSnippetStore extends JdbcStandardStore<ShellSnippet> {
 
@@ -20,6 +20,12 @@ public class ShellSnippetStore extends JdbcStandardStore<ShellSnippet> {
      */
     public static final ShellSnippetStore INSTANCE = new ShellSnippetStore();
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellSnippet model) {
         String id = model.getId();
         if (super.exist(id)) {

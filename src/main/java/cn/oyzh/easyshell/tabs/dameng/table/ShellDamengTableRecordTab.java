@@ -16,7 +16,7 @@ import java.util.List;
  * db表tab
  *
  * @author oyzh
- * @since 2023/12/24
+ * @since 2025-11-06
  */
 public class ShellDamengTableRecordTab extends ShellDamengBaseTab {
 
@@ -52,6 +52,7 @@ public class ShellDamengTableRecordTab extends ShellDamengBaseTab {
      * 初始化
      *
      * @param item 树键
+     * @return 是否初始化成功
      */
     public boolean init(ShellDamengTableTreeItem item) {
         // this.item = item;
@@ -72,18 +73,38 @@ public class ShellDamengTableRecordTab extends ShellDamengBaseTab {
         this.controller().reload();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellDamengClient client() {
         return this.item().client();
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<DamengRecordFilter> filters) {
         this.controller().setFilters(filters);
     }
 
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
     public ShellDamengTableTreeItem item(){
         return this.controller().getItem();
     }
     
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.item().tableName();
     }

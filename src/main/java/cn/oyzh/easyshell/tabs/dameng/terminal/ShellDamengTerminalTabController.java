@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
  * dameng命令行tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2026-09-02
  */
 public class ShellDamengTerminalTabController extends RichTabController {
 
@@ -37,6 +37,11 @@ public class ShellDamengTerminalTabController extends RichTabController {
         this.terminal.init(dbItem.client(), dbItem.schema());
     }
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellDamengSchemaTreeItem getDbItem() {
         return dbItem;
     }
@@ -50,6 +55,11 @@ public class ShellDamengTerminalTabController extends RichTabController {
         return this.terminal.shellConnect();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellDamengClient client() {
         return this.terminal.getClient();
     }

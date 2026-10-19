@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mongo.database;
 /**
  *
  * @author oyzh
- * @since 2026-06-01
+ * @since 2026-06-29
  */
 public class MongoDatabase {
 

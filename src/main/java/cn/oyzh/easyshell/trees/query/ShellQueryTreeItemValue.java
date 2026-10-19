@@ -9,10 +9,15 @@ import javafx.scene.paint.Color;
  * shell查询节点值
  *
  * @author oyzh
- * @since 2025/06/22
+ * @since 2025-06-11
  */
 public class ShellQueryTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造查询节点值
+     *
+     * @param item 查询节点
+     */
     public ShellQueryTreeItemValue(ShellQueryTreeItem item) {
         super(item);
         this.setRichMode(true);

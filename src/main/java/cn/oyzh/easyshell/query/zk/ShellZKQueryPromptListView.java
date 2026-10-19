@@ -11,7 +11,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
  * zk查询提示内容组件
  *
  * @author oyzh
- * @since 2025/01/21
+ * @since 2025-09-01
  */
 public class ShellZKQueryPromptListView extends DBQueryPromptListView<ShellZKQueryPromptItem> {
 

@@ -21,6 +21,7 @@ import com.hierynomus.msfscc.fileinformation.FileAllInformation;
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation;
 import com.hierynomus.mssmb2.SMB2CreateDisposition;
 import com.hierynomus.mssmb2.SMB2ShareAccess;
+import com.hierynomus.security.jce.JceSecurityProvider;
 import com.hierynomus.smbj.SMBClient;
 import com.hierynomus.smbj.SmbConfig;
 import com.hierynomus.smbj.auth.AuthenticationContext;
@@ -94,6 +95,11 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      */
     private final ChangeListener<ShellConnState> stateListener = (state1, state2, state3) -> ShellFileClient.super.onStateChanged(state3);
 
+    /**
+     * 构造smb协议客户端
+     *
+     * @param connect 连接
+     */
     public ShellSMBClient(ShellConnect connect) {
         this.connect = connect;
         this.state.set(ShellConnState.NOT_INITIALIZED);
@@ -105,7 +111,7 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      */
     private void initClient() {
         SmbConfig.Builder builder = SmbConfig.builder()
-//                .withSecurityProvider(new ShellSMBSecurityProvider())
+                .withSecurityProvider(new ShellSMBSecurityProvider())
                 .withTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withReadTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS)
                 .withWriteTimeout(this.connectTimeout(), TimeUnit.MILLISECONDS);
@@ -154,10 +160,20 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         }
     }
 
+    /**
+     * 是否访客用户
+     *
+     * @return 是否访客用户
+     */
     public boolean isGuest() {
         return "guest".equalsIgnoreCase(this.connect.getUser());
     }
 
+    /**
+     * 是否匿名用户
+     *
+     * @return 是否匿名用户
+     */
     public boolean isAnonymous() {
         return "anonymous".equalsIgnoreCase(this.connect.getUser());
     }
@@ -400,12 +416,24 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
         return this.deleteCompetitor;
     }
 
+    /**
+     * 删除任务列表
+     */
     private final ObservableList<ShellFileDeleteTask> deleteTasks = FXCollections.observableArrayList();
 
+    /**
+     * 上传任务列表
+     */
     private final ObservableList<ShellFileUploadTask> uploadTasks = FXCollections.observableArrayList();
 
+    /**
+     * 下载任务列表
+     */
     private final ObservableList<ShellFileDownloadTask> downloadTasks = FXCollections.observableArrayList();
 
+    /**
+     * 传输任务列表
+     */
     private final ObservableList<ShellFileTransportTask> transportTasks = FXCollections.observableArrayList();
 
     @Override

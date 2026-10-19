@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 文件传输任务表格视图
+ *
  * @author oyzh
  * @since 2025-03-21
  */
@@ -32,7 +34,7 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
             } else {
                 this.clearContextMenu();
             }

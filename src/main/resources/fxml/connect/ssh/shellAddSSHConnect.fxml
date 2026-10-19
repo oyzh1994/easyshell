@@ -437,11 +437,11 @@
                             <Insets left="30" top="5"/>
                         </FXHBox.margin>
                     </FXToggleSwitch>
-                    <FXButton groupId="x11" text="%shell.connect.tip9" onMousePrimaryClicked="#downloadX11">
-                        <FXHBox.margin>
-                            <Insets left="10"/>
-                        </FXHBox.margin>
-                    </FXButton>
+                    <!-- <FXButton groupId="x11" text="%shell.connect.tip9" onMousePrimaryClicked="#downloadX11"> -->
+                    <!--     <FXHBox.margin> -->
+                    <!--         <Insets left="10"/> -->
+                    <!--     </FXHBox.margin> -->
+                    <!-- </FXButton> -->
                 </FXHBox>
                 <InfoLabel text="%base.host">
                     <VBox.margin>
@@ -461,7 +461,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <PortTextField require="true" prefHeight="30" text="6000" fx:id="x11Port"
+                    <PortTextField require="true" prefHeight="30" text="6010" fx:id="x11Port"
                                    tipText="%base.contentTip1"
                                    flexWidth="100% - 380">
                         <HBox.margin>

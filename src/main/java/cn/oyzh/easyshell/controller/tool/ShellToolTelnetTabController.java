@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * shell工具箱 telnet业务
  *
  * @author oyzh
- * @since 2025/05/29
+ * @since 2025-05-29
  */
 public class ShellToolTelnetTabController extends SubStageController {
 

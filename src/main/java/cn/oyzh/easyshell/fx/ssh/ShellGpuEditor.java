@@ -9,13 +9,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
+ * gpu信息编辑器
+ *
  * @author oyzh
- * @since 2025-03-26
+ * @since 2026-04-29
  */
 public class ShellGpuEditor extends Editor {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         FontWeight weight = FontWeight.findByWeight(setting.getFontWeight());
         return FontUtil.newFont(AppSetting.defaultTerminalFontFamily(), weight, setting.getFontSize());

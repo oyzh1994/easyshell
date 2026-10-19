@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
-import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextField;
+import cn.oyzh.easyshell.fx.s3.ShellS3RegionTextFieldV2;
 import cn.oyzh.easyshell.fx.s3.ShellS3TypeCombobox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.s3.ShellS3Util;
@@ -33,13 +33,12 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-import software.amazon.awssdk.regions.Region;
 
 /**
  * s3连接新增业务
  *
  * @author oyzh
- * @since 2025/05/23
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -172,7 +171,7 @@ public class ShellAddS3ConnectController extends StageController {
      * 区域
      */
     @FXML
-    private ShellS3RegionTextField region;
+    private ShellS3RegionTextFieldV2 region;
 
     /**
      * 分组
@@ -304,7 +303,7 @@ public class ShellAddS3ConnectController extends StageController {
             shellConnect.setType("s3");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
+            if (this.connectStore.insert(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.setProp("connect", shellConnect);
@@ -388,7 +387,7 @@ public class ShellAddS3ConnectController extends StageController {
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Minio")) {
             this.type.selectType("Minio");
             this.osType.select("Minio");
-            this.region.select(Region.US_EAST_1);
+            this.region.select("us-east-1");
         } else if (StringUtil.equalsIgnoreCase(s3Type, "Cos")) {
             this.type.selectType("Tencent");
             this.osType.select("Tencent Cloud");

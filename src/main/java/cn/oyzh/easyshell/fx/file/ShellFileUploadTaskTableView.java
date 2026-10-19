@@ -14,8 +14,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 文件上传任务表格视图
+ *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-03-15
  */
 public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTask> {
 
@@ -32,7 +34,7 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
             } else {
                 this.clearContextMenu();
             }

@@ -13,7 +13,7 @@ import java.util.Set;
  * redis查询编辑器
  *
  * @author oyzh
- * @since 2025/01/21
+ * @since 2025-09-01
  */
 public class ShellRedisQueryEditor extends DBQueryEditor {
 
@@ -27,18 +27,38 @@ public class ShellRedisQueryEditor extends DBQueryEditor {
      */
     private ShellRedisClient client;
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }
 
+    /**
+     * 设置redis客户端
+     *
+     * @param client redis客户端
+     */
     public void setClient(ShellRedisClient client) {
         this.client = client;
     }
 
+    /**
+     * 获取db索引
+     *
+     * @return db索引
+     */
     public int getDbIndex() {
         return dbIndex;
     }
 
+    /**
+     * 设置db索引
+     *
+     * @param dbIndex db索引
+     */
     public void setDbIndex(int dbIndex) {
         this.dbIndex = dbIndex;
     }
@@ -74,7 +94,7 @@ public class ShellRedisQueryEditor extends DBQueryEditor {
     }
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.editorFontConfig());
     }

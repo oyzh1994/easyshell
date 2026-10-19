@@ -21,7 +21,7 @@ import java.util.List;
  * ssh-服务配置tab内容组件
  *
  * @author oyzh
- * @since 2025/03/16
+ * @since 2025-03-23
  */
 public class ShellSSHConfigTabController extends ParentTabController {
 
@@ -105,6 +105,11 @@ public class ShellSSHConfigTabController extends ParentTabController {
         // }
     }
 
+    /**
+     * 获取ssh客户端
+     *
+     * @return ssh客户端
+     */
     public ShellSSHClient getClient() {
         return client;
     }

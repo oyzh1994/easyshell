@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * rlogin tab
  *
  * @author oyzh
- * @since 2025/05/27
+ * @since 2025-03-04
  */
 public class ShellRLoginTab extends ShellTermTab {
 
@@ -70,6 +70,12 @@ public class ShellRLoginTab extends ShellTermTab {
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
     }
+    /**
+     * 创建rlogin标签页
+     *
+     * @param connect 连接
+     * @return rlogin标签页
+     */
     public static ShellRLoginTab of(ShellConnect connect) {
         ShellRLoginTab tab = new ShellRLoginTab();
         tab.init(connect);

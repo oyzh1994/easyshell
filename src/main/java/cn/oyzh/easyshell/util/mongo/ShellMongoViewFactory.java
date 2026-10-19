@@ -24,7 +24,7 @@ import cn.oyzh.fx.plus.window.StageManager;
  * mongo页面工厂
  *
  * @author oyzh
- * @since 2026-06-03
+ * @since 2026-06-29
  */
 public class ShellMongoViewFactory {
 

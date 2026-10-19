@@ -6,10 +6,15 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  * shell密钥长度选择框
  *
  * @author oyzh
- * @since 25/04/03
+ * @since 2025-04-03
  */
 public class ShellKeyLengthComboBox extends FXComboBox<Integer> {
 
+    /**
+     * 初始化密钥长度选项
+     *
+     * @param keyType 密钥类型
+     */
     public void init(String keyType) {
         this.clearItems();
         if (keyType == null) {

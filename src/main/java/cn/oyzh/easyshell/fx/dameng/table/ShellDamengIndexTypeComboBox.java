@@ -1,0 +1,18 @@
+package cn.oyzh.easyshell.fx.dameng.table;
+
+import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+
+/**
+ * 达梦索引类型下拉选择框
+ *
+ * @author oyzh
+ * @since 2025-11-06
+ */
+public class ShellDamengIndexTypeComboBox extends FXComboBox<String> {
+
+    @Override
+    public void initNode() {
+        this.addItem("NORMAL");
+        this.addItem("UNIQUE");
+    }
+}

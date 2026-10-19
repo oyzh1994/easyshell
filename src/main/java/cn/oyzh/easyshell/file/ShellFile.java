@@ -15,7 +15,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * 文件接口
  *
  * @author oyzh
- * @since 2025-04-28
+ * @since 2025-03-05
  */
 public interface ShellFile extends ObjectCopier<ShellFile>, Destroyable {
 

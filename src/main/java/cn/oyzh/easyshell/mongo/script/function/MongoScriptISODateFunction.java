@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  *
  * @author oyzh
- * @since 2026-06-17
+ * @since 2026-06-29
  */
 public class MongoScriptISODateFunction extends AbstractJSObject {
 

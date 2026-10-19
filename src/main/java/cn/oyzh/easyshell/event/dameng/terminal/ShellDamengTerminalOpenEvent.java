@@ -6,8 +6,10 @@ import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * 达梦终端打开事件
+ *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2026-09-02
  */
 public class ShellDamengTerminalOpenEvent extends Event<ShellDamengSchemaTreeItem> {
 

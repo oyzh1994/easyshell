@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.event.mysql;
 
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseAddedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
@@ -32,7 +31,6 @@ import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDesignEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
-import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
@@ -53,10 +51,16 @@ import cn.oyzh.event.EventUtil;
  * mysql事件工具
  *
  * @author oyzh
- * @since 2023/11/20
+ * @since 2025-11-11
  */
 public class ShellMysqlEventUtil {
 
+    /**
+     * 表打开事件
+     *
+     * @param item   表节点
+     * @param dbItem 数据库节点
+     */
     public static void tableOpen(ShellMysqlTableTreeItem item, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableOpenEvent event = new ShellMysqlTableOpenEvent();
         event.data(item);
@@ -64,6 +68,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 表结构变更事件
+     *
+     * @param tableName 表名称
+     * @param dbItem    数据库节点
+     */
     public static void tableAlerted(String tableName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableAlertedEvent event = new ShellMysqlTableAlertedEvent();
         event.data(tableName);
@@ -71,6 +81,13 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 表重命名事件
+     *
+     * @param tableName    表名称
+     * @param newTableName 新表名称
+     * @param dbItem       数据库节点
+     */
     public static void tableRenamed(String tableName, String newTableName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableRenamedEvent event = new ShellMysqlTableRenamedEvent();
         event.setDbItem(dbItem);
@@ -79,6 +96,13 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 视图重命名事件
+     *
+     * @param viewName    视图名称
+     * @param newViewName 新视图名称
+     * @param dbItem      数据库节点
+     */
     public static void viewRenamed(String viewName, String newViewName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlViewRenamedEvent event = new ShellMysqlViewRenamedEvent();
         event.setDbItem(dbItem);
@@ -87,6 +111,13 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 事件重命名事件
+     *
+     * @param eventName    事件名称
+     * @param newEventName 新事件名称
+     * @param dbItem       数据库节点
+     */
     public static void eventRenamed(String eventName, String newEventName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlEventRenamedEvent event = new ShellMysqlEventRenamedEvent();
         event.setDbItem(dbItem);
@@ -95,6 +126,13 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 函数重命名事件
+     *
+     * @param functionName    函数名称
+     * @param newFunctionName 新函数名称
+     * @param dbItem          数据库节点
+     */
     public static void functionRenamed(String functionName, String newFunctionName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlFunctionRenamedEvent event = new ShellMysqlFunctionRenamedEvent();
         event.setDbItem(dbItem);
@@ -103,6 +141,13 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 存储过程重命名事件
+     *
+     * @param procedureName    存储过程名称
+     * @param newProcedureName 新存储过程名称
+     * @param dbItem           数据库节点
+     */
     public static void procedureRenamed(String procedureName, String newProcedureName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlProcedureRenamedEvent event = new ShellMysqlProcedureRenamedEvent();
         event.setDbItem(dbItem);
@@ -111,6 +156,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 表清空事件
+     *
+     * @param tableItem 表节点
+     * @param dbItem    数据库节点
+     */
     public static void tableCleared(ShellMysqlTableTreeItem tableItem, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableClearedEvent event = new ShellMysqlTableClearedEvent();
         event.setDbItem(dbItem);
@@ -118,6 +169,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 表截断事件
+     *
+     * @param tableItem 表节点
+     * @param dbItem    数据库节点
+     */
     public static void tableTruncated(ShellMysqlTableTreeItem tableItem, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableTruncatedEvent event = new ShellMysqlTableTruncatedEvent();
         event.setDbItem(dbItem);
@@ -125,6 +182,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 表删除事件
+     *
+     * @param tableItem 表节点
+     * @param dbItem    数据库节点
+     */
     public static void tableDropped(ShellMysqlTableTreeItem tableItem, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableDroppedEvent event = new ShellMysqlTableDroppedEvent();
         event.setDbItem(dbItem);
@@ -132,12 +195,23 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 数据库关闭事件
+     *
+     * @param dbItem 数据库节点
+     */
     public static void databaseClosed(ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlDatabaseClosedEvent event = new ShellMysqlDatabaseClosedEvent();
         event.data(dbItem);
         EventUtil.post(event);
     }
 
+    /**
+     * 数据库新增事件
+     *
+     * @param connectItem 连接节点
+     * @param database    数据库
+     */
     public static void databaseAdded(ShellMysqlRootTreeItem connectItem, MysqlDatabase database) {
         ShellMysqlDatabaseAddedEvent event = new ShellMysqlDatabaseAddedEvent();
         event.data(database);
@@ -145,6 +219,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 数据库更新事件
+     *
+     * @param connectItem 连接节点
+     * @param database    数据库
+     */
     public static void databaseUpdated(ShellMysqlRootTreeItem connectItem, MysqlDatabase database) {
         ShellMysqlDatabaseUpdatedEvent event = new ShellMysqlDatabaseUpdatedEvent();
         event.data(database);
@@ -152,24 +232,45 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 数据库删除事件
+     *
+     * @param dbItem 数据库节点
+     */
     public static void databaseDropped(ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlDatabaseDroppedEvent event = new ShellMysqlDatabaseDroppedEvent();
         event.data(dbItem);
         EventUtil.post(event);
     }
 
+    /**
+     * 查询新增事件
+     *
+     * @param item 数据库节点
+     */
     public static void queryAdd(ShellMysqlDatabaseTreeItem item) {
         ShellMysqlQueryAddEvent event = new ShellMysqlQueryAddEvent();
         event.data(item);
         EventUtil.post(event);
     }
 
+    /**
+     * 查询删除事件
+     *
+     * @param item 查询节点
+     */
     public static void queryDeleted(ShellMysqlQueryTreeItem item) {
         ShellMysqlQueryDeletedEvent event = new ShellMysqlQueryDeletedEvent();
         event.data(item);
         EventUtil.post(event);
     }
 
+    /**
+     * 查询打开事件
+     *
+     * @param query 查询
+     * @param item  数据库节点
+     */
     public static void queryOpen(ShellQuery query, ShellMysqlDatabaseTreeItem item) {
         ShellMysqlQueryOpenEvent event = new ShellMysqlQueryOpenEvent();
         event.data(query);
@@ -177,15 +278,25 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-    public static void queryRenamed(String queryId, String queryName, String newQueryName, ShellMysqlDatabaseTreeItem item) {
+    /**
+     * 查询重命名事件
+     *
+     * @param item      查询节点
+     * @param queryName 查询名称
+     */
+    public static void queryRenamed(ShellMysqlQueryTreeItem item, String queryName) {
         ShellMysqlQueryRenamedEvent event = new ShellMysqlQueryRenamedEvent();
-        event.data(queryId);
-        event.data(queryName);
-        event.data(newQueryName);
-        event.setDbItem(item);
+        event.data(item);
+        event.setQueryName(queryName);
         EventUtil.post(event);
     }
 
+    /**
+     * 视图打开事件
+     *
+     * @param item   视图节点
+     * @param dbItem 数据库节点
+     */
     public static void viewOpen(ShellMysqlViewTreeItem item, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlViewOpenEvent event = new ShellMysqlViewOpenEvent();
         event.data(item);
@@ -193,6 +304,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 函数设计事件
+     *
+     * @param function 函数
+     * @param dbItem   数据库节点
+     */
     public static void designFunction(MysqlFunction function, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlFunctionDesignEvent event = new ShellMysqlFunctionDesignEvent();
         event.data(function);
@@ -200,6 +317,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 存储过程设计事件
+     *
+     * @param procedure 存储过程
+     * @param dbItem    数据库节点
+     */
     public static void designProcedure(MysqlProcedure procedure, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlProcedureDesignEvent event = new ShellMysqlProcedureDesignEvent();
         event.data(procedure);
@@ -207,6 +330,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 事件设计事件
+     *
+     * @param event  事件
+     * @param dbItem 数据库节点
+     */
     public static void designEvent(MysqlEvent event, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlEventDesignEvent event1 = new ShellMysqlEventDesignEvent();
         event1.data(event);
@@ -214,6 +343,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event1);
     }
 
+    /**
+     * 视图变更事件
+     *
+     * @param viewName 视图名称
+     * @param dbItem   数据库节点
+     */
     public static void viewAlerted(String viewName, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlViewAlertedEvent event = new ShellMysqlViewAlertedEvent();
         event.data(viewName);
@@ -221,6 +356,12 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 视图设计事件
+     *
+     * @param dbView 视图
+     * @param dbItem 数据库节点
+     */
     public static void designView(MysqlView dbView, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlViewDesignEvent event = new ShellMysqlViewDesignEvent();
         event.data(dbView);
@@ -228,30 +369,56 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
+    /**
+     * 视图删除事件
+     *
+     * @param treeItem 视图节点
+     */
     public static void dropView(ShellMysqlViewTreeItem treeItem) {
         ShellMysqlViewDroppedEvent event = new ShellMysqlViewDroppedEvent();
         event.data(treeItem);
         EventUtil.postSync(event);
     }
 
+    /**
+     * 函数删除事件
+     *
+     * @param treeItem 函数节点
+     */
     public static void dropFunction(ShellMysqlFunctionTreeItem treeItem) {
         ShellMysqlFunctionDroppedEvent event = new ShellMysqlFunctionDroppedEvent();
         event.data(treeItem);
         EventUtil.postSync(event);
     }
 
+    /**
+     * 存储过程删除事件
+     *
+     * @param treeItem 存储过程节点
+     */
     public static void dropProcedure(ShellMysqlProcedureTreeItem treeItem) {
         ShellMysqlProcedureDroppedEvent event = new ShellMysqlProcedureDroppedEvent();
         event.data(treeItem);
         EventUtil.postSync(event);
     }
 
+    /**
+     * 事件删除事件
+     *
+     * @param treeItem 事件节点
+     */
     public static void dropEvent(ShellMysqlEventTreeItem treeItem) {
         ShellMysqlEventDroppedEvent event = new ShellMysqlEventDroppedEvent();
         event.data(treeItem);
         EventUtil.postSync(event);
     }
 
+    /**
+     * 表设计事件
+     *
+     * @param table  表
+     * @param dbItem 数据库节点
+     */
     public static void designTable(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTableDesignEvent event = new ShellMysqlTableDesignEvent();
         event.data(table);
@@ -259,13 +426,18 @@ public class ShellMysqlEventUtil {
         EventUtil.post(event);
     }
 
-//    public static void printSql(String sql, ShellConnect connect) {
-//        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
-//        event.data(sql);
-//        event.setConnect(connect);
-//        EventUtil.post(event);
-//    }
+    //    public static void printSql(String sql, ShellConnect connect) {
+    //        ShellPrintSqlEvent event = new ShellPrintSqlEvent();
+    //        event.data(sql);
+    //        event.setConnect(connect);
+    //        EventUtil.post(event);
+    //    }
 
+    /**
+     * 终端打开事件
+     *
+     * @param dbItem 数据库节点
+     */
     public static void terminalOpen(ShellMysqlDatabaseTreeItem dbItem) {
         ShellMysqlTerminalOpenEvent event = new ShellMysqlTerminalOpenEvent();
         event.data(dbItem);

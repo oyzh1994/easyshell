@@ -4,11 +4,16 @@ import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 
 /**
+ * 客户端操作事件
+ *
  * @author oyzh
- * @since 2024-12-20
+ * @since 2025-04-21
  */
 public class ShellClientActionEvent extends Event<String> implements EventFormatter {
 
+    /**
+     * 操作
+     */
     private String action;
 
     public String getAction() {

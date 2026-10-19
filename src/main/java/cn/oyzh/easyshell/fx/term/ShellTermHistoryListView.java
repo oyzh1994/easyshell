@@ -20,7 +20,7 @@ import java.util.List;
  * shell终端历史列表
  *
  * @author oyzh
- * @since 2025/05/31
+ * @since 2025-06-04
  */
 public class ShellTermHistoryListView extends FXListView<FXHBox> {
 
@@ -28,14 +28,27 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
         this.setPadding(Insets.EMPTY);
     }
 
+    /**
+     * 获取选中项回调
+     *
+     * @return 选中项回调
+     */
     public Runnable getOnItemPicked() {
         return onItemPicked;
     }
 
+    /**
+     * 设置选中项回调
+     *
+     * @param onItemPicked 选中项回调
+     */
     public void setOnItemPicked(Runnable onItemPicked) {
         this.onItemPicked = onItemPicked;
     }
 
+    /**
+     * 触发选中项回调
+     */
     private void onItemPicked() {
         if (this.onItemPicked != null) {
             this.onItemPicked.run();
@@ -75,7 +88,7 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
     /**
      * 执行初始化
      *
-     * @param items 提示
+     * @param items 历史记录列表
      */
     public void init(List<String> items) {
         // 初始化数据
@@ -91,9 +104,10 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
     }
 
     /**
-     * 初始化组件
+     * 初始化单个历史项组件
      *
-     * @return FXHBox 组件
+     * @param item 历史记录
+     * @return 历史项组件
      */
     private FXHBox initBox(String item) {
         FXHBox hBox = new FXHBox();
@@ -122,13 +136,16 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(items, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
         });
     }
 
+    /**
+     * 复制选中项到剪贴板
+     */
     private void onCopy() {
         String item = this.getPickedItem();
         ClipboardUtil.copy(item);
@@ -136,8 +153,8 @@ public class ShellTermHistoryListView extends FXListView<FXHBox> {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        FXMenuItem run = MenuItemHelper.run( this::onItemPicked);
-        FXMenuItem copy = MenuItemHelper.copy( this::onCopy);
+        FXMenuItem run = MenuItemHelper.run(this::onItemPicked);
+        FXMenuItem copy = MenuItemHelper.copy(this::onCopy);
         return List.of(run, copy);
     }
 }

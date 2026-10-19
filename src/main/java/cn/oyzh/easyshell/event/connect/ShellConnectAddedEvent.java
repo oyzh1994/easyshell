@@ -6,8 +6,10 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 连接已新增事件
+ *
  * @author oyzh
- * @since 2023/9/18
+ * @since 2025-03-03
  */
 public class ShellConnectAddedEvent extends Event<ShellConnect> implements EventFormatter {
 

@@ -24,6 +24,12 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+/**
+ * 基于 Apache MINA SSHD 实现支持 X11 转发的 SSH 终端 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2025-06-30
+ */
 public class ShellTerminalApp4 extends Application {
 
     private ShellTestTermWidget widget = new ShellTestTermWidget();
@@ -56,7 +62,7 @@ public class ShellTerminalApp4 extends Application {
             this.session = future.verify(3000L).getSession();
             // 设置地址和端口
             CoreModuleProperties.X11_BIND_HOST.set(session, "localhost");
-            CoreModuleProperties.X11_BASE_PORT.set(session, 6000);
+            CoreModuleProperties.X11_BASE_PORT.set(session, 6010);
             this.session.addPasswordIdentity(pass);
             this.session.auth().verify();
 
@@ -160,15 +166,15 @@ public class ShellTerminalApp4 extends Application {
         widget.setPrefWidth(800);
 
         userField.setText("root");
-        passField.setText("123456");
-        hostField.setText("127.0.0.1");
+        passField.setText("user@147");
+        hostField.setText("192.168.22.152");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");
         primaryStage.show();
     }
 
-    public static class SSHTerminalAp4Test {
+    public static class SSHTerminalApp4Test {
 
         public static void main(String[] args) throws URISyntaxException {
             ShellTerminalApp4.main(args);

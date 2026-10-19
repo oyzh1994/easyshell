@@ -14,7 +14,7 @@ import java.util.function.Function;
  * zk状态解析器
  *
  * @author oyzh
- * @since 2020/3/26
+ * @since 2025-09-04
  */
 public class ShellZKStatParser implements Function<Stat, List<FriendlyInfo<Stat>>> {
 
@@ -23,12 +23,6 @@ public class ShellZKStatParser implements Function<Stat, List<FriendlyInfo<Stat>
      */
     public final static ShellZKStatParser INSTANCE = new ShellZKStatParser();
 
-    /**
-     * 为Stat对象应用FriendlyInfo
-     *
-     * @param stat Stat对象
-     * @return 包含Stat对象各个属性的FriendlyInfo列表
-     */
     @Override
     public List<FriendlyInfo<Stat>> apply( Stat stat) {
         List<FriendlyInfo<Stat>> statInfos = new ArrayList<>();

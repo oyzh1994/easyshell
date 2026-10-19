@@ -13,7 +13,7 @@ import java.util.List;
  * zk查询结果
  *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryResult {
 

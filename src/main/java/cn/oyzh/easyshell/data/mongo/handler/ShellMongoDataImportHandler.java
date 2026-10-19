@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataJsonTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
@@ -23,8 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Mongo数据导入处理器
+ *
  * @author oyzh
- * @since 2024/08/27
+ * @since 2026-06-29
  */
 public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord> {
 
@@ -43,6 +46,12 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
      */
     private final DBDataImportConfig config;
 
+    /**
+     * 构造 Mongo数据导入处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param dbName   数据库名称
+     */
     public ShellMongoDataImportHandler(ShellMongoClient dbClient, String dbName) {
         super(dbName);
         this.dbClient = dbClient;
@@ -65,6 +74,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
     /**
      * 导入表
      *
+     * @param file 导入文件
      * @throws Exception 异常
      */
     protected void importRecord(ShellMongoDataImportFile file) throws Exception {
@@ -90,6 +100,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
                 this.addInsert(records);
                 long end2 = System.currentTimeMillis();
                 JulLog.info("写入耗时: {}ms", (end2 - start2));
+                // this.processed(records.size());
             }
             // 收尾批量插入
             this.doBatchInsert();
@@ -99,6 +110,13 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         }
     }
 
+    /**
+     * 初始化读取器
+     *
+     * @param file 文件
+     * @return 类型文件读取器
+     * @throws Exception 异常
+     */
     private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isJsonType()) {
             return new DBDataJsonTypeFileReader(file, this.config);
@@ -106,12 +124,23 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         if (this.isXmlType()) {
             return new DBDataXmlTypeFileReader(file, this.config);
         }
+        if (this.isCsvType()) {
+            return new DBDataCsvTypeFileReader(file, this.config);
+        }
         if (this.isExcelType()) {
             return new DBDataExcelTypeFileReader(file, this.config);
         }
         return null;
     }
 
+    /**
+     * 读取记录
+     *
+     * @param reader 类型文件读取器
+     * @param count  读取数量
+     * @return 记录列表
+     * @throws Exception 异常
+     */
     private List<MongoRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<MongoRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
@@ -206,34 +235,74 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
         this.config.setAttrToColumn(attrToColumn);
     }
 
+    /**
+     * 设置记录分隔符
+     *
+     * @param recordSeparator 记录分隔符
+     */
     public void recordSeparator(String recordSeparator) {
         this.config.setRecordSeparator(recordSeparator);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(String txtIdentifier) {
         this.config.setTxtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置字段分隔符
+     *
+     * @param fieldSeparator 字段分隔符
+     */
     public void fieldSeparator(String fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
+    /**
+     * 获取数据库客户端
+     *
+     * @return 数据库客户端
+     */
     public ShellMongoClient getDbClient() {
         return dbClient;
     }
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellMongoClient dbClient) {
         this.dbClient = dbClient;
     }
 
+    /**
+     * 获取导入文件列表
+     *
+     * @return 导入文件列表
+     */
     public List<ShellMongoDataImportFile> getFiles() {
         return files;
     }
 
+    /**
+     * 设置导入文件列表
+     *
+     * @param files 导入文件列表
+     */
     public void setFiles(List<ShellMongoDataImportFile> files) {
         this.files = files;
     }
 
+    /**
+     * 获取导入配置
+     *
+     * @return 导入配置
+     */
     public DBDataImportConfig getConfig() {
         return config;
     }

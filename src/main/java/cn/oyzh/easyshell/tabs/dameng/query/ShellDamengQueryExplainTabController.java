@@ -4,8 +4,8 @@ import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordColumn;
-import cn.oyzh.easyshell.fx.dameng.record.DamengRecordTableView;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordColumn;
+import cn.oyzh.easyshell.fx.dameng.record.ShellDamengRecordTableView;
 import cn.oyzh.fx.db.ui.DBStatusColumn;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 达梦SQL解释结果标签页控制器，负责解释结果列、记录与SQL信息的初始化展示
+ *
  * @author oyzh
- * @since 2024/08/16
+ * @since 2025-11-06
  */
 public class ShellDamengQueryExplainTabController extends RichTabController {
 
@@ -46,7 +48,7 @@ public class ShellDamengQueryExplainTabController extends RichTabController {
      * 数据表单组件
      */
     @FXML
-    private DamengRecordTableView recordTable;
+    private ShellDamengRecordTableView recordTable;
 
     /**
      * 执行结果
@@ -92,7 +94,7 @@ public class ShellDamengQueryExplainTabController extends RichTabController {
         DBStatusColumn<DamengRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (DamengColumn column : columns) {
-            DamengRecordColumn tableColumn = new DamengRecordColumn(column);
+            ShellDamengRecordColumn tableColumn = new ShellDamengRecordColumn(column);
             tableColumn.setRealWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

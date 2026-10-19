@@ -24,12 +24,12 @@ import javafx.scene.text.Font;
  * redis终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 public class RedisTerminalPane extends TerminalPane {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.terminalFontConfig());
     }
@@ -39,6 +39,11 @@ public class RedisTerminalPane extends TerminalPane {
      */
     private ShellRedisClient client;
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }
@@ -58,6 +63,11 @@ public class RedisTerminalPane extends TerminalPane {
      */
     private Integer dbIndex;
 
+    /**
+     * 获取db索引
+     *
+     * @return db索引
+     */
     public Integer getDbIndex() {
         return dbIndex;
     }
@@ -87,6 +97,9 @@ public class RedisTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    /**
+     * 终端名称
+     */
     public static final String TERMINAL_NAME = "redis";
 
     @Override
@@ -94,6 +107,11 @@ public class RedisTerminalPane extends TerminalPane {
         return TERMINAL_NAME;
     }
 
+    /**
+     * 获取db名称
+     *
+     * @return db名称
+     */
     private String getDbName() {
         return this.dbIndex == null ? "" : "@db" + this.dbIndex;
     }
@@ -280,6 +298,11 @@ public class RedisTerminalPane extends TerminalPane {
         }
     }
 
+    /**
+     * 获取连接信息
+     *
+     * @return 连接信息
+     */
     public ShellConnect shellConnect() {
         return this.getClient().shellConnect();
     }

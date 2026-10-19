@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * 查询提示内容
  *
  * @author oyzh
- * @since 2024/02/21
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryPromptItem extends DBQueryPromptItem {
 
@@ -75,6 +75,11 @@ public class ShellMysqlQueryPromptItem extends DBQueryPromptItem {
         return 7 == this.getType();
     }
 
+    /**
+     * 获取包裹后的内容
+     *
+     * @return 包裹后的内容
+     */
     public String wrapContent( ) {
         if(this.isColumnType()){
             return DBUtil.wrap(this.getContent(), DBDialect.MYSQL);

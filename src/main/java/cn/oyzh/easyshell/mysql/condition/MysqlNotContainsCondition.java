@@ -6,12 +6,18 @@ import cn.oyzh.i18n.I18nHelper;
  * 不包含条件
  *
  * @author oyzh
- * @since 2024/6/27
+ * @since 2025-11-06
  */
 public class MysqlNotContainsCondition extends MysqlContainsCondition {
 
+    /**
+     * 单例实例
+     */
     public final static MysqlNotContainsCondition INSTANCE = new MysqlNotContainsCondition();
 
+    /**
+     * 构造不包含条件
+     */
     public MysqlNotContainsCondition() {
         super(I18nHelper.notContains(), "NOT LIKE");
     }

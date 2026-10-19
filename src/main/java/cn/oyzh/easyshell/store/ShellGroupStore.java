@@ -9,7 +9,7 @@ import java.util.List;
  * shell分组存储
  *
  * @author oyzh
- * @since 2023/5/12
+ * @since 2023-08-16
  */
 public class ShellGroupStore extends JdbcStandardStore<ShellGroup> {
 

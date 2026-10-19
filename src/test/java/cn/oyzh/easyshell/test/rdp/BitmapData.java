@@ -2,6 +2,9 @@ package cn.oyzh.easyshell.test.rdp;
 
 /**
  * 位图数据
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class BitmapData {
     private int x, y, width, height;

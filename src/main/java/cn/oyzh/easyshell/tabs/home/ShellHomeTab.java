@@ -9,10 +9,13 @@
   * shell主页tab
   *
   * @author oyzh
-  * @since 2023/6/24
+  * @since 2023-08-16
   */
  public class ShellHomeTab extends RichTab {
 
+     /**
+      * 构造主页标签页
+      */
      public ShellHomeTab() {
          super();
          super.flush();

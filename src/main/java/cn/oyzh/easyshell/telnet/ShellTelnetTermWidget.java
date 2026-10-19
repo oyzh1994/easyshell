@@ -1,24 +1,27 @@
 package cn.oyzh.easyshell.telnet;
 
-import cn.oyzh.easyshell.terminal.ShellDefaultTermWidget;
+import cn.oyzh.easyshell.terminal.ShellStreamTermWidget;
 import com.jediterm.core.util.TermSize;
-import com.pty4j.PtyProcess;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
+ * telnet终端组件，负责创建telnet终端的tty连接器
+ *
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellTelnetTermWidget extends ShellDefaultTermWidget {
+public class ShellTelnetTermWidget extends ShellStreamTermWidget {
 
-    @Override
-    public ShellTelnetTtyConnector createTtyConnector(Charset charset) throws IOException {
-        PtyProcess process = this.createProcess();
-        String[] command = this.getProcessCommand();
-        ShellTelnetTtyConnector connector = new ShellTelnetTtyConnector(process, charset, Arrays.asList(command));
+    /**
+     * 创建telnet终端tty连接器
+     *
+     * @param client telnet客户端
+     * @return tty连接器
+     * @throws IOException 异常
+     */
+    public ShellTelnetTtyConnector createTtyConnector(ShellTelnetClient client) throws IOException {
+        ShellTelnetTtyConnector connector = new ShellTelnetTtyConnector(client);
         // 监听终端大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> this.initPtySize());
         return connector;
@@ -29,6 +32,11 @@ public class ShellTelnetTermWidget extends ShellDefaultTermWidget {
         return (ShellTelnetTtyConnector) super.getTtyConnector();
     }
 
+    /**
+     * 获取telnet客户端
+     *
+     * @return telnet客户端
+     */
     public ShellTelnetClient client() {
         ShellTelnetTtyConnector connector = this.getTtyConnector();
         return connector == null ? null : connector.getClient();
@@ -43,6 +51,9 @@ public class ShellTelnetTermWidget extends ShellDefaultTermWidget {
             return;
         }
         TermSize termSize = this.getTermSize();
+        if (termSize == null) {
+            return;
+        }
         client.setPtySize(termSize.getColumns(), termSize.getRows());
     }
 }

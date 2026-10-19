@@ -66,6 +66,7 @@ import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -73,8 +74,6 @@ import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -98,7 +97,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 以及SQL执行、记录管理、索引/外键/检查约束管理等功能
  *
  * @author oyzh
- * @since 2023/11/06
+ * @since 2025-11-06
  */
 public class ShellMysqlClient implements ShellBaseClient, DBClient {
 
@@ -214,9 +213,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
-     * 初始化连接
+     * 初始化主机地址，开启跳板时通过SSH端口转发获取本地主机地址
      *
-     * @return 连接
+     * @return 主机地址
      */
     private String initHost() {
         // 连接地址
@@ -419,12 +418,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     boolean isQuery = statement.execute(execSql);
                     if (isQuery) {
                         ResultSet resultSet = statement.getResultSet();
-                        if (parser.isSingle()) {
-                            result.setFullColumn(parser.isFullColumn());
-                        } else {
-                            result.setFullColumn(DBUtil.isFullColumn(this.dialect(), execSql));
-                        }
-                        result.parseResult(resultSet, connection, !parser.isSelect());
+                        result.setFullColumn(parser.isFullColumn(execSql));
+                        result.parseResult(resultSet, connection, !parser.isSelect(execSql));
                         IOUtil.close(resultSet);
                         result.setSuccess(true);
                     } else {
@@ -549,6 +544,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return size;
     }
 
+    /**
+     * 修改函数
+     *
+     * @param param 参数
+     */
     public void alertFunction(MysqlAlertFunctionParam param) {
         Connection connection = null;
         try {
@@ -762,6 +762,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return product;
     }
 
+    /**
+     * 删除事件
+     *
+     * @param dbName 数据库名称
+     * @param event  事件
+     */
     public void dropEvent(String dbName, MysqlEvent event) {
         try {
             String sql = "DROP EVENT " + DBUtil.wrap(event.getDbName(), event.getName(), this.dialect());
@@ -775,6 +781,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 创建事件
+     *
+     * @param dbName 数据库名称
+     * @param event  事件
+     */
     public void createEvent(String dbName, MysqlEvent event) {
         try {
             String sql = MysqlEventCreateSqlGenerator.generateSql(event);
@@ -807,6 +819,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询事件数量
+     *
+     * @param dbName 数据库名称
+     * @return 事件数量
+     */
     public Integer eventSize(String dbName) {
         int count = 0;
         try {
@@ -1011,11 +1029,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
+            return list;
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
-        return list;
     }
 
     @Override
@@ -1039,7 +1058,10 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 if (Integer.parseInt(arr[0]) > 8) {
                     return true;
                 }
-                if (Integer.parseInt(arr[0]) == 8) {
+                if (Integer.parseInt(arr[0]) == 8 && arr.length >= 2) {
+                    return Integer.parseInt(arr[1]) > 0;
+                }
+                if (Integer.parseInt(arr[0]) == 8 && arr.length >= 3) {
                     return Integer.parseInt(arr[2]) >= 16;
                 }
             }
@@ -1080,8 +1102,14 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return newId;
     }
 
+    /**
+     * 表类型集合
+     */
     public static final String[] TABLE_TYPES = new String[]{"TABLE", "SYSTEM TABLE", "SYSTEM VIEW", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"};
 
+    /**
+     * 视图类型集合
+     */
     public static final String[] VIEW_TYPES = new String[]{"VIEW"};
 
     /**
@@ -1110,6 +1138,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return this.selectTables(param);
     }
 
+    /**
+     * 查询表列表
+     *
+     * @param param 参数
+     * @return 表列表
+     */
     public List<MysqlTable> selectTables(MysqlSelectTableParam param) {
         try {
             String dbName = param.getDbName();
@@ -1170,6 +1204,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             //    }
             //    IOUtil.close(resultSet);
             //}
+            DBName.sortItems(tables);
             return tables;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1227,6 +1262,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询记录列表
+     *
+     * @param param 参数
+     * @return 记录列表
+     */
     public List<MysqlRecord> selectRecords(MysqlSelectRecordParam param) {
         try {
             Connection connection = this.getConnManager().connection(param.getDbName());
@@ -1274,6 +1315,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询记录数量
+     *
+     * @param param 参数
+     * @return 记录数量
+     */
     public long selectRecordCount(MysqlSelectRecordParam param) {
         long count = 0;
         try {
@@ -1300,6 +1347,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return count;
     }
 
+    /**
+     * 插入记录
+     *
+     * @param param 参数
+     * @return 受影响行数
+     */
     public int insertRecord(MysqlInsertRecordParam param) {
         if (param == null || param.getRecord() == null) {
             return 0;
@@ -1312,6 +1365,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             for (String column : param.getRecord().columns()) {
                 builder.append(DBUtil.wrap(column, this.dialect())).append(",");
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
             for (String column : param.getRecord().columns()) {
@@ -1321,9 +1375,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     builder.append("?,");
                 }
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             String sql = builder.toString();
-            sql = sql.replaceAll(",\\)", ")");
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(param.getDbName());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -1346,6 +1400,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除记录
+     *
+     * @param param 参数
+     * @return 受影响行数
+     */
     public int deleteRecord(MysqlDeleteRecordParam param) {
         try {
             int updateCount;
@@ -1401,6 +1461,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 更新记录
+     *
+     * @param param 参数
+     * @return 受影响行数
+     */
     public int updateRecord(MysqlUpdateRecordParam param) {
         try {
             int updateCount;
@@ -1433,6 +1499,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     }
                     builder.append(DBUtil.wrap(column, this.dialect())).append(" = ?");
                 }
+                builder.append(" LIMIT 1");
                 int index = 1;
                 String sql = builder.toString();
                 this.printSql(sql);
@@ -1445,12 +1512,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 for (String colName : originalRecordData.columns()) {
                     DBUtil.setVal(statement, originalRecordData.value(colName), index++);
                 }
-                builder.append(" LIMIT 1");
                 updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
             } else {
                 MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
                 builder.append(DBUtil.wrap(primaryKey.getColumnName(), this.dialect())).append(" = ?");
+                builder.append(" LIMIT 1");
                 String sql = builder.toString();
                 this.printSql(sql);
                 DBUtil.printData(recordData);
@@ -1472,6 +1539,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询表的建表语句
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     * @return 建表语句
+     */
     public String showCreateTable(String dbName, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -1492,6 +1566,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图的建视图语句
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @return 建视图语句
+     */
     public String showCreateView(String dbName, String viewName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -1512,6 +1593,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询函数的建函数语句
+     *
+     * @param dbName       数据库名称
+     * @param functionName 函数名称
+     * @return 建函数语句
+     */
     public String showCreateFunction(String dbName, String functionName) {
         try {
             Connection connection = this.getConnManager().functionConnection(dbName);
@@ -1532,6 +1620,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询过程的建过程语句
+     *
+     * @param dbName        数据库名称
+     * @param procedureName 过程名称
+     * @return 建过程语句
+     */
     public String showCreateProcedure(String dbName, String procedureName) {
         try {
             Connection connection = this.getConnManager().procedureConnection(dbName);
@@ -1552,6 +1647,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询触发器的建触发器语句
+     *
+     * @param dbName      数据库名称
+     * @param triggerName 触发器名称
+     * @return 建触发器语句
+     */
     public String showCreateTrigger(String dbName, String triggerName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -1573,6 +1675,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询事件的建事件语句
+     *
+     * @param dbName    数据库名称
+     * @param eventName 事件名称
+     * @return 建事件语句
+     */
     public String showCreateEvent(String dbName, String eventName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -1648,6 +1757,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1678,6 +1788,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询数据库
+     *
+     * @param dbName 数据库名称
+     * @return 数据库
+     */
     public MysqlDatabase database(String dbName) {
         try {
             MysqlDatabase database = new MysqlDatabase();
@@ -1690,6 +1806,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询表(完整信息)
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     * @return 表
+     */
     public MysqlTable selectTable(String dbName, String tableName) {
         MysqlSelectTableParam param = new MysqlSelectTableParam();
         param.setFull(true);
@@ -1698,6 +1821,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return this.selectTable(param);
     }
 
+    /**
+     * 查询表(简要信息)
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     * @return 表
+     */
     public MysqlTable selectTableSimple(String dbName, String tableName) {
         MysqlSelectTableParam param = new MysqlSelectTableParam();
         param.setFull(false);
@@ -1706,6 +1836,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return this.selectTable(param);
     }
 
+    /**
+     * 查询表
+     *
+     * @param param 参数
+     * @return 表
+     */
     public MysqlTable selectTable(MysqlSelectTableParam param) {
         try {
             String dbName = param.getDbName();
@@ -2043,6 +2179,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2050,6 +2187,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除视图
+     *
+     * @param dbName 数据库名称
+     * @param view   视图
+     */
     public void dropView(String dbName, MysqlView view) {
         try {
             String sql = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getDbName(), view.getName(), this.dialect());
@@ -2063,6 +2206,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 判断视图是否存在
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @return 是否存在
+     */
     public boolean existView(String dbName, String viewName) {
         boolean result;
         try {
@@ -2222,6 +2372,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 checks.add(check);
             }
             IOUtil.close(resultSet);
+            DBName.sortItems(checks);
             return checks;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2297,6 +2448,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图字段
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @return 字段列表
+     */
     public List<MysqlColumn> viewColumns(String dbName, String viewName) {
         //        try {
         //            if (StringUtil.isBlank(viewName)) {
@@ -2387,6 +2545,16 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return this.selectColumns(param);
     }
 
+    /**
+     * 查询视图记录
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    限制行数
+     * @param filters  过滤条件
+     * @return 记录列表
+     */
     public List<MysqlRecord> viewRecords(String dbName, String viewName, Long start, Long limit, List<MysqlRecordFilter> filters) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -2427,6 +2595,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 创建表
+     *
+     * @param param 参数
+     */
     public void createTable(MysqlCreateTableParam param) {
         Connection connection = null;
         try {
@@ -2448,6 +2621,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改表
+     *
+     * @param param 参数
+     */
     public void alertTable(MysqlAlertTableParam param) {
         Connection connection = null;
         try {
@@ -2488,6 +2666,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     //    return result;
     //}
 
+    /**
+     * 重命名表
+     *
+     * @param dbName       数据库名称
+     * @param oldTableName 原表名称
+     * @param newTableName 新表名称
+     */
     public void renameTable(String dbName, String oldTableName, String newTableName) {
         try {
             StringBuilder builder = new StringBuilder("RENAME TABLE ");
@@ -2504,6 +2689,17 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 重命名视图
+     *
+     * @param dbName      数据库名称
+     * @param oldViewName 原视图名称
+     * @param newViewName 新视图名称
+     */
+    public void renameView(String dbName, String oldViewName, String newViewName) {
+        this.renameTable(dbName, oldViewName, newViewName);
     }
 
     /**
@@ -2571,6 +2767,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 清空表数据
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     */
     public void clearTable(String dbName, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(dbName).createStatement();
@@ -2584,6 +2786,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 截断表
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     */
     public void truncateTable(String dbName, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(dbName).createStatement();
@@ -2597,6 +2805,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除表
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     */
     public void dropTable(String dbName, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(dbName).createStatement();
@@ -2610,6 +2824,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询支持的字符集列表
+     *
+     * @return 字符集列表
+     */
     public List<String> charsets() {
         if (this.hasProperty("charsets")) {
             return this.getProperty("charsets");
@@ -2638,12 +2857,18 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询指定字符集支持的排序规则列表
+     *
+     * @param charset 字符集
+     * @return 排序规则列表
+     */
     public List<String> collation(String charset) {
         try {
             Map<String, List<String>> collations = this.getProperty("collation");
             if (collations == null) {
                 collations = new HashMap<>();
-                this.putProperty("collations", collations);
+                this.putProperty("collation", collations);
             }
             charset = charset.toUpperCase();
             if (collations.containsKey(charset)) {
@@ -2675,6 +2900,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 判断数据库是否存在
+     *
+     * @param dbName 数据库名称
+     * @return 是否存在
+     */
     public boolean existDatabase(String dbName) {
         boolean result = false;
         try {
@@ -2695,6 +2926,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return result;
     }
 
+    /**
+     * 创建数据库
+     *
+     * @param database 数据库
+     */
     public void createDatabase(MysqlDatabase database) {
         try {
             StringBuilder builder = new StringBuilder("CREATE DATABASE ");
@@ -2716,6 +2952,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改数据库
+     *
+     * @param database 数据库
+     * @return 是否修改成功
+     */
     public boolean alterDatabase(MysqlDatabase database) {
         try {
             // 无变化
@@ -2740,6 +2982,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询数据库的默认排序规则
+     *
+     * @param dbName 数据库名称
+     * @return 排序规则
+     */
     public String databaseCollation(String dbName) {
         String collation = this.getProperty("collation_" + dbName);
         if (StringUtil.isNotBlank(collation)) {
@@ -2772,6 +3020,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return collation;
     }
 
+    /**
+     * 删除数据库
+     *
+     * @param dbName 数据库名称
+     * @return 是否删除成功
+     */
     public boolean dropDatabase(String dbName) {
         try {
             String sql = "DROP DATABASE " + DBUtil.wrap(dbName, this.dialect());
@@ -2850,12 +3104,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 boolean isQuery = statement.execute(execSql);
                 if (isQuery) {
                     ResultSet resultSet = statement.getResultSet();
-                    if (parser.isSingle()) {
-                        result.setFullColumn(parser.isFullColumn());
-                    } else {
-                        result.setFullColumn(DBUtil.isFullColumn(this.dialect(), execSql));
-                    }
-                    result.parseResult(resultSet, connection, !parser.isSelect());
+                    result.setFullColumn(parser.isFullColumn(execSql));
+                    result.parseResult(resultSet, connection, !parser.isSelect(execSql));
                     IOUtil.close(resultSet);
                     result.setSuccess(true);
                 } else {
@@ -2939,10 +3189,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
         return result;
-    }
-
-    public DbType dbType() {
-        return DBDialect.MYSQL.dbType();
     }
 
     @Override
@@ -3119,6 +3365,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
@@ -3295,12 +3542,19 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
 
+    /**
+     * 删除过程
+     *
+     * @param dbName  数据库名称
+     * @param routine 过程
+     */
     public void dropProcedure(String dbName, MysqlProcedure routine) {
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(dbName, routine.getName(), this.dialect());
@@ -3357,6 +3611,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除函数
+     *
+     * @param dbName   数据库名称
+     * @param function 函数
+     */
     public void dropFunction(String dbName, MysqlFunction function) {
         try {
             String sql = "DROP function IF EXISTS " + DBUtil.wrap(dbName, function.getName(), this.dialect());
@@ -3439,6 +3699,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询单条记录
+     *
+     * @param param 参数
+     * @return 记录
+     */
     public MysqlRecord selectRecord(MysqlSelectRecordParam param) {
         try {
 
@@ -3477,6 +3743,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询客户端字符集
+     *
+     * @return 客户端字符集
+     */
     public String selectClientCharacter() {
         String character = "";
         try {
@@ -3498,6 +3769,13 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return character;
     }
 
+    /**
+     * 判断表是否存在主键
+     *
+     * @param dbName    数据库名称
+     * @param tableName 表名称
+     * @return 是否存在主键
+     */
     public boolean existPrimaryKey(String dbName, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -3578,45 +3856,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 foreignKey.setCreated(true);
             }
         }
-        // table.setName(table.getName() + ShellMysqlUtil.genCloneName());
-        // // 创建表
-        // MysqlCreateTableParam createTableParam = new MysqlCreateTableParam();
-        // createTableParam.setTable(table);
-        // createTableParam.setChecks(checks);
-        // createTableParam.setIndexes(indexes);
-        // createTableParam.setColumns(columns);
-        // createTableParam.setTriggers(triggers);
-        // createTableParam.setForeignKeys(foreignKeys);
-        // this.createTable(createTableParam);
-        // // 复制记录
-        // if (includeRecord) {
-        //     // 开始位置
-        //     long start = 0;
-        //     // 限制行
-        //     long limit = 1000;
-        //     while (true) {
-        //         // 查询记录
-        //         MysqlSelectRecordParam selectRecordParam = new MysqlSelectRecordParam();
-        //         selectRecordParam.setDbName(dbName);
-        //         selectRecordParam.setTableName(tableName);
-        //         selectRecordParam.setStart(start);
-        //         selectRecordParam.setLimit(limit);
-        //         List<MysqlRecord> records = this.selectRecords(selectRecordParam);
-        //         // 插入记录
-        //         if (CollectionUtil.isNotEmpty(records)) {
-        //             for (MysqlRecord record : records) {
-        //                 MysqlInsertRecordParam insertRecordParam = ShellMysqlUtil.toInsertRecord(columns, record);
-        //                 this.insertRecord(insertRecordParam);
-        //             }
-        //         }
-        //         // 查询结束
-        //         if (CollectionUtil.size(records) != limit) {
-        //             break;
-        //         }
-        //         start += limit;
-        //     }
-        // }
-        // String newTableName = tableName + ShellMysqlUtil.genCloneName();
         try {
             Connection connection = this.getConnManager().connection(dbName);
 
@@ -3664,7 +3903,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public void cloneView(String dbName, String viewName, String newViewName) {
         String sql = this.showCreateView(dbName, viewName);
         try {
-            sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
+            sql = sql.replace("VIEW " + DBUtil.wrap(viewName, DBDialect.MYSQL), "VIEW " + DBUtil.wrap(newViewName, DBDialect.MYSQL));
+            sql = sql.replace("VIEW " + DBUtil.wrap(dbName, viewName, DBDialect.MYSQL), "VIEW " + DBUtil.wrap(dbName, newViewName, DBDialect.MYSQL));
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3686,7 +3926,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public void cloneFunction(String dbName, String functionName, String newFunctionName) {
         String sql = this.showCreateFunction(dbName, functionName);
         try {
-            sql = sql.replace("FUNCTION `" + functionName + "`", "FUNCTION `" + newFunctionName + "`");
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.MYSQL));
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(dbName, functionName, DBDialect.MYSQL), "FUNCTION " + DBUtil.wrap(dbName, newFunctionName, DBDialect.MYSQL));
             this.printSql(sql);
             Connection connection = this.getConnManager().functionConnection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3708,7 +3949,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public void cloneProcedure(String dbName, String procedureName, String newProcedureName) {
         String sql = this.showCreateProcedure(dbName, procedureName);
         try {
-            sql = sql.replace("PROCEDURE `" + procedureName + "`", "PROCEDURE `" + newProcedureName + "`");
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.MYSQL));
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(dbName, procedureName, DBDialect.MYSQL), "PROCEDURE " + DBUtil.wrap(dbName, newProcedureName, DBDialect.MYSQL));
             this.printSql(sql);
             Connection connection = this.getConnManager().procedureConnection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3730,7 +3972,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public void cloneEvent(String dbName, String eventName, String newEventName) {
         String sql = this.showCreateEvent(dbName, eventName);
         try {
-            sql = sql.replace("EVENT `" + eventName + "`", "EVENT `" + newEventName + "`");
+            sql = sql.replace("EVENT " + DBUtil.wrap(eventName, DBDialect.MYSQL), "EVENT " + DBUtil.wrap(newEventName, DBDialect.MYSQL));
+            sql = sql.replace("EVENT " + DBUtil.wrap(dbName, eventName, DBDialect.MYSQL), "EVENT " + DBUtil.wrap(dbName, newEventName, DBDialect.MYSQL));
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3742,6 +3985,15 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询例程参数列表
+     *
+     * @param dbName      数据库名称
+     * @param routineName 例程名称
+     * @param routineType 例程类型
+     * @return 例程参数列表
+     * @throws Exception 查询异常
+     */
     public List<MysqlRoutineParam> listRoutineParam(String dbName, String routineName, String routineType) throws Exception {
         try {
             Connection connection = this.getConnManager().connection(dbName);
@@ -3781,6 +4033,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(params);
             return params;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -3788,10 +4041,26 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return Collections.emptyList();
     }
 
+    /**
+     * 查询函数参数列表
+     *
+     * @param dbName       数据库名称
+     * @param functionName 函数名称
+     * @return 函数参数列表
+     * @throws Exception 查询异常
+     */
     public List<MysqlRoutineParam> listFunctionParam(String dbName, String functionName) throws Exception {
         return listRoutineParam(dbName, functionName, "FUNCTION");
     }
 
+    /**
+     * 查询过程参数列表
+     *
+     * @param dbName        数据库名称
+     * @param procedureName 过程名称
+     * @return 过程参数列表
+     * @throws Exception 查询异常
+     */
     public List<MysqlRoutineParam> listProcedureParam(String dbName, String procedureName) throws Exception {
         return listRoutineParam(dbName, procedureName, "PROCEDURE");
     }
@@ -3803,16 +4072,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      */
     private void printSql(String sql) {
         DBUtil.printSql(sql);
-        String compressedSql = sql;
-        try {
-            // 压缩sql
-            SQLUtils.FormatOption formatOption = new SQLUtils.FormatOption();
-            formatOption.setUppCase(true);
-            formatOption.setPrettyFormat(false);
-            compressedSql = SQLUtils.format(sql, this.dbType(), formatOption);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        String compressedSql = DBSqlParser.compressSql(sql, this.dialect());
         ShellEventUtil.printSql(compressedSql, this.shellConnect);
     }
 }

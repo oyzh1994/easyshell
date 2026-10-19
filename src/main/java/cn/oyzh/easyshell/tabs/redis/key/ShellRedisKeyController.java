@@ -13,7 +13,7 @@ import javafx.scene.input.KeyEvent;
  * redis键tab内容组件
  *
  * @author oyzh
- * @since 2023/06/21
+ * @since 2025-09-01
  */
 public abstract class ShellRedisKeyController<T extends ShellRedisKeyTreeItem> extends SubTabController {
 
@@ -38,6 +38,7 @@ public abstract class ShellRedisKeyController<T extends ShellRedisKeyTreeItem> e
      * 初始化
      *
      * @param treeItem 树键
+     * @return 结果
      */
     public boolean init(T treeItem) {
         this.treeItem = treeItem;

@@ -27,7 +27,7 @@ import javafx.stage.WindowEvent;
  * 片段业务
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 @StageAttribute(
         modality = Modality.NONE,

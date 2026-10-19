@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * shell信息存储
  *
  * @author oyzh
- * @since 2023/6/23
+ * @since 2025-02-14
  */
 public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
 
@@ -69,6 +69,11 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
      */
     private final ShellTunnelingConfigStore tunnelingConfigStore = ShellTunnelingConfigStore.INSTANCE;
 
+    /**
+     * 加载连接列表
+     *
+     * @return 连接列表
+     */
     public synchronized List<ShellConnect> load() {
         return super.selectList();
     }
@@ -122,6 +127,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载MariaDB类型
+     *
+     * @return MariaDB类型连接
+     */
+    public List<ShellConnect> loadMariadbType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isMariadbType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载mongo类型
      *
      * @return mongo类型连接
@@ -170,6 +186,11 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
         return ShellConnect.class;
     }
 
+    /**
+     * 加载完整连接列表
+     *
+     * @return 连接列表
+     */
     public List<ShellConnect> loadFull() {
         List<ShellConnect> connects = this.load();
         for (ShellConnect connect : connects) {

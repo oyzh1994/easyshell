@@ -2,12 +2,15 @@ package cn.oyzh.easyshell.terminal.mongo.basic;
 
 import cn.oyzh.easyshell.terminal.mongo.MongoTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.mongo.MongoTerminalPane;
+import cn.oyzh.fx.db.util.DBTerminalUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
 /**
+ * mongo切换数据库命令处理器
+ *
  * @author oyzh
- * @since 2023/09/20
+ * @since 2026-06-16
  */
 public class MongoShowUseTerminalCommandHandler extends MongoTerminalCommandHandler<TerminalCommand> {
 
@@ -31,7 +34,7 @@ public class MongoShowUseTerminalCommandHandler extends MongoTerminalCommandHand
 
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, MongoTerminalPane terminal) {
-        terminal.setDbName(command.getArgs()[1]);
+        terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         result.setResult("switched to db " + terminal.getDbName());
         return result;

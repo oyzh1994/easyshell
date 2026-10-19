@@ -14,7 +14,7 @@ import javafx.stage.WindowEvent;
  * 页码设置弹窗
  *
  * @author oyzh
- * @since 2024/08/06
+ * @since 2025-09-01
  */
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "mongo/shellMongoPageSettingPopup.fxml"

@@ -11,7 +11,7 @@ import javafx.scene.Cursor;
  * telnet tab
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-03-04
  */
 public class ShellTelnetTab extends ShellTermTab {
 
@@ -72,6 +72,12 @@ public class ShellTelnetTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+    /**
+     * 创建telnet标签页
+     *
+     * @param connect 连接
+     * @return telnet标签页
+     */
     public static ShellTelnetTab of(ShellConnect connect) {
         ShellTelnetTab tab = new ShellTelnetTab();
         tab.init(connect);

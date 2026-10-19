@@ -55,50 +55,62 @@ public class ShellSSLConfig implements Serializable, ObjectCopier<ShellSSLConfig
     @Column
     private String caCrt;
 
+    /** 获取所属连接id */
     public String getIid() {
         return iid;
     }
 
+    /** 设置所属连接id */
     public void setIid(String iid) {
         this.iid = iid;
     }
 
+    /** 获取数据id */
     public String getId() {
         return id;
     }
 
+    /** 设置数据id */
     public void setId(String id) {
         this.id = id;
     }
 
+    /** 获取客户端密钥 */
     public String getClientKey() {
         return clientKey;
     }
 
+    /** 设置客户端密钥 */
     public void setClientKey(String clientKey) {
         this.clientKey = clientKey;
     }
 
+    /** 获取客户端证书 */
     public String getClientCrt() {
         return clientCrt;
     }
 
+    /** 设置客户端证书 */
     public void setClientCrt(String clientCrt) {
         this.clientCrt = clientCrt;
     }
 
+    /** 获取ca证书 */
     public String getCaCrt() {
         return caCrt;
     }
 
+    /** 设置ca证书 */
     public void setCaCrt(String caCrt) {
         this.caCrt = caCrt;
     }
 
+    /** 获取客户端密码 */
     public String getClientPwd() {
         return clientPwd;
     }
 
+    /** 设置客户端密码 */
     public void setClientPwd(String clientPwd) {
         this.clientPwd = clientPwd;
     }
@@ -123,6 +135,12 @@ public class ShellSSLConfig implements Serializable, ObjectCopier<ShellSSLConfig
                 || StringUtil.isBlank(this.clientKey);
     }
 
+    /**
+     * 克隆SSL配置
+     *
+     * @param config SSL配置
+     * @return 克隆后的SSL配置
+     */
     public static ShellSSLConfig clone(ShellSSLConfig config) {
         if (config == null) {
             return null;

@@ -4,8 +4,10 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
 
 /**
+ * Redis EVALSHA_RO 命令处理器
+ *
  * @author oyzh
- * @since 2023/7/31
+ * @since 2025-09-01
  */
 
 public class RedisEvalsha_r0TerminalCommandHandler extends cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler<TerminalCommand> {

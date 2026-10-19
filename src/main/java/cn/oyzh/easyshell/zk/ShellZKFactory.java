@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * zk工厂
  *
  * @author oyzh
- * @since 2023/9/27
+ * @since 2025-09-04
  */
 public class ShellZKFactory implements ZookeeperFactory {
 
@@ -29,6 +29,12 @@ public class ShellZKFactory implements ZookeeperFactory {
      */
     private Consumer<ZooKeeper> callback;
 
+    /**
+     * 构造函数
+     *
+     * @param connect  连接
+     * @param callback zookeeper对象回调
+     */
     public ShellZKFactory(ShellConnect connect, Consumer<ZooKeeper> callback) {
         this.connect = connect;
         this.callback = callback;

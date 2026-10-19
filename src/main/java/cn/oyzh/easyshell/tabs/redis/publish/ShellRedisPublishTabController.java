@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
  * redis发布内容组件
  *
  * @author oyzh
- * @since 2025/11/18
+ * @since 2025-11-18
  */
 public class ShellRedisPublishTabController extends SubTabController {
 
@@ -35,6 +35,11 @@ public class ShellRedisPublishTabController extends SubTabController {
         return (ShellRedisTabController) super.parent();
     }
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return this.parent().getClient();
     }

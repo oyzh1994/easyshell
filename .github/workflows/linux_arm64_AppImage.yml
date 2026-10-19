@@ -35,12 +35,12 @@ jobs:
       - name: 处理前置依赖
         run: |
           # 处理base依赖
-          git clone --depth 1 --branch v1.0.4  https://github.com/oyzh1994/base.git
+          git clone --depth 1 --branch master  https://github.com/oyzh1994/base.git
           cd base
           mvn clean install -DskipTests
           cd ..
           # 处理fx-base依赖
-          git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
+          git clone --depth 1 --branch master https://github.com/oyzh1994/fx-base.git
           cd fx-base
           mvn clean install -DskipTests
           cd ..

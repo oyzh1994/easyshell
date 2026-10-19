@@ -2,6 +2,9 @@ package cn.oyzh.easyshell.test.rdp;
 
 /**
  * RC4 密码实现 - 用于 RDP 加密/解密
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RC4Cipher {
     
@@ -14,7 +17,7 @@ public class RC4Cipher {
     }
     
     /**
-     * 初始�� RC4 状态向量
+     * 初始化 RC4 状态向量
      */
     private void init(byte[] key) {
         state = new byte[256];

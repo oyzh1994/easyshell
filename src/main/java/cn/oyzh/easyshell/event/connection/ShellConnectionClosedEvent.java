@@ -7,8 +7,10 @@ import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 连接已关闭事件
+ *
  * @author oyzh
- * @since 2023/9/18
+ * @since 2025-03-03
  */
 public class ShellConnectionClosedEvent extends Event<ShellBaseClient> implements EventFormatter {
 
@@ -17,6 +19,11 @@ public class ShellConnectionClosedEvent extends Event<ShellBaseClient> implement
         return String.format("[%s:%s closed] ", I18nHelper.connect(), this.data().connectName());
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect connect() {
         return this.data().getShellConnect();
     }

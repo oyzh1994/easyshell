@@ -14,23 +14,26 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 
 /**
- * db表记录属性
+ * MySQL记录属性
  *
  * @author oyzh
- * @since 2024/01/31
+ * @since 2025-11-06
  */
 public class MysqlRecordProperty extends DBRecordProperty {
-
-    /**
-     * 表字段
-     */
-    private MysqlColumn column;
 
     /**
      * 表记录
      */
     private MysqlRecord record;
 
+    /**
+     * 构造记录属性
+     *
+     * @param record   记录
+     * @param column   字段
+     * @param value    值
+     * @param readonly 是否只读
+     */
     public MysqlRecordProperty(MysqlRecord record, MysqlColumn column, Object value, boolean readonly) {
         super(value);
         this.column = column;
@@ -68,10 +71,10 @@ public class MysqlRecordProperty extends DBRecordProperty {
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return ShellMysqlRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellMysqlRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
-            this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.column);
+            this.node = ShellMysqlRecordUtil.getNode(this, super.get(), this.getColumn());
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
@@ -88,13 +91,7 @@ public class MysqlRecordProperty extends DBRecordProperty {
 
     @Override
     public void setChanged(boolean changed) {
-        super.setChanged(changed);
-        DBStatusListener listener;
-        if (this.column.getSchema() != null) {
-            listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getSchema() + ":" + this.column.getTableName());
-        } else {
-            listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getTableName());
-        }
+        DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getTableName());
         if (listener != null) {
             listener.changed(null, null, null);
         }
@@ -103,8 +100,12 @@ public class MysqlRecordProperty extends DBRecordProperty {
             filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
         }
         this.setToNullFlag = false;
+        super.setChanged(changed);
     }
 
+    /**
+     * 更新原始值
+     */
     public void updateOriginal() {
         try {
             if (this.node != null) {
@@ -161,10 +162,16 @@ public class MysqlRecordProperty extends DBRecordProperty {
     //     }
     // }
 
+    @Override
     public MysqlColumn getColumn() {
-        return column;
+        return (MysqlColumn) super.getColumn();
     }
 
+    /**
+     * 设置字段
+     *
+     * @param column 字段
+     */
     public void setColumn(MysqlColumn column) {
         this.column = column;
     }

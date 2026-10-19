@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.tabs.dameng.query;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.query.dameng.ShellDamengQueryEditor;
-import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -29,7 +29,7 @@ import java.util.List;
  * db查询内容组件
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellDamengQueryMainTabController extends RichTabController {
 
@@ -43,6 +43,11 @@ public class ShellDamengQueryMainTabController extends RichTabController {
      */
     private boolean unsaved;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery getQuery() {
         return query;
     }
@@ -52,6 +57,11 @@ public class ShellDamengQueryMainTabController extends RichTabController {
      */
     private ShellDamengSchemaTreeItem dbItem;
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellDamengSchemaTreeItem getDbItem() {
         return dbItem;
     }
@@ -170,12 +180,13 @@ public class ShellDamengQueryMainTabController extends RichTabController {
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
-                this.initInfoTab(results);
                 for (DamengExecuteResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }
@@ -206,12 +217,13 @@ public class ShellDamengQueryMainTabController extends RichTabController {
             this.initInfoTab(results);
             if (!results.isEmpty()) {
                 int index = 1;
-                this.initInfoTab(results);
                 for (DamengExplainResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }
@@ -350,6 +362,11 @@ public class ShellDamengQueryMainTabController extends RichTabController {
         }
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

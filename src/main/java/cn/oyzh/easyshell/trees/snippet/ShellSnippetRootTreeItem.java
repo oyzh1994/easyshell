@@ -15,7 +15,7 @@ import java.util.List;
  * shell片段根节点
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeItemValue> {
 
@@ -24,6 +24,11 @@ public class ShellSnippetRootTreeItem extends RichTreeItem<ShellSnippetRootTreeI
      */
     private final ShellSnippetStore snippetStore = ShellSnippetStore.INSTANCE;
 
+    /**
+     * 构造片段根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellSnippetRootTreeItem(RichTreeView treeView) {
         super(treeView);
         this.setValue(new ShellSnippetRootTreeItemValue());

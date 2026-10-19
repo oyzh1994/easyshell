@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
+import cn.oyzh.easyshell.controller.connect.mariadb.ShellAddMariadbConnectController;
+import cn.oyzh.easyshell.controller.connect.mariadb.ShellUpdateMariadbConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.ShellAddMongoConnectController;
 import cn.oyzh.easyshell.controller.connect.mongo.ShellUpdateMongoConnectController;
 import cn.oyzh.easyshell.controller.connect.mosh.ShellAddMoshConnectController;
@@ -90,7 +92,7 @@ import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.popups.snippet.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.term.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
@@ -386,6 +388,21 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddMysqlConnectController.class);
             adapter.setProp("group", group);
             adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 新增MariaDB连接
+     *
+     * @param group 分组
+     */
+    public static void addMariadbConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddMariadbConnectController.class);
+            adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -674,6 +691,22 @@ public class ShellViewFactory {
     public static void updateMysqlConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class);
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 修改MariaDB连接
+     *
+     * @param connect 连接
+     */
+    public static void updateMariadbConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMariadbConnectController.class);
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -1350,7 +1383,7 @@ public class ShellViewFactory {
      *
      * @param client 客户端
      */
-    public static StageAdapter addS3Bucket(ShellS3Client client) {
+    public static StageAdapter addS3Bucket(ShellS3ClientV2 client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellS3AddBucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
@@ -1368,7 +1401,7 @@ public class ShellViewFactory {
      *
      * @param client 客户端
      */
-    public static StageAdapter updateS3Bucket(ShellS3Client client, ShellS3Bucket bucket) {
+    public static StageAdapter updateS3Bucket(ShellS3ClientV2 client, ShellS3Bucket bucket) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellS3UpdateBucketController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
@@ -1495,7 +1528,7 @@ public class ShellViewFactory {
      * @param client 客户端
      * @param file   文件
      */
-    public static void shareFile(ShellS3Client client, ShellS3File file) {
+    public static void shareFile(ShellS3ClientV2 client, ShellS3File file) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellS3ShareFileController.class);
             adapter.setProp("s3File", file);

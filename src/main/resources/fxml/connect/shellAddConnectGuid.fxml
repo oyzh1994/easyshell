@@ -241,7 +241,7 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Mariadb" userData="mysql">
+        <FXRadioButton toggleGroup="$type" text="MariaDB" userData="mariadb">
             <graphic>
                 <MariadbSVGGlyph/>
             </graphic>

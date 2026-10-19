@@ -18,18 +18,22 @@ public class ShellPortScanResult {
      */
     private String desc;
 
+    /** 获取端口 */
     public int getPort() {
         return port;
     }
 
+    /** 设置端口 */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /** 获取描述 */
     public String getDesc() {
         return desc;
     }
 
+    /** 设置描述 */
     public void setDesc(String desc) {
         this.desc = desc;
     }

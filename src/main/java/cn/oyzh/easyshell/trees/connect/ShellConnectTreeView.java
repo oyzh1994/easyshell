@@ -28,7 +28,7 @@ import java.util.List;
  * shell连接树
  *
  * @author oyzh
- * @since 2025/03/10
+ * @since 2025-02-14
  */
 public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapter, FXEventListener {
 
@@ -61,17 +61,17 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         super.initRoot();
     }
 
-    @Override
-    protected void initEvenListener() {
-        super.initEvenListener();
-        // // 暂停按键处理
-        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
-        //     TreeItem<?> item = this.getSelectedItem();
-        //     if (item instanceof ShellConnectTreeItem treeItem) {
-        //         treeItem.closeConnect();
-        //     }
-        // });
-    }
+//    @Override
+//    protected void initEvenListener() {
+//        super.initEvenListener();
+//        // // 暂停按键处理
+//        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
+//        //     TreeItem<?> item = this.getSelectedItem();
+//        //     if (item instanceof ShellConnectTreeItem treeItem) {
+//        //         treeItem.closeConnect();
+//        //     }
+//        // });
+//    }
 
     @Override
     public ShellConnectRootTreeItem root() {
@@ -146,6 +146,8 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
 
     /**
      * 连接已导入事件
+     *
+     * @param event 事件
      */
     @EventSubscribe
     private void connectImported(ShellDataImportedEvent event) {
@@ -297,6 +299,11 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     //     ShellViewFactory.exportConnect();
     // }
 
+    /**
+     * 获取分组节点列表
+     *
+     * @return 分组节点列表
+     */
     public List<ShellConnectGroupTreeItem> getGroupItems() {
         return this.root().getGroupItems();
     }

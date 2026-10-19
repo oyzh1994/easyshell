@@ -17,7 +17,7 @@ import java.util.List;
  * shell连接tab
  *
  * @author oyzh
- * @since 2025/05/17
+ * @since 2025-05-17
  */
 public abstract class ShellConnectTab extends RichTab {
 

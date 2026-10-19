@@ -9,6 +9,7 @@ import cn.oyzh.fx.db.condition.ui.DBConditionComboBox;
 import cn.oyzh.fx.db.ui.DBColumnComboBox;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.flex.FlexUtil;
+import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Node;
@@ -20,7 +21,7 @@ import java.util.List;
  * 记录过滤条件
  *
  * @author oyzh
- * @since 2024/06/26
+ * @since 2025-11-06
  */
 public class MysqlRecordFilter extends DBRecordFilter {
 
@@ -29,19 +30,10 @@ public class MysqlRecordFilter extends DBRecordFilter {
      */
     private MysqlCondition condition;
 
-    /**
-     * 值组件
-     */
-    private FXHBox valueBox;
-
-    /**
-     * 获取值
-     *
-     * @return 值
-     */
+    @Override
     public Object value() throws Exception {
-        if (this.valueBox == null || this.valueBox.isChildEmpty()) {
-            return this.value;
+        if (this.valueBox == null || this.valueBox.isChildEmpty() || this.valueBox.isDisable()) {
+            return this.condition == null ? this.value : this.condition.getValue();
         }
         return this.value = MysqlConditionUtil.getNodeVal(this.valueBox.getChildren());
     }
@@ -56,14 +48,17 @@ public class MysqlRecordFilter extends DBRecordFilter {
         return this.valueBox;
     }
 
-    /**
-     * 更新值组件
-     */
-    private void updateValueControl() {
+    @Override
+    protected void updateValueControl() {
+        if (this.condition != null && !this.condition.isRequireCondition()) {
+            NodeUtil.disable(this.valueBox);
+            return;
+        }
         if (this.valueBox == null) {
             this.valueBox = new FXHBox();
             FlexUtil.flexWidth(this.valueBox, "100%");
         }
+        NodeUtil.enable(this.value);
         List<Node> nodes = MysqlConditionUtil.generateNode((MysqlColumn) this.column, this.condition);
         MysqlConditionUtil.setNodeVal(nodes, this.value);
         if (nodes.size() == 1) {
@@ -92,7 +87,7 @@ public class MysqlRecordFilter extends DBRecordFilter {
     public DBColumnComboBox getColumnControl() {
         DBColumnComboBox comboBox = new DBColumnComboBox(this.columns);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
-            this.column = (MysqlColumn) newValue;
+            this.column = newValue;
             this.updateValueControl();
         });
         comboBox.selectFirstIfNull(this.column);
@@ -129,6 +124,7 @@ public class MysqlRecordFilter extends DBRecordFilter {
      * 获取条件
      *
      * @return 条件
+     * @throws Exception 异常
      */
     public String condition() throws Exception {
         return this.condition.wrapCondition(this.column(), this.value());
@@ -143,10 +139,20 @@ public class MysqlRecordFilter extends DBRecordFilter {
         return this.condition.isRequireCondition();
     }
 
+    /**
+     * 获取查询条件
+     *
+     * @return 查询条件
+     */
     public MysqlCondition getCondition() {
         return condition;
     }
 
+    /**
+     * 设置查询条件
+     *
+     * @param condition 查询条件
+     */
     public void setCondition(MysqlCondition condition) {
         this.condition = condition;
     }

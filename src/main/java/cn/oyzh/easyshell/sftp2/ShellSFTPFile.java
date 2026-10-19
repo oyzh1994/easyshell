@@ -11,6 +11,8 @@ import java.nio.file.attribute.FileTime;
 import java.util.Date;
 
 /**
+ * sftp文件
+ *
  * @author oyzh
  * @since 2025-03-05
  */
@@ -51,14 +53,29 @@ public class ShellSFTPFile implements ShellFile {
      */
     private SftpClient.Attributes linkAttrs;
 
+    /**
+     * 获取文件对象
+     *
+     * @return 文件对象
+     */
     public SftpClient.DirEntry getEntry() {
         return entry;
     }
 
+    /**
+     * 设置文件对象
+     *
+     * @param entry 文件对象
+     */
     public void setEntry(SftpClient.DirEntry entry) {
         this.entry = entry;
     }
 
+    /**
+     * 获取文件属性
+     *
+     * @return 文件属性
+     */
     public SftpClient.Attributes getAttrs() {
         if (this.attrs == null) {
             return this.entry.getAttributes();
@@ -66,10 +83,20 @@ public class ShellSFTPFile implements ShellFile {
         return this.attrs;
     }
 
+    /**
+     * 获取链接属性
+     *
+     * @return 链接属性
+     */
     public SftpClient.Attributes getLinkAttrs() {
         return linkAttrs;
     }
 
+    /**
+     * 设置链接属性
+     *
+     * @param linkAttrs 链接属性
+     */
     public void setLinkAttrs(SftpClient.Attributes linkAttrs) {
         this.linkAttrs = linkAttrs;
     }
@@ -110,10 +137,21 @@ public class ShellSFTPFile implements ShellFile {
         return parentPath;
     }
 
+    /**
+     * 设置父路径
+     *
+     * @param parentPath 父路径
+     */
     public void setParentPath(String parentPath) {
         this.parentPath = parentPath;
     }
 
+    /**
+     * 构造sftp文件
+     *
+     * @param parentPath 父路径
+     * @param entry      文件对象
+     */
     public ShellSFTPFile(String parentPath, SftpClient.DirEntry entry) {
         this.parentPath = parentPath;
         this.entry = entry;
@@ -127,6 +165,13 @@ public class ShellSFTPFile implements ShellFile {
         this.updatePermissions();
     }
 
+    /**
+     * 构造sftp文件
+     *
+     * @param parentPath 父路径
+     * @param fileName   文件名
+     * @param attrs      文件属性
+     */
     public ShellSFTPFile(String parentPath, String fileName, SftpClient.Attributes attrs) {
         this.parentPath = parentPath;
         this.fileName = fileName;
@@ -151,8 +196,16 @@ public class ShellSFTPFile implements ShellFile {
         return ShellFileUtil.concat(this.parentPath, fileName);
     }
 
+    /**
+     * 权限属性
+     */
     private StringProperty permissionsProperty;
 
+    /**
+     * 获取权限属性
+     *
+     * @return 权限属性
+     */
     public StringProperty permissionsProperty() {
         if (this.permissionsProperty == null) {
             this.permissionsProperty = new SimpleStringProperty();
@@ -160,6 +213,9 @@ public class ShellSFTPFile implements ShellFile {
         return this.permissionsProperty;
     }
 
+    /**
+     * 更新权限
+     */
     protected void updatePermissions() {
         String permissions = ShellSFTPUtil.formatPermissions(this.getAttrs());
         this.permissionsProperty().set(permissions);
@@ -179,6 +235,11 @@ public class ShellSFTPFile implements ShellFile {
         this.permissionsProperty().set(permissions);
     }
 
+    /**
+     * 获取访问时间
+     *
+     * @return 访问时间
+     */
     public String getAddTime() {
         if (this.isReturnDirectory() || this.isCurrentFile()) {
             return "";
@@ -214,10 +275,20 @@ public class ShellSFTPFile implements ShellFile {
         }
     }
 
+    /**
+     * 获取拥有者id
+     *
+     * @return 拥有者id
+     */
     public int getUid() {
         return this.getAttrs().getUserId();
     }
 
+    /**
+     * 获取分组id
+     *
+     * @return 分组id
+     */
     public int getGid() {
         return this.getAttrs().getGroupId();
     }

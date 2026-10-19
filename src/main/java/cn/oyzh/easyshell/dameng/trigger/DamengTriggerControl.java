@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.dameng.trigger;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
-import cn.oyzh.easyshell.fx.dameng.table.DamengTriggerPolicyComboBox;
+import cn.oyzh.easyshell.fx.dameng.table.ShellDamengTriggerPolicyComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.control.EditorEnlargeTextFiled;
@@ -14,11 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 达梦触发器组件
+ *
  * @author oyzh
- * @since 2024/09/14
+ * @since 2025-11-06
  */
 public class DamengTriggerControl extends DamengTrigger {
 
+    /**
+     * 获取名称组件
+     *
+     * @return 名称组件
+     */
     public ClearableTextField getNameControl() {
         ClearableTextField textField = new ClearableTextField();
         textField.setPromptText(I18nHelper.pleaseInputName());
@@ -34,8 +40,13 @@ public class DamengTriggerControl extends DamengTrigger {
         return textField;
     }
 
-    public DamengTriggerPolicyComboBox getPolicyControl() {
-        DamengTriggerPolicyComboBox comboBox = new DamengTriggerPolicyComboBox();
+    /**
+     * 获取策略组件
+     *
+     * @return 策略组件
+     */
+    public ShellDamengTriggerPolicyComboBox getPolicyControl() {
+        ShellDamengTriggerPolicyComboBox comboBox = new ShellDamengTriggerPolicyComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setPolicy(newValue);
         });
@@ -45,6 +56,11 @@ public class DamengTriggerControl extends DamengTrigger {
         return comboBox;
     }
 
+    /**
+     * 获取定义组件
+     *
+     * @return 定义组件
+     */
     public EditorEnlargeTextFiled getDefinitionControl() {
         EditorEnlargeTextFiled textField = new EditorEnlargeTextFiled();
         textField.setFormatType(EditorFormatType.SQL);
@@ -56,12 +72,24 @@ public class DamengTriggerControl extends DamengTrigger {
         return textField;
     }
 
+    /**
+     * 根据触发器构建组件
+     *
+     * @param trigger 触发器
+     * @return 组件
+     */
     public static DamengTriggerControl of(DamengTrigger trigger) {
         DamengTriggerControl control = new DamengTriggerControl();
         control.copy(trigger);
         return control;
     }
 
+    /**
+     * 根据触发器列表构建组件列表
+     *
+     * @param triggers 触发器列表
+     * @return 组件列表
+     */
     public static List<DamengTriggerControl> of(List<DamengTrigger> triggers) {
         List<DamengTriggerControl> controls = new ArrayList<>();
         for (DamengTrigger trigger : triggers) {

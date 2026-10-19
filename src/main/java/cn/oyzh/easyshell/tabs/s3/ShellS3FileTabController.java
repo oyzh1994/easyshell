@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
 import cn.oyzh.easyshell.fx.s3.ShellS3FileTableView;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.s3.ShellS3File;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -30,10 +30,10 @@ import java.io.File;
 import java.util.List;
 
 /**
- * ftp组件
+ * s3文件标签页内容组件
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2025-03-05
  */
 public class ShellS3FileTabController extends SubTabController {
 
@@ -114,7 +114,12 @@ public class ShellS3FileTabController extends SubTabController {
         return (ShellS3TabController) super.parent();
     }
 
-    public ShellS3Client client() {
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
+    public ShellS3ClientV2 client() {
         return this.parent().client();
     }
 
@@ -123,14 +128,16 @@ public class ShellS3FileTabController extends SubTabController {
      */
     private ListChangeListener<ShellFileTask> taskSizeListener;
 
-    // 任务类型
+    /**
+     * 任务类型
+     */
     private final List<ShellFileTaskType> taskTypes = List.of(ShellFileTaskType.UPLOAD, ShellFileTaskType.DOWNLOAD);
 
     /**
      * 初始化
      */
     public void init() {
-        ShellS3Client client = this.client();
+        ShellS3ClientV2 client = this.client();
         this.fileTable.setClient(client);
         this.fileTable.refreshFile();
         // 任务数量监听
@@ -200,6 +207,9 @@ public class ShellS3FileTabController extends SubTabController {
         this.deleteFile.setDisable(!this.fileTable.isSupportDeleteAction());
     }
 
+    /**
+     * 刷新文件
+     */
     @FXML
     private void refreshFile() {
         try {
@@ -210,6 +220,9 @@ public class ShellS3FileTabController extends SubTabController {
         }
     }
 
+    /**
+     * 删除文件
+     */
     @FXML
     private void deleteFile() {
         try {
@@ -220,6 +233,9 @@ public class ShellS3FileTabController extends SubTabController {
         }
     }
 
+    /**
+     * 返回上级目录
+     */
     @FXML
     private void returnDir() {
         try {
@@ -243,16 +259,25 @@ public class ShellS3FileTabController extends SubTabController {
         }
     }
 
+    /**
+     * 创建文件
+     */
     @FXML
     private void touchFile() {
         this.fileTable.touch();
     }
 
+    /**
+     * 上传文件
+     */
     @FXML
     private void uploadFile() {
         this.fileTable.uploadFile();
     }
 
+    /**
+     * 上传文件夹
+     */
     @FXML
     private void uploadFolder() {
         this.fileTable.uploadFolder();

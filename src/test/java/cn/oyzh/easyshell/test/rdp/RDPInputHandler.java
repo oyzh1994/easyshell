@@ -12,6 +12,9 @@ import java.nio.ByteOrder;
 /**
  * RDP 输入事件处理器
  * 将 JavaFX 键盘和鼠标事件转换为 RDP 协议格式
+ *
+ * @author oyzh
+ * @since 2026-02-25
  */
 public class RDPInputHandler {
     

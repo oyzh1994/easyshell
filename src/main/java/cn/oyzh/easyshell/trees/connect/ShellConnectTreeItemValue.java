@@ -10,10 +10,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
 
 /**
- * shell树节点值
+ * shell连接节点值
  *
  * @author oyzh
- * @since 2025/4/7
+ * @since 2025-02-14
  */
 public class ShellConnectTreeItemValue extends RichTreeItemValue {
 
@@ -22,6 +22,11 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 构造连接节点值
+     *
+     * @param item 连接节点
+     */
     public ShellConnectTreeItemValue(ShellConnectTreeItem item) {
         super(item);
         this.setRichMode(true);
@@ -116,6 +121,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
         }
         if (this.item().isMysqlType()) {
             return Color.valueOf("#CA8A04");
+        }
+        if (this.item().isMariadbType()) {
+            return Color.valueOf("#00758F");
         }
         if (this.item().isMongoType()) {
             return Color.valueOf("#9F7AEA");

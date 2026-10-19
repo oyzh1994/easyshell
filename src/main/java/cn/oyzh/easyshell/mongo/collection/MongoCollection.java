@@ -8,7 +8,7 @@ import cn.oyzh.fx.db.DBName;
 /**
  *
  * @author oyzh
- * @since 2026-06-01
+ * @since 2026-06-29
  */
 public class MongoCollection implements DBName, ObjectComparator<MongoCollection>, ObjectCopier<MongoCollection> {
 

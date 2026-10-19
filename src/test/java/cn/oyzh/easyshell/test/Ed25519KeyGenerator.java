@@ -15,6 +15,12 @@ import java.security.Security;
 import java.security.spec.NamedParameterSpec;
 import java.util.Base64;
 
+/**
+ * 使用 BouncyCastle 生成 Ed25519 密钥对的测试工具
+ *
+ * @author oyzh
+ * @since 2025-04-04
+ */
 public class Ed25519KeyGenerator {
 
     public static void main(String[] args) throws Exception {

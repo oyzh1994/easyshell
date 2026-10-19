@@ -8,19 +8,32 @@ import org.apache.zookeeper.data.ACL;
  * zk访问控制
  *
  * @author oyzh
- * @since 2022/6/7
+ * @since 2025-09-04
  */
 
 public class ShellZKACL extends ACL {
 
+    /**
+     * 构造函数
+     */
     public ShellZKACL() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param acl 原始ACL对象
+     */
     public ShellZKACL(ACL acl) {
         this.setId(acl.getId());
         this.setPerms(acl.getPerms());
     }
 
+    /**
+     * 设置权限
+     *
+     * @param perms 权限字符串
+     */
     public void setPerms( String perms) {
         super.setPerms(ShellZKACLUtil.toPermInt(perms));
     }

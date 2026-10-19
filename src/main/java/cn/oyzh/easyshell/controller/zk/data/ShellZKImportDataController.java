@@ -37,7 +37,7 @@ import java.io.File;
  * zk数据导入业务
  *
  * @author oyzh
- * @since 2024/11/28
+ * @since 2025-09-01
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -284,6 +284,9 @@ public class ShellZKImportDataController extends StageController {
         return I18nHelper.importTitle();
     }
 
+    /**
+     * 显示第一步
+     */
     @FXML
     private void showStep1() {
         this.step2.disappear();
@@ -292,6 +295,9 @@ public class ShellZKImportDataController extends StageController {
         this.step1.display();
     }
 
+    /**
+     * 显示第二步
+     */
     @FXML
     private void showStep2() {
         this.step1.disappear();
@@ -320,6 +326,9 @@ public class ShellZKImportDataController extends StageController {
     //     this.step3.display();
     // }
 
+    /**
+     * 显示第三步
+     */
     @FXML
     private void showStep3() {
         // 检查客户端

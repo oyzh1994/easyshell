@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx.s3;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
@@ -16,14 +16,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * S3桶列表视图
+ *
  * @author oyzh
- * @since 2025-03-05
+ * @since 2025-06-16
  */
 public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
 
-    private ShellS3Client client;
+    /**
+     * S3客户端
+     */
+    private ShellS3ClientV2 client;
 
-    public void setClient(ShellS3Client client) {
+    /**
+     * 设置S3客户端
+     *
+     * @param client S3客户端
+     */
+    public void setClient(ShellS3ClientV2 client) {
         this.client = client;
     }
 
@@ -34,7 +44,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() - 10, e.getScreenY() - 10);
+                this.showContextMenu(items, e.getScreenX() , e.getScreenY());
             } else {
                 this.clearContextMenu();
             }

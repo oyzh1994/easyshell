@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
+import cn.oyzh.easyshell.rdp.ShellRDPUtil;
 import cn.oyzh.easyshell.ssh2.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
@@ -21,10 +22,12 @@ import cn.oyzh.easyshell.tabs.dameng.ShellDamengTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
+import cn.oyzh.easyshell.tabs.mariadb.ShellMariadbTab;
 import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoTab;
 import cn.oyzh.easyshell.tabs.mosh.ShellMoshTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
+import cn.oyzh.easyshell.tabs.rdp.ShellRdpTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
@@ -62,7 +65,7 @@ import java.util.List;
  * shell切换面板
  *
  * @author oyzh
- * @since 2023/05/21
+ * @since 2023-08-16
  */
 public class ShellTabPane extends RichTabPane implements FXEventListener {
 
@@ -208,6 +211,12 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 获取ssh连接标签页
+     *
+     * @param client ssh客户端
+     * @return 连接标签页
+     */
     private ShellSSHTab getConnectTab(ShellSSHClient client) {
         for (Tab tab : this.getTabs()) {
             if (tab instanceof ShellSSHTab tab1 && tab1.client() == client) {
@@ -255,6 +264,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = ShellWebdavTab.of(connect);
             } else if (connect.isMysqlType()) {
                 tab = ShellMysqlTab.of(connect);
+            } else if (connect.isMariadbType()) {
+                tab = ShellMariadbTab.of(connect);
             } else if (connect.isMongoType()) {
                 tab = ShellMongoTab.of(connect);
             } else if (connect.isMoshType()) {
@@ -262,17 +273,21 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             } else if (connect.isDamengType()) {
                 tab = ShellDamengTab.of(connect);
             } else if (connect.isRDPType()) {
-                if (OSUtil.isMacOS() && !FileUtil.exists("/Applications/Windows App.app")) {
-                    if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
-                        FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
-                    }
-                    return;
-                }
-                if (OSUtil.isWindows() || OSUtil.isMacOS()) {
-                    ShellRDPClient client = ShellClientUtil.newClient(connect);
-                    client.start();
+                if (ShellRDPUtil.isBuiltIn(connect)) {
+                    tab = ShellRdpTab.of(connect);
                 } else {
-                    MessageBox.warn(ShellI18nHelper.rdpTip2());
+                    if (OSUtil.isMacOS() && !FileUtil.exists("/Applications/Windows App.app")) {
+                        if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
+                            FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
+                        }
+                        return;
+                    }
+                    if (OSUtil.isWindows() || OSUtil.isMacOS()) {
+                        ShellRDPClient client = ShellClientUtil.newClient(connect);
+                        client.start();
+                    } else {
+                        MessageBox.warn(ShellI18nHelper.rdpTip2());
+                    }
                 }
             } else {
                 throw new RuntimeException("unknown connect type");

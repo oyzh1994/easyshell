@@ -7,6 +7,8 @@ import net.schmizz.sshj.transport.TransportException;
 import org.junit.Test;
 
 /**
+ * SCP 文件传输的测试
+ *
  * @author oyzh
  * @since 2025-06-09
  */

@@ -7,6 +7,8 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import javafx.event.Event;
 
 /**
+ * shell标签页基础控制器，提供程序设置及左右侧栏收放能力
+ *
  * @author oyzh
  * @since 2025-08-25
  */

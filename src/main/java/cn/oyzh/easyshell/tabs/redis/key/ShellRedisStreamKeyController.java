@@ -3,11 +3,11 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisStreamValue;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
+import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * stream键tab内容组件
  *
  * @author oyzh
- * @since 2023/07/07
+ * @since 2025-09-01
  */
 public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<ShellRedisStreamKeyTreeItem, ShellRedisStreamValue.RedisStreamRow> {
 
@@ -43,7 +43,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
      * 展开列表面板
      */
     @FXML
-    private ExpandListSVGPane expandPane;
+    private ExpandListSVGLabel expandPane;
 
     @Override
     protected void initKey() {
@@ -142,6 +142,9 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
         this.nodeData.disable();
     }
 
+    /**
+     * 展开或收起消息列表
+     */
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {

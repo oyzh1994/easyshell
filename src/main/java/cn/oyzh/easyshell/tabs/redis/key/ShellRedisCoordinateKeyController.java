@@ -3,13 +3,13 @@ package cn.oyzh.easyshell.tabs.redis.key;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.fx.svg.pane.ExpandListSVGPane;
 import cn.oyzh.easyshell.redis.key.ShellRedisKeyRow;
 import cn.oyzh.easyshell.redis.key.ShellRedisZSetValue;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisZSetKeyTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * zset键地理坐标tab内容组件
  *
  * @author oyzh
- * @since 2023/06/30
+ * @since 2025-09-01
  */
 public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyController<ShellRedisZSetKeyTreeItem, ShellRedisZSetValue.RedisZSetRow> {
 
@@ -79,7 +79,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
      * 展开列表面板
      */
     @FXML
-    private ExpandListSVGPane expandPane;
+    private ExpandListSVGLabel expandPane;
 
     // /**
     //  * 格式监听器
@@ -394,6 +394,9 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
 //        }
 //    }
 
+    /**
+     * 展开或收起坐标列表
+     */
     @FXML
     private void expendList() {
         if (this.expandPane.isCollapse()) {

@@ -6,9 +6,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.data.dameng.file.ShellDamengDataImportHelper;
-import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
+import cn.oyzh.easyshell.data.dameng.file.ShellDamengDataImportHelper;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
@@ -17,6 +18,7 @@ import cn.oyzh.fx.db.data.file.DBDataTxtTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,8 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Dameng数据导入处理器
+ *
  * @author oyzh
- * @since 2024/08/27
+ * @since 2025-11-26
  */
 public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
 
@@ -44,6 +48,12 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     private final DBDataImportConfig config;
 
+    /**
+     * 构造 Dameng数据导入处理器
+     *
+     * @param dbClient 数据库客户端
+     * @param name     名称
+     */
     public ShellDamengDataImportHandler(ShellDamengClient dbClient, String name) {
         super(name);
         this.dbClient = dbClient;
@@ -66,6 +76,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
     /**
      * 导入表
      *
+     * @param file 导入文件
      * @throws Exception 异常
      */
     protected void importRecord(ShellDamengDataImportFile file) throws Exception {
@@ -76,7 +87,15 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         if (this.config.isCopyMode()) {
             this.dbClient.clearTable(this.name, tableName);
         }
+        DamengColumns columns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(file.getSchema(), tableName)));
+        if (columns.isIdentityAutoIncrementType()) {
+            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
+            this.addInsert(line);
+        }
         try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
+            if (reader == null) {
+                return;
+            }
             // 获取数据库表字段
             DamengColumns dbColumns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(this.name, tableName)));
             if (!dbColumns.isEmpty()) {
@@ -93,8 +112,12 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
                     this.writeRecord(dbColumns, records);
                     long end2 = System.currentTimeMillis();
                     JulLog.info("写入耗时: {}ms", (end2 - start2));
-                    this.processed(records.size());
+//                    this.processed(records.size());
                 }
+            }
+            if (columns.isIdentityAutoIncrementType()) {
+                String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
+                this.addInsert(line);
             }
             // 收尾批量插入
             this.doBatchInsert();
@@ -104,6 +127,13 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         }
     }
 
+    /**
+     * 初始化读取器
+     *
+     * @param file 文件
+     * @return 类型文件读取器
+     * @throws Exception 异常
+     */
     private DBDataTypeFileReader initReader(File file) throws Exception {
         if (this.isCsvType()) {
             return new DBDataCsvTypeFileReader(file, this.config);
@@ -123,6 +153,14 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         return null;
     }
 
+    /**
+     * 读取记录
+     *
+     * @param reader 类型文件读取器
+     * @param count  读取数量
+     * @return 记录列表
+     * @throws Exception 异常
+     */
     private List<DamengRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<DamengRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readObjects(count);
@@ -141,33 +179,27 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      *
      * @param columns 字段列表
      * @param records 记录列表
+     * @throws Exception 异常
      */
     private void writeRecord(DamengColumns columns, List<DamengRecord> records) throws Exception {
         List<String> sqlList = ShellDamengDataImportHelper.toInsertSql(columns, records, this.config);
-        this.addInsertSql(sqlList);
+         this.addInsert(sqlList);
     }
 
-    /**
-     * 插入集合
-     */
-    private List<String> insertList;
-
-    /**
-     * 添加插入sql
-     *
-     * @param sqlList 插入sql列表
-     */
-    private void addInsertSql(List<String> sqlList) throws Exception {
-        if (CollectionUtil.isNotEmpty(sqlList)) {
-            if (this.insertList == null) {
-                this.insertList = new ArrayList<>();
-            }
-            this.insertList.addAll(sqlList);
-            if (this.insertList.size() >= this.batchLimit) {
-                this.doBatchInsert();
-            }
-        }
-    }
+    //    /**
+    //     * 添加插入sql
+    //     *
+    //     * @param sqlList 插入sql列表
+    //     * @throws Exception 异常
+    //     */
+    //    private void addInsertSql(List<String> sqlList) throws Exception {
+    //        if (CollectionUtil.isNotEmpty(sqlList)) {
+    //            this.getInsertList().addAll(sqlList);
+    //            if (this.getInsertList().size() >= this.batchLimit) {
+    //                this.doBatchInsert();
+    //            }
+    //        }
+    //    }
 
     @Override
     public void doBatchInsert(List<String> list, boolean parallel) {
@@ -238,32 +270,72 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         this.config.setAttrToColumn(attrToColumn);
     }
 
+    /**
+     * 设置记录分隔符
+     *
+     * @param recordSeparator 记录分隔符
+     */
     public void recordSeparator(String recordSeparator) {
         this.config.setRecordSeparator(recordSeparator);
     }
 
+    /**
+     * 设置文本标识符
+     *
+     * @param txtIdentifier 文本标识符
+     */
     public void txtIdentifier(String txtIdentifier) {
         this.config.setTxtIdentifier(txtIdentifier);
     }
 
+    /**
+     * 设置字段分隔符
+     *
+     * @param fieldSeparator 字段分隔符
+     */
     public void fieldSeparator(String fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
+    /**
+     * 获取数据库客户端
+     *
+     * @return 数据库客户端
+     */
     public ShellDamengClient getDbClient() {
         return dbClient;
     }
 
+    /**
+     * 获取导入文件列表
+     *
+     * @return 导入文件列表
+     */
     public List<ShellDamengDataImportFile> getFiles() {
         return files;
     }
 
+    /**
+     * 设置导入文件列表
+     *
+     * @param files 导入文件列表
+     */
     public void setFiles(List<ShellDamengDataImportFile> files) {
         this.files = files;
     }
 
+    /**
+     * 获取导入配置
+     *
+     * @return 导入配置
+     */
     public DBDataImportConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public boolean enableParallel() {
+        return false;
     }
 }
 

@@ -8,6 +8,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
@@ -18,13 +19,12 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
-import cn.oyzh.easyshell.x11.ShellX11Util;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItemValue;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeView;
 import cn.oyzh.fx.gui.setting.SettingMainPane;
-import cn.oyzh.fx.gui.text.field.ChooseDirTextField;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
@@ -33,6 +33,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.picker.FXColorPicker;
@@ -43,10 +44,8 @@ import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.font.FontSizeComboBox;
 import cn.oyzh.fx.plus.font.FontWeightComboBox;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.i18n.LocaleComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
@@ -54,11 +53,13 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.xserver.XAuthorityCookie;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
@@ -69,7 +70,7 @@ import java.util.Objects;
  * 应用设置业务
  *
  * @author oyzh
- * @since 2023/06/16
+ * @since 2023-08-16
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -252,11 +253,11 @@ public class SettingController extends StageController {
     // @FXML
     // private FXSlider titleBarOpacity;
 
-    /**
-     * x11目录
-     */
-    @FXML
-    private ChooseDirTextField x11Path;
+    //    /**
+    //     * x11目录
+    //     */
+    //    @FXML
+    //    private ChooseDirTextField x11Path;
 
     //    /**
     //     * ssh效率模式
@@ -483,30 +484,88 @@ public class SettingController extends StageController {
     @FXML
     private FXToggleSwitch enableShortcutKey;
 
+    /**
+     * 图形模式
+     */
+    @FXML
+    private ShellGraphicModeComboBox graphicMode;
+
+    /**
+     * x11，端口
+     */
+    @FXML
+    private NumberTextField x11Port;
+
+    /**
+     * x11，认证
+     */
+    @FXML
+    private ClearableTextField x11Auth;
+
+    /**
+     * x11，glx模式
+     */
+    @FXML
+    private FXCheckBox x11Glx;
+
+    /**
+     * x11，本地模式
+     */
+    @FXML
+    private FXCheckBox x11Local;
+
+    /**
+     * x11，点击获得焦点
+     */
+    @FXML
+    private FXCheckBox x11FocusOnClick;
+
+    /**
+     * x11，单窗口模式
+     */
+    @FXML
+    private FXCheckBox x11SingleWindow;
+
+    /**
+     * x11按钮
+     */
+    @FXML
+    private FXButton x11Btn;
+
+    /**
+     * x11状态
+     */
+    @FXML
+    private FXLabel x11Status;
+
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
         try {
             // 应用退出处理
-            if (this.setting.getExitMode() != null) {
-                switch (this.setting.getExitMode()) {
-                    // case 0 -> this.exitMode0.setSelected(true);
-                    case 1 -> this.exitMode1.setSelected(true);
-                    default -> this.exitMode2.setSelected(true);
-                }
-            }
+            //            if (this.setting.getExitMode() != null) {
+            //                switch (this.setting.getExitMode()) {
+            //                    // case 0 -> this.exitMode0.setSelected(true);
+            //                    case 1 -> this.exitMode1.setSelected(true);
+            //                    default -> this.exitMode2.setSelected(true);
+            //                }
+            //            }
+            this.exitMode1.setSelected(this.setting.isExitAsk());
+            this.exitMode2.setSelected(this.setting.isExitDirectly());
             // 记住页面大小处理
-            if (this.setting.getRememberPageSize() != null) {
-                this.pageSize.setSelected(this.setting.isRememberPageSize());
-            }
+            //            if (this.setting.getRememberPageSize() != null) {
+            //                this.pageSize.setSelected(this.setting.isRememberPageSize());
+            //            }
+            this.pageSize.setSelected(this.setting.isRememberPageSize());
             // // 记住页面拉伸处理
             // if (this.setting.getRememberPageResize() != null) {
             //     this.pageResize.setSelected(this.setting.isRememberPageResize());
             // }
             // 记住页面位置处理
-            if (this.setting.getRememberPageLocation() != null) {
-                this.pageLocation.setSelected(this.setting.isRememberPageLocation());
-            }
+            //            if (this.setting.getRememberPageLocation() != null) {
+            //                this.pageLocation.setSelected(this.setting.isRememberPageLocation());
+            //            }
+            this.pageLocation.setSelected(this.setting.isRememberPageLocation());
             // 主题相关处理
             this.theme.select(this.setting.getTheme());
             this.fgColor.setColor(StringUtil.emptyToDefault(this.setting.getFgColor(), this.theme.getFgColorHex()));
@@ -526,14 +585,14 @@ public class SettingController extends StageController {
             // 区域相关处理
             this.locale.select(this.setting.getLocale());
             // 透明度相关处理
-            if (this.setting.getOpacity() != null) {
-                this.opacity.setValue(this.setting.getOpacity());
-            }
+            //            if (this.setting.getOpacity() != null) {
+            this.opacity.setValue(this.setting.getOpacity());
+            //            }
             // if (this.setting.getTitleBarOpacity() != null) {
             //     this.titleBarOpacity.setValue(this.setting.getTitleBarOpacity());
             // }
-            // x11目录
-            this.x11Path.setText(this.setting.x11Path());
+            //            // x11目录
+            //            this.x11Path.setText(this.setting.x11Path());
             // 终端设置
             this.termType.select(this.setting.getTermType());
             this.termBeep.setSelected(this.setting.isTermBeep());
@@ -554,27 +613,34 @@ public class SettingController extends StageController {
             this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
             // zookeeper
             // 节点加载处理
-            if (this.setting.getLoadMode() != null) {
-                switch (this.setting.getLoadMode()) {
-                    case 0 -> this.loadMode0.setSelected(true);
-                    case 1 -> this.loadMode1.setSelected(true);
-                    case 2 -> this.loadMode2.setSelected(true);
-                }
-            }
+            //            if (this.setting.getLoadMode() != null) {
+            //                switch (this.setting.getLoadMode()) {
+            //                    case 0 -> this.loadMode0.setSelected(true);
+            //                    case 1 -> this.loadMode1.setSelected(true);
+            //                    case 2 -> this.loadMode2.setSelected(true);
+            //                }
+            //            }
+            this.loadMode0.setSelected(this.setting.isLoadFirst());
+            this.loadMode1.setSelected(this.setting.isLoadAll());
+            this.loadMode2.setSelected(this.setting.isLoadRoot());
             // 节点显示处理
-            if (this.setting.getViewport() != null) {
-                switch (this.setting.getViewport()) {
-                    case 0 -> this.viewport0.setSelected(true);
-                    case 1 -> this.viewport1.setSelected(true);
-                }
-            }
+            //            if (this.setting.getViewport() != null) {
+            //                switch (this.setting.getViewport()) {
+            //                    case 0 -> this.viewport0.setSelected(true);
+            //                    case 1 -> this.viewport1.setSelected(true);
+            //                }
+            //            }
+            this.viewport0.setSelected(this.setting.isShowNodeName());
+            this.viewport1.setSelected(this.setting.isShowNodePath());
             // 内容显示处理
-            if (this.setting.getZkContentViewportViewport() != null) {
-                switch (this.setting.getZkContentViewportViewport()) {
-                    case 0 -> this.zkContentViewport0.setSelected(true);
-                    case 1 -> this.zkContentViewport1.setSelected(true);
-                }
-            }
+            //            if (this.setting.getZkContentViewportViewport() != null) {
+            //                switch (this.setting.getZkContentViewportViewport()) {
+            //                    case 0 -> this.zkContentViewport0.setSelected(true);
+            //                    case 1 -> this.zkContentViewport1.setSelected(true);
+            //                }
+            //            }
+            this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
+            this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
             //// 节点认证处理
             // if (this.setting.getAuthMode() != null) {
             //    this.authMode.setSelected(this.setting.isAutoAuth());
@@ -597,6 +663,17 @@ public class SettingController extends StageController {
 
             // 启用快捷键
             this.enableShortcutKey.setSelected(this.setting.isEnableShortcutKey());
+
+            // 图形模式
+            this.graphicMode.select(this.setting.getGraphicMode());
+
+            // xserver
+            this.x11Auth.setText(this.setting.getX11Auth());
+            this.x11Port.setValue(this.setting.getX11Port());
+            this.x11Glx.setSelected(this.setting.isX11Glx());
+            this.x11Local.setSelected(this.setting.isX11Local());
+            this.x11FocusOnClick.setSelected(this.setting.isX11FocusOnClick());
+            this.x11SingleWindow.setSelected(this.setting.isX11SingleWindow());
         } catch (Exception ex) {
             MessageBox.exception(ex);
         }
@@ -613,6 +690,7 @@ public class SettingController extends StageController {
             String fontFamily = this.fontFamily.getText();
             short fontWeight = this.fontWeight.getWeight();
             Byte editorFontSize = this.editorFontSize.byteValue();
+            int graphicMode = this.graphicMode.getSelectedIndex();
             short editorFontWeight = this.editorFontWeight.getWeight();
             String editorFontFamily = this.editorFontFamily.getText();
             Byte terminalFontSize = this.terminalFontSize.byteValue();
@@ -621,8 +699,10 @@ public class SettingController extends StageController {
             byte exitMode = Byte.parseByte(this.exitMode.selectedUserData());
 
             // 提示文字
-            String tips = this.checkConfigForRestart(locale);
+            String tips = this.checkConfigForRestart();
 
+            // 图形模式
+            this.setting.setGraphicMode(graphicMode);
             // 终端设置
             this.setting.setTermBeep(this.termBeep.isSelected());
             this.setting.setTermRefreshRate(this.termFps.getFps());
@@ -652,8 +732,8 @@ public class SettingController extends StageController {
             this.setting.setAccentColor(this.accentColor.getColor());
             // 区域相关处理
             this.setting.setLocale(locale);
-            // x11目录
-            this.setting.setX11Path(this.x11Path.getText());
+            //            // x11目录
+            //            this.setting.setX11Path(this.x11Path.getText());
             // 透明度相关处理
             this.setting.setOpacity((float) this.opacity.getValue());
             // this.setting.setTitleBarOpacity((float) this.titleBarOpacity.getValue());
@@ -678,7 +758,8 @@ public class SettingController extends StageController {
             this.setting.setViewport(viewport);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
             this.setting.setZkContentViewport(zkContentViewport);
-            // this.setting.setAuthMode(authMode);
+            // xserver
+            this.applyX11();
             // 同步
             this.applySync();
             // 更新设置
@@ -707,12 +788,16 @@ public class SettingController extends StageController {
     /**
      * 检查重启软件配置
      *
-     * @param locale 区域
      * @return 结果
      */
-    private String checkConfigForRestart(String locale) {
+    private String checkConfigForRestart() {
+        String locale = this.locale.name();
         if (!Objects.equals(this.setting.getLocale(), locale)) {
-            return I18nResourceBundle.i18nString("base.restartTip1");
+            return I18nHelper.restartTip1();
+        }
+        int graphicMode = this.graphicMode.getSelectedIndex();
+        if (!Objects.equals(this.setting.getGraphicMode(), graphicMode)) {
+            return I18nHelper.restartTip1();
         }
         return "";
     }
@@ -837,6 +922,8 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.redis(), "redis_box"));
         // zookeeper
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.zk(), "zk_box"));
+        // xserver
+        treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.xserver(), "xserver_box"));
 
         SettingLeftTreeItem fontItem = treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.font(), "font_box"));
         fontItem.addItem(SettingLeftTreeItemValue.of(I18nHelper.general(), "font_general_box"));
@@ -846,10 +933,10 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.theme(), "theme_box"));
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.locale(), "locale_box"));
         treeView.selectItem("ssh_box");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+        //// linux隐藏x11
+        //if (OSUtil.isLinux()) {
+        //    NodeGroupUtil.disappear(this.getStage(), "x11");
+        //}
 
         // 更新同步信息
         this.updateSyncInfo();
@@ -934,31 +1021,49 @@ public class SettingController extends StageController {
         this.fontWeight.selectWeight(AppSetting.defaultFontWeight());
     }
 
+    /**
+     * 重置编辑器字体
+     */
     @FXML
     private void resetEditorFontFamily() {
         this.editorFontFamily.selectItem(AppSetting.defaultEditorFontFamily());
     }
 
+    /**
+     * 重置编辑器字体大小
+     */
     @FXML
     private void resetEditorFontSize() {
         this.editorFontSize.selectSize(AppSetting.defaultEditorFontSize());
     }
 
+    /**
+     * 重置编辑器字体粗细
+     */
     @FXML
     private void resetEditorFontWeight() {
         this.editorFontWeight.selectWeight(AppSetting.defaultEditorFontWeight());
     }
 
+    /**
+     * 重置终端字体
+     */
     @FXML
     private void resetTerminalFontFamily() {
         this.terminalFontFamily.selectItem(AppSetting.defaultTerminalFontFamily());
     }
 
+    /**
+     * 重置终端字体大小
+     */
     @FXML
     private void resetTerminalFontSize() {
         this.terminalFontSize.selectSize(AppSetting.defaultTerminalFontSize());
     }
 
+    /**
+     * 重置终端字体粗细
+     */
     @FXML
     private void resetTerminalFontWeight() {
         this.terminalFontWeight.selectWeight(AppSetting.defaultTerminalFontWeight());
@@ -990,18 +1095,38 @@ public class SettingController extends StageController {
     //        }
     //    }
 
+    /**
+     * 测试bash路径
+     */
     @FXML
     private void testBashPath() {
         String bash = this.termType.getSelectedItem();
         if (OSUtil.isWindows()) {
-            String result;
+            String result = null;
             // git-bash
             if (bash.contains("git-bash")) {
                 String filePath = "C:\\Program Files\\Git\\bin\\bash.exe";
-                result = FileUtil.exists(filePath) ? "find" : null;
+                String filePath2 = "C:\\Program Files (x86)\\Git\\bin\\bash.exe";
+                if (FileUtil.exists(filePath) || FileUtil.exists(filePath2)) {
+                    result = "find";
+                }
             } else if (bash.contains("git-sh")) {
                 String filePath = "C:\\Program Files\\Git\\bin\\sh.exe";
-                result = FileUtil.exists(filePath) ? "find" : null;
+                String filePath2 = "C:\\Program Files (x86)\\Git\\bin\\sh.exe";
+                if (FileUtil.exists(filePath) || FileUtil.exists(filePath2)) {
+                    result = "find";
+                }
+            } else if (bash.contains("msys2-bash")) {
+                String filePath = "C:\\msys64\\usr\\bin\\bash.exe";
+                if (FileUtil.exists(filePath)) {
+                    result = "find";
+                }
+            } else if (bash.contains("cygwin-bash")) {
+                String filePath = "C:\\cygwin64\\bin\\bash.exe";
+                String filePath2 = "C:\\cygwin\\bin\\bash.exe";
+                if (FileUtil.exists(filePath) || FileUtil.exists(filePath2)) {
+                    result = "find";
+                }
             } else {// cmd、powershell
                 result = RuntimeUtil.execForStr("where " + bash);
             }
@@ -1020,23 +1145,23 @@ public class SettingController extends StageController {
         }
     }
 
-    @FXML
-    private void testX11Path() {
-        String dir = this.x11Path.getText();
-        // 寻找存在的二进制命令
-        String bin;
-        if (OSUtil.isWindows()) {
-            // 寻找存在的二进制命令
-            bin = ShellX11Util.findExist(dir, setting.x11Binary());
-        } else {
-            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
-        }
-        if (bin != null) {
-            MessageBox.info(I18nHelper.testSuccess());
-        } else {
-            MessageBox.warn(I18nHelper.testFailed());
-        }
-    }
+    //    @FXML
+    //    private void testX11Path() {
+    //        String dir = this.x11Path.getText();
+    //        // 寻找存在的二进制命令
+    //        String bin;
+    //        if (OSUtil.isWindows()) {
+    //            // 寻找存在的二进制命令
+    //            bin = ShellX11Util.findExist(dir, setting.x11Binary());
+    //        } else {
+    //            bin = ShellX11Util.findExist(dir, "/bin/", setting.x11Binary());
+    //        }
+    //        if (bin != null) {
+    //            MessageBox.info(I18nHelper.testSuccess());
+    //        } else {
+    //            MessageBox.warn(I18nHelper.testFailed());
+    //        }
+    //    }
 
     /**
      * 初始化同步信息
@@ -1120,24 +1245,97 @@ public class SettingController extends StageController {
         this.setting.setSyncConnect(this.syncConnect.isSelected());
     }
 
+    /**
+     * 应用x11设置
+     */
+    private void applyX11() {
+        // xserver
+        int x11Port = this.x11Port.getIntValue();
+        boolean x11Glx = this.x11Glx.isSelected();
+        String x11Auth = this.x11Auth.getTextTrim();
+        boolean x11Local = this.x11Local.isSelected();
+        boolean x11FocusOnClick = this.x11FocusOnClick.isSelected();
+        boolean x11SingleWindow = this.x11SingleWindow.isSelected();
+        this.setting.setX11Glx(x11Glx);
+        this.setting.setX11Port(x11Port);
+        this.setting.setX11Auth(x11Auth);
+        this.setting.setX11Local(x11Local);
+        this.setting.setX11FocusOnClick(x11FocusOnClick);
+        this.setting.setX11SingleWindow(x11SingleWindow);
+    }
+
     @Override
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
-        String initDir = null;
-        if (OSUtil.isWindows()) {
-            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
-                initDir = "C:/Program Files/VcXsrv";
-            }
-        } else if (OSUtil.isMacOS()) {
-            if (FileUtil.exists("/opt/X11")) {
-                initDir = "/opt/X11";
-            }
-        }
-        this.x11Path.setInitDir(initDir);
+        //        String initDir = null;
+        //        if (OSUtil.isWindows()) {
+        //            if (FileUtil.exists("C:/Program Files/VcXsrv")) {
+        //                initDir = "C:/Program Files/VcXsrv";
+        //            }
+        //        } else if (OSUtil.isMacOS()) {
+        //            if (FileUtil.exists("/opt/X11")) {
+        //                initDir = "/opt/X11";
+        //            }
+        //        }
+        //        this.x11Path.setInitDir(initDir);
 
         // 过滤器
         FileExtensionFilter filter = new FileExtensionFilter(I18nHelper.pleaseSelectFile(), "*.jpg", ",*.png", "*.jpeg", "*.gif");
         this.termBackgroundImage.setFilter(filter);
+
+        // 更新x服务
+        this.updateXServerStatus();
+    }
+
+    /**
+     * 更新x服务
+     */
+    @FXML
+    private void updateXServer() {
+        try {
+            this.applyX11();
+            int status = ShellX11Manager.xServerStatus();
+            if (status == 0 || status == 2) {
+                ShellX11Manager.startXServer_built_in();
+            } else {
+                ShellX11Manager.stopXServer_built_in();
+            }
+            this.updateXServerStatus();
+            // 保存设置
+            this.settingStore.update(this.setting);
+        } catch (Exception ex) {
+            MessageBox.exception(ex);
+        }
+    }
+
+    /**
+     * 更新xserver状态
+     */
+    private void updateXServerStatus() {
+        int status = ShellX11Manager.xServerStatus();
+        int clients = ShellX11Manager.xServerClients();
+        if (status == 0) {
+            this.x11Btn.text(I18nHelper.start1());
+            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.notStarted());
+            this.x11Status.setTextFill(ThemeManager.currentForegroundColor());
+        } else if (status == 1) {
+            this.x11Btn.text(I18nHelper.stop1());
+            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.running() + ", " + I18nHelper.clientNum() + ": " + clients);
+            this.x11Status.setTextFill(Color.GREEN);
+        } else if (status == 2) {
+            this.x11Btn.text(I18nHelper.start1());
+            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.stopped());
+            this.x11Status.setTextFill(Color.RED);
+        }
+    }
+
+    /**
+     * 生成x11认证
+     */
+    @FXML
+    private void generateX11Auth() {
+        String hex = XAuthorityCookie.generateHex();
+        this.x11Auth.setText(hex);
     }
 
     //    @Override

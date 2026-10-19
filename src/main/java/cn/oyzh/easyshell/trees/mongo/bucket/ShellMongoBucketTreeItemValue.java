@@ -8,10 +8,15 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * mongodb树存储桶节点值
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2026-06-29
  */
 public class ShellMongoBucketTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造存储桶节点值
+     *
+     * @param item 存储桶节点
+     */
     public ShellMongoBucketTreeItemValue(ShellMongoBucketTreeItem item) {
         super(item);
         super.setRichMode(true);

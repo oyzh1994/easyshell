@@ -15,20 +15,19 @@
 <?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SnippetSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel?>
 <?import cn.oyzh.fx.gui.svg.label.UploadDownloadSVGLabel?>
-<?import cn.oyzh.fx.gui.svg.pane.HiddenSVGPane?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.pane.FXPane?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
           text="%base.terminal" fx:id="root">
@@ -76,11 +75,11 @@
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>
                 </FolderAddSVGGlyph>
-                <HiddenSVGPane fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
+                <HiddenSVGLabel fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
                     </HBox.margin>
-                </HiddenSVGPane>
+                </HiddenSVGLabel>
                 <UploadDownloadSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
                     <HBox.margin>
                         <Insets left="5" top="7"/>
@@ -143,7 +142,7 @@
                         <Insets left="5" top="5"/>
                     </FXHBox.margin>
                 </FXText>
-                <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refesh">
+                <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
                     <FXHBox.margin>
                         <Insets left="5" top="7"/>
                     </FXHBox.margin>

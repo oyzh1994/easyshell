@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
@@ -22,21 +21,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * zk终端文本域
+ * mongo终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-09-01
  */
 public class MongoTerminalPane extends TerminalPane {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.terminalFontConfig());
     }
 
     /**
-     * zk客户端
+     * mongo客户端
      */
     private ShellMongoClient client;
 
@@ -75,6 +74,9 @@ public class MongoTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    /**
+     * 终端名称
+     */
     public static final String TERMINAL_NAME = "mongo";
 
     @Override
@@ -82,6 +84,9 @@ public class MongoTerminalPane extends TerminalPane {
         return TERMINAL_NAME;
     }
 
+    /**
+     * 数据库名
+     */
     private String dbName;
 
     public String getDbName() {
@@ -97,6 +102,7 @@ public class MongoTerminalPane extends TerminalPane {
      * 初始化
      *
      * @param client 客户端
+     * @param dbName 数据库名
      */
     public void init(ShellMongoClient client, String dbName) {
         this.client = client;
@@ -120,7 +126,7 @@ public class MongoTerminalPane extends TerminalPane {
      * @return 结果
      */
     public boolean isTemporary() {
-        return this.client.iid() == null;
+        return this.client == null || this.client.iid() == null;
     }
 
     @Override
@@ -175,13 +181,6 @@ public class MongoTerminalPane extends TerminalPane {
      * 临时连接处理
      */
     private void initByTemporary() {
-        this.outputLine("connect [-timeout timeout] [-server server] [-r]");
-        this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
-        this.outputLine("-server ip:" + I18nHelper.port());
-        this.outputLine("-r " + I18nHelper.readonlyMode());
-        this.appendByPrompt("connect -timeout 3000 -server localhost:2181");
-        this.enableInput();
-        this.flushAndMoveCaretEnd();
     }
 
     /**
@@ -275,7 +274,7 @@ public class MongoTerminalPane extends TerminalPane {
     }
 
     public ShellConnect shellConnect() {
-        return this.getClient().getShellConnect();
+        return this.client == null ? null : this.getClient().getShellConnect();
     }
 
     @Override
@@ -308,6 +307,12 @@ public class MongoTerminalPane extends TerminalPane {
     //     super.destroy();
     // }
 
+    /**
+     * 执行命令
+     *
+     * @param input 输入内容
+     * @return 执行结果
+     */
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult result = new TerminalExecuteResult();
         try {
@@ -351,6 +356,9 @@ public class MongoTerminalPane extends TerminalPane {
         super.initNode();
     }
 
+    /**
+     * 是否已初始化提示词
+     */
     private boolean initPrompts;
 
     @Override

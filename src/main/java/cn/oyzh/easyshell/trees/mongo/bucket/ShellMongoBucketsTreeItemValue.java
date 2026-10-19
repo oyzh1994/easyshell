@@ -9,10 +9,15 @@ import javafx.scene.paint.Color;
  * mongodb树存储桶类型值
  *
  * @author oyzh
- * @since 2023/12/08
+ * @since 2025-11-06
  */
 public class ShellMongoBucketsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造存储桶类型节点值
+     *
+     * @param item 存储桶类型节点
+     */
     public ShellMongoBucketsTreeItemValue(ShellMongoBucketsTreeItem item) {
         super(item);
     }

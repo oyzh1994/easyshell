@@ -7,10 +7,10 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * mysql主页tab
+ * MySQL 主页标签页
  *
  * @author oyzh
- * @since 2025/11/10
+ * @since 2025-11-10
  */
 public class ShellMysqlHomeTab extends RichTab {
 

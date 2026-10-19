@@ -24,6 +24,12 @@ import java.security.cert.CertificateFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+/**
+ * 使用客户端证书通过双向 TLS 连接 Redis 的示例
+ *
+ * @author oyzh
+ * @since 2025-09-03
+ */
 public class JedisTlsClientCertExample {
 
     public static void main(String[] args) throws Exception {

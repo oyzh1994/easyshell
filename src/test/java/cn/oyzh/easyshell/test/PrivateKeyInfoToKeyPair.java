@@ -10,6 +10,12 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
 
+/**
+ * 由 PrivateKeyInfo 推导公钥并构建 KeyPair 的测试工具
+ *
+ * @author oyzh
+ * @since 2025-09-03
+ */
 public class PrivateKeyInfoToKeyPair {
 
     // public static void main(String[] args) throws Exception {

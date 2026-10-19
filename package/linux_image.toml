@@ -3,21 +3,23 @@ appIcon = "${projectPath}/resource/app.png"
 platform = "linux"
 
 [jpackage]
-#java-options = [
-#    "-XX:+UseZGC",
-#    "-XX:ZUncommitDelay=1"
-#]
+java-options = [
+    "-XX:+UseZGC",
+    "-XX:+ZUncommit",
+    "-XX:+ZProactive",
+    "-XX:ZUncommitDelay=1",
+]
 type = "app-image"
 
 [compress]
 type = "tar.gz"
 
-[jar]
-excludes = [
-    ".*.dll",
-    ".*.dylib",
-    ".*com/pty4j/native/darwin.*",
-    ".*com/pty4j/native/win.*",
-    ".*com/sun/jna/darwin.*",
-    ".*com/sun/jna/win32.*"
-]
+#[jar]
+#excludes = [
+#    ".*.dll",
+#    ".*.dylib",
+#    ".*com/pty4j/native/darwin.*",
+#    ".*com/pty4j/native/win.*",
+#    ".*com/sun/jna/darwin.*",
+#    ".*com/sun/jna/win32.*"
+#]

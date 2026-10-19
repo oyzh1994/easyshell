@@ -5,8 +5,10 @@ import cn.oyzh.fx.terminal.command.TerminalCommand;
 import redis.clients.jedis.Protocol;
 
 /**
+ * Redis SWAPDB 命令处理器
+ *
  * @author oyzh
- * @since 2023/7/25
+ * @since 2025-09-01
  */
 public class RedisSwapdbTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {
 

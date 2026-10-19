@@ -8,10 +8,15 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
  * mongodb树函数节点值
  *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2025-11-06
  */
 public class ShellMongoFunctionTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造函数节点值
+     *
+     * @param item 函数节点
+     */
     public ShellMongoFunctionTreeItemValue(ShellMongoFunctionTreeItem item) {
         super(item);
         this.setRichMode(true);

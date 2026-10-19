@@ -7,8 +7,10 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * 文件已拖拽事件
+ *
  * @author oyzh
- * @since 2024/3/29
+ * @since 2025-03-18
  */
 public class ShellFileDraggedEvent extends Event<List<File>> {
 

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * 结束以条件
  *
  * @author oyzh
- * @since 2024/6/27
+ * @since 2026-06-29
  */
 public class MongoEndWithCondition extends MongoCondition {
 

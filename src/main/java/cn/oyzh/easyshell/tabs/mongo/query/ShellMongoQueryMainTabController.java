@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
  * mongodb查询内容组件
  *
  * @author oyzh
- * @since 2024/02/18
+ * @since 2025-11-06
  */
 public class ShellMongoQueryMainTabController extends RichTabController {
 
@@ -45,6 +45,11 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      */
     private boolean unsaved;
 
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery getQuery() {
         return query;
     }
@@ -54,6 +59,11 @@ public class ShellMongoQueryMainTabController extends RichTabController {
      */
     private ShellMongoDatabaseTreeItem dbItem;
 
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
     public ShellMongoDatabaseTreeItem getDbItem() {
         return dbItem;
     }
@@ -186,10 +196,12 @@ public class ShellMongoQueryMainTabController extends RichTabController {
                 int index = 1;
                 this.initInfoTab(results);
                 for (ShellMongoExecuteResult result : results.getResults()) {
-                    if (result.isSuccess() && result.hasResult()) {
+                    if (result.isSuccess()) {
                         FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
-                        showType = 2;
                         this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
                     }
                 }
             }
@@ -369,6 +381,11 @@ public class ShellMongoQueryMainTabController extends RichTabController {
         //        this.root.autosize();
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return unsaved;
     }

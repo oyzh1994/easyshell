@@ -5,8 +5,10 @@ import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
 import cn.oyzh.event.Event;
 
 /**
+ * 容器运行事件
+ *
  * @author oyzh
- * @since 2025/07/03
+ * @since 2025-07-03
  */
 public class ShellContainerRunEvent extends Event<ShellDockerExec> {
 

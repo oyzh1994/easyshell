@@ -6,7 +6,7 @@ import org.apache.curator.framework.state.ConnectionState;
  * shell连接状态
  *
  * @author oyzh
- * @since 2023/07/1
+ * @since 2023-08-16
  */
 public enum ShellConnState {
 

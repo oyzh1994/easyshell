@@ -8,7 +8,7 @@ import javafx.fxml.FXML;
  * environment信息，windows
  *
  * @author oyzh
- * @since 2025/03/30
+ * @since 2025-03-30
  */
 public class ShellSSHConfigWinEnvironmentTabController extends ShellSSHBaseConfigTabController {
 

@@ -9,7 +9,7 @@ import java.util.Map;
  * sasl配置类
  *
  * @author oyzh
- * @since 2024-12-20
+ * @since 2025-09-04
  */
 public class ShellZKSASLConfiguration extends Configuration {
 

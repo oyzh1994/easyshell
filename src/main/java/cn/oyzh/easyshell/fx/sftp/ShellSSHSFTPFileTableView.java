@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * SSH SFTP文件列表视图
+ *
  * @author oyzh
  * @since 2025-05-26
  */
@@ -56,10 +58,20 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      */
     private ShellSSHClient sshClient;
 
+    /**
+     * 是否启用打包传输
+     *
+     * @return 结果
+     */
     public boolean isPkgTransfer() {
         return pkgTransfer;
     }
 
+    /**
+     * 设置SSH客户端
+     *
+     * @param sshClient SSH客户端
+     */
     public void setSSHClient(ShellSSHClient sshClient) {
         this.sshClient = sshClient;
         this.setClient(sshClient.sftpClient());
@@ -224,8 +236,8 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
     /**
      * 压缩文件
      *
-     * @param type  压缩类型
      * @param files 文件列表
+     * @param type  压缩类型
      */
     protected void compress(List<ShellSFTPFile> files, String type) {
 //        StageManager.showMask(() -> {

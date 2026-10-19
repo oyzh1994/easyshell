@@ -1,14 +1,15 @@
 package cn.oyzh.easyshell.mysql.routine;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.routine.ShellMysqlParamModeComboBox;
-import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObject;
+import cn.oyzh.fx.db.DBRoutineParam;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -22,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MySQL存储程序参数
+ *
  * @author oyzh
- * @since 2024/7/1
+ * @since 2025-11-06
  */
-public class MysqlRoutineParam extends DBObject {
+public class MysqlRoutineParam extends DBObject implements DBRoutineParam {
 
     /**
      * 名称
@@ -72,19 +75,39 @@ public class MysqlRoutineParam extends DBObject {
      */
     private ShellMysqlClient dbClient;
 
+    /**
+     * 获取类型
+     *
+     * @return 类型
+     */
     public String getType() {
         return this.typeProperty == null ? null : this.typeProperty.get();
     }
 
+    /**
+     * 设置类型
+     *
+     * @param type 类型
+     */
     public void setType(String type) {
         this.typeProperty().set(type);
         this.putOriginalData("type", type);
     }
 
+    /**
+     * 获取字符集
+     *
+     * @return 字符集
+     */
     public String getCharset() {
         return this.charsetProperty == null ? null : this.charsetProperty.get();
     }
 
+    /**
+     * 设置字符集
+     *
+     * @param charset 字符集
+     */
     public void setCharset(String charset) {
         if (charset != null) {
             charset = charset.toUpperCase();
@@ -123,6 +146,9 @@ public class MysqlRoutineParam extends DBObject {
         return comboBox;
     }
 
+    /**
+     * 字符集组件
+     */
     private ShellMysqlCharsetComboBox charsetControl;
 
     /**
@@ -154,6 +180,9 @@ public class MysqlRoutineParam extends DBObject {
         return comboBox;
     }
 
+    /**
+     * 小数位组件
+     */
     private NumberTextField digitsControl;
 
     /**
@@ -185,6 +214,9 @@ public class MysqlRoutineParam extends DBObject {
         return textField;
     }
 
+    /**
+     * 长度组件
+     */
     private NumberTextField sizeControl;
 
     /**
@@ -216,6 +248,11 @@ public class MysqlRoutineParam extends DBObject {
         return textField;
     }
 
+    /**
+     * 获取值列表
+     *
+     * @return 值列表
+     */
     public List<String> getValueList() {
         List<String> valueList = new ArrayList<>();
         if (this.getValue() != null) {
@@ -231,6 +268,9 @@ public class MysqlRoutineParam extends DBObject {
         return valueList;
     }
 
+    /**
+     * 值组件
+     */
     private ShellDBEnumTextFiled valueControl;
 
     /**
@@ -252,6 +292,9 @@ public class MysqlRoutineParam extends DBObject {
         return textField;
     }
 
+    /**
+     * 排序组件
+     */
     private ShellMysqlCollationComboBox collationControl;
 
     /**
@@ -290,6 +333,11 @@ public class MysqlRoutineParam extends DBObject {
         return comboBox;
     }
 
+    /**
+     * 是否为返回值参数
+     *
+     * @return 结果
+     */
     public boolean isReturnParam() {
         return StringUtil.isBlank(this.name) && StringUtil.isBlank(this.mode);
     }
@@ -333,6 +381,11 @@ public class MysqlRoutineParam extends DBObject {
         return definition;
     }
 
+    /**
+     * 设置字段定义标识
+     *
+     * @param dtdIdentifier 字段定义标识
+     */
     public void setDtdIdentifier(String dtdIdentifier) {
         String type;
         if (!dtdIdentifier.contains("(") && !dtdIdentifier.contains(" ")) {
@@ -363,15 +416,22 @@ public class MysqlRoutineParam extends DBObject {
     //     return ShellMysqlColumnUtil.supportEnum(this.getType());
     // }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
         this.putOriginalData("name", name);
     }
 
+    /**
+     * 获取类型属性
+     *
+     * @return 类型属性
+     */
     public StringProperty typeProperty() {
         if (this.typeProperty == null) {
             this.typeProperty = new SimpleStringProperty();
@@ -379,42 +439,87 @@ public class MysqlRoutineParam extends DBObject {
         return typeProperty;
     }
 
+    /**
+     * 获取模式
+     *
+     * @return 模式
+     */
     public String getMode() {
         return mode;
     }
 
+    /**
+     * 设置模式
+     *
+     * @param mode 模式
+     */
     public void setMode(String mode) {
         this.mode = mode;
         this.putOriginalData("mode", mode);
     }
 
+    /**
+     * 获取长度
+     *
+     * @return 长度
+     */
     public Integer getSize() {
         return size;
     }
 
+    /**
+     * 设置长度
+     *
+     * @param size 长度
+     */
     public void setSize(Integer size) {
         this.size = size;
         this.putOriginalData("size", size);
     }
 
+    /**
+     * 获取小数位
+     *
+     * @return 小数位
+     */
     public Integer getDigits() {
         return digits;
     }
 
+    /**
+     * 设置小数位
+     *
+     * @param digits 小数位
+     */
     public void setDigits(Integer digits) {
         this.digits = digits;
         this.putOriginalData("digits", digits);
     }
 
+    /**
+     * 获取值
+     *
+     * @return 值
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * 设置值
+     *
+     * @param value 值
+     */
     public void setValue(String value) {
         this.value = value;
         this.putOriginalData("value", value);
     }
 
+    /**
+     * 获取字符集属性
+     *
+     * @return 字符集属性
+     */
     public StringProperty charsetProperty() {
         if (this.charsetProperty == null) {
             this.charsetProperty = new SimpleStringProperty();
@@ -422,10 +527,20 @@ public class MysqlRoutineParam extends DBObject {
         return charsetProperty;
     }
 
+    /**
+     * 获取排序
+     *
+     * @return 排序
+     */
     public String getCollation() {
         return collation;
     }
 
+    /**
+     * 设置排序
+     *
+     * @param collation 排序
+     */
     public void setCollation(String collation) {
         if (collation != null) {
             collation = collation.toUpperCase();
@@ -434,6 +549,11 @@ public class MysqlRoutineParam extends DBObject {
         this.putOriginalData("collation", collation);
     }
 
+    /**
+     * 设置数据库客户端
+     *
+     * @param dbClient 数据库客户端
+     */
     public void setDbClient(ShellMysqlClient dbClient) {
         if (this.dbClient != null) {
             return;

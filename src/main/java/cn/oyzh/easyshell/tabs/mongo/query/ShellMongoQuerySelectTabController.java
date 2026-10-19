@@ -40,8 +40,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * MongoDB 查询结果标签页控制器
+ *
  * @author oyzh
- * @since 2024/08/12
+ * @since 2026-06-29
  */
 public class ShellMongoQuerySelectTabController extends RichTabController {
 
@@ -268,7 +270,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
     }
 
     /**
-     * 初始化记录
+     * 纠正记录
      *
      */
     private void correctRecords() {
@@ -285,9 +287,9 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
     private void addRecord() {
         try {
             MongoRecord lastItem = (MongoRecord) this.recordTable.lastItem();
-            if (lastItem == null) {
-                this.addDocument();
-            } else {
+            if (lastItem != null) {
+//                this.addDocument();
+//            } else {
                 MongoColumns columns = new MongoColumns(lastItem.getColumns());
                 MongoRecord record = new MongoRecord(columns);
                 record.setCreated(true);
@@ -305,12 +307,12 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
         }
     }
 
-    /**
-     * 添加文档
-     */
-    @FXML
-    private void addDocument() {
-    }
+//    /**
+//     * 添加文档
+//     */
+//    @FXML
+//    private void addDocument() {
+//    }
 
     /**
      * 插入记录

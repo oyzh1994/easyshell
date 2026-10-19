@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.s3;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
@@ -11,10 +11,10 @@ import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Cursor;
 
 /**
- * ftp tab
+ * s3标签页
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2025-03-04
  */
 public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 
@@ -61,7 +61,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
     }
 
     @Override
-    public ShellS3Client client() {
+    public ShellS3ClientV2 client() {
         return this.controller().client();
     }
 
@@ -80,6 +80,12 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
 //        super.onTabClosed(event);
 //        super.destroy();
 //    }
+    /**
+     * 创建s3标签页
+     *
+     * @param connect 连接
+     * @return s3标签页
+     */
     public static ShellS3Tab of(ShellConnect connect) {
         ShellS3Tab tab = new ShellS3Tab();
         tab.init(connect);

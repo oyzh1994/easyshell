@@ -5,16 +5,24 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.pkg.PackCost;
 import cn.oyzh.pkg.Packer;
+import cn.oyzh.pkg.config.PackConfig;
+import cn.oyzh.pkg.jar.JarConfig;
+import cn.oyzh.pkg.woa.WoaUtil;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
+ * 项目安装包打包的验证
+ *
  * @author oyzh
- * @since 2023/3/8
+ * @since 2025-03-09
  */
 public class Pack {
+
+    //    private boolean woa = OSUtil.isWindows() && OSUtil.isAarch64();
 
     private boolean appImage = false;
 
@@ -145,6 +153,10 @@ public class Pack {
         String projectPath = this.getProjectPath();
         properties.put(PackCost.PROJECT_PATH, projectPath);
         Packer packer = new Packer();
+        //        // windows on arm处理
+        //        if (this.woa) {
+        //            packer.registerWoaHandler();
+        //        }
         // appImage处理
         if (this.appImage) {
             packer.registerAppImageHandler();
@@ -163,7 +175,27 @@ public class Pack {
         //        packer.registerJdepsHandler();
         String packagePath = this.getPackagePath();
         String pack_config = packagePath + "/main.toml";
-        packer.pack(pack_config, platform_config, properties);
+        packer.pack(pack_config, platform_config, properties, (Consumer<PackConfig>) config -> {
+            // woa环境特殊处理
+            if (WoaUtil.isWoa()) {
+                JarConfig jarConfig = config.getJarConfig();
+                // 默认开启部分优化
+                if (jarConfig != null && jarConfig.isEnable()) {
+                    jarConfig.setJavafxOptimize(true);
+                }
+            }
+            // ci环境特殊处理
+            if (SystemUtil.isCIEnv()) {
+                JarConfig jarConfig = config.getJarConfig();
+                // 默认开启部分优化
+                if (jarConfig != null && jarConfig.isEnable()) {
+                    jarConfig.setCompact(true);
+                    jarConfig.setJavafxOptimize(true);
+                }
+                // ci环境用系统的appimagetool
+                config.setAppImageRuntime(null);
+            }
+        });
     }
 
     public static void main(String[] args) throws Exception {
@@ -199,6 +231,8 @@ public class Pack {
                 pack.win_msi();
             } else if (StringUtil.equalsIgnoreCase(packType, "windows_image")) {
                 pack.win_image();
+            } else {
+                throw new RuntimeException("unkown packType:" + packType);
             }
         }
     }
@@ -206,8 +240,8 @@ public class Pack {
     public static class PackStarter {
 
         public static void main(String[] args) throws Exception {
-            Pack.main(new String[]{"macos_image"});
-            //            Pack.main(new String[]{"windows_image"});
+            // Pack.main(new String[]{"macos_image"});
+            Pack.main(new String[]{"windows_image"});
             // Pack.main(new String[]{"windows_msi"});
             //Pack.main(new String[]{"macos_pkg"});
         }

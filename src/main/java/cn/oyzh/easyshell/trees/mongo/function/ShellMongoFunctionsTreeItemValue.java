@@ -10,10 +10,15 @@ import javafx.scene.paint.Color;
  * mongodb树函数类型值
  *
  * @author oyzh
- * @since 2024/06/28
+ * @since 2025-11-06
  */
 public class ShellMongoFunctionsTreeItemValue extends RichTreeItemValue {
 
+    /**
+     * 构造函数类型节点值
+     *
+     * @param item 函数类型节点
+     */
     public ShellMongoFunctionsTreeItemValue(ShellMongoFunctionsTreeItem item) {
         super(item);
     }

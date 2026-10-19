@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  * redis键信息组件
  *
  * @author oyzh
- * @since 2023/08/03
+ * @since 2025-09-01
  */
 public class ShellRedisKeyInfoController extends RichTabController {
 

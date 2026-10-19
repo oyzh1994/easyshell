@@ -13,7 +13,7 @@ import java.util.Map;
  * mongodb主页tab内容组件
  *
  * @author oyzh
- * @since 2023/6/24
+ * @since 2026-06-29
  */
 public class ShellMongoHomeTabController extends RichTabController {
 

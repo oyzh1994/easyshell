@@ -5,6 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.rdp.ShellRDPUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -23,7 +24,7 @@ import javafx.scene.layout.BackgroundSize;
  * shell连接工具类
  *
  * @author oyzh
- * @since 2025/04/01
+ * @since 2023-08-16
  */
 public class ShellConnectUtil {
 
@@ -210,7 +211,7 @@ public class ShellConnectUtil {
                 //    }
                 //    client.close();
                 //}
-                if (shellConnect.isRDPType()) {
+                if (shellConnect.isRDPType() && !ShellRDPUtil.isBuiltIn(shellConnect)) {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
                     if (NetworkUtil.reachable(hostIp, port, timeout1)) {

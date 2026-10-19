@@ -16,12 +16,14 @@ java-options = [
     "-Xmx2G",
     # 禁用类共享，注意部分jdk不支持此参数
     "-Xshare:off",
+    # 内存软限制上限
+    "-XX:SoftMaxHeapSize=512m",
     #    "-XX:ConcGCThreads=2",
     #    "-XX:+TieredCompilation",
     #    "-XX:TieredStopAtLevel=1",
     #    "-XX:MaxDirectMemorySize=256m",
     # 对象头压缩
-#    "-XX:+UseCompactObjectHeaders",
+    #    "-XX:+UseCompactObjectHeaders",
     #    "-XX:+UnlockDiagnosticVMOptions",
     #    "-XX:NativeMemoryTracking=detail",
     #    "-Dprism.text=t2k",
@@ -46,13 +48,13 @@ java-options = [
     # 提高编译阈值
     "-XX:CompileThreshold=1000",
     # 堆空间扩容比例
-    "-XX:MinHeapFreeRatio=30",
+    "-XX:MinHeapFreeRatio=20",
     # 堆空间缩容比例
-    "-XX:MaxHeapFreeRatio=50",
+    "-XX:MaxHeapFreeRatio=40",
     # 元空间扩容比例
-    "-XX:MinMetaspaceFreeRatio=30",
+    "-XX:MinMetaspaceFreeRatio=20",
     # 元空间缩容比例
-    "-XX:MaxMetaspaceFreeRatio=50",
+    "-XX:MaxMetaspaceFreeRatio=40",
     #    # 字符串拼接优化
     #    "-XX:+OptimizeStringConcat",
     # 字符串去重
@@ -60,27 +62,29 @@ java-options = [
     # 禁用大页
     "-XX:-UseLargePages",
     # 假装内存为2048m
-#    "-XX:MaxRAM=2048m",
+    #    "-XX:MaxRAM=2048m",
     # 假装核心为1c
     "-XX:ActiveProcessorCount=1",
     # 禁用方法内联
-#    "-XX:-Inline",
+    #    "-XX:-Inline",
     # 编译层级，C1
     "-XX:TieredStopAtLevel=1",
     # OOM时自动生成堆转储文件
     "-XX:+HeapDumpOnOutOfMemoryError",
     # gc参数
-    "-XX:+UseZGC",
-    "-XX:+ZUncommit",
-    "-XX:+ZProactive",
-    "-XX:ZUncommitDelay=1",
+#    "-XX:+UseZGC",
+#    "-XX:+ZUncommit",
+#    "-XX:+ZProactive",
+#    "-XX:ZUncommitDelay=1",
     "-XX:+UseDynamicNumberOfGCThreads",
     # 逐步缩小堆内存
-    "-XX:+ShrinkHeapInSteps",
+    "-XX:-ShrinkHeapInSteps",
+    # 允许本地方法访问
+    "--enable-native-access=ALL-UNNAMED",
     # 关闭控制台日志
     "-Dlogger.console.level=off",
-    # 允许本地方法访问
-    "--enable-native-access=ALL-UNNAMED"
+    # 当前环境
+    "-Dapp.env=prod",
 ]
 copyright = "Copyright © 2023-2026 oyzh. All Rights Reserved."
 description = "A powerful, modern, cross-platform, multi-protocol client"
@@ -142,11 +146,14 @@ add-modules = [
     "java.management",
     "java.datatransfer",
     "java.security.jgss",
+    # JDBC 驱动可能通过 Charset.forName 动态加载 GB18030、EUC-KR、BIG5；
+    # jdeps 无法从字符串常量推断这些编码，必须显式保留 jdk.charsets。
+    "jdk.charsets",
     "jdk.unsupported"
 ]
 
 [jre]
-enable = false
+enable = true
 excludes = [
     "COPYRIGHT",
     "README.txt",
@@ -168,9 +175,12 @@ excludes = [
 
 [jar]
 enable = true
+compact = false
 removeEmpty = true
 javafxOptimize = true
+binlibOptimize = true
 skipsJar = [
+    "bctls-jdk18on-.*.jar",
     "bcprov-jdk18on-.*.jar",
     "bcutil-jdk18on-.*.jar"
 ]
@@ -178,10 +188,12 @@ excludes = [
     # 各类杂项裁剪开始
     "AL2.0",
     "LGPL2.1",
+    "about.html",
     "package.html",
     "pom.xml",
     "pom.properties",
     "AUTHORS",
+    "README",
     "README.md",
     "README.txt",
     "DEPENDENCIES",
@@ -195,48 +207,66 @@ excludes = [
     "release-timestamp.txt",
     "ADDITIONAL_LICENSE_INFO",
     "reactor.blockhound.integration.BlockHoundIntegration",
-    "classpath.idx",
+#    "classpath.idx",
+    "INDEX.LIST",
+    "LICENSE",
     "LICENSE.*",
-    ".*.md",
-    ".*.pro",
-    ".*.xsd",
-    ".*.proto",
+    "LICENSE.md",
+    "LICENSE.txt",
+    "NOTICE",
     "NOTICE.*",
-    ".*.tooling",
-    ".*.schemas",
-    ".*.handlers",
-    "lombok-.*.jar",
-    ".*.processors",
-    ".*.kotlin_module",
+    "NOTICE.md",
+    "NOTICE.txt",
     "data.zip",
     "git.properties",
     "reflect-config.json",
     "native-image.properties",
-    "spring-boot-jarmode-layertools-.*.jar",
     "io.netty.version.properties",
+    "lombok-.*.jar",
+    "spring-boot-jarmode-layertools-.*.jar",
+    ".*.SF",
+    ".*.RSA",
+    ".*.md",
+    ".*.pro",
+    ".*.bss",
+    ".*.xsd",
+    ".*.proto",
+    ".*.tooling",
+    ".*.schemas",
+    ".*.handlers",
+    ".*.processors",
+    ".*.kotlin_module",
+    # 特定裁剪开始
+    ".*Android/.*",
+    ".*mozilla/.*",
+    ".*META-INF/native-image/.*",
+    # 特定裁剪结束
     # 各类杂项裁剪结束
+    #    # apache curator专项裁剪开始
+    #    ".*org/apache/curator/shaded/.*",
+    #    # apache curator专项裁剪结束
     #    # bouncycastle专项裁剪开始
     #    "BC2048KE.SF",
     #    "BC2048KE.DSA",
     #    ".*lowmc.*.bin.properties",
     #    # bouncycastle专项裁剪结束
-    # pty4j专项裁剪开始
-    ".*com/pty4j/native/freebsd.*",
-    ".*com/pty4j/native/win/x86/.*",
-    # pty4j专项裁剪结束
-    # jna专项裁剪开始
-    ".*com/sun/jna/aix.*",
-    ".*com/sun/jna/sunos.*",
-    ".*com/sun/jna/freebsd.*",
-    ".*com/sun/jna/openbsd.*",
-    ".*com/sun/jna/dragonflybsd.*",
-    # jna专项裁剪结束
-    # durid专项裁剪开始
-    # 资源
-    ".*support/http.*",
-    ".*support/monitor.*",
-    ".*tpcds/.*",
-    ".*tpch/.*",
+    #    # pty4j专项裁剪开始
+    #    ".*com/pty4j/native/freebsd.*",
+    #    ".*com/pty4j/native/win/x86/.*",
+    #    # pty4j专项裁剪结束
+    #    # jna专项裁剪开始
+    #    ".*com/sun/jna/aix.*",
+    #    ".*com/sun/jna/sunos.*",
+    #    ".*com/sun/jna/freebsd.*",
+    #    ".*com/sun/jna/openbsd.*",
+    #    ".*com/sun/jna/dragonflybsd.*",
+    #    # jna专项裁剪结束
+    #    # durid专项裁剪开始
+    #    # 资源
+    #    ".*support/http.*",
+    #    ".*support/monitor.*",
+    #    ".*tpcds/.*",
+    #    ".*tpch/.*",
     #    # 方言
     #    ".*com/alibaba/druid/sql/dialect/athena/.*",
     #    ".*com/alibaba/druid/sql/dialect/bigquery/.*",
@@ -270,20 +300,20 @@ excludes = [
     #    ".*com/alibaba/druid/pool/.*",
     #    ".*com/alibaba/druid/stat/.*",
     #    ".*com/alibaba/druid/proxy/.*",
-    # 支持组件
-    ".*com/alibaba/druid/support/calcite/.*",
-    ".*com/alibaba/druid/support/clickhouse/.*",
-    ".*com/alibaba/druid/support/hibernate/.*",
-    ".*com/alibaba/druid/support/http/.*",
-    ".*com/alibaba/druid/support/ibatis/.*",
-    ".*com/alibaba/druid/support/jakarta/.*",
-    ".*com/alibaba/druid/support/metrics/.*",
-    ".*com/alibaba/druid/support/monitor/.*",
-    ".*com/alibaba/druid/support/opds/.*",
-    ".*com/alibaba/druid/support/quartz/.*",
-    ".*com/alibaba/druid/support/simplejndi/.*",
-    ".*com/alibaba/druid/support/spring/.*",
-    # durid专项裁剪结束
+    #    # 支持组件
+    #    ".*com/alibaba/druid/support/calcite/.*",
+    #    ".*com/alibaba/druid/support/clickhouse/.*",
+    #    ".*com/alibaba/druid/support/hibernate/.*",
+    #    ".*com/alibaba/druid/support/http/.*",
+    #    ".*com/alibaba/druid/support/ibatis/.*",
+    #    ".*com/alibaba/druid/support/jakarta/.*",
+    #    ".*com/alibaba/druid/support/metrics/.*",
+    #    ".*com/alibaba/druid/support/monitor/.*",
+    #    ".*com/alibaba/druid/support/opds/.*",
+    #    ".*com/alibaba/druid/support/quartz/.*",
+    #    ".*com/alibaba/druid/support/simplejndi/.*",
+    #    ".*com/alibaba/druid/support/spring/.*",
+    #    # durid专项裁剪结束
     # jfx专项裁剪开始
     ".*com/sun/javafx/scene/control/skin/caspian/.*.bss",
     ".*com/sun/javafx/scene/control/skin/caspian/.*.css",

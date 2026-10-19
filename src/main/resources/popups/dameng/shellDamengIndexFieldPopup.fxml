@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.dameng.table.DamengIndexColumnListView?>
+<?import cn.oyzh.easyshell.fx.dameng.table.ShellDamengIndexColumnListView?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
@@ -21,8 +21,8 @@
             </HBox.margin>
         </FXLabel>
     </FXHBox>
-    <DamengIndexColumnListView flexWidth="100%" flexHeight="100% - 50" fx:id="listView">
-    </DamengIndexColumnListView>
+    <ShellDamengIndexColumnListView flexWidth="100%" flexHeight="100% - 50" fx:id="listView">
+    </ShellDamengIndexColumnListView>
     <FXHBox flexWidth="100%" realHeight="25">
         <SubmitSVGGlyph onMousePrimaryClicked="#submit">
             <HBox.margin>

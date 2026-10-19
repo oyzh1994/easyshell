@@ -15,7 +15,7 @@ import javafx.fxml.FXML;
  * hyLog键tab内容组件
  *
  * @author oyzh
- * @since 2024/05/17
+ * @since 2025-09-01
  */
 public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellRedisStringKeyTreeItem> {
 

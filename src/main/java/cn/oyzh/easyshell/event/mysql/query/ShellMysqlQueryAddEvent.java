@@ -4,8 +4,10 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.Event;
 
 /**
+ * mysql查询新增事件
+ *
  * @author oyzh
- * @since 2023/12/22
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryAddEvent extends Event<ShellMysqlDatabaseTreeItem> {
 

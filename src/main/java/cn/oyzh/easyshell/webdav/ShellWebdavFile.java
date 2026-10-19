@@ -7,7 +7,7 @@ import com.github.sardine.DavResource;
 import java.util.Date;
 
 /**
- * smb文件
+ * webdav文件
  *
  * @author oyzh
  * @since 2025-07-23
@@ -39,6 +39,12 @@ public class ShellWebdavFile implements ShellFile {
      */
     private Long fileSize;
 
+    /**
+     * 构造webdav文件
+     *
+     * @param parentPath 父路径
+     * @param resource   资源
+     */
     public ShellWebdavFile(String parentPath, DavResource resource) {
         this.resource = resource;
         this.parentPath = parentPath;

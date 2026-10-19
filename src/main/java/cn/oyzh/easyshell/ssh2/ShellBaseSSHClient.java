@@ -68,7 +68,7 @@ import java.util.function.Function;
  * shell客户端
  *
  * @author oyzh
- * @since 2025/04/25
+ * @since 2023-08-16
  */
 public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
@@ -127,6 +127,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected ShellSSHAuthInteractive authInteractive = new ShellSSHAuthInteractive();
 
+    /**
+     * 构造shell客户端
+     *
+     * @param connect 连接
+     */
     public ShellBaseSSHClient(ShellConnect connect) {
         this.shellConnect = connect;
     }
@@ -136,6 +141,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return shellConnect;
     }
 
+    /**
+     * 获取会话
+     *
+     * @return 会话
+     */
     public ClientSession getSession() {
         return session;
     }
@@ -147,11 +157,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected synchronized String osType() {
         if (this.osType == null) {
-            String output = this.exec("which");
-            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "which")) {
-                this.osType = "Windows";
+            String output = this.exec("uname -s");
+            if (StringUtil.isNotBlank(output) && ShellUtil.isWindowsCommandNotFound(output, "uname")) {
+                this.osType = this.exec("cmd.exe /c ver");
             } else {
-                this.osType = this.exec("uname");
+                this.osType = output;
             }
         }
         return this.osType;
@@ -190,9 +200,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 channel.setIn(null);
                 channel.setOut(stream);
                 channel.setErr(stream);
-//                // 等待命令执行完成：CLOSED 事件确保所有输出数据已刷新到 stream
-//                long waitTimeout = timeout > 0 ? timeout : Long.MAX_VALUE;
-//                channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED, ClientChannelEvent.TIMEOUT), waitTimeout);
+                //                // 等待命令执行完成：CLOSED 事件确保所有输出数据已刷新到 stream
+                //                long waitTimeout = timeout > 0 ? timeout : Long.MAX_VALUE;
+                //                channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED, ClientChannelEvent.TIMEOUT), waitTimeout);
                 // 开始时间
                 long start = 0L;
                 if (timeout > 0) {
@@ -346,7 +356,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isMacos() {
-        return StringUtil.containsIgnoreCase(this.osType(), "Darwin");
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "Darwin", "Macos", "OS X");
     }
 
     /**
@@ -364,7 +374,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isUnix() {
-        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix");
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "FreeBSD", "Aix", "HP-UX", "SunOS");
     }
 
     /**
@@ -382,7 +392,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isWindows() {
-        return StringUtil.equals(this.osType(), "Windows");
+        return StringUtil.containsAnyIgnoreCase(this.osType(), "Windows", "MINGW64_NT", "MSYS_NT", "CYGWIN_NT");
     }
 
     /**
@@ -688,11 +698,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 设置密钥工厂
         this.sshClient.setKeyPasswordProviderFactory(() -> (KeyPasswordProvider) CredentialsProvider.getDefault());
         // 心跳
-        this.sshClient.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(60));
+        this.sshClient.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofSeconds(15));
         // 其他参数
         CoreModuleProperties.SOCKET_KEEPALIVE.set(this.sshClient, true);
         CoreModuleProperties.ALLOW_DHG1_KEX_FALLBACK.set(this.sshClient, true);
-        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(60));
+        //        CoreModuleProperties.HEARTBEAT_INTERVAL.set(this.sshClient, Duration.ofSeconds(15));
         CoreModuleProperties.IO_CONNECT_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         CoreModuleProperties.FORWARD_REQUEST_TIMEOUT.set(this.sshClient, Duration.ofMillis(timeout));
         //        // 3秒认证超时
@@ -706,14 +716,27 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected Function<ShellConnect, ShellConnect> verifyFailureCallback = ShellSSHUtil::onVerifyFailure;
 
+    /**
+     * 设置认证失败回调
+     *
+     * @param verifyFailureCallback 认证失败回调
+     */
     public void setVerifyFailureCallback(Function<ShellConnect, ShellConnect> verifyFailureCallback) {
         this.verifyFailureCallback = verifyFailureCallback;
     }
 
+    /**
+     * 获取认证失败回调
+     *
+     * @return 认证失败回调
+     */
     public Function<ShellConnect, ShellConnect> getVerifyFailureCallback() {
         return verifyFailureCallback;
     }
 
+    /**
+     * 会话锁
+     */
     private final Object sessionLock = new Object();
 
     /**

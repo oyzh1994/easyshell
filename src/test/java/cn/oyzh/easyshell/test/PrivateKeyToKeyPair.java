@@ -6,6 +6,12 @@ import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import java.security.*;
 import java.security.spec.RSAPublicKeySpec;
 
+/**
+ * 由私钥信息提取公钥参数并构建 KeyPair 的测试工具
+ *
+ * @author oyzh
+ * @since 2025-09-03
+ */
 public class PrivateKeyToKeyPair {
     public static KeyPair convertToKeyPair(PrivateKeyInfo privateKeyInfo) throws Exception {
         // 转换私钥

@@ -20,10 +20,10 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 /**
- * ssh密钥新增业务
+ * ssh密钥编辑业务
  *
  * @author oyzh
- * @since 2025/04/03
+ * @since 2025-04-04
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

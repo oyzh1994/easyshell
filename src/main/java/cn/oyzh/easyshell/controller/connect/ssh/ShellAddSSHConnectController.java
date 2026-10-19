@@ -23,6 +23,7 @@ import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -42,7 +43,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -58,7 +58,7 @@ import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocket
  * ssh连接新增业务
  *
  * @author oyzh
- * @since 2025/03/15
+ * @since 2025-03-03
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -92,7 +92,7 @@ public class ShellAddSSHConnectController extends StageController {
     private PasswordTextField certificatePwd;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -188,7 +188,7 @@ public class ShellAddSSHConnectController extends StageController {
     private PortTextField x11Port;
 
     /**
-     * x11 cookie
+     * x11认证信息
      */
     @FXML
     private ClearableTextField x11Cookie;
@@ -319,7 +319,7 @@ public class ShellAddSSHConnectController extends StageController {
     private FXCheckBox enableZModem;
 
     /**
-     * forwardAgent
+     * 转发ssh代理
      */
     @FXML
     private FXCheckBox forwardAgent;
@@ -528,7 +528,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setType("ssh");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
             // 保存数据
-            if (this.connectStore.replace(shellConnect)) {
+            if (this.connectStore.insert(shellConnect)) {
                 ShellEventUtil.connectAdded(shellConnect);
                 MessageBox.okToast(I18nHelper.operationSuccess());
                 this.setProp("connect", shellConnect);
@@ -621,10 +621,10 @@ public class ShellAddSSHConnectController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.group = this.getProp("group");
-        // linux隐藏x11
-        if (OSUtil.isLinux()) {
-            NodeGroupUtil.disappear(this.getStage(), "x11");
-        }
+//        // linux隐藏x11
+//        if (OSUtil.isLinux()) {
+//            NodeGroupUtil.disappear(this.getStage(), "x11");
+//        }
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }
@@ -636,6 +636,8 @@ public class ShellAddSSHConnectController extends StageController {
         this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11Cookie.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11CookieBth.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        this.x11Port.setValue(ShellX11Manager.getX11Port());
+        this.x11Cookie.setValue(ShellX11Manager.getX11Cookie());
         if (OSUtil.isWindows()) {
             this.sshAgent.setText(PageantConnector.DESCRIPTOR.getIdentityAgent());
         } else {
@@ -648,33 +650,35 @@ public class ShellAddSSHConnectController extends StageController {
         return I18nHelper.connectAddTitle();
     }
 
-    /**
-     * 下载或者开启x11服务
-     */
-    @FXML
-    private void downloadX11() {
-        try {
-            String url = "";
-            if (OSUtil.isWindows()) {
-                url = "https://sourceforge.net/projects/vcxsrv/";
-            } else if (OSUtil.isMacOS()) {
-                url = "https://www.xquartz.org/";
-            } else if (OSUtil.isLinux()) {
-                url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
-            }
-            FXUtil.showDocument(url);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex);
-        }
-    }
+//    /**
+//     * 下载或者开启x11服务
+//     */
+//    @FXML
+//    private void downloadX11() {
+//        try {
+//            String url = "";
+//            if (OSUtil.isWindows()) {
+//                url = "https://sourceforge.net/projects/vcxsrv/";
+//            } else if (OSUtil.isMacOS()) {
+//                url = "https://www.xquartz.org/";
+//            } else if (OSUtil.isLinux()) {
+//                url = this.getClass().getResource("/doc/enable_x11.txt").toExternalForm();
+//            }
+//            FXUtil.showDocument(url);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            MessageBox.exception(ex);
+//        }
+//    }
 
     /**
      * 加载x11的cookie
      */
     @FXML
     private void loadX11Cookie() {
-        if (OSUtil.isLinux()) {
+        if (ShellX11Manager.isBuilt_in(this.getX11Config())) {
+            this.x11Cookie.setText(ShellX11Manager.getX11Cookie());
+        } else if (OSUtil.isLinux()) {
             String str = RuntimeUtil.execForStr("xauth list");
             if (StringUtil.isNotBlank(str)) {
                 String[] arr = str.split("\n")[0].split("\\s+");

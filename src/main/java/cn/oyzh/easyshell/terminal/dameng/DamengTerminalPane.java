@@ -23,28 +23,38 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 /**
- * dameng终端文本域
+ * 达梦终端文本域
  *
  * @author oyzh
- * @since 2023/7/21
+ * @since 2026-06-16
  */
 public class DamengTerminalPane extends TerminalPane {
 
     @Override
-    protected Font getEditorFont() {
+    public Font getEditorFont() {
         ShellSetting setting = ShellSettingStore.SETTING;
         return FontManager.toFont(setting.terminalFontConfig());
     }
 
     /**
-     * dameng客户端
+     * 达梦客户端
      */
     private ShellDamengClient client;
 
+    /**
+     * 获取达梦客户端
+     *
+     * @return 达梦客户端
+     */
     public ShellDamengClient getClient() {
         return client;
     }
 
+    /**
+     * 获取关联的连接信息
+     *
+     * @return 连接信息，客户端为空时返回 null
+     */
     public ShellConnect shellConnect() {
         return this.client == null ? null : this.client.getShellConnect();
     }
@@ -56,7 +66,7 @@ public class DamengTerminalPane extends TerminalPane {
 
     @Override
     public void flushPrompt() {
-        String str = this.dbName;
+        String str = this.schema;
         str += "@" + this.shellConnect().getName();
         if (this.isConnecting()) {
             str += "(" + I18nHelper.connectIng() + ")> ";
@@ -68,6 +78,9 @@ public class DamengTerminalPane extends TerminalPane {
         this.prompt(str);
     }
 
+    /**
+     * 终端名称
+     */
     public static final String TERMINAL_NAME = "dameng";
 
     @Override
@@ -75,14 +88,27 @@ public class DamengTerminalPane extends TerminalPane {
         return TERMINAL_NAME;
     }
 
-    private String dbName;
+    /**
+     * 数据库名称
+     */
+    private String schema;
 
-    public String getDbName() {
-        return dbName;
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
+    public String getSchema() {
+        return schema;
     }
 
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
+    /**
+     * 设置数据库名称并刷新提示符
+     *
+     * @param schema 数据库名称
+     */
+    public void setSchema(String schema) {
+        this.schema = schema;
         this.flushPrompt();
     }
 
@@ -90,14 +116,15 @@ public class DamengTerminalPane extends TerminalPane {
      * 初始化
      *
      * @param client 客户端
+     * @param schema 数据库名称
      */
-    public void init(ShellDamengClient client, String dbName) {
+    public void init(ShellDamengClient client, String schema) {
         this.client = client;
-        this.setDbName(dbName);
+        this.setSchema(schema);
         FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
-            this.outputLine("Powered By oyzh(2024-2026).");
+            this.outputLine("Powered By oyzh(2026-2026).");
             this.flushPrompt();
             if (this.isTemporary()) {
                 this.initByTemporary();
@@ -249,14 +276,20 @@ public class DamengTerminalPane extends TerminalPane {
     //     super.destroy();
     // }
 
+    /**
+     * 执行输入的终端命令
+     *
+     * @param input 输入内容
+     * @return 执行结果
+     */
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult terminalResult = new TerminalExecuteResult();
         try {
-            if (this.dbName == null) {
-                terminalResult.setResult("No database selected. Use 'use <database>' to select one.");
+            if (this.schema == null) {
+                terminalResult.setResult("No schema selected. Use 'use <schema>' to select one.");
                 return terminalResult;
             }
-            DBQueryResults<DamengExecuteResult> results = this.client.executeSql(this.dbName, input);
+            DBQueryResults<DamengExecuteResult> results = this.client.executeSql(this.schema, input);
             if (!results.isSuccess()) {
                 terminalResult.setException(new RuntimeException(results.getErrMsg()));
             } else if (results.isEmpty()) {
@@ -345,7 +378,7 @@ public class DamengTerminalPane extends TerminalPane {
         if (ms > 0) {
             sb.append(" (").append(ms).append(" ms)");
         }
-        return sb.append("#").toString();
+        return sb.toString();
     }
 
     @Override

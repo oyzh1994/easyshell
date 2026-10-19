@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.s3;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -19,7 +19,7 @@ import java.util.List;
  * s3组件
  *
  * @author oyzh
- * @since 2025/06/14
+ * @since 2025-03-05
  */
 public class ShellS3TabController extends ShellParentTabController {
 
@@ -43,14 +43,21 @@ public class ShellS3TabController extends ShellParentTabController {
     /**
      * s3客户端
      */
-    private ShellS3Client client;
+    private ShellS3ClientV2 client;
 
-    public ShellS3Client client() {
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
+    public ShellS3ClientV2 client() {
         return this.client;
     }
 
     /**
      * 初始化
+     *
+     * @param shellConnect 连接
      */
     public void init(ShellConnect shellConnect) {
         this.client = ShellClientUtil.newClient(shellConnect);

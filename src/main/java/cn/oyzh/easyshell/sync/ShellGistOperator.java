@@ -25,6 +25,11 @@ public abstract class ShellGistOperator implements AutoCloseable {
      */
     protected CloseableHttpClient httpClient;
 
+    /**
+     * 构造gist操作器
+     *
+     * @param accessToken 访问令牌
+     */
     public ShellGistOperator(String accessToken) {
         this.accessToken = accessToken;
         this.httpClient = HttpClients.createDefault();

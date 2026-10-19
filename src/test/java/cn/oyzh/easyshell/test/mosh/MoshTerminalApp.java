@@ -18,6 +18,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+/**
+ * 基于 ShellMoshTermWidget 的 Mosh 终端 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2025-06-30
+ */
 public class MoshTerminalApp extends Application {
 
     private ShellMoshTermWidget widget = new ShellMoshTermWidget();
@@ -44,8 +50,7 @@ public class MoshTerminalApp extends Application {
                 return;
             }
 
-            ShellMoshTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
-            connector.init(client);
+            ShellMoshTtyConnector connector = widget.createTtyConnector(client);
             this.widget.openSession(connector);
 
 //            // 使用 JediTermFX 实际终端尺寸（基于字体度量），而非像素估算

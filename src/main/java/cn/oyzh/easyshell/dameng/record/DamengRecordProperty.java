@@ -9,27 +9,31 @@ import cn.oyzh.easyshell.util.dameng.ShellDamengRecordUtil;
 import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 
 /**
- * db表记录属性
+ * 达梦记录属性
  *
  * @author oyzh
- * @since 2024/01/31
+ * @since 2026-09-02
  */
 public class DamengRecordProperty extends DBRecordProperty {
-
-    /**
-     * 表字段
-     */
-    private DamengColumn column;
 
     /**
      * 表记录
      */
     private DamengRecord record;
 
+    /**
+     * 构造记录属性
+     *
+     * @param record   记录
+     * @param column   字段
+     * @param value    值
+     * @param readonly 是否只读
+     */
     public DamengRecordProperty(DamengRecord record, DamengColumn column, Object value, boolean readonly) {
         super(value);
         this.column = column;
@@ -67,10 +71,10 @@ public class DamengRecordProperty extends DBRecordProperty {
     @Override
     public Object getValue() {
         if (this.readonly) {
-            return ShellDamengRecordUtil.formatValue(super.getValue(), this.column);
+            return ShellDamengRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
-            this.node = ShellDamengRecordUtil.getNode(this, super.getValue(), this.column);
+            this.node = ShellDamengRecordUtil.getNode(this, super.getValue(), this.getColumn());
             TableViewUtil.rowOnCtrlS(this.node);
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
@@ -87,14 +91,21 @@ public class DamengRecordProperty extends DBRecordProperty {
 
     @Override
     public void setChanged(boolean changed) {
-        this.changedProperty().set(changed);
         DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getSchema() + ":" + this.column.getTableName());
         if (listener != null) {
             listener.changed(null, null, null);
         }
+        // 重新格式化值
+        if (!changed && this.node instanceof BinaryTextFiled filed) {
+            filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
+        }
         this.setToNullFlag = false;
+        super.setChanged(changed);
     }
 
+    /**
+     * 更新原始值
+     */
     public void updateOriginal() {
         try {
             if (this.node != null) {
@@ -124,10 +135,16 @@ public class DamengRecordProperty extends DBRecordProperty {
         ClipboardUtil.copy(sql);
     }
 
+   @Override
     public DamengColumn getColumn() {
-        return column;
+        return (DamengColumn) super.getColumn();
     }
 
+    /**
+     * 设置字段
+     *
+     * @param column 字段
+     */
     public void setColumn(DamengColumn column) {
         this.column = column;
     }

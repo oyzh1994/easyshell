@@ -1,26 +1,39 @@
 package cn.oyzh.easyshell.util.dameng;
 
+import cn.oyzh.common.function.ExceptionConsumer;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
+import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.DBRecordData;
-import cn.oyzh.fx.db.util.DBUtil;
+import cn.oyzh.fx.db.data.handler.DataHandler;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * db工具类
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2026-09-02
  */
 public class ShellDamengUtil {
 
@@ -526,4 +539,154 @@ public class ShellDamengUtil {
     //    }
     //    return false;
     //}
+
+    /**
+     * 对表进行排序，被外键引用的父表排在前面，子表排在后面
+     *
+     * @param tables   表列表
+     * @param dbClient 达梦客户端
+     * @param handler  数据处理器
+     * @throws InterruptedException 中断异常
+     */
+    public static void sortTablesInHandler(List<DamengTable> tables, ShellDamengClient dbClient, DataHandler handler) throws InterruptedException {
+        if (tables == null || tables.isEmpty()) {
+            return;
+        }
+        // 表名 -> 表对象映射
+        Map<String, DamengTable> tableMap = tables.stream()
+                .collect(Collectors.toMap(DamengTable::getName, t -> t, (a, b) -> a));
+        Set<String> tableNames = tableMap.keySet();
+        Map<String, Integer> tableIndex = new HashMap<>();
+        for (int i = 0; i < tables.size(); i++) {
+            tableIndex.putIfAbsent(tables.get(i).getName(), i);
+        }
+
+        // 邻接表: 父表 -> 依赖它的子表集合
+        Map<String, Set<String>> dependents = new HashMap<>();
+        // 每个表的入度（被引用次数）
+        Map<String, Integer> inDegree = new HashMap<>();
+        for (DamengTable table : tables) {
+            inDegree.putIfAbsent(table.getName(), 0);
+            dependents.putIfAbsent(table.getName(), new LinkedHashSet<>());
+        }
+
+        // 查询外键，构建依赖图：子表 -> 父表（子表依赖父表）
+        // 查询有外键的表名称
+        List<String> fTables = dbClient.selectForeignKeyTables(tables.getFirst().getSchema());
+        for (DamengTable table : tables) {
+            if (!fTables.contains(table.getName())) {
+                continue;
+            }
+            List<String> parentTables = dbClient.selectParentTables(table.getSchema(), table.getName());
+            for (String parentTable : parentTables) {
+                handler.checkInterrupt();
+                // 仅处理属于当前表列表的引用
+                if (parentTable != null && tableNames.contains(parentTable) && !parentTable.equals(table.getName())) {
+                    Set<String> children = dependents.computeIfAbsent(parentTable, k -> new LinkedHashSet<>());
+                    if (children.add(table.getName())) {
+                        inDegree.merge(table.getName(), 1, Integer::sum);
+                    }
+                }
+                // 更新状态
+                handler.processed(0);
+            }
+        }
+
+        // 拓扑排序（BFS / Kahn算法）
+        Queue<String> queue = new PriorityQueue<>(Comparator.comparingInt(tableIndex::get));
+        Set<String> queued = new LinkedHashSet<>();
+        for (DamengTable table : tables) {
+            if (inDegree.get(table.getName()) == 0 && queued.add(table.getName())) {
+                queue.add(table.getName());
+            }
+        }
+
+        List<DamengTable> sorted = new ArrayList<>(tables.size());
+        while (!queue.isEmpty()) {
+            String tableName = queue.poll();
+            sorted.add(tableMap.get(tableName));
+            for (String child : dependents.getOrDefault(tableName, Collections.emptySet())) {
+                int newDegree = inDegree.merge(child, -1, Integer::sum);
+                if (newDegree == 0 && queued.add(child)) {
+                    queue.add(child);
+                }
+            }
+        }
+
+        // 存在循环依赖时，将剩余表追加到末尾
+        if (sorted.size() < tables.size()) {
+            Set<String> sortedNames = sorted.stream().map(DamengTable::getName).collect(Collectors.toSet());
+            for (DamengTable table : tables) {
+                if (!sortedNames.contains(table.getName())) {
+                    sorted.add(table);
+                }
+            }
+        }
+
+        // 替换原列表内容
+        tables.clear();
+        tables.addAll(sorted);
+    }
+
+    /**
+     * 执行表排序并回调，被外键引用的父表先回调，子表后回调
+     *
+     * @param dbClient 客户端
+     * @param tables   传输表
+     * @param callback 回调
+     */
+    public static void sortTablesByCallback(ShellDamengClient dbClient, List<DamengTable> tables, ExceptionConsumer<DamengTable> callback) throws Exception {
+        if (CollectionUtil.isEmpty(tables)) {
+            return;
+        }
+        String schema = tables.getFirst().getSchema();
+        // 有外键的表名称
+        Set<String> fTables = new HashSet<>(dbClient.selectForeignKeyTables(schema));
+        // 表名 -> 表对象映射
+        Map<String, DamengTable> tableMap = tables.stream()
+                .collect(Collectors.toMap(DamengTable::getName, t -> t, (a, b) -> a));
+        // 已处理表名称
+        Set<String> handles = new HashSet<>();
+        doSortTablesByCallback(dbClient, schema, fTables, tableMap, tables, handles, callback);
+    }
+
+    /**
+     * 执行表排序并回调
+     *
+     * @param dbClient 客户端
+     * @param schema   模式
+     * @param fTables  外键表
+     * @param tableMap 表名 -> 表对象映射
+     * @param tables   本次处理的表
+     * @param handles  已处理表
+     * @param callback 回调
+     */
+    private static void doSortTablesByCallback(ShellDamengClient dbClient, String schema, Set<String> fTables, Map<String, DamengTable> tableMap, List<DamengTable> tables, Set<String> handles, ExceptionConsumer<DamengTable> callback) throws Exception {
+        for (DamengTable table : tables) {
+            String tName = table.getName();
+            // 已处理或正在处理的表，跳过
+            if (handles.contains(tName)) {
+                continue;
+            }
+            // 必须在处理父表之前标记，否则自引用、循环外键会无限递归
+            handles.add(tName);
+            // 判断是否在外键表
+            if (fTables.contains(tName)) {
+                // 父表列表
+                List<DamengTable> parents = new ArrayList<>();
+                for (String parent : dbClient.selectParentTables(schema, tName)) {
+                    DamengTable parentTable = tableMap.get(parent);
+                    if (parentTable != null && !StringUtil.equals(parent, tName)) {
+                        parents.add(parentTable);
+                    }
+                }
+                // 先处理父表
+                doSortTablesByCallback(dbClient, schema, fTables, tableMap, parents, handles, callback);
+            }
+            // 再处理自身
+            if (callback != null) {
+                callback.accept(table);
+            }
+        }
+    }
 }

@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 达梦显示数据库命令处理器
+ *
  * @author oyzh
- * @since 2024-12-30
+ * @since 2026-06-16
  */
 public class DamengShowDatabasesTerminalCommandHandler extends DamengTerminalCommandHandler<TerminalCommand> {
 

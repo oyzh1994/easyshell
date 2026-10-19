@@ -9,7 +9,6 @@ import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
-import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.FileNotFoundException;
@@ -20,8 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Dameng Sql类型文件写入器
+ *
  * @author oyzh
- * @since 2024-09-04
+ * @since 2025-11-06
  */
 public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
 
@@ -40,10 +41,45 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
      */
     private final LineFileWriter writer;
 
+    /**
+     * 构造 Dameng Sql类型文件写入器
+     *
+     * @param filePath 文件路径
+     * @param config   导出配置
+     * @param columns  字段列表
+     * @throws FileNotFoundException 文件未找到异常
+     */
     public ShellDamengSqlTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws FileNotFoundException {
         this.columns = columns;
         this.config = config;
         this.writer = LineFileWriter.create(filePath, config.getCharset());
+    }
+
+    /**
+     * 表名称
+     */
+    private String table;
+
+    public void setTable(String table) {
+        this.table = table;
+    }
+
+    @Override
+    public void writeHeader() throws Exception {
+        if (this.table != null && this.columns.isIdentityAutoIncrementType()) {
+            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(this.table, DBDialect.DAMENG) + " ON;";
+            this.writer.writeLine(line);
+        }
+        super.writeHeader();
+    }
+
+    @Override
+    public void writeTrial() throws Exception {
+        if (this.table != null && this.columns.isIdentityAutoIncrementType()) {
+            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(this.table, DBDialect.DAMENG) + " OFF;";
+            this.writer.writeLine(line);
+        }
+        super.writeTrial();
     }
 
     @Override
@@ -124,10 +160,10 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
         //        if (column.supportEnum()) {
         //            return "'" + value + "'";
         //        }
-//        if (column.supportString()) {
-//            value = DBDataUtil.escapeQuotes((String) value, DBDialect.DAMENG);
-            //            return "'" + str + "'";
-//        }
+        //        if (column.supportString()) {
+        //            value = DBDataUtil.escapeQuotes((String) value, DBDialect.DAMENG);
+        //            return "'" + str + "'";
+        //        }
         return DBUtil.wrapData(value, DBDialect.DAMENG);
     }
 }

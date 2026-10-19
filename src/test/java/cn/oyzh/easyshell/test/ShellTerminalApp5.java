@@ -21,6 +21,12 @@ import java.io.PipedOutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
+/**
+ * 基于 mosh4j 实现 Mosh 终端的 JavaFX 测试应用
+ *
+ * @author oyzh
+ * @since 2026-07-04
+ */
 public class ShellTerminalApp5 extends Application {
 
     private ShellTestTermWidget widget = new ShellTestTermWidget();
@@ -121,7 +127,6 @@ public class ShellTerminalApp5 extends Application {
             e.printStackTrace();
         }
     }
-
 
     private byte[] mapKeyToAnsiSequence(KeyEvent event) {
         return switch (event.getCode()) {

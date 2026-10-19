@@ -123,19 +123,19 @@ jobs:
             artifact: EasyShell-Win-arm64.exe
             artifact_glob: 'dist/*.exe'
             is_windows: true
-            javafx_fix: true
+            woa: true
           - os: windows-11-arm
             pack_arg: windows_image
             artifact: EasyShell-Win-arm64.zip
             artifact_glob: 'dist/*.zip'
             is_windows: true
-            javafx_fix: true
+            woa: true
           - os: windows-11-arm
             pack_arg: windows_msi
             artifact: EasyShell-Win-arm64.msi
             artifact_glob: 'dist/*.msi'
             is_windows: true
-            javafx_fix: true
+            woa: true
 
     name: ${{ matrix.artifact }}
     runs-on: ${{ matrix.os }}
@@ -170,22 +170,32 @@ jobs:
 
       - name: 处理前置依赖
         run: |
-          git clone --depth 1 --branch v1.0.4 https://github.com/oyzh1994/base.git
-          cd base && mvn clean install -DskipTests
-          # Windows arm64需要额外处理JavaFX依赖
-          if [ "${{ matrix.javafx_fix }}" = "true" ]; then
-            chcp.com 65001 > /dev/null 2>&1 || true
-            export LANG=en_US.UTF-8
-            ./base-pkg/package/pack.bat
+          git clone --depth 1 --branch master https://github.com/oyzh1994/base.git
+          cd base
+          mvn clean install -DskipTests
+          cd ..
+          git clone --depth 1 --branch master https://github.com/oyzh1994/fx-base.git
+          cd fx-base
+          if [ "${{ matrix.woa }}" = "true" ]; then
+            mvn clean install -Djavafx.platform=win -DskipTests
+          else
+            mvn clean install -DskipTests
           fi
           cd ..
-          git clone --depth 1 --branch v1.3.7 https://github.com/oyzh1994/fx-base.git
-          cd fx-base && mvn clean install -DskipTests && cd ..
         shell: bash
+
+      - name: 安装 WiX Toolset (Windows arm64)
+        if: matrix.woa == true
+        run: choco install wixtoolset -y
+        shell: cmd
 
       - name: 执行打包
         run: |
-          if [ "${{ matrix.is_windows }}" = "true" ]; then
+          if [ "${{ matrix.woa }}" = "true" ]; then
+            chcp.com 65001 > /dev/null 2>&1 || true
+            export LANG=en_US.UTF-8
+            ./package/pack_woa.bat ${{ matrix.pack_arg }}
+          elif [ "${{ matrix.is_windows }}" = "true" ]; then
             chcp.com 65001 > /dev/null 2>&1 || true
             export LANG=en_US.UTF-8
             ./package/pack.bat ${{ matrix.pack_arg }}
@@ -289,12 +299,12 @@ jobs:
 
           | Platform | Arch | Format |
           |----------|------|--------|
-          | Linux | x86_64 | tar.gz / deb / rpm / AppImage |
-          | Linux | arm64 | tar.gz / deb / rpm / AppImage |
-          | macOS | x86_64 | dmg / pkg / zip |
+          | Linux | amd64 | deb / rpm / AppImage / tar.gz |
+          | Linux | arm64 | deb / rpm / AppImage / tar.gz |
+          | macOS | amd64 | dmg / pkg / zip |
           | macOS | arm64 | dmg / pkg / zip |
-          | Windows | x86_64 | exe / zip / msi |
-          | Windows | arm64 | exe / zip / msi |
+          | Windows | amd64 | exe / msi / zip |
+          | Windows | arm64 | exe / msi / zip |
 
           ### SHA256 Checksums
 

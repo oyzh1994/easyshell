@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
  * shell连接串口内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellSerialTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
@@ -55,10 +55,20 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     //  */
     // private final ShellSetting setting = ShellSettingStore.SETTING;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellSerialClient getClient() {
         return client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -69,8 +79,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
      * @throws IOException io异常
      */
     private void initWidget() throws IOException {
-        Charset charset = this.client.getCharset();
-        ShellSerialTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellSerialTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -81,10 +90,10 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
-        // this.widget.setAlwaysShowThumbs(true);
+        // 打开回话
         this.widget.openSession(connector);
-        connector.init(this.client);
-        // this.widget.onTermination(exitCode -> this.widget.close());
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
@@ -160,7 +169,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

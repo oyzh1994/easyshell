@@ -6,7 +6,7 @@ import java.util.function.Function;
  * ssh异常解析器
  *
  * @author oyzh
- * @since 2020/7/2
+ * @since 2023-08-16
  */
 public class ShellExceptionParser implements Function<Throwable, String> {
 

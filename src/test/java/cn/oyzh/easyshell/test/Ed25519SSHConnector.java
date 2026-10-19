@@ -15,6 +15,12 @@ import java.security.KeyPair;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+/**
+ * 生成 Ed25519 密钥对及其 OpenSSH 公私钥格式的测试工具
+ *
+ * @author oyzh
+ * @since 2025-04-04
+ */
 public class Ed25519SSHConnector {
 
     static {

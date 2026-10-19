@@ -12,10 +12,15 @@ import java.util.List;
  * shell密钥选择框
  *
  * @author oyzh
- * @since 25/03/09
+ * @since 2025-04-03
  */
 public class ShellKeyComboBox extends FXComboBox<ShellKey> {
 
+    /**
+     * 获取密钥id
+     *
+     * @return 密钥id
+     */
     public String getKeyId() {
         ShellKey key = this.getSelectedItem();
         if (key == null) {
@@ -24,6 +29,11 @@ public class ShellKeyComboBox extends FXComboBox<ShellKey> {
         return key.getId();
     }
 
+    /**
+     * 根据id选中密钥
+     *
+     * @param certificate 密钥id
+     */
     public void selectById(String certificate) {
         for (ShellKey item : this.getItems()) {
             if (StringUtil.equals(certificate, item.getId())) {

@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
  * mongodb命令行tab内容组件
  *
  * @author oyzh
- * @since 2023/07/21
+ * @since 2026-06-29
  */
 public class ShellMongoTerminalTabController extends RichTabController {
 
@@ -21,18 +21,27 @@ public class ShellMongoTerminalTabController extends RichTabController {
     @FXML
     private MongoTerminalPane terminal;
 
+    /**
+     * 数据库名称
+     */
     private String dbName;
 
     /**
      * 初始化
      *
      * @param client mongodb客户端
+     * @param dbName 数据库名称
      */
     public void init(ShellMongoClient client, String dbName) {
         this.terminal.init(client,dbName);
         this.dbName = dbName;
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
     public String getDbName() {
         return dbName;
     }
@@ -46,6 +55,11 @@ public class ShellMongoTerminalTabController extends RichTabController {
         return this.terminal.shellConnect();
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellMongoClient client() {
         return this.terminal.getClient();
     }

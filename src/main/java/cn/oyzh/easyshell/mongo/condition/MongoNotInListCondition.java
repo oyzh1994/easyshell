@@ -13,7 +13,7 @@ import java.util.List;
  * 不在列表条件
  *
  * @author oyzh
- * @since 2024/6/28
+ * @since 2026-06-29
  */
 public class MongoNotInListCondition extends MongoInListCondition {
 

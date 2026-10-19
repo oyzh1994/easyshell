@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
  * shell连接telnet内容组件
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 public class ShellTelnetTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
@@ -49,10 +49,20 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      */
     private ShellTelnetClient client;
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellTelnetClient getClient() {
         return client;
     }
 
+    /**
+     * 获取连接
+     *
+     * @return 连接
+     */
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
@@ -63,8 +73,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      * @throws IOException io异常
      */
     private void initWidget() throws IOException {
-        Charset charset = this.client.getCharset();
-        ShellTelnetTtyConnector connector = this.widget.createTtyConnector(charset);
+        ShellTelnetTtyConnector connector = this.widget.createTtyConnector(this.client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -77,11 +86,10 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         // this.widget.setAlwaysShowThumbs(true);
         this.widget.openSession(connector);
-        // this.widget.onTermination(exitCode -> this.widget.close());
         // 初始化一次pty大小
         this.widget.initPtySize();
-        // 初始化
-        connector.init(this.client);
+        // 聚焦
+        this.widget.requestFocus();
     }
 
     /**
@@ -140,7 +148,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      * @param event 事件
      */
     @FXML
-    private void refesh(MouseEvent event) {
+    private void refresh(MouseEvent event) {
         try {
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();

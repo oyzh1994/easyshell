@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MySQL 查询执行计划标签页控制器
+ *
  * @author oyzh
- * @since 2024/08/16
+ * @since 2025-11-06
  */
 public class ShellMysqlQueryExplainTabController extends RichTabController {
 

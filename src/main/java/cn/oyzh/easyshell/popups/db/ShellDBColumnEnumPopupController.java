@@ -23,7 +23,7 @@ import java.util.List;
  * 字段列表弹窗业务
  *
  * @author oyzh
- * @since 2024/07/12
+ * @since 2025-11-06
  */
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "db/shellDBColumnEnumPopup.fxml"
@@ -81,6 +81,12 @@ public class ShellDBColumnEnumPopupController extends PopupController {
         this.listView.removeSelectedItem();
     }
 
+    /**
+     * 创建文本输入节点
+     *
+     * @param text 文本
+     * @return 文本输入组件
+     */
     private ClearableTextField createNode(String text) {
         ClearableTextField textField = new ClearableTextField(text);
         textField.setRealHeight(22);

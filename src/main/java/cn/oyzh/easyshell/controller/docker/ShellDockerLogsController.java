@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
  * docker容器日志业务
  *
  * @author oyzh
- * @since 2025/03/13
+ * @since 2025-03-13
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -39,6 +39,9 @@ public class ShellDockerLogsController extends StageController {
     @FXML
     private HighlightTextField filter;
 
+    /**
+     * 复制日志
+     */
     @FXML
     private void copyLogs() {
         ClipboardUtil.copy(this.data.getText());

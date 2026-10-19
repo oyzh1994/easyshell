@@ -5,8 +5,10 @@ import cn.oyzh.i18n.I18nHelper;
 import org.apache.zookeeper.data.Stat;
 
 /**
+ * zk查询状态标签页
+ *
  * @author oyzh
- * @since 2025/01/20
+ * @since 2025-09-04
  */
 public class ShellZKQueryStatTab extends RichTab {
 
@@ -16,6 +18,11 @@ public class ShellZKQueryStatTab extends RichTab {
     //    this.controller().init(stat);
     //}
 
+    /**
+     * 初始化状态数据
+     *
+     * @param stat 状态信息
+     */
     public void init(Stat stat) {
         super.flush();
         this.controller().init(stat);
@@ -42,6 +49,12 @@ public class ShellZKQueryStatTab extends RichTab {
         super.initNode();
     }
 
+    /**
+     * 创建zk查询状态标签页
+     *
+     * @param stat 状态信息
+     * @return zk查询状态标签页
+     */
     public static ShellZKQueryStatTab of(Stat stat) {
         ShellZKQueryStatTab tab = new ShellZKQueryStatTab();
         tab.init(stat);

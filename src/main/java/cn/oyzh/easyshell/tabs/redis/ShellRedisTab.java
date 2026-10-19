@@ -8,8 +8,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
+ * redis标签页
+ *
  * @author oyzh
- * @since 2024-12-03
+ * @since 2025-09-01
  */
 public class ShellRedisTab extends ShellConnectTab {
 
@@ -66,6 +68,12 @@ public class ShellRedisTab extends ShellConnectTab {
     //        super.onTabClosed(event);
     //        this.destroy();
     //    }
+    /**
+     * 创建redis标签页
+     *
+     * @param connect shell连接
+     * @return redis标签页
+     */
     public static ShellRedisTab of(ShellConnect connect) {
         ShellRedisTab tab = new ShellRedisTab();
         tab.init(connect);

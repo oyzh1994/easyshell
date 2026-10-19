@@ -13,7 +13,7 @@ import java.util.Locale;
  * redis键过滤类型选择框
  *
  * @author oyzh
- * @since 2024/4/19
+ * @since 2025-09-01
  */
 public class ShellRedisKeyFilterTypeComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 

@@ -37,7 +37,7 @@ import java.util.List;
  * docker容器运行业务
  *
  * @author oyzh
- * @since 2025/07/03
+ * @since 2025-07-03
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -242,6 +242,9 @@ public class ShellDockerRunController extends StageController {
         return I18nHelper.runContainer();
     }
 
+    /**
+     * 运行容器
+     */
     @FXML
     private void run() {
         ShellDockerRun run = this.initParam();

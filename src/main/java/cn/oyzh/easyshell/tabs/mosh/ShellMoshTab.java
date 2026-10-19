@@ -8,10 +8,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
- * telnet tab
+ * mosh标签页
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-03-04
  */
 public class ShellMoshTab extends ShellTermTab {
 
@@ -66,6 +66,12 @@ public class ShellMoshTab extends ShellTermTab {
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
     }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellMoshTab of(ShellConnect connect) {
         ShellMoshTab tab = new ShellMoshTab();
         tab.init(connect);

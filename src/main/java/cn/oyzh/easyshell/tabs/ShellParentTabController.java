@@ -7,6 +7,8 @@ import cn.oyzh.fx.gui.tabs.ParentTabController;
 import javafx.event.Event;
 
 /**
+ * shell父级标签页控制器，提供程序设置及左右侧栏收放能力
+ *
  * @author oyzh
  * @since 2025-08-25
  */

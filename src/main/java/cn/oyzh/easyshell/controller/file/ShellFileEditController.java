@@ -40,7 +40,7 @@ import java.io.File;
  * shell文件编辑业务
  *
  * @author oyzh
- * @since 2025/05/13
+ * @since 2025-03-18
  */
 @StageAttribute(
         multipliable = true,
@@ -263,7 +263,7 @@ public class ShellFileEditController extends StageController {
     }
 
     /**
-     * hex tab
+     * 十六进制tab
      */
     @FXML
     private FXTab hexTab;

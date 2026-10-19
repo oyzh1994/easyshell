@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * db字段
+ * 达梦数据库字段信息
  *
  * @author oyzh
- * @since 2023/12/20
+ * @since 2025-11-06
  */
 public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<DamengColumn>, Destroyable {
 
@@ -109,22 +109,45 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
     private Boolean autoIncrement;
 
     /**
+     * 自动递增类型
+     */
+    private String autoIncrementType;
+
+    /**
      * 名称
      */
     private String name;
 
+    /**
+     * 构造达梦数据库字段
+     */
     public DamengColumn() {
 
     }
 
+    /**
+     * 构造达梦数据库字段
+     *
+     * @param name 字段名称
+     */
     public DamengColumn(String name) {
         this.name = name;
     }
 
+    /**
+     * 名称是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isNameChanged() {
         return super.checkOriginalData("name", this.name);
     }
 
+    /**
+     * 获取原始名称
+     *
+     * @return 原始名称
+     */
     public String originalName() {
         return (String) super.getOriginalData("name");
     }
@@ -138,14 +161,29 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         super.putOriginalData("type", type);
     }
 
+    /**
+     * 类型是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isTypeChanged() {
         return super.checkOriginalData("type", this.getType());
     }
 
+    /**
+     * 长度是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isSizeChanged() {
         return super.checkOriginalData("size", this.size);
     }
 
+    /**
+     * 获取字段值列表
+     *
+     * @return 字段值列表
+     */
     public List<String> getValueList() {
         List<String> valueList = new ArrayList<>();
         if (this.getValue() != null) {
@@ -161,24 +199,48 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return valueList;
     }
 
+    /**
+     * 设置默认值
+     *
+     * @param defaultValue 默认值
+     */
     public void setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
         super.putOriginalData("defaultValue", defaultValue);
     }
 
+    /**
+     * 默认值是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isDefaultValueChanged() {
         return super.checkOriginalData("defaultValue", this.defaultValue);
     }
 
+    /**
+     * 获取默认值的字符串形式
+     *
+     * @return 默认值字符串
+     */
     public String getDefaultValueString() {
         Object defaultValue = this.defaultValue;
         return defaultValue == null ? null : defaultValue.toString();
     }
 
+    /**
+     * 获取按字段类型修正后的默认值
+     *
+     * @return 修正后的默认值
+     */
     public Object getDefaultValueFix() {
         Object defaultValue = this.defaultValue;
         if (defaultValue == null) {
             return null;
+        }
+        // 序列
+        if (this.isDefaultValueSequence()) {
+            return defaultValue;
         }
         String valStr = defaultValue.toString();
         if (this.supportInteger()) {
@@ -208,6 +270,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return DBUtil.wrapData(defaultValue, DBDialect.DAMENG);
     }
 
+    /**
+     * 设置是否自动递增
+     *
+     * @param autoIncrement 是否自动递增
+     */
     public void setAutoIncrement(Boolean autoIncrement) {
         this.autoIncrement = autoIncrement;
         super.putOriginalData("autoIncrement", autoIncrement);
@@ -217,23 +284,90 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         // }
     }
 
+    @Override
     public boolean isAutoIncrement() {
         return BooleanUtil.isTrue(this.autoIncrement);
     }
 
+    /**
+     * 自动递增是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isAutoIncrementChanged() {
         return super.checkOriginalData("autoIncrement", this.autoIncrement);
     }
 
+    /**
+     * 设置自动递增类型
+     *
+     * @param autoIncrementType 自动递增类型
+     */
+    public void setAutoIncrementType(String autoIncrementType) {
+        this.autoIncrementType = autoIncrementType;
+        super.putOriginalData("autoIncrementType", autoIncrementType);
+    }
+
+    /**
+     * 获取自动递增类型
+     *
+     * @return 结果
+     */
+    public String getAutoIncrementType() {
+        return this.autoIncrementType;
+    }
+
+    /**
+     * 获取自动递增类型原始值
+     *
+     * @return 结果
+     */
+    public String getAutoIncrementTypeOriginal() {
+        return (String) super.getOriginalData("autoIncrementType");
+    }
+
+    /**
+     * 是否IDENTITY自动递增类型
+     *
+     * @return 结果
+     */
+    public boolean isIdentityAutoIncrementType() {
+        return StringUtil.equalsIgnoreCase(this.autoIncrementType, "IDENTITY");
+    }
+
+    /**
+     * 自动递增类型是否变更
+     *
+     * @return 变更结果
+     */
+    public boolean isAutoIncrementTypeChanged() {
+        return super.checkOriginalData("autoIncrementType", this.autoIncrementType);
+    }
+
+    /**
+     * 是否存在注释
+     *
+     * @return 是否存在注释
+     */
     public boolean hasComment() {
         return this.getComment() != null;
     }
 
+    /**
+     * 设置字段值
+     *
+     * @param value 字段值
+     */
     public void setValue(String value) {
         this.valueProperty().setValue(value);
         super.putOriginalData("value", value);
     }
 
+    /**
+     * 设置是否无符号
+     *
+     * @param unsigned 是否无符号
+     */
     public void setUnsigned(Boolean unsigned) {
         this.unsigned = unsigned;
         super.putOriginalData("unsigned", unsigned);
@@ -248,11 +382,21 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return BooleanUtil.isTrue(this.unsigned);
     }
 
+    /**
+     * 设置是否随当前时间戳更新
+     *
+     * @param updateOnCurrentTimestamp 是否随当前时间戳更新
+     */
     public void setUpdateOnCurrentTimestamp(Boolean updateOnCurrentTimestamp) {
         this.updateOnCurrentTimestamp = updateOnCurrentTimestamp;
         super.putOriginalData("updateOnCurrentTimestamp", updateOnCurrentTimestamp);
     }
 
+    /**
+     * 是否随当前时间戳更新
+     *
+     * @return 是否随当前时间戳更新
+     */
     public boolean isUpdateOnCurrentTimestamp() {
         return BooleanUtil.isTrue(this.updateOnCurrentTimestamp);
     }
@@ -382,13 +526,23 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         super.putOriginalData("name", name);
     }
 
+    /**
+     * 设置注释
+     *
+     * @param comment 注释
+     */
     public void setComment(String comment) {
         this.comment = comment;
         super.putOriginalData("comment", comment);
     }
 
+    /**
+     * 注释是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isCommentChanged() {
-        return super.checkOriginalData("comment", this.getType());
+        return super.checkOriginalData("comment", this.getComment());
     }
 
     @Override
@@ -397,16 +551,31 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         super.putOriginalData("size", size);
     }
 
+    /**
+     * 设置小数位
+     *
+     * @param digits 小数位
+     */
     public void setDigits(Integer digits) {
         this.digits = digits;
         super.putOriginalData("digits", digits);
     }
 
+    /**
+     * 设置是否可为空
+     *
+     * @param nullable 是否可为空
+     */
     public void setNullable(Boolean nullable) {
         this.nullable = nullable;
         super.putOriginalData("nullable", nullable);
     }
 
+    /**
+     * 获取主键属性
+     *
+     * @return 主键属性
+     */
     public SimpleBooleanProperty primaryKeyProperty() {
         if (this.primaryKeyProperty == null) {
             this.primaryKeyProperty = new SimpleBooleanProperty();
@@ -414,15 +583,22 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return this.primaryKeyProperty;
     }
 
+    @Override
     public boolean isPrimaryKey() {
         return this.primaryKeyProperty != null && this.primaryKeyProperty.get();
     }
 
-    public void setPrimaryKey(Boolean primaryKey) {
+    @Override
+    public void setPrimaryKey(boolean primaryKey) {
         this.primaryKeyProperty().set(primaryKey);
         super.putOriginalData("primaryKey", primaryKey);
     }
 
+    /**
+     * 字段是否变更
+     *
+     * @return 变更结果
+     */
     public boolean isColumnChanged() {
         for (Map.Entry<String, Object> entry : super.originalData().entrySet()) {
             if (!StringUtil.equalsAny(entry.getKey(), "primaryKey", "primaryKeySize")) {
@@ -464,20 +640,40 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return false;
     }
 
+    /**
+     * 设置是否填充零
+     *
+     * @param zeroFill 是否填充零
+     */
     public void setZeroFill(Boolean zeroFill) {
         this.zeroFill = zeroFill;
         super.putOriginalData("zeroFill", zeroFill);
     }
 
+    /**
+     * 是否填充零
+     *
+     * @return 是否填充零
+     */
     public boolean isZeroFill() {
         return BooleanUtil.isTrue(this.zeroFill);
     }
 
+    /**
+     * 设置主键长度
+     *
+     * @param primaryKeySize 主键长度
+     */
     public void setPrimaryKeySize(Integer primaryKeySize) {
         this.primaryKeySize = primaryKeySize;
         super.putOriginalData("primaryKeySize", primaryKeySize);
     }
 
+    /**
+     * 是否可为空
+     *
+     * @return 是否可为空
+     */
     public boolean isNullable() {
         return BooleanUtil.isTrue(this.nullable);
     }
@@ -512,6 +708,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         }
     }
 
+    /**
+     * 解析主键标识
+     *
+     * @param key 主键标识
+     */
     public void parseKey(String key) {
         if (StringUtil.isEmpty(key)) {
             return;
@@ -523,6 +724,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         }
     }
 
+    /**
+     * 是否存在默认值
+     *
+     * @return 是否存在默认值
+     */
     public boolean hasDefaultValue() {
         return this.defaultValue != null;
     }
@@ -532,10 +738,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         if (column != null) {
             this.setSize(column.size);
             this.setName(column.name);
-            this.setType(column.getType());
-            this.setValue(column.getValue());
+            this.setSchema(column.schema);
             this.setDigits(column.digits);
+            this.setType(column.getType());
             this.setComment(column.comment);
+            this.setValue(column.getValue());
             this.setNullable(column.nullable);
             this.setUnsigned(column.unsigned);
             this.setZeroFill(column.zeroFill);
@@ -544,22 +751,35 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
             this.setPrimaryKey(column.isPrimaryKey());
             this.setAutoIncrement(column.autoIncrement);
             this.setPrimaryKeySize(column.primaryKeySize);
+            this.setAutoIncrementType(column.autoIncrementType);
             this.setUpdateOnCurrentTimestamp(column.updateOnCurrentTimestamp);
         }
     }
 
+    @Override
     public String getSchema() {
         return schema;
     }
 
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
+    @Override
     public String getTableName() {
         return tableName;
     }
 
+    /**
+     * 设置表名称
+     *
+     * @param tableName 表名称
+     */
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
@@ -574,6 +794,11 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return this.typeProperty == null ? null : this.typeProperty.get();
     }
 
+    /**
+     * 获取字段类型属性
+     *
+     * @return 字段类型属性
+     */
     public StringProperty typeProperty() {
         if (this.typeProperty == null) {
             this.typeProperty = new SimpleStringProperty();
@@ -581,10 +806,20 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return typeProperty;
     }
 
+    /**
+     * 获取字段值
+     *
+     * @return 字段值
+     */
     public String getValue() {
         return this.valueProperty == null ? null : this.valueProperty.getValue();
     }
 
+    /**
+     * 获取字段值属性
+     *
+     * @return 字段值属性
+     */
     public StringProperty valueProperty() {
         if (this.valueProperty == null) {
             this.valueProperty = new SimpleStringProperty();
@@ -592,46 +827,93 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
         return valueProperty;
     }
 
+    /**
+     * 获取注释
+     *
+     * @return 注释
+     */
     public String getComment() {
         return comment;
     }
 
+    /**
+     * 获取是否可为空
+     *
+     * @return 是否可为空
+     */
     public Boolean getNullable() {
         return nullable;
     }
 
+    /**
+     * 获取是否无符号
+     *
+     * @return 是否无符号
+     */
     public Boolean getUnsigned() {
         return unsigned;
     }
 
+    /**
+     * 获取是否填充零
+     *
+     * @return 是否填充零
+     */
     public Boolean getZeroFill() {
         return zeroFill;
     }
 
+    /**
+     * 获取是否随当前时间戳更新
+     *
+     * @return 是否随当前时间戳更新
+     */
     public Boolean getUpdateOnCurrentTimestamp() {
         return updateOnCurrentTimestamp;
     }
 
+    /**
+     * 获取字段位置
+     *
+     * @return 字段位置
+     */
     public Integer getPosition() {
         return position == null ? 0 : position;
     }
 
+    /**
+     * 设置字段位置
+     *
+     * @param position 字段位置
+     */
     public void setPosition(Integer position) {
         this.position = position;
     }
 
+    /**
+     * 获取主键长度
+     *
+     * @return 主键长度
+     */
     public Integer getPrimaryKeySize() {
         return primaryKeySize;
     }
 
+    @Override
     public Object getDefaultValue() {
         return defaultValue;
     }
 
+    @Override
     public Integer getDigits() {
         return digits;
     }
 
+    /**
+     * 获取是否自动递增
+     *
+     * @return 是否自动递增
+     */
     public Boolean getAutoIncrement() {
         return autoIncrement;
     }

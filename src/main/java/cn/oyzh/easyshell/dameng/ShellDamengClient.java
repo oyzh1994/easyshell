@@ -57,10 +57,12 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.fx.db.DBClient;
+import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBConnManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -68,8 +70,6 @@ import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.sql.SQLUtils;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -93,7 +93,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 以及SQL执行、记录管理、索引/外键/检查约束管理等功能
  *
  * @author oyzh
- * @since 2023/11/06
+ * @since 2026-09-02
  */
 public class ShellDamengClient implements ShellBaseClient, DBClient {
 
@@ -209,9 +209,9 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     }
 
     /**
-     * 初始化连接
+     * 初始化连接主机地址
      *
-     * @return 连接
+     * @return 主机地址
      */
     private String initHost() {
         // 连接地址
@@ -384,12 +384,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     boolean isQuery = statement.execute(execSql);
                     if (isQuery) {
                         ResultSet resultSet = statement.getResultSet();
-                        if (parser.isSingle()) {
-                            result.setFullColumn(parser.isFullColumn());
-                        } else {
-                            result.setFullColumn(DBUtil.isFullColumn(this.dialect(), execSql));
-                        }
-                        result.parseResult(resultSet, connection, !parser.isSelect());
+                        result.setFullColumn(parser.isFullColumn(sql));
+                        result.parseResult(resultSet, connection, !parser.isSelect(sql));
                         IOUtil.close(resultSet);
                         result.setSuccess(true);
                     } else {
@@ -593,6 +589,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 查询触发器列表
+     *
+     * @param param 查询参数
+     * @return 触发器列表
+     */
     public DBObjects<DamengTrigger> selectTriggers(DamengSelectTriggerParam param) {
         try {
             //            String sql = """
@@ -659,18 +661,20 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 DamengTrigger trigger = new DamengTrigger();
                 String name = resultSet.getString("TRIGGER_NAME");
                 String type = resultSet.getString("TRIGGER_TYPE");
-                String definition = resultSet.getString("ACTION_STATEMENT");
+                String createDefinition = resultSet.getString("ACTION_STATEMENT");
                 String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
                 trigger.setName(name);
                 trigger.setSchema(schema);
                 trigger.setTableName(tableName);
-                trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(definition));
+                trigger.setCreateDefinition(createDefinition);
+                trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(createDefinition));
                 trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
                 list.add(trigger);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -874,6 +878,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return false;
     }
 
+    /**
+     * 是否支持检查约束特性
+     *
+     * @return 支持返回true，否则返回false
+     */
     public boolean isSupportCheckFeature() {
         return this.isSupportFeature(DBFeature.CHECK);
     }
@@ -885,9 +894,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         if (rs.next()) {
             newId = rs.getLong(1);
         } else {
+            Connection connection = statement.getConnection();
             IOUtil.close(statement);
             String sql = "SELECT @@IDENTITY FROM DUAL";
-            statement = statement.getConnection().createStatement();
+            statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
                 newId = resultSet.getLong(1);
@@ -896,6 +906,28 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         IOUtil.close(statement);
         IOUtil.close(rs);
         return newId;
+    }
+
+    /**
+     * 获取序列当前值
+     *
+     * @param statement 语句块
+     * @param column    字段
+     * @return 结果
+     * @throws Exception 异常
+     */
+    public Long getSequenceCurrVal(Statement statement, DBColumn column) throws Exception {
+        if (column.isDefaultValueSequence()) {
+            Connection connection = statement.getConnection();
+            IOUtil.close(statement);
+            String sql = "SELECT $SEQ.CURRVAL FROM DUAL".replace("$SEQ", column.getSequenceName());
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            }
+        }
+        return null;
     }
 
     //    public boolean isSupportEventFeature() {
@@ -928,6 +960,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTables(param);
     }
 
+    /**
+     * 查询表列表
+     *
+     * @param param 查询参数
+     * @return 表列表
+     */
     public List<DamengTable> selectTables(DamengSelectTableParam param) {
         try {
             String schema = param.getSchema();
@@ -970,6 +1008,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(tables);
             return tables;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1012,6 +1051,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        }
     //    }
 
+    /**
+     * 查询字段列表
+     *
+     * @param param 查询参数
+     * @return 字段列表
+     */
     public List<DamengColumn> selectColumns(DamengSelectColumnParam param) {
         try {
             String schema = param.getSchema();
@@ -1129,26 +1174,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 column.setDefaultValue(def);
                 column.setPosition(position);
                 column.setTableName(tableName);
-                //                column.setAutoIncrement(autoIncrement);
                 column.setNullable("yes".equalsIgnoreCase(nullable));
                 columns.add(column);
             }
             IOUtil.close(resultSet);
-
-            // 判断自增
-            DatabaseMetaData dbmd = connection.getMetaData();
-            resultSet = dbmd.getColumns(null, schema, tableName, null);
-            DBUtil.printMetaData(resultSet);
-            while (resultSet.next()) {
-                String columnName = resultSet.getString("COLUMN_NAME");
-                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-                boolean isIdentity = "YES".equals(isAutoIncrement);
-                DamengColumn column = columns.column(columnName);
-                if (column != null && isIdentity) {
-                    column.setAutoIncrement(isIdentity);
-                }
-            }
-            IOUtil.close(resultSet);
+            // 初始化自动递增
+            this.initAutoIncrement(connection, schema, tableName, columns, false);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
@@ -1157,6 +1188,51 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 初始化自动递增
+     *
+     * @param connection 连接
+     * @param schema     模式
+     * @param name       名称
+     * @param columns    字段列表
+     * @throws SQLException 异常
+     */
+    private void initAutoIncrement(Connection connection, String schema, String name, DamengColumns columns, boolean isView) throws SQLException {
+        // 判断自增
+        DatabaseMetaData dbmd = connection.getMetaData();
+        ResultSet resultSet = dbmd.getColumns(null, schema, name, null);
+        DBUtil.printMetaData(resultSet);
+        while (resultSet.next()) {
+            String columnName = resultSet.getString("COLUMN_NAME");
+            String isNullable = resultSet.getString("IS_NULLABLE");
+            String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+            boolean isIdentity = !StringUtil.equalsIgnoreCase(isNullable, "YES") && StringUtil.equalsIgnoreCase(isAutoIncrement, "YES");
+            DamengColumn column = columns.column(columnName);
+            if (column != null && isIdentity) {
+                column.setAutoIncrement(isIdentity);
+                if (!isView) {
+                    try {
+                        String ddl = this.showCreateTable(schema, name);
+                        if (ddl.toUpperCase().contains("IDENTITY")) {
+                            column.setAutoIncrementType("IDENTITY");
+                        } else if (ddl.toUpperCase().contains("AUTO_INCREMENT")) {
+                            column.setAutoIncrementType("AUTO_INCREMENT");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        IOUtil.close(resultSet);
+    }
+
+    /**
+     * 查询记录列表
+     *
+     * @param param 查询参数
+     * @return 记录列表
+     */
     public List<DamengRecord> selectRecords(DamengSelectRecordParam param) {
         try {
             Connection connection = this.getConnManager().connection(param.getSchema());
@@ -1205,11 +1281,17 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询记录总数
+     *
+     * @param param 查询参数
+     * @return 记录总数
+     */
     public long selectRecordCount(DamengSelectRecordParam param) {
         long count = 0;
         try {
             Connection connection = this.getConnManager().connection(param.getSchema());
-            StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM");
+            StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ");
             builder.append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG));
             String filterCondition = DamengConditionUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
@@ -1231,6 +1313,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return count;
     }
 
+    /**
+     * 新增记录
+     *
+     * @param param 新增参数
+     * @return 受影响的行数
+     */
     public int insertRecord(DamengInsertRecordParam param) {
         if (param == null || param.getRecord() == null) {
             return 0;
@@ -1241,32 +1329,48 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     .append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG))
                     .append("(");
             for (String column : param.getRecord().columns()) {
+                // 序列
+                if (param.getRecord().isDefaultValueSequence(column)) {
+                    continue;
+                }
                 builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(",");
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
             for (String column : param.getRecord().columns()) {
-                //                if (param.getRecord().isTypeGeometry(column)) {
-                //                    builder.append("ST_GeomFromText(?),");
-                //                } else {
+                // 序列
+                if (param.getRecord().isDefaultValueSequence(column)) {
+                    continue;
+                }
                 builder.append("?,");
-                //                }
             }
+            StringUtil.deleteLast(builder);
             builder.append(")");
             String sql = builder.toString();
-            sql = sql.replaceAll(",\\)", ")");
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(param.getSchema());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
-            for (String colName : param.getRecord().columns()) {
-                DBUtil.setVal(statement, param.getRecord().value(colName), index++);
+            for (String column : param.getRecord().columns()) {
+                // 序列
+                if (param.getRecord().isDefaultValueSequence(column)) {
+                    continue;
+                }
+                DBUtil.setVal(statement, param.getRecord().value(column), index++);
             }
             int count = statement.executeUpdate();
             DamengRecordPrimaryKey primaryKey = param.getPrimaryKey();
             // 处理自动递增值
-            if (primaryKey != null && primaryKey.shouldReturnData()) {
-                Long newId = this.getGeneratedKeys(statement);
+            if (primaryKey != null) {
+                Long newId;
+                // 正常主键
+                if (primaryKey.shouldReturnData()) {
+                    newId = this.getGeneratedKeys(statement);
+                } else {// 处理序列值
+                    newId = this.getSequenceCurrVal(statement, primaryKey.getColumn());
+                    primaryKey.setData(newId);
+                }
                 primaryKey.setReturnData(newId);
             }
             IOUtil.close(statement);
@@ -1277,6 +1381,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除记录
+     *
+     * @param param 删除参数
+     * @return 受影响的行数
+     */
     public int deleteRecord(DamengDeleteRecordParam param) {
         try {
             int updateCount;
@@ -1331,6 +1441,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改记录
+     *
+     * @param param 修改参数
+     * @return 受影响的行数
+     */
     public int updateRecord(DamengUpdateRecordParam param) {
         try {
             int updateCount;
@@ -1364,6 +1480,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(" = ?");
                     }
                 }
+                builder.append(" LIMIT 1");
                 int index = 1;
                 String sql = builder.toString();
                 this.printSql(sql);
@@ -1384,6 +1501,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             } else {
                 DamengRecordPrimaryKey primaryKey = param.getPrimaryKey();
                 builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.DAMENG)).append(" = ?");
+                builder.append(" LIMIT 1");
                 String sql = builder.toString();
                 DBUtil.printInfo(sql, recordData);
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -1404,6 +1522,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建表语句
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 建表语句
+     */
     public String showCreateTable(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1425,6 +1550,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建视图语句
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 建视图语句
+     */
     public String showCreateView(String schema, String viewName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1446,6 +1578,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建函数语句
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 建函数语句
+     */
     public String showCreateFunction(String schema, String functionName) {
         try {
             Connection connection = this.getConnManager().functionConnection(schema);
@@ -1467,6 +1606,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建过程语句
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 建过程语句
+     */
     public String showCreateProcedure(String schema, String procedureName) {
         try {
             Connection connection = this.getConnManager().procedureConnection(schema);
@@ -1488,6 +1634,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询建触发器语句
+     *
+     * @param schema      模式名称
+     * @param triggerName 触发器名称
+     * @return 建触发器语句
+     */
     public String showCreateTrigger(String schema, String triggerName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1553,7 +1706,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //                    ORDER BY 1
             //                    """;
 
-            ResultSet resultSet = null;
             List<DamengSchema> list = new ArrayList<>();
             String sql;
             //            if (this.isDbaRole()) {
@@ -1563,7 +1715,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             //                sql = "SELECT SF_GET_SCHEMA_NAME_BY_ID(CURRENT_SCHID);";
             //            }
             this.printSql(sql);
-            resultSet = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 DamengSchema schema = new DamengSchema();
                 String name = resultSet.getString(1);
@@ -1572,6 +1724,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1579,6 +1732,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询模式信息
+     *
+     * @param schema 模式名称
+     * @return 模式对象
+     */
     public DamengSchema schema(String schema) {
         try {
             DamengSchema dbSchema = new DamengSchema();
@@ -1590,6 +1749,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询表信息(完整信息)
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 表对象
+     */
     public DamengTable selectTable(String schema, String tableName) {
         DamengSelectTableParam param = new DamengSelectTableParam();
         param.setFull(true);
@@ -1598,6 +1764,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTable(param);
     }
 
+    /**
+     * 查询表信息(简要信息)
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 表对象
+     */
     public DamengTable selectTableSimple(String schema, String tableName) {
         DamengSelectTableParam param = new DamengSelectTableParam();
         param.setFull(false);
@@ -1606,6 +1779,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTable(param);
     }
 
+    /**
+     * 查询表信息
+     *
+     * @param param 查询参数
+     * @return 表对象
+     */
     public DamengTable selectTable(DamengSelectTableParam param) {
         try {
             String schema = param.getSchema();
@@ -1655,6 +1834,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图信息(完整信息)
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 视图对象
+     */
     public DamengView selectView(String schema, String viewName) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(true);
@@ -1663,6 +1849,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectView(param);
     }
 
+    /**
+     * 查询视图信息(简要信息)
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 视图对象
+     */
     public DamengView selectViewSimple(String schema, String viewName) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(false);
@@ -1671,6 +1864,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectView(param);
     }
 
+    /**
+     * 查询视图信息
+     *
+     * @param param 查询参数
+     * @return 视图对象
+     */
     public DamengView selectView(DamengSelectViewParam param) {
         try {
             String schema = param.getSchema();
@@ -1714,15 +1913,17 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (readOnly == null) {
-                    view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, viewName));
-                } else {
-                    view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                    readOnly = ShellDamengHelper.getViewReadOnly(connection, schema, viewName);
+                }
+                if (readOnly == null) {
+                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
                 }
                 view.setName(name);
                 view.setSchema(schema);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
                 view.setCreateDefinition(createDefinition);
+                view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
@@ -1734,6 +1935,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图列表(完整信息)
+     *
+     * @param schema 模式名称
+     * @return 视图列表
+     */
     public List<DamengView> selectViews(String schema) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(true);
@@ -1741,6 +1948,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectViews(param);
     }
 
+    /**
+     * 查询视图列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 视图列表
+     */
     public List<DamengView> selectViewsSimple(String schema) {
         DamengSelectViewParam param = new DamengSelectViewParam();
         param.setFull(false);
@@ -1748,6 +1961,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectViews(param);
     }
 
+    /**
+     * 查询视图列表
+     *
+     * @param param 查询参数
+     * @return 视图列表
+     */
     public List<DamengView> selectViews(DamengSelectViewParam param) {
         try {
             String schema = param.getSchema();
@@ -1787,9 +2006,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (readOnly == null) {
-                    view.setUpdatable(ShellDamengHelper.isViewUpdatable(connection, schema, name));
-                } else {
-                    view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                    readOnly = ShellDamengHelper.getViewReadOnly(connection, schema, name);
+                }
+                if (readOnly == null) {
+                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
                 }
                 view.setSchema(schema);
                 view.setName(name);
@@ -1802,6 +2022,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1809,6 +2030,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除视图
+     *
+     * @param view 视图
+     */
     public void dropView(DamengView view) {
         try {
             String sql = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getSchema(), view.getName(), DBDialect.DAMENG);
@@ -1822,6 +2048,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 判断视图是否存在
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 存在返回true，否则返回false
+     */
     public boolean existView(String schema, String viewName) {
         boolean result;
         try {
@@ -1905,6 +2138,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询索引列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 索引列表
+     */
     public List<DamengIndex> indexes(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -1968,6 +2208,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询检查约束列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 检查约束列表
+     */
     public List<DamengCheck> selectChecks(String schema, String tableName) {
         if (!this.isSupportCheckFeature()) {
             return null;
@@ -2006,6 +2253,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 checks.add(check);
             }
             IOUtil.close(resultSet);
+            DBName.sortItems(checks);
             return checks;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2023,7 +2271,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = """
                     SELECT
-                        ACR.TABLE_NAME AS "PKTABLE_NAME"
+                        AC.TABLE_NAME AS "FKTABLE_NAME"
                     FROM 
                         ALL_CONSTRAINTS AC
                     JOIN 
@@ -2051,18 +2299,17 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     AND 
                         AC.OWNER = ?
                     GROUP BY 
-                        ACR.TABLE_NAME
+                        AC.TABLE_NAME
                     """;
             this.printSql(sql);
             PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
             statement.setString(1, schema);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
-            Map<String, DamengForeignKey> foreignKeyMap = new HashMap<>();
             List<String> tables = new ArrayList<>();
             while (resultSet.next()) {
-                String pkTableName = resultSet.getString("PKTABLE_NAME");
-                tables.add(pkTableName);
+                String fkTableName = resultSet.getString("FKTABLE_NAME");
+                tables.add(fkTableName);
             }
             IOUtil.close(resultSet);
             return tables;
@@ -2072,6 +2319,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询外键列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 外键列表
+     */
     public List<DamengForeignKey> selectForeignKeys(String schema, String tableName) {
         try {
             String sql = """
@@ -2148,205 +2402,104 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询视图字段列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 字段列表
+     */
     public List<DamengColumn> viewColumns(String schema, String viewName) {
-        //        try {
-        //            if (StringUtil.isBlank(viewName)) {
-        //                return Collections.emptyList();
-        //            }
-        //            //            String sql = """
-        //            //                    SELECT
-        //            //                        C.COLUMN_NAME AS "COLUMN_NAME",
-        //            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "IS_NULLABLE",
-        //            //                        C.DATA_TYPE AS "COLUMN_TYPE",
-        //            //                        CC.COMMENT$ AS "REMARKS",
-        //            //                        C.DATA_DEFAULT AS "COLUMN_DEF",
-        //            //                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "COLUMN_KEY",
-        //            //                        C.COLUMN_ID AS ORDINAL_POSITION
-        //            //                    FROM
-        //            //                        ALL_TAB_COLUMNS C
-        //            //                    LEFT JOIN
-        //            //                        SYS.SYSCOLUMNCOMMENTS CC
-        //            //                    ON
-        //            //                        C.OWNER = CC.SCHNAME
-        //            //                    AND
-        //            //                        C.TABLE_NAME = CC.TVNAME
-        //            //                    AND
-        //            //                        C.COLUMN_NAME = CC.COLNAME
-        //            //                    LEFT JOIN
-        //            //                        ALL_CONS_COLUMNS CONS
-        //            //                    ON
-        //            //                        C.OWNER = CONS.OWNER
-        //            //                    AND
-        //            //                        C.TABLE_NAME = CONS.TABLE_NAME
-        //            //                    AND
-        //            //                        C.COLUMN_NAME = CONS.COLUMN_NAME
-        //            //                    AND
-        //            //                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
-        //            //                    WHERE
-        //            //                        C.OWNER = ?
-        //            //                    AND
-        //            //                        C.TABLE_NAME = ?
-        //            //                    ORDER BY
-        //            //                        C.COLUMN_ID
-        //            //                    """;
-        //            String sql = """
-        //                    SELECT
-        //                        C.COLUMN_ID AS "POSITION",
-        //                        C.COLUMN_NAME AS "Field",
-        //                        C.DATA_SCALE AS "DATA_SCALE",
-        //                        C.DATA_LENGTH AS "DATA_LENGTH",
-        //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
-        //                        C.DATA_TYPE AS "Type",
-        //                        CC.COMMENTS AS "Comment",
-        //                        C.DATA_DEFAULT AS "Default",
-        //                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
-        //                    FROM
-        //                        ALL_TAB_COLUMNS C
-        //                    LEFT JOIN
-        //                        ALL_COL_COMMENTS CC
-        //                    ON
-        //                        C.OWNER = CC.OWNER
-        //                    AND
-        //                        C.TABLE_NAME = CC.TABLE_NAME
-        //                    AND
-        //                        C.COLUMN_NAME = CC.COLUMN_NAME
-        //                    LEFT JOIN
-        //                        ALL_CONS_COLUMNS CONS
-        //                    ON
-        //                        C.OWNER = CONS.OWNER
-        //                    AND
-        //                        C.TABLE_NAME = CONS.TABLE_NAME
-        //                    AND
-        //                        C.COLUMN_NAME = CONS.COLUMN_NAME
-        //                    AND
-        //                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
-        //                    WHERE
-        //                        C.OWNER = ?
-        //                    AND
-        //                        C.TABLE_NAME = ?
-        //                    """;
-        //            //            String sql = """
-        //            //                    SELECT
-        //            //                        '' AS COLUMN_EXTRA,
-        //            //                        NULL AS COLUMN_KEY,
-        //            //                        CC.COMMENTS AS REMARKS,
-        //            //                        C.DATA_TYPE AS COLUMN_TYPE,
-        //            //                        C.COLUMN_NAME AS COLUMN_NAME,
-        //            //                        CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS IS_NULLABLE,
-        //            //                        C.DATA_DEFAULT AS COLUMN_DEF,
-        //            //                        NULL AS COLLATION_NAME,
-        //            //                        NULL AS CHARSET_NAME,
-        //            //                        C.COLUMN_ID AS ORDINAL_POSITION
-        //            //                    FROM
-        //            //                        ALL_TAB_COLUMNS C
-        //            //                    LEFT JOIN
-        //            //                        ALL_COL_COMMENTS CC ON C.OWNER=CC.OWNER AND C.TABLE_NAME=CC.TABLE_NAME AND C.COLUMN_NAME=CC.COLUMN_NAME
-        //            //                    WHERE
-        //            //                        C.OWNER = ?
-        //            //                    AND
-        //            //                        C.TABLE_NAME = ?
-        //            //                    ORDER BY
-        //            //                        C.COLUMN_ID
-        //            //                    """;
-        //            this.printSql(sql);
-        //            Connection connection = this.getConnManager().connection(schema);
-        //            PreparedStatement statement = connection.prepareStatement(sql);
-        //            statement.setString(1, schema);
-        //            statement.setString(2, viewName);
-        //            ResultSet resultSet = statement.executeQuery();
-        //            // 打印元数据
-        //            DBUtil.printMetaData(resultSet);
-        //            DatabaseMetaData metaData = connection.getMetaData();
-        //            Map<String, DamengColumn> columns = new HashMap<>();
-        //            while (resultSet.next()) {
-        //                String key = resultSet.getString("Key");
-        //                String type = resultSet.getString("Type");
-        //                String field = resultSet.getString("Field");
-        //                Object def = resultSet.getObject("Default");
-        //                int position = resultSet.getInt("POSITION");
-        //                String nullable = resultSet.getString("Null");
-        //                int dataScale = resultSet.getInt("DATA_SCALE");
-        //                String comment = resultSet.getString("Comment");
-        //                int dataLength = resultSet.getInt("DATA_LENGTH");
-        //                // 自动递增
-        //                Boolean autoIncrement = null;
-        //                ResultSet rs = metaData.getColumns(null, null, viewName, field);
-        //                if (rs.next()) {
-        //                    autoIncrement = StringUtil.equalsIgnoreCase("YES", rs.getString("IS_AUTOINCREMENT"));
-        //                }
-        //                IOUtil.close(rs);
-        //                DamengColumn column = new DamengColumn();
-        //                column.parseKey(key);
-        //                column.setName(field);
-        //                column.setSize(dataLength);
-        //                column.setDigits(dataScale);
-        //                column.setType(type);
-        //                column.setSchema(schema);
-        //                column.setComment(comment);
-        //                column.setDefaultValue(def);
-        //                column.setPosition(position);
-        //                column.setTableName(viewName);
-        //                column.setAutoIncrement(autoIncrement);
-        //                column.setNullable("yes".equalsIgnoreCase(nullable));
-        //                columns.put(column.getName(), column);
-        //            }
-        //            IOUtil.close(resultSet);
-        //            IOUtil.close(statement);
-        //
-        //            sql = "SELECT * FROM " + DBUtil.wrap(schema, viewName, DBDialect.DAMENG) + " FETCH FIRST 1 ROWS ONLY";
-        //            this.printSql(sql);
-        //            PreparedStatement statement1 = this.getConnManager().connection(schema).prepareStatement(sql);
-        //            ResultSet resultSet1 = statement1.executeQuery();
-        //            DBUtil.printMetaData(resultSet1);
-        //            DamengColumns dbColumns = DamengHelper.parseColumns(resultSet1);
-        //            IOUtil.close(resultSet1);
-        //            IOUtil.close(statement1);
-        //
-        //            // 初始化状态
-        //            for (DamengColumn value : columns.values()) {
-        //                DamengColumn dbColumn = dbColumns.column(value.getName());
-        //                if (dbColumn != null) {
-        //                    value.setNullable(dbColumn.isNullable());
-        //                    value.setAutoIncrement(dbColumn.isAutoIncrement());
-        //                }
-        //                value.setTableName(viewName);
-        //                value.initStatus();
-        //            }
-        //            // 返回排序后的数据
-        //            return CollectionUtil.sort(columns.values(), Comparator.comparingInt(DamengColumn::getPosition));
-        //        } catch (Exception ex) {
-        //            ex.printStackTrace();
-        //            throw new ShellException(ex);
-        //        }
-
-        DamengSelectColumnParam param = new DamengSelectColumnParam();
-        param.setSchema(schema);
-        param.setTableName(viewName);
-        DamengColumns columns = new DamengColumns(this.selectColumns(param));
         try {
-            Connection conn = this.getConnManager().connection(schema);
-            // 2. 获取 DatabaseMetaData 对象
-            DatabaseMetaData dbmd = conn.getMetaData();
-            ResultSet resultSet = dbmd.getColumns(null, schema, viewName, null);
+            DamengColumns columns = new DamengColumns();
+            String sql = """
+                    SELECT
+                        C.DATA_TYPE AS "Type",
+                        C.COLUMN_NAME AS "Field",
+                        CC.COMMENTS AS "Comment",
+                        C.COLUMN_ID AS "POSITION",
+                        C.DATA_DEFAULT AS "Default",
+                        C.DATA_SCALE AS "DATA_SCALE",
+                        C.DATA_LENGTH AS "DATA_LENGTH",
+                        CASE WHEN C.NULLABLE = 'Y' THEN 'YES' ELSE 'NO' END AS "Null",
+                        CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
+                    FROM
+                        ALL_TAB_COLUMNS C
+                    LEFT JOIN
+                        ALL_COL_COMMENTS CC
+                    ON
+                        C.OWNER = CC.SCHEMA_NAME
+                    AND
+                        C.TABLE_NAME = CC.TABLE_NAME
+                    AND
+                        C.COLUMN_NAME = CC.COLUMN_NAME
+                    LEFT JOIN
+                        ALL_CONS_COLUMNS CONS
+                    ON
+                        C.OWNER = CONS.OWNER
+                    AND
+                        C.TABLE_NAME = CONS.TABLE_NAME
+                    AND
+                        C.COLUMN_NAME = CONS.COLUMN_NAME
+                    AND
+                        EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER = CONS.OWNER AND AC.CONSTRAINT_NAME = CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE = 'P')
+                    WHERE
+                        C.OWNER = ?
+                    AND
+                        C.TABLE_NAME = ?
+                    """;
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
-                // 关键: 读取 IS_AUTOINCREMENT 列
-                String columnName = resultSet.getString("COLUMN_NAME");
-                String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
-                boolean isIdentity = "YES".equals(isAutoIncrement);
-                DamengColumn column = columns.column(columnName);
-                column.setAutoIncrement(isIdentity);
+                String key = resultSet.getString("Key");
+                String type = resultSet.getString("Type");
+                String field = resultSet.getString("Field");
+                Object def = resultSet.getObject("Default");
+                int position = resultSet.getInt("POSITION");
+                String nullable = resultSet.getString("Null");
+                int dataScale = resultSet.getInt("DATA_SCALE");
+                String comment = resultSet.getString("Comment");
+                int dataLength = resultSet.getInt("DATA_LENGTH");
+                DamengColumn column = new DamengColumn();
+                column.parseKey(key);
+                column.setName(field);
+                column.setSize(dataLength);
+                column.setDigits(dataScale);
+                column.setType(type);
+                column.setSchema(schema);
+                column.setComment(comment);
+                column.setDefaultValue(def);
+                column.setPosition(position);
+                column.setTableName(viewName);
+                column.setNullable("yes".equalsIgnoreCase(nullable));
+                columns.add(column);
             }
             IOUtil.close(resultSet);
+            // 初始化自动递增
+            this.initAutoIncrement(connection, schema, viewName, columns, true);
+            // 返回排序后的数据
+            return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
-        return columns;
     }
 
-    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long
-            limit, List<DamengRecordFilter> filters) {
+    /**
+     * 查询视图记录列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    查询条数
+     * @param filters  过滤条件
+     * @return 记录列表
+     */
+    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<DamengRecordFilter> filters) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -2389,6 +2542,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 创建表
+     *
+     * @param param 创建参数
+     */
     public void createTable(DamengCreateTableParam param) {
         Connection connection = null;
         try {
@@ -2410,6 +2568,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改表
+     *
+     * @param param 修改参数
+     */
     public void alertTable(DamengAlertTableParam param) {
         Connection connection = null;
         try {
@@ -2457,6 +2620,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //        return result;
     //    }
 
+    /**
+     * 重命名表
+     *
+     * @param schema       模式名称
+     * @param oldTableName 原表名称
+     * @param newTableName 新表名称
+     */
     public void renameTable(String schema, String oldTableName, String newTableName) {
         try {
             String sql = "ALTER TABLE " + DBUtil.wrap(schema, oldTableName, DBDialect.DAMENG)
@@ -2470,6 +2640,44 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 重命名视图
+     *
+     * @param schema      模式名称
+     * @param oldViewName 原视图名称
+     * @param newViewName 新视图名称
+     */
+    public void renameView(String schema, String oldViewName, String newViewName) {
+        try {
+            // 查询
+            DamengView view = this.selectView(schema, oldViewName);
+            view.setName(newViewName);
+            DamengCreateViewParam param = new DamengCreateViewParam();
+            param.setSchema(schema);
+            param.setView(view);
+            // 创建新的
+            this.createView(param);
+            view.setName(oldViewName);
+            // 删除旧的
+            this.dropView(view);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+        //try {
+        //String sql = "ALTER VIEW " + DBUtil.wrap(schema, oldViewName, DBDialect.DAMENG)
+        //        + " RENAME TO " + DBUtil.wrap(schema, newViewName, DBDialect.DAMENG);
+        //Connection connection = this.getConnManager().connection(schema);
+        //Statement statement = connection.createStatement();
+        //this.printSql(sql);
+        //statement.execute(sql);
+        //IOUtil.close(statement);
+        //} catch (Exception ex) {
+        //    ex.printStackTrace();
+        //    throw new ShellException(ex);
+        //}
     }
 
     /**
@@ -2512,6 +2720,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 清空表数据
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     */
     public void clearTable(String schema, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(schema).createStatement();
@@ -2525,6 +2739,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 截断表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     */
     public void truncateTable(String schema, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(schema).createStatement();
@@ -2538,6 +2758,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     */
     public void dropTable(String schema, String tableName) {
         try {
             Statement statement = this.getConnManager().connection(schema).createStatement();
@@ -2551,47 +2777,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    //    public List<String> charsets() {
-    //        if (this.hasProperty("charsets")) {
-    //            return this.getProperty("charsets");
-    //        }
-    //        try {
-    //            // 达梦常用字符集列表（系统视图查询可能因版本差异失败，直接返回静态列表）
-    //            List<String> charsets = new ArrayList<>();
-    //            charsets.add("UTF-8");
-    //            charsets.add("GBK");
-    //            charsets.add("GB18030");
-    //            charsets.add("GB2312");
-    //            charsets.add("ISO-8859-1");
-    //            this.putProperty("charsets", charsets);
-    //            return charsets;
-    //        } catch (Exception ex) {
-    //            throw new ShellException(ex);
-    //        }
-    //    }
-
-    //    public List<String> collation(String charset) {
-    //        try {
-    //            Map<String, List<String>> collations = this.getProperty("collation");
-    //            if (collations == null) {
-    //                collations = new HashMap<>();
-    //                this.putProperty("collations", collations);
-    //            }
-    //            charset = charset.toUpperCase();
-    //            if (collations.containsKey(charset)) {
-    //                return collations.get(charset.toUpperCase());
-    //            }
-    //            // 达梦排序规则：返回默认列表
-    //            List<String> list = new ArrayList<>();
-    //            list.add("BINARY");
-    //            list.add("BINARY_CI");
-    //            collations.put(charset, list);
-    //            return list;
-    //        } catch (Exception ex) {
-    //            throw new ShellException(ex);
-    //        }
-    //    }
-
+    /**
+     * 判断模式是否存在
+     *
+     * @param schema 模式名称
+     * @return 存在返回true，否则返回false
+     */
     public boolean existSchema(String schema) {
         boolean result = false;
         try {
@@ -2616,6 +2807,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return result;
     }
 
+    /**
+     * 创建模式
+     *
+     * @param schema 模式
+     */
     public void createSchema(DamengSchema schema) {
         try {
             StringBuilder builder = new StringBuilder("CREATE SCHEMA ");
@@ -2631,6 +2827,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 修改模式
+     *
+     * @param schema 模式
+     * @return 修改成功返回true，否则返回false
+     */
     public boolean alterSchema(DamengSchema schema) {
         try {
             return true;
@@ -2639,6 +2841,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除模式
+     *
+     * @param schema 模式名称
+     * @return 删除成功返回true，否则返回false
+     */
     public boolean dropSchema(String schema) {
         try {
             String sql = "DROP SCHEMA " + DBUtil.wrap(schema, DBDialect.DAMENG) + " CASCADE";
@@ -2652,6 +2860,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 解释SQL
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     * @return 执行计划结果
+     */
     public DBQueryResults<DamengExplainResult> explainSql(String schema, String sql) {
         DBQueryResults<DamengExplainResult> results = new DBQueryResults<>();
         Connection connection = null;
@@ -2687,6 +2902,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return results;
     }
 
+    /**
+     * 执行单条SQL
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     * @return 执行结果
+     */
     public DamengExecuteResult executeSingleSql(String schema, String sql) {
         Connection connection = null;
         DamengExecuteResult result = new DamengExecuteResult();
@@ -2702,12 +2924,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 boolean isQuery = statement.execute(execSql);
                 if (isQuery) {
                     ResultSet resultSet = statement.getResultSet();
-                    if (parser.isSingle()) {
-                        result.setFullColumn(parser.isFullColumn());
-                    } else {
-                        result.setFullColumn(DBUtil.isFullColumn(this.dialect(), execSql));
-                    }
-                    result.parseResult(resultSet, connection, !parser.isSelect());
+                    result.setFullColumn(parser.isFullColumn(sql));
+                    result.parseResult(resultSet, connection, !parser.isSelect(sql));
                     IOUtil.close(resultSet);
                     result.setSuccess(true);
                 } else {
@@ -2730,6 +2948,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return result;
     }
 
+    /**
+     * 简单执行SQL
+     *
+     * @param schema 模式名称
+     * @param sql    SQL语句
+     */
     public void executeSqlSimple(String schema, String sql) {
         Connection connection = null;
         try {
@@ -2748,6 +2972,14 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 批量插入
+     *
+     * @param schema   模式名称
+     * @param sqlList  SQL列表
+     * @param parallel 是否使用独立连接并行执行
+     * @return 受影响的行数
+     */
     public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
         Connection connection = null;
         int result = 0;
@@ -2769,19 +3001,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 result += i;
             }
         } catch (Exception ex) {
-            //            if (ExceptionUtil.hasMessage(ex, "SET IDENTITY_INSERT")) {
-            //
-            //            }
             JulLog.warn("sqlList:{}", sqlList);
             ex.printStackTrace();
             DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
         return result;
-    }
-
-    public DbType dbType() {
-        return DBDialect.DAMENG.dbType();
     }
 
     @Override
@@ -2802,6 +3027,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectFunctions(param);
     }
 
+    /**
+     * 查询函数列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 函数列表
+     */
     public List<DamengFunction> selectFunctionsSimple(String schema) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(false);
@@ -2809,6 +3040,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectFunctions(param);
     }
 
+    /**
+     * 查询函数列表
+     *
+     * @param param 查询参数
+     * @return 函数列表
+     */
     public List<DamengFunction> selectFunctions(DamengSelectFunctionParam param) {
         try {
             String schema = param.getSchema();
@@ -2884,6 +3121,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
@@ -2903,6 +3141,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedures(param);
     }
 
+    /**
+     * 查询存储过程列表(简要信息)
+     *
+     * @param schema 模式名称
+     * @return 存储过程列表
+     */
     public List<DamengProcedure> selectProceduresSimple(String schema) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(false);
@@ -2910,6 +3154,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedures(param);
     }
 
+    /**
+     * 查询存储过程列表
+     *
+     * @param param 查询参数
+     * @return 存储过程列表
+     */
     public List<DamengProcedure> selectProcedures(DamengSelectProcedureParam param) {
         try {
             String schema = param.getSchema();
@@ -2981,12 +3231,20 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
 
+    /**
+     * 查询存储过程信息(完整信息)
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 存储过程对象
+     */
     public DamengProcedure selectProcedure(String schema, String procedureName) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(true);
@@ -2995,6 +3253,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedure(param);
     }
 
+    /**
+     * 查询存储过程信息(简要信息)
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 存储过程对象
+     */
     public DamengProcedure selectProcedureSimple(String schema, String procedureName) {
         DamengSelectProcedureParam param = new DamengSelectProcedureParam();
         param.setFull(false);
@@ -3003,6 +3268,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectProcedure(param);
     }
 
+    /**
+     * 查询存储过程信息
+     *
+     * @param param 查询参数
+     * @return 存储过程对象
+     */
     public DamengProcedure selectProcedure(DamengSelectProcedureParam param) {
         try {
             String schema = param.getSchema();
@@ -3082,6 +3353,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除存储过程
+     *
+     * @param routine 存储过程
+     */
     public void dropProcedure(DamengProcedure routine) {
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(routine.getSchema(), routine.getName(), DBDialect.DAMENG);
@@ -3131,6 +3407,11 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 删除函数
+     *
+     * @param function 函数
+     */
     public void dropFunction(DamengFunction function) {
         try {
             String sql = "DROP function IF EXISTS " + DBUtil.wrap(function.getSchema(), function.getName(), DBDialect.DAMENG);
@@ -3144,6 +3425,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询函数信息(完整信息)
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 函数对象
+     */
     public DamengFunction selectFunction(String schema, String functionName) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(true);
@@ -3152,6 +3440,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectFunction(param);
     }
 
+    /**
+     * 查询函数信息(简要信息)
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 函数对象
+     */
     public DamengFunction selectFunctionSimple(String schema, String functionName) {
         DamengSelectFunctionParam param = new DamengSelectFunctionParam();
         param.setFull(false);
@@ -3263,6 +3558,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询单条记录
+     *
+     * @param param 查询参数
+     * @return 记录对象
+     */
     public DamengRecord selectRecord(DamengSelectRecordParam param) {
         try {
             String schema = param.getSchema();
@@ -3296,11 +3597,23 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询客户端字符集
+     *
+     * @return 字符集
+     */
     public String selectClientCharacter() {
         // 达梦客户端字符集，返回默认值
         return "UTF-8";
     }
 
+    /**
+     * 判断表是否存在自增列
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 存在返回true，否则返回false
+     */
     public boolean existAutoIncrement(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3351,6 +3664,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    /**
+     * 查询主键约束列表
+     *
+     * @param schema    模式名称
+     * @param tableName 表名称
+     * @return 主键约束名称列表
+     */
     public List<String> selectePrimaryKeys(String schema, String tableName) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3498,7 +3818,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public void cloneView(String schema, String viewName, String newViewName) {
         String sql = this.showCreateView(schema, viewName);
         try {
-            sql = sql.replace("VIEW `" + viewName + "`", "VIEW `" + newViewName + "`");
+            sql = sql.replace("VIEW " + DBUtil.wrap(viewName, DBDialect.DAMENG), "VIEW " + DBUtil.wrap(newViewName, DBDialect.DAMENG));
+            sql = sql.replace("VIEW " + DBUtil.wrap(schema, viewName, DBDialect.DAMENG), "VIEW " + DBUtil.wrap(schema, newViewName, DBDialect.DAMENG));
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3520,7 +3841,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public void cloneFunction(String schema, String functionName, String newFunctionName) {
         String sql = this.showCreateFunction(schema, functionName);
         try {
-            sql = sql.replace("FUNCTION `" + functionName + "`", "FUNCTION `" + newFunctionName + "`");
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.DAMENG), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.DAMENG));
+            sql = sql.replace("FUNCTION " + DBUtil.wrap(schema, functionName, DBDialect.DAMENG), "FUNCTION " + DBUtil.wrap(schema, newFunctionName, DBDialect.DAMENG));
             this.printSql(sql);
             Connection connection = this.getConnManager().functionConnection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3542,7 +3864,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public void cloneProcedure(String schema, String procedureName, String newProcedureName) {
         String sql = this.showCreateProcedure(schema, procedureName);
         try {
-            sql = sql.replace("PROCEDURE `" + procedureName + "`", "PROCEDURE `" + newProcedureName + "`");
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.DAMENG), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.DAMENG));
+            sql = sql.replace("PROCEDURE " + DBUtil.wrap(schema, procedureName, DBDialect.DAMENG), "PROCEDURE " + DBUtil.wrap(schema, newProcedureName, DBDialect.DAMENG));
             this.printSql(sql);
             Connection connection = this.getConnManager().procedureConnection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3554,28 +3877,15 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    //    /**
-    //     * 克隆事件
-    //     *
-    //     * @param schema       数据库
-    //     * @param eventName    事件名称
-    //     * @param newEventName 新事件名称
-    //     */
-    //    public void cloneEvent(String schema, String eventName, String newEventName) {
-    //        String sql = this.showCreateEvent(schema, eventName);
-    //        try {
-    //            sql = sql.replace("EVENT `" + eventName + "`", "EVENT `" + newEventName + "`");
-    //            this.printSql(sql);
-    //            Connection connection = this.getConnManager().connection(schema);
-    //            PreparedStatement stmt = connection.prepareStatement(sql);
-    //            stmt.execute();
-    //            IOUtil.close(stmt);
-    //        } catch (Exception ex) {
-    //            ex.printStackTrace();
-    //            throw new ShellException(ex);
-    //        }
-    //    }
-
+    /**
+     * 查询例程参数列表
+     *
+     * @param schema      模式名称
+     * @param routineName 例程名称
+     * @param routineType 例程类型
+     * @return 例程参数列表
+     * @throws Exception 异常
+     */
     public List<DamengRoutineParam> listRoutineParam(String schema, String routineName, String routineType) throws Exception {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3602,8 +3912,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             statement.setString(1, schema);
             statement.setString(2, routineName);
             // 执行SQL查询并获取结果集
-            ResultSet resultSet = statement.executeQuery
-                    ();
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 DamengRoutineParam param = new DamengRoutineParam();
                 param.setSize(resultSet.getInt("SIZE"));
@@ -3617,6 +3926,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            DBName.sortItems(params);
             return params;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -3624,10 +3934,26 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return Collections.emptyList();
     }
 
+    /**
+     * 查询函数参数列表
+     *
+     * @param schema       模式名称
+     * @param functionName 函数名称
+     * @return 参数列表
+     * @throws Exception 异常
+     */
     public List<DamengRoutineParam> listFunctionParam(String schema, String functionName) throws Exception {
         return listRoutineParam(schema, functionName, "FUNCTION");
     }
 
+    /**
+     * 查询过程参数列表
+     *
+     * @param schema        模式名称
+     * @param procedureName 过程名称
+     * @return 参数列表
+     * @throws Exception 异常
+     */
     public List<DamengRoutineParam> listProcedureParam(String schema, String procedureName) throws Exception {
         return listRoutineParam(schema, procedureName, "PROCEDURE");
     }
@@ -3657,22 +3983,29 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //    }
 
     /**
+     * 查询父表
+     *
+     * @param schema 模式
+     * @param table  表名称
+     */
+    public List<String> selectParentTables(String schema, String table) {
+        List<String> parents = new ArrayList<>();
+        List<DamengForeignKey> foreignKeys = this.selectForeignKeys(schema, table);
+        for (DamengForeignKey foreignKey : foreignKeys) {
+            String parentTable = foreignKey.getPrimaryKeyTable();
+            parents.add(parentTable);
+        }
+        return parents;
+    }
+
+    /**
      * 打印sql
      *
      * @param sql sql
      */
     private void printSql(String sql) {
         DBUtil.printSql(sql);
-        String compressedSql = sql;
-        try {
-            // 压缩sql
-            SQLUtils.FormatOption formatOption = new SQLUtils.FormatOption();
-            formatOption.setUppCase(true);
-            formatOption.setPrettyFormat(false);
-            compressedSql = SQLUtils.format(sql, this.dbType(), formatOption);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        String compressedSql = DBSqlParser.compressSql(sql, this.dialect());
         ShellEventUtil.printSql(compressedSql, this.shellConnect);
     }
 }

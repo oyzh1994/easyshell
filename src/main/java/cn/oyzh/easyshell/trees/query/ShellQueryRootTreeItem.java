@@ -15,7 +15,7 @@ import java.util.List;
  * shell查询根节点
  *
  * @author oyzh
- * @since 2025/06/11
+ * @since 2025-06-11
  */
 public class ShellQueryRootTreeItem extends RichTreeItem<ShellQueryRootTreeItemValue> {
 
@@ -24,6 +24,11 @@ public class ShellQueryRootTreeItem extends RichTreeItem<ShellQueryRootTreeItemV
      */
     private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
 
+    /**
+     * 构造查询根节点
+     *
+     * @param treeView 树视图
+     */
     public ShellQueryRootTreeItem(RichTreeView treeView) {
         super(treeView);
         this.setValue(new ShellQueryRootTreeItemValue());

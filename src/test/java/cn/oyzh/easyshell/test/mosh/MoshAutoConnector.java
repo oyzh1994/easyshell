@@ -8,6 +8,12 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 
+/**
+ * 通过 SSH 连接远程主机并启动 mosh-server 的 Mosh 自动连接工具
+ *
+ * @author oyzh
+ * @since 2026-07-04
+ */
 public class MoshAutoConnector {
 
     /**

@@ -8,8 +8,10 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
 
 /**
+ * MongoDB 数据库连接标签页
+ *
  * @author oyzh
- * @since 2024-09-12
+ * @since 2025-09-01
  */
 public class ShellMongoTab extends ShellConnectTab {
 
@@ -60,6 +62,12 @@ public class ShellMongoTab extends ShellConnectTab {
     public ShellBaseClient client() {
         return this.controller().getClient();
     }
+    /**
+     * 创建实例
+     *
+     * @param connect 连接
+     * @return 实例对象
+     */
     public static ShellMongoTab of(ShellConnect connect) {
         ShellMongoTab tab = new ShellMongoTab();
         tab.init(connect);

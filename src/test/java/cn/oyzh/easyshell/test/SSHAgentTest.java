@@ -12,8 +12,15 @@ import com.jcraft.jsch.PageantConnector;
 import com.jcraft.jsch.Session;
 import org.junit.Test;
 
+/**
+ * 测试通过 Pageant 代理身份仓库建立 SSH 连接及内存占用情况的测试类
+ *
+ * @author oyzh
+ * @since 2025-06-09
+ */
 public class SSHAgentTest {
 
+    // 通过 Pageant 代理连接 SSH 并统计前后内存变化
     @Test
     public void test1() throws JSchException, AgentProxyException {
         double m1 = SystemUtil.getUsedMemory();

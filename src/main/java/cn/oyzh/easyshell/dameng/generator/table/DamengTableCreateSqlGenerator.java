@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -20,7 +21,7 @@ import java.util.List;
  * 达梦建表SQL生成器
  *
  * @author oyzh
- * @since 2024/09/11
+ * @since 2026-09-02
  */
 public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
 
@@ -29,6 +30,11 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
      */
     private boolean changeFlag;
 
+    /**
+     * 执行SQL生成，依次处理字段、主键、索引、外键、检查、表空间、触发器和表注释
+     *
+     * @param param 建表参数
+     */
     private void _generate(DamengCreateTableParam param) {
         String schema = param.schema();
         DamengTable table = param.getTable();
@@ -47,7 +53,7 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
         // 索引
         if (param.hasIndex()) {
-            this.indexHandle(this.sqlBuilder, param);
+            this.indexHandle(param);
         }
         // 外键
         if (param.hasForeignKey()) {
@@ -62,7 +68,7 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
             StringUtil.deleteLast(this.sqlBuilder, ",");
             this.changeFlag = false;
         }
-        this.sqlBuilder.append(")");
+        this.sqlBuilder.append("\n)");
         // 达梦表空间
         if (table.hasTableSpace()) {
             this.sqlBuilder.append(" STORAGE (ON ").append(table.getTableSpace()).append("),");
@@ -89,6 +95,11 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 追加表触发器定义SQL
+     *
+     * @param param 建表参数
+     */
     protected void triggerHandle(DamengCreateTableParam param) {
         DBObjects<DamengTrigger> triggers = param.getTriggers();
         for (DamengTrigger trigger : triggers) {
@@ -109,6 +120,12 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 追加字段定义，并生成列注释SQL
+     *
+     * @param builder SQL构建器
+     * @param param   建表参数
+     */
     protected void columnHandle(StringBuilder builder, DamengCreateTableParam param) {
         for (DamengColumn column : param.getColumns()) {
             builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
@@ -143,7 +160,11 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
 
             // 达梦自增列使用 IDENTITY
             if (isIdentity) {
-                builder.append(" IDENTITY(1,1)");
+                if (column.isIdentityAutoIncrementType()) {
+                    builder.append(" IDENTITY(1, 1)");
+                } else {
+                    builder.append(" ").append(column.getAutoIncrementType());
+                }
             }
 
             // 达梦列注释使用独立COMMENT ON COLUMN语句，ALTER TABLE中跳过
@@ -162,6 +183,12 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 追加主键定义
+     *
+     * @param builder SQL构建器
+     * @param param   建表参数
+     */
     protected void primaryKeyHandle(StringBuilder builder, DamengCreateTableParam param) {
         builder.append(" PRIMARY KEY (");
         for (DamengColumn column : param.primaryKeys()) {
@@ -173,32 +200,45 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         this.changeFlag = true;
     }
 
-    protected void indexHandle(StringBuilder builder, DamengCreateTableParam param) {
+    /**
+     * 索引处理
+     *
+     * @param param 表创建参数
+     */
+    protected void indexHandle(DamengCreateTableParam param) {
         DBObjects<DamengIndex> indexes = param.getIndexes();
+        String tableFullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.DAMENG);
+
+        // 新增、编辑索引
         for (DamengIndex index : indexes) {
-            // 新增索引
-            if (index.isUnique()) {
-                builder.append(" UNIQUE");
+            // 索引新增用独立CREATE INDEX语句
+            if (DBObjectList.isCreated(index) || DBObjectList.isChanged(index)) {
+                StringBuilder builder = new StringBuilder("CREATE ");
+                // 达梦不支持 FULLTEXT/SPATIAL，仅保留 UNIQUE
+                if (index.typeName() != null && !"FULLTEXT".equalsIgnoreCase(index.typeName()) && !"SPATIAL".equalsIgnoreCase(index.typeName())) {
+                    builder.append(index.typeName()).append(" ");
+                }
+                builder.append("INDEX ")
+                        .append(DBUtil.wrap(index.getName(), DBDialect.DAMENG))
+                        .append(" ON ").append(tableFullName)
+                        .append(" (");
+                for (DamengIndex.IndexColumn column : index.getColumns()) {
+                    builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.DAMENG));
+                    builder.append(",");
+                }
+                StringUtil.deleteLast(builder, ",");
+                builder.append(");");
+                this.sqlList.add(builder.toString());
             }
-            builder.append(" INDEX ")
-                    .append(DBUtil.wrap(index.getName(), DBDialect.DAMENG))
-                    .append(" (");
-            for (DamengIndex.IndexColumn column : index.getColumns()) {
-                builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.DAMENG));
-                builder.append(",");
-            }
-            StringUtil.deleteLast(builder, ",");
-            builder.append(") ");
-            // 方法名称
-            if (index.methodName() != null) {
-                builder.append(" USING ").append(index.methodName());
-            }
-            // 拼接,
-            builder.append(",\n");
-            this.changeFlag = true;
         }
     }
 
+    /**
+     * 追加外键定义
+     *
+     * @param builder SQL构建器
+     * @param param   建表参数
+     */
     protected void foreignKeyHandle(StringBuilder builder, DamengCreateTableParam param) {
         DBObjects<DamengForeignKey> foreignKeys = param.getForeignKeys();
         for (DamengForeignKey foreignKey : foreignKeys) {
@@ -226,6 +266,12 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 追加检查约束定义
+     *
+     * @param builder SQL构建器
+     * @param table   建表参数
+     */
     protected void checkHandle(StringBuilder builder, DamengCreateTableParam table) {
         DBObjects<DamengCheck> checks = table.getChecks();
         for (DamengCheck check : checks) {
@@ -240,20 +286,44 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * 生成建表SQL列表
+     *
+     * @param param 建表参数
+     * @return SQL列表
+     */
     public List<String> generate(DamengCreateTableParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条建表SQL
+     *
+     * @param param 建表参数
+     * @return 单条SQL
+     */
     public String generateSingle(DamengCreateTableParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成建表SQL列表
+     *
+     * @param param 建表参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(DamengCreateTableParam param) {
         return new DamengTableCreateSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条建表SQL
+     *
+     * @param param 建表参数
+     * @return 单条SQL
+     */
     public static String generateSqlSingle(DamengCreateTableParam param) {
         return new DamengTableCreateSqlGenerator().generateSingle(param);
     }

@@ -19,7 +19,7 @@ import java.util.List;
  * db节点工具类
  *
  * @author oyzh
- * @since 2023/12/27
+ * @since 2025-11-06
  */
 public class ShellMysqlNodeUtil {
 
@@ -127,13 +127,13 @@ public class ShellMysqlNodeUtil {
         //            node = new ClearableTextField();
         //        }
         node.setId("value");
-        if (column != null) {
+//        if (column != null) {
             handlerDigits(node, column.getDigits());
             handlerComment(node, column.getComment());
             if (handlerDefaultValue && column.getDefaultValue() != null) {
                 handlerDefaultValue(node, column.getDefaultValue());
             }
-        }
+//        }
         return node;
     }
 

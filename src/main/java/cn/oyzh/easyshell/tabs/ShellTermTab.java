@@ -6,7 +6,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
  * shell终端tab
  *
  * @author oyzh
- * @since 2025/05/17
+ * @since 2025-06-11
  */
 public abstract class ShellTermTab extends ShellConnectTab {
 
@@ -19,6 +19,7 @@ public abstract class ShellTermTab extends ShellConnectTab {
      * 运行片段
      *
      * @param content 内容
+     * @throws Exception 异常
      */
     public abstract void runSnippet(String content) throws Exception;
 

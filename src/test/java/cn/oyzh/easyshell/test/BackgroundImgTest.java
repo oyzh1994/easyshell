@@ -16,6 +16,12 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 
+/**
+ * JavaFX 窗口背景图片与标签页效果的演示程序
+ *
+ * @author oyzh
+ * @since 2026-03-29
+ */
 public class BackgroundImgTest extends Application {
 
     static void main(String[] args) {

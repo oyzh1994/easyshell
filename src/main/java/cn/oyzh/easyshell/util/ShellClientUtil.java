@@ -5,13 +5,14 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mosh.ShellMoshClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
-import cn.oyzh.easyshell.s3.ShellS3Client;
+import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
@@ -26,7 +27,7 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
  * 客户端工具类
  *
  * @author oyzh
- * @since 2025-04-25
+ * @since 2025-05-12
  */
 public class ShellClientUtil {
 
@@ -56,7 +57,8 @@ public class ShellClientUtil {
         } else if (connect.isLocalType()) {
             client = new ShellLocalClient(connect);
         } else if (connect.isS3Type()) {
-            client = new ShellS3Client(connect);
+//            client = new ShellS3Client(connect);
+            client = new ShellS3ClientV2(connect);
         } else if (connect.isSMBType()) {
             client = new ShellSMBClient(connect);
         } else if (connect.isRDPType()) {
@@ -69,6 +71,8 @@ public class ShellClientUtil {
             client = new ShellWebdavClient(connect);
         } else if (connect.isMysqlType()) {
             client = new ShellMysqlClient(connect);
+        } else if (connect.isMariadbType()) {
+            client = new ShellMariadbClient(connect);
         } else if (connect.isMongoType()) {
             client = new ShellMongoClient(connect);
         } else if (connect.isMoshType()) {

@@ -25,7 +25,7 @@ import java.sql.Date;
  * redis ttl设置业务
  *
  * @author oyzh
- * @since 2023/07/09
+ * @since 2025-09-01
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -87,26 +87,41 @@ public class ShellRedisKeyTTLController extends StageController {
         }
     }
 
+    /**
+     * 永久保存键（取消过期）
+     */
     @FXML
     private void persistKey() {
         this.ttl.setValue(-1L);
     }
 
+    /**
+     * 过期时间设为1天
+     */
     @FXML
     private void expireAt1D() {
         this.ttl.setValue(24 * 3600);
     }
 
+    /**
+     * 过期时间设为1小时
+     */
     @FXML
     private void expireAt1H() {
         this.ttl.setValue(3600);
     }
 
+    /**
+     * 过期时间设为1分钟
+     */
     @FXML
     private void expireAt1M() {
         this.ttl.setValue(60);
     }
 
+    /**
+     * 过期时间追加1分钟
+     */
     @FXML
     private void appendWith1M() {
         long ttl = this.ttl.getValue();
@@ -117,6 +132,9 @@ public class ShellRedisKeyTTLController extends StageController {
         }
     }
 
+    /**
+     * 过期时间追加1小时
+     */
     @FXML
     private void appendWith1H() {
         long ttl = this.ttl.getValue();
@@ -127,6 +145,9 @@ public class ShellRedisKeyTTLController extends StageController {
         }
     }
 
+    /**
+     * 过期时间追加1天
+     */
     @FXML
     private void appendWith1D() {
         long ttl = this.ttl.getValue();
@@ -137,6 +158,9 @@ public class ShellRedisKeyTTLController extends StageController {
         }
     }
 
+    /**
+     * 重置过期时间
+     */
     @FXML
     private void resetTTL() {
         this.ttl.setValue(this.treeItem.ttl());
@@ -152,6 +176,7 @@ public class ShellRedisKeyTTLController extends StageController {
                 this.expirePreview.setText(Const.DATE_FORMAT.format(new Date(this.showTime + ttl * 1000)));
             }
         });
+        super.bindListeners();
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.Properties;
  * mysql代理连接工厂
  *
  * @author oyzh
- * @since 2025/11/07
+ * @since 2025-11-07
  */
 public class ShellMysqlProxySocketFactory extends StandardSocketFactory {
 

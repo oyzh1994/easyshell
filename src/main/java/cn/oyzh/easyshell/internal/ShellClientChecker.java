@@ -64,7 +64,7 @@ public class ShellClientChecker {
                         // 如果客户端已关闭，则从队列里面移除
                         if (client.isClosed()) {
                             closedList.add(reference);
-                        }else{
+                        } else {
                             DownLatch latch = DownLatch.of();
                             ThreadUtil.start(() -> {
                                 try {
@@ -74,8 +74,8 @@ public class ShellClientChecker {
                                 }
                             });
                             // 如果客户端检测超时，则更新状态
-                            if (!latch.await(5000)) {
-                                client.stateProperty().set(ShellConnState.INTERRUPTED);
+                            if (!latch.await(client.connectTimeout())) {
+                                client.setState(ShellConnState.INTERRUPTED);
                             }
                         }
                     } else {
@@ -83,7 +83,7 @@ public class ShellClientChecker {
                     }
                 }
                 CLIENTS.removeAll(closedList);
-            }, 1500, 0);
+            }, 3000, 1500);
         }
     }
 

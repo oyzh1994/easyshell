@@ -17,8 +17,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Mysql数据导入助手
+ *
  * @author oyzh
- * @since 2024/09/02
+ * @since 2025-11-06
  */
 public class ShellMysqlDataImportHelper {
 
@@ -27,7 +29,9 @@ public class ShellMysqlDataImportHelper {
      *
      * @param column 字段
      * @param value  值
+     * @param config 导入配置
      * @return 参数化后的值
+     * @throws ParseException 解析异常
      */
     public static Object parameterized(MysqlColumn column, Object value, DBDataImportConfig config) throws ParseException {
         if (value == null) {
@@ -64,6 +68,7 @@ public class ShellMysqlDataImportHelper {
      * @param records 记录
      * @param config  配置
      * @return 插入sql
+     * @throws Exception 异常
      */
     public static List<String> toInsertSql(MysqlColumns columns, List<MysqlRecord> records, DBDataImportConfig config) throws Exception {
         List<String> insertSql = new ArrayList<>();
@@ -85,7 +90,7 @@ public class ShellMysqlDataImportHelper {
             sql.deleteCharAt(sql.length() - 2);
             sql.append(")");
             insertSql.add(sql.toString());
-            System.out.println(sql);
+//            System.out.println(sql);
         }
         return insertSql;
     }

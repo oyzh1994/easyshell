@@ -13,7 +13,7 @@ import java.util.List;
  * redis订阅发布tab内容组件
  *
  * @author oyzh
- * @since 2023/08/02
+ * @since 2025-09-01
  */
 public class ShellRedisPubsubTabController extends SubTabController {
 
@@ -22,6 +22,11 @@ public class ShellRedisPubsubTabController extends SubTabController {
      */
     private ShellRedisClient client;
 
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
     public ShellRedisClient getClient() {
         return client;
     }

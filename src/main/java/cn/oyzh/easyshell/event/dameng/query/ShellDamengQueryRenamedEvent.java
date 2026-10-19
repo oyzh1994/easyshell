@@ -1,21 +1,22 @@
 package cn.oyzh.easyshell.event.dameng.query;
 
-import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.dameng.query.ShellDamengQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
+ * 达梦查询已重命名事件
+ *
  * @author oyzh
- * @since 2024/01/23
+ * @since 2025-11-06
  */
-public class ShellDamengQueryRenamedEvent extends Event<String> implements EventFormatter {
+public class ShellDamengQueryRenamedEvent extends Event<ShellDamengQueryTreeItem> implements EventFormatter {
 
-    private ShellDamengSchemaTreeItem dbItem;
-
+    /**
+     * 查询名称
+     */
     private String queryName;
-
-    private String newQueryName;
 
     public String getQueryName() {
         return queryName;
@@ -25,28 +26,25 @@ public class ShellDamengQueryRenamedEvent extends Event<String> implements Event
         this.queryName = queryName;
     }
 
-    public String getNewQueryName() {
-        return newQueryName;
+    public String newQueryName() {
+        return this.data().queryName();
     }
 
-    public void setNewQueryName(String newQueryName) {
-        this.newQueryName = newQueryName;
+    public String queryId() {
+        return this.data().value().getUid();
     }
 
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
     public String schema() {
-        return this.dbItem.schema();
-    }
-
-    public ShellDamengSchemaTreeItem getDbItem() {
-        return dbItem;
-    }
-
-    public void setDbItem(ShellDamengSchemaTreeItem dbItem) {
-        this.dbItem = dbItem;
+        return this.data().schema();
     }
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.getNewQueryName());
+        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.newQueryName());
     }
 }

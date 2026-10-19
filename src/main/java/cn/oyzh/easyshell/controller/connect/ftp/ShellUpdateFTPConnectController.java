@@ -35,7 +35,7 @@ import javafx.stage.WindowEvent;
  * ftp连接修改业务
  *
  * @author oyzh
- * @since 2025/04/24
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,

@@ -17,7 +17,7 @@ import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_TOP_LEFT;
  * redis页码设置弹窗
  *
  * @author oyzh
- * @since 2025/02/08
+ * @since 2025-09-01
  */
 @PopupAttribute(
         value = FXConst.POPUP_PATH + "redis/shellRedisPageSettingPopup.fxml",

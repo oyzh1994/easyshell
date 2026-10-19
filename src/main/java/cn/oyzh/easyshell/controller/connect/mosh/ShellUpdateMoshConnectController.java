@@ -41,7 +41,7 @@ import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocket
  * mosh连接修改业务
  *
  * @author oyzh
- * @since 2025/03/15
+ * @since 2025-04-24
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
@@ -75,7 +75,7 @@ public class ShellUpdateMoshConnectController extends StageController {
     private PasswordTextField certificatePwd;
 
     /**
-     * ssh agent
+     * ssh代理
      */
     @FXML
     private ReadOnlyTextField sshAgent;
@@ -188,7 +188,7 @@ public class ShellUpdateMoshConnectController extends StageController {
 //    private ChooseFileTextField backgroundImage;
 
     /**
-     * mosh key
+     * mosh密钥
      */
     @FXML
     private ClearableTextField moshKey;

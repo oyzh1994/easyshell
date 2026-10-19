@@ -9,8 +9,10 @@ import cn.oyzh.store.jdbc.param.QueryParam;
 import java.util.List;
 
 /**
+ * shell隧道配置存储
+ *
  * @author oyzh
- * @since 2025-04-16
+ * @since 2025-03-08
  */
 public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingConfig> {
 
@@ -19,6 +21,12 @@ public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingC
      */
     public static final ShellTunnelingConfigStore INSTANCE = new ShellTunnelingConfigStore();
 
+    /**
+     * 替换
+     *
+     * @param models 模型列表
+     * @return 结果
+     */
     public boolean replace(List<ShellTunnelingConfig> models) {
         try {
             for (ShellTunnelingConfig model : models) {
@@ -31,6 +39,12 @@ public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingC
         return false;
     }
 
+    /**
+     * 替换
+     *
+     * @param model 模型
+     * @return 结果
+     */
     public boolean replace(ShellTunnelingConfig model) {
         if (super.exist(model.getId())) {
             return super.update(model);
@@ -50,12 +64,12 @@ public class ShellTunnelingConfigStore extends JdbcStandardStore<ShellTunnelingC
      * @return 结果
      */
     public boolean deleteByIid(String iid) {
-        if (StringUtil.isEmpty(iid)) {
-            return false;
+        if (StringUtil.isNotBlank(iid)) {
+            DeleteParam param = new DeleteParam();
+            param.addQueryParam(new QueryParam("iid", iid));
+            return super.delete(param);
         }
-        DeleteParam param = new DeleteParam();
-        param.addQueryParam(new QueryParam("iid", iid));
-        return super.delete(param);
+        return false;
     }
 
     /**

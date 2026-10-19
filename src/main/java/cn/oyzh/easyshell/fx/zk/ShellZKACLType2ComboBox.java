@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * ZooKeeper ACL 类型下拉框(简化版)
+ *
  * @author oyzh
- * @since 2024/4/26
+ * @since 2025-09-04
  */
 public class ShellZKACLType2ComboBox extends FXComboBox<String> implements I18nSelectAdapter<String> {
 
