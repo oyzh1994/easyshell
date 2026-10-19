@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.terminal.dameng.basic;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.terminal.dameng.DamengTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.dameng.DamengTerminalPane;
+import cn.oyzh.fx.db.util.DBTerminalUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
@@ -36,13 +37,11 @@ public class DamengUseTerminalCommandHandler extends DamengTerminalCommandHandle
 
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
-        terminal.setSchema(command.getArgs()[1]);
+        terminal.setSchema(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         try {
             List<DamengSchema> schemas = terminal.getClient().selectSchemas();
-            List<String> dbs = schemas.stream()
-                    .map(DamengSchema::getName)
-                    .toList();
+            List<String> dbs = schemas.stream().map(DamengSchema::getName).toList();
             if (dbs.contains(terminal.getSchema())) {
                 result.setResult("Schema changed");
             } else {

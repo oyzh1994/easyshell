@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.terminal.mariadb.basic;
 import cn.oyzh.easyshell.mariadb.database.MariadbDatabase;
 import cn.oyzh.easyshell.terminal.mariadb.MariadbTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.mariadb.MariadbTerminalPane;
+import cn.oyzh.fx.db.util.DBTerminalUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
@@ -36,7 +37,7 @@ public class MariadbUseTerminalCommandHandler extends MariadbTerminalCommandHand
 
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, MariadbTerminalPane terminal) {
-        terminal.setDbName(command.getArgs()[1]);
+        terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         List<MariadbDatabase> databases = terminal.getClient().databases();
         List<String> dbs = databases.stream()

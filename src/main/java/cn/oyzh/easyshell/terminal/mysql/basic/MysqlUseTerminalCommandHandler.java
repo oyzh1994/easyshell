@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.terminal.mysql.basic;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane;
+import cn.oyzh.fx.db.util.DBTerminalUtil;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 
@@ -36,7 +37,7 @@ public class MysqlUseTerminalCommandHandler extends MysqlTerminalCommandHandler<
 
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, MysqlTerminalPane terminal) {
-        terminal.setDbName(command.getArgs()[1]);
+        terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         List<MysqlDatabase> databases = terminal.getClient().databases();
         List<String> dbs = databases.stream()
