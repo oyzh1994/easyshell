@@ -110,7 +110,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
      */
     public void init(ShellConnect connect) {
         this.client = ShellClientUtil.newClient(connect);
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 if (!this.client.isConnected()) {
                     this.client.start();

@@ -74,7 +74,7 @@ public class ShellDamengTableInfoController extends StageController {
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.treeItem = this.getProp("item");
-        StageManager.showMask(this::initInfo);
+        StageManager.showMask(this.getWindow(), this::initInfo);
         this.stage.hideOnEscape();
     }
 

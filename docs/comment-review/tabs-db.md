@@ -450,13 +450,13 @@
   | 方法 | 说明 | 关键逻辑/调用 |
   |---|---|---|
   | public DamengProcedure getProcedure() | 获取过程对象 | 返回 `procedure` |
-  | public void init(DamengProcedure procedure, ShellDamengSchemaTreeItem dbItem) | 初始化 | 保存参数，`newData = procedure.isNew()`，`StageManager.showMask(this::doInit)` |
+  | public void init(DamengProcedure procedure, ShellDamengSchemaTreeItem dbItem) | 初始化 | 保存参数，`newData = procedure.isNew()`，`StageManager.showMask(this.getWindow(), this::doInit)` |
   | private void doInit() | 执行初始化 | `initDBListener()` 后 `FXUtil.runWait(this::initInfo)` |
   | private void initDBListener() | 初始化监听器 | 解绑旧 listener；新建以 `schema:name` 命名的 `DBStatusListener`，绑定 `definition/securityType/parallelEnable`，并 `paramTable.setStatusListener` |
   | private void initChangedFlag() | 置未保存 | 非初始化中时 `unsaved = true` 并 `flushTab()` |
   | protected void initInfo() | 加载信息 | 新数据填默认过程体并隐藏 action3；否则 `dbItem.selectProcedure` 重查，填充定义/参数/安全性/`PARALLEL_ENABLE`；结束置 `initiating=false` |
   | private void refresh() | 刷新（@FXML） | 确认后重调 `init` 并 `flushTab()` |
-  | private void save() | 保存（@FXML） | `StageManager.showMask(this::doSave)` |
+  | private void save() | 保存（@FXML） | `StageManager.showMask(this.getWindow(), this::doSave)` |
   | private void doSave() | 执行保存 | 组装临时对象；新数据提示过程名后 `dbItem.createProcedure` 并加入树；否则 `dbItem.alertProcedure`；复位标志，`initInfo`/`paramTable.reset`/`initPreview` |
   | private DamengProcedure tempData() | 组装临时数据 | 从表单读取定义、参数、安全性并按 `parallelEnable` 拼装 `characteristic` |
   | private void initPreview() | 生成 SQL 预览 | 新数据用 `DamengProcedureCreateSqlGenerator`，否则 `DamengProcedureAlertSqlGenerator` |
@@ -553,7 +553,7 @@
   | private DamengAlertTableParam initAlertParam() | 改表参数 | `(DamengAlertTableParam) initParam(false)` |
   | private Object initParam(boolean isCreate) | 组装参数 | 汇集注释/表空间/字段/索引/外键/触发器/检查（含删除项），调用 `dbItem.createTableParam` 或 `dbItem.alterTableParam` |
   | private void refresh() | 刷新（@FXML） | 确认后 `initTable/resetTable/init/initPreview` |
-  | private void save() | 保存（@FXML） | `StageManager.showMask(this::doSave)` |
+  | private void save() | 保存（@FXML） | `StageManager.showMask(this.getWindow(), this::doSave)` |
   | private void doSave() | 执行保存 | 逐表校验 invalid 并定位对应 tab；新数据提示表名后 `dbItem.createTable` 加入树；否则 `dbItem.alterTable` 并 `ShellDamengEventUtil.tableAlerted`；复位后 `initInfo/resetTable/initPreview` |
   | private void initChangedFlag() | 置未保存 | 非初始化中时 `unsaved=true` 并 `flushTab()` |
   | protected void resetTable() throws Exception | 重置五表 | 依次 `reset()` index/check/column/trigger/foreignKey 表 |
@@ -570,7 +570,7 @@
   | private void initIndexTable() | 初始化索引表 | 将字段列表注入各 `DamengIndexControl` |
   | private void initForeignKeyTable() | 初始化外键表 | 注入字段列表并设置 schema、dbClient |
   | private void initPreview() | SQL 预览 | 新数据 `DamengTableCreateSqlGenerator`，否则 `DamengTableAlertSqlGenerator` |
-  | public void init(DamengTable table, ShellDamengSchemaTreeItem dbItem) throws Exception | 初始化 | 保存参数、置 `newData`、设置 schema，`StageManager.showMask(this::doInit)` |
+  | public void init(DamengTable table, ShellDamengSchemaTreeItem dbItem) throws Exception | 初始化 | 保存参数、置 `newData`、设置 schema，`StageManager.showMask(this.getWindow(), this::doInit)` |
   | private void doInit() | 执行初始化 | `initDBListener`、`tableSpace.init`、`initInfo`，无检查特性时移除 checkTab |
   | private void initDBListener() | 初始化监听器 | 单例 listener 绑定五表及 tableSpace/tableComment |
   | private void doAdd() | 新增（@FXML） | 按当前选中 tab 分派 addColumn/addIndex/addForeignKey/addTrigger/addCheck |
@@ -632,7 +632,7 @@
   | public void init (ShellDamengTableTreeItem item) | 初始化 | 建立 itemProperty 及父节点监听（为 null 时 `closeTab`），`reload()`，创建 changeListener（变更时 `apply.enable()`） |
   | public ShellDamengTableTreeItem getItem () | 获取树节点 | `itemProperty.get()` |
   | private void initDataList (long pageNo) | 加载数据列表 | `getItem().recordPage(...)` 后 `pageBox.setPaging` 与 `initRecords` |
-  | private void initDataListByMask (long pageNo) | 带遮罩加载 | `StageManager.showMask(this::initDataList)` |
+  | private void initDataListByMask (long pageNo) | 带遮罩加载 | `StageManager.showMask(this.getWindow(), this::initDataList)` |
   | private List<DamengRecordFilter> enabledFilters () | 启用过滤 | 过滤 `isEnabled` 的过滤器，否则返回 null |
   | private void initCount (long count) | 更新计数 | 以 recordTable.itemList 重建 `Paging` 并设置到 pageBox |
   | private void initColumns (DamengColumns columns) | 初始化列 | 组合状态列与 `ShellDamengRecordColumn`（设合适宽度）后 `recordTable.setColumn` |
@@ -643,13 +643,13 @@
   | private DamengRecordPrimaryKey initPrimaryKey (DamengRecord record) | 组装主键 | `getItem().getPrimaryKey()` 存在时初始化主键对象 |
   | private void apply () | 应用变更（@FXML） | 遍历记录，新建走 insert、变更走 update，完成后 `apply.disable()` |
   | private void discard () | 丢弃变更（@FXML） | 撤销变更记录、移除新建记录，计数 -1 |
-  | public void reload () | 刷新（@FXML） | `StageManager.showMask(this::doReload)` |
+  | public void reload () | 刷新（@FXML） | `StageManager.showMask(this.getWindow(), this::doReload)` |
   | private void doReload () | 刷新业务 | 未保存时确认；`initColumns`、`initDataList(0)`、主键缺失提示、过滤激活、禁用 apply |
   | private void filter () | 过滤（@FXML） | 打开 `ShellDamengRecordFilterPopupController`，提交后设置过滤并 `reload()` |
   | private void nextPage ()/prevPage ()/lastPage ()/firstPage () | 翻页（@FXML） | 委托 `pageData` 对应方法与 `initDataListByMask` |
   | private void pageJump (PageEvent.PageJumpEvent event) | 跳页（@FXML） | `initDataListByMask(event.getPage())` |
   | private void pageSetting () | 页码设置（@FXML） | 打开 `ShellDBPageSettingPopupController`，limit 变化时回首页 |
-  | private void deleteRecord () | 删除记录（@FXML） | 取选中记录，确认后 `StageManager.showMask(this::deleteRecords)` |
+  | private void deleteRecord () | 删除记录（@FXML） | 取选中记录，确认后 `StageManager.showMask(this.getWindow(), this::deleteRecords)` |
   | private void deleteRecords (List<DamengRecord> records) | 批量删除 | 逐条 `deleteRecord`，成功则移除并更新计数，失败提示 |
   | private boolean deleteRecord (DamengRecord record) | 单条删除 | 新建直接成功；否则按主键或原始数据删除，成功后 `record.destroy()` |
   | public void onTabClosed (Event event) | 关闭标签（@Override） | `DBStatusListenerManager.removeListener(changeListener)` |
@@ -703,12 +703,12 @@
   | 方法 | 说明 | 关键逻辑/调用 |
   |---|---|---|
   | protected void initInfo() | 加载信息 | 新数据隐藏 action3；否则 `dbItem.selectView` 重查并填充注释/定义/只读/安全性，显示 action3；结束置 `initiating=false` |
-  | public void init(DamengView view, ShellDamengSchemaTreeItem dbItem) | 初始化 | 保存参数、置 `newData`，`StageManager.showMask(this::doInit)` |
+  | public void init(DamengView view, ShellDamengSchemaTreeItem dbItem) | 初始化 | 保存参数、置 `newData`，`StageManager.showMask(this.getWindow(), this::doInit)` |
   | private void doInit() | 执行初始化 | `initDBListener()` 后 `FXUtil.runWait(this::initInfo)`，再绑定各组件监听 |
   | private void initDBListener() | 初始化监听器 | 解绑旧 listener，新建 `schema:name` listener，绑定 comment/readonly/definition/securityType |
   | private void initChangedFlag() | 置未保存 | 非初始化中时 `unsaved=true` 并 `flushTab()` |
   | private void refresh() | 刷新（@FXML） | 确认后 `init` 并 `flushTab()` |
-  | private void save() | 保存（@FXML） | `StageManager.showMask(this::doSave)` |
+  | private void save() | 保存（@FXML） | `StageManager.showMask(this.getWindow(), this::doSave)` |
   | private void doSave() | 执行保存 | 组装临时对象；新数据提示视图名后 `dbItem.createView` 并加入树、重建监听；否则 `dbItem.alertView` 并 `ShellDamengEventUtil.viewAlerted`；复位后 `initInfo/initPreview` |
   | private DamengView tempData() | 组装临时数据 | 从表单读取注释/可更新/定义/安全性 |
   | protected void bindListeners() | 绑定监听 | Ctrl+S 保存绑定；tabPane 切到索引 2 时 `initPreview()` |
@@ -767,7 +767,7 @@
   | public void init (ShellDamengViewTreeItem item) | 初始化 | 建立 itemProperty 及父节点监听（null 时 `closeTab`），`reload()`；视图可更新时创建 changeListener 并显示 apply/action2 |
   | public ShellDamengViewTreeItem getItem () | 获取树节点 | `itemProperty.get()` |
   | private void initDataList (long pageNo) | 加载数据列表 | `getItem().recordPage(...)` 后 `pageBox.setPaging` 与 `initRecords` |
-  | private void initDataListByMask (long pageNo) | 带遮罩加载 | `StageManager.showMask(this::initDataList)` |
+  | private void initDataListByMask (long pageNo) | 带遮罩加载 | `StageManager.showMask(this.getWindow(), this::initDataList)` |
   | private List<DamengRecordFilter> enabledFilters () | 启用过滤 | 过滤 `isEnabled` 的过滤器，否则返回 null |
   | private void initCount (long count) | 更新计数 | 重建 `Paging` 并设置到 pageBox |
   | private void initColumns (DamengColumns columns) | 初始化列 | 组合状态列与 `ShellDamengRecordColumn`（设合适宽度）后 `recordTable.setColumn` |
@@ -778,13 +778,13 @@
   | private DamengRecordPrimaryKey initPrimaryKey (DamengRecord record) | 组装主键 | `getItem().getPrimaryKey()` 存在时初始化主键对象 |
   | private void apply () | 应用变更（@FXML） | 遍历记录，新建走 insert、变更走 update，完成后 `apply.disable()` |
   | private void discard () | 丢弃变更（@FXML） | 撤销变更记录、移除新建记录，计数 -1 |
-  | public void reload () | 刷新（@FXML） | `StageManager.showMask(this::doReload)` |
+  | public void reload () | 刷新（@FXML） | `StageManager.showMask(this.getWindow(), this::doReload)` |
   | private void doReload () | 刷新业务 | 未保存时确认；`initColumns`、`initDataList(0)`、主键缺失提示、过滤激活、禁用 apply |
   | private void filter () | 过滤（@FXML） | 打开 `ShellDamengRecordFilterPopupController`，提交后设置过滤并 `reload()` |
   | private void nextPage ()/prevPage ()/lastPage ()/firstPage () | 翻页（@FXML） | 委托 `pageData` 对应方法与 `initDataListByMask` |
   | private void pageJump (PageEvent.PageJumpEvent event) | 跳页（@FXML） | `initDataListByMask(event.getPage())` |
   | private void pageSetting () | 页码设置（@FXML） | 打开 `ShellDBPageSettingPopupController`，limit 变化时回首页 |
-  | private void deleteRecord () | 删除记录（@FXML） | 取选中记录，确认后 `StageManager.showMask(this::deleteRecords)` |
+  | private void deleteRecord () | 删除记录（@FXML） | 取选中记录，确认后 `StageManager.showMask(this.getWindow(), this::deleteRecords)` |
   | private void deleteRecords (List<DamengRecord> records) | 批量删除 | 逐条 `deleteRecord`，成功则移除并更新计数，失败提示 |
   | private boolean deleteRecord (DamengRecord record) | 单条删除 | 新建直接成功；否则按主键或原始数据删除，成功后 `record.destroy()` |
   | public void onTabClosed (Event event) | 关闭标签（@Override） | `DBStatusListenerManager.removeListener(changeListener)` |

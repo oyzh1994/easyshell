@@ -70,7 +70,7 @@ public class ShellMariadbTableDesignTab extends ShellMariadbBaseTab {
      * @throws Exception 异常
      */
     public void init(MariadbTable table, ShellMariadbDatabaseTreeItem dbItem) throws Exception {
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.controller().init(table, dbItem);
                 this.flush();

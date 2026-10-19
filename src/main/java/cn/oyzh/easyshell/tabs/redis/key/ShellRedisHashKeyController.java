@@ -196,7 +196,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
         if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 // 刷新数据
                 if (this.treeItem.reloadRow()) {
@@ -232,7 +232,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.treeItem.saveKeyValue();
                     this.listTable.refresh();

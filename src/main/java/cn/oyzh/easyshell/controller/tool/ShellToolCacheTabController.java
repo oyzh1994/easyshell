@@ -34,7 +34,7 @@ public class ShellToolCacheTabController extends SubStageController {
      */
     @FXML
     private void calcCache() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.cacheArea.setText("calc cache start.");
                 BiConsumer<LongAdder, LongAdder> callback = (fileCount, fileSize) -> {
@@ -81,7 +81,7 @@ public class ShellToolCacheTabController extends SubStageController {
      */
     @FXML
     private void clearCache() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.cacheArea.setText("clear cache start.");
                 BiConsumer<LongAdder, LongAdder> callback = (fileCount, fileSize) -> {

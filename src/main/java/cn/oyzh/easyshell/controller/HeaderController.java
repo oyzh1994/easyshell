@@ -222,9 +222,7 @@ public class HeaderController extends StageController {
             FXMenuItem importData = new FXMenuItem(I18nHelper.importData(), ShellViewFactory::dataImport);
             easyshell.getItems().add(importData);
 
-            FXMenuItem minimize = new FXMenuItem(I18nHelper.minimize(), () -> {
-                StageManager.getPrimaryStage().setIconified(true);
-            });
+            FXMenuItem minimize = new FXMenuItem(I18nHelper.minimize(), () -> StageManager.getPrimaryStage().setIconified(true));
             easyshell.getItems().add(minimize);
 
             FXMenu features1 = new FXMenu(I18nHelper.features1());

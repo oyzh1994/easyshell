@@ -49,7 +49,7 @@ public class ShellSSHServerCpuTabController extends SubTabController {
         if (!force && !this.cpuInfo.isEmpty()) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellSSHExec exec = this.client().sshExec();
                 String output = exec.cpu_info();

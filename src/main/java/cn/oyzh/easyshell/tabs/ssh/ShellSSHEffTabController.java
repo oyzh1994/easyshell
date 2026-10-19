@@ -741,7 +741,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     @FXML
     private void termHistory(MouseEvent event) {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             // 获取最近100条历史
             List<String> histories = ShellSSHUtil.histories(this.client(), null, 100);
             // 显示弹窗

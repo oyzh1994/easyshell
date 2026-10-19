@@ -107,7 +107,7 @@ public class ShellMariadbProcedureTreeItem extends ShellMariadbTreeItem<ShellMar
      * 克隆过程
      */
     private void cloneProcedure() {
-        StageManager.showMask(this::doCloneProcedure);
+        StageManager.showMask(this.getWindow(), this::doCloneProcedure);
     }
 
     /**

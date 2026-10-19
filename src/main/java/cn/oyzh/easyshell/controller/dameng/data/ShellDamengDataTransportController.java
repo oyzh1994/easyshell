@@ -338,10 +338,10 @@ public class ShellDamengDataTransportController extends StageController {
     protected void bindListeners() {
         super.bindListeners();
         this.sourceInfo.selectedItemChanged(newValue -> {
-            StageManager.showMask(() -> this.doConnect(1, newValue));
+            StageManager.showMask(this.getWindow(), () -> this.doConnect(1, newValue));
         });
         this.targetInfo.selectedItemChanged(newValue -> {
-            StageManager.showMask(() -> this.doConnect(2, newValue));
+            StageManager.showMask(this.getWindow(), () -> this.doConnect(2, newValue));
         });
         this.sourceDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {

@@ -161,7 +161,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         if (!MessageBox.confirm(I18nHelper.deleteImage() + " " + image.getRepository(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellDockerRmi rmi = new ShellDockerRmi();
                 rmi.setForce(force);
@@ -230,7 +230,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         if (image == null) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_inspect(image.getImageId());
                 if (StringUtil.isBlank(output)) {
@@ -250,7 +250,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
      */
     public void imageHistory() {
         ShellDockerImage image = this.getSelectedItem();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_history(image.getImageId());
                 List<ShellDockerImageHistory> histories = ShellDockerParser.history(output);

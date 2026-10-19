@@ -280,7 +280,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
         };
         if (this.enabledLoading) {
-            StageManager.showMask(func);
+            StageManager.showMask(this.getWindow(), func);
         } else {
             ThreadUtil.start(() -> {
                 this.disable();
@@ -859,7 +859,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
             // String filePath = ShellFileUtil.concat(file.getParentPath(), name);
             // String newPath = ShellFileUtil.concat(file.getParentPath(), newName);
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     if (this.client.rename(file, newName)) {
                         file.setFileName(newName);

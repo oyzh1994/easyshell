@@ -72,7 +72,7 @@ public class ShellVNCTabController extends ShellBaseTabController {
             }
         });
         // 执行连接
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 if (!this.client.isConnected()) {
                     this.client.start();

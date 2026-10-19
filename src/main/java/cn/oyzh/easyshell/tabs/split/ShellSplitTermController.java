@@ -183,7 +183,7 @@ public class ShellSplitTermController extends SubTabController {
         this.destroyTerm();
         // this.destroy();
         ShellConnect connect = this.connect.getSelectedItem();
-        StageManager.showMask(() -> this.doConnect(connect));
+        StageManager.showMask(this.getWindow(), () -> this.doConnect(connect));
     }
 
     /**

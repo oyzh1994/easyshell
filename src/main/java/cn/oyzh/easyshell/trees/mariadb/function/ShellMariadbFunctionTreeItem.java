@@ -98,7 +98,7 @@ public class ShellMariadbFunctionTreeItem extends ShellMariadbTreeItem<ShellMari
      * 克隆函数
      */
     private void cloneFunction() {
-        StageManager.showMask(this::doCloneFunction);
+        StageManager.showMask(this.getWindow(), this::doCloneFunction);
     }
 
     /**

@@ -187,7 +187,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
      * @param pageNo 数据页码
      */
     private void initDataListByMask(long pageNo) {
-        StageManager.showMask(() -> this.initDataList(pageNo));
+        StageManager.showMask(this.getWindow(), () -> this.initDataList(pageNo));
     }
 
     /**
@@ -386,7 +386,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
      */
     @FXML
     public void reload() {
-        StageManager.showMask(this::doReload);
+        StageManager.showMask(this.getWindow(), this::doReload);
     }
 
     /**
@@ -498,7 +498,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?", this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> this.deleteRecords(records));
+        StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));
     }
 
     /**

@@ -130,7 +130,7 @@ public class ShellMariadbDataImportFile {
         ShellMariadbTableComboBox comboBox = new ShellMariadbTableComboBox();
         //String dbName = CacheHelper.get("mariadb:dbName");
         //ShellMariadbClient dbClient = CacheHelper.get("mariadb:dbClient");
-        StageManager.showMask(() -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
+        StageManager.showMask(StageManager.getFrontWindow(), () -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });

@@ -330,7 +330,7 @@ public class ShellMariadbDataExportController extends StageController {
         this.dateFormat.textProperty().addListener((observable, oldValue, newValue) -> this.flushDatePreview());
         this.database.selectedItemChanged((observable, oldValue, newValue) -> {
             this.dbName = newValue;
-            StageManager.showMask(this::initTables);
+            StageManager.showMask(this.getWindow(), this::initTables);
         });
     }
 
@@ -441,7 +441,7 @@ public class ShellMariadbDataExportController extends StageController {
             return;
         }
         //        if (this.exportTableView.isItemEmpty()) {
-        StageManager.showMask(this::initTables);
+        StageManager.showMask(this.getWindow(), this::initTables);
         //        }
         this.step1.disappear();
         this.step3.disappear();

@@ -89,7 +89,7 @@
   |---|---|---|
   | `void doExport()` | 执行导出 | `counter.reset()`、`exportMsg.clear()`；新建 `ShellMongoDataExportHandler(dbClient, dbName)` 并设置消息/进度处理器，或 `interrupt(false)`；依次设置文件类型/表 `exportTableView.getSelectedTables()`/查询上限（非 Excel 时 10000）/日期格式/字段作为属性/早期版本/分隔符/包含列标题/文本识别符/错误继续；`NodeGroupUtil.disable(stage,"exec")`、`stage.appendTitle(...)`；`ThreadUtil.start(...)` 内 `exportHandler.doExport()`，异常区分取消/失败；`finally` 恢复界面与标题 |
   | `void stopExport()` | 结束导出 | `ThreadUtil.interrupt(execTask)`、`execTask=null`；非空则 `exportHandler.interrupt()` |
-  | `void bindListeners()` | 绑定表/日期/库变化 | `tableCombobox.selectedItemChanged` 时 `tableColumns.init(collection.getColumns())` 或 `clearItems()`；`dateFormat.textProperty()` 变化 `flushDatePreview()`；`database.selectedItemChanged` 时写 `dbName` 并 `StageManager.showMask(this::initTables)` |
+  | `void bindListeners()` | 绑定表/日期/库变化 | `tableCombobox.selectedItemChanged` 时 `tableColumns.init(collection.getColumns())` 或 `clearItems()`；`dateFormat.textProperty()` 变化 `flushDatePreview()`；`database.selectedItemChanged` 时写 `dbName` 并 `StageManager.showMask(this.getWindow(), this::initTables)` |
   | `void flushDatePreview()` | 刷新日期预览 | `dateFormat.getTextTrim()` 与 `DateUtil.format(new Date(), format)` 拼接显示；异常显示 `invalidFormat()` |
   | `void onWindowShown(WindowEvent event)` | 窗口显示时初始化库/导出模式 | `getProp("dbClient"/"dbName"/"collectionName")`；可选 `exportMode`、`exportTable`；`dbName` 非空时 `database.setItem/selectFirst/disable`，否则 `database.init(dbClient)/enable`；`stage.hideOnEscape()` |
   | `void onWindowHidden(WindowEvent event)` | 窗口隐藏时停止导出 | `stopExport()` |
@@ -97,7 +97,7 @@
   | `String getViewTitle()` | 返回窗口标题 | `I18nHelper.exportTitle()` |
   | `void showStep1()` | 显示第一步 | `step1.display()`、`step2.disappear()` |
   | `void initTables()` | 初始化表列表 | `exportTableView.clearItems()`；`exportMode==0` 时 `dbClient.listCollections(dbName)` 逐个构造 `ShellMongoDataExportCollection` 并按 `tableName` 设选中，否则加入 `exportTable`；按 `fileType.selectedToggle().getUserData()` 设置扩展名 `FXChooser.extensionFilter(...)` |
-  | `void showStep2()` | 显示第二步 | `fileType.selectedToggle()` 为空时 `MessageBox.warn(pleaseSelectType())` 返回；`StageManager.showMask(this::initTables)`；切换 step 显示 |
+  | `void showStep2()` | 显示第二步 | `fileType.selectedToggle()` 为空时 `MessageBox.warn(pleaseSelectType())` 返回；`StageManager.showMask(this.getWindow(), this::initTables)`；切换 step 显示 |
   | `void showStep3()` | 显示第三步 | `exportTableView.hasSelectedTable()` 校验；遍历选中表，缺列时 `dbClient.selectColumns(new MongoSelectRecordParam(dbName, name))`；加入 `tableCombobox` 并 `selectFirst()`；切换 step |
   | `void showStep4()` | 显示第四步 | 根据文件类型（sql/txt/json/xls/xlsx/csv/html/xml/js）用 `NodeGroupUtil.display/disappear` 切换各选项组件可见性；`flushDatePreview()`；切换 step |
   | `void showStep5()` | 显示第五步 | `step4.disappear()`、`step5.display()` |
@@ -213,7 +213,7 @@
   |---|---|---|
   | `void doTransport()` | 执行传输 | `counter.reset()`、清空消息与状态；新建 `ShellMongoDataTransportHandler()` 设置消息/进度处理器，或 `interrupt(false)`；设置来源/目标客户端与库、表 `tableList.getSelectedObjects()`、函数 `functionList.getSelectedObjects()`；`NodeGroupUtil.disable(stage,"exec")`、`stage.appendTitle(...)`；`ThreadUtil.start(...)` 内 `transportHandler.doTransport()`，异常区分取消/失败；`finally` 恢复界面 |
   | `void stopTransport()` | 结束传输 | `ThreadUtil.interrupt(execTask)`、`execTask=null`；非空则 `transportHandler.interrupt()` |
-  | `void bindListeners()` | 绑定来源/目标选择与列表变化 | `sourceInfo.selectedItemChanged` → `StageManager.showMask(() -> doConnect(1, ...))`；`targetInfo.selectedItemChanged` → `doConnect(2, ...)`；来源/目标库变化时刷新对应名称标签并 `clearList()`；`tableList/functionList.setSelectedChanged` → `flushPaneText("table"/"function")` |
+  | `void bindListeners()` | 绑定来源/目标选择与列表变化 | `sourceInfo.selectedItemChanged` → `StageManager.showMask(this.getWindow(), () -> doConnect(1, ...))`；`targetInfo.selectedItemChanged` → `doConnect(2, ...)`；来源/目标库变化时刷新对应名称标签并 `clearList()`；`tableList/functionList.setSelectedChanged` → `flushPaneText("table"/"function")` |
   | `void doConnect(int type, ShellConnect connect)` | 建立来源/目标连接 | `type==1` 时写 `sourceHost/sourceType/sourceInfoName`、关闭旧 `sourceClient`、`ShellClientUtil.newClient(connect)` 后 `start()`、`selectVersion()`、`sourceDatabase.enable/init(client, database)`；`type==2` 时同理处理目标（`targetDatabase.init(client)`）；为空则清空标签并禁用库；异常 `MessageBox.warn(connectInitFail())` |
   | `void onWindowShown(WindowEvent event)` | 窗口显示时预选来源连接 | `super.onWindowShown(event)`、`stage.hideOnEscape()`；`getProp("connect")`、`database=getProp("dbName")`；`connect` 非空时 `sourceInfo.selectItem(connect)` |
   | `void onWindowHidden(WindowEvent event)` | 窗口隐藏时停止传输 | `super.onWindowHidden(event)`、`stopTransport()` |

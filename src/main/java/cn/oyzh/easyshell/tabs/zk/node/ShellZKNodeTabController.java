@@ -110,7 +110,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         this.client = client;
         this.treeView.client(this.client);
         // 加载根节点
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.treeView.loadRoot();
             } catch (Exception ex) {
@@ -147,7 +147,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         try {
             if (this.activeItem != null) {
                 // 初始化节点
-                StageManager.showMask(() -> {
+                StageManager.showMask(this.getWindow(), () -> {
                     try {
                         this.initNode();
                     } catch (Exception ex) {
@@ -203,7 +203,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      * 刷新节点
      */
     private void refreshItem() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 // 刷新节点
                 this.activeItem.refreshNode();
@@ -246,7 +246,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 // 初始化节点
-                StageManager.showMask(() -> {
+                StageManager.showMask(this.getWindow(), () -> {
                     try {
                         this.initNode();
                     } catch (Exception ex) {

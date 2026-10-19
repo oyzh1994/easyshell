@@ -46,7 +46,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter addRedisKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getFrontWindow());
             adapter.setProp("type", type);
             adapter.setProp("client", client);
             adapter.setProp("dbIndex", dbIndex);
@@ -67,7 +67,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisBatchOperation(ShellRedisClient client, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -85,7 +85,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisMoveKey(ShellRedisKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -104,7 +104,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisCopyKey(ShellRedisKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -122,7 +122,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisTtlKey(ShellRedisKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.display();
         } catch (Exception ex) {
@@ -138,7 +138,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisZSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -156,7 +156,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisZSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -174,7 +174,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisSetMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -192,7 +192,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisHashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -210,7 +210,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -228,7 +228,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -246,7 +246,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -265,7 +265,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisImportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -283,7 +283,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisExportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -301,7 +301,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getFrontWindow());
             adapter.setProp("sourceConnect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();

@@ -189,7 +189,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
      * @param pageNo 数据页码
      */
     private void initDataListByMask(long pageNo) {
-        StageManager.showMask(() -> this.initDataList(pageNo));
+        StageManager.showMask(this.getWindow(), () -> this.initDataList(pageNo));
     }
 
     /**
@@ -514,7 +514,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
      */
     @FXML
     public void reload() {
-        StageManager.showMask(this::doReload);
+        StageManager.showMask(this.getWindow(), this::doReload);
     }
 
     /**
@@ -623,7 +623,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
             return;
         }
         List<MongoRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        StageManager.showMask(() -> this.deleteRecords(records));
+        StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));
     }
 
     /**

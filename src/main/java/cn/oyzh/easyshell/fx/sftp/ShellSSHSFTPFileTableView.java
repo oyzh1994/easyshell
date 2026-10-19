@@ -202,7 +202,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
         if (!MessageBox.confirm(ShellI18nHelper.fileTip20(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 // linux、macos、unix下合并路径操作
                 if (this.sshClient.isLinux() || this.sshClient.isMacos() || this.sshClient.isUnix()) {
@@ -240,7 +240,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param type  压缩类型
      */
     protected void compress(List<ShellSFTPFile> files, String type) {
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
         ThreadUtil.start(() -> {
             try {
                 // 执行解压
@@ -269,7 +269,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * @param files 文件列表
      */
     protected void uncompress(List<ShellSFTPFile> files) {
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
         ThreadUtil.start(() -> {
             try {
                 // 执行解压
@@ -316,7 +316,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      * 粘贴文件
      */
     protected void pasteFile() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 for (ShellSFTPFile f1 : this.tempFiles) {
                     String fName = ShellFileUtil.concat(this.getLocation(), f1.getFileName());

@@ -79,7 +79,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     @FXML
     public void refresh() {
         this.init = true;
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.fileContent();
                 this.data.setText(output);
@@ -109,7 +109,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
             return;
         }
         String text = this.data.getText();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellSSHExec exec = this.client().sshExec();
                 ShellSFTPClient sftpClient = this.sftpClient();
@@ -152,7 +152,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
             return;
         }
         ShellSSHExec exec = this.client().sshExec();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = exec.source(this.filePath());
                 if (!StringUtil.isBlank(output)) {

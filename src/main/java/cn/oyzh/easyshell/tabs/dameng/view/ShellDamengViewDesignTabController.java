@@ -138,7 +138,7 @@ public class ShellDamengViewDesignTabController extends RichTabController {
         this.view = view;
         // 更新新数据标志位
         this.newData = this.view.isNew();
-        StageManager.showMask(this::doInit);
+        StageManager.showMask(this.getWindow(), this::doInit);
     }
 
     /**
@@ -215,7 +215,7 @@ public class ShellDamengViewDesignTabController extends RichTabController {
      */
     @FXML
     private void save() {
-        StageManager.showMask(this::doSave);
+        StageManager.showMask(this.getWindow(), this::doSave);
     }
 
     /**

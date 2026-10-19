@@ -68,7 +68,7 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
         if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             // 刷新数据
             try {
                 this.treeItem.refreshKeyValue();

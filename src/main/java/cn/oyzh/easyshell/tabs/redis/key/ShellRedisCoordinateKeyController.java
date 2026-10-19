@@ -224,7 +224,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.treeItem.saveKeyValue();
                     this.listTable.refresh();

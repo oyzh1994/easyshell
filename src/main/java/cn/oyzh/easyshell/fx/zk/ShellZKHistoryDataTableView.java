@@ -105,7 +105,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      * 刷新数据
      */
     public void refreshData() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             this.setItem(ShellZKDataUtil.listHistory(this.nodePath, this.client));
         });
     }
@@ -117,7 +117,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      */
     public void deleteData(ShellZKHistoryData data) {
         if (MessageBox.confirm(I18nHelper.deleteHistory(), this.getWindow())) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 ShellZKDataUtil.deleteHistory(this.nodePath, data.getSaveTime(), this.client);
                 this.removeItem(data);
             });
@@ -130,7 +130,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
     //     * @param data 树
     //     */
     //    public void viewData(ShellZKHistoryData data) {
-    //        StageManager.showMask(() -> {
+    //        StageManager.showMask(this.getWindow(), () -> {
     //            try {
     //                byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
     //                ShellZKViewFactory.zkHistoryView(this.nodePath, bytes, this.stage());
@@ -147,7 +147,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      * @param data 数据
      */
     public void restoreData(ShellZKHistoryData data) {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 byte[] bytes = ShellZKDataUtil.getHistory(this.nodePath, data.getSaveTime(), this.client);
                 this.client.setData(this.nodePath, bytes);

@@ -157,7 +157,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
                 MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 if (!this.client.isConnected()) {
                     this.client.start();

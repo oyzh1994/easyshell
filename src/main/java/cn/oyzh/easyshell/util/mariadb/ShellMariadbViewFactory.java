@@ -56,7 +56,7 @@ public class ShellMariadbViewFactory {
      */
     public static void exportData(ShellMariadbClient client, String dbName, String tableName, int exportMode, ShellMariadbDataExportTable exportTable) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataExportController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataExportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.setProp("tableName", tableName);
@@ -77,7 +77,7 @@ public class ShellMariadbViewFactory {
      */
     public static void importData(ShellMariadbClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataImportController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataImportController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -97,7 +97,7 @@ public class ShellMariadbViewFactory {
      */
     public static void dumpData(ShellMariadbClient client, String dbName, String tableName, int dumpType) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataDumpController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataDumpController.class, StageManager.getFrontWindow());
             adapter.setProp("dumpType", dumpType);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
@@ -117,7 +117,7 @@ public class ShellMariadbViewFactory {
      */
     public static void runSqlFile(ShellMariadbClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataRunSqlFileController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataRunSqlFileController.class, StageManager.getFrontWindow());
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -153,7 +153,7 @@ public class ShellMariadbViewFactory {
      */
     public static void transportData(ShellConnect connect, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataTransportController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataTransportController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", dbName);
             adapter.display();

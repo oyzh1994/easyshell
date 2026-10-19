@@ -49,7 +49,7 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
         if (!force && !this.memoryInfo.isEmpty()) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellSSHExec exec = this.client().sshExec();
                 String output = exec.memory_info();

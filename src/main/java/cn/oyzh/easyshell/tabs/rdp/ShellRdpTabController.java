@@ -64,7 +64,7 @@ public class ShellRdpTabController extends ShellBaseTabController {
             }
         });
         // 执行连接
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.client.initRdpView(this.rdpView);
                 if (!this.client.isConnected()) {

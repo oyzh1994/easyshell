@@ -50,7 +50,7 @@ public class ShellSSHServerDiskTabController extends SubTabController {
         if (!force && !this.diskTable.isChildEmpty()) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.init();
             } catch (Exception ex) {

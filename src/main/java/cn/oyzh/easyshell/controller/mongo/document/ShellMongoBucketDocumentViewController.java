@@ -156,7 +156,7 @@
 //     */
 //    @FXML
 //    private void save() {
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
 //            try {
 //                String content = this.txt.getText();
 //                FileUtil.writeUtf8String(content, this.destPath);
@@ -179,7 +179,7 @@
 //     * 初始化文件
 //     */
 //    private void init() {
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
 //            try {
 //                FileUtil.touch(this.destPath);
 //                Object idValue = this.file._idValue();

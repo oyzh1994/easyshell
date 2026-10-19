@@ -92,7 +92,7 @@ public class ShellCopyIdKeyController extends StageController {
             return;
         }
         ShellSSHClient client = ShellClientUtil.newClient(connect);
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.message.appendLine("client connecting");
                 client.start(3000);

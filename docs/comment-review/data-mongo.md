@@ -90,7 +90,7 @@
   | `fileProperty()` / `getFile()` / `setFile(File)` | 文件属性读写 | 惰性属性 |
   | `getFilePath()` / `getFileName()` | 取文件路径/文件名 | 基于 `getFile()` 返回，空则 `null` |
   | `getFilePathControl()` | 生成 `ChooseFileTextField` | 绑定 `fileProperty`，选文件回调 `setFile`，`selectRowOnMouseClicked` |
-  | `getTargetTableControl()` | 生成 `ShellMongoCollectionComboBox` | `StageManager.showMask(() -> comboBox.init(dbName, getTableName(), dbClient))`；选中回调 `setTargetTableName` |
+  | `getTargetTableControl()` | 生成 `ShellMongoCollectionComboBox` | `StageManager.showMask(this.getWindow(), () -> comboBox.init(dbName, getTableName(), dbClient))`；选中回调 `setTargetTableName` |
   | `getTableName()` | 由文件名推断集合名 | 去掉最后一个 `.` 及其后缀 |
   | `getTargetTableName()` / `setTargetTableName(String)` | 目标集合名读写 | 未设置时回退到 `getTableName()` |
 

@@ -98,7 +98,7 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
      * 克隆函数
      */
     private void cloneFunction() {
-        StageManager.showMask(this::doCloneFunction);
+        StageManager.showMask(this.getWindow(), this::doCloneFunction);
     }
 
     /**

@@ -145,7 +145,7 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
         //        if (this.containerTable.getExec() == null) {
         //            this.containerTable.setExec(this.client().dockerExec());
         //        }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.containerTable.loadContainer();
             } catch (Exception ex) {

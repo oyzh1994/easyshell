@@ -215,7 +215,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      * @param pageNo 数据页码
      */
     private void initDataListByMask(long pageNo) {
-        StageManager.showMask(() -> this.initDataList(pageNo));
+        StageManager.showMask(this.getWindow(), () -> this.initDataList(pageNo));
     }
 
     /**
@@ -340,7 +340,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
      */
     @FXML
     public void reload() {
-        StageManager.showMask(this::doReload);
+        StageManager.showMask(this.getWindow(), this::doReload);
     }
 
     /**
@@ -498,7 +498,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //        if (file == null) {
         //            return;
         //        }
-        //        StageManager.showMask(() -> {
+        //        StageManager.showMask(this.getWindow(), () -> {
         //            try {
         //                ObjectId _id = this.getItem().uploadRecord(file);
         //                if (_id == null) {
@@ -547,7 +547,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //        if (file == null) {
         //            return;
         //        }
-        //        StageManager.showMask(() -> {
+        //        StageManager.showMask(this.getWindow(), () -> {
         //            try {
         //                Object _id = record.getId();
         //                this.getItem().downloadRecord(_id, file.getPath());

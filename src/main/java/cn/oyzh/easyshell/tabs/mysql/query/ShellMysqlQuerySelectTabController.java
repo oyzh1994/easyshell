@@ -411,7 +411,7 @@ public class ShellMysqlQuerySelectTabController extends RichTabController {
         if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?", this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> this.deleteRecords(records));
+        StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));
     }
 
     /**

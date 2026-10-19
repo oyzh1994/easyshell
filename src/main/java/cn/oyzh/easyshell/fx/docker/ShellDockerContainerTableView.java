@@ -46,14 +46,14 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> items = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(items)) {
-                this.showContextMenu(items, e.getScreenX() , e.getScreenY());
+                this.showContextMenu(items, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
         });
         // 快捷键
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            //if (KeyboardUtil.info_keyCombination.match(event)) {// 容器信息
+            // if (KeyboardUtil.info_keyCombination.match(event)) {// 容器信息
             //    this.containerInspect(this.getSelectedItem());
             //    event.consume();
             //}
@@ -63,9 +63,9 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             } else if (KeyboardUtil.delete_keyCombination.match(event)) {// 删除容器
                 this.deleteContainer(this.getSelectedItem(), false);
                 event.consume();
-            //} else if (KeyboardUtil.restart_keyCombination.match(event)) {// 重启容器
-            //    this.restartContainer(this.getSelectedItem());
-            //    event.consume();
+                //} else if (KeyboardUtil.restart_keyCombination.match(event)) {// 重启容器
+                //    this.restartContainer(this.getSelectedItem());
+                //    event.consume();
             } else if (KeyboardUtil.stop_keyCombination.match(event)) {// 停止容器
                 this.stopContainer(this.getSelectedItem());
                 event.consume();
@@ -124,7 +124,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
     public void setStatus(byte status) {
         if (status != this.status) {
             this.status = status;
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.loadContainer();
                 } catch (Exception ex) {
@@ -219,7 +219,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.deleteContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output;
                 if (force) {
@@ -248,45 +248,45 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         }
 
         List<FXMenuItem> menuItems = new ArrayList<>();
-        FXMenuItem containerInfo = MenuItemHelper.containerInspect( () -> this.containerInspect(container));
-        //containerInfo.setAccelerator(KeyboardUtil.info_keyCombination);
+        FXMenuItem containerInfo = MenuItemHelper.containerInspect(() -> this.containerInspect(container));
+        // containerInfo.setAccelerator(KeyboardUtil.info_keyCombination);
         menuItems.add(containerInfo);
-        FXMenuItem containerResource = MenuItemHelper.containerResource( this::containerResource);
+        FXMenuItem containerResource = MenuItemHelper.containerResource(this::containerResource);
         menuItems.add(containerResource);
-        FXMenuItem containerPorts = MenuItemHelper.containerPorts( this::containerPorts);
+        FXMenuItem containerPorts = MenuItemHelper.containerPorts(this::containerPorts);
         menuItems.add(containerPorts);
         if (container.isExited()) {
-            FXMenuItem startContainer = MenuItemHelper.start1Container( () -> this.startContainer(container));
+            FXMenuItem startContainer = MenuItemHelper.start1Container(() -> this.startContainer(container));
             startContainer.setAccelerator(KeyboardUtil.run_keyCombination);
             menuItems.add(startContainer);
         } else {
-            FXMenuItem stopContainer = MenuItemHelper.stop1Container( () -> this.stopContainer(container));
+            FXMenuItem stopContainer = MenuItemHelper.stop1Container(() -> this.stopContainer(container));
             stopContainer.setAccelerator(KeyboardUtil.stop_keyCombination);
-            FXMenuItem killContainer = MenuItemHelper.killContainer( this::killContainer);
-            FXMenuItem restartContainer = MenuItemHelper.restartContainer( () -> this.restartContainer(container));
-            //restartContainer.setAccelerator(KeyboardUtil.restart_keyCombination);
+            FXMenuItem killContainer = MenuItemHelper.killContainer(this::killContainer);
+            FXMenuItem restartContainer = MenuItemHelper.restartContainer(() -> this.restartContainer(container));
+            // restartContainer.setAccelerator(KeyboardUtil.restart_keyCombination);
             menuItems.add(stopContainer);
             menuItems.add(killContainer);
             menuItems.add(restartContainer);
             if (container.isPaused()) {
-                FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer( this::unpauseContainer);
+                FXMenuItem unpauseContainer = MenuItemHelper.unpauseContainer(this::unpauseContainer);
                 menuItems.add(unpauseContainer);
             } else {
-                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer( () -> this.pauseContainer(container));
+                FXMenuItem pauseContainer = MenuItemHelper.pauseContainer(() -> this.pauseContainer(container));
                 menuItems.add(pauseContainer);
             }
         }
-        FXMenuItem containerLogs = MenuItemHelper.containerLogs( this::containerLogs);
-        FXMenuItem renameContainer = MenuItemHelper.renameContainer( () -> this.renameContainer(container));
+        FXMenuItem containerLogs = MenuItemHelper.containerLogs(this::containerLogs);
+        FXMenuItem renameContainer = MenuItemHelper.renameContainer(() -> this.renameContainer(container));
         renameContainer.setAccelerator(KeyboardUtil.rename_keyCombination);
-        FXMenuItem deleteContainer = MenuItemHelper.deleteContainer( () -> this.deleteContainer(container, false));
+        FXMenuItem deleteContainer = MenuItemHelper.deleteContainer(() -> this.deleteContainer(container, false));
         deleteContainer.setAccelerator(KeyboardUtil.delete_keyCombination);
-        FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer( () -> this.deleteContainer(container, true));
+        FXMenuItem forceDeleteContainer = MenuItemHelper.forceDeleteContainer(() -> this.deleteContainer(container, true));
         menuItems.add(containerLogs);
         menuItems.add(renameContainer);
         menuItems.add(deleteContainer);
         menuItems.add(forceDeleteContainer);
-        FXMenuItem saveContainer = MenuItemHelper.saveContainer( () -> this.saveContainer(container));
+        FXMenuItem saveContainer = MenuItemHelper.saveContainer(() -> this.saveContainer(container));
         menuItems.add(saveContainer);
         return menuItems;
     }
@@ -315,7 +315,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_start(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
@@ -342,7 +342,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.stop1Container() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_stop(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
@@ -365,7 +365,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_kill(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
@@ -392,7 +392,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.restartContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_restart(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
@@ -419,7 +419,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_pause(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
@@ -442,7 +442,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_unpause(container.getContainerId());
                 if (StringUtil.isNotBlank(output)) {
@@ -466,7 +466,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_inspect(container.getContainerId());
                 if (StringUtil.isBlank(output)) {
@@ -486,7 +486,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void containerResource() {
         ShellDockerContainer container = this.getSelectedItem();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_resource(container.getContainerId());
                 if (StringUtil.isBlank(output)) {
@@ -507,7 +507,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void containerLogs() {
         ShellDockerContainer container = this.getSelectedItem();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 DownLatch latch = DownLatch.of();
                 AtomicReference<String> ref = new AtomicReference<>();
@@ -559,7 +559,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (StringUtil.isBlank(newName) || StringUtil.equalsIgnoreCase(container.getNames(), newName)) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_rename(container.getContainerId(), newName);
                 if (StringUtil.isNotBlank(output)) {
@@ -580,7 +580,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void containerPorts() {
         ShellDockerContainer container = this.getSelectedItem();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_port(container.getContainerId());
                 List<ShellDockerPort> ports = ShellDockerParser.port(output);

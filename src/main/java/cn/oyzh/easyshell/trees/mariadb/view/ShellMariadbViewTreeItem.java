@@ -132,7 +132,7 @@ public class ShellMariadbViewTreeItem extends ShellMariadbTreeItem<ShellMariadbV
      * 克隆视图
      */
     private void cloneView() {
-        StageManager.showMask(this::doCloneView);
+        StageManager.showMask(this.getWindow(), this::doCloneView);
     }
 
     /**

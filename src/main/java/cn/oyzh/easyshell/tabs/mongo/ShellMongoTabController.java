@@ -82,7 +82,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
             }
         });
         // 加载根节点
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.client.start();
                 if (!this.client.isConnected()) {

@@ -58,7 +58,7 @@ public class ShellToolTelnetTabController extends SubStageController {
         if (!this.telnetHost.validate()) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 // 清除记录
                 this.telnetArea.clear();

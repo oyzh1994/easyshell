@@ -98,7 +98,7 @@ public class ShellMysqlFunctionTreeItem extends ShellMysqlTreeItem<ShellMysqlFun
      * 克隆函数
      */
     private void cloneFunction() {
-        StageManager.showMask(this::doCloneFunction);
+        StageManager.showMask(this.getWindow(), this::doCloneFunction);
     }
 
     /**

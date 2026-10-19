@@ -137,7 +137,7 @@ public class ShellViewFactory {
      */
     public static void addConnectGuid(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddConnectGuidController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddConnectGuidController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -153,7 +153,7 @@ public class ShellViewFactory {
      */
     public static void addSSHConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddSSHConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddSSHConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -169,7 +169,7 @@ public class ShellViewFactory {
      */
     public static void addLocalConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddLocalConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddLocalConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -185,7 +185,7 @@ public class ShellViewFactory {
      */
     public static void addTelnetConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddTelnetConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddTelnetConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -201,7 +201,7 @@ public class ShellViewFactory {
      */
     public static void addSerialConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddSerialConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddSerialConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -218,7 +218,7 @@ public class ShellViewFactory {
      */
     public static void addSFTPConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddSFTPConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddSFTPConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -234,7 +234,7 @@ public class ShellViewFactory {
      */
     public static void addFTPConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddFTPConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddFTPConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -251,7 +251,7 @@ public class ShellViewFactory {
      */
     public static void addS3Connect(ShellGroup group, String s3Type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddS3ConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddS3ConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.setProp("s3Type", s3Type);
             adapter.display();
@@ -268,7 +268,7 @@ public class ShellViewFactory {
      */
     public static void addVNCConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddVNCConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddVNCConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -285,7 +285,7 @@ public class ShellViewFactory {
      */
     public static void addRLoginConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddRLoginConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddRLoginConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -301,7 +301,7 @@ public class ShellViewFactory {
      */
     public static void addSMBConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddSMBConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddSMBConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -317,7 +317,7 @@ public class ShellViewFactory {
      */
     public static void addRedisConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddRedisConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddRedisConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -334,7 +334,7 @@ public class ShellViewFactory {
      */
     public static void addZKConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddZKConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddZKConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -351,7 +351,7 @@ public class ShellViewFactory {
      */
     public static void addRDPConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddRDPConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddRDPConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -368,7 +368,7 @@ public class ShellViewFactory {
      */
     public static void addWebdavConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddWebdavConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddWebdavConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -385,7 +385,7 @@ public class ShellViewFactory {
      */
     public static void addMysqlConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddMysqlConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddMysqlConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -401,7 +401,7 @@ public class ShellViewFactory {
      */
     public static void addMariadbConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddMariadbConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddMariadbConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -417,7 +417,7 @@ public class ShellViewFactory {
      */
     public static void addDamengConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddDamengConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddDamengConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
             adapter.display();
@@ -434,7 +434,7 @@ public class ShellViewFactory {
      */
     public static void addMongoConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddMongoConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddMongoConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -450,7 +450,7 @@ public class ShellViewFactory {
      */
     public static void addMoshConnect(ShellGroup group) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddMoshConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddMoshConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -466,7 +466,7 @@ public class ShellViewFactory {
      */
     public static void updateSSHConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateSSHConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSSHConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -482,7 +482,7 @@ public class ShellViewFactory {
      */
     public static void updateLocalConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateLocalConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateLocalConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -498,7 +498,7 @@ public class ShellViewFactory {
      */
     public static void updateTelnetConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateTelnetConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateTelnetConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -514,7 +514,7 @@ public class ShellViewFactory {
      */
     public static void updateSerialConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateSerialConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSerialConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -530,7 +530,7 @@ public class ShellViewFactory {
      */
     public static void updateSFTPConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateSFTPConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSFTPConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -546,7 +546,7 @@ public class ShellViewFactory {
      */
     public static void updateFTPConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateFTPConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateFTPConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -562,7 +562,7 @@ public class ShellViewFactory {
      */
     public static void updateS3Connect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3ConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateS3ConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -578,7 +578,7 @@ public class ShellViewFactory {
      */
     public static void updateVNCConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateVNCConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateVNCConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -594,7 +594,7 @@ public class ShellViewFactory {
      */
     public static void updateRLoginConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateRLoginConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRLoginConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -610,7 +610,7 @@ public class ShellViewFactory {
      */
     public static void updateSMBConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateSMBConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSMBConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -626,7 +626,7 @@ public class ShellViewFactory {
      */
     public static void updateRedisConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateRedisConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRedisConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -642,7 +642,7 @@ public class ShellViewFactory {
      */
     public static void updateZKConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateZKConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateZKConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -658,7 +658,7 @@ public class ShellViewFactory {
      */
     public static void updateRDPConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateRDPConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRDPConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -674,7 +674,7 @@ public class ShellViewFactory {
      */
     public static void updateWebdavConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateWebdavConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateWebdavConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -690,7 +690,7 @@ public class ShellViewFactory {
      */
     public static void updateMysqlConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -706,7 +706,7 @@ public class ShellViewFactory {
      */
     public static void updateMariadbConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateMariadbConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMariadbConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -722,7 +722,7 @@ public class ShellViewFactory {
      */
     public static void updateDamengConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateDamengConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateDamengConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -738,7 +738,7 @@ public class ShellViewFactory {
      */
     public static void updateMongoConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateMongoConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMongoConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -754,7 +754,7 @@ public class ShellViewFactory {
      */
     public static void updateMoshConnect(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateMoshConnectController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateMoshConnectController.class, StageManager.getFrontWindow());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -778,7 +778,7 @@ public class ShellViewFactory {
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("show main.");
                 }
-                StageManager.showStage(MainController.class);
+                StageManager.showStage(MainController.class, StageManager.getFrontWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -801,7 +801,7 @@ public class ShellViewFactory {
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("show setting.");
                 }
-                StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
+                StageManager.showStage(SettingController.class, StageManager.getFrontWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -814,7 +814,7 @@ public class ShellViewFactory {
      */
     public static void tool() {
         try {
-            StageManager.showStage(ShellToolController.class, StageManager.getPrimaryStage());
+            StageManager.showStage(ShellToolController.class, StageManager.getFrontWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -826,7 +826,7 @@ public class ShellViewFactory {
      */
     public static void about() {
         try {
-            StageManager.showStage(AboutController.class, StageManager.getPrimaryStage());
+            StageManager.showStage(AboutController.class, StageManager.getFrontWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -838,7 +838,7 @@ public class ShellViewFactory {
      */
     public static void dataExport() {
         try {
-            StageManager.showStage(ShellDataExportController.class, StageManager.getPrimaryStage());
+            StageManager.showStage(ShellDataExportController.class, StageManager.getFrontWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -861,7 +861,7 @@ public class ShellViewFactory {
      */
     public static void dataImport(File file) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDataImportController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDataImportController.class, StageManager.getFrontWindow());
             adapter.setProp("file", file);
             adapter.display();
         } catch (Exception ex) {
@@ -878,7 +878,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter sshAuth(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellSSHAuthController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellSSHAuthController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
@@ -904,7 +904,7 @@ public class ShellViewFactory {
         //            }
         //        }
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class, StageManager.getFrontWindow());
             adapter.setProp("sourceConnect", sourceConnect);
             adapter.display();
         } catch (Exception ex) {
@@ -990,7 +990,7 @@ public class ShellViewFactory {
      */
     public static void fileManage(ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
             adapter.display();
         } catch (Exception ex) {
@@ -1024,7 +1024,7 @@ public class ShellViewFactory {
      */
     public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class, StageManager.getFrontWindow());
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -1043,7 +1043,7 @@ public class ShellViewFactory {
      */
     public static void fileView(ShellFile file, ShellFileClient<?> client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class, StageManager.getFrontWindow());
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);
@@ -1083,7 +1083,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter filePkgUpload(String dest, List<File> files, ShellSFTPClient client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFilePkgUploadController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellFilePkgUploadController.class, StageManager.getFrontWindow());
             adapter.setProp("dest", dest);
             adapter.setProp("files", files);
             adapter.setProp("client", client);
@@ -1104,7 +1104,7 @@ public class ShellViewFactory {
      */
     public static void dockerInfo(String info) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerInfoController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerInfoController.class, StageManager.getFrontWindow());
             adapter.setProp("info", info);
             adapter.display();
         } catch (Exception ex) {
@@ -1120,7 +1120,7 @@ public class ShellViewFactory {
      */
     public static void dockerVersion(String version) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerVersionController.class, StageManager.getFrontWindow());
             adapter.setProp("version", version);
             adapter.display();
         } catch (Exception ex) {
@@ -1136,7 +1136,7 @@ public class ShellViewFactory {
      */
     public static void dockerHistory(List<ShellDockerImageHistory> histories) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerImageHistoryController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerImageHistoryController.class, StageManager.getFrontWindow());
             adapter.setProp("histories", histories);
             adapter.display();
         } catch (Exception ex) {
@@ -1153,7 +1153,7 @@ public class ShellViewFactory {
      */
     public static void dockerInspect(String inspect, boolean image) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerInspectController.class, StageManager.getFrontWindow());
             adapter.setProp("inspect", inspect);
             adapter.setProp("image", image);
             adapter.display();
@@ -1172,7 +1172,7 @@ public class ShellViewFactory {
      */
     public static void dockerResource(ShellDockerExec exec, ShellDockerResource resource, String id) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerResourceController.class, StageManager.getFrontWindow());
             adapter.setProp("exec", exec);
             adapter.setProp("resource", resource);
             adapter.setProp("id", id);
@@ -1190,7 +1190,7 @@ public class ShellViewFactory {
      */
     public static void dockerLogs(String logs) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerLogsController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerLogsController.class, StageManager.getFrontWindow());
             adapter.setProp("logs", logs);
             adapter.display();
         } catch (Exception ex) {
@@ -1206,7 +1206,7 @@ public class ShellViewFactory {
      */
     public static void dockerPort(List<ShellDockerPort> ports) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerPortController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellDockerPortController.class, StageManager.getFrontWindow());
             adapter.setProp("ports", ports);
             adapter.display();
         } catch (Exception ex) {
@@ -1222,7 +1222,7 @@ public class ShellViewFactory {
      */
     public static void copyKeysToHost(List<ShellKey> keys) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellCopyIdKeyController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellCopyIdKeyController.class, StageManager.getFrontWindow());
             adapter.setProp("keys", keys);
             adapter.display();
         } catch (Exception ex) {
@@ -1241,7 +1241,7 @@ public class ShellViewFactory {
             if (key == null) {
                 return;
             }
-            StageAdapter adapter = StageManager.parseStage(ShellUpdateKeyController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateKeyController.class, StageManager.getFrontWindow());
             adapter.setProp("key", key);
             adapter.display();
         } catch (Exception ex) {
@@ -1255,7 +1255,7 @@ public class ShellViewFactory {
      */
     public static void addKey() {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellAddKeyController.class, StageManager.getFrontWindow());
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1268,7 +1268,7 @@ public class ShellViewFactory {
      */
     public static void importKey() {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellImportKeyController.class, StageManager.getFrontWindow());
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1367,7 +1367,7 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.getStage(ShellSnippetController.class);
             if (adapter == null) {
-                adapter = StageManager.parseStage(ShellSnippetController.class);
+                adapter = StageManager.parseStage(ShellSnippetController.class, StageManager.getFrontWindow());
                 adapter.display();
             } else {
                 adapter.toFront();
@@ -1439,7 +1439,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter addHost(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
@@ -1458,7 +1458,7 @@ public class ShellViewFactory {
      */
     public static void runImage(ShellDockerExec exec, ShellDockerImage image) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerRunController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellDockerRunController.class, StageManager.getFrontWindow());
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
             adapter.display();
@@ -1476,7 +1476,7 @@ public class ShellViewFactory {
      */
     public static void saveImage(ShellDockerExec exec, ShellDockerImage image) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class, StageManager.getFrontWindow());
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
             adapter.display();
@@ -1494,7 +1494,7 @@ public class ShellViewFactory {
      */
     public static void tagImage(ShellDockerExec exec, ShellDockerImage image) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerTagController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellDockerTagController.class, StageManager.getFrontWindow());
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
             adapter.display();
@@ -1512,7 +1512,7 @@ public class ShellViewFactory {
      */
     public static void commitContainer(ShellDockerExec exec, ShellDockerContainer container) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class, StageManager.getFrontWindow());
             adapter.setProp("exec", exec);
             adapter.setProp("container", container);
             adapter.display();
@@ -1530,7 +1530,7 @@ public class ShellViewFactory {
      */
     public static void shareFile(ShellS3ClientV2 client, ShellS3File file) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellS3ShareFileController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellS3ShareFileController.class, StageManager.getFrontWindow());
             adapter.setProp("s3File", file);
             adapter.setProp("client", client);
             adapter.display();
@@ -1549,7 +1549,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter addRedisKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("type", type);
     //         adapter.setProp("client", client);
     //         adapter.setProp("dbIndex", dbIndex);
@@ -1570,7 +1570,7 @@ public class ShellViewFactory {
     //  */
     // public static void redisBatchOperation(ShellRedisClient client, Integer dbIndex) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getFrontWindow());
     //         adapter.setProp("client", client);
     //         adapter.setProp("dbIndex", dbIndex);
     //         adapter.display();
@@ -1588,7 +1588,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisMoveKey(ShellRedisKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1607,7 +1607,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisCopyKey(ShellRedisKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1625,7 +1625,7 @@ public class ShellViewFactory {
     //  */
     // public static void redisTtlKey(ShellRedisKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.display();
     //     } catch (Exception ex) {
@@ -1641,7 +1641,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisZSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1659,7 +1659,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisZSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1677,7 +1677,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisSetMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1695,7 +1695,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisHashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1713,7 +1713,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1731,7 +1731,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1749,7 +1749,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getFrontWindow());
     //         adapter.setProp("treeItem", treeItem);
     //         adapter.showAndWait();
     //         return adapter;
@@ -1767,7 +1767,7 @@ public class ShellViewFactory {
     //  */
     // public static void redisImportData(ShellConnect connect) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class, StageManager.getFrontWindow());
     //         adapter.setProp("connect", connect);
     //         adapter.display();
     //     } catch (Exception ex) {
@@ -1784,7 +1784,7 @@ public class ShellViewFactory {
     //  */
     // public static void redisExportData(ShellConnect connect, Integer dbIndex) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class, StageManager.getFrontWindow());
     //         adapter.setProp("connect", connect);
     //         adapter.setProp("dbIndex", dbIndex);
     //         adapter.display();
@@ -1802,7 +1802,7 @@ public class ShellViewFactory {
     //  */
     // public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class, StageManager.getFrontWindow());
     //         adapter.setProp("sourceConnect", connect);
     //         adapter.setProp("dbIndex", dbIndex);
     //         adapter.display();
@@ -1821,7 +1821,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getFrontWindow());
     //         adapter.setProp("zkItem", nodeItem);
     //         adapter.setProp("zkClient", client);
     //         adapter.showAndWait();
@@ -1842,7 +1842,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getFrontWindow());
     //         adapter.setProp("zkItem", nodeItem);
     //         adapter.setProp("zkClient", client);
     //         adapter.showAndWait();
@@ -1862,7 +1862,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter zkAddACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getFrontWindow());
     //         adapter.setProp("zkItem", nodeItem);
     //         adapter.setProp("zkClient", client);
     //         adapter.showAndWait();
@@ -1883,7 +1883,7 @@ public class ShellViewFactory {
     //  */
     // public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getFrontWindow());
     //         adapter.setProp("acl", acl);
     //         adapter.setProp("zkItem", nodeItem);
     //         adapter.setProp("zkClient", client);
@@ -1903,7 +1903,7 @@ public class ShellViewFactory {
     //  */
     // public static void zkImportData(ShellConnect connect) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKImportDataController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKImportDataController.class, StageManager.getFrontWindow());
     //         adapter.setProp("connect", connect);
     //         adapter.display();
     //     } catch (Exception ex) {
@@ -1920,7 +1920,7 @@ public class ShellViewFactory {
     //  */
     // public static void zkExportData(ShellConnect connect, String nodePath) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKExportDataController.class, StageManager.getFrontWindow());
     //         adapter.setProp("connect", connect);
     //         adapter.setProp("nodePath", nodePath);
     //         adapter.display();
@@ -1937,7 +1937,7 @@ public class ShellViewFactory {
     //  */
     // public static void zkTransportData(ShellConnect connect) {
     //     try {
-    //         StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class, StageManager.getPrimaryStage());
+    //         StageAdapter adapter = StageManager.parseStage(ShellZKTransportDataController.class, StageManager.getFrontWindow());
     //         adapter.setProp("sourceConnect", connect);
     //         adapter.display();
     //     } catch (Exception ex) {

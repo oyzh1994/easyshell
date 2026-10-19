@@ -97,7 +97,7 @@ public abstract class ShellRedisKeyController<T extends ShellRedisKeyTreeItem> e
     @FXML
     protected void saveKeyValue() {
         if (this.treeItem.isDataUnsaved()) {
-            StageManager.showMask(this.treeItem::saveKeyValue);
+            StageManager.showMask(this.getWindow(), this.treeItem::saveKeyValue);
         }
     }
 

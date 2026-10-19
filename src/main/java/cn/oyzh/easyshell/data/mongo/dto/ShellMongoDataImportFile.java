@@ -130,7 +130,7 @@ public class ShellMongoDataImportFile {
         ShellMongoCollectionComboBox comboBox = new ShellMongoCollectionComboBox();
         //String dbName = CacheHelper.get("mongo:dbName");
         //ShellMongoClient dbClient = CacheHelper.get("mongo:dbClient");
-        StageManager.showMask(() -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
+        StageManager.showMask(StageManager.getFrontWindow(), () -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });

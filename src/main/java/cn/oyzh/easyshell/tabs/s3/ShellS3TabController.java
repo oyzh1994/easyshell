@@ -67,7 +67,7 @@ public class ShellS3TabController extends ShellParentTabController {
                 MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 if (!this.client.isConnected()) {
                     this.client.start();

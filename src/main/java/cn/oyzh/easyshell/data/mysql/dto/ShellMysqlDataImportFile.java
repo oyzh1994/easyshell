@@ -130,7 +130,7 @@ public class ShellMysqlDataImportFile {
         ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
         //String dbName = CacheHelper.get("mysql:dbName");
         //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
-        StageManager.showMask(() -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
+        StageManager.showMask(StageManager.getFrontWindow(), () -> comboBox.init(this.dbName, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });

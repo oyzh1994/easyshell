@@ -132,7 +132,7 @@ public class ShellDamengDataImportFile {
      */
     public ShellDamengTableComboBox getTargetTableControl() {
         ShellDamengTableComboBox comboBox = new ShellDamengTableComboBox();
-        StageManager.showMask(() -> comboBox.init(this.schema, this.getTableName(), this.dbClient));
+        StageManager.showMask(StageManager.getFrontWindow(), () -> comboBox.init(this.schema, this.getTableName(), this.dbClient));
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setTargetTableName(newValue);
         });

@@ -111,7 +111,7 @@ public class ShellMariadbEventTreeItem extends ShellMariadbTreeItem<ShellMariadb
      * 克隆事件
      */
     private void cloneEvent() {
-        StageManager.showMask(this::doCloneEvent);
+        StageManager.showMask(this.getWindow(), this::doCloneEvent);
     }
 
     /**

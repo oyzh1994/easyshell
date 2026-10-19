@@ -103,7 +103,7 @@ public class ShellFileEditController extends StageController {
      */
     @FXML
     private void save() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 File localFile = new File(this.destPath);
                 String content = this.data.getText();
@@ -128,7 +128,7 @@ public class ShellFileEditController extends StageController {
      * 初始化文件
      */
     private void init() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 FileUtil.touch(this.destPath);
                 this.client.get(this.file, this.destPath);

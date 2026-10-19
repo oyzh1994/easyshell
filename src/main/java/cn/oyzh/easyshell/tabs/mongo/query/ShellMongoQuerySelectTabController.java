@@ -181,7 +181,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
      * 初始化数据列表，带遮罩板
      */
     private void initDataListByMask() {
-        StageManager.showMask(this::initDataList);
+        StageManager.showMask(this.getWindow(), this::initDataList);
     }
 
     /**
@@ -395,7 +395,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
      */
     @FXML
     public void reload() {
-        StageManager.showMask(this::doReload);
+        StageManager.showMask(this.getWindow(), this::doReload);
     }
 
     /**
@@ -449,7 +449,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
             return;
         }
         List<MongoRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        StageManager.showMask(() -> this.deleteRecords(records));
+        StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));
     }
 
     /**

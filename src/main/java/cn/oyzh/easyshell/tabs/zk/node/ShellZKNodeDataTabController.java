@@ -155,7 +155,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
             return;
         }
         // 刷新数据
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.activeItem().refreshData();
                 this.activeItem().refresh();
@@ -329,7 +329,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
     //     byte[] bytes = this.activeItem().getData();
     //     bytes = TextUtil.changeCharset(bytes, Charset.defaultCharset(), this.charset.getCharset());
     //     byte[] finalBytes = bytes;
-    //     StageManager.showMask(() -> FXUtil.runWait(() -> this.nodeData.showData(dataType, finalBytes)));
+    //     StageManager.showMask(this.getWindow(), () -> FXUtil.runWait(() -> this.nodeData.showData(dataType, finalBytes)));
     // }
 
     /**

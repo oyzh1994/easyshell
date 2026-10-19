@@ -77,7 +77,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
     public void loadBucket() {
         try {
             if (this.client != null) {
-                StageManager.showMask(() -> {
+                StageManager.showMask(this.getWindow(), () -> {
                     try {
                         List<ShellS3Bucket> buckets = this.client.listBuckets();
                         this.setItem(buckets);
@@ -101,7 +101,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
         if (bucket != null && MessageBox.confirm(I18nHelper.deleteBucket() + " " + bucket.getName() + "?", this.getWindow())) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.client.deleteBucket(bucket, force);
                     this.loadBucket();

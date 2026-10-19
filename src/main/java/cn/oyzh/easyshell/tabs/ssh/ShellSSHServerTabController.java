@@ -102,7 +102,7 @@ public class ShellSSHServerTabController extends ParentTabController {
      * 初始化数据
      */
     private void init() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 if (this.client != null) {
                     // 初始化磁盘信息

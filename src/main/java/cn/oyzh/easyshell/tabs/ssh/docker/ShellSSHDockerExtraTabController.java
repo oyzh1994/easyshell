@@ -39,7 +39,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerInfo() {
         ShellDockerExec exec = this.client().dockerExec();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = exec.docker_info();
                 if (StringUtil.isBlank(output)) {
@@ -65,7 +65,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerVersion() {
         ShellDockerExec exec = this.client().dockerExec();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = exec.docker_version();
                 if (StringUtil.isBlank(output)) {
@@ -91,7 +91,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
     @FXML
     private void dockerComposeVersion() {
         ShellDockerExec exec = this.client().dockerExec();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = exec.docker_compose_version();
                 MessageBox.info(output, this.getWindow());
@@ -115,7 +115,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
             return;
         }
         ShellDockerExec exec = this.client().dockerExec();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = exec.docker_restart();
                 if (StringUtil.isNotBlank(output)) {
@@ -137,7 +137,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         if (!MessageBox.confirm(I18nHelper.clearContainerData(), I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 exec.docker_container_prune_f();
                 this.parent().loadContainer();
@@ -157,7 +157,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         if (!MessageBox.confirm(I18nHelper.clearImageData(), I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 exec.docker_image_prune_f();
                 this.parent().loadImage();
@@ -177,7 +177,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         if (!MessageBox.confirm(I18nHelper.clearNetworkData(), I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 exec.docker_network_prune_f();
             } catch (Exception ex) {
@@ -196,7 +196,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
         if (!MessageBox.confirm(I18nHelper.clearVolumeData(), I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 exec.docker_volume_prune_f();
             } catch (Exception ex) {

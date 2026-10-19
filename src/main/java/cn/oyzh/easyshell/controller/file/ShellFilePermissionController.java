@@ -135,7 +135,7 @@ public class ShellFilePermissionController extends StageController {
      */
     @FXML
     private void save() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String perms = this.getPerms();
                 int permission = ShellFileUtil.toPermissionInt(perms);

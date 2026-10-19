@@ -1182,7 +1182,7 @@ public class SettingController extends StageController {
     @FXML
     private void doSync() {
         this.initSync();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellSyncManager.doSync();
                 this.updateSyncInfo();
@@ -1202,7 +1202,7 @@ public class SettingController extends StageController {
             return;
         }
         this.initSync();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellSyncManager.clearSync();
                 this.updateSyncInfo();

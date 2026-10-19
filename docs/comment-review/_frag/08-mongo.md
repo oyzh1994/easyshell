@@ -154,12 +154,12 @@
   | `public void init(ShellMongoBucketTreeItem item)` | 初始化 | 设置 `client`、`columns`、`fileTable` 客户端/库名/桶名；`itemProperty` 与 `item.parentProperty()` 监听置空时 `closeTab()`；`client.addTaskSizeListener(...)` 更新 `manage` 文本与计数；最后 `reload()` |
   | `public ShellMongoBucketTreeItem getItem()` | 获取树节点 | `itemProperty.get()` |
   | `private void initDataList(long pageNo)` | 加载分页数据 | `getItem().recordPage(...)` 取 `pageData`，`pageBox.setPaging`，`fileTable.setItem(records)` |
-  | `private void initDataListByMask(long pageNo)` | 带遮罩加载分页 | `StageManager.showMask(() -> initDataList(pageNo))` |
+  | `private void initDataListByMask(long pageNo)` | 带遮罩加载分页 | `StageManager.showMask(this.getWindow(), () -> initDataList(pageNo))` |
   | `private List<MongoRecordFilter> enabledFilters()` | 获取已启用过滤条件 | 过滤 `isEnabled()`，空则返回 null |
   | `private void initCount(long count)` | 更新计数 | 以 `fileTable.itemList()`、`pageData.limit()`、`count` 重建 `Paging` 并 `pageBox.setPaging` |
   | `private void editDocument()` | 编辑文档（FXML 事件） | `fileTable.editDocument(fileTable.getSelectedItem())` |
   | `public void viewDocument()` | 查看文档（FXML 事件） | `fileTable.viewFile(fileTable.getSelectedItem())` |
-  | `public void reload()` | 刷新记录（FXML 事件） | `StageManager.showMask(this::doReload)` |
+  | `public void reload()` | 刷新记录（FXML 事件） | `StageManager.showMask(this.getWindow(), this::doReload)` |
   | `private void doReload()` | 刷新业务 | `initDataListByMask(0)`；按 `enabledFilters()` 设置 `filter.setActive(...)` |
   | `private void filter()` | 过滤记录（FXML 事件） | `PopupManager.parsePopup(ShellMongoRecordFilterPopupController.class)`，设置 item/filters/columns，`setSubmitHandler` 内 `setFilters`+`reload` |
   | `private void nextPage()` | 下一页（FXML 事件） | `initDataListByMask(pageData.nextPage())` |
@@ -227,7 +227,7 @@
   | `public void init(ShellMongoCollectionTreeItem item)` | 初始化 | 建 `itemProperty` 并监听置空 `closeTab()`；监听 `item.parentProperty()` 置空 `closeTab()`；`reload()`；创建 `changeListener`（键为 `dbName:collectionName`）触发 `apply.enable()` |
   | `public ShellMongoCollectionTreeItem getItem()` | 获取树节点 | `itemProperty.get()` |
   | `private void initDataList(long pageNo)` | 加载分页数据 | `getItem().recordPage(...)` 取 `pageData`，`pageBox.setPaging`，`updateColumns`、`initRecords`、`correctRecords` |
-  | `private void initDataListByMask(long pageNo)` | 带遮罩加载分页 | `StageManager.showMask(() -> initDataList(pageNo))` |
+  | `private void initDataListByMask(long pageNo)` | 带遮罩加载分页 | `StageManager.showMask(this.getWindow(), () -> initDataList(pageNo))` |
   | `private List<MongoRecordFilter> enabledFilters()` | 获取已启用过滤条件 | 过滤 `isEnabled()`，空则 null |
   | `private void updateColumns(List<MongoRecord> records)` | 更新字段 | 汇总记录列名，缺失列 `column.copy` 后 `add`，删除已消失列，有变化时 `initColumns` |
   | `private void initCount(long count)` | 更新计数 | 以 `recordTable.itemList()`、`pageData.limit()`、`count` 重建 `Paging` 并 `pageBox.setPaging` |
@@ -241,7 +241,7 @@
   | `private void updateRecord(MongoRecord record)` | 更改记录 | `getItem().updateRecord(record)`，成功则更新字段并纠正记录，否则告警 |
   | `private void apply()` | 应用变更（FXML 事件） | 遍历记录，`DBObjectList.isCreated` 走 `insertRecord`，`isChanged` 走 `updateRecord`，各 `clearStatus` 后 `apply.disable()` |
   | `private void discard()` | 丢弃变更（FXML 事件） | 新增记录移除，变更记录 `record.discard()`，`removeItem` 后计数 |
-  | `public void reload()` | 刷新记录（FXML 事件） | `StageManager.showMask(this::doReload)` |
+  | `public void reload()` | 刷新记录（FXML 事件） | `StageManager.showMask(this.getWindow(), this::doReload)` |
   | `private void doReload()` | 刷新业务 | 有未保存变更时确认 `unsavedAndContinue`；`initDataListByMask(0)`、设置 `filter` 激活、`apply.disable()` |
   | `private void filter()` | 过滤记录（FXML 事件） | 弹出 `ShellMongoRecordFilterPopupController`，提交后 `setFilters`+`reload` |
   | `private void nextPage()` / `prevPage()` / `lastPage()` / `firstPage()` | 翻页（FXML 事件） | 分别 `initDataListByMask(pageData.nextPage()/prevPage()/lastPage()/0)` |
@@ -301,12 +301,12 @@
   | 方法 | 说明 | 关键逻辑/调用 |
   |---|---|---|
   | `public MongoFunction getFunction()` | 获取函数对象 | 返回 `function` |
-  | `public void init(MongoFunction function, ShellMongoDatabaseTreeItem dbItem)` | 初始化 | 赋值 `dbItem`/`function`，`newData = function.isNew()`，`StageManager.showMask(this::doInit)` |
+  | `public void init(MongoFunction function, ShellMongoDatabaseTreeItem dbItem)` | 初始化 | 赋值 `dbItem`/`function`，`newData = function.isNew()`，`StageManager.showMask(this.getWindow(), this::doInit)` |
   | `private void doInit()` | 执行初始化 | `initDBListener()`；`FXUtil.runWait(this::initInfo)` |
   | `private void initDBListener()` | 初始化数据监听器 | 销毁旧 `listener` 并 `unbindListener`；新建 `DBStatusListener`（键 `dbName:name`）变更时 `initChangedFlag()`，`bindListener` 到 `definition` |
   | `private void initChangedFlag()` | 初始化变更标志 | 非 `initiating` 时置 `unsaved=true` 并 `flushTab()` |
   | `protected void initInfo()` | 初始化信息 | 置 `initiating=true`；新数据写入默认模板并 `unsaved=true`；否则 `dbItem.selectFunction` 取代码 `setText`+`forgetHistory`；`FXUtil.runPulse` 复位 `initiating` |
-  | `private void save()` | 保存（FXML 事件） | `StageManager.showMask(this::doSave)` |
+  | `private void save()` | 保存（FXML 事件） | `StageManager.showMask(this.getWindow(), this::doSave)` |
   | `private void doSave()` | 执行保存 | `tempData()` 构造临时函数；新数据 `MessageBox.prompt` 取名并 `dbItem.createFunction`，随后 `selectFunction`+`addFunction`+`initDBListener`；否则 `dbItem.alertFunction`；复位标志并 `initInfo`+`initPreview` |
   | `private MongoFunction tempData()` | 获取临时数据 | 以 `function` 名称、库名与 `definition` 文本构建 `MongoFunction` |
   | `public void initialize(URL location, ResourceBundle resourceBundle)` | 控制器初始化 | `NodeUtil.nodeOnCtrlS` 绑定 tab 与编辑器 `save`；`tabPane.selectedIndexChanged` 选到索引 1 时 `initPreview()` |
@@ -425,7 +425,7 @@
   | `public void init(ShellQuery query, ShellMongoDatabaseTreeItem dbItem)` | 初始化 | `resultTabPane.setProp("query", query)`；赋值 `query`/`dbItem`；`showNode(0)`；`queryArea.setText(query.getContent())`+`forgetHistory()`；监听文本变化置 `unsaved`；`ShellMongoQueryUtil.updateIndex(...)` |
   | `public void initialize(URL url, ResourceBundle resourceBundle)` | 控制器初始化 | `resultTabPane.selectedItemChanged` 时按 id 切换 `showNode(1/2)`；`queryArea.setRunCallback(this::run)` |
   | `private void clearTabs()` | 清理结果标签 | 保留 `infoTab`，其余 `resultTabPane.removeTab(removes)` |
-  | `private void run()` | 运行（FXML 事件） | 取选中文本或全文，`StageManager.showMask(() -> doRun(sql))` |
+  | `private void run()` | 运行（FXML 事件） | 取选中文本或全文，`StageManager.showMask(this.getWindow(), () -> doRun(sql))` |
   | `private void doRun(String sql)` | 执行运行 | `dbItem.executeScript(sql)` 取结果；`clearTabs()`、`initInfoTab(results)`；对成功结果建 `initSelectTab` 并 `addTab`，有结果则 `showType=2`；按类型选中结果或首项并 `showNode` |
   | `private void initInfoTab(DBQueryResults<?> results)` | 初始化信息标签 | `infoTab.init(results)` |
   | `private ShellMongoQuerySelectTab initSelectTab(ShellMongoExecuteResult result, String title)` | 初始化结果标签 | `new ShellMongoQuerySelectTab()` 后 `init(title, result, dbItem)`，设 id 与属性 |
@@ -477,7 +477,7 @@
   |---|---|---|
   | `public void init(ShellMongoExecuteResult result, ShellMongoDatabaseTreeItem dbItem)` | 初始化 | 赋值 `result`/`dbItem`；监听 `dbItem.parentProperty()` 置空 `closeTab()`；`reload()`；`result.isUpdatable()` 时建 `changeListener` 并 `display` add/apply/delete/discard |
   | `private void initDataList()` | 初始化数据列表 | `updateColumns`、`initRecords`、`correctRecords`；写 `script`（`TextUtil.toSingleLine`）、`used`、`initCount(result.getCount())` |
-  | `private void initDataListByMask()` | 带遮罩加载 | `StageManager.showMask(this::initDataList)` |
+  | `private void initDataListByMask()` | 带遮罩加载 | `StageManager.showMask(this.getWindow(), this::initDataList)` |
   | `private void updateColumns(List<MongoRecord> records)` | 更新字段 | 汇总列名，缺失列 `copy`+`add`，删除消失列，有变化时 `initColumns` |
   | `private void initCount(int count)` | 更新计数 | `count.text(总数据: count)` |
   | `private void initColumns(MongoColumns columns)` | 初始化列 | 首列 `DBStatusColumn`，其余 `ShellMongoRecordColumn`（标记 2）并 `setColumn` |
@@ -489,7 +489,7 @@
   | `private void updateRecord(MongoRecord record)` | 更改记录 | `dbItem.updateCollectionRecord(record)`，成功更新字段与纠正，否则告警 |
   | `private void apply()` | 应用变更（FXML 事件） | 遍历记录，`isCreated` 走 `insertRecord`、`isChanged` 走 `updateRecord`，各 `clearStatus` 后 `apply.disable()` |
   | `private void discard()` | 丢弃变更（FXML 事件） | 新增记录移除，变更记录 `discard()`，`removeItem` 后计数 |
-  | `public void reload()` | 刷新记录（FXML 事件） | `StageManager.showMask(this::doReload)` |
+  | `public void reload()` | 刷新记录（FXML 事件） | `StageManager.showMask(this.getWindow(), this::doReload)` |
   | `private void doReload()` | 刷新业务 | 未保存变更时确认；`dbItem.executeSingleScript(result.getContent())` 重新执行；`initDataListByMask()`、`apply.disable()` |
   | `private void exportRecord()` | 导出记录（FXML 事件） | 从 `getTabPane().getProp("query")` 取查询，构建 `ShellMongoDataExportCollection` 并 `ShellMongoViewFactory.exportData(...)` |
   | `private void deleteRecord()` | 删除记录（FXML 事件） | 确认后 `deleteRecords(选中记录)` |

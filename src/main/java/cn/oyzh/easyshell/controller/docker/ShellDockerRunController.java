@@ -249,7 +249,7 @@ public class ShellDockerRunController extends StageController {
     private void run() {
         ShellDockerRun run = this.initParam();
         // 执行
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.exec.docker_run(run);
                 if (JulLog.isInfoEnabled()) {

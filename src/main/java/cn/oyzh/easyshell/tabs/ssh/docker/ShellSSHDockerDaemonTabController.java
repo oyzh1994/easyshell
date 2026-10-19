@@ -55,7 +55,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
         if (this.filePath.isEmpty()) {
             this.filePath.text(this.client().dockerExec().getDaemonFilePath());
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String filePath = this.filePath.getText();
                 if (this.sftpClient().exist(filePath)) {
@@ -85,7 +85,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     @FXML
     private void save() {
         String text = this.data.getText();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             ShellSSHExec exec = this.client().sshExec();
             try {
                 ShellSFTPClient sftpClient = this.sftpClient();

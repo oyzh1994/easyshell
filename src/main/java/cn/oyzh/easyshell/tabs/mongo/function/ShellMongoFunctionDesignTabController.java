@@ -96,7 +96,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         this.function = function;
         // 更新新数据标志位
         this.newData = this.function.isNew();
-        StageManager.showMask(this::doInit);
+        StageManager.showMask(this.getWindow(), this::doInit);
     }
 
     /**
@@ -176,7 +176,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
      */
     @FXML
     private void save() {
-        StageManager.showMask(this::doSave);
+        StageManager.showMask(this.getWindow(), this::doSave);
     }
 
     /**

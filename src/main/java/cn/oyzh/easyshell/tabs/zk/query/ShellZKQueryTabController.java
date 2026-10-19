@@ -149,7 +149,7 @@ public class ShellZKQueryTabController extends RichTabController {
      */
     @FXML
     private void run() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellZKQueryParam param = new ShellZKQueryParam();
                 param.setContent(this.content.getText());

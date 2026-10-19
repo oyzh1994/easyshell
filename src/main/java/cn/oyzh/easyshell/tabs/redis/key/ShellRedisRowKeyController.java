@@ -116,7 +116,7 @@ public abstract class ShellRedisRowKeyController<T extends ShellRedisRowKeyTreeI
         if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 // 刷新数据
                 this.treeItem.refreshKeyValue();
@@ -154,7 +154,7 @@ public abstract class ShellRedisRowKeyController<T extends ShellRedisRowKeyTreeI
      * @param pageNo 页码
      */
     protected void initPage(long pageNo) {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 List<R> rows = this.getRows();
                 this.pageData = new Paging<>(rows, this.setting.getRowPageLimit());

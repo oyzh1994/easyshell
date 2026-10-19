@@ -138,7 +138,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.treeItem.saveKeyValue();
                     this.listTable.refresh();

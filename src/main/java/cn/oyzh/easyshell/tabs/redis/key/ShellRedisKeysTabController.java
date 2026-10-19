@@ -226,7 +226,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
             this.tabPane.disable();
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             CostUtil.record();
             try {
                 // 初始化数据

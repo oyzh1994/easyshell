@@ -59,7 +59,7 @@ public class ShellZKHistoryDataController extends StageController {
             this.editor.clear();
             this.editor.disable();
         } else {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     byte[] bytes = ShellZKDataUtil.getHistory(listTable.getNodePath(), data.getSaveTime(), listTable.getClient());
                     this.editor.showData(bytes);

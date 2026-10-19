@@ -370,7 +370,7 @@ public class ShellFileTransportController extends StageController {
             }
             // 连接初始化
             if (this.sourceClient == null || this.sourceClient.isClosed() || this.targetClient == null || this.targetClient.isClosed()) {
-                StageManager.showMask(() -> {
+                StageManager.showMask(this.getWindow(), () -> {
                     try {
                         // 检查来源
                         if (this.sourceClient == null || this.sourceClient.isClosed()) {

@@ -130,7 +130,7 @@ public class ShellDockerCommitController extends StageController {
      */
     @FXML
     private void run() {
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 ShellDockerCommit commit = this.initParam();
                 String output = this.exec.docker_commit(commit);

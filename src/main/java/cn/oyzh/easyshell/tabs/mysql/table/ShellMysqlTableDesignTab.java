@@ -70,7 +70,7 @@ public class ShellMysqlTableDesignTab extends ShellMysqlBaseTab {
      * @throws Exception 异常
      */
     public void init(MysqlTable table, ShellMysqlDatabaseTreeItem dbItem) throws Exception {
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.controller().init(table, dbItem);
                 this.flush();

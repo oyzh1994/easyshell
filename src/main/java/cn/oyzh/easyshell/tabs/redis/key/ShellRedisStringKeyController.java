@@ -226,7 +226,7 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
         if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 // 刷新数据
                 this.treeItem.refreshKeyValue();
@@ -249,7 +249,7 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 try {
                     // 保存数据
                     this.treeItem.saveKeyValue();

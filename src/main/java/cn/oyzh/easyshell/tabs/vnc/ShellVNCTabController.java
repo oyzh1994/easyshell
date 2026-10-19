@@ -79,7 +79,7 @@
 //        // 设置渲染组件
 //        this.client.setRenderProtocol(this.renderService);
 //        // 执行连接
-//        StageManager.showMask(() -> {
+//        StageManager.showMask(this.getWindow(), () -> {
 //            try {
 //                if (!this.client.isConnected()) {
 //                    this.client.start();

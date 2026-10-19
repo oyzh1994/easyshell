@@ -157,7 +157,7 @@ public class ShellAddKeyController extends StageController {
     @FXML
     private void generateKey() {
         Integer length = this.keyLength.getSelectedItem();
-        StageManager.showMask(() -> {
+        StageManager.showMask(this.getWindow(), () -> {
             try {
                 String password = this.keyPassword.getPassword();
                 String[] key;

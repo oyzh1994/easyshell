@@ -63,7 +63,7 @@ public class ShellMessageTabController extends RichTabController {
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
         if (!EVENT_MESSAGES.isEmpty()) {
-            StageManager.showMask(() -> {
+            StageManager.showMask(this.getWindow(), () -> {
                 synchronized (EVENT_MESSAGES) {
                     this.appendMsg(EVENT_MESSAGES);
                     EVENT_MESSAGES.addListener(this.changeListener);
