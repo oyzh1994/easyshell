@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox?>
@@ -36,8 +37,6 @@
 <?import cn.oyzh.fx.plus.theme.ThemeComboBox?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
-<?import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox?>
-<?import cn.oyzh.fx.plus.controls.text.FXText?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="650">
     <FXHeaderBar/>

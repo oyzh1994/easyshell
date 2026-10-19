@@ -320,7 +320,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         }
         // 序列
         for (DamengColumn column : record.getColumns()) {
-            if(column.isDefaultValueSequence()){
+            if (column.isDefaultValueSequence()) {
                 DamengRecordPrimaryKey primaryKey = new DamengRecordPrimaryKey();
                 primaryKey.init(column, record);
                 return primaryKey;
@@ -398,7 +398,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
             // 初始化数据
             this.initDataList(0);
             // 判断是否缺少主键列
-            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey());
+            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey() && !this.columns.isDefaultValueSequence());
             // 设置过滤激活
             this.filter.setActive(CollectionUtil.isNotEmpty(this.enabledFilters()));
             // 禁用组件
@@ -600,7 +600,7 @@ public class ShellDamengTableRecordTabController extends RichTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-//        this.recordTable.destroy();
+        //        this.recordTable.destroy();
         DBStatusListenerManager.removeListener(this.changeListener);
     }
 
@@ -709,9 +709,9 @@ public class ShellDamengTableRecordTabController extends RichTabController {
         ShellDamengViewFactory.exportData(this.getItem().client(), this.getItem().schema(), this.getItem().tableName());
     }
 
-//    @Override
-//    public void destroy() {
-//        this.recordTable.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.recordTable.destroy();
+    //        super.destroy();
+    //    }
 }

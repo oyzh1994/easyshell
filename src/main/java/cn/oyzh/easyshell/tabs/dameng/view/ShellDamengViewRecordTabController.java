@@ -403,7 +403,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
             // 初始化数据
             this.initDataList(0);
             // 判断是否缺少主键列
-            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey());
+            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey() && !this.columns.isDefaultValueSequence());
             // 设置过滤激活
             this.filter.setActive(CollectionUtil.isNotEmpty(this.enabledFilters()));
             // 禁用组件

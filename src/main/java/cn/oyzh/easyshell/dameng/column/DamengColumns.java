@@ -182,4 +182,18 @@ public class DamengColumns extends DBObjectList<DamengColumn> {
         }
         return false;
     }
+
+    /**
+     * 默认值是否序列
+     *
+     * @return 结果
+     */
+    public boolean isDefaultValueSequence() {
+        for (DamengColumn column : this) {
+            if (column.isDefaultValueSequence()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
