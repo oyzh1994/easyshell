@@ -98,13 +98,13 @@ public class ShellCopyIdKeyController extends StageController {
                 client.start(3000);
                 if (!client.isConnected()) {
                     this.message.appendLine("client not connected");
-                    MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     return;
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 this.message.appendLine("client connect fail");
-                MessageBox.warn(I18nHelper.connectFail());
+                MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                 return;
             }
             this.message.appendLine("client connected successfully");

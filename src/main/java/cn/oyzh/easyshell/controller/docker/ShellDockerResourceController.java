@@ -120,18 +120,18 @@ public class ShellDockerResourceController extends StageController {
                 JulLog.info("docker update result: {}", output);
             }
             if (StringUtil.isBlank(output)) {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             } else if (!StringUtil.contains(output, this.containerId)) {
-                MessageBox.warn(output);
+                MessageBox.warn(output, this.getWindow());
             } else if (StringUtil.notEquals(output.replace("\n", ""), this.containerId)) {
                 String msg = output.split("\n")[1];
-                MessageBox.info(msg);
+                MessageBox.info(msg, this.getWindow());
             } else {
                 this.closeWindow();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

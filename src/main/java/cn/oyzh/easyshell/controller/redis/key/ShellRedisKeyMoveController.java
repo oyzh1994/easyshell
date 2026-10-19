@@ -77,11 +77,11 @@ public class ShellRedisKeyMoveController extends StageController {
             this.client.throwClusterException();
             this.client.throwSentinelException();
             if (targetDBIndex == fromDBIndex) {
-                MessageBox.warn(ShellI18nHelper.redisMoveTip1());
+                MessageBox.warn(ShellI18nHelper.redisMoveTip1(), this.getWindow());
                 return;
             }
             if (this.client.exists(targetDBIndex, key)) {
-                MessageBox.warn(ShellI18nHelper.redisMoveTip2());
+                MessageBox.warn(ShellI18nHelper.redisMoveTip2(), this.getWindow());
                 return;
             }
             // 保留ttl
@@ -92,7 +92,7 @@ public class ShellRedisKeyMoveController extends StageController {
             // 移动键
             long count = this.client.move(key, fromDBIndex, targetDBIndex);
             if (count <= 0) {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             } else {
                 // 设置新键的ttl
                 if (ttl > 0) {
@@ -100,12 +100,12 @@ public class ShellRedisKeyMoveController extends StageController {
                 }
                 this.setProp("dbIndex", targetDBIndex);
                 // ShellEventUtil.redisKeyMoved(this.treeItem, targetDBIndex);
-                // MessageBox.okToast(I18nHelper.operationSuccess());
+                // MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                 this.closeWindow();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

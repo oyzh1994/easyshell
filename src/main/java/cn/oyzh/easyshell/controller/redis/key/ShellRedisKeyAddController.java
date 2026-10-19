@@ -266,7 +266,7 @@ public class ShellRedisKeyAddController extends StageController {
         try {
             long ttl = this.ttlValue.getValue();
             if (ttl == 0) {
-                MessageBox.warn(ShellI18nHelper.redisAddTip2());
+                MessageBox.warn(ShellI18nHelper.redisAddTip2(), this.getWindow());
                 return;
             }
             if (key.isEmpty()) {
@@ -274,7 +274,7 @@ public class ShellRedisKeyAddController extends StageController {
                 return;
             }
             if (this.client.exists(dbIndex, key)) {
-                MessageBox.warn("key: [" + key + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn("key: [" + key + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             boolean result = false;
@@ -311,7 +311,7 @@ public class ShellRedisKeyAddController extends StageController {
                 // keyType = "BITMAP/STRING";
             }
             if (!result) {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 return;
             }
             // 设置ttl
@@ -320,11 +320,11 @@ public class ShellRedisKeyAddController extends StageController {
             }
             this.setProp("key", key);
             // ShellEventUtil.redisKeyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
-            // MessageBox.okToast(I18nHelper.operationSuccess());
+            // MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -471,7 +471,7 @@ public class ShellRedisKeyAddController extends StageController {
             return false;
         }
         if (!JSONUtil.isJson(nodeValue)) {
-            MessageBox.warn(ShellI18nHelper.redisAddTip1());
+            MessageBox.warn(ShellI18nHelper.redisAddTip1(), this.getWindow());
             return false;
         }
         String streamID = this.streamIDValue.getText();

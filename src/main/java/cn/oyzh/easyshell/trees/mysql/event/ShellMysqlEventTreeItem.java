@@ -124,14 +124,14 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
             MysqlEvent mysqlEvent = this.dbItem().selectEvent(cloneEvent);
             this.dbItem().getEventTypeChild().addEvent(mysqlEvent);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(I18nHelper.deleteEvent() + " " + this.value.getName() + "?")) {
+        if (!MessageBox.confirm(I18nHelper.deleteEvent() + " " + this.value.getName() + "?", this.getWindow())) {
             return;
         }
         try {
@@ -140,7 +140,7 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
             this.parent().clearEventSize();
             super.remove();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -188,14 +188,14 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
     @Override
     public void rename() {
         try {
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.eventName());
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.eventName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (newName == null || Objects.equals(newName, this.eventName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(newName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.eventName();
@@ -206,7 +206,7 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
             this.refresh();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

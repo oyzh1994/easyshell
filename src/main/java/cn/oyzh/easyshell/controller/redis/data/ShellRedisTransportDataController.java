@@ -459,7 +459,7 @@ public class ShellRedisTransportDataController extends StageController {
                 this.sourceClient.close();
                 this.sourceClient = null;
                 this.sourceInfo.requestFocus();
-                MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectInitFail());
+                MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectInitFail(), this.getWindow());
                 return;
             }
 
@@ -503,7 +503,7 @@ public class ShellRedisTransportDataController extends StageController {
                 this.targetClient.close();
                 this.targetClient = null;
                 this.targetInfo.requestFocus();
-                MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectInitFail());
+                MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectInitFail(), this.getWindow());
                 return;
             }
 
@@ -572,17 +572,17 @@ public class ShellRedisTransportDataController extends StageController {
         int targetDb = this.targetDatabase.getDB();
         if (sourceInfo.compare(targetInfo) && sourceDb == targetDb) {
             this.sourceInfo.requestFocus();
-            MessageBox.warn(I18nHelper.databasesCannotBeTheSame());
+            MessageBox.warn(I18nHelper.databasesCannotBeTheSame(), this.getWindow());
             return;
         }
 
         if (this.sourceClient == null || this.sourceClient.isClosed()) {
-            MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail());
+            MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
             return;
         }
 
         if (this.targetClient == null || this.targetClient.isClosed()) {
-            MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail());
+            MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
             return;
         }
 

@@ -305,7 +305,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                         this.doSort();
                     })
                     .onSuccess(this::refresh)
-                    .onError(MessageBox::exception)
+                    .onError(ex -> MessageBox.exception(ex, this.getWindow()))
                     .build();
             this.startWaiting(task);
         }
@@ -407,7 +407,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      */
     private void copyNodePath() {
         ClipboardUtil.copy(this.decodeNodePath());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     /**
@@ -424,7 +424,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         String newNodePath = ShellZKNodeUtil.concatPath(parentPath, nodeName);
         try {
             if (this.client().exists(newNodePath)) {
-                MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             // 创建模式
@@ -433,10 +433,10 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             if (this.client().create(newNodePath, this.getNodeData(), List.copyOf(this.acl()), null, createMode, true) != null) {
                 this.getTreeView().nodeAdded(newNodePath);
             } else {// 操作失败
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -489,7 +489,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -506,7 +506,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         if (this.isRootNode() || this.isParentNode() || this.isEphemeralNode()) {
             return;
         }
-        String nodeName = MessageBox.prompt(I18nHelper.pleaseInputNodeName(), this.nodeName());
+        String nodeName = MessageBox.prompt(I18nHelper.pleaseInputNodeName(), this.nodeName(), this.getWindow());
         // 名称为空或名称跟当前名称相同，则忽略
         if (StringUtil.isBlank(nodeName) || Objects.equals(nodeName, this.nodeName())) {
             return;
@@ -516,7 +516,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         String newNodePath = ShellZKNodeUtil.concatPath(parentPath, nodeName);
         try {
             if (this.client().exists(newNodePath)) {
-                MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             // 创建模式
@@ -529,10 +529,10 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                 // ShellZKEventUtil.nodeAdded(this.zkConnect(), newNodePath);
                 this.getTreeView().nodeAdded(newNodePath);
             } else {// 操作失败
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -543,13 +543,13 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             return;
         }
         // 父节点
-        if (!MessageBox.confirm(I18nHelper.delete() + " [" + this.decodeNodePath() + "] ", I18nHelper.areYouSure())) {
+        if (!MessageBox.confirm(I18nHelper.delete() + " [" + this.decodeNodePath() + "] ", I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
         // 创建任务
         Task task = TaskBuilder.newBuilder()
                 .onStart(this::deleteNode)
-                .onError(MessageBox::exception)
+                .onError(ex -> MessageBox.exception(ex, this.getWindow()))
                 .build();
         this.startWaiting(task);
     }
@@ -610,7 +610,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                     this.doSort();
                 })
                 .onSuccess(this::refresh)
-                .onError(MessageBox::exception)
+                .onError(ex -> MessageBox.exception(ex, this.getWindow()))
                 .build();
         this.startWaiting(task);
     }
@@ -622,7 +622,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> this.collapseAll(this))
                 .onSuccess(() -> this.getTreeView().select(this))
-                .onError(ex -> MessageBox.exception(ex, I18nHelper.operationFail()))
+                .onError(ex -> MessageBox.exception(ex, I18nHelper.operationFail(), this.getWindow()))
                 .build();
         this.startWaiting(task);
     }
@@ -634,7 +634,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> this.expandAll(this))
                 .onSuccess(() -> this.getTreeView().select(this))
-                .onError(ex -> MessageBox.exception(ex, I18nHelper.operationFail()))
+                .onError(ex -> MessageBox.exception(ex, I18nHelper.operationFail(), this.getWindow()))
                 .build();
         this.startWaiting(task);
     }
@@ -672,7 +672,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             nodeTreeItem.loadChild();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -705,7 +705,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                     // 刷新父节点状态
                     parent.refreshStat();
                 } catch (Exception ex) {
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
                 // 选中节点
                 if (nextItem != null) {
@@ -855,7 +855,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.refresh();
         }
@@ -869,7 +869,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                 this.refreshNode();
                 this.loadChild();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }

@@ -51,7 +51,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
+                this.showContextMenu(menuItems, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -67,17 +67,17 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost( () -> ShellViewFactory.copyKeysToHost(keys));
+        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost(() -> ShellViewFactory.copyKeysToHost(keys));
         menuItems.add(copyKeys1ToHost);
-        MenuItem deleteKey = MenuItemHelper.deleteKey1( () -> this.deleteKey(keys));
+        MenuItem deleteKey = MenuItemHelper.deleteKey1(() -> this.deleteKey(keys));
         menuItems.add(deleteKey);
         if (keys.size() == 1) {
             ShellKey key = keys.getFirst();
-            MenuItem updateKey = MenuItemHelper.editKey1( () -> ShellViewFactory.updateKey(key));
+            MenuItem updateKey = MenuItemHelper.editKey1(() -> ShellViewFactory.updateKey(key));
             menuItems.add(updateKey);
-            MenuItem renameKey = MenuItemHelper.renameKey1( () -> this.renameKey(key));
+            MenuItem renameKey = MenuItemHelper.renameKey1(() -> this.renameKey(key));
             menuItems.add(renameKey);
-            MenuItem exportKey = MenuItemHelper.exportKey1( () -> this.exportKey(key));
+            MenuItem exportKey = MenuItemHelper.exportKey1(() -> this.exportKey(key));
             menuItems.add(exportKey);
         }
         return menuItems;
@@ -90,7 +90,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
      */
     public void deleteKey(List<ShellKey> keys) {
         try {
-            if (!MessageBox.confirm(I18nHelper.areYouSure())) {
+            if (!MessageBox.confirm(I18nHelper.areYouSure(), this.getWindow())) {
                 return;
             }
             for (ShellKey key : new ArrayList<>(keys)) {
@@ -98,7 +98,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             }
             this.removeItem(keys);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -113,7 +113,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
                 return;
             }
             String oldName = key.getName();
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), oldName);
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), oldName, this.getWindow());
             if (StringUtil.isBlank(newName)) {
                 return;
             }
@@ -124,7 +124,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
                 key.setName(oldName);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -144,15 +144,15 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             }
             File priFile = new File(dir, key.getName());
             File pubFile = new File(dir, key.getName() + ".pub");
-            if ((pubFile.exists() || priFile.exists()) && !MessageBox.confirm(I18nHelper.fileExistsAndContinue())) {
+            if ((pubFile.exists() || priFile.exists()) && !MessageBox.confirm(I18nHelper.fileExistsAndContinue(), this.getWindow())) {
                 return;
             }
             FileUtil.writeUtf8String(key.getPrivateKey(), priFile);
             FileUtil.writeUtf8String(key.getPublicKey(), pubFile);
             // 提示信息
-            MessageBox.info(I18nHelper.operationSuccess() + " [" + priFile.getName() + "," + pubFile.getName() + "]");
+            MessageBox.info(I18nHelper.operationSuccess() + " [" + priFile.getName() + "," + pubFile.getName() + "]", this.getWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

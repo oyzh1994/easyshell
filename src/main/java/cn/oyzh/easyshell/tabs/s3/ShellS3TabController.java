@@ -64,7 +64,7 @@ public class ShellS3TabController extends ShellParentTabController {
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
         StageManager.showMask(() -> {
@@ -73,7 +73,7 @@ public class ShellS3TabController extends ShellParentTabController {
                     this.client.start();
                 }
                 if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
                 }
@@ -86,7 +86,7 @@ public class ShellS3TabController extends ShellParentTabController {
                 // this.bucketTabController.init();
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
                 this.closeTab();
             }
         });

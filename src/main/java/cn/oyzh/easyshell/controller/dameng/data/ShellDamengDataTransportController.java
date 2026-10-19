@@ -306,11 +306,11 @@ public class ShellDamengDataTransportController extends StageController {
             } catch (Exception e) {
                 if (e.getClass().isAssignableFrom(InterruptedException.class)) {
                     this.updateStatus(I18nHelper.operationCancel());
-                    MessageBox.okToast(I18nHelper.operationCancel());
+                    MessageBox.okToast(I18nHelper.operationCancel(), this.getWindow());
                 } else {
                     e.printStackTrace();
                     this.updateStatus(I18nHelper.operationFail());
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } finally {
                 // 结束处理
@@ -420,7 +420,7 @@ public class ShellDamengDataTransportController extends StageController {
             }
             this.clearList();
         } catch (Throwable ex) {
-            MessageBox.warn(I18nHelper.connectInitFail());
+            MessageBox.warn(I18nHelper.connectInitFail(), this.getWindow());
             ex.printStackTrace();
         }
     }
@@ -479,28 +479,28 @@ public class ShellDamengDataTransportController extends StageController {
         String targetDatabase = this.targetDatabase.getSelectedItem();
         if (sourceInfo == null) {
             this.sourceInfo.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseSelectSourceConnect());
+            MessageBox.warn(I18nHelper.pleaseSelectSourceConnect(), this.getWindow());
             return;
         }
         if (targetInfo == null) {
             this.targetInfo.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseSelectTargetConnect());
+            MessageBox.warn(I18nHelper.pleaseSelectTargetConnect(), this.getWindow());
             return;
         }
         if (sourceDatabase == null) {
             this.sourceDatabase.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseSelectSourceDatabase());
+            MessageBox.warn(I18nHelper.pleaseSelectSourceDatabase(), this.getWindow());
             return;
         }
         if (targetDatabase == null) {
             this.targetDatabase.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseSelectTargetDatabase());
+            MessageBox.warn(I18nHelper.pleaseSelectTargetDatabase(), this.getWindow());
             return;
         }
         if (StringUtil.equalsIgnoreCase(sourceInfo.getName(), targetInfo.getName())
                 && StringUtil.equalsIgnoreCase(sourceDatabase, targetDatabase)) {
             this.targetDatabase.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseCheckDatabase());
+            MessageBox.warn(I18nHelper.pleaseCheckDatabase(), this.getWindow());
             return;
         }
         if (this.viewList.isItemEmpty()) {

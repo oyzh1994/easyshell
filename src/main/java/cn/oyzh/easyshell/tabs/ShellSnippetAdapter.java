@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs;
 
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Node;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public interface ShellSnippetAdapter {
                 try {
                     this.runSnippet(h.getContent() + "\r");
                 } catch (Exception ex) {
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, StageManager.getFrontWindow());
                 }
             }
         });

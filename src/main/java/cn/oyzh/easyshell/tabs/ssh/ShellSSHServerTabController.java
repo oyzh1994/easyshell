@@ -114,7 +114,7 @@ public class ShellSSHServerTabController extends ParentTabController {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

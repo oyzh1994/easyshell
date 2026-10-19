@@ -129,7 +129,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                     this.loadContainer();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -216,7 +216,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.deleteContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.deleteContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -231,11 +231,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                     this.containers.remove(container);
                     this.refreshContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -312,7 +312,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null || !container.isExited()) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -321,11 +321,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -339,7 +339,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.stop1Container() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.stop1Container() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -348,11 +348,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -362,7 +362,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void killContainer() {
         ShellDockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -371,11 +371,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -389,7 +389,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.restartContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.restartContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -398,11 +398,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -416,7 +416,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -425,11 +425,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -439,7 +439,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void unpauseContainer() {
         ShellDockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames())) {
+        if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -448,11 +448,11 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 if (StringUtil.isNotBlank(output)) {
                     this.loadContainer();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -470,13 +470,13 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             try {
                 String output = this.exec.docker_inspect(container.getContainerId());
                 if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
                     ShellViewFactory.dockerInspect(output, false);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -490,14 +490,14 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             try {
                 String output = this.exec.docker_resource(container.getContainerId());
                 if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
                     ShellDockerResource resource = ShellDockerParser.resource(output);
                     ShellViewFactory.dockerResource(exec, resource, container.getContainerId());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -524,7 +524,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 });
                 // 最多等待30秒
                 if (!latch.await(30_000)) {
-                    MessageBox.warn(I18nHelper.executeTimout());
+                    MessageBox.warn(I18nHelper.executeTimout(), this.getWindow());
                     return;
                 }
                 // 抛出异常
@@ -533,15 +533,15 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 }
                 String output = ref.get();
                 if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else if (StringUtil.length(output) > 512 * 1024) {
-                    MessageBox.warn(I18nHelper.dataTooLarge());
+                    MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
                 } else {
                     ShellViewFactory.dockerLogs(output);
                 }
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -555,7 +555,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), container.getNames());
+        String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), container.getNames(), this.getWindow());
         if (StringUtil.isBlank(newName) || StringUtil.equalsIgnoreCase(container.getNames(), newName)) {
             return;
         }
@@ -563,14 +563,14 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
             try {
                 String output = this.exec.docker_rename(container.getContainerId(), newName);
                 if (StringUtil.isNotBlank(output)) {
-                    MessageBox.warn(output);
+                    MessageBox.warn(output, this.getWindow());
                 } else {
                     container.setNames(newName);
                     this.refreshContainer();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -592,7 +592,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
                 ShellViewFactory.dockerPort(ports);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

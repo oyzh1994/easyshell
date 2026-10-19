@@ -118,11 +118,11 @@ public class ShellS3AddBucketController extends StageController {
             // 创建桶
             this.client.createBucket(bucket);
             this.setProp("bucket", bucket);
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

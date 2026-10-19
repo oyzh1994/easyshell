@@ -81,12 +81,12 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
      */
     private void addCollection() {
         try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputCollectionName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputCollectionName(), this.getWindow());
             if (StringUtil.isBlank(name)) {
                 return;
             }
             if (this.client().existCollection(this.dbName(), name)) {
-                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             MongoCollection collection = new MongoCollection();
@@ -96,7 +96,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
             this.addCollection(collection);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -150,7 +150,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
                     })
                     .onError(ex -> {
                         this.setLoaded(false);
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     })
                     .onSuccess(this::refresh)
                     .onFinish(() -> {

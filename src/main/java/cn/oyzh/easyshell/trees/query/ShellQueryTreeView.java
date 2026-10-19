@@ -124,7 +124,7 @@ public class ShellQueryTreeView extends RichTreeView implements MenuItemAdapter 
      */
     public void addQuery() {
         if (this.addCallback != null) {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
             if (StringUtil.isBlank(name)) {
                 return;
             }

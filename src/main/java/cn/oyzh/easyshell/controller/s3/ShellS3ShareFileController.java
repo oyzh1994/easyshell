@@ -87,7 +87,7 @@ public class ShellS3ShareFileController extends StageController {
             this.shareUrl.setText(url);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -98,10 +98,10 @@ public class ShellS3ShareFileController extends StageController {
     private void copyUrl() {
         try {
             ClipboardUtil.copy(this.shareUrl.getText());
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

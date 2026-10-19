@@ -65,7 +65,7 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
     @FXML
     private void reloadData() {
         // 放弃保存
-        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -78,7 +78,7 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
                 this.treeItem.flushMemoryUsage();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

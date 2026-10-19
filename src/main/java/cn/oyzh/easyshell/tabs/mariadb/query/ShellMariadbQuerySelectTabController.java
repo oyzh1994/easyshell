@@ -166,7 +166,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
             // 初始化计数
             this.initCount(this.result.getCount());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -331,7 +331,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
                 }
                 this.apply.disable();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }
@@ -355,7 +355,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
             // 初始化计数
             this.initCount(this.recordTable.getItemSize());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -366,7 +366,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
     private void reload() {
         try {
             // 检查是否有未保存的数据
-            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
                 return;
             }
             // 执行查询
@@ -376,7 +376,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
             // 禁用组件
             this.apply.disable();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -398,7 +398,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
             exportTable.setRecords(this.result.getRecords());
             ShellMariadbViewFactory.exportData(this.dbItem.client(), this.result.dbName(), null, 1, exportTable);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -408,7 +408,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
     @FXML
     private void deleteRecord() {
         List<MariadbRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?")) {
+        if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?", this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> this.deleteRecords(records));
@@ -434,10 +434,10 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
                 // 初始化计数
                 this.initCount(this.recordTable.getItemSize());
             } else {// 操作失败
-                MessageBox.warnToast(I18nHelper.operationFail());
+                MessageBox.warnToast(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

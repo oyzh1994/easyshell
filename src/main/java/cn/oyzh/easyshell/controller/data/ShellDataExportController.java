@@ -96,7 +96,7 @@ public class ShellDataExportController extends StageController {
     @FXML
     private void doExport() {
         if (this.exportFile == null) {
-            MessageBox.warn(I18nHelper.pleaseSelectFile());
+            MessageBox.warn(I18nHelper.pleaseSelectFile(), this.getWindow());
             return;
         }
         try {
@@ -124,9 +124,9 @@ public class ShellDataExportController extends StageController {
             // }
             FileUtil.writeUtf8String(export.toJSONString(), this.exportFile);
             this.closeWindow();
-            MessageBox.okToast(I18nHelper.exportDataSuccess());
+            MessageBox.okToast(I18nHelper.exportDataSuccess(), this.getWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex, I18nHelper.exportConnectionFail());
+            MessageBox.exception(ex, I18nHelper.exportConnectionFail(), this.getWindow());
         }
     }
 

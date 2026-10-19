@@ -98,7 +98,7 @@
 //                this.initScale();
 //            } catch (Throwable ex) {
 //                ex.printStackTrace();
-//                MessageBox.exception(ex);
+//                MessageBox.exception(ex, this.getWindow());
 //                this.closeTab();
 //            }
 //        });

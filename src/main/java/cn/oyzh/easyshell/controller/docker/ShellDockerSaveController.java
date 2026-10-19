@@ -181,7 +181,7 @@ public class ShellDockerSaveController extends StageController {
                             ex.printStackTrace();
                         }
                     }
-                    MessageBox.info(I18nHelper.fileSaved());
+                    MessageBox.info(I18nHelper.fileSaved(), this.getWindow());
                 } finally {
                     NodeGroupUtil.enable(this.stage, "run");
                 }
@@ -197,7 +197,7 @@ public class ShellDockerSaveController extends StageController {
             });
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

@@ -170,11 +170,11 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.checkRowExists()) {
-            MessageBox.warn(I18nHelper.dataAlreadyExists());
+            MessageBox.warn(I18nHelper.dataAlreadyExists(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataTooBig()) {
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
@@ -186,7 +186,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
                     this.treeItem.flushMemoryUsage();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -269,7 +269,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
             this.nodeData.disable();
             this.ignoreDataChange = true;
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         // 状态处理
@@ -289,7 +289,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteMember() + ":" + row.getValue())) {
+        if (!MessageBox.confirm(I18nHelper.deleteMember() + ":" + row.getValue(), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

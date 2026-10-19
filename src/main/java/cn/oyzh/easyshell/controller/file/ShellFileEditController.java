@@ -119,7 +119,7 @@ public class ShellFileEditController extends StageController {
                 this.restoreTitle();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -142,7 +142,7 @@ public class ShellFileEditController extends StageController {
                 this.data.scrollToTop();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -218,7 +218,7 @@ public class ShellFileEditController extends StageController {
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
         // 检查是否保存
-        if (this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21())) {
+        if (this.getViewTitle().endsWith(" *") && !MessageBox.confirm(ShellI18nHelper.fileTip21(), this.getWindow())) {
             event.consume();
             return;
         }
@@ -290,7 +290,7 @@ public class ShellFileEditController extends StageController {
             this.hexView.openFile(file);
             this.statusLabel.init(this.hexView);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -62,7 +62,7 @@ public class ShellRedisSubscribeTabController extends SubTabController {
         try {
             String channel = this.channel.getText();
             if (StringUtils.isEmpty(channel)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 this.channel.requestFocus();
                 this.subscribe.setSelected(false);
                 return;
@@ -80,7 +80,7 @@ public class ShellRedisSubscribeTabController extends SubTabController {
             });
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -98,7 +98,7 @@ public class ShellRedisSubscribeTabController extends SubTabController {
             JulLog.info("unsubscribe:{} success", channel);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

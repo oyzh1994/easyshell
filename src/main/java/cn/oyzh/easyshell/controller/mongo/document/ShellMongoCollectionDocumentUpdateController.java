@@ -47,7 +47,7 @@ public class ShellMongoCollectionDocumentUpdateController extends StageControlle
             //                MessageBox.warn(I18nHelper.documentInvalid());
             //            }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

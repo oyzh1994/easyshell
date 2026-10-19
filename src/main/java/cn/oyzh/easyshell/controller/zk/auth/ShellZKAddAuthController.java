@@ -75,13 +75,13 @@ public class ShellZKAddAuthController extends StageController {
                 return;
             }
             if (this.authStore.exist(this.connect.getId(), user, password)) {
-                MessageBox.warn(I18nHelper.contentAlreadyExists());
+                MessageBox.warn(I18nHelper.contentAlreadyExists(), this.getWindow());
                 return;
             }
             String iid = this.connect.getId();
             // 检查是否存在
             if (this.authStore.exist(user, password, iid)) {
-                MessageBox.warn(I18nHelper.authAlreadyExists());
+                MessageBox.warn(I18nHelper.authAlreadyExists(), this.getWindow());
                 return;
             }
             ShellZKAuth auth = new ShellZKAuth(iid, user, password);
@@ -90,14 +90,14 @@ public class ShellZKAddAuthController extends StageController {
                 this.setProp("auth", auth);
                 //System.out.println(this.connect.getAuths().contains(auth));
                 //this.connect.addAuth(auth);
-                //MessageBox.okToast(I18nHelper.operationSuccess());
+                //MessageBox.okToast(I18nHelper.operationCancel(), this.getWindow());
                 this.closeWindow();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

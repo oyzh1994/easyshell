@@ -56,7 +56,7 @@ public class ShellSSHServerGpuTabController extends SubTabController {
                 this.gpuInfo.text(output);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -67,7 +67,7 @@ public class ShellSSHServerGpuTabController extends SubTabController {
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.gpuInfo.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

@@ -229,7 +229,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             //            try {
             //                workDir = this.getClient().workDir();
             //            } catch (Exception ex) {
-            //                MessageBox.exception(ex);
+            //                MessageBox.exception(ex, this.getWindow());
             //            }
             //            if (workDir != null) {
             //                this.locationProperty = new SimpleStringProperty(workDir);
@@ -273,7 +273,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             } catch (Exception ex) {
                 if (!ExceptionUtil.isInterrupt(ex) && !this.client.isClosed()) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             } finally {
                 this.loading.set(false);
@@ -663,7 +663,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -796,20 +796,20 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         if (files.size() == 1) {
             E file = files.getFirst();
-            if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName())) {
+            if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName(), this.getWindow())) {
                 return;
             }
-            if (!file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName())) {
+            if (!file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName(), this.getWindow())) {
                 return;
             }
-        } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2())) {
+        } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2(), this.getWindow())) {
             return;
         }
         try {
             List<E> fList = new CopyOnWriteArrayList<>(files);
             for (E file : fList) {
                 // 隐藏文件
-                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1())) {
+                if (file.isHiddenFile() && !MessageBox.confirm(file.getFileName() + " " + ShellI18nHelper.fileTip1(), this.getWindow())) {
                     continue;
                 }
                 // 执行删除
@@ -820,7 +820,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.refreshFile();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -852,7 +852,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             if (this.checkInvalid(file)) {
                 return;
             }
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName());
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputContent(), file.getFileName(), this.getWindow());
             String name = file.getFileName();
             if (newName == null || StringUtil.equals(name, newName)) {
                 return;
@@ -865,16 +865,16 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                         file.setFileName(newName);
                         this.refreshFile();
                     } else {
-                        MessageBox.warn(I18nHelper.operationFail());
+                        MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -892,7 +892,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             } catch (Exception ex) {
                 if (!this.client.isClosed()) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             }
         }
@@ -907,7 +907,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         if (file == null || !file.isFile()) {
             return;
         }
-        if (file.getFileSize() > 100 * 1024 * 1024 && !MessageBox.confirm(I18nHelper.fileTooLargeAndContinue())) {
+        if (file.getFileSize() > 100 * 1024 * 1024 && !MessageBox.confirm(I18nHelper.fileTooLargeAndContinue(), this.getWindow())) {
             return;
         }
         String type = ShellFileUtil.fileViewable(file.getExtName());
@@ -933,11 +933,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void touch() {
         try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputFileName(), this.getWindow());
             this.touch(name);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -952,7 +952,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             return;
         }
         name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4())) {
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip4(), this.getWindow())) {
             return;
         }
         String filePath = ShellFileUtil.concat(this.getLocation(), name);
@@ -967,11 +967,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public void createDir() {
         try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputDirName(), this.getWindow());
             this.createDir(name);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -989,7 +989,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             return;
         }
         name = name.trim();
-        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5())) {
+        if (this.existFile(name) && !MessageBox.confirm(ShellI18nHelper.fileTip5(), this.getWindow())) {
             return;
         }
         String dirPath = ShellFileUtil.concat(this.getLocation(), name);
@@ -1031,7 +1031,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             // this.refreshFile();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -1068,7 +1068,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -1081,7 +1081,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.uploadFile(file);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -1130,7 +1130,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         // 检查要上传的文件是否存在
         for (File file : files) {
             if (this.existFile(file.getName())) {
-                if (!MessageBox.confirm(ShellI18nHelper.fileTip3())) {
+                if (!MessageBox.confirm(ShellI18nHelper.fileTip3(), this.getWindow())) {
                     return;
                 }
                 break;
@@ -1139,7 +1139,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         for (File file : files) {
             this.client.doUpload(file, this.getLocation(), callback);
         }
-        MessageBox.okToast(I18nHelper.addedToUploadList());
+        MessageBox.okToast(I18nHelper.addedToUploadList(), this.getWindow());
     }
 
     /**
@@ -1175,7 +1175,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                 for (String f1 : fileArr) {
                     Optional<E> file = files.parallelStream().filter(f -> StringUtil.equalsIgnoreCase(f.getFileName(), f1)).findAny();
                     if (file.isPresent()) {
-                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6())) {
+                        if (!MessageBox.confirm(ShellI18nHelper.fileTip6(), this.getWindow())) {
                             return;
                         }
                         break;
@@ -1185,7 +1185,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             for (E file : files) {
                 this.client.doDownload(file, dir);
             }
-            MessageBox.okToast(I18nHelper.addedToDownloadList());
+            MessageBox.okToast(I18nHelper.addedToDownloadList(), this.getWindow());
         }
     }
 

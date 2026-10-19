@@ -85,7 +85,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
                 this.data.setText(output);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -96,7 +96,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
     @FXML
     private void copy() {
         ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
                 // 把临时文件内容copy到真实文件
                 String output = exec.cat_file(tempFile, filePath);
                 if (!StringUtil.isBlank(output)) {
-                    MessageBox.warn(output);
+                    MessageBox.warn(output, this.getWindow());
                 } else if (sftpClient.exist(tempFile)) { // 删除临时文件
                     sftpClient.delete(tempFile);
                 }
@@ -136,7 +136,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
                 // 忽略No such file错误
                 if (!ExceptionUtil.hasMessage(ex, "No such file")) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             }
         });
@@ -156,11 +156,11 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
             try {
                 String output = exec.source(this.filePath());
                 if (!StringUtil.isBlank(output)) {
-                    MessageBox.warn(output);
+                    MessageBox.warn(output, this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

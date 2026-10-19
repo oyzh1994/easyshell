@@ -114,14 +114,14 @@ public class ShellAddKeyController extends StageController {
             // 保存数据
             if (this.keyStore.insert(shellKey)) {
                 ShellEventUtil.keyAdded(shellKey);
-                MessageBox.okToast(I18nHelper.operationSuccess());
+                MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                 this.closeWindow();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -181,7 +181,7 @@ public class ShellAddKeyController extends StageController {
                 // ssh私钥
                 this.privateKey.setText(key[1]);
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

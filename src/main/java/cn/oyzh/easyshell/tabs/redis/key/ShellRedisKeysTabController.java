@@ -237,7 +237,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
                 this.treeView.focusNode();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             } finally {
                 CostUtil.printCost();
             }

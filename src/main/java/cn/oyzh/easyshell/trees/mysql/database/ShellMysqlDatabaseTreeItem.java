@@ -167,12 +167,12 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
     public void delete() {
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> {
-                    if (MessageBox.confirm(I18nHelper.deleteDatabase() + "[" + this.dbName() + "]")) {
+                    if (MessageBox.confirm(I18nHelper.deleteDatabase() + "[" + this.dbName() + "]", this.getWindow())) {
                         if (this.parent().dropDatabase(this.dbName())) {
                             ShellMysqlEventUtil.databaseDropped(this);
                             super.remove();
                         } else {
-                            MessageBox.warn(I18nHelper.operationFail());
+                            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                         }
                     }
                 })
@@ -218,7 +218,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
                     .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
-                        MessageBox.error(ex.getMessage());
+                        MessageBox.error(ex.getMessage(), this.getWindow());
                     })
                     .onFinish(() -> this.setLoading(false))
                     .build();

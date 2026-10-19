@@ -96,7 +96,7 @@ public class ShellImportKeyController extends StageController {
                         this.fillKeyType();
                         this.fillKeySize();
                     } catch (Exception ex1) {
-                        MessageBox.exception(ex1);
+                        MessageBox.exception(ex1, this.getWindow());
                     }
                 }
             }
@@ -160,14 +160,14 @@ public class ShellImportKeyController extends StageController {
             // 保存数据
             if (this.keyStore.insert(shellKey)) {
                 ShellEventUtil.keyAdded(shellKey);
-                MessageBox.okToast(I18nHelper.operationSuccess());
+                MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                 this.closeWindow();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -191,7 +191,7 @@ public class ShellImportKeyController extends StageController {
         }
         // 文件异常
         if (file.length() > 500 * 1024) {
-            MessageBox.warn(I18nHelper.invalidFile());
+            MessageBox.warn(I18nHelper.invalidFile(), this.getWindow());
             return;
         }
         String fileName = file.getName();
@@ -237,7 +237,7 @@ public class ShellImportKeyController extends StageController {
         }
         // 文件异常
         if (file.length() > 500 * 1024) {
-            MessageBox.warn(I18nHelper.invalidFile());
+            MessageBox.warn(I18nHelper.invalidFile(), this.getWindow());
             return;
         }
         String fileName = file.getName();
@@ -334,13 +334,13 @@ public class ShellImportKeyController extends StageController {
      */
     private boolean checkKeyPassword(Exception ex) {
         if (ExceptionUtil.hasMessage(ex, "No password provider for encrypted key in null")) {
-            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.keyPassword.getPassword());
+            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.keyPassword.getPassword(), this.getWindow());
             if (StringUtil.isNotBlank(pwd)) {
                 this.keyPassword.setText(pwd);
             }
             return true;
         }
-        MessageBox.exception(ex);
+        MessageBox.exception(ex, this.getWindow());
         return false;
     }
 

@@ -113,7 +113,7 @@ public abstract class ShellRedisRowKeyController<T extends ShellRedisRowKeyTreeI
     @Override
     public void reloadKey() {
         // 放弃保存
-        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -126,7 +126,7 @@ public abstract class ShellRedisRowKeyController<T extends ShellRedisRowKeyTreeI
                 this.treeItem.flushMemoryUsage();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -162,7 +162,7 @@ public abstract class ShellRedisRowKeyController<T extends ShellRedisRowKeyTreeI
                 this.listTable.setItem(pageRows);
                 this.pagePane.setPaging(this.pageData);
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

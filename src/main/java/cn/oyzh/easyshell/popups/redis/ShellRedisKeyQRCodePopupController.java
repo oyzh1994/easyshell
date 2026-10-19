@@ -63,11 +63,11 @@ public class ShellRedisKeyQRCodePopupController extends PopupController {
         } catch (Exception ex) {
             this.closeWindow();
             if (ExceptionUtil.hasMessage(ex, "Data too big")) {
-                MessageBox.warn(I18nHelper.dataTooLarge());
+                MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             } else {
                 ex.printStackTrace();
                 JulLog.warn("initQRCode error, ex:{}", ex.getMessage());
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         }
     }

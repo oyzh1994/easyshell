@@ -91,7 +91,7 @@ public class ShellToolPortScanTabController extends SubStageController {
         int endPort = this.portScanEndPort.getIntValue();
         if (startPort >= endPort) {
             this.portScanStartPort.requestFocus();
-            MessageBox.warn(I18nHelper.invalid());
+            MessageBox.warn(I18nHelper.invalid(), this.getWindow());
             return;
         }
         this.portScanStartBtn.disable();

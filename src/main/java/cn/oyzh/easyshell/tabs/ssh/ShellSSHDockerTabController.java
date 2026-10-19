@@ -97,18 +97,18 @@ public class ShellSSHDockerTabController extends ParentTabController {
             String output = exec.docker_ps();
             // 未找到
             if (ShellUtil.isCommandNotFound(output)) {
-                MessageBox.info(ShellI18nHelper.connectTip5());
+                MessageBox.info(ShellI18nHelper.connectTip5(), this.getWindow());
                 return;
             }
             // 未运行
             if (StringUtil.containsAnyIgnoreCase(output, "daemon running", "daemon is not running", "system cannot find the file specified.")) {
-                MessageBox.warn(ShellI18nHelper.connectTip6());
+                MessageBox.warn(ShellI18nHelper.connectTip6(), this.getWindow());
                 return;
             }
             this.containerController.refreshContainer();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

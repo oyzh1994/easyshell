@@ -63,7 +63,7 @@ public class ShellSnippetPopupController extends PopupController {
             List<ShellSnippet> snippets = this.snippetStore.listByName(kw);
             this.listView.init(snippets);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

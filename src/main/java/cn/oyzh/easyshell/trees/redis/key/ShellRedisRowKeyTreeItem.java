@@ -88,7 +88,7 @@ public abstract class ShellRedisRowKeyTreeItem<R extends ShellRedisKeyRow> exten
             this.refreshKeyValue();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
         if (this.value.isSetKey()) {
             return (List<R>) this.value.asSetValue().getValue();

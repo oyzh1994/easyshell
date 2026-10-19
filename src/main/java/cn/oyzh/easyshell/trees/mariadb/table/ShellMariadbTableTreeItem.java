@@ -163,7 +163,7 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
             MariadbTable mariadbTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(mariadbTable);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -193,13 +193,13 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
      * 清空表数据并重置自增
      */
     private void truncateTable() {
-        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]", this.getWindow())) {
             try {
                 this.dbItem().truncateTable(this.tableName());
                 ShellMariadbEventUtil.tableTruncated(this, this.dbItem());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }
@@ -209,26 +209,26 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
      */
     private void clearTable() {
         try {
-            if (MessageBox.confirm(I18nHelper.clearTable() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.clearTable() + "[" + this.tableName() + "]", this.getWindow())) {
                 this.dbItem().clearTable(this.tableName());
                 ShellMariadbEventUtil.tableCleared(this, this.dbItem());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]", this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellMariadbEventUtil.tableDropped(this, this.dbItem());
                 this.parent().clearTableSize();
                 this.remove();
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -242,14 +242,14 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
     @Override
     public void rename() {
         try {
-            String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());
+            String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (tableName == null || Objects.equals(tableName, this.value.getName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(tableName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.value.getName();
@@ -260,7 +260,7 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
             ShellMariadbEventUtil.tableRenamed(oldName, tableName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

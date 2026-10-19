@@ -66,7 +66,7 @@ public class ShellRedisStreamMessageAddController extends StageController {
                 return;
             }
             if (!JSONUtil.isJson(rowValue)) {
-                MessageBox.warn(ShellI18nHelper.redisAddTip4());
+                MessageBox.warn(ShellI18nHelper.redisAddTip4(), this.getWindow());
                 return;
             }
             JSONObject fields = JSONUtil.parseObject(rowValue);
@@ -97,7 +97,7 @@ public class ShellRedisStreamMessageAddController extends StageController {
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

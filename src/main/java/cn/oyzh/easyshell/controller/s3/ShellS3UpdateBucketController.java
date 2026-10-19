@@ -115,11 +115,11 @@ public class ShellS3UpdateBucketController extends StageController {
             this.client.updateBucket(bucket);
             this.bucket.copy(bucket);
             this.setProp("bucket", this.bucket);
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             this.closeWindow();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

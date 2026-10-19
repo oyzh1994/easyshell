@@ -131,7 +131,7 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
                     .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     })
                     .onFinish(() -> {
                         this.setLoading(false);

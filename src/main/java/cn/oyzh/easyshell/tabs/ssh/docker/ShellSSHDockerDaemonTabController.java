@@ -65,7 +65,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -76,7 +76,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
     @FXML
     private void copy() {
         ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     /**
@@ -105,7 +105,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
 //                String output = exec.echo("$(cat " + tempFile + ")", jsonFile);
                 String output = exec.cat_file(tempFile, jsonFile);
                 if (!StringUtil.isBlank(output)) {
-                    MessageBox.warn(output);
+                    MessageBox.warn(output, this.getWindow());
                 } else {
                     // 删除临时文件
                     this.sftpClient().delete(tempFile);
@@ -113,7 +113,7 @@ public class ShellSSHDockerDaemonTabController extends SubTabController {
             } catch (Exception ex) {
                 if (!ExceptionUtil.hasMessage(ex, "No such file")) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             }
         });

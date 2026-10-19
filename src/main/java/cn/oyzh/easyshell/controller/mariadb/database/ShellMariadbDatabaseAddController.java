@@ -65,7 +65,7 @@ public class ShellMariadbDatabaseAddController extends StageController {
             // 检查字段是否存在
             String dbName = this.name.getText();
             if (this.connectItem.existDatabase(dbName)) {
-                MessageBox.warn(I18nHelper.database() + " " + dbName + " " + I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.database() + " " + dbName + " " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             MariadbDatabase database = new MariadbDatabase();
@@ -79,7 +79,7 @@ public class ShellMariadbDatabaseAddController extends StageController {
             ShellMariadbEventUtil.databaseAdded(this.connectItem, database);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

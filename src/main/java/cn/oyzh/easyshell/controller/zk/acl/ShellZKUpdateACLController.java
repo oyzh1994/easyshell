@@ -102,7 +102,7 @@ public class ShellZKUpdateACLController extends StageController {
         try {
             String perms = this.getPerms();
             if (StringUtil.isBlank(perms)) {
-                MessageBox.warn(I18nHelper.contentCanNotEmpty());
+                MessageBox.warn(I18nHelper.contentCanNotEmpty(), this.getWindow());
                 return;
             }
             List<ACL> aclList = this.zkClient.getACL(this.zkItem.nodePath());
@@ -115,14 +115,14 @@ public class ShellZKUpdateACLController extends StageController {
                         // ShellEventUtil.zkNodeACLUpdated(this.zkItem.zkConnect(), this.zkItem.nodePath());
                         this.closeWindow();
                     } else {
-                        MessageBox.warn(I18nHelper.operationFail());
+                        MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                     }
                     break;
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

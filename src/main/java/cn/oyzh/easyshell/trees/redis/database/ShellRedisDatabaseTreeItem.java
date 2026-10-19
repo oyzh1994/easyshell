@@ -314,7 +314,7 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
         if (!this.isLoading()) {
             Task task = TaskBuilder.newBuilder()
                     .onSuccess(this::refresh)
-                    .onError(MessageBox::exception)
+                    .onError(ex -> MessageBox.exception(ex, this.getWindow()))
                     .onFinish(() -> {
                         this.expend();
                         this.doFilter();
@@ -475,7 +475,7 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
                 this.addChild(this.initKeyItem(redisKey));
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -518,7 +518,7 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
             Task task = TaskBuilder.newBuilder()
                     .onSuccess(this::expend)
                     .onStart(() -> this.loadChild(0))
-                    .onError(MessageBox::exception)
+                    .onError(ex -> MessageBox.exception(ex, this.getWindow()))
                     .build();
             this.startWaiting(task);
         }

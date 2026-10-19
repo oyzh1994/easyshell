@@ -80,7 +80,7 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
             this.containerTable.setExec(exec);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -118,7 +118,7 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
             this.refreshContainer.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -150,7 +150,7 @@ public class ShellSSHDockerContainerTabController extends SubTabController {
                 this.containerTable.loadContainer();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

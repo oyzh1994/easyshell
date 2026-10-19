@@ -127,7 +127,7 @@ public class ShellZKAuthTabController extends RichTabController {
             if (CollectionUtil.isEmpty(auths)) {
                 return;
             }
-            if (MessageBox.confirm(I18nHelper.deleteData())) {
+            if (MessageBox.confirm(I18nHelper.deleteData(), this.getWindow())) {
                 for (ShellZKAuth auth : auths) {
                     if (auth != null) {
                         this.authStore.delete(auth.getUid());
@@ -138,7 +138,7 @@ public class ShellZKAuthTabController extends RichTabController {
 //                this.authTable.removeItem(auths);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -90,19 +90,19 @@ public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMongoRootTre
     @FXML
     private void addDatabase() {
         try {
-            String databaseName = MessageBox.prompt(I18nHelper.pleaseInputDatabaseName());
+            String databaseName = MessageBox.prompt(I18nHelper.pleaseInputDatabaseName(), this.getWindow());
             if (StringUtil.isBlank(databaseName)) {
                 return;
             }
             if (this.existDatabase(databaseName)) {
-                MessageBox.warn(I18nHelper.database() + " " + databaseName + " " + I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.database() + " " + databaseName + " " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             this.createDatabase(databaseName);
             MongoDatabase database = this.getClient().database(databaseName);
             super.addChild(new ShellMongoDatabaseTreeItem(database, this.getTreeView()));
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

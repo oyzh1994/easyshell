@@ -116,7 +116,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
                     this.client.start();
                 }
                 if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
                 }
@@ -127,7 +127,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
                 ThreadUtil.start(this::initBackground);
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
                 this.closeTab();
             }
         });
@@ -153,7 +153,7 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

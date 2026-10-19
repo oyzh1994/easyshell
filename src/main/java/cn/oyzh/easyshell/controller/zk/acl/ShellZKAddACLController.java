@@ -240,7 +240,7 @@ public class ShellZKAddACLController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -261,11 +261,11 @@ public class ShellZKAddACLController extends StageController {
         }
         String digest = ShellZKAuthUtil.digest(user, password);
         if (digest == null) {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             return;
         }
         if (this.zkItem.existDigestACL(digest)) {
-            MessageBox.warn("[" + digest + "] " + I18nHelper.alreadyExists());
+            MessageBox.warn("[" + digest + "] " + I18nHelper.alreadyExists(), this.getWindow());
             return;
         }
         ACL acl = new ACL();
@@ -306,7 +306,7 @@ public class ShellZKAddACLController extends StageController {
             return;
         }
         if (this.zkItem.existDigestACL(digest)) {
-            MessageBox.warn("[" + digest + "] " + I18nHelper.alreadyExists());
+            MessageBox.warn("[" + digest + "] " + I18nHelper.alreadyExists(), this.getWindow());
             return;
         }
         ACL acl = new ACL();
@@ -329,7 +329,7 @@ public class ShellZKAddACLController extends StageController {
         }
         String digest = zkAuth.digest();
         if (this.zkItem.existDigestACL(digest)) {
-            MessageBox.warn("[" + digest + "] " + I18nHelper.alreadyExists());
+            MessageBox.warn("[" + digest + "] " + I18nHelper.alreadyExists(), this.getWindow());
             return;
         }
         ACL acl = new ACL();
@@ -345,7 +345,7 @@ public class ShellZKAddACLController extends StageController {
      */
     private void addWorldACL() {
         if (this.zkItem.hasWorldACL()) {
-            MessageBox.warn("World " + I18nHelper.permsAlreadyExists());
+            MessageBox.warn("World " + I18nHelper.permsAlreadyExists(), this.getWindow());
             return;
         }
         ACL acl = new ACL();
@@ -367,7 +367,7 @@ public class ShellZKAddACLController extends StageController {
         acl.setId(new Id("ip", ip));
         acl.setPerms(perms);
         if (this.zkItem.existIPACL(acl.idVal())) {
-            MessageBox.warnToast("[" + ip + "] " + I18nHelper.alreadyExists());
+            MessageBox.warnToast("[" + ip + "] " + I18nHelper.alreadyExists(), this.getWindow());
         } else {
             this.addACL(acl);
         }
@@ -394,7 +394,7 @@ public class ShellZKAddACLController extends StageController {
             acl.setId(new Id("ip", ip));
             acl.setPerms(perms);
             if (this.zkItem.existIPACL(acl.idVal())) {
-                MessageBox.warnToast("[" + ip + "] " + I18nHelper.alreadyExists());
+                MessageBox.warnToast("[" + ip + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             aclList.add(acl);
@@ -427,9 +427,9 @@ public class ShellZKAddACLController extends StageController {
                 this.closeWindow();
                 return true;
             }
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
         return false;
     }

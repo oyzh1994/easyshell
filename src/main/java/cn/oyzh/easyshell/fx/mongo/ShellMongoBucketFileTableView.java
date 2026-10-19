@@ -164,7 +164,7 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
             }
             // 修改数据
             if (this.client.updateBucketRecord(r) != 1) {
-                MessageBox.warn(I18nHelper.updateDocumentFail());
+                MessageBox.warn(I18nHelper.updateDocumentFail(), this.getWindow());
             } else {
                 record.setFileName(r.getFileName());
                 record.setMetadata(r.getMetadata());
@@ -172,7 +172,7 @@ public class ShellMongoBucketFileTableView extends ShellFileTableView<ShellMongo
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

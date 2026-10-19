@@ -107,7 +107,7 @@ public class ShellZKQueryDataTabController extends RichTabController {
             ShellZKDataUtil.addHistory(this.path, bytes, this.zkClient);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

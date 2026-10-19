@@ -79,7 +79,7 @@ public class ShellDamengQueryExplainTabController extends RichTabController {
             this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
             this.count.text(I18nHelper.totalData() + ": " + this.result.getCount());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

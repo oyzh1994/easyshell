@@ -46,7 +46,7 @@ public class ShellDockerInspectController extends StageController {
     @FXML
     private void copyInspect() {
         ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

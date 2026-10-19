@@ -423,7 +423,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             try {
                 this.fileTable.setFilterText(t1);
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
         // 监听信息
@@ -504,7 +504,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             this.fileTable.loadFile();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -517,7 +517,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             this.fileTable.deleteFile(this.fileTable.getSelectedItems());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -530,7 +530,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             this.fileTable.returnDir();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -543,7 +543,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             this.fileTable.intoHome();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -599,7 +599,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -749,7 +749,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 try {
                     this.widget.getTtyConnector().writeLine(h);
                 } catch (Exception ex) {
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             }));
         });
@@ -766,7 +766,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -794,7 +794,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             this.widget.getTtyConnector().write(this.fileTable.getLocation());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

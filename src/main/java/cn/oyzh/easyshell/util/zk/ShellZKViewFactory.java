@@ -41,7 +41,7 @@ public class ShellZKViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class ShellZKViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -82,7 +82,7 @@ public class ShellZKViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -104,7 +104,7 @@ public class ShellZKViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -121,7 +121,7 @@ public class ShellZKViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -139,7 +139,7 @@ public class ShellZKViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -155,7 +155,7 @@ public class ShellZKViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -173,7 +173,7 @@ public class ShellZKViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -192,7 +192,7 @@ public class ShellZKViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -211,7 +211,7 @@ public class ShellZKViewFactory {
 //            adapter.display();
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, StageManager.getFrontWindow());
 //        }
 //    }
 }

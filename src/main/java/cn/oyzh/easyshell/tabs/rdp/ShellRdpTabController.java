@@ -60,7 +60,7 @@ public class ShellRdpTabController extends ShellBaseTabController {
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
         // 执行连接
@@ -71,7 +71,7 @@ public class ShellRdpTabController extends ShellBaseTabController {
                     this.client.start();
                 }
                 if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
                 }
@@ -79,7 +79,7 @@ public class ShellRdpTabController extends ShellBaseTabController {
                 this.hideLeft();
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
                 this.closeTab();
             }
         });

@@ -78,7 +78,7 @@ public class ShellRedisKeyCopyController extends StageController {
             this.client.throwSentinelException();
             this.client.throwCommandException("copy");
             if (targetDBIndex == fromDBIndex) {
-                MessageBox.warn(ShellI18nHelper.redisMoveTip1());
+                MessageBox.warn(ShellI18nHelper.redisMoveTip1(), this.getWindow());
                 return;
             }
             // 移动键
@@ -86,14 +86,14 @@ public class ShellRedisKeyCopyController extends StageController {
             if (result) {
                 this.setProp("dbIndex", targetDBIndex);
                 // ShellEventUtil.redisKeyCopied(this.client.shellConnect(), List.of(key), fromDBIndex, targetDBIndex);
-                // MessageBox.okToast(I18nHelper.operationSuccess());
+                // MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                 this.closeWindow();
             } else {
-                MessageBox.warn(ShellI18nHelper.redisCopyTip1());
+                MessageBox.warn(ShellI18nHelper.redisCopyTip1(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

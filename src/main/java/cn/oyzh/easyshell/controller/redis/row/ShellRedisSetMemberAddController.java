@@ -60,7 +60,7 @@ public class ShellRedisSetMemberAddController extends StageController {
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
             if (client.sismember(dbIndex, key, rowValue)) {
-                MessageBox.warn(I18nHelper.coordinates() + "[" + rowValue + "] " +I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.coordinates() + "[" + rowValue + "] " +I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             // 添加元素
@@ -71,7 +71,7 @@ public class ShellRedisSetMemberAddController extends StageController {
             // ShellEventUtil.redisSetMemberAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

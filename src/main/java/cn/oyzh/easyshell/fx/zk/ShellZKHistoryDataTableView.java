@@ -116,7 +116,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
      * @param data 数据
      */
     public void deleteData(ShellZKHistoryData data) {
-        if (MessageBox.confirm(I18nHelper.deleteHistory())) {
+        if (MessageBox.confirm(I18nHelper.deleteHistory(), this.getWindow())) {
             StageManager.showMask(() -> {
                 ShellZKDataUtil.deleteHistory(this.nodePath, data.getSaveTime(), this.client);
                 this.removeItem(data);
@@ -136,7 +136,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
     //                ShellZKViewFactory.zkHistoryView(this.nodePath, bytes, this.stage());
     //            } catch (Exception ex) {
     //                ex.printStackTrace();
-    //                MessageBox.exception(ex);
+    //                MessageBox.exception(ex, this.getWindow());
     //            }
     //        });
     //    }
@@ -155,7 +155,7 @@ public class ShellZKHistoryDataTableView extends FXTableView<ShellZKHistoryData>
                 ShellZKEventUtil.zkHistoryRestoreUpdated(this.client, this.nodePath);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

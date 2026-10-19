@@ -139,7 +139,7 @@ public class ShellZKAuthNodeController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -163,18 +163,18 @@ public class ShellZKAuthNodeController extends StageController {
                 }
                 this.setProp("auth", auth);
                 this.setProp("success", true);
-                MessageBox.okToast(I18nHelper.operationSuccess());
+                MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                 this.closeWindow();
             } else if (this.zkNode.aclEmpty() || this.zkNode.hasDigestACL()) {
                 //ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             } else {
                 //ShellZKEventUtil.authAuthed(this.zkItem, false, user, password);
-                MessageBox.warn(I18nHelper.authFailTip1());
+                MessageBox.warn(I18nHelper.authFailTip1(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex, I18nHelper.operationFail());
+            MessageBox.exception(ex, I18nHelper.operationFail(), this.getWindow());
         }
     }
 

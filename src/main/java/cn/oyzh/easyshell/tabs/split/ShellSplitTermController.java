@@ -205,7 +205,7 @@ public class ShellSplitTermController extends SubTabController {
                 this.destroyTerm();
             }
         } catch (Throwable ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
             this.destroyTerm();
         }
     }

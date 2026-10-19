@@ -134,7 +134,7 @@
 
   | 方法 | 说明 | 关键逻辑/调用 |
   |---|---|---|
-  | `void save()` | 保存权限并回传远程 | `StageManager.showMask(...)`；`getPerms()` → `ShellFileUtil.toPermissionInt(perms)`；勾选 `includeSub` 时 `client.chmodRecursive(permission, file)`，否则 `client.chmod(permission, file.getFilePath())`；成功则 `file.setPermissions(perms)`、`closeWindow()`，失败 `MessageBox.warn(I18nHelper.operationFail())` |
+  | `void save()` | 保存权限并回传远程 | `StageManager.showMask(...)`；`getPerms()` → `ShellFileUtil.toPermissionInt(perms)`；勾选 `includeSub` 时 `client.chmodRecursive(permission, file)`，否则 `client.chmod(permission, file.getFilePath())`；成功则 `file.setPermissions(perms)`、`closeWindow()`，失败 `MessageBox.warn(I18nHelper.operationFail(), this.getWindow())` |
   | `void bindListeners()` | 九个勾选框变化时刷新权限预览 | 各 `ownerR/W/E`、`groupsR/W/E`、`othersR/W/E` 的 `selectedChanged` 绑定 `flushPerms()`；结尾 `super.bindListeners()` |
   | `void onWindowShown(WindowEvent event)` | 回填文件权限与属主属组 | `stage.switchOnTab()`、`stage.hideOnEscape()`；`getProp("file")`、`getProp("client")`；设置 `ownerName/groupName`；依据 `file.hasOwnerReadPermission()` 等九个方法设置勾选框；目录时 `includeSub.enable()`；`appendTitle("-"+file.getFileName())`、`flushPerms()` |
   | `String getPerms()` | 拼接九位 rwx 权限字符串 | 依次依据九个勾选框拼接 `r/w/x` 或 `-`（`private`） |

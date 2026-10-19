@@ -215,9 +215,9 @@ public class ShellConnectUtil {
                     String hostIp = shellConnect.hostIp();
                     int port = shellConnect.hostPort();
                     if (NetworkUtil.reachable(hostIp, port, timeout1)) {
-                        MessageBox.okToast(I18nHelper.connectSuccess());
+                        MessageBox.okToast(I18nHelper.connectSuccess(), adapter);
                     } else {
-                        MessageBox.warn(I18nHelper.connectFail());
+                        MessageBox.warn(I18nHelper.connectFail(), adapter);
                     }
                 } else {
                     ShellBaseClient client = ShellClientUtil.newClient(shellConnect);
@@ -225,15 +225,15 @@ public class ShellConnectUtil {
                     client.start(timeout1);
                     if (client.isConnected()) {
                         client.close();
-                        MessageBox.okToast(I18nHelper.connectSuccess());
+                        MessageBox.okToast(I18nHelper.connectSuccess(), adapter);
                     } else {
-                        MessageBox.warn(I18nHelper.connectFail());
+                        MessageBox.warn(I18nHelper.connectFail(), adapter);
                     }
                     client.close();
                 }
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, adapter.stage());
             }
         });
     }
@@ -299,7 +299,7 @@ public class ShellConnectUtil {
         }
         // 背景失效
         if (setting.isTermBackgroundImageInvalid()) {
-            MessageBox.warn(ShellI18nHelper.connectTip7());
+            MessageBox.warn(ShellI18nHelper.connectTip7(), terminalPanel.getWindow());
             return;
         }
         // 处理背景
@@ -308,15 +308,8 @@ public class ShellConnectUtil {
         canvas.setOpacity(0.7);
         Image backgroundImage = new Image(url);
         // 生成背景
-        BackgroundSize backgroundSize = new BackgroundSize(
-                BackgroundSize.AUTO, BackgroundSize.AUTO, false, false,
-                true, true);
-        BackgroundImage backgroundImg = new BackgroundImage(
-                backgroundImage,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT,
-                backgroundSize);
+        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true);
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         // 创建 Background 对象
         Background background = new Background(backgroundImg);
         terminalPanel.setBackground(background);

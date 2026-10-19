@@ -142,7 +142,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -158,7 +158,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -174,7 +174,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -190,7 +190,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -207,7 +207,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -223,7 +223,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -239,7 +239,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -257,7 +257,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -274,7 +274,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -290,7 +290,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -306,7 +306,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -323,7 +323,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -340,7 +340,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -357,7 +357,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -374,7 +374,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -390,7 +390,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -406,7 +406,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -423,7 +423,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -439,7 +439,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -455,7 +455,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -471,7 +471,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -487,7 +487,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -503,7 +503,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -519,7 +519,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -535,7 +535,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -551,7 +551,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -567,7 +567,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -583,7 +583,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -599,7 +599,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -615,7 +615,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -631,7 +631,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -647,7 +647,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -663,7 +663,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -679,7 +679,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -695,7 +695,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -711,7 +711,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -727,7 +727,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -743,7 +743,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -759,7 +759,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -782,7 +782,7 @@ public class ShellViewFactory {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -805,7 +805,7 @@ public class ShellViewFactory {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -817,7 +817,7 @@ public class ShellViewFactory {
             StageManager.showStage(ShellToolController.class, StageManager.getPrimaryStage());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -829,7 +829,7 @@ public class ShellViewFactory {
             StageManager.showStage(AboutController.class, StageManager.getPrimaryStage());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -841,7 +841,7 @@ public class ShellViewFactory {
             StageManager.showStage(ShellDataExportController.class, StageManager.getPrimaryStage());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -866,7 +866,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -884,7 +884,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -909,7 +909,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -920,7 +920,7 @@ public class ShellViewFactory {
     //            adapter.display();
     //        } catch (Exception ex) {
     //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, StageManager.getFrontWindow());
     //        }
     //    }
 
@@ -932,7 +932,7 @@ public class ShellViewFactory {
     //            adapter.display();
     //        } catch (Exception ex) {
     //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, StageManager.getFrontWindow());
     //        }
     //    }
     //
@@ -944,7 +944,7 @@ public class ShellViewFactory {
     //            adapter.display();
     //        } catch (Exception ex) {
     //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, StageManager.getFrontWindow());
     //        }
     //    }
 
@@ -956,7 +956,7 @@ public class ShellViewFactory {
     //            adapter.showAndWait();
     //        } catch (Exception ex) {
     //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, StageManager.getFrontWindow());
     //        }
     //    }
 
@@ -967,7 +967,7 @@ public class ShellViewFactory {
     //            adapter.display();
     //        } catch (Exception ex) {
     //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, StageManager.getFrontWindow());
     //        }
     //    }
 
@@ -979,7 +979,7 @@ public class ShellViewFactory {
     //            adapter.showAndWait();
     //        } catch (Exception ex) {
     //            ex.printStackTrace();
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, StageManager.getFrontWindow());
     //        }
     //    }
 
@@ -995,7 +995,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1012,7 +1012,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1030,7 +1030,7 @@ public class ShellViewFactory {
             adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1050,7 +1050,7 @@ public class ShellViewFactory {
             adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1069,7 +1069,7 @@ public class ShellViewFactory {
             adapter.showAndWait();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1091,7 +1091,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -1109,7 +1109,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1125,7 +1125,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1141,7 +1141,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1159,7 +1159,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1179,7 +1179,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1195,7 +1195,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1211,7 +1211,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1227,7 +1227,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1246,7 +1246,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1259,7 +1259,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1272,7 +1272,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1286,7 +1286,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -1304,7 +1304,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -1318,7 +1318,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1339,7 +1339,7 @@ public class ShellViewFactory {
             adapter.showPopup(parent);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1356,7 +1356,7 @@ public class ShellViewFactory {
             adapter.showPopup(parent);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1374,7 +1374,7 @@ public class ShellViewFactory {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1391,7 +1391,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -1410,7 +1410,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -1427,7 +1427,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1445,7 +1445,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -1464,7 +1464,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1482,7 +1482,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1500,7 +1500,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1518,7 +1518,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1536,7 +1536,7 @@ public class ShellViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -1557,7 +1557,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1576,7 +1576,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1594,7 +1594,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1613,7 +1613,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1630,7 +1630,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1647,7 +1647,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1665,7 +1665,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1683,7 +1683,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1701,7 +1701,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1719,7 +1719,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1737,7 +1737,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1755,7 +1755,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1772,7 +1772,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1790,7 +1790,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1808,7 +1808,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
 
@@ -1828,7 +1828,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1849,7 +1849,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1869,7 +1869,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1891,7 +1891,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1908,7 +1908,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1926,7 +1926,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1942,7 +1942,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1960,7 +1960,7 @@ public class ShellViewFactory {
     //         return adapter;
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     //     return null;
     // }
@@ -1979,7 +1979,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
     //
@@ -1995,7 +1995,7 @@ public class ShellViewFactory {
     //         adapter.display();
     //     } catch (Exception ex) {
     //         ex.printStackTrace();
-    //         MessageBox.exception(ex);
+    //         MessageBox.exception(ex, StageManager.getFrontWindow());
     //     }
     // }
 
@@ -2011,7 +2011,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -2030,7 +2030,7 @@ public class ShellViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }

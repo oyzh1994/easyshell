@@ -257,16 +257,16 @@
 //                 // 收尾工作
 //                 this.updateStatus(I18nHelper.processing());
 //                 this.updateStatus(I18nHelper.operationSuccess());
-//                 MessageBox.okToast(I18nHelper.operationSuccess());
+//                 MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
 //
 //             } catch (Exception ex) {
 //                 if (ex.getClass().isAssignableFrom(InterruptedException.class)) {
 //                     this.updateStatus(I18nHelper.operationCancel());
-//                     MessageBox.okToast(I18nHelper.operationCancel());
+//                     MessageBox.okToast(I18nHelper.operationCancel(), this.getWindow());
 //                 } else {
 //                     ex.printStackTrace();
 //                     this.updateStatus(I18nHelper.operationFail());
-//                     MessageBox.warn(I18nHelper.operationFail());
+//                     MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
 //                 }
 //             } finally {
 //                 // 结束处理

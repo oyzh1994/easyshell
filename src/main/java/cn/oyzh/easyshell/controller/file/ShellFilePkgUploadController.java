@@ -57,7 +57,7 @@ public class ShellFilePkgUploadController extends StageController {
                 this.closeWindow();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
                 this.root.appendLine(I18nHelper.compressFailed());
             }
         });

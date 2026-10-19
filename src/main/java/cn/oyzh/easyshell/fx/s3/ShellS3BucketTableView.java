@@ -83,13 +83,13 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
                         this.setItem(buckets);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     }
                 });
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -100,14 +100,14 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
      * @param force  强制
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
-        if (bucket != null && MessageBox.confirm(I18nHelper.deleteBucket() + " " + bucket.getName() + "?")) {
+        if (bucket != null && MessageBox.confirm(I18nHelper.deleteBucket() + " " + bucket.getName() + "?", this.getWindow())) {
             StageManager.showMask(() -> {
                 try {
                     this.client.deleteBucket(bucket, force);
                     this.loadBucket();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -128,7 +128,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -145,7 +145,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

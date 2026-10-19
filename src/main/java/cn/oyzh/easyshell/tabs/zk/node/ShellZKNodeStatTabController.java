@@ -66,7 +66,7 @@ public class ShellZKNodeStatTabController extends SubTabController {
             this.initStat();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -256,15 +256,15 @@ public class ShellDockerRunController extends StageController {
                     JulLog.info("docker run result: {}", output);
                 }
                 if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
-                    MessageBox.info(I18nHelper.containerId() + ":" + output);
+                    MessageBox.info(I18nHelper.containerId() + ":" + output, this.getWindow());
                     ShellEventUtil.containerRun(this.exec);
                     this.closeWindow();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
 
@@ -291,11 +291,11 @@ public class ShellDockerRunController extends StageController {
             if (CollectionUtil.isEmpty(ports)) {
                 return;
             }
-            if (MessageBox.confirm(I18nHelper.deleteData())) {
+            if (MessageBox.confirm(I18nHelper.deleteData(), this.getWindow())) {
                 this.portTable.removeItem(ports);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -320,11 +320,11 @@ public class ShellDockerRunController extends StageController {
             if (CollectionUtil.isEmpty(volumes)) {
                 return;
             }
-            if (MessageBox.confirm(I18nHelper.deleteData())) {
+            if (MessageBox.confirm(I18nHelper.deleteData(), this.getWindow())) {
                 this.volumeTable.removeItem(volumes);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -349,11 +349,11 @@ public class ShellDockerRunController extends StageController {
             if (CollectionUtil.isEmpty(envs)) {
                 return;
             }
-            if (MessageBox.confirm(I18nHelper.deleteData())) {
+            if (MessageBox.confirm(I18nHelper.deleteData(), this.getWindow())) {
                 this.envTable.removeItem(envs);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -378,11 +378,11 @@ public class ShellDockerRunController extends StageController {
             if (CollectionUtil.isEmpty(labels)) {
                 return;
             }
-            if (MessageBox.confirm(I18nHelper.deleteData())) {
+            if (MessageBox.confirm(I18nHelper.deleteData(), this.getWindow())) {
                 this.labelTable.removeItem(labels);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

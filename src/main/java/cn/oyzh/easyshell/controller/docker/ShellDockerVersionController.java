@@ -37,7 +37,7 @@ public class ShellDockerVersionController extends StageController {
     @FXML
     private void copyVersion() {
         ClipboardUtil.copy(this.version.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

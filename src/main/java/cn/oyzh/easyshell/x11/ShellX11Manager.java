@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.xserver.ServerOptions;
 import cn.oyzh.fx.xserver.XServer;
 
@@ -127,7 +128,7 @@ public class ShellX11Manager {
         // 寻找存在的二进制命令
         String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
         if (bin == null) {
-            MessageBox.warn(ShellI18nHelper.x11Tip1());
+            MessageBox.warn(ShellI18nHelper.x11Tip1(), StageManager.getFrontWindow());
             return;
         }
         // 异步启动
@@ -158,7 +159,7 @@ public class ShellX11Manager {
                 x11Process = RuntimeUtil.exec(command.toString(), null, dir);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, StageManager.getFrontWindow());
             }
         });
     }
@@ -224,7 +225,7 @@ public class ShellX11Manager {
         // 寻找存在的二进制命令
         String bin = ShellX11Util.findExist(setting.x11WorkDir(), setting.x11Binary());
         if (bin == null) {
-            MessageBox.warn(ShellI18nHelper.x11Tip1());
+            MessageBox.warn(ShellI18nHelper.x11Tip1(), StageManager.getFrontWindow());
             return;
         }
         // 异步启动
@@ -239,7 +240,7 @@ public class ShellX11Manager {
                 x11Process = processBuilder.start();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, StageManager.getFrontWindow());
             }
         });
     }
@@ -262,7 +263,7 @@ public class ShellX11Manager {
     //                x11Process = processBuilder.start();
     //            } catch (Exception ex) {
     //                ex.printStackTrace();
-    //                MessageBox.exception(ex);
+    //                MessageBox.exception(ex, StageManager.getFrontWindow());
     //            }
     //        });
     //    }

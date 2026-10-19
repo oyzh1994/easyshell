@@ -97,7 +97,7 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
             Task task = TaskBuilder.newBuilder()
                     .onSuccess(this::refresh)
                     .onStart(this::loadDatabase)
-                    .onError(MessageBox::exception)
+                    .onError(ex -> MessageBox.exception(ex, this.getWindow()))
                     .onFinish(this::expend)
                     .build();
             this.startWaiting(task);

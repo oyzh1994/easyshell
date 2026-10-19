@@ -52,15 +52,15 @@ public class ShellRedisPublishTabController extends SubTabController {
         try {
             String channel = this.channel.getText();
             if (StringUtils.isEmpty(channel)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 this.channel.requestFocus();
                 return;
             }
             this.getClient().publish(channel, this.msg.getTextTrim());
-            MessageBox.okToast(I18nHelper.messageSent());
+            MessageBox.okToast(I18nHelper.messageSent(), this.getWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

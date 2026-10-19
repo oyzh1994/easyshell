@@ -490,7 +490,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         }
         String content = builder.substring(0, builder.lastIndexOf("\n"));
         if (!ClipboardUtil.copy(content)) {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 
@@ -504,32 +504,32 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         if (this.connectStore.replace(shellConnect)) {
             this.connectManager().addConnect(shellConnect);
         } else {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]", this.getWindow())) {
             // this.closeConnect(false);
             if (this.connectManager().delConnectItem(this)) {
                 ShellEventUtil.connectDeleted(this.value);
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         }
     }
 
     @Override
     public void rename() {
-        String connectName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName());
+        String connectName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName(), this.getWindow());
         // 名称为null或者跟当前名称相同，则忽略
         if (connectName == null || Objects.equals(connectName, this.value.getName())) {
             return;
         }
         // 检查名称
         if (StringUtil.isBlank(connectName)) {
-            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            MessageBox.warn(I18nHelper.contentCanNotEmpty(), this.getWindow());
             return;
         }
         this.value.setName(connectName);
@@ -537,7 +537,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         if (this.connectStore.update(this.value)) {
             this.setValue(new ShellConnectTreeItemValue(this));
         } else {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 

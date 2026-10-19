@@ -143,7 +143,7 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

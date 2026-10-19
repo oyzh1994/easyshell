@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.SSHException;
 import org.apache.sshd.client.auth.keyboard.UserInteraction;
@@ -20,30 +21,30 @@ import org.apache.sshd.client.session.ClientSession;
  */
 public class ShellSSHAuthInteractive implements UserInteraction {
 
-//    /**
-//     * 密码
-//     */
-//    private String password;
-//
-//    public ShellSSHAuthInteractive(String password) {
-//        this.password = password;
-//    }
+    //    /**
+    //     * 密码
+    //     */
+    //    private String password;
+    //
+    //    public ShellSSHAuthInteractive(String password) {
+    //        this.password = password;
+    //    }
 
     @Override
     public String[] interactive(ClientSession session, String name, String instruction, String lang, String[] prompt, boolean[] echo) {
         String content = ArrayUtil.first(prompt);
         JulLog.info("interactive prompt:", content);
         if (StringUtil.containsAnyIgnoreCase(content, "Password", "密码")) {
-//            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.password);
-            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword());
+            //            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), this.password);
+            String pwd = MessageBox.prompt(I18nHelper.pleaseInputPassword(), StageManager.getFrontWindow());
             if (StringUtil.isEmpty(pwd)) {
                 throw new SSHException("invalid password");
             }
-//            this.password = pwd;
+            //            this.password = pwd;
             return new String[]{pwd};
         }
         if (StringUtil.containsAnyIgnoreCase(content, "", "Verification code", "验证码")) {
-            String verificationCode = MessageBox.prompt(I18nHelper.pleaseInputVerificationCode());
+            String verificationCode = MessageBox.prompt(I18nHelper.pleaseInputVerificationCode(), StageManager.getFrontWindow());
             if (StringUtil.isEmpty(verificationCode)) {
                 throw new SSHException("invalid verification code");
             }
@@ -52,16 +53,16 @@ public class ShellSSHAuthInteractive implements UserInteraction {
         return null;
     }
 
-//    @Override
-//    public String resolveAuthPasswordAttempt(ClientSession session) {
-//        JulLog.info("resolveAuthPasswordAttempt");
-//        return this.password;
-//    }
+    //    @Override
+    //    public String resolveAuthPasswordAttempt(ClientSession session) {
+    //        JulLog.info("resolveAuthPasswordAttempt");
+    //        return this.password;
+    //    }
 
     @Override
     public String getUpdatedPassword(ClientSession session, String prompt, String lang) {
-//        JulLog.info("getUpdatedPassword");
-//        return this.password;
+        //        JulLog.info("getUpdatedPassword");
+        //        return this.password;
         throw new UnsupportedOperationException();
     }
 }

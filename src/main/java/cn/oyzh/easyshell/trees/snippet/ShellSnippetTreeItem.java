@@ -74,12 +74,12 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]", this.getWindow())) {
             if (this.snippetStore.delete(this.value)) {
                 this.getTreeView().deleteSnippet(this.value);
                 this.remove();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         }
     }
@@ -93,14 +93,14 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
 
     @Override
     public void rename() {
-        String connectName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName());
+        String connectName = MessageBox.prompt(I18nHelper.contentTip1(), this.value.getName(), this.getWindow());
         // 名称为null或者跟当前名称相同，则忽略
         if (connectName == null || Objects.equals(connectName, this.value.getName())) {
             return;
         }
         // 检查名称
         if (StringUtil.isBlank(connectName)) {
-            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            MessageBox.warn(I18nHelper.contentCanNotEmpty(), this.getWindow());
             return;
         }
         this.value.setName(connectName);
@@ -108,7 +108,7 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
         if (this.snippetStore.update(this.value)) {
             this.setValue(new ShellSnippetTreeItemValue(this));
         } else {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 

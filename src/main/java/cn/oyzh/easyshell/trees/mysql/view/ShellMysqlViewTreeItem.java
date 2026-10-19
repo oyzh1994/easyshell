@@ -145,7 +145,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
             MysqlView mysqlView = this.dbItem().selectView(cloneView);
             this.dbItem().getViewTypeChild().addView(mysqlView);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -165,7 +165,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(I18nHelper.deleteView() + " " + this.value.getName() + "?")) {
+        if (!MessageBox.confirm(I18nHelper.deleteView() + " " + this.value.getName() + "?", this.getWindow())) {
             return;
         }
         try {
@@ -174,7 +174,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
             this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -376,14 +376,14 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
     @Override
     public void rename() {
         try {
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.viewName());
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.viewName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (newName == null || Objects.equals(newName, this.viewName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(newName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.viewName();
@@ -394,7 +394,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
             ShellMysqlEventUtil.viewRenamed(oldName, newName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

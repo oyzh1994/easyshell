@@ -210,7 +210,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
 
     @Override
     public void rename() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name(), this.value.getName());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name(), this.value.getName(), this.getWindow());
         // 名称为null或者跟当前名称相同，则忽略
         if (StringUtil.isBlank(groupName) || Objects.equals(groupName, this.value.getName())) {
             return;
@@ -223,13 +223,13 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             this.refresh();
             ShellEventUtil.groupRenamed(groupName, oldName);
         } else {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 
     @Override
     public void delete() {
-        if (this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteFolder1())) {
+        if (this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteFolder1(), this.getWindow())) {
             return;
         }
 //        if (!this.isChildEmpty() && !MessageBox.confirm(I18nHelper.deleteGroupTip2())) {
@@ -240,12 +240,12 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         for (ShellConnectGroupTreeItem groupItem : groupItems) {
             // 删除失败
             if (!this.groupStore.delete(groupItem.value)) {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 return;
             }
         }
         // if (!this.groupStore.delete(this.value)) {
-        //     MessageBox.warn(I18nHelper.operationFail());
+        //     MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         //     return;
         // }
         // 处理连接
@@ -290,14 +290,14 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name(), this.getWindow());
         // 名称为null，则忽略
         if (groupName == null) {
             return;
         }
         // 不能为空
         if (StringUtil.isBlank(groupName)) {
-            MessageBox.warn(I18nHelper.nameCanNotEmpty());
+            MessageBox.warn(I18nHelper.nameCanNotEmpty(), this.getWindow());
             return;
         }
         ShellGroup group = new ShellGroup();
@@ -312,7 +312,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
             ShellEventUtil.groupAdded(group.getName());
         } else {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 

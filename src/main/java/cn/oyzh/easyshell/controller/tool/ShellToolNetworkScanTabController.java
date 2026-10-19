@@ -97,7 +97,7 @@ public class ShellToolNetworkScanTabController extends SubStageController {
             return;
         }
         if (this.scanStart.getIntValue() > this.scanEnd.getIntValue()) {
-            MessageBox.warn(I18nHelper.invalidData());
+            MessageBox.warn(I18nHelper.invalidData(), this.getWindow());
             this.scanStart.requestFocus();
             return;
         }

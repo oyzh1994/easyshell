@@ -128,7 +128,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
      * 清空集合
      */
     private void clearCollection() {
-        if (MessageBox.confirm(I18nHelper.clearCollection() + "[" + this.collectionName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.clearCollection() + "[" + this.collectionName() + "]", this.getWindow())) {
             this.dbItem().clearCollection(this.collectionName());
             this.parent().reloadChild();
         }
@@ -137,30 +137,30 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteCollection() + "[" + this.collectionName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.deleteCollection() + "[" + this.collectionName() + "]", this.getWindow())) {
                 this.dbItem().dropCollection(this.collectionName());
                 ShellMongoEventUtil.collectionDropped(this, this.dbItem());
                 this.parent().clearCollectionSize();
                 this.remove();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
     @Override
     public void rename() {
         try {
-            String collectionName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());
+            String collectionName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (collectionName == null || Objects.equals(collectionName, this.value.getName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(collectionName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.value.getName();
@@ -171,7 +171,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
             ShellMongoEventUtil.collectionRenamed(oldName, collectionName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

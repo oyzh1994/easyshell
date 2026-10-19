@@ -78,7 +78,7 @@ public class ShellRedisListElementAddController extends StageController {
             // ShellEventUtil.redisListRowAdded(this.treeItem, key, rowValue);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -200,11 +200,11 @@ public class ShellRedisImportDataController extends StageController {
             } catch (Exception e) {
                 if (e.getClass().isAssignableFrom(InterruptedException.class)) {
                     this.updateStatus(I18nHelper.operationCancel());
-                    MessageBox.warn(I18nHelper.operationCancel());
+                    MessageBox.warn(I18nHelper.operationCancel(), this.getWindow());
                 } else {
                     e.printStackTrace();
                     this.updateStatus(I18nHelper.operationFail());
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } finally {
                 NodeGroupUtil.enable(this.stage, "exec");
@@ -331,7 +331,7 @@ public class ShellRedisImportDataController extends StageController {
                 if (!latch.await(3000) || !this.client.isConnected()) {
                     this.client.close();
                     this.client = null;
-                    MessageBox.warn(I18nHelper.connectInitFail());
+                    MessageBox.warn(I18nHelper.connectInitFail(), this.getWindow());
                     return false;
                 }
             }

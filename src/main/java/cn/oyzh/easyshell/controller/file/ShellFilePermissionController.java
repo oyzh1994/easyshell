@@ -144,19 +144,19 @@ public class ShellFilePermissionController extends StageController {
                         this.file.setPermissions(perms);
                         this.closeWindow();
                     } else {
-                        MessageBox.warn(I18nHelper.operationFail());
+                        MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                     }
                 } else {
                     if (this.client.chmod(permission, this.file.getFilePath())) {
                         this.file.setPermissions(perms);
                         this.closeWindow();
                     } else {
-                        MessageBox.warn(I18nHelper.operationFail());
+                        MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                     }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

@@ -381,7 +381,7 @@ public class ShellZKTransportDataController extends StageController {
 
             if (sourceInfo.compare(targetInfo)) {
                 this.sourceInfo.requestFocus();
-                MessageBox.warn(I18nHelper.connectionsCannotBeTheSame());
+                MessageBox.warn(I18nHelper.connectionsCannotBeTheSame(), this.getWindow());
                 return;
             }
 
@@ -402,7 +402,7 @@ public class ShellZKTransportDataController extends StageController {
                     this.sourceClient.close();
                     this.sourceClient = null;
                     this.sourceInfo.requestFocus();
-                    MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail());
+                    MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
                     return;
                 }
             }
@@ -421,7 +421,7 @@ public class ShellZKTransportDataController extends StageController {
                     this.targetClient.close();
                     this.targetClient = null;
                     this.targetInfo.requestFocus();
-                    MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail());
+                    MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
                     return;
                 }
             }

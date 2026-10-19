@@ -56,7 +56,7 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
                 this.memoryInfo.text(output);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -67,7 +67,7 @@ public class ShellSSHServerMemoryTabController extends SubTabController {
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.memoryInfo.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

@@ -158,7 +158,7 @@ public class ShellRedisKeyDataController extends ParentTabController {
         if (treeItem.isExpire()) {
             // BackgroundService.submitFXLater(() -> {
             String tips = I18nHelper.key() + " [" + treeItem.key() + "] " + I18nHelper.expired() + ", " + I18nHelper.deleteKey() + "?";
-            if (MessageBox.confirm(tips)) {
+            if (MessageBox.confirm(tips, this.getWindow())) {
                 this.treeItem.deleteByExpired();
             }
             // });

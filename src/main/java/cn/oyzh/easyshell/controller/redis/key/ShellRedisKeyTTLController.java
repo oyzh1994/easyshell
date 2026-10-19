@@ -72,7 +72,7 @@ public class ShellRedisKeyTTLController extends StageController {
             if (ttlValue.longValue() <= -1) {
                 this.client.persist(this.treeItem.dbIndex(), this.treeItem.key());
             } else if (ttlValue.longValue() == 0) {
-                if (MessageBox.confirm(ShellI18nHelper.redisTtlTip1())) {
+                if (MessageBox.confirm(ShellI18nHelper.redisTtlTip1(), this.getWindow())) {
                     this.client.del(this.treeItem.dbIndex(), this.treeItem.key());
                 }
             } else {
@@ -80,10 +80,10 @@ public class ShellRedisKeyTTLController extends StageController {
             }
             // this.setProp("result", true);
             ShellRedisEventUtil.redisKeyTTLUpdated(this.treeItem.shellConnect(), ttlValue.longValue(), this.treeItem.key(), this.treeItem.dbIndex());
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -57,7 +57,7 @@ public class ShellToolZookeeperTabController extends SubStageController {
             this.digest.setText(digest1);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -67,7 +67,7 @@ public class ShellToolZookeeperTabController extends SubStageController {
     @FXML
     private void copyDigest() {
         this.digest.copy();
-        MessageBox.info(I18nHelper.copySuccess());
+        MessageBox.info(I18nHelper.copySuccess(), this.getWindow());
     }
 
     @Override

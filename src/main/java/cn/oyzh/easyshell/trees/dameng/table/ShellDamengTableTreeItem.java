@@ -24,7 +24,6 @@ import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
-import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -162,7 +161,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
             DamengTable damengTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(damengTable);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -192,13 +191,13 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
      * 截断表
      */
     private void truncateTable() {
-        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]", this.getWindow())) {
             try {
                 this.dbItem().truncateTable(this.tableName());
                 ShellDamengEventUtil.tableTruncated(this, this.dbItem());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }
@@ -208,26 +207,26 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
      */
     private void clearTable() {
         try {
-            if (MessageBox.confirm(I18nHelper.clearTableData() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.clearTableData() + "[" + this.tableName() + "]", this.getWindow())) {
                 this.dbItem().clearTable(this.tableName());
                 ShellDamengEventUtil.tableCleared(this, this.dbItem());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]", this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellDamengEventUtil.tableDropped(this, this.dbItem());
                 this.parent().clearTableSize();
                 this.remove();
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -241,14 +240,14 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
     @Override
     public void rename() {
         try {
-            String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());
+            String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (tableName == null || Objects.equals(tableName, this.value.getName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(tableName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.value.getName();
@@ -259,7 +258,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
             ShellDamengEventUtil.tableRenamed(oldName, tableName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

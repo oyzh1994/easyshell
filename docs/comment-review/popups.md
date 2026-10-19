@@ -22,7 +22,7 @@
 | 方法 | 说明 | 关键逻辑/调用 |
 |---|---|---|
 | `onWindowShowing(WindowEvent event)` | 窗口展示回调 | 先 `super.onWindowShowing(event)`，再调用 `initQRCode()` |
-| `initQRCode()` | 生成二维码 | `getProp("zkNode")` 取 `ShellZKNode`、`getProp("nodeData")` 取数据；拼装「节点路径 + 节点数据」文本；`NodeUtil.getWidth/getHeight(qrcode)` 取控件宽高；`QRCodeUtil.createImage(text, "utf-8", codeW, codeH)` 生成 `BufferedImage`；`FXUtil.toImage(source)` 转 `Image` 后 `qrcode.setImage(...)`；异常时 `closeWindow()`、`JulLog.warn` 并 `MessageBox.warn(I18nHelper.operationFail())` |
+| `initQRCode()` | 生成二维码 | `getProp("zkNode")` 取 `ShellZKNode`、`getProp("nodeData")` 取数据；拼装「节点路径 + 节点数据」文本；`NodeUtil.getWidth/getHeight(qrcode)` 取控件宽高；`QRCodeUtil.createImage(text, "utf-8", codeW, codeH)` 生成 `BufferedImage`；`FXUtil.toImage(source)` 转 `Image` 后 `qrcode.setImage(...)`；异常时 `closeWindow()`、`JulLog.warn` 并 `MessageBox.warn(I18nHelper.operationFail(), this.getWindow())` |
 
 - 调用链：`ShellZKNodeDataTabController.node2QRCode → PopupManager.parsePopup → setProp("zkNode","nodeData") → showPopup → onWindowShowing → initQRCode → QRCodeUtil.createImage → FXUtil.toImage`
 
@@ -64,7 +64,7 @@
 | 方法 | 说明 | 关键逻辑/调用 |
 |---|---|---|
 | `onWindowShowing(WindowEvent event)` | 窗口展示回调 | 先 `super`，再 `initQRCode()` |
-| `initQRCode()` | 生成二维码 | `getProp("key")` 取 `ShellRedisKey`、`getProp("keyData")` 取数据；拼装「键 + 数据库 + 数据」文本；`NodeUtil.getWidth/getHeight(qrcode)` 取尺寸；`QRCodeUtil.createImage(text, "utf-8", codeW, codeH)` → `FXUtil.toImage` → `qrcode.setImage`；异常时 `closeWindow()`，并用 `ExceptionUtil.hasMessage(ex, "Data too big")` 区分：数据过大提示 `I18nHelper.dataTooLarge()`，否则打印堆栈 + `JulLog.warn` + `MessageBox.warn(I18nHelper.operationFail())` |
+| `initQRCode()` | 生成二维码 | `getProp("key")` 取 `ShellRedisKey`、`getProp("keyData")` 取数据；拼装「键 + 数据库 + 数据」文本；`NodeUtil.getWidth/getHeight(qrcode)` 取尺寸；`QRCodeUtil.createImage(text, "utf-8", codeW, codeH)` → `FXUtil.toImage` → `qrcode.setImage`；异常时 `closeWindow()`，并用 `ExceptionUtil.hasMessage(ex, "Data too big")` 区分：数据过大提示 `I18nHelper.dataTooLarge()`，否则打印堆栈 + `JulLog.warn` + `MessageBox.warn(I18nHelper.operationFail(), this.getWindow())` |
 
 - 调用链：`ShellRedisStringKeyController / ShellRedisJsonKeyController → PopupManager.parsePopup → setProp("key","keyData") → showPopup → onWindowShowing → initQRCode → QRCodeUtil.createImage → FXUtil.toImage`
 

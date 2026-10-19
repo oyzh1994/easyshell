@@ -164,12 +164,12 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
     public void delete() {
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> {
-                    if (MessageBox.confirm(I18nHelper.deleteSchema() + "[" + this.schema() + "]")) {
+                    if (MessageBox.confirm(I18nHelper.deleteSchema() + "[" + this.schema() + "]", this.getWindow())) {
                         if (this.parent().dropSchema(this.schema())) {
                             ShellDamengEventUtil.schemaDropped(this);
                             super.remove();
                         } else {
-                            MessageBox.warn(I18nHelper.operationFail());
+                            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                         }
                     }
                 })
@@ -214,7 +214,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
                     .onSuccess(this::expend)
                     .onError(ex -> {
                         this.setLoaded(false);
-                        MessageBox.error(ex.getMessage());
+                        MessageBox.error(ex.getMessage(), this.getWindow());
                     })
                     .onFinish(() -> this.setLoading(false))
                     .build();

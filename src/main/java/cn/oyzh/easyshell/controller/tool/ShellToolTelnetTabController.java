@@ -106,11 +106,11 @@ public class ShellToolTelnetTabController extends SubStageController {
                 } else {// 连接失败
                     // 断开连接
                     client.disconnect();
-                    MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 this.telnetArea.appendLine(ex.getMessage());
-                MessageBox.warn(I18nHelper.connectFail());
+                MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
             }
         });
     }

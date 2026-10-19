@@ -205,7 +205,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
             // 初始化数据
             //            this.initRecords(records);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -312,7 +312,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //            }
         //        } catch (Exception ex) {
         //            ex.printStackTrace();
-        //            MessageBox.exception(ex);
+        //            MessageBox.exception(ex, this.getWindow());
         //        }
         this.fileTable.editDocument(this.fileTable.getSelectedItem());
     }
@@ -353,7 +353,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
             // 设置过滤激活
             this.filter.setActive(CollectionUtil.isNotEmpty(this.enabledFilters()));
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -465,10 +465,10 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     //                this.fileTable.removeItem(records);
     //                this.initCount(this.pageData.count() - records.size());
     //            } else {// 操作失败
-    //                MessageBox.warnToast(I18nHelper.operationFail());
+    //                MessageBox.warnToast(I18nHelper.operationFail(), this.getWindow());
     //            }
     //        } catch (Exception ex) {
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, this.getWindow());
     //        }
     //    }
 
@@ -484,7 +484,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
     //        if (success) {
     //            this.fileTable.removeItem(record);
     //        } else {// 操作失败
-    //            MessageBox.warnToast(I18nHelper.operationFail());
+    //            MessageBox.warnToast(I18nHelper.operationFail(), this.getWindow());
     //        }
     //        return success;
     //    }
@@ -514,7 +514,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //                this.fileTable.selectLast();
         //                this.initCount(this.fileTable.getItemSize());
         //            } catch (Exception ex) {
-        //                MessageBox.exception(ex);
+        //                MessageBox.exception(ex, this.getWindow());
         //            }
         //        });
         //        this.fileTable.uploadFile(() -> {
@@ -552,7 +552,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         //                Object _id = record.getId();
         //                this.getItem().downloadRecord(_id, file.getPath());
         //            } catch (Exception ex) {
-        //                MessageBox.exception(ex);
+        //                MessageBox.exception(ex, this.getWindow());
         //            }
         //        });
         this.fileTable.downloadFile(new ArrayList<>(this.fileTable.getFilterSelectedItems()));
@@ -583,7 +583,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
             try {
                 this.fileTable.setFilterText(t1);
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
         // 快捷键
@@ -616,7 +616,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
             this.fileTable.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

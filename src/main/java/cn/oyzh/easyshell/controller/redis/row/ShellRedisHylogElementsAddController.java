@@ -72,7 +72,7 @@ public class ShellRedisHylogElementsAddController extends StageController {
             ShellRedisClient client = this.treeItem.client();
             String[] array = ArrayUtil.toArray(elements, String.class);
             if (client.pfadd(dbIndex, key, array) <= 0) {
-                MessageBox.warn(ShellI18nHelper.redisAddTip3());
+                MessageBox.warn(ShellI18nHelper.redisAddTip3(), this.getWindow());
                 return;
             }
             // 结果
@@ -81,7 +81,7 @@ public class ShellRedisHylogElementsAddController extends StageController {
             // ShellEventUtil.redisHyLogElementsAdded(this.treeItem, key, array);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

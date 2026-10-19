@@ -92,7 +92,7 @@ public class ShellRedisHashKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRed
             this.clearData();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -120,7 +120,7 @@ public class ShellRedisHashKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRed
             return false;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
         return false;
     }

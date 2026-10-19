@@ -199,7 +199,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
      */
     protected void forceDel(List<ShellSFTPFile> files) {
         // 提示
-        if (!MessageBox.confirm(ShellI18nHelper.fileTip20())) {
+        if (!MessageBox.confirm(ShellI18nHelper.fileTip20(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -210,7 +210,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                     // 执行操作
                     String result = this.sshClient.serverExec().forceDel(list);
                     if (StringUtil.isNotBlank(result)) {
-                        MessageBox.warn(result);
+                        MessageBox.warn(result, this.getWindow());
                     } else {
                         for (ShellSFTPFile file : files) {
                             super.onFileDeleted(file.getFilePath());
@@ -221,14 +221,14 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                         // 执行操作
                         String result = this.sshClient.serverExec().forceDel(file.getFilePath(), file.isFile());
                         if (StringUtil.isNotBlank(result)) {
-                            MessageBox.warn(result);
+                            MessageBox.warn(result, this.getWindow());
                         } else {
                             super.onFileDeleted(file.getFilePath());
                         }
                     }
                 }
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -249,7 +249,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                     try {
                         String result = this.sshClient.serverExec().compress(file.getFilePath(), type);
                         if (ShellUtil.isCommandNotFound(result)) {
-                            MessageBox.warn(result);
+                            MessageBox.warn(result, this.getWindow());
                             break;
                         }
                     } finally {
@@ -258,7 +258,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 }
                 super.loadFileInnerBatch();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -278,7 +278,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                     try {
                         String result = this.sshClient.serverExec().uncompress(file.getFilePath());
                         if (ShellUtil.isCommandNotFound(result)) {
-                            MessageBox.warn(result);
+                            MessageBox.warn(result, this.getWindow());
                             break;
                         }
                     } finally {
@@ -287,7 +287,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                 }
                 super.loadFileInnerBatch();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -322,7 +322,7 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                     String fName = ShellFileUtil.concat(this.getLocation(), f1.getFileName());
                     String dst = f1.isDirectory() ? this.getLocation() : fName;
                     // 判断文件是否存在
-                    if (this.client.exist(fName) && !MessageBox.confirm("[" + fName + "] " + ShellI18nHelper.fileTip4())) {
+                    if (this.client.exist(fName) && !MessageBox.confirm("[" + fName + "] " + ShellI18nHelper.fileTip4(), this.getWindow())) {
                         continue;
                     }
                     String result;
@@ -333,13 +333,13 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                         result = this.sshClient.serverExec().copy(f1.getFilePath(), dst);
                     }
                     if (StringUtil.isNotBlank(result)) {
-                        MessageBox.warn(result);
+                        MessageBox.warn(result, this.getWindow());
                     } else {
                         super.onFileAdded(fName);
                     }
                 }
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             } finally {
                 this.tempFiles = null;
             }
@@ -365,10 +365,10 @@ public class ShellSSHSFTPFileTableView extends ShellSFTPFileTableView {
                         this.client.delete(remoteFile);
                         this.reloadFile();
                     } catch (Exception ex) {
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     }
                 } else {
-                    MessageBox.warn(I18nHelper.uploadFailed());
+                    MessageBox.warn(I18nHelper.uploadFailed(), this.getWindow());
                 }
             });
         }

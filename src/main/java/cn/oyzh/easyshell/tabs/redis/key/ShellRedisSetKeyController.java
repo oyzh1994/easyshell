@@ -130,11 +130,11 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.checkRowExists()) {
-            MessageBox.warn(I18nHelper.dataAlreadyExists());
+            MessageBox.warn(I18nHelper.dataAlreadyExists(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataTooBig()) {
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
@@ -146,7 +146,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
                     this.treeItem.flushMemoryUsage();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -213,7 +213,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
             // 异步处理，避免阻塞主程序
             TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getPrimaryStage())) {
+                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getFrontWindow())) {
                     this.saveBinaryFile();
                 }
             }, 10);
@@ -243,7 +243,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
                 FileUtil.writeBytes(bytes, file);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -254,7 +254,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteMember() + ":" + row.getValue())) {
+        if (!MessageBox.confirm(I18nHelper.deleteMember() + ":" + row.getValue(), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

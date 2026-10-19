@@ -104,7 +104,7 @@ public class ShellDataImportController extends StageController {
     @FXML
     private void doImport() {
         if (this.importFile == null) {
-            MessageBox.warn(I18nHelper.pleaseSelectFile());
+            MessageBox.warn(I18nHelper.pleaseSelectFile(), this.getWindow());
             return;
         }
         try {
@@ -154,13 +154,13 @@ public class ShellDataImportController extends StageController {
             // if (success) {
             ShellEventUtil.dataImported();
             this.closeWindow();
-            MessageBox.okToast(I18nHelper.importDataSuccess());
+            MessageBox.okToast(I18nHelper.importDataSuccess(), this.getWindow());
             // } else {
             //     MessageBox.warn(I18nHelper.importDataFail());
             // }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex, I18nHelper.importDataFail());
+            MessageBox.exception(ex, I18nHelper.importDataFail(), this.getWindow());
         }
     }
 

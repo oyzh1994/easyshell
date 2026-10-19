@@ -108,7 +108,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
     @FXML
     private void reloadRow() {
         // 放弃保存
-        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -119,7 +119,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -152,7 +152,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.isDataTooBig()) {
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
@@ -164,7 +164,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
                     this.treeItem.flushMemoryUsage();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -231,7 +231,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
             // 异步处理，避免阻塞主程序
             TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getPrimaryStage())) {
+                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getFrontWindow())) {
                     this.saveBinaryFile();
                 }
             }, 10);
@@ -261,7 +261,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
                 FileUtil.writeBytes(bytes, file);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -272,7 +272,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteElement() + ":" + row.getValue())) {
+        if (!MessageBox.confirm(I18nHelper.deleteElement() + ":" + row.getValue(), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

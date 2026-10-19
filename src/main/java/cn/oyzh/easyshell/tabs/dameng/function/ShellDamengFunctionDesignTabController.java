@@ -308,14 +308,14 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
      */
     @FXML
     private void refresh() {
-        if (!MessageBox.confirm(I18nHelper.refreshData() + "?")) {
+        if (!MessageBox.confirm(I18nHelper.refreshData() + "?", this.getWindow())) {
             return;
         }
         try {
             this.init(this.function, this.dbItem);
             this.flushTab();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -342,7 +342,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
 
             // 函数名称
             if (this.newData) {
-                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), this.functionName);
+                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), this.functionName, this.getWindow());
                 if (this.functionName == null) {
                     return;
                 }
@@ -372,7 +372,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.flushTab();
         }
@@ -465,7 +465,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
             this.paramTable.addItem(param);
             this.paramTable.selectLast();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -478,7 +478,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
             DamengRoutineParam param = this.paramTable.getSelectedItem();
             if (param != null) {
                 // 非新增的数据进行提示
-                if (!param.isCreated() && !MessageBox.confirm(I18nHelper.delete() + " " + param.getName())) {
+                if (!param.isCreated() && !MessageBox.confirm(I18nHelper.delete() + " " + param.getName(), this.getWindow())) {
                     return;
                 }
                 this.paramTable.getItems().remove(param);
@@ -490,7 +490,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
                 }
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -502,7 +502,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
         try {
             TableViewUtil.moveUp(this.paramTable);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -514,7 +514,7 @@ public class ShellDamengFunctionDesignTabController extends RichTabController {
         try {
             TableViewUtil.moveDown(this.paramTable);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

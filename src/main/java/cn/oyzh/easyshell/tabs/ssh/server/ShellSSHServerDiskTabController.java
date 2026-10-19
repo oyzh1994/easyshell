@@ -54,7 +54,7 @@ public class ShellSSHServerDiskTabController extends SubTabController {
             try {
                 this.init();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

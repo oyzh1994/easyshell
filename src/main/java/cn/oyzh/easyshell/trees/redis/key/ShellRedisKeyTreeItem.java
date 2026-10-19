@@ -306,7 +306,7 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
     @Override
     public void delete() {
         try {
-            if (!MessageBox.confirm(I18nHelper.deleteKey() + " " + this.key())) {
+            if (!MessageBox.confirm(I18nHelper.deleteKey() + " " + this.key(), this.getWindow())) {
                 return;
             }
             // 删除此键
@@ -323,7 +323,7 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
             // ShellEventUtil.redisKeyDeleted(this.shellConnect(), this.key(), this.dbIndex());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -334,14 +334,14 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
 
     @Override
     public void rename() {
-        String newKey = MessageBox.prompt(I18nHelper.renameKey(), this.value.getKey());
+        String newKey = MessageBox.prompt(I18nHelper.renameKey(), this.value.getKey(), this.getWindow());
         // 名称为空或者跟当前名称相同，则忽略
         if (StringUtil.isBlank(newKey) || Objects.equals(newKey, this.value.getKey())) {
             return;
         }
         // 键已存在
         if (this.client().exists(this.dbIndex(), newKey)) {
-            MessageBox.warn(I18nHelper.contentAlreadyExists());
+            MessageBox.warn(I18nHelper.contentAlreadyExists(), this.getWindow());
             return;
         }
         try {
@@ -352,11 +352,11 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
                 this.refresh();
                 // ShellEventUtil.redisKeyRenamed(this, oldKey);
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -371,7 +371,7 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
             return this.value.getTtl();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
         return -1L;
     }

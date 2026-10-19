@@ -61,7 +61,7 @@ public class ShellZKNodeQRCodePopupController extends PopupController {
             this.closeWindow();
             ex.printStackTrace();
             JulLog.warn("initQRCode error, ex:{}", ex.getMessage());
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 }

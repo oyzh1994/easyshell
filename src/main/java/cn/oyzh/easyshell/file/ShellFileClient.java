@@ -5,6 +5,7 @@ import cn.oyzh.common.function.ExceptionConsumer;
 import cn.oyzh.common.util.Competitor;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -337,7 +338,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             }
         }, ex -> {
             if (!ExceptionUtil.isInterrupt(ex)) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, StageManager.getFrontWindow());
             }
         });
     }
@@ -378,7 +379,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             if (callback != null) {
                 callback.accept(false);
             }
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         });
     }
 
@@ -421,7 +422,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             }
         }, ex -> {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         });
     }
 
@@ -455,7 +456,7 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
             }
         }, ex -> {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         });
     }
 

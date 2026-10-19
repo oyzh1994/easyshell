@@ -263,7 +263,7 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     //         this.root().addChild(new ShellConnectGroupTreeItem(group, this));
     //         ShellEventUtil.groupAdded(groupName);
     //     } else {
-    //         MessageBox.warn(I18nHelper.operationFail());
+    //         MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
     //     }
     // }
     //

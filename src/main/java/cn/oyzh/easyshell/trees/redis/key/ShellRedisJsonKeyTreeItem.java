@@ -40,7 +40,7 @@ public class ShellRedisJsonKeyTreeItem extends ShellRedisKeyTreeItem {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -62,7 +62,7 @@ public class ShellRedisJsonKeyTreeItem extends ShellRedisKeyTreeItem {
             this.clearData();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

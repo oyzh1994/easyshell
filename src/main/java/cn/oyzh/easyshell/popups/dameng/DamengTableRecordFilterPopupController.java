@@ -86,7 +86,7 @@
 //            this.submit(this.filterTable.getItems());
 //            this.closeWindow();
 //        } catch (Exception ex) {
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //
@@ -159,7 +159,7 @@
 //                this.filterTable.getItems().remove(filter);
 //            }
 //        } catch (Exception ex) {
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //}

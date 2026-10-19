@@ -116,7 +116,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
         StageManager.showMask(() -> {
@@ -127,7 +127,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
                 if (!this.client.isConnected()) {
                     MessageBox.warn(I18nHelper.connectFail()
                             + " errCode: " + this.client.getLastErrorCode()
-                            + " errLocation: " + this.client.getLastErrorLocation());
+                            + " errLocation: " + this.client.getLastErrorLocation(), this.getWindow());
                     this.closeTab();
                     return;
                 }
@@ -144,7 +144,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
                 ThreadUtil.start(this::initBackground);
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
                 this.closeTab();
             }
         });
@@ -174,7 +174,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
             ShellEventUtil.connectionOpened(this.shellConnect());
             this.closeTab();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

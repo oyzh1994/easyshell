@@ -194,7 +194,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
 
             // 创建函数
             if (this.newData) {
-                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), this.functionName);
+                this.functionName = MessageBox.prompt(I18nHelper.pleaseInputFunctionName(), this.functionName, this.getWindow());
                 if (this.functionName == null) {
                     return;
                 }
@@ -217,7 +217,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.flushTab();
         }

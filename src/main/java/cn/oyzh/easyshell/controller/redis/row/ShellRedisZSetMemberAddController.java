@@ -24,11 +24,7 @@ import javafx.stage.WindowEvent;
  * @author oyzh
  * @since 2025-09-01
  */
-@StageAttribute(
-        stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "redis/row/shellRedisZSetMemberAdd.fxml"
-)
+@StageAttribute(stageStyle = FXStageStyle.EXTENDED, modality = Modality.APPLICATION_MODAL, value = FXConst.FXML_PATH + "redis/row/shellRedisZSetMemberAdd.fxml")
 public class ShellRedisZSetMemberAddController extends StageController {
 
     /**
@@ -72,7 +68,7 @@ public class ShellRedisZSetMemberAddController extends StageController {
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
             if (client.zrank(dbIndex, key, rowValue) != null) {
-                MessageBox.warn(I18nHelper.member() + "[" + rowValue + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.member() + "[" + rowValue + "] " + I18nHelper.alreadyExists(), this.getStage());
                 return;
             }
             double score = scoreValue.doubleValue();
@@ -84,7 +80,7 @@ public class ShellRedisZSetMemberAddController extends StageController {
             // ShellEventUtil.redisZSetMemberAdded(this.treeItem, key, rowValue, score);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

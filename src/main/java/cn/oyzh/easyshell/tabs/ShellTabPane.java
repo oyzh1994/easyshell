@@ -277,7 +277,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                     tab = ShellRdpTab.of(connect);
                 } else {
                     if (OSUtil.isMacOS() && !FileUtil.exists("/Applications/Windows App.app")) {
-                        if (MessageBox.confirm(ShellI18nHelper.rdpTip3())) {
+                        if (MessageBox.confirm(ShellI18nHelper.rdpTip3(), this.getWindow())) {
                             FXUtil.showDocument("https://apps.apple.com/app/windows-app/id1295203466");
                         }
                         return;
@@ -286,7 +286,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                         ShellRDPClient client = ShellClientUtil.newClient(connect);
                         client.start();
                     } else {
-                        MessageBox.warn(ShellI18nHelper.rdpTip2());
+                        MessageBox.warn(ShellI18nHelper.rdpTip2(), this.getWindow());
                     }
                 }
             } else {
@@ -300,7 +300,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
             }
         } catch (Throwable ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -400,7 +400,7 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                         break;
                     }
                 } catch (Exception ex) {
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             }
         }

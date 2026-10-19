@@ -326,7 +326,7 @@
 //            try {
 //                this.widget.getTtyConnector().writeLine(h);
 //            } catch (Exception ex) {
-//                MessageBox.exception(ex);
+//                MessageBox.exception(ex, this.getWindow());
 //            }
 //        });
 //    }

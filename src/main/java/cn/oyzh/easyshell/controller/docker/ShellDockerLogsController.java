@@ -45,7 +45,7 @@ public class ShellDockerLogsController extends StageController {
     @FXML
     private void copyLogs() {
         ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

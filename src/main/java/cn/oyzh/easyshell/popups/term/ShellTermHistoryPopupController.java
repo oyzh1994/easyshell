@@ -58,7 +58,7 @@ public class ShellTermHistoryPopupController extends PopupController {
             // 初始化数据
             this.listView.init(histories);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -88,7 +88,7 @@ public class ShellRedisKeyHexController extends RichTabController {
                 this.statusLabel.stop();
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

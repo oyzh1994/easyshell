@@ -56,7 +56,7 @@ public class ShellSSHServerCpuTabController extends SubTabController {
                 this.cpuInfo.text(output);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -67,7 +67,7 @@ public class ShellSSHServerCpuTabController extends SubTabController {
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.cpuInfo.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

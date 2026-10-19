@@ -212,7 +212,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
             }
             this.showNode(showType);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.resultTabPane.enable();
         }
@@ -248,7 +248,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
     //            }
     //            this.showNode(showType);
     //        } catch (Exception ex) {
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, this.getWindow());
     //        } finally {
     //            this.resultTabPane.enable();
     //        }
@@ -301,7 +301,7 @@ public class ShellMongoQueryMainTabController extends RichTabController {
         try {
             String name = this.query.getName();
             if (name == null) {
-                name = MessageBox.prompt(I18nHelper.pleaseInputName());
+                name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
                 if (name == null) {
                     return;
                 }
@@ -322,14 +322,14 @@ public class ShellMongoQueryMainTabController extends RichTabController {
                 result = ShellQueryStore.INSTANCE.update(this.query);
             }
             if (!result) {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             } else {
                 // this.tab.setContentChanged(false);
                 this.unsaved = false;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.flushTab();
         }

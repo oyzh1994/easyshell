@@ -420,7 +420,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
             this.select(tab);
             tab.init(event.data());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -147,7 +147,7 @@ public class ShellDamengTableColumnExtraController extends SubTabController {
                 this.column.setUpdateOnCurrentTimestamp(this.currentTimestamp.isSelected());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

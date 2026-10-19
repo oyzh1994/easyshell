@@ -44,9 +44,9 @@ public class ShellZKNodeQuotaTabController extends SubTabController {
         try {
             this.activeItem().refreshQuota();
             this.initQuota();
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -67,10 +67,10 @@ public class ShellZKNodeQuotaTabController extends SubTabController {
                 builder = I18nHelper.count() + " " + quota.getCount() + System.lineSeparator() + I18nHelper.bytes() + " " + quota.getBytes();
             }
             ClipboardUtil.setStringAndTip(builder);
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -105,9 +105,9 @@ public class ShellZKNodeQuotaTabController extends SubTabController {
     private void saveQuota() {
         try {
             this.activeItem().saveQuota(this.quotaBytes.getLongValue(), this.quotaCount.getIntValue());
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

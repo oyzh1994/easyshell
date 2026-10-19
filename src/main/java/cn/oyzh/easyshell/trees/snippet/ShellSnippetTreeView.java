@@ -120,7 +120,7 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
      */
     public void addSnippet( ) {
         if (this.addCallback != null) {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
             if (StringUtil.isBlank(name)) {
                 return;
             }

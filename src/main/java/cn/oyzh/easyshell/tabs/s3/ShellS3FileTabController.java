@@ -168,7 +168,7 @@ public class ShellS3FileTabController extends SubTabController {
             try {
                 this.fileTable.setFilterText(t1);
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
         // 路径跳转
@@ -216,7 +216,7 @@ public class ShellS3FileTabController extends SubTabController {
             this.fileTable.loadFile();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -229,7 +229,7 @@ public class ShellS3FileTabController extends SubTabController {
             this.fileTable.deleteFile(this.fileTable.getSelectedItems());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -242,7 +242,7 @@ public class ShellS3FileTabController extends SubTabController {
             this.fileTable.returnDir();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -255,7 +255,7 @@ public class ShellS3FileTabController extends SubTabController {
             this.fileTable.intoHome();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -299,7 +299,7 @@ public class ShellS3FileTabController extends SubTabController {
             this.fileTable.uploadFile(files);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

@@ -106,7 +106,7 @@ public class ShellRedisQueryTabController extends SubTabController {
     private void save() {
         try {
             if (this.query == null) {
-                String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+                String name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
                 if (StringUtil.isBlank(name)) {
                     return;
                 }
@@ -126,7 +126,7 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.setUnsaved(false);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -169,7 +169,7 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.content.parentAutosize();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.enableTab();
         }

@@ -55,7 +55,7 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
                 String output = exec.network_interface_info();
                 this.networkCardInfo.text(output);
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -66,7 +66,7 @@ public class ShellSSHServerNetworkTabController extends SubTabController {
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.networkCardInfo.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

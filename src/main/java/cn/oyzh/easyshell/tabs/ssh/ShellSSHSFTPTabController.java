@@ -157,7 +157,7 @@
 //                try {
 //                    this.fileTable.setFilterText(t1);
 //                } catch (Exception ex) {
-//                    MessageBox.exception(ex);
+//                    MessageBox.exception(ex, this.getWindow());
 //                }
 //            });
 //            // 路径跳转
@@ -183,7 +183,7 @@
 //            this.refreshFile.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //
@@ -213,7 +213,7 @@
 //            this.fileTable.loadFile();
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //
@@ -226,7 +226,7 @@
 //            this.fileTable.deleteFile(this.fileTable.getSelectedItems());
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //
@@ -239,7 +239,7 @@
 //            this.fileTable.returnDir();
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //
@@ -252,7 +252,7 @@
 //            this.fileTable.intoHome();
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //
@@ -308,7 +308,7 @@
 //            }
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, this.getWindow());
 //        }
 //    }
 //

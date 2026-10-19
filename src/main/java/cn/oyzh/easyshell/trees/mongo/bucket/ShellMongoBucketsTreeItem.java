@@ -62,12 +62,12 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
      */
     private void addBucket() {
         try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputBucketName());
+            String name = MessageBox.prompt(I18nHelper.pleaseInputBucketName(), this.getWindow());
             if (StringUtil.isBlank(name)) {
                 return;
             }
             if (this.client().existBucket(this.dbName(), name)) {
-                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             MongoBucket bucket = new MongoBucket();
@@ -77,7 +77,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
             this.addBucket(bucket);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -131,7 +131,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
                     })
                     .onError(ex -> {
                         this.setLoaded(false);
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     })
                     .onSuccess(this::refresh)
                     .onFinish(() -> {

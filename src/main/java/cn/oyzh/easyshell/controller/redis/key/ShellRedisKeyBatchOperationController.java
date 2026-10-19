@@ -171,7 +171,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
         this.client.throwSentinelException();
         // 扫描参数
         String pattern = StringUtil.isBlank(this.pattern1.getText()) ? "*" : this.pattern1.getText();
-        if (MessageBox.confirm(I18nHelper.deleteKeys())) {
+        if (MessageBox.confirm(I18nHelper.deleteKeys(), this.getWindow())) {
             this.execTask = ThreadUtil.start(() -> {
                 try {
                     NodeGroupUtil.disable(this.root, "exec");
@@ -198,7 +198,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                     ShellRedisEventUtil.redisKeyFlushed(this.client.getShellConnect(), this.dbIndex);
                     // 提示信息
                     String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
-                    MessageBox.info(msg);
+                    MessageBox.info(msg, this.getWindow());
                 } finally {
                     this.stopExec();
                 }
@@ -244,14 +244,14 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                     ShellRedisEventUtil.redisKeyFlushed(this.client.shellConnect(), this.dbIndex);
                     // 提示信息
                     String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
-                    MessageBox.info(msg);
+                    MessageBox.info(msg, this.getWindow());
                 } finally {
                     this.stopExec();
                 }
             }, 200);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -262,14 +262,14 @@ public class ShellRedisKeyBatchOperationController extends StageController {
     private void flushDB() {
         try {
             this.client.throwSentinelException();
-            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip3())) {
+            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip3(), this.getWindow())) {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
                         this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
                         this.client.flushDB(this.dbIndex);
                         ShellRedisEventUtil.redisKeyFlushed(this.client.getShellConnect(), this.dbIndex);
-                        MessageBox.okToast(I18nHelper.operationSuccess());
+                        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                     } finally {
                         this.stopExec();
                     }
@@ -277,7 +277,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -291,11 +291,11 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             this.client.throwSentinelException();
             int targetDBIndex = this.moveTargetDB.getDB();
             if (targetDBIndex == this.dbIndex) {
-                MessageBox.warn(ShellI18nHelper.redisBatchTip4());
+                MessageBox.warn(ShellI18nHelper.redisBatchTip4(), this.getWindow());
                 return;
             }
             String pattern = StringUtil.isBlank(this.pattern4.getText()) ? "*" : this.pattern4.getText();
-            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip5())) {
+            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip5(), this.getWindow())) {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
@@ -321,7 +321,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                         ShellRedisEventUtil.redisKeysMoved(this.client.shellConnect(), this.dbIndex, targetDBIndex);
                         // 提示信息
                         String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
-                        MessageBox.info(msg);
+                        MessageBox.info(msg, this.getWindow());
                     } finally {
                         this.stopExec();
                     }
@@ -329,7 +329,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -344,11 +344,11 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             this.client.throwCommandException("copy");
             int targetDBIndex = this.copyTargetDB.getDB();
             if (targetDBIndex == this.dbIndex) {
-                MessageBox.warn(ShellI18nHelper.redisBatchTip4());
+                MessageBox.warn(ShellI18nHelper.redisBatchTip4(), this.getWindow());
                 return;
             }
             String pattern = StringUtil.isBlank(this.pattern5.getText()) ? "*" : this.pattern5.getText();
-            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip6())) {
+            if (MessageBox.confirm(ShellI18nHelper.redisBatchTip6(), this.getWindow())) {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
@@ -374,7 +374,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                         ShellRedisEventUtil.redisKeysCopied(this.client.shellConnect(), keys, this.dbIndex, targetDBIndex);
                         // 提示信息
                         String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
-                        MessageBox.info(msg);
+                        MessageBox.info(msg, this.getWindow());
                     } finally {
                         this.stopExec();
                     }
@@ -382,7 +382,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

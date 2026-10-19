@@ -349,14 +349,14 @@ public class ShellUpdateZKConnectController extends StageController {
                 // 移除sasl配置
                 ShellZKSASLUtil.removeSasl(this.shellConnect.getId());
                 ShellEventUtil.connectUpdated(this.shellConnect);
-                MessageBox.okToast(I18nHelper.operationSuccess());
+                MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
                 this.closeWindow();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -513,7 +513,7 @@ public class ShellUpdateZKConnectController extends StageController {
     @FXML
     private void deleteJump() {
         ShellJumpConfig config = this.jumpTableView.getSelectedItem();
-        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?")) {
+        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?", this.getWindow())) {
             this.jumpTableView.removeSelectedItem();
             this.jumpConfigStore.delete(config);
             this.jumpTableView.updateOrder();

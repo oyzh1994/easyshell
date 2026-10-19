@@ -675,7 +675,7 @@ public class SettingController extends StageController {
             this.x11FocusOnClick.setSelected(this.setting.isX11FocusOnClick());
             this.x11SingleWindow.setSelected(this.setting.isX11SingleWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -775,13 +775,13 @@ public class SettingController extends StageController {
                 // 应用透明度配置
                 OpacityManager.apply(this.setting.opacityConfig());
                 // 提示不为空，说明需要重启，则执行重启
-                if (StringUtil.isNotBlank(tips) && MessageBox.confirm(tips)) {
+                if (StringUtil.isNotBlank(tips) && MessageBox.confirm(tips, this.getWindow())) {
                     ShellProcessUtil.restartApplication();
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -1131,16 +1131,16 @@ public class SettingController extends StageController {
                 result = RuntimeUtil.execForStr("where " + bash);
             }
             if (StringUtil.isNotBlank(result)) {
-                MessageBox.info(I18nHelper.testSuccess());
+                MessageBox.info(I18nHelper.testSuccess(), this.getWindow());
             } else {
-                MessageBox.warn(I18nHelper.testFailed());
+                MessageBox.warn(I18nHelper.testFailed(), this.getWindow());
             }
         } else {
             String result = RuntimeUtil.execForStr("which " + bash);
             if (StringUtil.isNotBlank(result) && !StringUtil.containsAnyIgnoreCase(result, "not found")) {
-                MessageBox.info(I18nHelper.testSuccess());
+                MessageBox.info(I18nHelper.testSuccess(), this.getWindow());
             } else {
-                MessageBox.warn(I18nHelper.testFailed());
+                MessageBox.warn(I18nHelper.testFailed(), this.getWindow());
             }
         }
     }
@@ -1169,7 +1169,7 @@ public class SettingController extends StageController {
     private void initSync() {
         if (this.syncToken.isEmpty()) {
             this.syncToken.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseInputContent());
+            MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
             return;
         }
         this.applySync();
@@ -1188,7 +1188,7 @@ public class SettingController extends StageController {
                 this.updateSyncInfo();
             } catch (Exception ex) {
                 JulLog.warn("do sync error", ex);
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -1198,7 +1198,7 @@ public class SettingController extends StageController {
      */
     @FXML
     private void clearSync() {
-        if (!MessageBox.confirm(I18nHelper.clearSyncData())) {
+        if (!MessageBox.confirm(I18nHelper.clearSyncData(), this.getWindow())) {
             return;
         }
         this.initSync();
@@ -1208,7 +1208,7 @@ public class SettingController extends StageController {
                 this.updateSyncInfo();
             } catch (Exception ex) {
                 JulLog.warn("clear sync error", ex);
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -1304,7 +1304,7 @@ public class SettingController extends StageController {
             // 保存设置
             this.settingStore.update(this.setting);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

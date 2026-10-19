@@ -56,10 +56,10 @@ public class ShellDamengSchemaUpdateController extends StageController {
                 ShellDamengEventUtil.schemaUpdated(this.connectItem, schema);
                 this.closeWindow();
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

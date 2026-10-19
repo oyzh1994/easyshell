@@ -93,7 +93,7 @@ public class ShellZKTabController extends ShellParentTabController {
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended());
+                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
         // 加载根节点
@@ -102,7 +102,7 @@ public class ShellZKTabController extends ShellParentTabController {
                 this.client.start();
                 if (!this.client.isConnected()) {
                     this.client.close();
-                    MessageBox.warn(I18nHelper.connectFail());
+                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
                 }
@@ -114,7 +114,7 @@ public class ShellZKTabController extends ShellParentTabController {
                 this.terminalController.init(this.client.forkClient());
             } catch (Throwable ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
                 this.closeTab();
             }
         });

@@ -37,7 +37,7 @@ public class ShellDockerInfoController extends StageController {
     @FXML
     private void copyInfo() {
         ClipboardUtil.copy(this.data.getText());
-        MessageBox.okToast(I18nHelper.operationSuccess());
+        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     @Override

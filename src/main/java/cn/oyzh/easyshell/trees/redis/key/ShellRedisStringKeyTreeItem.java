@@ -39,7 +39,7 @@ public class ShellRedisStringKeyTreeItem extends ShellRedisKeyTreeItem {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -69,7 +69,7 @@ public class ShellRedisStringKeyTreeItem extends ShellRedisKeyTreeItem {
             this.clearData();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

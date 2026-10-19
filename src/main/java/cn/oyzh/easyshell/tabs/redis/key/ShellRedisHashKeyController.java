@@ -193,7 +193,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     @FXML
     private void reloadRow() {
         // 放弃保存
-        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -204,7 +204,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -224,11 +224,11 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.checkRowExists()) {
-            MessageBox.warn(I18nHelper.fieldName() + "[" + this.treeItem.field() + "] " + I18nHelper.alreadyExists());
+            MessageBox.warn(I18nHelper.fieldName() + "[" + this.treeItem.field() + "] " + I18nHelper.alreadyExists(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataTooBig()) {
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
@@ -240,7 +240,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
                     this.treeItem.flushMemoryUsage();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -331,7 +331,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
             this.nodeData.disable();
             this.ignoreDataChange = true;
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         // 状态处理
@@ -364,7 +364,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisHashValue.RedisHashRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteField() + ":" + row.getField())) {
+        if (!MessageBox.confirm(I18nHelper.deleteField() + ":" + row.getField(), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

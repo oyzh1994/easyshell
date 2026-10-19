@@ -45,7 +45,7 @@ public class ShellMongoCollectionDocumentAddController extends StageController {
             this.setProp("doc", doc);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

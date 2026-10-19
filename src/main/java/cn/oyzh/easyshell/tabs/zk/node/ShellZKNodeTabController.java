@@ -115,7 +115,7 @@ public class ShellZKNodeTabController extends ParentTabController {
                 this.treeView.loadRoot();
             } catch (Exception ex) {
                 this.closeTab();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
         // 状态无效，则关闭，延迟3秒检查
@@ -151,7 +151,7 @@ public class ShellZKNodeTabController extends ParentTabController {
                     try {
                         this.initNode();
                     } catch (Exception ex) {
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     }
                 });
                 // 启用组件
@@ -167,7 +167,7 @@ public class ShellZKNodeTabController extends ParentTabController {
             // 刷新tab
             this.flushTab();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -212,7 +212,7 @@ public class ShellZKNodeTabController extends ParentTabController {
                 // 刷新tab
                 this.flushTab();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -227,7 +227,7 @@ public class ShellZKNodeTabController extends ParentTabController {
         // 节点被移除
         String nodePath = this.activeItem.nodePath();
         if (this.activeItem.isNeedAuth()) { // 需要认证
-            if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip6())) {
+            if (MessageBox.confirm("[" + nodePath + "] " + ShellI18nHelper.zkNodeTip6(), this.getWindow())) {
                 this.activeItem.authNode();
             }
         }
@@ -250,7 +250,7 @@ public class ShellZKNodeTabController extends ParentTabController {
                     try {
                         this.initNode();
                     } catch (Exception ex) {
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     }
                 });
             }
@@ -308,9 +308,9 @@ public class ShellZKNodeTabController extends ParentTabController {
     //    private void saveQuota() {
     //        try {
     //            this.activeItem.saveQuota(this.quotaBytes.getLongValue(), this.quotaCount.getIntValue());
-    //            MessageBox.okToast(I18nHelper.operationSuccess());
+    //            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     //        } catch (Exception ex) {
-    //            MessageBox.exception(ex);
+    //            MessageBox.exception(ex, this.getWindow());
     //        }
     //    }
 

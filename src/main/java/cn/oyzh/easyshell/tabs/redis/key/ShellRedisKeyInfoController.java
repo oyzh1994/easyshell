@@ -116,7 +116,7 @@ public class ShellRedisKeyInfoController extends RichTabController {
                 this.objectEncoding.text(I18nHelper.encoding() + " : " + this.redisKey.objectedEncodingString());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }

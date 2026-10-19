@@ -54,7 +54,7 @@ public class ShellRedisPageSettingPopupController extends PopupController {
             this.submit(limit);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

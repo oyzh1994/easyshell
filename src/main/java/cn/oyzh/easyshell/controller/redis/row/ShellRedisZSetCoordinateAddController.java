@@ -82,7 +82,7 @@ public class ShellRedisZSetCoordinateAddController extends StageController {
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
             if (client.zrank(dbIndex, key, rowValue) != null) {
-                MessageBox.warn(I18nHelper.coordinates() + "[" + rowValue + "] " + I18nHelper.alreadyExists());
+                MessageBox.warn(I18nHelper.coordinates() + "[" + rowValue + "] " + I18nHelper.alreadyExists(), this.getWindow());
                 return;
             }
             double longitude = longitudeValue.doubleValue();
@@ -95,7 +95,7 @@ public class ShellRedisZSetCoordinateAddController extends StageController {
             // ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
             this.closeWindow();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

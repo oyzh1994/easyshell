@@ -117,7 +117,7 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
      * @param data 数据
      */
     public void deleteData(ShellZKAuth data) {
-        if (MessageBox.confirm(I18nHelper.deleteAuth())) {
+        if (MessageBox.confirm(I18nHelper.deleteAuth(), this.getWindow())) {
             ShellZKAuthStore.INSTANCE.delete(data);
             //            this.list.remove(data);
             this.refreshAuths();

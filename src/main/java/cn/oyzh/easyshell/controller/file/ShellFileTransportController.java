@@ -203,14 +203,14 @@ public class ShellFileTransportController extends StageController {
                     break;
                 }
             }
-            if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19())) {
+            if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19(), this.getWindow())) {
                 return;
             }
             String remotePath = this.targetFile.getLocation();
             this.doTransport(files, remotePath, this.sourceClient, this.targetClient);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -235,14 +235,14 @@ public class ShellFileTransportController extends StageController {
                     break;
                 }
             }
-            if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19())) {
+            if (exists && !MessageBox.confirm(ShellI18nHelper.fileTip19(), this.getWindow())) {
                 return;
             }
             String remotePath = this.sourceFile.getLocation();
             this.doTransport(files, remotePath, this.targetClient, this.sourceClient);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -386,7 +386,7 @@ public class ShellFileTransportController extends StageController {
                             this.sourceClient.close();
                             this.sourceClient = null;
                             this.sourceInfo.requestFocus();
-                            MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail());
+                            MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
                             return;
                         }
                         // 检查目标
@@ -403,7 +403,7 @@ public class ShellFileTransportController extends StageController {
                             this.targetClient.close();
                             this.targetClient = null;
                             this.targetInfo.requestFocus();
-                            MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail());
+                            MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
                             return;
                         }
                         // 显示页面
@@ -413,7 +413,7 @@ public class ShellFileTransportController extends StageController {
                         this.initFileTable();
                     } catch (Throwable ex) {
                         ex.printStackTrace();
-                        MessageBox.exception(ex);
+                        MessageBox.exception(ex, this.getWindow());
                     }
                 });
             } else {
@@ -425,7 +425,7 @@ public class ShellFileTransportController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -521,7 +521,7 @@ public class ShellFileTransportController extends StageController {
     @Override
     public void onWindowCloseRequest(WindowEvent event) {
         // 检查任务是否执行中
-        if (!this.transportTable.isItemEmpty() && !MessageBox.confirm(ShellI18nHelper.fileTip18())) {
+        if (!this.transportTable.isItemEmpty() && !MessageBox.confirm(ShellI18nHelper.fileTip18(), this.getWindow())) {
             event.consume();
             return;
         }
@@ -587,7 +587,7 @@ public class ShellFileTransportController extends StageController {
         try {
             this.sourceFile.intoHome();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -607,7 +607,7 @@ public class ShellFileTransportController extends StageController {
         try {
             this.targetFile.intoHome();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

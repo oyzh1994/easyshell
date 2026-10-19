@@ -105,7 +105,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
      * 清空集合
      */
     private void clearBucket() {
-        if (MessageBox.confirm(I18nHelper.clearBucket() + "[" + this.bucketName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.clearBucket() + "[" + this.bucketName() + "]", this.getWindow())) {
             this.dbItem().clearBucket(this.bucketName());
             this.parent().reloadChild();
         }
@@ -114,14 +114,14 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteBucket() + "[" + this.bucketName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.deleteBucket() + "[" + this.bucketName() + "]", this.getWindow())) {
                 this.dbItem().dropBucket(this.bucketName());
                 ShellMongoEventUtil.bucketDropped(this, this.dbItem());
                 this.parent().clearBucketsSize();
                 this.remove();
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

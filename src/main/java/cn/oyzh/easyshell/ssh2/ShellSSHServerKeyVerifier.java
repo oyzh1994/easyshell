@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh2;
 
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import org.apache.sshd.client.config.hosts.KnownHostEntry;
 import org.apache.sshd.client.keyverifier.ModifiedServerKeyAcceptor;
 import org.apache.sshd.client.keyverifier.ServerKeyVerifier;
@@ -23,7 +24,7 @@ public class ShellSSHServerKeyVerifier implements ServerKeyVerifier, ModifiedSer
 //        if (SSHUtil.isMiddle(clientSession)) {
 //            return true;
 //        }
-        return MessageBox.confirm(ShellI18nHelper.sshTip2());
+        return MessageBox.confirm(ShellI18nHelper.sshTip2(), StageManager.getFrontWindow());
     }
 
     @Override
@@ -31,6 +32,6 @@ public class ShellSSHServerKeyVerifier implements ServerKeyVerifier, ModifiedSer
 //        if (SSHUtil.isMiddle(clientSession)) {
 //            return true;
 //        }
-        return MessageBox.confirm(ShellI18nHelper.sshTip1());
+        return MessageBox.confirm(ShellI18nHelper.sshTip1(), StageManager.getFrontWindow());
     }
 }

@@ -163,7 +163,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
             MysqlTable mysqlTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(mysqlTable);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -193,13 +193,13 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      * 清空表数据并重置自增
      */
     private void truncateTable() {
-        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]")) {
+        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]", this.getWindow())) {
             try {
                 this.dbItem().truncateTable(this.tableName());
                 ShellMysqlEventUtil.tableTruncated(this, this.dbItem());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }
@@ -209,26 +209,26 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      */
     private void clearTable() {
         try {
-            if (MessageBox.confirm(I18nHelper.clearTable() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.clearTable() + "[" + this.tableName() + "]", this.getWindow())) {
                 this.dbItem().clearTable(this.tableName());
                 ShellMysqlEventUtil.tableCleared(this, this.dbItem());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]")) {
+            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]", this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellMysqlEventUtil.tableDropped(this, this.dbItem());
                 this.parent().clearTableSize();
                 this.remove();
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -242,14 +242,14 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
     @Override
     public void rename() {
         try {
-            String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName());
+            String tableName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.value.getName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (tableName == null || Objects.equals(tableName, this.value.getName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(tableName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.value.getName();
@@ -260,7 +260,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
             ShellMysqlEventUtil.tableRenamed(oldName, tableName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -400,7 +400,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
                 this.value.copy(table);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

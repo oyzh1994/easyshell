@@ -138,14 +138,14 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * 添加分组
      */
     public void addGroup() {
-        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name());
+        String groupName = MessageBox.prompt(I18nHelper.pleaseInputFolder1Name(), this.getWindow());
         // 名称为null，则忽略
         if (groupName == null) {
             return;
         }
         // 不能为空
         if (StringUtil.isBlank(groupName)) {
-            MessageBox.warn(I18nHelper.nameCanNotEmpty());
+            MessageBox.warn(I18nHelper.nameCanNotEmpty(), this.getWindow());
             return;
         }
         ShellGroup group = new ShellGroup();
@@ -236,7 +236,7 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
             this.addChild(new ShellConnectGroupTreeItem(group, this.getTreeView()));
             ShellEventUtil.groupAdded(group.getName());
         } else {
-            MessageBox.warn(I18nHelper.operationFail());
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
     }
 

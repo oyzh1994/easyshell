@@ -109,7 +109,7 @@ public class ShellZKQueryTabController extends RichTabController {
     private void save() {
         try {
             if (this.query == null) {
-                String name = MessageBox.prompt(I18nHelper.pleaseInputName());
+                String name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
                 if (StringUtil.isBlank(name)) {
                     return;
                 }
@@ -127,7 +127,7 @@ public class ShellZKQueryTabController extends RichTabController {
             this.setUnsaved(false);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -247,7 +247,7 @@ public class ShellZKQueryTabController extends RichTabController {
                 this.content.parentAutosize();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

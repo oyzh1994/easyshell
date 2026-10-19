@@ -97,7 +97,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
             NodeGroupUtil.disable(this.getTab(), "dataToBig");
             // 异步处理，避免阻塞主程序
             TaskManager.startDelay(() -> {
-                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getPrimaryStage())) {
+                if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.redisKeyTip9(), null, StageManager.getFrontWindow())) {
                     this.saveBinaryFile();
                 }
             }, 10);
@@ -135,7 +135,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
                 FileUtil.writeBytes(bytes, file);
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -145,7 +145,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
     @FXML
     private void reloadData() {
         // 放弃保存
-        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -158,7 +158,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
                 this.treeItem.flushMemoryUsage();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -167,7 +167,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.isDataTooBig()) {
-            MessageBox.warn(I18nHelper.dataTooLarge());
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
             return;
         }
         if (this.treeItem.isDataUnsaved()) {
@@ -181,7 +181,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
                     this.treeItem.flushMemoryUsage();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, this.getWindow());
                 }
             });
         }
@@ -261,7 +261,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
             adapter.showPopup((Node) event.getSource());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

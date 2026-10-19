@@ -135,15 +135,15 @@ public class ShellDockerCommitController extends StageController {
                 ShellDockerCommit commit = this.initParam();
                 String output = this.exec.docker_commit(commit);
                 if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
-                    MessageBox.info(I18nHelper.imageId() + ":" + output);
+                    MessageBox.info(I18nHelper.imageId() + ":" + output, this.getWindow());
                     ShellEventUtil.containerCommit(this.exec);
                     this.closeWindow();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

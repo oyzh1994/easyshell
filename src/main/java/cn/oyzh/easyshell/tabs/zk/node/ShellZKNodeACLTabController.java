@@ -60,9 +60,9 @@ public class ShellZKNodeACLTabController extends SubTabController {
         try {
             this.activeItem().refreshACL();
             this.initACL();
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -86,16 +86,16 @@ public class ShellZKNodeACLTabController extends SubTabController {
     private void copyACL() {
         ShellZKACL acl = this.aclTableView.getSelectedItem();
         if (acl == null) {
-            MessageBox.warn(I18nHelper.acl() + " " + I18nHelper.isEmpty());
+            MessageBox.warn(I18nHelper.acl() + " " + I18nHelper.isEmpty(), this.getWindow());
             return;
         }
         try {
             String builder = acl.idFriend().getName(this.aclViewSwitch.isSelected()) + " " + acl.idFriend().getValue(this.aclViewSwitch.isSelected()) + System.lineSeparator() + acl.schemeFriend().getName(this.aclViewSwitch.isSelected()) + " " + acl.schemeFriend().getValue(this.aclViewSwitch.isSelected()) + System.lineSeparator() + acl.permsFriend().getName(this.aclViewSwitch.isSelected()) + " " + acl.permsFriend().getValue(this.aclViewSwitch.isSelected());
             ClipboardUtil.setStringAndTip(builder);
-            MessageBox.okToast(I18nHelper.operationSuccess());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -125,10 +125,10 @@ public class ShellZKNodeACLTabController extends SubTabController {
             return;
         }
         if (this.activeItem().acl().size() == 1) {
-            MessageBox.warn(this.i18nString("shell.zk.aclTip1"));
+            MessageBox.warn(this.i18nString("shell.zk.aclTip1"), this.getWindow());
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.deleteACL() + " " + acl.idVal() + " ?")) {
+        if (!MessageBox.confirm(I18nHelper.deleteACL() + " " + acl.idVal() + " ?", this.getWindow())) {
             return;
         }
         try {
@@ -138,10 +138,10 @@ public class ShellZKNodeACLTabController extends SubTabController {
                 this.aclTableView.removeItem(acl);
                 this.activeItem().acl().remove(acl);
             } else {
-                MessageBox.warn(I18nHelper.operationFail());
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

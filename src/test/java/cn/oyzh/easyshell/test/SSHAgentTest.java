@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import com.jcraft.jsch.AgentIdentityRepository;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelShell;
@@ -26,8 +27,8 @@ public class SSHAgentTest {
         double m1 = SystemUtil.getUsedMemory();
         PageantConnector connector = new PageantConnector();
         AgentIdentityRepository repository = new AgentIdentityRepository(connector);
-        if(!connector.isAvailable()){
-            MessageBox.warn("agent<UNK>");
+        if (!connector.isAvailable()) {
+            MessageBox.warn("agent<UNK>", StageManager.getFrontWindow());
             return;
         }
         for (Identity identity : repository.getIdentities()) {

@@ -95,13 +95,13 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
             this.dbItem().createFunction(function);
             this.dbItem().getFunctionTypeChild().addFunction(function);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(I18nHelper.deleteFunction() + " " + this.value.getName() + "?")) {
+        if (!MessageBox.confirm(I18nHelper.deleteFunction() + " " + this.value.getName() + "?", this.getWindow())) {
             return;
         }
         try {
@@ -110,7 +110,7 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
             this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -174,7 +174,7 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         } catch (Exception ex) {
             this.setLoaded(false);
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         } finally {
             this.setLoading(false);
         }
@@ -201,14 +201,14 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
     @Override
     public void rename() {
         try {
-            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.functionName());
+            String newName = MessageBox.prompt(I18nHelper.pleaseInputName(), this.functionName(), this.getWindow());
             // 名称为null或者跟当前名称相同，则忽略
             if (newName == null || Objects.equals(newName, this.functionName())) {
                 return;
             }
             // 检查名称
             if (StringUtil.isBlank(newName)) {
-                MessageBox.warn(I18nHelper.pleaseInputContent());
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
             String oldName = this.functionName();
@@ -219,7 +219,7 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
             ShellMongoEventUtil.functionRenamed(oldName, newName, this.dbItem());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 }

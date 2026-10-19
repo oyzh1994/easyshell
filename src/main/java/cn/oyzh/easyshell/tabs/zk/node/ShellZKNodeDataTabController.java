@@ -117,7 +117,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
             String data = this.activeItem().decodeNodePath() + " " + new String(bytes);
             ClipboardUtil.setStringAndTip(data);
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -138,10 +138,10 @@ public class ShellZKNodeDataTabController extends SubTabController {
             File file = FileChooserHelper.save(I18nHelper.saveFile(), "", FXChooser.allExtensionFilter());
             if (file != null) {
                 FileUtil.writeBytes(this.activeItem().getNodeData(), file);
-                MessageBox.info(I18nHelper.operationSuccess());
+                MessageBox.info(I18nHelper.operationSuccess(), this.getWindow());
             }
         } catch (Exception ex) {
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -151,7 +151,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
     @FXML
     private void reloadData() {
         // 放弃保存
-        if (this.activeItem().isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue())) {
+        if (this.activeItem().isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
             return;
         }
         // 刷新数据
@@ -168,7 +168,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
                 this.dataSave.disable();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -250,7 +250,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
             adapter.showPopup((Node) event.getSource());
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -301,7 +301,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
         //    NodeGroupUtil.disable(this.dataTab, "dataToBig");
         //    // 异步处理，避免阻塞主程序
         //    TaskManager.startDelay(() -> {
-        //        if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.zkNodeTip7(), null, StageManager.getPrimaryStage())) {
+        //        if (MessageBox.confirm(I18nHelper.tips(), ShellI18nHelper.zkNodeTip7(), null, StageManager.getFrontWindow())) {
         //            this.saveBinaryFile();
         //        }
         //    }, 10);

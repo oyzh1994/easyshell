@@ -59,7 +59,7 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
             this.initWidget();
         } catch (IOException ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

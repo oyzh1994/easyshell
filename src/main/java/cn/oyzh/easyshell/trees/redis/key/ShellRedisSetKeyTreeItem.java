@@ -59,7 +59,7 @@ public class ShellRedisSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedi
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -77,7 +77,7 @@ public class ShellRedisSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedi
                 this.client().sadd(this.dbIndex(), this.key(), rowValue);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         }
     }
@@ -92,7 +92,7 @@ public class ShellRedisSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedi
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
         return false;
     }
@@ -107,7 +107,7 @@ public class ShellRedisSetKeyTreeItem extends ShellRedisRowKeyTreeItem<ShellRedi
             this.clearData();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 

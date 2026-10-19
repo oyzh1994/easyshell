@@ -74,7 +74,7 @@ public class ShellSSHDockerImageTabController extends SubTabController {
             this.refreshImage();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -106,7 +106,7 @@ public class ShellSSHDockerImageTabController extends SubTabController {
             this.refreshImage.setTipKeyCombination(KeyboardUtil.refresh_keyCombination);
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -134,7 +134,7 @@ public class ShellSSHDockerImageTabController extends SubTabController {
             try {
                 this.imageTable.loadImage();
             } catch (Exception ex) {
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

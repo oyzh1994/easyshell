@@ -158,7 +158,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         if (image == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.deleteImage() + " " + image.getRepository())) {
+        if (!MessageBox.confirm(I18nHelper.deleteImage() + " " + image.getRepository(), this.getWindow())) {
             return;
         }
         StageManager.showMask(() -> {
@@ -176,11 +176,11 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
                     this.images.remove(image);
                     this.refreshImage();
                 } else {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -234,13 +234,13 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
             try {
                 String output = this.exec.docker_inspect(image.getImageId());
                 if (StringUtil.isBlank(output)) {
-                    MessageBox.warn(I18nHelper.operationFail());
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
                     ShellViewFactory.dockerInspect(output, true);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }
@@ -262,7 +262,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
                 ShellViewFactory.dockerHistory(histories);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                MessageBox.exception(ex);
+                MessageBox.exception(ex, this.getWindow());
             }
         });
     }

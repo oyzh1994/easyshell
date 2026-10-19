@@ -42,7 +42,7 @@ public class ShellMongoViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -61,7 +61,7 @@ public class ShellMongoViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -80,7 +80,7 @@ public class ShellMongoViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -116,7 +116,7 @@ public class ShellMongoViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -134,7 +134,7 @@ public class ShellMongoViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -156,7 +156,7 @@ public class ShellMongoViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -174,7 +174,7 @@ public class ShellMongoViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -195,7 +195,7 @@ public class ShellMongoViewFactory {
 //            adapter.showAndWait();
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, StageManager.getFrontWindow());
 //        }
 //    }
 
@@ -213,7 +213,7 @@ public class ShellMongoViewFactory {
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
@@ -231,7 +231,7 @@ public class ShellMongoViewFactory {
             return adapter;
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
     }
@@ -248,7 +248,7 @@ public class ShellMongoViewFactory {
 //            adapter.show();
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
-//            MessageBox.exception(ex);
+//            MessageBox.exception(ex, StageManager.getFrontWindow());
 //        }
 //    }
 

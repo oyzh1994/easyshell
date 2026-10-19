@@ -8,6 +8,7 @@ import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -284,7 +285,7 @@ public class ShellFileDownloadTask extends ShellFileTask {
                     this.error = ex;
                     this.updateStatus(this.status);
                     ex.printStackTrace();
-                    MessageBox.exception(ex);
+                    MessageBox.exception(ex, StageManager.getFrontWindow());
                 }
             }
         });

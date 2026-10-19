@@ -176,7 +176,7 @@ public class ShellZKAddNodeController extends StageController {
             // 新增节点
             String node = this.zkClient.create(this.nodePathText, nodeData.getBytes(), List.of(acl), null, createMode, true);
             if (node == null) {
-                MessageBox.warnToast(I18nHelper.operationFail());
+                MessageBox.warnToast(I18nHelper.operationFail(), this.getWindow());
             } else {
                 //ShellZKEventUtil.nodeAdded(this.zkClient.getShellConnect(), this.nodePathText);
                 this.setProp("addedNodePath", this.nodePathText);
@@ -184,7 +184,7 @@ public class ShellZKAddNodeController extends StageController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            MessageBox.exception(ex);
+            MessageBox.exception(ex, this.getWindow());
         }
     }
 
@@ -256,7 +256,7 @@ public class ShellZKAddNodeController extends StageController {
 
         if (builder.isEmpty()) {
             this.perms.requestFocus();
-            MessageBox.warn(I18nHelper.invalidData());
+            MessageBox.warn(I18nHelper.invalidData(), this.getWindow());
             return null;
         }
 

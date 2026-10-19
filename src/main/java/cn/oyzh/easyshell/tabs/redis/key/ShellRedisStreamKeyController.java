@@ -120,7 +120,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteMessage() + ":" + row.getValue())) {
+        if (!MessageBox.confirm(I18nHelper.deleteMessage() + ":" + row.getValue(), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {
