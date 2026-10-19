@@ -14,7 +14,7 @@ java-options = [
 type = "exe"
 win-menu = true
 win-shortcut = true
-win-dir-chooser = false
+win-dir-chooser = true
 
 [jar]
 excludes = [

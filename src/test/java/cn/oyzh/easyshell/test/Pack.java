@@ -190,7 +190,7 @@ public class Pack {
                 JarConfig jarConfig = config.getJarConfig();
                 // 默认开启部分优化
                 if (jarConfig != null && jarConfig.isEnable()) {
-                    //                    jarConfig.setCompact(true);
+                    jarConfig.setCompact(true);
                     jarConfig.setJavafxOptimize(true);
                 }
                 // ci环境用系统的appimagetool
