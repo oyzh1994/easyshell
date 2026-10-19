@@ -461,7 +461,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
-                    <PortTextField require="true" prefHeight="30" text="6000" fx:id="x11Port"
+                    <PortTextField require="true" prefHeight="30" text="6010" fx:id="x11Port"
                                    tipText="%base.contentTip1"
                                    flexWidth="100% - 380">
                         <HBox.margin>

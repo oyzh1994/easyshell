@@ -636,6 +636,8 @@ public class ShellAddSSHConnectController extends StageController {
         this.x11Port.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11Cookie.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11CookieBth.disableProperty().bind(this.x11forwarding.selectedProperty().not());
+        this.x11Port.setValue(ShellX11Manager.getX11Port());
+        this.x11Cookie.setValue(ShellX11Manager.getX11Cookie());
         if (OSUtil.isWindows()) {
             this.sshAgent.setText(PageantConnector.DESCRIPTOR.getIdentityAgent());
         } else {

@@ -327,6 +327,15 @@ public class ShellX11Manager {
     }
 
     /**
+     * 获取x11端口
+     *
+     * @return 结果
+     */
+    public static int getX11Port() {
+        return setting.getX11Port();
+    }
+
+    /**
      * 获取x11认证
      *
      * @return 结果

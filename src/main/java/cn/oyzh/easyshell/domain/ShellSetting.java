@@ -1076,7 +1076,7 @@ public class ShellSetting extends AppSetting {
     }
 
     public int getX11Port() {
-        return x11Port == null ? 6000 : x11Port;
+        return x11Port == null ? 6010 : x11Port;
     }
 
     public void setX11Port(int x11Port) {
