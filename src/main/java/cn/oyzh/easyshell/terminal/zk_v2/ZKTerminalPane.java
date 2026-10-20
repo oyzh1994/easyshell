@@ -372,16 +372,6 @@ public class ZKTerminalPane extends TerminalPane {
         ShellSettingStore.INSTANCE.replace(setting);
     }
 
-    @Override
-    public void initNode() {
-        this.keyHandler(ZKTerminalKeyHandler.INSTANCE);
-        this.helpHandler(ZKTerminalHelpHandler.INSTANCE);
-        this.mouseHandler(ZKTerminalMouseHandler.INSTANCE);
-        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
-        this.completeHandler(ZKTerminalCompleteHandler.INSTANCE);
-        super.initNode();
-    }
-
     private boolean initPrompts;
 
     @Override
@@ -399,6 +389,16 @@ public class ZKTerminalPane extends TerminalPane {
             this.setPrompts(prompts);
         }
         return super.getPrompts();
+    }
+
+    @Override
+    public void initNode() {
+        this.keyHandler(ZKTerminalKeyHandler.INSTANCE);
+        this.helpHandler(ZKTerminalHelpHandler.INSTANCE);
+        this.mouseHandler(ZKTerminalMouseHandler.INSTANCE);
+        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
+        this.completeHandler(ZKTerminalCompleteHandler.INSTANCE);
+        super.initNode();
     }
 
     @Override

@@ -16,8 +16,8 @@ public class ZKTerminalManager {
      * 注册 ZooKeeper v2 终端的静态命令处理器。
      */
     public static void registerHandlers() {
-        TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKHelpTerminalCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ClearTerminalCommandHandler.class);
+        TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKHelpTerminalCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKHelpCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKConnectCommandHandler.class);
     }
