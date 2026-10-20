@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.query.redis;
 
 
+import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandTokenizer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,13 +81,7 @@ public class ShellRedisQueryParam {
      */
     public void setContent(String content) {
         this.content = content;
-        String[] arr = this.content.trim().split(" ");
-        this.params = new ArrayList<>();
-        for (String s : arr) {
-            if (!s.isBlank()) {
-                this.params.add(s);
-            }
-        }
+        this.params = new ArrayList<>(RedisCommandTokenizer.tokenize(this.content));
     }
 
     /**

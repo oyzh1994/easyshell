@@ -19,13 +19,10 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
-import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.redis.RedisTerminalPane;
-import cn.oyzh.easyshell.terminal.redis.RedisTerminalUtil;
+import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandBuilder;
+import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandDescriptor;
+import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandRegistry;
 import cn.oyzh.easyshell.util.redis.ShellRedisVersionUtil;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import cn.oyzh.fx.terminal.command.TerminalCommandHandler;
-import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder2;
 import javafx.beans.property.ObjectProperty;
@@ -62,6 +59,7 @@ import redis.clients.jedis.params.GeoAddParams;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.params.XAddParams;
 import redis.clients.jedis.resps.CommandInfo;
+import redis.clients.jedis.resps.CommandDocument;
 import redis.clients.jedis.resps.ScanResult;
 import redis.clients.jedis.resps.Slowlog;
 import redis.clients.jedis.resps.StreamEntry;
@@ -4889,6 +4887,56 @@ public class ShellRedisClient implements ShellBaseClient {
     }
 
     /**
+     * 获取服务端命令列表。
+     *
+     * @return 命令列表
+     */
+    public List<String> commandList() {
+        this.throwSentinelException();
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "command list");
+        Jedis jedis = this.getResource();
+        try {
+            return jedis.commandList();
+        } finally {
+            this.returnResource(jedis);
+        }
+    }
+
+    /**
+     * 获取服务端命令文档。
+     *
+     * @param commands 命令名称
+     * @return 命令文档
+     */
+    public Map<String, CommandDocument> commandDocs(String... commands) {
+        this.throwSentinelException();
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "command docs");
+        Jedis jedis = this.getResource();
+        try {
+            return jedis.commandDocs(commands);
+        } finally {
+            this.returnResource(jedis);
+        }
+    }
+
+    /**
+     * 获取命令涉及的键。
+     *
+     * @param command 完整命令
+     * @return 键列表
+     */
+    public List<String> commandGetKeys(String... command) {
+        this.throwSentinelException();
+        ShellRedisVersionUtil.checkSupported(this.getServerVersion(), "command getkeys");
+        Jedis jedis = this.getResource();
+        try {
+            return jedis.commandGetKeys(command);
+        } finally {
+            this.returnResource(jedis);
+        }
+    }
+
+    /**
      * 执行命令
      *
      * @param dbIndex       库
@@ -4898,6 +4946,9 @@ public class ShellRedisClient implements ShellBaseClient {
     public Object execCommand(Integer dbIndex, CommandObject<Object> commandObject) {
         if (commandObject == null) {
             return null;
+        }
+        if (this.isClusterMode()) {
+            return this.getCluster().executeCommand(commandObject);
         }
         Jedis jedis = this.getResource(dbIndex);
         try {
@@ -4916,6 +4967,33 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     public Object execCommand(CommandObject<Object> commandObject) {
         return this.execCommand(null, commandObject);
+    }
+
+    /**
+     * 打开命令会话。
+     *
+     * @param dbIndex 数据库索引
+     * @return 命令会话
+     */
+    public ShellRedisCommandSession openCommandSession(Integer dbIndex) {
+        if (this.isClusterMode()) {
+            return new ShellRedisCommandSession(this, null, this.getCluster());
+        }
+        Jedis jedis = this.getResource(dbIndex);
+        if (jedis == null) {
+            throw new IllegalStateException("Redis connection is unavailable");
+        }
+        try {
+            this.dbIndex(jedis, dbIndex);
+            return new ShellRedisCommandSession(this, jedis, null);
+        } catch (RuntimeException ex) {
+            this.returnResource(jedis);
+            throw ex;
+        }
+    }
+
+    void releaseCommandResource(Jedis jedis) {
+        this.returnResource(jedis);
     }
 
     /**
@@ -4950,13 +5028,23 @@ public class ShellRedisClient implements ShellBaseClient {
         ShellRedisQueryResult result = new ShellRedisQueryResult();
         long start = System.currentTimeMillis();
         try {
-            TerminalCommandHandler<?, ?> handler = TerminalManager.findHandler(RedisTerminalPane.TERMINAL_NAME, param.getContent());
-            if (handler instanceof RedisTerminalCommandHandler<?> commandHandler) {
-                TerminalCommand command = commandHandler.parseCommand(param.getContent());
-                CommandObject<Object> object = RedisTerminalUtil.getCommand(commandHandler.getCommandType(), command.getArgs());
-                Object execResult = this.execCommand(param.getDbIndex(), object);
-                result.setResult(execResult);
+            List<String> command = param.getParams();
+            if (command == null || command.isEmpty()) {
+                throw new IllegalArgumentException("No command entered");
             }
+            List<String> keys;
+            try {
+                keys = this.commandGetKeys(command.toArray(String[]::new));
+            } catch (Exception ignored) {
+                keys = List.of();
+            }
+            RedisCommandDescriptor descriptor = null;
+            try {
+                descriptor = RedisCommandRegistry.from(this.commandInfo(command.getFirst())).find(command);
+            } catch (Exception ignored) {
+            }
+            CommandObject<Object> object = RedisCommandBuilder.build(command, descriptor, keys);
+            result.setResult(this.execCommand(param.getDbIndex(), object));
             result.setSuccess(true);
             result.setMessage("OK");
         } catch (Exception ex) {
