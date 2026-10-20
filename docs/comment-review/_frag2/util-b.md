@@ -256,9 +256,9 @@
   | `StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem)` | 添加 list 元素 | `ShellRedisListElementAddController` |
   | `StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem)` | 添加 stream 消息 | `ShellRedisStreamMessageAddController` |
   | `StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem)` | 添加 hylog 元素 | `ShellRedisHylogElementsAddController` |
-  | `void redisImportData(ShellConnect, Integer)` | 导入数据 | `ShellRedisImportDataController` |
-  | `void redisExportData(ShellConnect, Integer)` | 导出数据 | `ShellRedisExportDataController` |
-  | `void redisTransportData(ShellConnect, Integer)` | 传输数据 | `ShellRedisTransportDataController` |
+  | `void redisImportData(ShellConnect, Integer)` | 导入数据 | `ShellRedisDataImportController` |
+  | `void redisExportData(ShellConnect, Integer)` | 导出数据 | `ShellRedisDataExportController` |
+  | `void redisTransportData(ShellConnect, Integer)` | 传输数据 | `ShellRedisDataTransportController` |
 
 - 调用链：`Xxx 方法 → StageManager.parseStage(XxxController) → adapter.setProp(...) → adapter.showAndWait()/display()`
 
@@ -494,9 +494,9 @@
   | `StageAdapter zkAddNode(ShellZKNodeTreeItem, ShellZKClient)` | 添加子节点 | `ShellZKAddNodeController` |
   | `StageAdapter zkAddACL(ShellZKNodeTreeItem, ShellZKClient)` | 添加权限 | `ShellZKAddACLController` |
   | `StageAdapter zkUpdateACL(ShellZKNodeTreeItem, ShellZKClient, ShellZKACL)` | 修改权限 | `ShellZKUpdateACLController` |
-  | `void zkImportData(ShellConnect)` | 导入数据 | `ShellZKImportDataController` |
-  | `void zkExportData(ShellConnect, String)` | 导出数据 | `ShellZKExportDataController` |
-  | `void zkTransportData(ShellConnect)` | 传输数据 | `ShellZKTransportDataController` |
+  | `void zkImportData(ShellConnect)` | 导入数据 | `ShellZKDataImportController` |
+  | `void zkExportData(ShellConnect, String)` | 导出数据 | `ShellZKDataExportController` |
+  | `void zkTransportData(ShellConnect)` | 传输数据 | `ShellZKDataTransportController` |
   | `StageAdapter zkAuthAdd(ShellConnect)` | 新增认证 | `ShellZKAddAuthController` |
   | `void zkHistoryData(ShellZKClient, String)` | 数据历史 | `ShellZKHistoryDataController` |
 

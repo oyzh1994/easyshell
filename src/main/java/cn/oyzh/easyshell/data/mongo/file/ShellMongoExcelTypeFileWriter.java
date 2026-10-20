@@ -92,7 +92,7 @@ public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
      * @param flush  是否刷新写入
      * @throws Exception 异常
      */
-    private void writeObject(Map<String, Object> object, boolean flush) throws Exception {
+    private void writeRecord(Map<String, Object> object, boolean flush) throws Exception {
         // 处理数据
         Object[] values = new Object[this.columns.size()];
         for (Map.Entry<String, Object> entry : object.entrySet()) {
@@ -130,14 +130,14 @@ public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
-        this.writeObject(object, true);
+    public void writeRecord(Map<String, Object> object) throws Exception {
+        this.writeRecord(object, true);
     }
 
     @Override
-    public void writeObjects(List<Map<String, Object>> objects) throws Exception {
+    public void writeRecords(List<Map<String, Object>> objects) throws Exception {
         for (Map<String, Object> object : objects) {
-            this.writeObject(object, false);
+            this.writeRecord(object, false);
         }
         // 写入数据
         WorkbookHelper.write(this.workbook, this.filePath);

@@ -143,7 +143,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
      */
     private List<MongoRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<MongoRecord> records = new ArrayList<>();
-        List<Map<String, Object>> list = reader.readObjects(count);
+        List<Map<String, Object>> list = reader.readRecords(count);
         for (Map<String, Object> objectMap : list) {
             MongoColumns columns = new MongoColumns();
             String collectionName = reader.getFile().getName();
@@ -209,12 +209,12 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
     }
 
     /**
-     * 设置数据起始索引
+     * 设置数据起始行索引
      *
-     * @param dataStartIndex 数据起始索引
+     * @param dataRowStarts 数据起始行索引
      */
-    public void dataStartIndex(int dataStartIndex) {
-        this.config.setDataStartIndex(dataStartIndex);
+    public void dataRowStarts(int dataRowStarts) {
+        this.config.setDataRowStarts(dataRowStarts);
     }
 
     /**

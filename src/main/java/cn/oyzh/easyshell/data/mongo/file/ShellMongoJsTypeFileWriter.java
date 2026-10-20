@@ -49,7 +49,7 @@ public class ShellMongoJsTypeFileWriter extends ShellMongoTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         MongoRecord record = new MongoRecord(this.columns);
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             record.putValue(entry.getKey(), entry.getValue());

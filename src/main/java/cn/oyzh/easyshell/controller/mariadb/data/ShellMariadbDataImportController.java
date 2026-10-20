@@ -246,7 +246,7 @@ public class ShellMariadbDataImportController extends StageController {
         // 字段索引
         this.importHandler.columnIndex(this.columnIndex.getIntValue() - 1);
         // 数据起始位置
-        this.importHandler.dataStartIndex(this.dataStartIndex.getIntValue() - 1);
+        this.importHandler.dataRowStarts(this.dataStartIndex.getIntValue());
         // 行记录标签
         if (!this.recordLabel.isRoot()) {
             this.importHandler.recordLabel(this.recordLabel.getSelectedItem());

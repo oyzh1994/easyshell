@@ -56,12 +56,12 @@ public class ShellMariadbSqlTypeFileWriter extends ShellMariadbTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         String tableName = this.columns.tableName();
         List<MariadbColumn> columnList = this.columns.sortOfPosition();
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MARIADB);
         StringBuilder sql = new StringBuilder(sqlBase);
-        if (this.config.isIncludeFields()) {
+        if (this.config.isIncludeTitle()) {
             sql.append("(");
             for (MariadbColumn dbColumn : columnList) {
                 sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MARIADB)).append(", ");

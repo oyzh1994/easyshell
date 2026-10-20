@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.mysql.file;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
-import cn.oyzh.fx.db.data.file.csv.DBDataCsvFileWriter;
+import cn.oyzh.store.file.CsvFileWriter;
 
 import java.io.IOException;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class ShellMysqlTxtTypeFileWriter extends ShellMysqlTypeFileWriter {
     /**
      * 文件写入器
      */
-    private DBDataCsvFileWriter writer;
+    private CsvFileWriter writer;
 
     /**
      * 构造 Mysql Txt类型文件写入器
@@ -42,7 +42,7 @@ public class ShellMysqlTxtTypeFileWriter extends ShellMysqlTypeFileWriter {
     public ShellMysqlTxtTypeFileWriter(String filePath, DBDataExportConfig config, MysqlColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = new DBDataCsvFileWriter(filePath, config, config.getFieldSeparator());
+        this.writer = new CsvFileWriter(filePath, config, config.getFieldSeparator());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ShellMysqlTxtTypeFileWriter extends ShellMysqlTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         Object[] values = new Object[this.columns.size()];
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             int index = this.columns.index(entry.getKey());

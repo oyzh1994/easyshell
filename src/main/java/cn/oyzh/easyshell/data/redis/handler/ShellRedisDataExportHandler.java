@@ -239,7 +239,7 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
         columns.addColumn("type", I18nHelper.type());
         columns.addColumn("ttl", I18nHelper.ttl());
         // 获取写入器
-        TypeFileWriter writer = FileHelper.initWriter(this.fileType, this.config, columns);
+        TypeFileWriter<FileRecord> writer = FileHelper.initWriter(this.fileType, this.config, columns);
         if (writer != null) {
             // 批量记录
             List<FileRecord> batchList = new ArrayList<>(this.batchSize);

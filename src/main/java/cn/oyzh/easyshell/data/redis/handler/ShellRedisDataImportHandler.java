@@ -187,7 +187,7 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
         columns.addColumn("type", 3);
         columns.addColumn("ttl", 4);
         // 获取写入器
-        TypeFileReader reader = FileHelper.initReader(this.fileType, this.config, columns);
+        TypeFileReader<FileRecord> reader = FileHelper.initReader(this.fileType, this.config, columns);
         if (reader != null) {
             try {
                 while (true) {

@@ -173,7 +173,7 @@ public class ShellZKDataImportHandler extends DataImportHandler {
         columns.addColumn("data", 1);
         columns.addColumn("acl", 2);
         // 获取写入器
-        TypeFileReader reader = FileHelper.initReader(this.fileType, this.config, columns);
+        TypeFileReader<FileRecord> reader = FileHelper.initReader(this.fileType, this.config, columns);
         if (reader != null) {
             try {
                 while (true) {

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.data.dameng.file;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
-import cn.oyzh.fx.db.data.file.csv.DBDataCsvFileWriter;
+import cn.oyzh.store.file.CsvFileWriter;
 
 import java.io.IOException;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class ShellDamengCsvTypeFileWriter extends ShellDamengTypeFileWriter {
     /**
      * CSV 写入器
      */
-    private final DBDataCsvFileWriter writer;
+    private final CsvFileWriter writer;
 
     /**
      * 构造 Dameng CSV类型文件写入器
@@ -42,7 +42,7 @@ public class ShellDamengCsvTypeFileWriter extends ShellDamengTypeFileWriter {
     public ShellDamengCsvTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = new DBDataCsvFileWriter(filePath, config);
+        this.writer = new CsvFileWriter(filePath, config);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ShellDamengCsvTypeFileWriter extends ShellDamengTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         Object[] values = new Object[this.columns.size()];
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             int index = this.columns.index(entry.getKey());

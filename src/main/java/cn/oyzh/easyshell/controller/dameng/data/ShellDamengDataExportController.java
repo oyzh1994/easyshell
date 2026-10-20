@@ -265,7 +265,7 @@ public class ShellDamengDataExportController extends StageController {
         // 记录分隔符
         this.exportHandler.recordSeparator(this.recordSeparator.value());
         // 包含列标题
-        this.exportHandler.includeFields(this.includeFields.isSelected());
+        this.exportHandler.includeTitle(this.includeFields.isSelected());
         // 文本识别符
         this.exportHandler.txtIdentifier(this.txtIdentifier.getSelectedItem());
         // 错误时继续

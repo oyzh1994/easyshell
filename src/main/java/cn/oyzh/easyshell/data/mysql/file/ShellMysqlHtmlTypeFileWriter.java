@@ -96,7 +96,7 @@ public class ShellMysqlHtmlTypeFileWriter extends ShellMysqlTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         StringBuilder builder = new StringBuilder("<tr>");
         Object[] values = new Object[this.columns.size()];
         for (Map.Entry<String, Object> entry : object.entrySet()) {

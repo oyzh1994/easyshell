@@ -56,12 +56,12 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         String tableName = this.columns.tableName();
         List<MysqlColumn> columnList = this.columns.sortOfPosition();
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
         StringBuilder sql = new StringBuilder(sqlBase);
-        if (this.config.isIncludeFields()) {
+        if (this.config.isIncludeTitle()) {
             sql.append("(");
             for (MysqlColumn dbColumn : columnList) {
                 sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");

@@ -149,7 +149,7 @@ public class ShellMariadbDataImportHandler extends DBDataImportHandler<String> {
      */
     private List<MariadbRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
         List<MariadbRecord> records = new ArrayList<>();
-        List<Map<String, Object>> list = reader.readObjects(count);
+        List<Map<String, Object>> list = reader.readRecords(count);
         for (Map<String, Object> objectMap : list) {
             MariadbRecord record = new MariadbRecord(null);
             for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
@@ -215,12 +215,12 @@ public class ShellMariadbDataImportHandler extends DBDataImportHandler<String> {
     }
 
     /**
-     * 设置数据起始索引
+     * 设置数据起始行索引
      *
-     * @param dataStartIndex 数据起始索引
+     * @param dataRowStarts 数据起始行索引
      */
-    public void dataStartIndex(int dataStartIndex) {
-        this.config.setDataStartIndex(dataStartIndex);
+    public void dataRowStarts(int dataRowStarts) {
+        this.config.setDataRowStarts(dataRowStarts);
     }
 
     /**

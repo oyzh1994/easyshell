@@ -59,7 +59,7 @@ public class ShellMariadbXmlTypeFileWriter extends ShellMariadbTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         StringBuilder builder;
         if (this.config.isFieldToAttr()) {
             builder = new StringBuilder("  <RECORD ");

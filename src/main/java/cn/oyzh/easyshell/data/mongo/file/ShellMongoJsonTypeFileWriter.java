@@ -72,7 +72,7 @@ public class ShellMongoJsonTypeFileWriter extends ShellMongoTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         if (!this.firstWrite) {
             this.writer.write(",\n");
         }

@@ -63,7 +63,7 @@ public class ShellZKDataExportHandler extends DataExportHandler {
      */
     private FileWriteConfig config = new FileWriteConfig();
 
-   @Override
+    @Override
     public void doExport() throws Exception {
         this.message("Export Starting");
         FileColumns columns = new FileColumns();
@@ -73,7 +73,7 @@ public class ShellZKDataExportHandler extends DataExportHandler {
             columns.addColumn("acl", I18nHelper.acl());
         }
         // 获取写入器
-        TypeFileWriter writer = FileHelper.initWriter(this.fileType, this.config, columns);
+        TypeFileWriter<FileRecord> writer = FileHelper.initWriter(this.fileType, this.config, columns);
         if (writer != null) {
             // 批量记录
             List<FileRecord> batchList = new ArrayList<>(this.batchSize);
@@ -164,8 +164,7 @@ public class ShellZKDataExportHandler extends DataExportHandler {
         if (prefix.isBlank()) {
             this.config.prefix(null);
         } else {
-
-            this.config.prefix(prefix + " ");
+            this.config.prefix(prefix);
         }
     }
 

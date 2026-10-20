@@ -83,12 +83,12 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
     }
 
     @Override
-    public void writeObject(Map<String, Object> object) throws Exception {
+    public void writeRecord(Map<String, Object> object) throws Exception {
         String tableName = this.columns.tableName();
         List<DamengColumn> columnList = this.columns.sortOfPosition();
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.DAMENG);
         StringBuilder sql = new StringBuilder(sqlBase);
-        if (this.config.isIncludeFields()) {
+        if (this.config.isIncludeTitle()) {
             sql.append("(");
             for (DamengColumn dbColumn : columnList) {
                 sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.DAMENG)).append(", ");

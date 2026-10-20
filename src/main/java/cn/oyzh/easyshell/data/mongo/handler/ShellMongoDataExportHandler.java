@@ -189,7 +189,7 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
         for (MongoRecord object : records) {
             objects.add(object.toMap());
         }
-        writer.writeObjects(objects);
+        writer.writeRecords(objects);
     }
 
     /**
@@ -243,12 +243,12 @@ public class ShellMongoDataExportHandler extends DBDataExportHandler {
     }
 
     /**
-     * 设置是否包含字段
+     * 设置是否包含标题
      *
-     * @param includeFields 是否包含字段
+     * @param includeTitle 是否包含标题
      */
-    public void includeFields(boolean includeFields) {
-        this.config.setIncludeFields(includeFields);
+    public void includeTitle(boolean includeTitle) {
+        this.config.setIncludeTitle(includeTitle);
     }
 
     /**
