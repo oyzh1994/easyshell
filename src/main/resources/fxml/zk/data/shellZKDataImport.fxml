@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.zk.data.ShellZKImportDataController" realWidth="800"
+        fx:controller="cn.oyzh.easyshell.controller.zk.data.ShellZKDataImportController" realWidth="800"
         realHeight="600">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
@@ -49,22 +49,22 @@
             </fx:define>
             <FXRadioButton userData="json" toggleGroup="$format" text="%base.jsonType" selected="true">
                 <VBox.margin>
-                    <Insets left="30" top="5"/>
+                    <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXRadioButton>
             <FXRadioButton userData="excel" toggleGroup="$format" text="%base.excelType">
                 <VBox.margin>
-                    <Insets left="30" top="5"/>
+                    <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXRadioButton>
             <FXRadioButton userData="xml" toggleGroup="$format" text="%base.xmlType">
                 <VBox.margin>
-                    <Insets left="30" top="5"/>
+                    <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXRadioButton>
             <FXRadioButton userData="csv" toggleGroup="$format" text="%base.csvType">
                 <VBox.margin>
-                    <Insets left="30" top="5"/>
+                    <Insets left="30" top="10"/>
                 </VBox.margin>
             </FXRadioButton>
         </FXVBox>

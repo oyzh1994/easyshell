@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.util.redis;
 
-import cn.oyzh.easyshell.controller.redis.data.ShellRedisExportDataController;
-import cn.oyzh.easyshell.controller.redis.data.ShellRedisImportDataController;
-import cn.oyzh.easyshell.controller.redis.data.ShellRedisTransportDataController;
+import cn.oyzh.easyshell.controller.redis.data.ShellRedisDataExportController;
+import cn.oyzh.easyshell.controller.redis.data.ShellRedisDataImportController;
+import cn.oyzh.easyshell.controller.redis.data.ShellRedisDataTransportController;
 import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyAddController;
 import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyBatchOperationController;
 import cn.oyzh.easyshell.controller.redis.key.ShellRedisKeyCopyController;
@@ -265,7 +265,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisImportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisImportDataController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellRedisDataImportController.class);
             adapter.setProp("connect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -283,7 +283,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisExportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisExportDataController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellRedisDataExportController.class);
             adapter.setProp("connect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -301,7 +301,7 @@ public class ShellRedisViewFactory {
      */
     public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisTransportDataController.class);
+            StageAdapter adapter = StageManager.parseStage(ShellRedisDataTransportController.class);
             adapter.setProp("sourceConnect", connect);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();

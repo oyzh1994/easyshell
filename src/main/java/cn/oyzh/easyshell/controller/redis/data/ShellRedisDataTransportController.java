@@ -44,9 +44,9 @@ import java.util.Set;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "redis/data/shellRedisTransportData.fxml"
+        value = FXConst.FXML_PATH + "redis/data/shellRedisDataTransport.fxml"
 )
-public class ShellRedisTransportDataController extends StageController {
+public class ShellRedisDataTransportController extends StageController {
 
     /**
      * 第一步

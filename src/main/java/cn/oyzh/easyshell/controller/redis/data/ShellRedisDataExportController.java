@@ -27,7 +27,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -51,9 +50,9 @@ import java.util.Set;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "redis/data/shellRedisExportData.fxml"
+        value = FXConst.FXML_PATH + "redis/data/shellRedisDataExport.fxml"
 )
-public class ShellRedisExportDataController extends StageController {
+public class ShellRedisDataExportController extends StageController {
 
     /**
      * 第一步

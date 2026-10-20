@@ -1,12 +1,13 @@
-package cn.oyzh.easyshell.controller.redis.data;
+package cn.oyzh.easyshell.controller.zk.data;
 
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.redis.handler.ShellRedisDataImportHandler;
+import cn.oyzh.easyshell.data.zk.handler.ShellZKDataImportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKClientUtil;
+import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -23,8 +24,6 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -35,17 +34,17 @@ import java.io.File;
 
 
 /**
- * redis数据导入业务
+ * zk数据导入业务
  *
  * @author oyzh
  * @since 2025-09-01
  */
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "redis/data/shellRedisImportData.fxml"
+        //        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "zk/data/shellZKDataImport.fxml"
 )
-public class ShellRedisImportDataController extends StageController {
+public class ShellZKDataImportController extends StageController {
 
     /**
      * 第一步
@@ -65,10 +64,22 @@ public class ShellRedisImportDataController extends StageController {
     @FXML
     private FXVBox step3;
 
+    // /**
+    //  * 第四步
+    //  */
+    // @FXML
+    // private FXVBox step4;
+
     /**
      * 导入文件
      */
     private File importFile;
+
+    /**
+     * 包含acl
+     */
+    @FXML
+    private FXCheckBox includeACL;
 
     /**
      * 文件格式
@@ -82,6 +93,18 @@ public class ShellRedisImportDataController extends StageController {
     @FXML
     private FXText fileName;
 
+    // /**
+    //  * 连接名
+    //  */
+    // @FXML
+    // private FXText connectionName;
+
+    /**
+     * 字符集
+     */
+    @FXML
+    private CharsetComboBox charset;
+
     /**
      * 存在时忽略
      */
@@ -94,11 +117,11 @@ public class ShellRedisImportDataController extends StageController {
     @FXML
     private NumberTextField dataRowStarts;
 
-    /**
-     * 选择文件
-     */
-    @FXML
-    private FXButton selectFile;
+    //    /**
+    //     * 选择文件
+    //     */
+    //    @FXML
+    //    private FXButton selectFile;
 
     /**
      * 结束导入按钮
@@ -119,19 +142,14 @@ public class ShellRedisImportDataController extends StageController {
     private MsgTextArea importMsg;
 
     /**
-     * db索引
-     */
-    private Integer dbIndex;
-
-    /**
-     * 当前redis对象
+     * 当前zk对象
      */
     private ShellConnect connect;
 
     /**
-     * 当前redis客户端
+     * 当前zk客户端
      */
-    private ShellRedisClient client;
+    private ShellZKClient client;
 
     /**
      * 导入操作任务
@@ -146,7 +164,7 @@ public class ShellRedisImportDataController extends StageController {
     /**
      * 导入处理器
      */
-    private ShellRedisDataImportHandler importHandler;
+    private ShellZKDataImportHandler importHandler;
 
     /**
      * 执行导入
@@ -161,7 +179,7 @@ public class ShellRedisImportDataController extends StageController {
         this.stage.appendTitle("===" + I18nHelper.importProcessing() + "===");
         // 生成导入处理器
         if (this.importHandler == null) {
-            this.importHandler = new ShellRedisDataImportHandler();
+            this.importHandler = new ShellZKDataImportHandler();
             this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str));
             this.importHandler.setProcessedHandler(count -> {
                 this.counter.incr(count);
@@ -171,16 +189,18 @@ public class ShellRedisImportDataController extends StageController {
             this.importHandler.interrupt(false);
         }
         String fileType = this.format.selectedUserData();
-        // db索引
-        this.importHandler.dbIndex(this.dbIndex);
         // 文件类型
         this.importHandler.setFileType(fileType);
         // 客户端
         this.importHandler.setClient(this.client);
+        // 包含acl
+        this.importHandler.setIncludeACL(this.includeACL.isSelected());
         // 存在时忽略
         this.importHandler.setIgnoreExist(this.ignoreExist.isSelected());
         // 导入文件
         this.importHandler.filePath(this.importFile.getPath());
+        // 字符集
+        this.importHandler.charset(this.charset.getCharsetName());
         // 数据行开始
         if (this.dataRowStarts.isEnable()) {
             this.importHandler.dataRowStarts(this.dataRowStarts.getIntValue());
@@ -197,6 +217,10 @@ public class ShellRedisImportDataController extends StageController {
                 this.importHandler.doImport();
                 // 更新状态
                 this.updateStatus(I18nHelper.importFinished());
+                // // 发送消息到托盘
+                // if (!this.stage.isFocused()) {
+                //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.importFinished());
+                // }
             } catch (Exception e) {
                 if (e.getClass().isAssignableFrom(InterruptedException.class)) {
                     this.updateStatus(I18nHelper.operationCancel());
@@ -231,7 +255,7 @@ public class ShellRedisImportDataController extends StageController {
         super.bindListeners();
         this.stage.hideOnEscape();
         // 格式选择监听
-        this.format.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+        this.format.selectedToggleProperty().addListener((observable) -> {
             this.importFile = null;
             this.fileName.clear();
         });
@@ -267,6 +291,7 @@ public class ShellRedisImportDataController extends StageController {
     private void showStep1() {
         this.step2.disappear();
         this.step3.disappear();
+        // this.step4.disappear();
         this.step1.display();
     }
 
@@ -277,6 +302,7 @@ public class ShellRedisImportDataController extends StageController {
     private void showStep2() {
         this.step1.disappear();
         this.step3.disappear();
+        // this.step4.disappear();
         String fileType = this.format.selectedUserData();
         // 检查是否支持跳行
         if (StringUtil.equalsAny(fileType, "excel", "csv")) {
@@ -287,25 +313,31 @@ public class ShellRedisImportDataController extends StageController {
         this.step2.display();
     }
 
+    // @FXML
+    // private void showStep3() {
+    //     if (this.importFile == null) {
+    //         this.selectFile.requestFocus();
+    //         MessageBox.warn(I18nHelper.pleaseSelectFile());
+    //         return;
+    //     }
+    //     this.step1.disappear();
+    //     this.step2.disappear();
+    //     this.step4.disappear();
+    //     this.step3.display();
+    // }
+
     /**
      * 显示第三步
      */
     @FXML
     private void showStep3() {
-        // 检查文件
-        if (this.importFile == null) {
-            //            this.selectFile.requestFocus();
-            //            MessageBox.warn(I18nHelper.pleaseSelectFile());
-            ValidatorUtil.validFail(this.selectFile);
-            return;
-        }
         // 检查客户端
-        if (!this.doConnect()) {
-            return;
+        if (this.doConnect()) {
+            this.step1.disappear();
+            this.step2.disappear();
+            // this.step3.disappear();
+            this.step3.display();
         }
-        this.step1.disappear();
-        this.step2.disappear();
-        this.step3.display();
     }
 
     /**
@@ -322,7 +354,7 @@ public class ShellRedisImportDataController extends StageController {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
                     try {
-                        this.client = ShellClientUtil.newClient(this.connect);
+                        this.client = ShellZKClientUtil.newClient(this.connect);
                         this.client.start(2500);
                     } finally {
                         latch.countDown();
@@ -357,11 +389,12 @@ public class ShellRedisImportDataController extends StageController {
         }
     }
 
+
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.connect = this.getProp("connect");
-        this.dbIndex = this.getProp("dbIndex");
+        // this.connectionName.setText(this.connect.getName());
     }
 
     // /**
@@ -371,8 +404,8 @@ public class ShellRedisImportDataController extends StageController {
     // private void openOld() {
     //     if (this.doConnect()) {
     //         this.closeWindow();
-    //         StageAdapter adapter = StageManager.parseStage(RedisKeyImportController.class);
-    //         adapter.setProp("client", this.client);
+    //         StageAdapter adapter = StageManager.parseStage(ZKNodeImportController.class);
+    //         adapter.setProp("zkClient", this.client);
     //         adapter.display();
     //     }
     // }

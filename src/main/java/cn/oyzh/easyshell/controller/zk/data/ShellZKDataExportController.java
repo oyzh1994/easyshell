@@ -1,15 +1,16 @@
 package cn.oyzh.easyshell.controller.zk.data;
 
+import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.zk.handler.ShellZKDataImportHandler;
+import cn.oyzh.easyshell.data.zk.handler.ShellZKDataExportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKClientUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
-import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -24,6 +25,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -34,7 +36,7 @@ import java.io.File;
 
 
 /**
- * zk数据导入业务
+ * zk数据导出业务
  *
  * @author oyzh
  * @since 2025-09-01
@@ -42,9 +44,9 @@ import java.io.File;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "zk/data/shellZKImportData.fxml"
+        value = FXConst.FXML_PATH + "zk/data/shellZKDataExport.fxml"
 )
-public class ShellZKImportDataController extends StageController {
+public class ShellZKDataExportController extends StageController {
 
     /**
      * 第一步
@@ -71,15 +73,9 @@ public class ShellZKImportDataController extends StageController {
     // private FXVBox step4;
 
     /**
-     * 导入文件
+     * 导出文件
      */
-    private File importFile;
-
-    /**
-     * 包含acl
-     */
-    @FXML
-    private FXCheckBox includeACL;
+    private File exportFile;
 
     /**
      * 文件格式
@@ -88,16 +84,22 @@ public class ShellZKImportDataController extends StageController {
     private FXToggleGroup format;
 
     /**
+     * 前缀
+     */
+    @FXML
+    private FXToggleGroup prefix;
+
+    /**
      * 文件名
      */
     @FXML
     private FXText fileName;
 
-    // /**
-    //  * 连接名
-    //  */
-    // @FXML
-    // private FXText connectionName;
+    /**
+     * 节点路径
+     */
+    @FXML
+    private FXText nodePath;
 
     /**
      * 字符集
@@ -106,40 +108,51 @@ public class ShellZKImportDataController extends StageController {
     private CharsetComboBox charset;
 
     /**
-     * 存在时忽略
+     * 选择文件
      */
     @FXML
-    private FXCheckBox ignoreExist;
+    private FXButton selectFile;
 
     /**
-     * 数据行开始
+     * 包含标题
      */
     @FXML
-    private NumberTextField dataRowStarts;
-
-    //    /**
-    //     * 选择文件
-    //     */
-    //    @FXML
-    //    private FXButton selectFile;
+    private FXCheckBox includeTitle;
 
     /**
-     * 结束导入按钮
+     * 包含acl
      */
     @FXML
-    private FXButton stopImportBtn;
+    private FXCheckBox includeACL;
 
     /**
-     * 导入状态
+     * 压缩
      */
     @FXML
-    private FXLabel importStatus;
+    private FXCheckBox compress;
 
     /**
-     * 导入消息
+     * 结束导出按钮
      */
     @FXML
-    private MsgTextArea importMsg;
+    private FXButton stopExportBtn;
+
+    /**
+     * 导出状态
+     */
+    @FXML
+    private FXLabel exportStatus;
+
+    /**
+     * 导出消息
+     */
+    @FXML
+    private MsgTextArea exportMsg;
+
+    /*
+     * 导出路径
+     */
+    private String exportPath;
 
     /**
      * 当前zk对象
@@ -152,7 +165,7 @@ public class ShellZKImportDataController extends StageController {
     private ShellZKClient client;
 
     /**
-     * 导入操作任务
+     * 导出操作任务
      */
     private Thread execTask;
 
@@ -162,64 +175,66 @@ public class ShellZKImportDataController extends StageController {
     private final Counter counter = new Counter();
 
     /**
-     * 导入处理器
+     * 导出处理器
      */
-    private ShellZKDataImportHandler importHandler;
+    private ShellZKDataExportHandler exportHandler;
 
     /**
-     * 执行导入
+     * 执行导出
      */
     @FXML
-    private void doImport() {
+    private void doExport() {
         // 重置参数
         this.counter.reset();
-        this.importMsg.clear();
-        this.importStatus.clear();
+        this.exportMsg.clear();
+        this.exportStatus.clear();
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.importProcessing() + "===");
-        // 生成导入处理器
-        if (this.importHandler == null) {
-            this.importHandler = new ShellZKDataImportHandler();
-            this.importHandler.setMessageHandler(str -> this.importMsg.appendLine(str));
-            this.importHandler.setProcessedHandler(count -> {
+        this.stage.appendTitle("===" + I18nHelper.exportProcessing() + "===");
+        // 生成导出处理器
+        if (this.exportHandler == null) {
+            this.exportHandler = new ShellZKDataExportHandler();
+            this.exportHandler.setMessageHandler(str -> this.exportMsg.appendLine(str));
+            this.exportHandler.setProcessedHandler(count -> {
                 this.counter.incr(count);
-                this.updateStatus(I18nHelper.importInProgress());
+                this.updateStatus(I18nHelper.exportInProgress());
             });
         } else {
-            this.importHandler.interrupt(false);
+            this.exportHandler.interrupt(false);
         }
         String fileType = this.format.selectedUserData();
         // 文件类型
-        this.importHandler.setFileType(fileType);
+        this.exportHandler.setFileType(fileType);
         // 客户端
-        this.importHandler.setClient(this.client);
-        // 包含acl
-        this.importHandler.setIncludeACL(this.includeACL.isSelected());
-        // 存在时忽略
-        this.importHandler.setIgnoreExist(this.ignoreExist.isSelected());
-        // 导入文件
-        this.importHandler.filePath(this.importFile.getPath());
+        this.exportHandler.setClient(this.client);
+        // 节点路径
+        this.exportHandler.setNodePath(this.exportPath);
+        // 导出文件
+        this.exportHandler.filePath(this.exportFile.getPath());
         // 字符集
-        this.importHandler.charset(this.charset.getCharsetName());
-        // 数据行开始
-        if (this.dataRowStarts.isEnable()) {
-            this.importHandler.dataRowStarts(this.dataRowStarts.getIntValue());
-        } else {
-            this.importHandler.dataRowStarts(null);
+        this.exportHandler.charset(this.charset.getCharsetName());
+        // 包含acl
+        this.exportHandler.setIncludeACL(this.includeACL.isSelected());
+        // 包含标题
+        this.exportHandler.includeTitle(this.includeTitle.isEnable() && this.includeTitle.isSelected());
+        // 压缩
+        this.exportHandler.compress(this.compress.isEnable() && this.compress.isSelected());
+        // 前缀
+        if (FileNameUtil.isTxtType(fileType)) {
+            this.exportHandler.prefix(this.prefix.selectedUserData());
         }
-        // 执行导入
+        // 执行导出
         this.execTask = ThreadUtil.start(() -> {
             try {
-                this.stopImportBtn.enable();
+                this.stopExportBtn.enable();
                 // 更新状态
-                this.updateStatus(I18nHelper.importStarting());
-                // 执行导入
-                this.importHandler.doImport();
+                this.updateStatus(I18nHelper.exportStarting());
+                // 执行导出
+                this.exportHandler.doExport();
                 // 更新状态
-                this.updateStatus(I18nHelper.importFinished());
+                this.updateStatus(I18nHelper.exportFinished());
                 // // 发送消息到托盘
                 // if (!this.stage.isFocused()) {
-                //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.importFinished());
+                //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.exportFinished());
                 // }
             } catch (Exception e) {
                 if (e.getClass().isAssignableFrom(InterruptedException.class)) {
@@ -232,21 +247,21 @@ public class ShellZKImportDataController extends StageController {
                 }
             } finally {
                 NodeGroupUtil.enable(this.stage, "exec");
-                this.stopImportBtn.disable();
+                this.stopExportBtn.disable();
                 this.stage.restoreTitle();
             }
         });
     }
 
     /**
-     * 结束导入
+     * 结束导出
      */
     @FXML
-    private void stopImport() {
+    private void stopExport() {
         ThreadUtil.interrupt(this.execTask);
         this.execTask = null;
-        if (this.importHandler != null) {
-            this.importHandler.interrupt();
+        if (this.exportHandler != null) {
+            this.exportHandler.interrupt();
         }
     }
 
@@ -255,8 +270,8 @@ public class ShellZKImportDataController extends StageController {
         super.bindListeners();
         this.stage.hideOnEscape();
         // 格式选择监听
-        this.format.selectedToggleProperty().addListener((observable) -> {
-            this.importFile = null;
+        this.format.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            this.exportFile = null;
             this.fileName.clear();
         });
     }
@@ -264,7 +279,7 @@ public class ShellZKImportDataController extends StageController {
     @Override
     public void onWindowHidden(WindowEvent event) {
         super.onWindowHidden(event);
-        this.stopImport();
+        this.stopExport();
     }
 
     /**
@@ -276,12 +291,12 @@ public class ShellZKImportDataController extends StageController {
         if (extraMsg != null) {
             this.counter.setExtraMsg(extraMsg);
         }
-        this.importStatus.setText(this.counter.unknownFormat());
+        this.exportStatus.text(this.counter.unknownFormat());
     }
 
     @Override
     public String getViewTitle() {
-        return I18nHelper.importTitle();
+        return I18nHelper.exportTitle();
     }
 
     /**
@@ -291,7 +306,6 @@ public class ShellZKImportDataController extends StageController {
     private void showStep1() {
         this.step2.disappear();
         this.step3.disappear();
-        // this.step4.disappear();
         this.step1.display();
     }
 
@@ -302,51 +316,39 @@ public class ShellZKImportDataController extends StageController {
     private void showStep2() {
         this.step1.disappear();
         this.step3.disappear();
-        // this.step4.disappear();
         String fileType = this.format.selectedUserData();
-        // 检查是否支持跳行
-        if (StringUtil.equalsAny(fileType, "excel", "csv")) {
-            this.dataRowStarts.enable();
+        // 检查是否支持前缀
+        if (FileNameUtil.isTxtType(fileType)) {
+            NodeGroupUtil.enable(this.stage, "txt");
         } else {
-            this.dataRowStarts.disable();
+            NodeGroupUtil.disable(this.stage, "txt");
+        }
+        // 检查是否支持标题
+        if (StringUtil.equalsAny(fileType, "xls", "xlsx", "csv")) {
+            this.includeTitle.enable();
+        } else {
+            this.includeTitle.disable();
+        }
+        // 检查是否支持压缩
+        if (StringUtil.equalsAny(fileType, "xml", "json")) {
+            this.compress.enable();
+        } else {
+            this.compress.disable();
         }
         this.step2.display();
     }
-
-    // @FXML
-    // private void showStep3() {
-    //     if (this.importFile == null) {
-    //         this.selectFile.requestFocus();
-    //         MessageBox.warn(I18nHelper.pleaseSelectFile());
-    //         return;
-    //     }
-    //     this.step1.disappear();
-    //     this.step2.disappear();
-    //     this.step4.disappear();
-    //     this.step3.display();
-    // }
 
     /**
      * 显示第三步
      */
     @FXML
     private void showStep3() {
-        // 检查客户端
-        if (this.doConnect()) {
-            this.step1.disappear();
-            this.step2.disappear();
-            // this.step3.disappear();
-            this.step3.display();
-        }
-    }
-
-    /**
-     * 执行连接
-     *
-     * @return 结果
-     */
-    private boolean doConnect() {
         try {
+            // 检查文件
+            if (this.exportFile == null) {
+                ValidatorUtil.validFail(this.selectFile);
+                return;
+            }
             // 检查客户端
             if (this.client == null || this.client.isClosed()) {
                 this.getStage().appendTitle("===" + I18nHelper.connectIng() + "===");
@@ -364,10 +366,13 @@ public class ShellZKImportDataController extends StageController {
                     this.client.close();
                     this.client = null;
                     MessageBox.warn(I18nHelper.connectInitFail(), this.getWindow());
-                    return false;
+                    return;
                 }
             }
-            return true;
+
+            this.step1.disappear();
+            this.step2.disappear();
+            this.step3.display();
         } finally {
             this.getStage().restoreTitle();
             this.getStage().enable();
@@ -381,32 +386,27 @@ public class ShellZKImportDataController extends StageController {
     private void selectFile() {
         String fileType = this.format.selectedUserData();
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
-        this.importFile = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
-        if (this.importFile != null) {
-            this.fileName.setText(this.importFile.getPath());
+        String fileName = "Zookeeper-" + this.connect.getName() + "-" + I18nHelper.exportData() + "." + fileType;
+        this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
+        if (this.exportFile != null) {
+            // 删除文件
+            if (this.exportFile.exists()) {
+                FileUtil.del(this.exportFile);
+            }
+            this.fileName.setText(this.exportFile.getPath());
         } else {
             this.fileName.clear();
         }
     }
 
-
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.connect = this.getProp("connect");
-        // this.connectionName.setText(this.connect.getName());
+        this.exportPath = this.getProp("nodePath");
+        if (this.exportPath == null) {
+            this.exportPath = "/";
+        }
+        this.nodePath.setText(this.exportPath);
     }
-
-    // /**
-    //  * 打开旧版
-    //  */
-    // @FXML
-    // private void openOld() {
-    //     if (this.doConnect()) {
-    //         this.closeWindow();
-    //         StageAdapter adapter = StageManager.parseStage(ZKNodeImportController.class);
-    //         adapter.setProp("zkClient", this.client);
-    //         adapter.display();
-    //     }
-    // }
 }

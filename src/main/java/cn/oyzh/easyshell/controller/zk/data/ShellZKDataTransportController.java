@@ -36,9 +36,9 @@ import javafx.stage.WindowEvent;
 @StageAttribute(
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "zk/data/shellZKTransportData.fxml"
+        value = FXConst.FXML_PATH + "zk/data/shellZKDataTransport.fxml"
 )
-public class ShellZKTransportDataController extends StageController {
+public class ShellZKDataTransportController extends StageController {
 
     /**
      * 第一步
