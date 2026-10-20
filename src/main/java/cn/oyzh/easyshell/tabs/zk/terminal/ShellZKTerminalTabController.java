@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.zk.terminal;
 
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+import cn.oyzh.easyshell.terminal.zk_v2.ZKTerminalPane;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
