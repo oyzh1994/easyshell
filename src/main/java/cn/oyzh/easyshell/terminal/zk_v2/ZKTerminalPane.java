@@ -25,6 +25,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.text.Font;
 import org.apache.zookeeper.ZooKeeper;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -379,6 +380,25 @@ public class ZKTerminalPane extends TerminalPane {
         this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(ZKTerminalCompleteHandler.INSTANCE);
         super.initNode();
+    }
+
+    private boolean initPrompts;
+
+    @Override
+    public Set<String> getPrompts() {
+        if (!this.initPrompts) {
+            this.initPrompts = true;
+            Set<String> prompts = super.getPrompts();
+            if (prompts == null) {
+                prompts = new HashSet<>();
+            } else {
+                prompts = new HashSet<>(prompts);
+            }
+            // 设置内容提示符
+            prompts.addAll(ZKCommandRegistry.commandNames());
+            this.setPrompts(prompts);
+        }
+        return super.getPrompts();
     }
 
     @Override
