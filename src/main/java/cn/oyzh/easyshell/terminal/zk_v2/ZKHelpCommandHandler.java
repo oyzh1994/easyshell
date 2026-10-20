@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * ZooKeeper v2 终端帮助命令。
+ *
+ * @author oyzh
+ * @since 2026-10-20
  */
 public class ZKHelpCommandHandler extends ZKTerminalCommandHandler<TerminalCommand> {
 
@@ -17,6 +20,12 @@ public class ZKHelpCommandHandler extends ZKTerminalCommandHandler<TerminalComma
         return result;
     }
 
+    /**
+     * 渲染 ZooKeeper 命令帮助内容。
+     *
+     * @param input help 命令输入
+     * @return 帮助文本
+     */
     public static String render(String input) {
         if (input == null) {
             return "";

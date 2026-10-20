@@ -5,12 +5,21 @@ import java.util.List;
 
 /**
  * ZooKeeper 终端命令分词器。
+ *
+ * @author oyzh
+ * @since 2026-10-20
  */
 public final class ZKCommandTokenizer {
 
     private ZKCommandTokenizer() {
     }
 
+    /**
+     * 将 ZooKeeper 命令行拆分为参数，支持单双引号和转义字符。
+     *
+     * @param input 命令行内容
+     * @return 参数列表
+     */
     public static List<String> tokenize(String input) {
         List<String> tokens = new ArrayList<>();
         if (input == null || input.isBlank()) {

@@ -13,11 +13,18 @@ import java.util.Map;
 
 /**
  * ZooKeeper v2 终端命令补全。
+ *
+ * @author oyzh
+ * @since 2026-10-20
  */
 public class ZKTerminalCompleteHandler extends BaseTerminalCompleteHandler<ZKTerminalPane> {
 
+    /** 当前实例。 */
     public static final ZKTerminalCompleteHandler INSTANCE = new ZKTerminalCompleteHandler();
 
+    /**
+     * 查找可补全的静态和动态 ZooKeeper 命令。
+     */
     @Override
     protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(ZKTerminalPane terminal, String line) {
         List<String> words = ZKCommandTokenizer.tokenize(line);

@@ -6,9 +6,15 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
 
 /**
  * ZooKeeper v2 终端管理器。
+ *
+ * @author oyzh
+ * @since 2026-10-20
  */
 public class ZKTerminalManager {
 
+    /**
+     * 注册 ZooKeeper v2 终端的静态命令处理器。
+     */
     public static void registerHandlers() {
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKHelpTerminalCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ClearTerminalCommandHandler.class);

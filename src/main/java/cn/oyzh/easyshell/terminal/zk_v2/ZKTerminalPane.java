@@ -31,17 +31,26 @@ import java.util.Set;
 
 /**
  * 基于动态命令发现的 ZooKeeper v2 终端。
+ *
+ * @author oyzh
+ * @since 2026-10-20
  */
 public class ZKTerminalPane extends TerminalPane {
 
+    /** ZooKeeper v2 终端名称。 */
     public static final String TERMINAL_NAME = "zookeeper-v2";
 
+    /** 不需要 ZooKeeper 连接即可执行的 CLI 命令。 */
     private static final Set<String> CLI_COMMANDS_WITHOUT_CONNECTION = Set.of("version");
 
+    /** ZooKeeper 命令执行器。 */
     private final ZKCommandExecutor commandExecutor = new ZKCommandExecutor();
 
+    /** ZooKeeper 客户端。 */
     private ShellZKClient client;
+    /** 临时连接解析结果。 */
     private ShellZKConnectInfo connectInfo;
+    /** 客户端连接状态监听器。 */
     private ChangeListener<ShellConnState> stateChangeListener;
 
     @Override
@@ -50,10 +59,21 @@ public class ZKTerminalPane extends TerminalPane {
         return FontManager.toFont(setting.terminalFontConfig());
     }
 
+    /**
+     * 获取 ZooKeeper 客户端。
+     *
+     * @return ZooKeeper 客户端
+     */
     public ShellZKClient getClient() {
         return client;
     }
 
+    /**
+     * 获取底层 ZooKeeper 会话对象。
+     *
+     * @return ZooKeeper 会话
+     * @throws Exception 获取会话失败
+     */
     public ZooKeeper zooKeeper() throws Exception {
         return this.client.getZooKeeper();
     }
@@ -88,6 +108,11 @@ public class ZKTerminalPane extends TerminalPane {
         return TERMINAL_NAME;
     }
 
+    /**
+     * 初始化 ZooKeeper 终端。
+     *
+     * @param client ZooKeeper 客户端
+     */
     public void init(ShellZKClient client) {
         this.client = client;
         FXUtil.runPulse(() -> {
@@ -103,6 +128,11 @@ public class ZKTerminalPane extends TerminalPane {
         });
     }
 
+    /**
+     * 判断当前是否为临时连接终端。
+     *
+     * @return 是否为临时终端
+     */
     public boolean isTemporary() {
         return this.client == null || this.client.iid() == null;
     }
@@ -114,18 +144,38 @@ public class ZKTerminalPane extends TerminalPane {
         }
     }
 
+    /**
+     * 判断 ZooKeeper 是否已连接。
+     *
+     * @return 是否已连接
+     */
     public boolean isConnected() {
         return this.client != null && this.client.isConnected();
     }
 
+    /**
+     * 判断 ZooKeeper 是否正在连接。
+     *
+     * @return 是否正在连接
+     */
     public boolean isConnecting() {
         return this.client != null && this.client.isConnecting();
     }
 
+    /**
+     * 判断 ZooKeeper 连接是否已关闭。
+     *
+     * @return 是否已关闭
+     */
     public boolean isClosed() {
         return this.client != null && this.client.isClosed();
     }
 
+    /**
+     * 按终端输入解析并建立临时 ZooKeeper 连接。
+     *
+     * @param input connect 命令内容
+     */
     public void connect(String input) {
         this.connectInfo = ShellZKConnectUtil.parse(input);
         if (this.connectInfo != null) {
@@ -135,6 +185,9 @@ public class ZKTerminalPane extends TerminalPane {
         }
     }
 
+    /**
+     * 初始化临时终端的连接提示。
+     */
     private void initByTemporary() {
         this.outputLine("connect [-timeout timeout] [-server server] [-r]");
         this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
@@ -145,6 +198,9 @@ public class ZKTerminalPane extends TerminalPane {
         this.flushAndMoveCaretEnd();
     }
 
+    /**
+     * 初始化固定连接终端。
+     */
     private void initByPermanent() {
         this.flushPrompt();
         this.appendByPrompt("");
@@ -152,6 +208,9 @@ public class ZKTerminalPane extends TerminalPane {
         this.flushAndMoveCaretEnd();
     }
 
+    /**
+     * 异步启动 ZooKeeper 客户端。
+     */
     private void start() {
         TaskManager.startSync(() -> {
             try {
@@ -165,6 +224,9 @@ public class ZKTerminalPane extends TerminalPane {
         });
     }
 
+    /**
+     * 注册 ZooKeeper 连接状态监听器。
+     */
     private void initStateListener() {
         if (this.stateChangeListener != null) {
             return;
@@ -219,6 +281,9 @@ public class ZKTerminalPane extends TerminalPane {
         return this.client == null ? null : this.client.getShellConnect();
     }
 
+    /**
+     * 查找静态命令处理器，其余输入交给动态命令处理器。
+     */
     @Override
     protected TerminalCommandHandler findHandler(String input) {
         TerminalCommandHandler<?, ?> handler = TerminalManager.findHandler(TERMINAL_NAME, input);
@@ -230,6 +295,12 @@ public class ZKTerminalPane extends TerminalPane {
         return new ZKDynamicCommandHandler(commandName);
     }
 
+    /**
+     * 解析并执行一行终端命令。
+     *
+     * @param input 命令行内容
+     * @return 执行结果
+     */
     public TerminalExecuteResult eval(String input) {
         TerminalExecuteResult result = TerminalExecuteResult.ok();
         try {
@@ -242,6 +313,12 @@ public class ZKTerminalPane extends TerminalPane {
         }
     }
 
+    /**
+     * 执行完整 ZooKeeper 命令参数。
+     *
+     * @param args 完整命令参数
+     * @return 执行结果
+     */
     public TerminalExecuteResult executeCommand(List<String> args) {
         TerminalExecuteResult terminalResult = TerminalExecuteResult.ok();
         if (args == null || args.isEmpty()) {
@@ -285,6 +362,9 @@ public class ZKTerminalPane extends TerminalPane {
         this.saveFontSize();
     }
 
+    /**
+     * 保存当前终端字号设置。
+     */
     private void saveFontSize() {
         ShellSetting setting = ShellSettingStore.SETTING;
         setting.setTerminalFontSize((byte) this.getFontSize());

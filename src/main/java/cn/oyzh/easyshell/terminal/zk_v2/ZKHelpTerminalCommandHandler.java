@@ -10,12 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 等宽终端中的 ZooKeeper 命令帮助处理器。
  *
  * @author oyzh
  * @since 2026-10-20
  */
 public class ZKHelpTerminalCommandHandler extends HelpTerminalCommandHandler {
 
+    /**
+     * 在等宽终端中输出静态命令和动态发现的 ZooKeeper 命令。
+     */
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, Terminal terminal) {
         TerminalExecuteResult result = new TerminalExecuteResult();
