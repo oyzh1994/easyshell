@@ -69,7 +69,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellRedisViewFactory.redisStreamMessageAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.streamMessageAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

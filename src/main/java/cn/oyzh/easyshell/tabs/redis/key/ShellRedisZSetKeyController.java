@@ -143,7 +143,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellRedisViewFactory.redisZSetMemberAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.zSetMemberAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

@@ -32,7 +32,7 @@ public class ShellZKViewFactory {
      * @param client   zk客户端
      * @return 页面
      */
-    public static StageAdapter zkAuthNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    public static StageAdapter authNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getFrontWindow());
             adapter.setProp("zkItem", nodeItem);
@@ -53,7 +53,7 @@ public class ShellZKViewFactory {
      * @param client   zk客户端
      * @return StageAdapter
      */
-    public static StageAdapter zkAddNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    public static StageAdapter addNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getFrontWindow());
             adapter.setProp("zkItem", nodeItem);
@@ -73,7 +73,7 @@ public class ShellZKViewFactory {
      * @param nodeItem zk节点
      * @param client   zk客户端
      */
-    public static StageAdapter zkAddACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
+    public static StageAdapter addACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getFrontWindow());
             adapter.setProp("zkItem", nodeItem);
@@ -94,7 +94,7 @@ public class ShellZKViewFactory {
      * @param client   zk客户端
      * @param acl      权限
      */
-    public static StageAdapter zkUpdateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
+    public static StageAdapter updateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getFrontWindow());
             adapter.setProp("acl", acl);
@@ -114,7 +114,7 @@ public class ShellZKViewFactory {
      *
      * @param connect zk连接
      */
-    public static void zkImportData(ShellConnect connect) {
+    public static void importData(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKDataImportController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
@@ -131,7 +131,7 @@ public class ShellZKViewFactory {
      * @param connect  zk连接
      * @param nodePath 节点路径
      */
-    public static void zkExportData(ShellConnect connect, String nodePath) {
+    public static void exportData(ShellConnect connect, String nodePath) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKDataExportController.class);
             adapter.setProp("connect", connect);
@@ -148,7 +148,7 @@ public class ShellZKViewFactory {
      *
      * @param connect zk连接
      */
-    public static void zkTransportData(ShellConnect connect) {
+    public static void transportData(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKDataTransportController.class);
             adapter.setProp("sourceConnect", connect);
@@ -165,7 +165,7 @@ public class ShellZKViewFactory {
      * @param connect 连接
      * @return 页面
      */
-    public static StageAdapter zkAuthAdd(ShellConnect connect) {
+    public static StageAdapter authAdd(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
             adapter.setProp("connect", connect);
@@ -184,7 +184,7 @@ public class ShellZKViewFactory {
      * @param client   客户端
      * @param nodePath 路径
      */
-    public static void zkHistoryData(ShellZKClient client, String nodePath) {
+    public static void historyData(ShellZKClient client, String nodePath) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class);
             adapter.setProp("client", client);

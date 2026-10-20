@@ -139,7 +139,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellRedisViewFactory.redisListElementAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.listElementAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

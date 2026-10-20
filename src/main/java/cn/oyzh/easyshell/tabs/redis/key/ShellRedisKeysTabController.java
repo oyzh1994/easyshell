@@ -288,7 +288,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
      */
     @FXML
     public void importData() {
-        ShellRedisViewFactory.redisImportData(this.shellConnect(), null);
+        ShellRedisViewFactory.importData(this.shellConnect(), null);
     }
 
     /**
@@ -296,7 +296,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
      */
     @FXML
     private void exportData() {
-        ShellRedisViewFactory.redisExportData(this.shellConnect(), null);
+        ShellRedisViewFactory.exportData(this.shellConnect(), null);
     }
 
     /**
@@ -304,7 +304,7 @@ public class ShellRedisKeysTabController extends ParentTabController {
      */
     @FXML
     private void transportData() {
-        ShellRedisViewFactory.redisTransportData(this.shellConnect(), null);
+        ShellRedisViewFactory.transportData(this.shellConnect(), null);
     }
 
     /**

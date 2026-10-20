@@ -72,6 +72,6 @@ public class ShellRedisKeyExtraController extends SubTabController {
      */
     @FXML
     protected void ttlUpdate() {
-        ShellRedisViewFactory.redisTtlKey(this.treeItem);
+        ShellRedisViewFactory.ttlKey(this.treeItem);
     }
 }

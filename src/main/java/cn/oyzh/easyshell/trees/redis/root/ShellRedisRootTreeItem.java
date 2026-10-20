@@ -57,14 +57,14 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
      * 导入redis键
      */
     public void importData() {
-        ShellRedisViewFactory.redisImportData(this.shellConnect(), null);
+        ShellRedisViewFactory.importData(this.shellConnect(), null);
     }
 
     /**
      * 导出redis键
      */
     public void exportData() {
-        ShellRedisViewFactory.redisExportData(this.shellConnect(), null);
+        ShellRedisViewFactory.exportData(this.shellConnect(), null);
     }
 
     @Override

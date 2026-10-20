@@ -390,7 +390,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     @FXML
     private void importData() {
-        ShellZKViewFactory.zkImportData(this.client.getShellConnect());
+        ShellZKViewFactory.importData(this.client.getShellConnect());
     }
 
     /**
@@ -398,7 +398,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     @FXML
     private void exportData() {
-        ShellZKViewFactory.zkExportData(this.client.getShellConnect(), null);
+        ShellZKViewFactory.exportData(this.client.getShellConnect(), null);
     }
 
     /**
@@ -406,7 +406,7 @@ public class ShellZKNodeTabController extends ParentTabController {
      */
     @FXML
     private void transportData() {
-        ShellZKViewFactory.zkTransportData(this.client.getShellConnect());
+        ShellZKViewFactory.transportData(this.client.getShellConnect());
     }
 
     /**

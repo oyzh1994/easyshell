@@ -204,7 +204,7 @@
   | `StageAdapter addJump()` | 添加跳板机 | parse `ShellAddJumpController`，`showAndWait` |
   | `StageAdapter updateJump(ShellJumpConfig)` | 修改跳板机 | parse `ShellUpdateJumpController`，setProp config，`showAndWait` |
 - 调用链：`ShellViewFactory 方法 → StageManager.parseStage/showStage/getStage → Controller`；弹窗类走 `PopupManager.parsePopup → PopupAdapter.showPopup`
-- 备注：类中大量 redis/zk 相关的 `addRedisKey`、`redisBatchOperation`、`zkAddNode` 等方法体已整体注释；所有方法统一 `try/catch` 后 `MessageBox.exception`。个别新增方法存在 `adapter.display()` 重复调用（Serial/VNC/Redis/ZK/RDP/Webdav/Mysql/Dameng）。
+- 备注：类中大量 redis/zk 相关的 `addKey`、`batchOperation`、`zkAddNode` 等方法体已整体注释；所有方法统一 `try/catch` 后 `MessageBox.exception`。个别新增方法存在 `adapter.display()` 重复调用（Serial/VNC/Redis/ZK/RDP/Webdav/Mysql/Dameng）。
 
 ## 2.2 dameng（cn.oyzh.easyshell.util.dameng）
 

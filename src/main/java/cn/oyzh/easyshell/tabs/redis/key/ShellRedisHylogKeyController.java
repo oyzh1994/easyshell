@@ -88,7 +88,7 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
      */
     @FXML
     private void addRow() {
-        StageAdapter adapter = ShellRedisViewFactory.redisHylogElementsAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.hylogElementsAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             // 刷新键值

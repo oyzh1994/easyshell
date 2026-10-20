@@ -44,7 +44,7 @@ public class ShellRedisViewFactory {
      * @param dbIndex db库节点
      * @param type    键类型
      */
-    public static StageAdapter addRedisKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
+    public static StageAdapter addKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getFrontWindow());
             adapter.setProp("type", type);
@@ -65,7 +65,7 @@ public class ShellRedisViewFactory {
      * @param client  客户端
      * @param dbIndex db索引
      */
-    public static void redisBatchOperation(ShellRedisClient client, Integer dbIndex) {
+    public static void batchOperation(ShellRedisClient client, Integer dbIndex) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getFrontWindow());
             adapter.setProp("client", client);
@@ -83,7 +83,7 @@ public class ShellRedisViewFactory {
      * @param treeItem 键节点
      * @return 页面
      */
-    public static StageAdapter redisMoveKey(ShellRedisKeyTreeItem treeItem) {
+    public static StageAdapter moveKey(ShellRedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -102,7 +102,7 @@ public class ShellRedisViewFactory {
      * @param treeItem 键节点
      * @return 页面
      */
-    public static StageAdapter redisCopyKey(ShellRedisKeyTreeItem treeItem) {
+    public static StageAdapter copyKey(ShellRedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -120,7 +120,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static void redisTtlKey(ShellRedisKeyTreeItem treeItem) {
+    public static void ttlKey(ShellRedisKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -136,7 +136,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisZSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
+    public static StageAdapter zSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -154,7 +154,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisZSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
+    public static StageAdapter zSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -172,7 +172,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisSetMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
+    public static StageAdapter setMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -190,7 +190,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisHashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
+    public static StageAdapter hashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -208,7 +208,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisListElementAdd(ShellRedisListKeyTreeItem treeItem) {
+    public static StageAdapter listElementAdd(ShellRedisListKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -226,7 +226,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisStreamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
+    public static StageAdapter streamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -244,7 +244,7 @@ public class ShellRedisViewFactory {
      *
      * @param treeItem 键节点
      */
-    public static StageAdapter redisHylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
+    public static StageAdapter hylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getFrontWindow());
             adapter.setProp("treeItem", treeItem);
@@ -263,7 +263,7 @@ public class ShellRedisViewFactory {
      * @param connect redis连接
      * @param dbIndex db索引
      */
-    public static void redisImportData(ShellConnect connect, Integer dbIndex) {
+    public static void importData(ShellConnect connect, Integer dbIndex) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisDataImportController.class);
             adapter.setProp("connect", connect);
@@ -281,7 +281,7 @@ public class ShellRedisViewFactory {
      * @param connect redis连接
      * @param dbIndex db索引
      */
-    public static void redisExportData(ShellConnect connect, Integer dbIndex) {
+    public static void exportData(ShellConnect connect, Integer dbIndex) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisDataExportController.class);
             adapter.setProp("connect", connect);
@@ -299,7 +299,7 @@ public class ShellRedisViewFactory {
      * @param connect redis连接
      * @param dbIndex db索引
      */
-    public static void redisTransportData(ShellConnect connect, Integer dbIndex) {
+    public static void transportData(ShellConnect connect, Integer dbIndex) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellRedisDataTransportController.class);
             adapter.setProp("sourceConnect", connect);

@@ -72,7 +72,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
     @FXML
     private void addACL() {
 //        ShellZKEventUtil.showAddACL(this.activeItem(), this.client());
-        StageAdapter adapter = ShellZKViewFactory.zkAddACL(this.activeItem(), this.client());
+        StageAdapter adapter = ShellZKViewFactory.addACL(this.activeItem(), this.client());
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.reloadACL();
@@ -108,7 +108,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
         if (acl == null) {
             return;
         }
-        StageAdapter adapter = ShellZKViewFactory.zkUpdateACL(this.activeItem(), this.client(), acl);
+        StageAdapter adapter = ShellZKViewFactory.updateACL(this.activeItem(), this.client(), acl);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.reloadACL();

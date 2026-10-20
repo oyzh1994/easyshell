@@ -401,7 +401,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      */
     private void dataHistory() {
         String nodePath = this.value.nodePath();
-        ShellZKViewFactory.zkHistoryData(this.client(), nodePath);
+        ShellZKViewFactory.historyData(this.client(), nodePath);
     }
 
     /**
@@ -462,7 +462,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      * 添加zk子节点
      */
     public void addNode() {
-        StageAdapter adapter = ShellZKViewFactory.zkAddNode(this, this.client());
+        StageAdapter adapter = ShellZKViewFactory.addNode(this, this.client());
         if (adapter == null) {
             return;
         }
@@ -477,7 +477,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      */
     public void authNode() {
         try {
-            StageAdapter adapter = ShellZKViewFactory.zkAuthNode(this, this.client());
+            StageAdapter adapter = ShellZKViewFactory.authNode(this, this.client());
             if (adapter == null) {
                 return;
             }
@@ -499,14 +499,14 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      * 导入zk节点
      */
     private void importData() {
-        ShellZKViewFactory.zkImportData(this.zkConnect());
+        ShellZKViewFactory.importData(this.zkConnect());
     }
 
     /**
      * 导出zk节点
      */
     private void exportData() {
-        ShellZKViewFactory.zkExportData(this.zkConnect(), this.nodePath());
+        ShellZKViewFactory.exportData(this.zkConnect(), this.nodePath());
     }
 
     @Override

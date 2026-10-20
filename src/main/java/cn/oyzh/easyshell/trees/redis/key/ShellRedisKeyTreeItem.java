@@ -157,14 +157,14 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
      * 修改ttl
      */
     private void updateTtl() {
-        ShellRedisViewFactory.redisTtlKey(this);
+        ShellRedisViewFactory.ttlKey(this);
     }
 
     /**
      * 移动键
      */
     private void moveKey() {
-        StageAdapter adapter = ShellRedisViewFactory.redisMoveKey(this);
+        StageAdapter adapter = ShellRedisViewFactory.moveKey(this);
         if (adapter == null) {
             return;
         }
@@ -184,7 +184,7 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
      * 复制键
      */
     private void copyKey() {
-        StageAdapter adapter = ShellRedisViewFactory.redisCopyKey(this);
+        StageAdapter adapter = ShellRedisViewFactory.copyKey(this);
         if (adapter == null) {
             return;
         }

@@ -97,28 +97,28 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             items.add(transportFile);
         } else if (this.isRedisType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
-                ShellRedisViewFactory.redisTransportData(this.value, null);
+                ShellRedisViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
             FXMenuItem importData = MenuItemHelper.importData(() -> {
-                ShellRedisViewFactory.redisImportData(this.value, null);
+                ShellRedisViewFactory.importData(this.value, null);
             });
             items.add(importData);
             FXMenuItem exportData = MenuItemHelper.exportData(() -> {
-                ShellRedisViewFactory.redisExportData(this.value, null);
+                ShellRedisViewFactory.exportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isZKType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
-                ShellZKViewFactory.zkTransportData(this.value);
+                ShellZKViewFactory.transportData(this.value);
             });
             items.add(transportData);
             FXMenuItem importData = MenuItemHelper.importData(() -> {
-                ShellZKViewFactory.zkImportData(this.value);
+                ShellZKViewFactory.importData(this.value);
             });
             items.add(importData);
             FXMenuItem exportData = MenuItemHelper.exportData(() -> {
-                ShellZKViewFactory.zkExportData(this.value, null);
+                ShellZKViewFactory.exportData(this.value, null);
             });
             items.add(exportData);
         } else if (this.isMysqlType()) {

@@ -105,7 +105,7 @@ public class ShellZKAuthTabController extends RichTabController {
      */
     @FXML
     private void addAuth() {
-        StageAdapter adapter = ShellZKViewFactory.zkAuthAdd(this.shellConnect());
+        StageAdapter adapter = ShellZKViewFactory.authAdd(this.shellConnect());
         if (adapter == null) {
             return;
         }

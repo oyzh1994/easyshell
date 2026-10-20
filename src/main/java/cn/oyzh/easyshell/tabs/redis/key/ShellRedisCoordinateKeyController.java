@@ -186,7 +186,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
     @FXML
     @Override
     protected void addRow() {
-        StageAdapter adapter = ShellRedisViewFactory.redisZSetCoordinateAdd(this.treeItem);
+        StageAdapter adapter = ShellRedisViewFactory.zSetCoordinateAdd(this.treeItem);
         // 操作成功
         if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
             this.firstPage();

@@ -198,28 +198,28 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
      */
     @FXML
     private void batchOperation() {
-        ShellRedisViewFactory.redisBatchOperation(this.client(), this.dbIndex);
+        ShellRedisViewFactory.batchOperation(this.client(), this.dbIndex);
     }
 
     /**
      * 传输数据
      */
     public void transportData() {
-        ShellRedisViewFactory.redisTransportData(this.shellConnect(), this.dbIndex);
+        ShellRedisViewFactory.transportData(this.shellConnect(), this.dbIndex);
     }
 
     /**
      * 导入键
      */
     public void importData() {
-        ShellRedisViewFactory.redisImportData(this.shellConnect(), this.dbIndex);
+        ShellRedisViewFactory.importData(this.shellConnect(), this.dbIndex);
     }
 
     /**
      * 导出键
      */
     public void exportData() {
-        ShellRedisViewFactory.redisExportData(this.shellConnect(), this.dbIndex);
+        ShellRedisViewFactory.exportData(this.shellConnect(), this.dbIndex);
     }
 
     /**
@@ -262,7 +262,7 @@ public class ShellRedisDatabaseTreeItem extends ShellRedisTreeItem<ShellRedisDat
      * 添加键
      */
     public void addKey() {
-        StageAdapter adapter = ShellRedisViewFactory.addRedisKey(this.client(), this.dbIndex, null);
+        StageAdapter adapter = ShellRedisViewFactory.addKey(this.client(), this.dbIndex, null);
         if (adapter != null) {
             String key = adapter.getProp("key");
             this.keyAdded(key);
