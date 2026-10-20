@@ -4,14 +4,18 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
 import cn.oyzh.easyshell.mariadb.database.MariadbDatabase;
+import cn.oyzh.easyshell.mariadb.event.MariadbEvent;
 import cn.oyzh.easyshell.mariadb.function.MariadbFunction;
 import cn.oyzh.easyshell.mariadb.procedure.MariadbProcedure;
 import cn.oyzh.easyshell.mariadb.table.MariadbTable;
 import cn.oyzh.easyshell.mariadb.view.MariadbView;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -32,7 +36,7 @@ public class ShellMariadbQueryUtil {
     /**
      * 关键字
      */
-    private static final List<String> DB_KEYWORDS = new ArrayList<>();
+    private static final Set<String> DB_KEYWORDS = new HashSet<>();
 
     /**
      * 数据库
@@ -58,6 +62,11 @@ public class ShellMariadbQueryUtil {
      * 过程
      */
     private static final List<MariadbProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
+
+    /**
+     * 事件
+     */
+    private static final List<MariadbEvent> DB_EVENTS = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
@@ -137,6 +146,8 @@ public class ShellMariadbQueryUtil {
         DB_KEYWORDS.add("LOWER");
         DB_KEYWORDS.add("TRIM");
         DB_KEYWORDS.add("ROUND");
+
+        DB_KEYWORDS.addAll(List.of(DBUtil.SQL_KEYWORDS));
     }
 
     /**
@@ -144,7 +155,7 @@ public class ShellMariadbQueryUtil {
      *
      * @return 关键字列表
      */
-    public static List<String> getKeywords() {
+    public static Set<String> getKeywords() {
         return DB_KEYWORDS;
     }
 
@@ -164,6 +175,34 @@ public class ShellMariadbQueryUtil {
      */
     public static List<MariadbTable> getTables() {
         return DB_TABLES;
+    }
+
+    /**
+     * 获取关键字列表
+     *
+     * @return 结果
+     */
+    public static Set<String> getDbKeywords() {
+        Set<String> list = new HashSet<>(getKeywords());
+//        for (DBName name : DB_DATABASES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_TABLES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_VIEWS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_FUNCTIONS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_PROCEDURES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_EVENTS) {
+//            list.add(name.getName());
+//        }
+        return list;
     }
 
     /**
@@ -255,6 +294,15 @@ public class ShellMariadbQueryUtil {
                             tasks.add(() -> {
                                 List<MariadbProcedure> procedures = client.selectProceduresSimple(database.getName());
                                 DB_PROCEDURES.addAll(procedures);
+                            });
+                        }
+                    }
+                    // 更新事件索引
+                    for (MariadbDatabase database : DB_DATABASES) {
+                        if (!ShellMariadbUtil.isInternalDatabase(database.getName())) {
+                            tasks.add(() -> {
+                                List<MariadbEvent> events = client.selectEventsSimple(database.getName());
+                                DB_EVENTS.addAll(events);
                             });
                         }
                     }

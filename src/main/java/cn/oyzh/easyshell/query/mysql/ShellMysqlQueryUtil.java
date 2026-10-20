@@ -4,14 +4,18 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.database.MysqlDatabase;
+import cn.oyzh.easyshell.mysql.event.MysqlEvent;
 import cn.oyzh.easyshell.mysql.function.MysqlFunction;
 import cn.oyzh.easyshell.mysql.procedure.MysqlProcedure;
 import cn.oyzh.easyshell.mysql.table.MysqlTable;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -32,7 +36,7 @@ public class ShellMysqlQueryUtil {
     /**
      * 关键字
      */
-    private static final List<String> DB_KEYWORDS = new ArrayList<>();
+    private static final Set<String> DB_KEYWORDS = new HashSet<>();
 
     /**
      * 数据库
@@ -58,6 +62,11 @@ public class ShellMysqlQueryUtil {
      * 过程
      */
     private static final List<MysqlProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
+
+    /**
+     * 事件
+     */
+    private static final List<MysqlEvent> DB_EVENTS = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
@@ -137,6 +146,8 @@ public class ShellMysqlQueryUtil {
         DB_KEYWORDS.add("LOWER");
         DB_KEYWORDS.add("TRIM");
         DB_KEYWORDS.add("ROUND");
+
+        DB_KEYWORDS.addAll(List.of(DBUtil.SQL_KEYWORDS));
     }
 
     /**
@@ -144,7 +155,7 @@ public class ShellMysqlQueryUtil {
      *
      * @return 关键字列表
      */
-    public static List<String> getKeywords() {
+    public static Set<String> getKeywords() {
         return DB_KEYWORDS;
     }
 
@@ -164,6 +175,34 @@ public class ShellMysqlQueryUtil {
      */
     public static List<MysqlTable> getTables() {
         return DB_TABLES;
+    }
+
+    /**
+     * 获取关键字列表
+     *
+     * @return 结果
+     */
+    public static Set<String> getDbKeywords() {
+        Set<String> list = new HashSet<>(getKeywords());
+//        for (DBName name : DB_DATABASES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_TABLES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_VIEWS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_FUNCTIONS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_PROCEDURES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_EVENTS) {
+//            list.add(name.getName());
+//        }
+        return list;
     }
 
     /**
@@ -255,6 +294,15 @@ public class ShellMysqlQueryUtil {
                             tasks.add(() -> {
                                 List<MysqlProcedure> procedures = client.selectProceduresSimple(database.getName());
                                 DB_PROCEDURES.addAll(procedures);
+                            });
+                        }
+                    }
+                    // 更新事件索引
+                    for (MysqlDatabase database : DB_DATABASES) {
+                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                            tasks.add(() -> {
+                                List<MysqlEvent> events = client.selectEventsSimple(database.getName());
+                                DB_EVENTS.addAll(events);
                             });
                         }
                     }

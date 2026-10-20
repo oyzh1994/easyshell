@@ -9,9 +9,12 @@ import cn.oyzh.easyshell.dameng.schema.DamengSchema;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -32,7 +35,7 @@ public class ShellDamengQueryUtil {
     /**
      * 关键字
      */
-    private static final List<String> DB_KEYWORDS = new ArrayList<>();
+    private static final Set<String> DB_KEYWORDS = new HashSet<>();
 
     /**
      * 数据库
@@ -137,6 +140,8 @@ public class ShellDamengQueryUtil {
         DB_KEYWORDS.add("LOWER");
         DB_KEYWORDS.add("TRIM");
         DB_KEYWORDS.add("ROUND");
+
+        DB_KEYWORDS.addAll(List.of(DBUtil.SQL_KEYWORDS));
     }
 
     /**
@@ -144,7 +149,7 @@ public class ShellDamengQueryUtil {
      *
      * @return 关键字列表
      */
-    public static List<String> getKeywords() {
+    public static Set<String> getKeywords() {
         return DB_KEYWORDS;
     }
 
@@ -164,6 +169,31 @@ public class ShellDamengQueryUtil {
      */
     public static List<DamengTable> getTables() {
         return DB_TABLES;
+    }
+
+    /**
+     * 获取关键字列表
+     *
+     * @return 结果
+     */
+    public static Set<String> getDbKeywords() {
+        Set<String> list = new HashSet<>(getKeywords());
+//        for (DBName name : DB_SCHEMAS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_TABLES) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_VIEWS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_FUNCTIONS) {
+//            list.add(name.getName());
+//        }
+//        for (DBName name : DB_PROCEDURES) {
+//            list.add(name.getName());
+//        }
+        return list;
     }
 
     /**

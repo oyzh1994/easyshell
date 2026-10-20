@@ -19,60 +19,60 @@ import java.util.List;
  */
 public class DamengTerminalCompleteHandler extends BaseTerminalCompleteHandler<DamengTerminalPane> {
 
-    /**
-     * 创建指定名称的命令处理器
-     *
-     * @param name 命令名称
-     * @return 命令处理器
-     */
-    private DamengTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
-        return new DamengTerminalCommandHandler<>() {
+//    /**
+//     * 创建指定名称的命令处理器
+//     *
+//     * @param name 命令名称
+//     * @return 命令处理器
+//     */
+//    private DamengTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
+//        return new DamengTerminalCommandHandler<>() {
+//
+//            @Override
+//            public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
+//                return terminal.eval(command.getCommand());
+//            }
+//
+//            @Override
+//            public String commandName() {
+//                return name;
+//            }
+//        };
+//    }
+//
+//    @Override
+//    protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(DamengTerminalPane terminal, String line) {
+//        List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
+//        if (line.isEmpty()) {
+//            for (String keyword : DBUtil.SQL_KEYWORDS) {
+//                list.add(this.newCommandHandler(keyword));
+//            }
+//        } else {
+//            list = super.findCommandHandlers(terminal, line);
+//            if (list.isEmpty()) {
+//                String upperLine = line.toUpperCase();
+//                for (String keyword : DBUtil.SQL_KEYWORDS) {
+//                    if (keyword.startsWith(upperLine)) {
+//                        list.add(this.newCommandHandler(keyword));
+//                    }
+//                }
+//            }
+//        }
+//        return list;
+//    }
 
-            @Override
-            public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
-                return terminal.eval(command.getCommand());
-            }
-
-            @Override
-            public String commandName() {
-                return name;
-            }
-        };
-    }
-
-    @Override
-    protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(DamengTerminalPane terminal, String line) {
-        List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
-        if (line.isEmpty()) {
-            for (String keyword : DBUtil.SQL_KEYWORDS) {
-                list.add(this.newCommandHandler(keyword));
-            }
-        } else {
-            list = super.findCommandHandlers(terminal, line);
-            if (list.isEmpty()) {
-                String upperLine = line.toUpperCase();
-                for (String keyword : DBUtil.SQL_KEYWORDS) {
-                    if (keyword.startsWith(upperLine)) {
-                        list.add(this.newCommandHandler(keyword));
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public boolean completion(String line, DamengTerminalPane terminal) {
-        List<TerminalCommandHandler<?, ?>> handlers = this.findCommandHandlers(terminal, line);
-        if (handlers.isEmpty()) {
-            this.noMatch(line, terminal);
-        } else if (handlers.size() == 1) {
-            this.oneMatch(line, terminal, handlers.getFirst());
-        } else {
-            this.multiMatch(line, terminal, handlers);
-        }
-        return true;
-    }
+//    @Override
+//    public boolean completion(String line, DamengTerminalPane terminal) {
+//        List<TerminalCommandHandler<?, ?>> handlers = this.findCommandHandlers(terminal, line);
+//        if (handlers.isEmpty()) {
+//            this.noMatch(line, terminal);
+//        } else if (handlers.size() == 1) {
+//            this.oneMatch(line, terminal, handlers.getFirst());
+//        } else {
+//            this.multiMatch(line, terminal, handlers);
+//        }
+//        return true;
+//    }
 
     /**
      * 当前实例

@@ -17,60 +17,60 @@ import java.util.List;
  */
 public class MysqlTerminalCompleteHandler extends BaseTerminalCompleteHandler<MysqlTerminalPane> {
 
-    /**
-     * 创建命令处理器
-     *
-     * @param name 命令名称
-     * @return 命令处理器
-     */
-    private MysqlTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
-        return new MysqlTerminalCommandHandler<>() {
+//    /**
+//     * 创建命令处理器
+//     *
+//     * @param name 命令名称
+//     * @return 命令处理器
+//     */
+//    private MysqlTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
+//        return new MysqlTerminalCommandHandler<>() {
+//
+//            @Override
+//            public TerminalExecuteResult execute(TerminalCommand command, MysqlTerminalPane terminal) {
+//                return terminal.eval(command.getCommand());
+//            }
+//
+//            @Override
+//            public String commandName() {
+//                return name;
+//            }
+//        };
+//    }
 
-            @Override
-            public TerminalExecuteResult execute(TerminalCommand command, MysqlTerminalPane terminal) {
-                return terminal.eval(command.getCommand());
-            }
-
-            @Override
-            public String commandName() {
-                return name;
-            }
-        };
-    }
-
-    @Override
-    protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MysqlTerminalPane terminal, String line) {
-        List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
-        if (line.isEmpty()) {
-            for (String keyword : DBUtil.SQL_KEYWORDS) {
-                list.add(this.newCommandHandler(keyword));
-            }
-        } else {
-            list = super.findCommandHandlers(terminal, line);
-            if (list.isEmpty()) {
-                String upperLine = line.toUpperCase();
-                for (String keyword : DBUtil.SQL_KEYWORDS) {
-                    if (keyword.startsWith(upperLine)) {
-                        list.add(this.newCommandHandler(keyword));
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public boolean completion(String line, MysqlTerminalPane terminal) {
-        List<TerminalCommandHandler<?, ?>> handlers = this.findCommandHandlers(terminal, line);
-        if (handlers.isEmpty()) {
-            this.noMatch(line, terminal);
-        } else if (handlers.size() == 1) {
-            this.oneMatch(line, terminal, handlers.getFirst());
-        } else {
-            this.multiMatch(line, terminal, handlers);
-        }
-        return true;
-    }
+//    @Override
+//    protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MysqlTerminalPane terminal, String line) {
+//        List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
+//        if (line.isEmpty()) {
+//            for (String keyword : DBUtil.SQL_KEYWORDS) {
+//                list.add(this.newCommandHandler(keyword));
+//            }
+//        } else {
+//            list = super.findCommandHandlers(terminal, line);
+//            if (list.isEmpty()) {
+//                String upperLine = line.toUpperCase();
+//                for (String keyword : DBUtil.SQL_KEYWORDS) {
+//                    if (keyword.startsWith(upperLine)) {
+//                        list.add(this.newCommandHandler(keyword));
+//                    }
+//                }
+//            }
+//        }
+//        return list;
+//    }
+//
+//    @Override
+//    public boolean completion(String line, MysqlTerminalPane terminal) {
+//        List<TerminalCommandHandler<?, ?>> handlers = this.findCommandHandlers(terminal, line);
+//        if (handlers.isEmpty()) {
+//            this.noMatch(line, terminal);
+//        } else if (handlers.size() == 1) {
+//            this.oneMatch(line, terminal, handlers.getFirst());
+//        } else {
+//            this.multiMatch(line, terminal, handlers);
+//        }
+//        return super.completion(line, terminal);
+//    }
 
     /**
      * 当前实例

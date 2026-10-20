@@ -33,6 +33,11 @@ public class MongoShowUseTerminalCommandHandler extends MongoTerminalCommandHand
     }
 
     @Override
+    public String commandSubName() {
+        return "<db>";
+    }
+
+    @Override
     public TerminalExecuteResult execute(TerminalCommand command, MongoTerminalPane terminal) {
         terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();

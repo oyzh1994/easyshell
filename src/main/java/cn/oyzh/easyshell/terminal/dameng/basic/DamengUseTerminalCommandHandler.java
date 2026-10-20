@@ -36,6 +36,11 @@ public class DamengUseTerminalCommandHandler extends DamengTerminalCommandHandle
     }
 
     @Override
+    public String commandSubName() {
+        return "<schema>;";
+    }
+
+    @Override
     public TerminalExecuteResult execute(TerminalCommand command, DamengTerminalPane terminal) {
         terminal.setSchema(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();

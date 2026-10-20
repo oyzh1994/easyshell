@@ -64,9 +64,10 @@ public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<Mo
     @Override
     protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MongoTerminalPane terminal, String line) {
         List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
-        if (line.isEmpty()) {
-            list.add(this.newCommandHandler("db.getCollection('')"));
-        } else if (collectionPattern().matcher(line).matches()) {
+//        if (line.isEmpty()) {
+//            list.add(this.newCommandHandler("db.getCollection('')"));
+//        }
+        if (collectionPattern().matcher(line).matches()) {
             long count = StringUtil.count(line, ".");
             Set<String> set = MongoScriptUtil.collectionFuncions();
             if (count == 1) {
@@ -103,18 +104,18 @@ public class MongoTerminalCompleteHandler extends BaseTerminalCompleteHandler<Mo
         return list;
     }
 
-    @Override
-    public boolean completion(String line, MongoTerminalPane terminal) {
-        List<TerminalCommandHandler<?, ?>> handlers = this.findCommandHandlers(terminal, line);
-        if (handlers.isEmpty()) {
-            this.noMatch(line, terminal);
-        } else if (handlers.size() == 1) {
-            this.oneMatch(line, terminal, handlers.getFirst());
-        } else {
-            this.multiMatch(line, terminal, handlers);
-        }
-        return true;
-    }
+//    @Override
+//    public boolean completion(String line, MongoTerminalPane terminal) {
+//        List<TerminalCommandHandler<?, ?>> handlers = this.findCommandHandlers(terminal, line);
+//        if (handlers.isEmpty()) {
+//            this.noMatch(line, terminal);
+//        } else if (handlers.size() == 1) {
+//            this.oneMatch(line, terminal, handlers.getFirst());
+//        } else {
+//            this.multiMatch(line, terminal, handlers);
+//        }
+//        return true;
+//    }
 
     /**
      * 当前实例

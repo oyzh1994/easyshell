@@ -36,6 +36,11 @@ public class MariadbUseTerminalCommandHandler extends MariadbTerminalCommandHand
     }
 
     @Override
+    public String commandSubName() {
+        return "<db>;";
+    }
+
+    @Override
     public TerminalExecuteResult execute(TerminalCommand command, MariadbTerminalPane terminal) {
         terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();

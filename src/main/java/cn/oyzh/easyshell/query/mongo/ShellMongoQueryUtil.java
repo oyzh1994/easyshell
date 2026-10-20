@@ -73,6 +73,18 @@ public class ShellMongoQueryUtil {
     }
 
     /**
+     * 获取数据库关键字集合
+     *
+     * @return 结果
+     */
+    public static Set<String> getDbKeywords() {
+        Set<String> set = new HashSet<>(getKeywords());
+//        set.addAll(DB_FUNCTIONS);
+//        set.addAll(DB_COLLECTIONS);
+        return set;
+    }
+
+    /**
      * 更新索引
      *
      * @param client 客户端

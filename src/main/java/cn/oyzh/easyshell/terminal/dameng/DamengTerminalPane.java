@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.query.dameng.ShellDamengQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -20,7 +21,9 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.text.Font;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 达梦终端文本域
@@ -411,4 +414,27 @@ public class DamengTerminalPane extends TerminalPane {
         this.completeHandler(DamengTerminalCompleteHandler.INSTANCE);
         super.initNode();
     }
+
+    /**
+     * 是否已初始化提示词
+     */
+    private boolean initPrompts;
+
+    @Override
+    public Set<String> getPrompts() {
+        if (!this.initPrompts) {
+            this.initPrompts = true;
+            Set<String> prompts = super.getPrompts();
+            if (prompts == null) {
+                prompts = new HashSet<>();
+            } else {
+                prompts = new HashSet<>(prompts);
+            }
+            // 设置内容提示符
+            prompts.addAll(ShellDamengQueryUtil.getDbKeywords());
+            this.setPrompts(prompts);
+        }
+        return super.getPrompts();
+    }
+
 }

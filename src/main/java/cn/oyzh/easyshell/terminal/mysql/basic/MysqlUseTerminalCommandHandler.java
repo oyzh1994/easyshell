@@ -36,6 +36,11 @@ public class MysqlUseTerminalCommandHandler extends MysqlTerminalCommandHandler<
     }
 
     @Override
+    public String commandSubName() {
+        return "<db>;";
+    }
+
+    @Override
     public TerminalExecuteResult execute(TerminalCommand command, MysqlTerminalPane terminal) {
         terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
         TerminalExecuteResult result = TerminalExecuteResult.ok();

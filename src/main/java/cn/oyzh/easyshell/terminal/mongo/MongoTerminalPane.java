@@ -372,9 +372,7 @@ public class MongoTerminalPane extends TerminalPane {
                 prompts = new HashSet<>(prompts);
             }
             // 设置内容提示符
-            prompts.addAll(ShellMongoQueryUtil.getKeywords());
-            prompts.addAll(ShellMongoQueryUtil.getCollections());
-            prompts.addAll(ShellMongoQueryUtil.getFunctions());
+            prompts.addAll(ShellMongoQueryUtil.getDbKeywords());
             this.setPrompts(prompts);
         }
         return super.getPrompts();

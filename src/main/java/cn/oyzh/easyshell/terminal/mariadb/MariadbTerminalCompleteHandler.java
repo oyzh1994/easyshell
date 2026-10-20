@@ -17,47 +17,47 @@ import java.util.List;
  */
 public class MariadbTerminalCompleteHandler extends BaseTerminalCompleteHandler<MariadbTerminalPane> {
 
-    /**
-     * 创建命令处理器
-     *
-     * @param name 命令名称
-     * @return 命令处理器
-     */
-    private MariadbTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
-        return new MariadbTerminalCommandHandler<>() {
-
-            @Override
-            public TerminalExecuteResult execute(TerminalCommand command, MariadbTerminalPane terminal) {
-                return terminal.eval(command.getCommand());
-            }
-
-            @Override
-            public String commandName() {
-                return name;
-            }
-        };
-    }
-
-    @Override
-    protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MariadbTerminalPane terminal, String line) {
-        List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
-        if (line.isEmpty()) {
-            for (String keyword : DBUtil.SQL_KEYWORDS) {
-                list.add(this.newCommandHandler(keyword));
-            }
-        } else {
-            list = super.findCommandHandlers(terminal, line);
-            if (list.isEmpty()) {
-                String upperLine = line.toUpperCase();
-                for (String keyword : DBUtil.SQL_KEYWORDS) {
-                    if (keyword.startsWith(upperLine)) {
-                        list.add(this.newCommandHandler(keyword));
-                    }
-                }
-            }
-        }
-        return list;
-    }
+//    /**
+//     * 创建命令处理器
+//     *
+//     * @param name 命令名称
+//     * @return 命令处理器
+//     */
+//    private MariadbTerminalCommandHandler<TerminalCommand> newCommandHandler(String name) {
+//        return new MariadbTerminalCommandHandler<>() {
+//
+//            @Override
+//            public TerminalExecuteResult execute(TerminalCommand command, MariadbTerminalPane terminal) {
+//                return terminal.eval(command.getCommand());
+//            }
+//
+//            @Override
+//            public String commandName() {
+//                return name;
+//            }
+//        };
+//    }
+//
+//    @Override
+//    protected List<TerminalCommandHandler<?, ?>> findCommandHandlers(MariadbTerminalPane terminal, String line) {
+//        List<TerminalCommandHandler<?, ?>> list = new ArrayList<>();
+//        if (line.isEmpty()) {
+//            for (String keyword : DBUtil.SQL_KEYWORDS) {
+//                list.add(this.newCommandHandler(keyword));
+//            }
+//        } else {
+//            list = super.findCommandHandlers(terminal, line);
+//            if (list.isEmpty()) {
+//                String upperLine = line.toUpperCase();
+//                for (String keyword : DBUtil.SQL_KEYWORDS) {
+//                    if (keyword.startsWith(upperLine)) {
+//                        list.add(this.newCommandHandler(keyword));
+//                    }
+//                }
+//            }
+//        }
+//        return list;
+//    }
 
     @Override
     public boolean completion(String line, MariadbTerminalPane terminal) {

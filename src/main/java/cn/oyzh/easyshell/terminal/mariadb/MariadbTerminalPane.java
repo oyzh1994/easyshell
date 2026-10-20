@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbExecuteResult;
 import cn.oyzh.easyshell.mariadb.record.MariadbRecord;
+import cn.oyzh.easyshell.query.mariadb.ShellMariadbQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -20,7 +21,9 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.text.Font;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * MariaDB终端文本域
@@ -319,7 +322,7 @@ public class MariadbTerminalPane extends TerminalPane {
         sb.append(this.lineEndingText());
 
         for (int i = 0; i < colCount; i++) {
-            sb.append("-".repeat(colWidths[i]));
+            sb.repeat("-", colWidths[i]);
             sb.append("  ");
         }
         sb.append(this.lineEndingText());
@@ -371,6 +374,28 @@ public class MariadbTerminalPane extends TerminalPane {
         this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
         this.completeHandler(MariadbTerminalCompleteHandler.INSTANCE);
         super.initNode();
+    }
+
+    /**
+     * 是否已初始化提示词
+     */
+    private boolean initPrompts;
+
+    @Override
+    public Set<String> getPrompts() {
+        if (!this.initPrompts) {
+            this.initPrompts = true;
+            Set<String> prompts = super.getPrompts();
+            if (prompts == null) {
+                prompts = new HashSet<>();
+            } else {
+                prompts = new HashSet<>(prompts);
+            }
+            // 设置内容提示符
+            prompts.addAll(ShellMariadbQueryUtil.getDbKeywords());
+            this.setPrompts(prompts);
+        }
+        return super.getPrompts();
     }
 
     // @Override
