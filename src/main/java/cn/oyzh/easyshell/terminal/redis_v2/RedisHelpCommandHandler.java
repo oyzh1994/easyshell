@@ -34,7 +34,8 @@ public class RedisHelpCommandHandler extends RedisTerminalCommandHandler<Termina
             words = words.subList(1, words.size());
         }
         if (words.isEmpty()) {
-            return String.join(lineEnding, registry.commandNames());
+            return "";
+//            return String.join(lineEnding, registry.commandNames());
         }
         RedisCommandDescriptor command = registry.find(words);
         if (command == null) {

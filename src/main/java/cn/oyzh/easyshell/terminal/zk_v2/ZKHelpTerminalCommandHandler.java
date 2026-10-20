@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.terminal.zk_v2;
 
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.fx.terminal.Terminal;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
@@ -17,17 +16,12 @@ import java.util.List;
  */
 public class ZKHelpTerminalCommandHandler extends HelpTerminalCommandHandler {
 
-    /**
-     * 在等宽终端中输出静态命令和动态发现的 ZooKeeper 命令。
-     */
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, Terminal terminal) {
         TerminalExecuteResult result = new TerminalExecuteResult();
-        List<String> list = new ArrayList<>();
-        list.add("help");
-        list.add("clear");
-        list.addAll(ZKCommandRegistry.commandNames());
-        result.setResult(TextUtil.format(list));
+        if (terminal instanceof ZKTerminalPane terminalPane) {
+            result.setResult(super.formatOutput(terminalPane.getPrompts()));
+        }
         return result;
     }
 }

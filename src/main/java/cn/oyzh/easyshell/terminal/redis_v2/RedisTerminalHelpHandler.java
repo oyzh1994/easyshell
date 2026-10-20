@@ -15,6 +15,6 @@ public class RedisTerminalHelpHandler extends BaseTerminalHelpHandler<RedisTermi
 
     @Override
     public void help(String input, RedisTerminalPane terminal) {
-        terminal.outputLine(RedisHelpCommandHandler.render(input, terminal.registry(), terminal.lineEndingText()));
+        terminal.outputByPrompt(RedisHelpCommandHandler.render(input, terminal.registry(), terminal.lineEndingText()));
     }
 }
