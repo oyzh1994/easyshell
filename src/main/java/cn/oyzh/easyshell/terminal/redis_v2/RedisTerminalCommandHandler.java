@@ -11,8 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-10-20
  */
-public abstract class RedisTerminalCommandHandler<C extends TerminalCommand>
-        extends BaseTerminalCommandHandler<C, RedisTerminalPane> {
+public abstract class RedisTerminalCommandHandler<C extends TerminalCommand> extends BaseTerminalCommandHandler<C, RedisTerminalPane> {
 
     @Override
     public C parseCommand(String line) throws Exception {

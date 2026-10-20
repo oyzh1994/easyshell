@@ -19,9 +19,11 @@ public class ZKHelpTerminalCommandHandler extends HelpTerminalCommandHandler {
     @Override
     public TerminalExecuteResult execute(TerminalCommand command, Terminal terminal) {
         TerminalExecuteResult result = new TerminalExecuteResult();
-        if (terminal instanceof ZKTerminalPane terminalPane) {
-            result.setResult(super.formatOutput(terminalPane.getPrompts()));
-        }
+        List<String> list = new ArrayList<>();
+        list.add("help");
+        list.add("clear");
+        list.addAll(ZKCommandRegistry.commandNames());
+        result.setResult(super.formatOutput(list));
         return result;
     }
 }
