@@ -1,17 +1,13 @@
 package cn.oyzh.easyshell.terminal.zk_v2;
 
-import org.apache.zookeeper.cli.CliCommand;
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.ClassUtil;
 import org.apache.zookeeper.ZooKeeperMain;
+import org.apache.zookeeper.cli.CliCommand;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -19,9 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
 
 /**
  * 动态发现 ZooKeeper CLI 命令，避免逐命令硬编码。
@@ -80,87 +74,25 @@ public final class ZKCommandRegistry {
         return Map.copyOf(commands);
     }
 
-    @SuppressWarnings("unchecked")
     private static Map<String, CliCommand> cliCommandMap() {
         Map<String, CliCommand> commands = new LinkedHashMap<>();
         try {
-            Field field = ZooKeeperMain.class.getDeclaredField("commandMapCli");
-            field.setAccessible(true);
-            Map<String, CliCommand> registeredCommands = (Map<String, CliCommand>) field.get(null);
-            commands.putAll(registeredCommands);
-        } catch (Exception ignored) {
-        }
-        scanCommandClasses().forEach(command -> commands.putIfAbsent(command.getCmdStr(), command));
-        return commands;
-    }
-
-    private static List<CliCommand> scanCommandClasses() {
-        String packagePath = CliCommand.class.getPackageName().replace('.', '/');
-        Map<String, CliCommand> commands = new LinkedHashMap<>();
-        try {
-            Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(packagePath);
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                if ("jar".equals(resource.getProtocol())) {
-                    scanJar((JarURLConnection) resource.openConnection(), packagePath, commands);
-                } else if ("file".equals(resource.getProtocol())) {
-                    scanDirectory(Path.of(resource.toURI()), commands);
+            commands.putAll(ZooKeeperMain.commandMapCli);
+            ClassUtil.scanClasses(CliCommand.class.getPackageName(), (Predicate<Class<?>>) aClass -> {
+                if (!Modifier.isAbstract(aClass.getModifiers()) && CliCommand.class.isAssignableFrom(aClass)) {
+                    CliCommand command = (CliCommand) ClassUtil.newInstance(aClass);
+                    if (command != null) {
+                        commands.putIfAbsent(command.getCmdStr(), command);
+                    } else {
+                        JulLog.warn("init CliCommand:{} fail", aClass);
+                    }
                 }
-            }
+                return false;
+            });
         } catch (Exception ex) {
-            throw new IllegalStateException("Unable to scan ZooKeeper CLI commands", ex);
+            ex.printStackTrace();
         }
-        return List.copyOf(commands.values());
-    }
-
-    private static void scanJar(JarURLConnection connection, String packagePath,
-                                Map<String, CliCommand> commands) throws Exception {
-        connection.setUseCaches(false);
-        try (JarFile jarFile = connection.getJarFile()) {
-            Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                String name = entry.getName();
-                if (entry.isDirectory() || !name.startsWith(packagePath + "/") || !name.endsWith(".class")) {
-                    continue;
-                }
-                String className = name.substring(0, name.length() - 6).replace('/', '.');
-                addCommandClass(className, commands);
-            }
-        }
-    }
-
-    private static void scanDirectory(Path directory, Map<String, CliCommand> commands) throws Exception {
-        if (!Files.isDirectory(directory)) {
-            return;
-        }
-        String packageName = CliCommand.class.getPackageName();
-        try (Stream<Path> paths = Files.walk(directory)) {
-            for (Path path : paths.filter(Files::isRegularFile).filter(file -> file.toString().endsWith(".class")).toList()) {
-                String fileName = directory.relativize(path).toString();
-                String className = packageName + '.' + fileName
-                        .substring(0, fileName.length() - 6)
-                        .replace(java.io.File.separatorChar, '.');
-                addCommandClass(className, commands);
-            }
-        }
-    }
-
-    private static void addCommandClass(String className, Map<String, CliCommand> commands) {
-        try {
-            Class<?> type = Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-            if (!CliCommand.class.isAssignableFrom(type)
-                    || type.isInterface()
-                    || Modifier.isAbstract(type.getModifiers())
-                    || type.getDeclaredConstructor().getParameterCount() != 0) {
-                return;
-            }
-            Constructor<?> constructor = type.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            CliCommand command = (CliCommand) constructor.newInstance();
-            commands.putIfAbsent(command.getCmdStr(), command);
-        } catch (ReflectiveOperationException | LinkageError ignored) {
-        }
+        return commands;
     }
 
     public static Optional<ZKCommandDescriptor> find(String command) {

@@ -39,7 +39,8 @@ public abstract class ZKPathTerminalCommandHandler<C extends TerminalCommand> ex
                 }
             }
             if (list.size() > 1) {
-                String text = TextUtil.beautifyFormat(list, 4, 0);
+//                String text = TextUtil.beautifyFormat(list, 4, 0);
+                String text = TextUtil.format(list);
                 terminal.outputLine(text);
                 terminal.outputPrompt();
                 terminal.outputByAppend(line);

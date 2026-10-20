@@ -10,7 +10,7 @@ import cn.oyzh.fx.terminal.util.TerminalManager;
 public class ZKTerminalManager {
 
     public static void registerHandlers() {
-//        TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, HelpTerminalCommandHandler.class);
+        TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKHelpTerminalCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ClearTerminalCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKHelpCommandHandler.class);
         TerminalManager.registerHandler(ZKTerminalPane.TERMINAL_NAME, ZKConnectCommandHandler.class);

@@ -66,7 +66,8 @@ public class ZKDynamicCommandHandler extends ZKTerminalCommandHandler<TerminalCo
         if (options.size() == 1) {
             terminal.coverInput(line.substring(0, line.length() - input.length()) + options.getFirst());
         } else {
-            terminal.outputByPrompt(TextUtil.beautifyFormat(options, 4, 0));
+//            terminal.outputByPrompt(TextUtil.beautifyFormat(options, 4, 0));
+            terminal.outputByPrompt(TextUtil.format(options));
             terminal.coverInput(line);
         }
         terminal.moveCaretEnd();
@@ -88,7 +89,8 @@ public class ZKDynamicCommandHandler extends ZKTerminalCommandHandler<TerminalCo
             if (matches.size() == 1) {
                 terminal.coverInput(line.substring(0, line.length() - path.length()) + matches.getFirst());
             } else {
-                terminal.outputByPrompt(TextUtil.beautifyFormat(matches, 4, 0));
+//                terminal.outputByPrompt(TextUtil.beautifyFormat(matches, 4, 0));
+                terminal.outputByPrompt(TextUtil.format(matches));
                 terminal.coverInput(line);
             }
             terminal.moveCaretEnd();

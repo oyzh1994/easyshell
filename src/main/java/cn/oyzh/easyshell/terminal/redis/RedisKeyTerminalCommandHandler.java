@@ -36,7 +36,8 @@ public abstract class RedisKeyTerminalCommandHandler<C extends TerminalCommand> 
                 if (keys.size() == 1) {
                     terminal.coverInput(words[0] + " " + CollectionUtil.getFirst(keys));
                 } else {
-                    String textFormat = TextUtil.beautifyFormat(keys, 3, 0);
+//                    String textFormat = TextUtil.beautifyFormat(keys, 3, 0);
+                    String textFormat = TextUtil.format(keys);
                     terminal.outputByPrompt(textFormat);
                     terminal.outputPrompt();
                     terminal.output(line);
