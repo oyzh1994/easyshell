@@ -38,7 +38,14 @@ public class ZKHelpCommandHandler extends ZKTerminalCommandHandler<TerminalComma
         if (commandName.isEmpty()) {
             return "";
         }
-        return ZKCommandRegistry.find(commandName).map(command -> command.name() + (command.usage().isBlank() ? "" : " " + command.usage())).orElse("Unknown command: " + commandName);
+        List<ZKCommandDescriptor> descriptors = ZKCommandRegistry.findAll(commandName);
+        if (descriptors.isEmpty()) {
+            return "Unknown command: " + commandName;
+        }
+        return descriptors.stream()
+                .map(command -> command.name() + (command.usage().isBlank() ? "" : " " + command.usage()))
+                .distinct()
+                .collect(java.util.stream.Collectors.joining(System.lineSeparator()));
     }
 
     @Override

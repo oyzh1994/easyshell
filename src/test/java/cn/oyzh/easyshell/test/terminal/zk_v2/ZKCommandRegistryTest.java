@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ZKCommandRegistryTest {
@@ -21,7 +22,7 @@ public class ZKCommandRegistryTest {
             "listquota", "ls2", "ls", "reconfig", "removewatches", "rmr",
             "setAcl", "setquota", "set", "stat", "sync", "whoami",
             "conf", "cons", "crst", "dirs", "dump", "envi", "kill", "mntr",
-            "reqs", "ruok", "srst", "srvr", "stat4", "wchc", "wchp", "wchs"
+            "reqs", "ruok", "srst", "srvr", "wchc", "wchp", "wchs"
     );
 
     @Test
@@ -46,10 +47,26 @@ public class ZKCommandRegistryTest {
     }
 
     @Test
-    public void keepsLegacyCliAliases() {
+    public void discoversDeprecatedCliCommands() {
         assertTrue(ZKCommandRegistry.find("ls").isPresent());
         assertTrue(ZKCommandRegistry.find("ls2").isPresent());
-        assertEquals(ZKCommandRegistry.find("deleteall").orElseThrow().usage(),
-                ZKCommandRegistry.find("rmr").orElseThrow().usage());
+        assertTrue(ZKCommandRegistry.find("deleteall").isPresent());
+        assertTrue(ZKCommandRegistry.find("rmr").isPresent());
+    }
+
+    @Test
+    public void resolvesStatCommandByArgumentShape() {
+        ZKCommandDescriptor cliCommand = ZKCommandRegistry.find(List.of("stat", "/root")).orElseThrow();
+        assertEquals("stat", cliCommand.name());
+        assertEquals("path", cliCommand.usage());
+        assertEquals(ZKCommandDescriptor.Type.CLI, cliCommand.type());
+
+        ZKCommandDescriptor fourLetterWord = ZKCommandRegistry.find(List.of("stat")).orElseThrow();
+        assertEquals("stat", fourLetterWord.name());
+        assertEquals("", fourLetterWord.usage());
+        assertEquals(ZKCommandDescriptor.Type.FOUR_LETTER_WORD, fourLetterWord.type());
+
+        assertEquals(2, ZKCommandRegistry.findAll("stat").size());
+        assertFalse(ZKCommandRegistry.contains("stat4"));
     }
 }

@@ -36,8 +36,7 @@ public class ZKCommandExecutor {
         }
         return switch (descriptor.type()) {
             case CLI -> executeCli(descriptor.name(), args, zooKeeper);
-            case FOUR_LETTER_WORD -> FourLetterWordMain.send4LetterWord(host, port,
-                    descriptor.name().equals("stat4") ? "stat" : descriptor.name());
+            case FOUR_LETTER_WORD -> FourLetterWordMain.send4LetterWord(host, port, descriptor.name());
             case TERMINAL -> executeTerminal(descriptor.name());
         };
     }

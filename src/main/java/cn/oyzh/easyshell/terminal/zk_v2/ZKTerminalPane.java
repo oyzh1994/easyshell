@@ -326,7 +326,7 @@ public class ZKTerminalPane extends TerminalPane {
             return terminalResult;
         }
         String commandName = args.getFirst();
-        ZKCommandDescriptor descriptor = ZKCommandRegistry.find(commandName).orElse(null);
+        ZKCommandDescriptor descriptor = ZKCommandRegistry.find(args).orElse(null);
         if (descriptor == null) {
             terminalResult.setErrMsg("Command not found: " + commandName);
             return terminalResult;
