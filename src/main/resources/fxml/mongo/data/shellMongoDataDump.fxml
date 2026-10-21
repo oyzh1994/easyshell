@@ -9,13 +9,14 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataDumpController" realWidth="700"
-        realHeight="600">
+        realHeight="700">
     <FXHeaderBar/>
     <InfoLabel text="%base.connect">
         <VBox.margin>
@@ -54,17 +55,28 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <DBDataDumpTypeComboBox initIndex="0" fx:id="dataType" realHeight="30" flexWidth="100% - 180">
+    <DBDataDumpTypeComboBox groupId="exec" initIndex="0" fx:id="dataType" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
     </DBDataDumpTypeComboBox>
+    <InfoLabel text="%base.options">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.db.export.tip1"
+                selected="true">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXCheckBox>
     <InfoLabel text="%base.processMessage">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 390">
+    <MsgTextArea lineLimit="300" fx:id="dumpMsg" flexWidth="100% - 180" flexHeight="100% - 460">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

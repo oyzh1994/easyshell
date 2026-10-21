@@ -46,40 +46,64 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
             throw new RuntimeException("parameter invalid!");
         }
         this.message("Dump Starting");
-        this.writeHeader();
         try {
+            this.writeHeader();
             if (this.dumpType == 1) {
-                this.dumpCollection();
-                this.dumpFunction();
+                try {
+                    this.dumpCollection();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
+                try {
+                    this.dumpFunction();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
             } else if (this.dumpType == 2) {
-                MongoCollection collection = new MongoCollection();
-                collection.setDbName(this.dbName);
-                collection.setName(this.tableName);
-                this.dumpCollection(collection);
-                this.processedIncr();
+                try {
+                    MongoCollection collection = new MongoCollection();
+                    collection.setDbName(this.dbName);
+                    collection.setName(this.tableName);
+                    this.dumpCollection(collection);
+                    this.processedIncr();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
             }
-            this.writeTail();
-            this.fileWriter.close();
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleDumpError(ex);
+        } finally {
+            try {
+                this.writeTail();
+            } catch (Exception ex) {
+                this.handleDumpError(ex);
+            } finally {
+                try {
+                    this.fileWriter.close();
+                } finally {
+                    this.message("Dump Finished");
+                    this.message("Dump File To -> " + this.dumpFile.getPath());
+                }
+            }
         }
-        this.message("Dump Finished");
-        this.message("Dump File To -> " + this.dumpFile.getPath());
     }
 
     /**
      * 转储所有集合
      *
-     * @throws InterruptedException 中断异常
-     * @throws IOException          IO异常
+     * @throws Exception 异常
      */
-    protected void dumpCollection() throws InterruptedException, IOException {
+    protected void dumpCollection() throws Exception {
         List<MongoCollection> collections = this.dbClient.listCollections(this.dbName);
         if (CollectionUtil.isNotEmpty(collections)) {
             for (MongoCollection table : collections) {
-                this.checkInterrupt();
-                this.dumpCollection(table);
-                this.processedIncr();
+                try {
+                    this.checkInterrupt();
+                    this.dumpCollection(table);
+                    this.processedIncr();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
             }
         }
     }
@@ -88,10 +112,9 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
      * 转储指定集合
      *
      * @param collection 集合
-     * @throws InterruptedException 中断异常
-     * @throws IOException          IO异常
+     * @throws Exception 异常
      */
-    protected void dumpCollection(MongoCollection collection) throws InterruptedException, IOException {
+    protected void dumpCollection(MongoCollection collection) throws Exception {
         String line0 = "";
         String line1 = "// ----------------------------";
         String line2 = "// Collection structure for " + collection.getName();
@@ -110,10 +133,9 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
      * 转储集合记录
      *
      * @param tableName 集合名称
-     * @throws InterruptedException 中断异常
-     * @throws IOException          IO异常
+     * @throws Exception 异常
      */
-    protected void dumpRecord(String tableName) throws InterruptedException, IOException {
+    protected void dumpRecord(String tableName) throws Exception {
         long start = 0;
         String line0 = "";
         String line1 = "// ----------------------------";
@@ -121,27 +143,33 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         String line3 = "// ----------------------------";
         this.fileWriter.appendLines(List.of(line0, line1, line2, line3));
         while (true) {
-            this.checkInterrupt();
-            long start1 = System.currentTimeMillis();
-            MongoSelectRecordParam param = new MongoSelectRecordParam();
-            param.setStart(start);
-            param.setReadonly(true);
-            param.setDbName(this.dbName);
-            param.setCollectionName(tableName);
-            param.setLimit((long) this.queryLimit);
-            List<MongoRecord> records = this.dbClient.selectCollectionRecords(param);
-            if (CollectionUtil.isEmpty(records)) {
-                break;
+            long nextStart = start + this.queryLimit;
+            try {
+                this.checkInterrupt();
+                long start1 = System.currentTimeMillis();
+                MongoSelectRecordParam param = new MongoSelectRecordParam();
+                param.setStart(start);
+                param.setReadonly(true);
+                param.setDbName(this.dbName);
+                param.setCollectionName(tableName);
+                param.setLimit((long) this.queryLimit);
+                List<MongoRecord> records = this.dbClient.selectCollectionRecords(param);
+                if (CollectionUtil.isEmpty(records)) {
+                    break;
+                }
+                long end1 = System.currentTimeMillis();
+                JulLog.info("查询耗时: {}ms", (end1 - start1));
+                long start2 = System.currentTimeMillis();
+                List<String> inserts = ShellMongoDataUtil.toInsertScript(records);
+                this.fileWriter.appendLines(inserts);
+                long end2 = System.currentTimeMillis();
+                JulLog.info("写入耗时: {}ms", (end2 - start2));
+                this.processed(records.size());
+            } catch (Exception ex) {
+                this.handleDumpError(ex);
+            } finally {
+                start = nextStart;
             }
-            long end1 = System.currentTimeMillis();
-            JulLog.info("查询耗时: {}ms", (end1 - start1));
-            long start2 = System.currentTimeMillis();
-            List<String> inserts = ShellMongoDataUtil.toInsertScript(records);
-            this.fileWriter.appendLines(inserts);
-            long end2 = System.currentTimeMillis();
-            JulLog.info("写入耗时: {}ms", (end2 - start2));
-            start += this.queryLimit;
-            this.processed(records.size());
         }
     }
 
@@ -154,33 +182,37 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         List<MongoFunction> functions = this.dbClient.listFunctions(this.dbName);
         if (CollectionUtil.isNotEmpty(functions)) {
             for (MongoFunction function : functions) {
-                this.checkInterrupt();
-                this.message("Dumping Function " + function.getName());
-                String line0 = "";
-                String line1 = "// ----------------------------";
-                String line2 = "// Function structure for " + function.getName();
-                String line3 = "// ----------------------------";
+                try {
+                    this.checkInterrupt();
+                    this.message("Dumping Function " + function.getName());
+                    String line0 = "";
+                    String line1 = "// ----------------------------";
+                    String line2 = "// Function structure for " + function.getName();
+                    String line3 = "// ----------------------------";
 
-                String id = ShellMongoDataUtil.buildRecordValue(function.getName(), 0).toString();
-                String dropFunction = """
-                        db.getCollection('system.js').deleteOne({
-                            _id: $id
-                        });
-                        """;
-                dropFunction = dropFunction.replace("$id", id);
+                    String id = ShellMongoDataUtil.buildRecordValue(function.getName(), 0).toString();
+                    String dropFunction = """
+                            db.getCollection('system.js').deleteOne({
+                                _id: $id
+                            });
+                            """;
+                    dropFunction = dropFunction.replace("$id", id);
 
-                String createDefinition = """
-                        db.getCollection('system.js').insert({
-                            _id: $id,
-                            value: Code('$code')
-                        })
-                        """;
-                String code = function.getCode();
-                code = code.replace("\r", "\\r");
-                code = code.replace("\n", "\\n");
-                createDefinition = createDefinition.replace("$id", id).replace("$code", code);
-                this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, createDefinition));
-                this.processedIncr();
+                    String createDefinition = """
+                            db.getCollection('system.js').insert({
+                                _id: $id,
+                                value: Code('$code')
+                            })
+                            """;
+                    String code = function.getCode();
+                    code = code.replace("\r", "\\r");
+                    code = code.replace("\n", "\\n");
+                    createDefinition = createDefinition.replace("$id", id).replace("$code", code);
+                    this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, createDefinition));
+                    this.processedIncr();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
             }
         }
     }
@@ -238,4 +270,3 @@ public class ShellMongoDataDumpHandler extends DBDataDumpHandler {
         this.dbClient = dbClient;
     }
 }
-

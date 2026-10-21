@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -112,6 +113,12 @@ public class ShellDamengDataDumpController extends StageController {
     private DBDataDumpTypeComboBox dataType;
 
     /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithErrors;
+
+    /**
      * 转储操作任务
      */
     private Thread execTask;
@@ -190,6 +197,7 @@ public class ShellDamengDataDumpController extends StageController {
                 .setTableName(this.table.getText())
                 .setDumpType((byte) this.dumpType)
                 .setDataType((byte) this.dataType.getSelectedIndex());
+        this.dumpHandler.setContinueWithErrors(this.continueWithErrors.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
         this.stage.appendTitle("===" + I18nHelper.dumpProcessing() + "===");
         // 执行转储
