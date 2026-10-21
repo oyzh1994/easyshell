@@ -79,34 +79,54 @@ public class ShellMysqlDataImportHandler extends DBDataImportHandler<String> {
      */
     protected void importRecord(ShellMysqlDataImportFile file) throws Exception {
         String tableName = file.getTargetTableName();
-        this.message("Importing Table " + tableName);
-        this.message("Importing Records of Table " + tableName);
-        // 复制模式
-        if (this.config.isCopyMode()) {
-            this.dbClient.clearTable(this.name, tableName);
-        }
-        try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
-            // 获取数据库表字段
-            MysqlColumns dbColumns = new MysqlColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.name, tableName)));
-            if (!dbColumns.isEmpty()) {
-                while (true) {
-                    this.checkInterrupt();
-                    long start1 = System.currentTimeMillis();
-                    List<MysqlRecord> records = this.readRecords(reader, this.readLimit);
-                    if (CollectionUtil.isEmpty(records)) {
-                        break;
-                    }
-                    long end1 = System.currentTimeMillis();
-                    JulLog.info("读取耗时: {}ms", (end1 - start1));
-                    long start2 = System.currentTimeMillis();
-                    this.writeRecord(dbColumns, records);
-                    long end2 = System.currentTimeMillis();
-                    JulLog.info("写入耗时: {}ms", (end2 - start2));
-                    // this.processed(records.size());
-                }
+        try {
+            this.message("Importing Table " + tableName);
+            this.message("Importing Records of Table " + tableName);
+            // 复制模式
+            if (this.config.isCopyMode()) {
+                this.dbClient.clearTable(this.name, tableName);
             }
-            // 收尾批量插入
-            this.doBatchInsert();
+            try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
+                // 获取数据库表字段
+                MysqlColumns dbColumns = new MysqlColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(this.name, tableName)));
+                if (!dbColumns.isEmpty()) {
+                    while (true) {
+                        this.checkInterrupt();
+                        try {
+                            long start1 = System.currentTimeMillis();
+                            List<MysqlRecord> records = this.readRecords(reader, this.readLimit);
+                            if (CollectionUtil.isEmpty(records)) {
+                                break;
+                            }
+                            long end1 = System.currentTimeMillis();
+                            JulLog.info("读取耗时: {}ms", (end1 - start1));
+                            long start2 = System.currentTimeMillis();
+                            this.writeRecord(dbColumns, records);
+                            long end2 = System.currentTimeMillis();
+                            JulLog.info("写入耗时: {}ms", (end2 - start2));
+                            // this.processed(records.size());
+                        } catch (Exception ex) {
+                            if (this.isContinueWithErrors()) {
+                                this.exception(ex);
+                                this.processedDecr();
+                                this.getInsertList().clear();
+                            } else {
+                                throw ex;
+                            }
+                        }
+                    }
+                }
+                // 收尾批量插入
+                this.doBatchInsert();
+            }
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
         } finally {
             this.insertList = null;
             this.message("Importing Table " + tableName + " From -> " + file.getFilePath());

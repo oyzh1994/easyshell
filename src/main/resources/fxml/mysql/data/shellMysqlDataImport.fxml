@@ -250,6 +250,12 @@
                     </HBox.margin>
                 </FXLabel>
             </FXHBox>
+            <FXCheckBox groupId="exec" fx:id="continueWithErrors" prefHeight="30" text="%shell.db.export.tip1"
+                        selected="true">
+                <VBox.margin>
+                    <Insets left="30" top="10"/>
+                </VBox.margin>
+            </FXCheckBox>
         </FXVBox>
         <FXHBox flexWidth="100%">
             <PrevStepButton onAction="#showStep2" realHeight="30">

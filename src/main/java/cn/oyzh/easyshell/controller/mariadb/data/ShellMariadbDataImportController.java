@@ -134,6 +134,12 @@ public class ShellMariadbDataImportController extends StageController {
     private FXCheckBox attrToColumn;
 
     /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithErrors;
+
+    /**
      * 字段索引
      */
     @FXML
@@ -241,6 +247,8 @@ public class ShellMariadbDataImportController extends StageController {
         this.importHandler.dateFormat(this.dateFormat.getTextTrim());
         // 标签属性作为表字段
         this.importHandler.attrToColumn(this.attrToColumn.isSelected());
+        // 遇到错误时继续
+        this.importHandler.setContinueWithErrors(this.continueWithErrors.isSelected());
         // 导入模式
         this.importHandler.importMode(this.importMode.selectedUserData());
         // 字段索引

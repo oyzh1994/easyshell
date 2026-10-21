@@ -81,46 +81,66 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
      */
     protected void importRecord(ShellDamengDataImportFile file) throws Exception {
         String tableName = file.getTargetTableName();
-        this.message("Importing Table " + tableName);
-        this.message("Importing Records of Table " + tableName);
-        // 复制模式
-        if (this.config.isCopyMode()) {
-            this.dbClient.clearTable(this.name, tableName);
-        }
-        DamengColumns columns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(file.getSchema(), tableName)));
-        if (columns.isIdentityAutoIncrementType()) {
-            String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
-            this.addInsert(line);
-        }
-        try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
-            if (reader == null) {
-                return;
+        try {
+            this.message("Importing Table " + tableName);
+            this.message("Importing Records of Table " + tableName);
+            // 复制模式
+            if (this.config.isCopyMode()) {
+                this.dbClient.clearTable(this.name, tableName);
             }
-            // 获取数据库表字段
-            DamengColumns dbColumns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(this.name, tableName)));
-            if (!dbColumns.isEmpty()) {
-                while (true) {
-                    this.checkInterrupt();
-                    long start1 = System.currentTimeMillis();
-                    List<DamengRecord> records = this.readRecords(reader, this.readLimit);
-                    if (CollectionUtil.isEmpty(records)) {
-                        break;
-                    }
-                    long end1 = System.currentTimeMillis();
-                    JulLog.info("读取耗时: {}ms", (end1 - start1));
-                    long start2 = System.currentTimeMillis();
-                    this.writeRecord(dbColumns, records);
-                    long end2 = System.currentTimeMillis();
-                    JulLog.info("写入耗时: {}ms", (end2 - start2));
-//                    this.processed(records.size());
-                }
-            }
+            DamengColumns columns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(file.getSchema(), tableName)));
             if (columns.isIdentityAutoIncrementType()) {
-                String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
+                String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
                 this.addInsert(line);
             }
-            // 收尾批量插入
-            this.doBatchInsert();
+            try (DBDataTypeFileReader reader = this.initReader(file.getFile())) {
+                if (reader == null) {
+                    return;
+                }
+                // 获取数据库表字段
+                DamengColumns dbColumns = new DamengColumns(this.dbClient.selectColumns(new DamengSelectColumnParam(this.name, tableName)));
+                if (!dbColumns.isEmpty()) {
+                    while (true) {
+                        this.checkInterrupt();
+                        try {
+                            long start1 = System.currentTimeMillis();
+                            List<DamengRecord> records = this.readRecords(reader, this.readLimit);
+                            if (CollectionUtil.isEmpty(records)) {
+                                break;
+                            }
+                            long end1 = System.currentTimeMillis();
+                            JulLog.info("读取耗时: {}ms", (end1 - start1));
+                            long start2 = System.currentTimeMillis();
+                            this.writeRecord(dbColumns, records);
+                            long end2 = System.currentTimeMillis();
+                            JulLog.info("写入耗时: {}ms", (end2 - start2));
+//                            this.processed(records.size());
+                        } catch (Exception ex) {
+                            if (this.isContinueWithErrors()) {
+                                this.exception(ex);
+                                this.processedDecr();
+                                this.getInsertList().clear();
+                            } else {
+                                throw ex;
+                            }
+                        }
+                    }
+                }
+                if (columns.isIdentityAutoIncrementType()) {
+                    String line = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
+                    this.addInsert(line);
+                }
+                // 收尾批量插入
+                this.doBatchInsert();
+            }
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
         } finally {
             this.insertList = null;
             this.message("Importing Table " + tableName + " From -> " + file.getFilePath());
@@ -338,4 +358,3 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
         return false;
     }
 }
-
