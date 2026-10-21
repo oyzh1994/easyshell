@@ -100,8 +100,9 @@ public class ShellTestTtyConnector extends TtyStreamConnector {
 
     private org.apache.sshd.client.channel.ChannelShell shell2;
 
-    public void init(org.apache.sshd.client.channel.ChannelShell shell) throws IOException {
+    public void init(org.apache.sshd.client.channel.ChannelShell shell) throws IOException, InterruptedException {
         this.shell2 = shell;
+        ThreadUtil.sleep(200);
         this.reader = new InputStreamReader(shell.getInvertedOut(), this.charset());
         this.writer = new OutputStreamWriter(shell.getInvertedIn(), this.charset());
     }
