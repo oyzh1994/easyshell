@@ -144,7 +144,7 @@ public class DamengSequence extends DBObject implements DBSequence, ObjectCopier
     }
 
     public Long getCacheSize() {
-        return cacheSize;
+        return cacheSize == null ? null : Math.max(2, this.cacheSize);
     }
 
     public void setCacheSize(Long cacheSize) {
@@ -210,12 +210,16 @@ public class DamengSequence extends DBObject implements DBSequence, ObjectCopier
         }
     }
 
-    /** 获取库名称 */
+    /**
+     * 获取库名称
+     */
     public String getSchema() {
         return schema;
     }
 
-    /** 设置库名称 */
+    /**
+     * 设置库名称
+     */
     public void setSchema(String schema) {
         this.schema = schema;
     }

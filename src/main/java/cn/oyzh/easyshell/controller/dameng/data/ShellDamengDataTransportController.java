@@ -224,6 +224,12 @@ public class ShellDamengDataTransportController extends StageController {
     private FXTab triggerPane;
 
     /**
+     * 序列组件
+     */
+    @FXML
+    private FXTab sequencePane;
+
+    /**
      * 表列表
      */
     @FXML
@@ -252,6 +258,12 @@ public class ShellDamengDataTransportController extends StageController {
      */
     @FXML
     private DBDataTransportNameListView triggerList;
+
+    /**
+     * 序列列表
+     */
+    @FXML
+    private DBDataTransportNameListView sequenceList;
 
     /**
      * 遇到错误时继续
@@ -319,6 +331,8 @@ public class ShellDamengDataTransportController extends StageController {
         this.transportHandler.setTables(this.tableList.getSelectedObjects());
         // 触发器
         this.transportHandler.setTriggers(this.triggerList.getSelectedObjects());
+        // 序列
+        this.transportHandler.setSequences(this.sequenceList.getSelectedObjects());
         // 函数
         this.transportHandler.setFunctions(this.functionList.getSelectedObjects());
         // 过程
@@ -396,6 +410,7 @@ public class ShellDamengDataTransportController extends StageController {
         this.viewList.setSelectedChanged(() -> this.flushPaneText("view"));
         this.tableList.setSelectedChanged(() -> this.flushPaneText("table"));
         this.triggerList.setSelectedChanged(() -> this.flushPaneText("trigger"));
+        this.sequenceList.setSelectedChanged(() -> this.flushPaneText("sequence"));
         this.functionList.setSelectedChanged(() -> this.flushPaneText("function"));
         this.procedureList.setSelectedChanged(() -> this.flushPaneText("procedure"));
     }
@@ -561,6 +576,9 @@ public class ShellDamengDataTransportController extends StageController {
         if (this.procedureList.isItemEmpty()) {
             this.procedureList.of(this.sourceClient.selectProcedures(this.sourceDatabase.getSelectedItem()));
         }
+        if (this.sequenceList.isItemEmpty()) {
+            this.sequenceList.of(this.sourceClient.selectSequences(this.sourceDatabase.getSelectedItem()));
+        }
         this.step2.disappear();
         this.step4.disappear();
         this.step3.display();
@@ -581,7 +599,9 @@ public class ShellDamengDataTransportController extends StageController {
     private void clearList() {
         this.viewList.clearItems();
         this.tableList.clearItems();
+        this.triggerList.clearItems();
         this.functionList.clearItems();
+        this.sequenceList.clearItems();
         this.procedureList.clearItems();
     }
 
@@ -606,6 +626,9 @@ public class ShellDamengDataTransportController extends StageController {
         } else if (StringUtil.equalsIgnoreCase(name, "procedure")) {
             String procedureTipText = "(" + this.procedureList.getSelectedSize() + "/" + this.procedureList.getItemSize() + ")";
             this.procedurePane.setAppendText(procedureTipText);
+        } else if (StringUtil.equalsIgnoreCase(name, "sequence")) {
+            String sequenceTipText = "(" + this.sequenceList.getSelectedSize() + "/" + this.sequenceList.getItemSize() + ")";
+            this.sequencePane.setAppendText(sequenceTipText);
         }
     }
 

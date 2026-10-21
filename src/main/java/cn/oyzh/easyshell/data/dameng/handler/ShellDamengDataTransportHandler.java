@@ -62,6 +62,11 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
     protected List<DBDataTransportObject> procedures;
 
     /**
+     * 序列
+     */
+    protected List<DBDataTransportObject> sequences;
+
+    /**
      * 构造 Dameng数据传输处理器
      */
     public ShellDamengDataTransportHandler() {
@@ -110,6 +115,11 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
             if (CollectionUtil.isNotEmpty(this.triggers)) {
                 for (DBDataTransportObject trigger : this.triggers) {
                     this.transportTrigger(trigger.getName());
+                }
+            }
+            if (CollectionUtil.isNotEmpty(this.sequences)) {
+                for (DBDataTransportObject sequence : this.sequences) {
+                    this.transportSequence(sequence.getName());
                 }
             }
         } catch (Exception ex) {
@@ -336,6 +346,40 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
         }
     }
 
+    /**
+     * 传输序列
+     *
+     * @param sequenceName 序列名称
+     * @throws InterruptedException 异常
+     */
+    private void transportSequence(String sequenceName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除触发器
+            String dropTable = "DROP SEQUENCE IF EXISTS " + DBUtil.wrap(sequenceName, DBDialect.DAMENG) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Sequence " + sequenceName);
+            this.processedIncr();
+
+            // 创建触发器
+            String createDefinition = this.sourceClient.showCreateSequence(this.sourceDatabase, sequenceName);
+            // TODO: 去除特定架构
+            //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+            createDefinition = ShellDamengUtil.removeSchema(createDefinition,this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Sequence " + sequenceName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
+    }
+
     @Override
     public void doBatchInsert(List<String> list, boolean parallel) {
         try {
@@ -471,6 +515,14 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      */
     public void setProcedures(List<DBDataTransportObject> procedures) {
         this.procedures = procedures;
+    }
+
+    public List<DBDataTransportObject> getSequences() {
+        return sequences;
+    }
+
+    public void setSequences(List<DBDataTransportObject> sequences) {
+        this.sequences = sequences;
     }
 
     @Override

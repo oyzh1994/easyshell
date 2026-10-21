@@ -688,6 +688,13 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
+    public List<DamengSequence> selectSequences(String schema) {
+        DamengSelectSequenceParam param = new DamengSelectSequenceParam();
+        param.setFull(true);
+        param.setSchema(schema);
+        return this.selectSequences(param);
+    }
+
     /**
      * 查询序列列表
      *
@@ -707,6 +714,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         MAX_VALUE,
                         CACHE_SIZE,
                         CYCLE_FLAG,
+                        ORDER_FLAG,
                         INCREMENT_BY,
                         LAST_NUMBER AS CURRENT_VALUE,
                         DBMS_METADATA.GET_DDL('SEQUENCE', SEQUENCE_NAME, SEQUENCE_OWNER) AS DLL
@@ -728,6 +736,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 String name = resultSet.getString("SEQUENCE_NAME");
                 String createDefinition = resultSet.getString("DLL");
                 String cycleFlag = resultSet.getString("CYCLE_FLAG");
+                String orderFlag = resultSet.getString("ORDER_FLAG");
                 long incrementBy = resultSet.getLong("INCREMENT_BY");
                 long currentValue = resultSet.getLong("CURRENT_VALUE");
                 sequence.setName(name);
@@ -739,6 +748,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 sequence.setIncrementBy(incrementBy);
                 sequence.setCreateDefinition(createDefinition);
                 sequence.setCycle(StringUtil.equalsIgnoreCase("Y", cycleFlag));
+                sequence.setOrder(StringUtil.equalsIgnoreCase("Y", orderFlag));
                 list.add(sequence);
             }
             IOUtil.close(resultSet);
@@ -4177,6 +4187,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         MAX_VALUE,
                         CACHE_SIZE,
                         CYCLE_FLAG,
+                        ORDER_FLAG,
                         INCREMENT_BY,
                         LAST_NUMBER AS CURRENT_VALUE,
                         DBMS_METADATA.GET_DDL('SEQUENCE', SEQUENCE_NAME, SEQUENCE_OWNER) AS DLL
@@ -4200,6 +4211,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 long cacheSize = resultSet.getLong("CACHE_SIZE");
                 String createDefinition = resultSet.getString("DLL");
                 String cycleFlag = resultSet.getString("CYCLE_FLAG");
+                String orderFlag = resultSet.getString("ORDER_FLAG");
                 long incrementBy = resultSet.getLong("INCREMENT_BY");
                 long currentValue = resultSet.getLong("CURRENT_VALUE");
                 sequence.setSchema(schema);
@@ -4210,6 +4222,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 sequence.setIncrementBy(incrementBy);
                 sequence.setCreateDefinition(createDefinition);
                 sequence.setCycle(StringUtil.equalsIgnoreCase("Y", cycleFlag));
+                sequence.setOrder(StringUtil.equalsIgnoreCase("Y", orderFlag));
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);

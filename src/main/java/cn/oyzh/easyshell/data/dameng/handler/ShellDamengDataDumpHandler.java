@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
+import cn.oyzh.easyshell.dameng.sequence.DamengSequence;
 import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
@@ -63,6 +64,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 this.dumpFunction();
                 this.dumpProcedure();
                 this.dumpTrigger();
+                this.dumpSequence();
             } else if (this.dumpType == 2) {
                 DamengTable table = this.dbClient.selectTable(this.dbName, this.tableName);
                 this.dumpTable(table);
@@ -368,24 +370,33 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
     }
 
-    // protected void dumpEvent() throws Exception {
-    //     List<DamengEvent> events = this.dbClient.events(this.dbName);
-    //     if (CollectionUtil.isNotEmpty(events)) {
-    //         for (DamengEvent event : events) {
-    //             this.message("Dumping Event " + event.getName());
-    //             String line0 = "";
-    //             String line1 = "-- ----------------------------";
-    //             String line2 = "-- Event structure for " + event.getName();
-    //             String line3 = "-- ----------------------------";
-    //             String dropTrigger = "DROP EVENT IF EXISTS " + DBUtil.wrap(event.getName()) + ";";
-    //             String line4 = "delimiter ;;";
-    //             String line5 = ";;";
-    //             String line6 = "delimiter ;";
-    //             String createDefinition = event.getCreateDefinition();
-    //             this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
-    //         }
-    //         this.processed(events.size());
-    //     }
-    // }
+    /**
+     * 转储序列
+     *
+     * @throws Exception 异常
+     */
+    protected void dumpSequence() throws Exception {
+        List<DamengSequence> sequences = this.dbClient.selectSequences(this.dbName);
+        if (CollectionUtil.isNotEmpty(sequences)) {
+            for (DamengSequence trigger : sequences) {
+                this.message("Dumping Sequence " + trigger.getName());
+                String line0 = "";
+                String line1 = "-- ----------------------------";
+                String line2 = "-- Sequence structure for " + trigger.getName();
+                String line3 = "-- ----------------------------";
+                String dropSequence = "DROP SEQUENCE IF EXISTS " + DBUtil.wrap(trigger.getName(), DBDialect.DAMENG) + ";";
+                String line4 = "delimiter ;;";
+                String line5 = ";;";
+                String line6 = "delimiter ;";
+                String createDefinition = trigger.getCreateDefinition();
+                //                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
+                // TODO: 去除特定架构
+                //                createDefinition = createDefinition.replaceFirst(DBUtil.wrap(trigger.getSchema(), this.dialect) + ".", "");
+                createDefinition = ShellDamengUtil.removeSchema(createDefinition, trigger.getSchema());
+                this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropSequence, line4, createDefinition, line5, line6));
+                this.processedIncr();
+            }
+        }
+    }
 }
 
