@@ -135,7 +135,7 @@
   | `renameTable/renameFunction/renameProcedure` | 重命名 | 委托 `client()` 同名方法 |
   | `clearTable/truncateTable/dropTable(String)` | 清空/截断/删除表 | 委托 `client()` |
   | `executeSql` / `executeSingleSql` / `explainSql` | 执行与解析 SQL | `client().executeSql/executeSingleSql/explainSql(schema, sql)`，返回 `DBQueryResults<...>` |
-  | `createFunction/alertFunction/dropFunction` | 函数增改删 | 组装 `DamengCreateFunctionParam`/`DamengAlertFunctionParam` 后调客户端 |
+  | `createFunction/alertFunction/dropFunction` | 函数增改删 | 组装 `DamengCreateSequenceParam`/`DamengAlertSequenceParam` 后调客户端 |
   | `selectProcedure/createProcedure/alertProcedure/dropProcedure` | 过程查询与增改删 | 组装 `DamengCreateProcedureParam`/`DamengAlertProcedureParam` |
   | `selectFunction(String)` / `selectView(String)` / `selectTable(String)` | 查询函数/视图/表 | 委托 `client()` |
   | `createView/alertView/dropView/existView` | 视图增改删与存在性 | 组装 `DamengCreateViewParam`/`DamengAlertViewParam` |

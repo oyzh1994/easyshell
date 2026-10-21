@@ -16,6 +16,9 @@ import cn.oyzh.easyshell.event.dameng.query.ShellDamengQueryOpenEvent;
 import cn.oyzh.easyshell.event.dameng.query.ShellDamengQueryRenamedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaClosedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.sequence.ShellDamengSequenceDesignEvent;
+import cn.oyzh.easyshell.event.dameng.sequence.ShellDamengSequenceDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.sequence.ShellDamengSequenceRenamedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableAlertedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableClearedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableDesignEvent;
@@ -33,6 +36,7 @@ import cn.oyzh.easyshell.tabs.dameng.function.ShellDamengFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.dameng.home.ShellDamengHomeTab;
 import cn.oyzh.easyshell.tabs.dameng.procedure.ShellDamengProcedureDesignTab;
 import cn.oyzh.easyshell.tabs.dameng.query.ShellDamengQueryMainTab;
+import cn.oyzh.easyshell.tabs.dameng.sequence.ShellDamengSequenceDesignTab;
 import cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableDesignTab;
 import cn.oyzh.easyshell.tabs.dameng.table.ShellDamengTableRecordTab;
 import cn.oyzh.easyshell.tabs.dameng.terminal.ShellDamengTerminalTab;
@@ -174,6 +178,23 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         }
         return null;
     }
+
+    /**
+     * 获取序列tab
+     *
+     * @param dbItem        db节点
+     * @param sequenceName 序列名称
+     * @return 结果
+     */
+    private ShellDamengSequenceDesignTab getSequenceDesignTab(ShellDamengSchemaTreeItem dbItem, String sequenceName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellDamengSequenceDesignTab tab1 && tab1.dbItem() == dbItem && StringUtil.equals(sequenceName, tab1.sequenceName())) {
+                return tab1;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 获取表记录tab
@@ -737,5 +758,44 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
             }
         }
         return null;
+    }
+
+    @EventSubscribe
+    private void onSequenceRenamed(ShellDamengSequenceRenamedEvent event) {
+        try {
+            ShellDamengSequenceDesignTab tab = this.getSequenceDesignTab(event.getDbItem(), event.sequenceName());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @EventSubscribe
+    private void onSequenceDesign(ShellDamengSequenceDesignEvent event) {
+        try {
+            ShellDamengSequenceDesignTab tab = this.getSequenceDesignTab(event.getDbItem(), event.sequenceName());
+            if (tab == null) {
+                tab = new ShellDamengSequenceDesignTab();
+                tab.init(event.data(), event.getDbItem());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @EventSubscribe
+    private void onSequenceDropped(ShellDamengSequenceDroppedEvent event) {
+        try {
+            ShellDamengSequenceDesignTab tab1 = this.getSequenceDesignTab(event.getDbItem(), event.sequenceName());
+            if (tab1 != null) {
+                tab1.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

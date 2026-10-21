@@ -355,7 +355,7 @@
   | `@FXML save()` | 保存 | mask 内 `doSave` |
   | `private void doSave()` | 执行保存 | `tempData` 构造临时函数，新增则 `dbItem.createFunction` 并追加树节点，否则 `dbItem.alertFunction`；重置标志、刷新、重置表格、`initPreview` |
   | `private DamengFunction tempData()` | 临时数据 | 汇集名称/schema/参数/定义/安全性/特征/返回值 |
-  | `private void initPreview()` | 预览 | newData 用 `DamengFunctionCreateSqlGenerator`，否则 `DamengFunctionAlertSqlGenerator` 生成 SQL |
+  | `private void initPreview()` | 预览 | newData 用 `DamengSequenceCreateSqlGenerator`，否则 `DamengSequenceAlertSqlGenerator` 生成 SQL |
   | `@FXML addParam()` | 加参数 | 新增 created 参数并选中末行 |
   | `@FXML deleteParam()` | 删参数 | 非新增确认；created 直接移除，否则标记 deleted |
   | `@FXML moveParamUp/Down()` | 参数排序 | `TableViewUtil.moveUp/moveDown` |

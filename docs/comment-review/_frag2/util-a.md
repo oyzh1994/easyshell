@@ -314,7 +314,7 @@
   | `void tableInfo(ShellDamengTableTreeItem)` | 表信息 | parse `ShellDamengTableInfoController`，setProp item |
   | `void viewInfo(ShellDamengViewTreeItem)` | 视图信息 | parse `ShellDamengViewInfoController`，setProp item |
   | `void functionInfo(ShellDamengFunctionTreeItem)` | 函数信息 | parse `ShellDamengFunctionInfoController`，setProp item |
-  | `void procedureInfo(ShellDamengProcedureTreeItem)` | 过程信息 | parse `ShellDamengProcedureInfoController`，setProp item |
+  | `void procedureInfo(ShellDamengProcedureTreeItem)` | 过程信息 | parse `ShellDamengSequenceInfoController`，setProp item |
 - 调用链：`ShellDamengViewFactory 方法 → StageManager.parseStage → Controller`
 - 备注：`databaseUpdate`、`addDatabase` 为注释代码；类注释误写为 "msyql页面工厂"。
 

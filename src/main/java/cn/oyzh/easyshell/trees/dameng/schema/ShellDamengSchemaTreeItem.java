@@ -15,12 +15,13 @@ import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.easyshell.dameng.procedure.DamengAlertProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengCreateProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
-import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
-import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.dameng.record.DamengDeleteRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
+import cn.oyzh.easyshell.dameng.sequence.DamengAlertSequenceParam;
+import cn.oyzh.easyshell.dameng.sequence.DamengCreateSequenceParam;
+import cn.oyzh.easyshell.dameng.sequence.DamengSequence;
 import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
@@ -30,6 +31,8 @@ import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.dameng.ShellDamengEventUtil;
+import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
+import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
 import cn.oyzh.easyshell.trees.dameng.ShellDamengTreeItem;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionsTreeItem;
@@ -37,6 +40,7 @@ import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProcedureTreeItem;
 import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProceduresTreeItem;
 import cn.oyzh.easyshell.trees.dameng.query.ShellDamengQueriesTreeItem;
 import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
+import cn.oyzh.easyshell.trees.dameng.sequence.ShellDamengSequencesTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTablesTreeItem;
 import cn.oyzh.easyshell.trees.dameng.terminal.ShellDamengTerminalTreeItem;
@@ -207,6 +211,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
                         typeItems.add(new ShellDamengViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengProceduresTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellDamengSequencesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -324,25 +329,6 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return list;
     }
 
-    //    public DamengEventsTreeItem getEventTypeChild() {
-    //        for (RichTreeItem<?> child : this.richChildren()) {
-    //            if (child instanceof DamengEventsTreeItem treeItem) {
-    //                return treeItem;
-    //            }
-    //        }
-    //        return null;
-    //    }
-    //
-    //    public List<DamengEventTreeItem> getEventChild() {
-    //        List<DamengEventTreeItem> list = new ArrayList<>();
-    //        for (RichTreeItem<?> child : this.getEventTypeChild().richChildren()) {
-    //            if (child instanceof DamengEventTreeItem treeItem) {
-    //                list.add(treeItem);
-    //            }
-    //        }
-    //        return list;
-    //    }
-
     /**
      * 获取视图类型子节点
      *
@@ -370,6 +356,15 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
             }
         }
         return list;
+    }
+
+    public ShellDamengSequencesTreeItem getSequenceTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellDamengSequencesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 
     /**
@@ -583,15 +578,15 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         this.client().renameView(this.schema(), oldViewName, newViewName);
     }
 
-//    /**
-//     * 重命名事件
-//     *
-//     * @param oldEventName 事件名称
-//     * @param newEventName 新事件名称
-//     */
-//    public void renameEvent(String oldEventName, String newEventName) {
-//        this.client().renameEvent(this.dbName(), oldEventName, newEventName);
-//    }
+    //    /**
+    //     * 重命名事件
+    //     *
+    //     * @param oldEventName 事件名称
+    //     * @param newEventName 新事件名称
+    //     */
+    //    public void renameEvent(String oldEventName, String newEventName) {
+    //        this.client().renameEvent(this.dbName(), oldEventName, newEventName);
+    //    }
 
     /**
      * 重命名函数
@@ -824,28 +819,6 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return this.isVisible();
     }
 
-    //@Override
-    //public synchronized void doFilter(RichTreeItemFilter itemFilter) {
-    //    super.doFilter(itemFilter);
-    //    this.refresh();
-    //}
-
-    //    public DamengEvent selectEvent(String eventName) {
-    //        return this.client().selectEvent(this.schema(), eventName);
-    //    }
-
-    //    public void alertEvent(DamengEvent event) {
-    //        this.client().alertEvent(this.schema(), event);
-    //    }
-    //
-    //    public void createEvent(DamengEvent event) {
-    //        this.client().createEvent(this.schema(), event);
-    //    }
-
-    //public void dropEvent(DamengEvent event) {
-    //    this.client().dropEvent(this.schema(), event);
-    //}
-
     /**
      * 是否支持检查约束特性
      *
@@ -987,13 +960,33 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         this.client().cloneProcedure(this.schema(), procedureName, newProcedureName);
     }
 
-//    /**
-//     * 克隆事件
-//     *
-//     * @param eventName    事件名称
-//     * @param newEventName 新事件名称
-//     */
-//    public void cloneEvent(String eventName, String newEventName) {
-//        this.client().cloneEvent(this.dbName(), eventName, newEventName);
-//    }
+    public void cloneSequence(String sequenceName, String newSequenceName) {
+        this.client().cloneSequence(this.schema(), sequenceName, newSequenceName);
+    }
+
+    public DamengSequence selectSequence(String sequenceName) {
+        return this.client().selectSequence(this.schema(), sequenceName);
+    }
+
+    public void dropSequence(DamengSequence sequence) {
+        this.client().dropSequence(sequence);
+    }
+
+    public void renameSequence(String oldSequenceName, String newSequenceName) {
+        this.client().renameSequence(this.schema(), oldSequenceName, newSequenceName);
+    }
+
+    public void createSequence(DamengSequence sequence) {
+        DamengCreateSequenceParam param = new DamengCreateSequenceParam();
+        param.setSequence(sequence);
+        param.setSchema(this.schema());
+        this.client().createSequence(param);
+    }
+
+    public void alertSequence(DamengSequence sequence) {
+        DamengAlertSequenceParam param = new DamengAlertSequenceParam();
+        param.setSequence(sequence);
+        param.setSchema(this.schema());
+        this.client().alertSequence(param);
+    }
 }

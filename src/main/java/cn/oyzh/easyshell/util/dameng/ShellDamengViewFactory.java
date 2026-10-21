@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.controller.dameng.function.ShellDamengFunctionInfoContr
 import cn.oyzh.easyshell.controller.dameng.procedure.ShellDamengProcedureInfoController;
 import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaAddController;
 import cn.oyzh.easyshell.controller.dameng.schema.ShellDamengSchemaUpdateController;
+import cn.oyzh.easyshell.controller.dameng.sequence.ShellDamengSequenceInfoController;
 import cn.oyzh.easyshell.controller.dameng.table.ShellDamengTableInfoController;
 import cn.oyzh.easyshell.controller.dameng.view.ShellDamengViewInfoController;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
@@ -18,6 +19,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.trees.dameng.function.ShellDamengFunctionTreeItem;
 import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProcedureTreeItem;
 import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
+import cn.oyzh.easyshell.trees.dameng.sequence.ShellDamengSequenceTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -243,4 +245,14 @@ public class ShellDamengViewFactory {
         }
     }
 
+    public static void sequenceInfo(ShellDamengSequenceTreeItem treeItem) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellDamengSequenceInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
 }

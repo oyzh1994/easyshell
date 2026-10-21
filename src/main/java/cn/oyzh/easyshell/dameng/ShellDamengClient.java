@@ -18,6 +18,8 @@ import cn.oyzh.easyshell.dameng.generator.function.DamengFunctionAlertSqlGenerat
 import cn.oyzh.easyshell.dameng.generator.function.DamengFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.procedure.DamengProcedureAlertSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.procedure.DamengProcedureCreateSqlGenerator;
+import cn.oyzh.easyshell.dameng.generator.sequence.DamengSequenceAlertSqlGenerator;
+import cn.oyzh.easyshell.dameng.generator.sequence.DamengSequenceCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.table.DamengTableAlertSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.table.DamengTableCreateSqlGenerator;
 import cn.oyzh.easyshell.dameng.generator.view.DamengViewAlertSqlGenerator;
@@ -36,6 +38,10 @@ import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengUpdateRecordParam;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineParam;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
+import cn.oyzh.easyshell.dameng.sequence.DamengAlertSequenceParam;
+import cn.oyzh.easyshell.dameng.sequence.DamengCreateSequenceParam;
+import cn.oyzh.easyshell.dameng.sequence.DamengSelectSequenceParam;
+import cn.oyzh.easyshell.dameng.sequence.DamengSequence;
 import cn.oyzh.easyshell.dameng.table.DamengAlertTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengCreateTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
@@ -671,6 +677,69 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 trigger.setDefinition(ShellDamengHelper.fixTiggerDefinition(createDefinition));
                 trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
                 list.add(trigger);
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            DBName.sortItems(list);
+            return list;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询序列列表
+     *
+     * @param param 查询参数
+     * @return 触发器列表
+     */
+    public DBObjects<DamengSequence> selectSequences(DamengSelectSequenceParam param) {
+        try {
+            String schema = param.getSchema();
+            PreparedStatement statement;
+            Connection connection = this.getConnManager().connection(schema);
+            String sql = """
+                    SELECT
+                        SEQUENCE_OWNER,
+                        SEQUENCE_NAME,
+                        MIN_VALUE,
+                        MAX_VALUE,
+                        CACHE_SIZE,
+                        CYCLE_FLAG,
+                        INCREMENT_BY,
+                        LAST_NUMBER AS CURRENT_VALUE,
+                        DBMS_METADATA.GET_DDL('SEQUENCE', SEQUENCE_NAME, SEQUENCE_OWNER) AS DLL
+                    FROM
+                        ALL_SEQUENCES
+                    WHERE
+                        SEQUENCE_OWNER = ?;
+                    """;
+            this.printSql(sql);
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            ResultSet resultSet = statement.executeQuery();
+            DBObjects<DamengSequence> list = new DBObjects<>();
+            while (resultSet.next()) {
+                DamengSequence sequence = new DamengSequence();
+                long minValue = resultSet.getLong("MIN_VALUE");
+                long maxValue = resultSet.getLong("MAX_VALUE");
+                long cacheSize = resultSet.getLong("CACHE_SIZE");
+                String name = resultSet.getString("SEQUENCE_NAME");
+                String createDefinition = resultSet.getString("DLL");
+                String cycleFlag = resultSet.getString("CYCLE_FLAG");
+                long incrementBy = resultSet.getLong("INCREMENT_BY");
+                long currentValue = resultSet.getLong("CURRENT_VALUE");
+                sequence.setName(name);
+                sequence.setSchema(schema);
+                sequence.setMinVal(minValue);
+                sequence.setMaxVal(maxValue);
+                sequence.setCacheSize(cacheSize);
+                sequence.setCurrentVal(currentValue);
+                sequence.setIncrementBy(incrementBy);
+                sequence.setCreateDefinition(createDefinition);
+                sequence.setCycle(StringUtil.equalsIgnoreCase("Y", cycleFlag));
+                list.add(sequence);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
@@ -1592,6 +1661,34 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, functionName);
+            ResultSet resultSet = stmt.executeQuery();
+            String createDefinition = "";
+            if (resultSet.next()) {
+                createDefinition = resultSet.getString(1);
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(stmt);
+            return createDefinition;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询建序列语句
+     *
+     * @param schema       模式名称
+     * @param sequenceName 序列名称
+     * @return 建函数语句
+     */
+    public String showCreateSequence(String schema, String sequenceName) {
+        try {
+            Connection connection = this.getConnManager().functionConnection(schema);
+            String sql = "SELECT DBMS_METADATA.GET_DDL('SEQUENCE', ?) FROM DUAL";
+            this.printSql(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, sequenceName);
             ResultSet resultSet = stmt.executeQuery();
             String createDefinition = "";
             if (resultSet.next()) {
@@ -3414,7 +3511,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public void dropFunction(DamengFunction function) {
         try {
-            String sql = "DROP function IF EXISTS " + DBUtil.wrap(function.getSchema(), function.getName(), DBDialect.DAMENG);
+            String sql = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(function.getSchema(), function.getName(), DBDialect.DAMENG);
             this.printSql(sql);
             Statement statement = this.getConnManager().functionConnection(function.getSchema()).createStatement();
             statement.executeUpdate(sql);
@@ -3996,6 +4093,180 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             parents.add(parentTable);
         }
         return parents;
+    }
+
+    /**
+     * 创建序列
+     *
+     * @param param 参数
+     */
+    public void createSequence(DamengCreateSequenceParam param) {
+        try {
+            String sql = DamengSequenceCreateSqlGenerator.generateSqlSingle(param);
+            this.printSql(sql);
+            Statement statement = this.getConnManager().connection(param.getSchema()).createStatement();
+            statement.executeUpdate(sql);
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    public int sequenceSize(String schema) {
+        int size = 0;
+        try {
+            Connection connection = this.getConnManager().functionConnection(schema);
+            String sql = """
+                    SELECT
+                        COUNT(*)
+                    FROM
+                        ALL_OBJECTS
+                    WHERE
+                        OWNER = ?
+                    AND
+                        OBJECT_TYPE = 'SEQUENCE'
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            ResultSet resultSet = statement.executeQuery();
+            DBUtil.printMetaData(resultSet);
+            if (resultSet.next()) {
+                size = resultSet.getInt(1);
+            }
+            IOUtil.close(resultSet);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+        return size;
+    }
+
+    public List<DamengSequence> selectSequencesSimple(String schema) {
+        DamengSelectSequenceParam param = new DamengSelectSequenceParam();
+        param.setFull(false);
+        param.setSchema(schema);
+        return this.selectSequences(param);
+    }
+
+    public void cloneSequence(String schema, String sequenceName, String newSequenceName) {
+        String sql = this.showCreateSequence(schema, sequenceName);
+        try {
+            sql = sql.replace("SEQUENCE " + DBUtil.wrap(sequenceName, DBDialect.DAMENG), "SEQUENCE " + DBUtil.wrap(newSequenceName, DBDialect.DAMENG));
+            sql = sql.replace("SEQUENCE " + DBUtil.wrap(schema, sequenceName, DBDialect.DAMENG), "SEQUENCE " + DBUtil.wrap(schema, newSequenceName, DBDialect.DAMENG));
+            this.printSql(sql);
+            Connection connection = this.getConnManager().functionConnection(schema);
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            IOUtil.close(stmt);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    public DamengSequence selectSequence(String schema, String sequenceName) {
+        try {
+            PreparedStatement statement;
+            Connection connection = this.getConnManager().connection(schema);
+            String sql = """
+                    SELECT
+                        SEQUENCE_OWNER,
+                        MIN_VALUE,
+                        MAX_VALUE,
+                        CACHE_SIZE,
+                        CYCLE_FLAG,
+                        INCREMENT_BY,
+                        LAST_NUMBER AS CURRENT_VALUE,
+                        DBMS_METADATA.GET_DDL('SEQUENCE', SEQUENCE_NAME, SEQUENCE_OWNER) AS DLL
+                    FROM
+                        ALL_SEQUENCES
+                    WHERE
+                        SEQUENCE_OWNER = ?
+                    AND
+                        SEQUENCE_NAME = ?;
+                    """;
+            this.printSql(sql);
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, sequenceName);
+            ResultSet resultSet = statement.executeQuery();
+            DamengSequence sequence = new DamengSequence();
+            sequence.setName(sequenceName);
+            while (resultSet.next()) {
+                long minValue = resultSet.getLong("MIN_VALUE");
+                long maxValue = resultSet.getLong("MAX_VALUE");
+                long cacheSize = resultSet.getLong("CACHE_SIZE");
+                String createDefinition = resultSet.getString("DLL");
+                String cycleFlag = resultSet.getString("CYCLE_FLAG");
+                long incrementBy = resultSet.getLong("INCREMENT_BY");
+                long currentValue = resultSet.getLong("CURRENT_VALUE");
+                sequence.setSchema(schema);
+                sequence.setMinVal(minValue);
+                sequence.setMaxVal(maxValue);
+                sequence.setCacheSize(cacheSize);
+                sequence.setCurrentVal(currentValue);
+                sequence.setIncrementBy(incrementBy);
+                sequence.setCreateDefinition(createDefinition);
+                sequence.setCycle(StringUtil.equalsIgnoreCase("Y", cycleFlag));
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return sequence;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    public void dropSequence(DamengSequence sequence) {
+        try {
+            String sql = "DROP Sequence IF EXISTS " + DBUtil.wrap(sequence.getSchema(), sequence.getName(), DBDialect.DAMENG);
+            this.printSql(sql);
+            Statement statement = this.getConnManager().getConnection(sequence.getSchema()).createStatement();
+            statement.executeUpdate(sql);
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    public void renameSequence(String schema, String oldSequenceName, String newSequenceName) {
+        try {
+            this.cloneSequence(schema, oldSequenceName, newSequenceName);
+            DamengSequence sequence = new DamengSequence();
+            sequence.setSchema(schema);
+            sequence.setName(oldSequenceName);
+            this.dropSequence(sequence);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    public void alertSequence(DamengAlertSequenceParam param) {
+        Connection connection = null;
+        try {
+            String sql = DamengSequenceAlertSqlGenerator.generateSqlSingle(param);
+            // 无变化
+            if (StringUtil.isBlank(sql)) {
+                return;
+            }
+            String schema = param.getSchema();
+            connection = this.getConnManager().connection(schema);
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            this.printSql(sql);
+            statement.executeUpdate(sql);
+            connection.commit();
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            DBUtil.rollback(connection);
+            throw new ShellException(ex);
+        }
     }
 
     /**

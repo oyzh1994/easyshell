@@ -1,12 +1,11 @@
 package cn.oyzh.easyshell.event.dameng;
 
-import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
+import cn.oyzh.easyshell.dameng.sequence.DamengSequence;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.view.DamengView;
-import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.dameng.function.ShellDamengFunctionDesignEvent;
 import cn.oyzh.easyshell.event.dameng.function.ShellDamengFunctionDroppedEvent;
@@ -22,6 +21,9 @@ import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaAddedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaClosedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaDroppedEvent;
 import cn.oyzh.easyshell.event.dameng.schema.ShellDamengSchemaUpdatedEvent;
+import cn.oyzh.easyshell.event.dameng.sequence.ShellDamengSequenceDesignEvent;
+import cn.oyzh.easyshell.event.dameng.sequence.ShellDamengSequenceDroppedEvent;
+import cn.oyzh.easyshell.event.dameng.sequence.ShellDamengSequenceRenamedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableAlertedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableClearedEvent;
 import cn.oyzh.easyshell.event.dameng.table.ShellDamengTableDesignEvent;
@@ -40,6 +42,7 @@ import cn.oyzh.easyshell.trees.dameng.procedure.ShellDamengProcedureTreeItem;
 import cn.oyzh.easyshell.trees.dameng.query.ShellDamengQueryTreeItem;
 import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
+import cn.oyzh.easyshell.trees.dameng.sequence.ShellDamengSequenceTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTableTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.event.EventUtil;
@@ -395,4 +398,24 @@ public class ShellDamengEventUtil {
         EventUtil.post(event);
     }
 
+    public static void designSequence(DamengSequence sequence, ShellDamengSchemaTreeItem dbItem) {
+        ShellDamengSequenceDesignEvent event = new ShellDamengSequenceDesignEvent();
+        event.data(sequence);
+        event.setDbItem(dbItem);
+        EventUtil.post(event);
+    }
+
+    public static void dropSequence(ShellDamengSequenceTreeItem treeItem) {
+        ShellDamengSequenceDroppedEvent event = new ShellDamengSequenceDroppedEvent();
+        event.data(treeItem);
+        EventUtil.postSync(event);
+    }
+
+    public static void sequenceRenamed(String oldSequenceName, String newSequenceName, ShellDamengSchemaTreeItem dbItem) {
+        ShellDamengSequenceRenamedEvent event = new ShellDamengSequenceRenamedEvent();
+        event.setDbItem(dbItem);
+        event.data(oldSequenceName);
+        event.setNewSequenceName(newSequenceName);
+        EventUtil.post(event);
+    }
 }
