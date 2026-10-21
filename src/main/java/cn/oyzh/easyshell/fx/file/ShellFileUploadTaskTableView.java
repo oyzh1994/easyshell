@@ -34,7 +34,7 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
+                this.showContextMenu(menuItems, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -97,6 +97,6 @@ public class ShellFileUploadTaskTableView extends FXTableView<ShellFileUploadTas
      * @param task 任务
      */
     protected void errorInfo(ShellFileUploadTask task) {
-        ShellViewFactory.fileError(task);
+        ShellViewFactory.fileError(task, this.getWindow());
     }
 }

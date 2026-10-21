@@ -291,15 +291,15 @@ public class ShellZKNodeTabController extends ParentTabController {
     //        }
     //    }
 
-    /**
-     * 当前窗口
-     *
-     * @return 窗口
-     */
-    protected Window window() {
-        return this.getActiveItem().window();
-        // return this.treeItem == null ? null : this.treeItem.window();
-    }
+//    /**
+//     * 当前窗口
+//     *
+//     * @return 窗口
+//     */
+//    protected Window window() {
+//        return this.getActiveItem().getWindow();
+//        // return this.treeItem == null ? null : this.treeItem.window();
+//    }
 
     //    /**
     //     * 保存配额

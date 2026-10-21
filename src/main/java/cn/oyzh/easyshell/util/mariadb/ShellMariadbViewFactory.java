@@ -135,7 +135,7 @@ public class ShellMariadbViewFactory {
      */
     public static void databaseUpdate(MariadbDatabase database, ShellMariadbRootTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDatabaseUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDatabaseUpdateController.class, StageManager.getPrimaryStage());
             adapter.setProp("database", database);
             adapter.setProp("connectItem", treeItem);
             adapter.display();
@@ -171,7 +171,7 @@ public class ShellMariadbViewFactory {
      */
     public static StageAdapter addDatabase(ShellMariadbRootTreeItem connectItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDatabaseAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbDatabaseAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("connectItem", connectItem);
             adapter.showAndWait();
             return adapter;
@@ -189,9 +189,9 @@ public class ShellMariadbViewFactory {
      */
     public static void tableInfo(ShellMariadbTableTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMariadbTableInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbTableInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -205,9 +205,9 @@ public class ShellMariadbViewFactory {
      */
     public static void viewInfo(ShellMariadbViewTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMariadbViewInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbViewInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -221,9 +221,9 @@ public class ShellMariadbViewFactory {
      */
     public static void functionInfo(ShellMariadbFunctionTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMariadbFunctionInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbFunctionInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -237,9 +237,9 @@ public class ShellMariadbViewFactory {
      */
     public static void procedureInfo(ShellMariadbProcedureTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMariadbProcedureInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbProcedureInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -253,9 +253,9 @@ public class ShellMariadbViewFactory {
      */
     public static void eventInfo(ShellMariadbEventTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMariadbEventInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMariadbEventInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());

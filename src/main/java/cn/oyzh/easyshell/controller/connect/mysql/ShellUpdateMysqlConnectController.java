@@ -44,11 +44,7 @@ import javafx.stage.WindowEvent;
  * @author oyzh
  * @since 2025-04-24
  */
-@StageAttribute(
-        stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/mysql/shellUpdateMysqlConnect.fxml"
-)
+@StageAttribute(stageStyle = FXStageStyle.EXTENDED, modality = Modality.APPLICATION_MODAL, value = FXConst.FXML_PATH + "connect/mysql/shellUpdateMysqlConnect.fxml")
 public class ShellUpdateMysqlConnectController extends StageController {
 
     /**
@@ -428,7 +424,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
      */
     @FXML
     private void addHost() {
-        StageAdapter adapter = ShellViewFactory.addHost(this.shellConnect);
+        StageAdapter adapter = ShellViewFactory.addHost(this.shellConnect, this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -444,7 +440,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = ShellViewFactory.addJump();
+        StageAdapter adapter = ShellViewFactory.addJump(this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -464,7 +460,7 @@ public class ShellUpdateMysqlConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        StageAdapter adapter = ShellViewFactory.updateJump(config, this.getWindow());
         if (adapter == null) {
             return;
         }

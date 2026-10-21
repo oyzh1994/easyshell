@@ -34,7 +34,7 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
+                this.showContextMenu(menuItems, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -97,7 +97,7 @@ public class ShellFileTransportTaskTableView extends FXTableView<ShellFileTransp
      * @param task 任务
      */
     protected void errorInfo(ShellFileTransportTask task) {
-        ShellViewFactory.fileError(task);
+        ShellViewFactory.fileError(task, this.getWindow());
     }
 
     /**

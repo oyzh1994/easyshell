@@ -460,7 +460,7 @@ public class ShellUpdateZKConnectController extends StageController {
      */
     @FXML
     private void addHost() {
-        StageAdapter adapter = ShellViewFactory.addHost(this.shellConnect);
+        StageAdapter adapter = ShellViewFactory.addHost(this.shellConnect, this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -476,7 +476,7 @@ public class ShellUpdateZKConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = ShellViewFactory.addJump();
+        StageAdapter adapter = ShellViewFactory.addJump(this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -496,7 +496,7 @@ public class ShellUpdateZKConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        StageAdapter adapter = ShellViewFactory.updateJump(config, this.getWindow());
         if (adapter == null) {
             return;
         }

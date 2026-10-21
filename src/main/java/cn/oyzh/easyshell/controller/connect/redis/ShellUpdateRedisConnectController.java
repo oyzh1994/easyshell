@@ -45,11 +45,7 @@ import javafx.stage.WindowEvent;
  * @author oyzh
  * @since 2025-04-24
  */
-@StageAttribute(
-        stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/redis/shellUpdateRedisConnect.fxml"
-)
+@StageAttribute(stageStyle = FXStageStyle.EXTENDED, modality = Modality.APPLICATION_MODAL, value = FXConst.FXML_PATH + "connect/redis/shellUpdateRedisConnect.fxml")
 public class ShellUpdateRedisConnectController extends StageController {
 
     /**
@@ -296,7 +292,7 @@ public class ShellUpdateRedisConnectController extends StageController {
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
-//            MessageBox.warn(I18nHelper.contentCanNotEmpty());
+            //            MessageBox.warn(I18nHelper.contentCanNotEmpty());
         } else {
             int timeout = this.connectTimeOut.getIntValue();
             // 创建连接信息
@@ -330,9 +326,9 @@ public class ShellUpdateRedisConnectController extends StageController {
             return;
         }
         String userName = this.userName.getTextTrim();
-//        if (!this.userName.validate()) {
-//            return;
-//        }
+        //        if (!this.userName.validate()) {
+        //            return;
+        //        }
         String password = this.password.getPassword();
         // 检查代理配置
         if (this.enableProxy.isSelected()) {
@@ -494,7 +490,7 @@ public class ShellUpdateRedisConnectController extends StageController {
      */
     @FXML
     private void addHost() {
-        StageAdapter adapter = ShellViewFactory.addHost(this.shellConnect);
+        StageAdapter adapter = ShellViewFactory.addHost(this.shellConnect, this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -510,7 +506,7 @@ public class ShellUpdateRedisConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = ShellViewFactory.addJump();
+        StageAdapter adapter = ShellViewFactory.addJump(this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -530,7 +526,7 @@ public class ShellUpdateRedisConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        StageAdapter adapter = ShellViewFactory.updateJump(config, this.getWindow());
         if (adapter == null) {
             return;
         }

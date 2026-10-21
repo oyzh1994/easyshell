@@ -34,7 +34,7 @@ public class ShellZKViewFactory {
      */
     public static StageAdapter authNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKAuthNodeController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
             adapter.setProp("zkClient", client);
             adapter.showAndWait();
@@ -55,7 +55,7 @@ public class ShellZKViewFactory {
      */
     public static StageAdapter addNode(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKAddNodeController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
             adapter.setProp("zkClient", client);
             adapter.showAndWait();
@@ -75,7 +75,7 @@ public class ShellZKViewFactory {
      */
     public static StageAdapter addACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKAddACLController.class, StageManager.getPrimaryStage());
             adapter.setProp("zkItem", nodeItem);
             adapter.setProp("zkClient", client);
             adapter.showAndWait();
@@ -96,7 +96,7 @@ public class ShellZKViewFactory {
      */
     public static StageAdapter updateACL(ShellZKNodeTreeItem nodeItem, ShellZKClient client, ShellZKACL acl) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKUpdateACLController.class, StageManager.getPrimaryStage());
             adapter.setProp("acl", acl);
             adapter.setProp("zkItem", nodeItem);
             adapter.setProp("zkClient", client);
@@ -116,7 +116,7 @@ public class ShellZKViewFactory {
      */
     public static void importData(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKDataImportController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKDataImportController.class, StageManager.getPrimaryStage());
             adapter.setProp("connect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -167,7 +167,7 @@ public class ShellZKViewFactory {
      */
     public static StageAdapter authAdd(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellZKAddAuthController.class, StageManager.getPrimaryStage());
             adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
@@ -195,23 +195,4 @@ public class ShellZKViewFactory {
             MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
-
-//    /**
-//     * zk查看历史
-//     *
-//     * @param nodePath 节点路径
-//     * @param data     数据
-//     * @param owner    父窗口
-//     */
-//    public static void zkHistoryView(String nodePath, byte[] data, Window owner) {
-//        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryViewController.class, owner);
-//            adapter.setProp("data", data);
-//            adapter.setProp("path", nodePath);
-//            adapter.display();
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            MessageBox.exception(ex, StageManager.getFrontWindow());
-//        }
-//    }
 }

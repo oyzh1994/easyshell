@@ -46,7 +46,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter addKey(ShellRedisClient client, Integer dbIndex, ShellRedisKeyType type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("type", type);
             adapter.setProp("client", client);
             adapter.setProp("dbIndex", dbIndex);
@@ -67,7 +67,7 @@ public class ShellRedisViewFactory {
      */
     public static void batchOperation(ShellRedisClient client, Integer dbIndex) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyBatchOperationController.class, StageManager.getPrimaryStage());
             adapter.setProp("client", client);
             adapter.setProp("dbIndex", dbIndex);
             adapter.display();
@@ -85,7 +85,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter moveKey(ShellRedisKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyMoveController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -104,7 +104,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter copyKey(ShellRedisKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyCopyController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -122,7 +122,7 @@ public class ShellRedisViewFactory {
      */
     public static void ttlKey(ShellRedisKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisKeyTTLController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.display();
         } catch (Exception ex) {
@@ -138,7 +138,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter zSetCoordinateAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetCoordinateAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -156,7 +156,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter zSetMemberAdd(ShellRedisZSetKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisZSetMemberAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -174,7 +174,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter setMemberAdd(ShellRedisSetKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisSetMemberAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -192,7 +192,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter hashFieldAdd(ShellRedisHashKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisHashFieldAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -210,7 +210,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter listElementAdd(ShellRedisListKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisListElementAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -228,7 +228,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter streamMessageAdd(ShellRedisStreamKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisStreamMessageAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;
@@ -246,7 +246,7 @@ public class ShellRedisViewFactory {
      */
     public static StageAdapter hylogElementsAdd(ShellRedisStringKeyTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellRedisHylogElementsAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("treeItem", treeItem);
             adapter.showAndWait();
             return adapter;

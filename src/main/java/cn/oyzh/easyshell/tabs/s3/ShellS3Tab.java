@@ -69,7 +69,7 @@ public class ShellS3Tab extends ShellConnectTab implements NodeLifeCycle {
     public void onNodeInitialize() {
         NodeLifeCycle.super.onNodeInitialize();
         // 更新一下内容
-        StageAdapter adapter = StageManager.getAdapter(this.window());
+        StageAdapter adapter = StageManager.getAdapter(this.getWindow());
         if (adapter != null) {
             adapter.updateContentLater();
         }

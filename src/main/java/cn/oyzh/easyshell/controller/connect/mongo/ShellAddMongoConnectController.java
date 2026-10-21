@@ -44,11 +44,7 @@ import javafx.stage.WindowEvent;
  * @author oyzh
  * @since 2025-04-24
  */
-@StageAttribute(
-        stageStyle = FXStageStyle.EXTENDED,
-        modality = Modality.APPLICATION_MODAL,
-        value = FXConst.FXML_PATH + "connect/mongo/shellAddMongoConnect.fxml"
-)
+@StageAttribute(stageStyle = FXStageStyle.EXTENDED, modality = Modality.APPLICATION_MODAL, value = FXConst.FXML_PATH + "connect/mongo/shellAddMongoConnect.fxml")
 public class ShellAddMongoConnectController extends StageController {
 
     /**
@@ -456,7 +452,7 @@ public class ShellAddMongoConnectController extends StageController {
      */
     @FXML
     private void addHost() {
-        StageAdapter adapter = ShellViewFactory.addHost(null);
+        StageAdapter adapter = ShellViewFactory.addHost(null, this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -472,7 +468,7 @@ public class ShellAddMongoConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = ShellViewFactory.addJump();
+        StageAdapter adapter = ShellViewFactory.addJump(this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -492,7 +488,7 @@ public class ShellAddMongoConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        StageAdapter adapter = ShellViewFactory.updateJump(config, this.getWindow());
         if (adapter == null) {
             return;
         }

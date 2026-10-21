@@ -125,24 +125,6 @@ public class ShellDamengViewFactory {
         }
     }
 
-    //    /**
-    //     * 编辑数据库
-    //     *
-    //     * @param database 数据库
-    //     * @param treeItem 树节点
-    //     */
-    //    public static void databaseUpdate(DamengDatabase database, ShellDamengRootTreeItem treeItem) {
-    //        try {
-    //            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaUpdateController.class, StageManager.getFrontWindow());
-    //            adapter.setProp("database", database);
-    //            adapter.setProp("connectItem", treeItem);
-    //            adapter.display();
-    //        } catch (Exception ex) {
-    //            ex.printStackTrace();
-    //            MessageBox.exception(ex, StageManager.getFrontWindow());
-    //        }
-    //    }
-
     /**
      * 传输数据
      *
@@ -161,25 +143,6 @@ public class ShellDamengViewFactory {
         }
     }
 
-    //    /**
-    //     * 添加数据库
-    //     *
-    //     * @param connectItem 根节点
-    //     * @return 窗口适配器
-    //     */
-    //    public static StageAdapter addDatabase(ShellDamengRootTreeItem connectItem) {
-    //        try {
-    //            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaAddController.class, StageManager.getFrontWindow());
-    //            adapter.setProp("connectItem", connectItem);
-    //            adapter.showAndWait();
-    //            return adapter;
-    //        } catch (Exception ex) {
-    //            ex.printStackTrace();
-    //            MessageBox.exception(ex, StageManager.getFrontWindow());
-    //        }
-    //        return null;
-    //    }
-
     /**
      * 添加数据库
      *
@@ -188,7 +151,7 @@ public class ShellDamengViewFactory {
      */
     public static StageAdapter addSchema(ShellDamengRootTreeItem connectItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("connectItem", connectItem);
             adapter.showAndWait();
             return adapter;
@@ -206,7 +169,7 @@ public class ShellDamengViewFactory {
      */
     public static void updateSchema(DamengSchema schema, ShellDamengRootTreeItem connectItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellDamengSchemaUpdateController.class, StageManager.getPrimaryStage());
             adapter.setProp("database", schema);
             adapter.setProp("connectItem", connectItem);
             adapter.display();
@@ -223,9 +186,9 @@ public class ShellDamengViewFactory {
      */
     public static void tableInfo(ShellDamengTableTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellDamengTableInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellDamengTableInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -239,9 +202,9 @@ public class ShellDamengViewFactory {
      */
     public static void viewInfo(ShellDamengViewTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellDamengViewInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellDamengViewInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -255,9 +218,9 @@ public class ShellDamengViewFactory {
      */
     public static void functionInfo(ShellDamengFunctionTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellDamengFunctionInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellDamengFunctionInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -271,9 +234,9 @@ public class ShellDamengViewFactory {
      */
     public static void procedureInfo(ShellDamengProcedureTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellDamengProcedureInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellDamengProcedureInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());

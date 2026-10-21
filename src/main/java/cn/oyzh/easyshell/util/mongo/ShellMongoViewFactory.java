@@ -36,7 +36,7 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter collectionDocumentAdd(MongoColumns columns) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("columns", columns);
             adapter.showAndWait();
             return adapter;
@@ -55,7 +55,7 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter collectionDocumentUpdate(MongoRecord record) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoCollectionDocumentUpdateController.class, StageManager.getPrimaryStage());
             adapter.setProp("document", record);
             adapter.showAndWait();
             return adapter;
@@ -74,7 +74,7 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter bucketDocumentUpdate(MongoBucketFile record) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoBucketDocumentUpdateController.class, StageManager.getPrimaryStage());
             adapter.setProp("document", record);
             adapter.showAndWait();
             return adapter;
@@ -225,7 +225,7 @@ public class ShellMongoViewFactory {
      */
     public static StageAdapter userCreate(ShellMongoDatabaseTreeItem dbItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMongoUserCreateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMongoUserCreateController.class, StageManager.getPrimaryStage());
             adapter.setProp("dbItem", dbItem);
             adapter.showAndWait();
             return adapter;
@@ -243,7 +243,7 @@ public class ShellMongoViewFactory {
 //     */
 //    public static void viewUser(MongoUser user) {
 //        try {
-//            StageAdapter adapter = StageManager.parseStage(ShellMongoUserViewController.class, StageManager.getFrontWindow());
+//            StageAdapter adapter = StageManager.parseStage(ShellMongoUserViewController.class, StageManager.getPrimaryStage());
 //            adapter.setProp("user", user);
 //            adapter.show();
 //        } catch (Exception ex) {

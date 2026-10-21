@@ -718,7 +718,7 @@ public class ShellAddSSHConnectController extends StageController {
     private void addHost() {
         // StageAdapter adapter = StageManager.parseStage(ShellAddHostController.class);
         // adapter.showAndWait();
-        StageAdapter adapter = ShellViewFactory.addHost(null);
+        StageAdapter adapter = ShellViewFactory.addHost(null, this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -734,7 +734,7 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private void addJump() {
-        StageAdapter adapter = ShellViewFactory.addJump();
+        StageAdapter adapter = ShellViewFactory.addJump(this.getWindow());
         if (adapter == null) {
             return;
         }
@@ -754,7 +754,7 @@ public class ShellAddSSHConnectController extends StageController {
         if (config == null) {
             return;
         }
-        StageAdapter adapter = ShellViewFactory.updateJump(config);
+        StageAdapter adapter = ShellViewFactory.updateJump(config, this.getWindow());
         if (adapter == null) {
             return;
         }

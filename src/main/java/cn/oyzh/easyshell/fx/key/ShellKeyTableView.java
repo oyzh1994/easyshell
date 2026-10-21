@@ -67,7 +67,9 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             return Collections.emptyList();
         }
         List<MenuItem> menuItems = new ArrayList<>();
-        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost(() -> ShellViewFactory.copyKeysToHost(keys));
+        MenuItem copyKeys1ToHost = MenuItemHelper.copyToHost(() -> {
+            ShellViewFactory.copyKeysToHost(keys, this.getWindow());
+        });
         menuItems.add(copyKeys1ToHost);
         MenuItem deleteKey = MenuItemHelper.deleteKey1(() -> this.deleteKey(keys));
         menuItems.add(deleteKey);

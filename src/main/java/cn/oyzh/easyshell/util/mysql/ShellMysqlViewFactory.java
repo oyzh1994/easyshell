@@ -135,7 +135,7 @@ public class ShellMysqlViewFactory {
      */
     public static void databaseUpdate(MysqlDatabase database, ShellMysqlRootTreeItem treeItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseUpdateController.class, StageManager.getPrimaryStage());
             adapter.setProp("database", database);
             adapter.setProp("connectItem", treeItem);
             adapter.display();
@@ -171,7 +171,7 @@ public class ShellMysqlViewFactory {
      */
     public static StageAdapter addDatabase(ShellMysqlRootTreeItem connectItem) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseAddController.class, StageManager.getFrontWindow());
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlDatabaseAddController.class, StageManager.getPrimaryStage());
             adapter.setProp("connectItem", connectItem);
             adapter.showAndWait();
             return adapter;
@@ -189,9 +189,9 @@ public class ShellMysqlViewFactory {
      */
     public static void tableInfo(ShellMysqlTableTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMysqlTableInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlTableInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -205,9 +205,9 @@ public class ShellMysqlViewFactory {
      */
     public static void viewInfo(ShellMysqlViewTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMysqlViewInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlViewInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -221,9 +221,9 @@ public class ShellMysqlViewFactory {
      */
     public static void functionInfo(ShellMysqlFunctionTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMysqlFunctionInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlFunctionInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -237,9 +237,9 @@ public class ShellMysqlViewFactory {
      */
     public static void procedureInfo(ShellMysqlProcedureTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMysqlProcedureInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlProcedureInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -253,9 +253,9 @@ public class ShellMysqlViewFactory {
      */
     public static void eventInfo(ShellMysqlEventTreeItem treeItem) {
         try {
-            StageAdapter fxView = StageManager.parseStage(ShellMysqlEventInfoController.class, StageManager.getFrontWindow());
-            fxView.setProp("item", treeItem);
-            fxView.display();
+            StageAdapter adapter = StageManager.parseStage(ShellMysqlEventInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());

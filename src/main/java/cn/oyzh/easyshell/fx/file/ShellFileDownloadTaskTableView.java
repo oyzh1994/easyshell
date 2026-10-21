@@ -33,7 +33,7 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
         this.setOnContextMenuRequested(e -> {
             List<? extends MenuItem> menuItems = this.getMenuItems();
             if (CollectionUtil.isNotEmpty(menuItems)) {
-                this.showContextMenu(menuItems, e.getScreenX() , e.getScreenY());
+                this.showContextMenu(menuItems, e.getScreenX(), e.getScreenY());
             } else {
                 this.clearContextMenu();
             }
@@ -96,7 +96,7 @@ public class ShellFileDownloadTaskTableView extends FXTableView<ShellFileDownloa
      * @param task 任务
      */
     protected void errorInfo(ShellFileDownloadTask task) {
-        ShellViewFactory.fileError(task);
+        ShellViewFactory.fileError(task, this.getWindow());
     }
 
 }
