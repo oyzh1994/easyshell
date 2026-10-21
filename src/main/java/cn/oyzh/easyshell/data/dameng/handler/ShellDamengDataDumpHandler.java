@@ -117,7 +117,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
      * 转储所有表
      *
      * @throws InterruptedException 中断异常
-     * @throws Exception          异常
+     * @throws Exception            异常
      */
     protected void dumpTable() throws Exception {
         DamengSelectTableParam selectTableParam = new DamengSelectTableParam();
@@ -162,7 +162,8 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         }
         //        createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
         // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll(DBUtil.wrap(table.getSchema(), this.dialect) + ".", "");
+        //        createDefinition = createDefinition.replaceFirst(DBUtil.wrap(table.getSchema(), this.dialect) + ".", "");
+        createDefinition = ShellDamengUtil.removeSchema(createDefinition, table.getSchema());
         this.message("Dumping Table " + table.getName());
         this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTable, createDefinition));
         // 查询字段
@@ -265,9 +266,10 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line3 = "-- ----------------------------";
                 String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(view.getName(), DBDialect.DAMENG) + ";";
                 String createDefinition = view.getCreateDefinition();
-                // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll(DBUtil.wrap(view.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
+                // TODO: 去除特定架构
+                //                createDefinition = createDefinition.replaceFirst(DBUtil.wrap(view.getSchema(), this.dialect) + ".", "");
+                createDefinition = ShellDamengUtil.removeSchema(createDefinition, view.getSchema());
                 if (!createDefinition.endsWith(";")) {
                     createDefinition += ";";
                 }
@@ -298,8 +300,9 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line6 = "delimiter ;";
                 String createDefinition = function.getCreateDefinition();
                 // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll(DBUtil.wrap(function.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
+                //                createDefinition = createDefinition.replaceFirst(DBUtil.wrap(function.getSchema(), this.dialect) + ".", "");
+                createDefinition = ShellDamengUtil.removeSchema(createDefinition, function.getSchema());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropFunction, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }
@@ -326,9 +329,10 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line5 = ";;";
                 String line6 = "delimiter ;";
                 String createDefinition = procedure.getCreateDefinition();
-                // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll(DBUtil.wrap(procedure.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
+                // TODO: 去除特定架构
+                //                createDefinition = createDefinition.replaceFirst(DBUtil.wrap(procedure.getSchema(), this.dialect) + ".", "");
+                createDefinition = ShellDamengUtil.removeSchema(createDefinition, procedure.getSchema());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropProcedure, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }
@@ -354,9 +358,10 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 String line5 = ";;";
                 String line6 = "delimiter ;";
                 String createDefinition = trigger.getCreateDefinition();
-                // TODO: 去除特定架构
-                createDefinition = createDefinition.replaceAll(DBUtil.wrap(trigger.getSchema(), this.dialect) + ".", "");
                 //                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
+                // TODO: 去除特定架构
+                //                createDefinition = createDefinition.replaceFirst(DBUtil.wrap(trigger.getSchema(), this.dialect) + ".", "");
+                createDefinition = ShellDamengUtil.removeSchema(createDefinition, trigger.getSchema());
                 this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropTrigger, line4, createDefinition, line5, line6));
                 this.processedIncr();
             }

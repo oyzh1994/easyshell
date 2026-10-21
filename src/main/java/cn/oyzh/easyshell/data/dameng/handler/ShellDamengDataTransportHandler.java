@@ -126,55 +126,78 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      * @throws Exception 异常
      */
     private void transportTable(String tableName) throws Exception {
-        this.checkInterrupt();
-        // 删除表
-        String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(tableName, DBDialect.DAMENG) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Table " + tableName);
-        this.processedIncr();
-
-        // 创建表
-        String createDefinition = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
-        // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
-        this.message("Create Table " + tableName);
-        this.processedIncr();
-
-        // 传输表
-        this.message("Transport Table " + tableName + " Starting");
-        DamengColumns columns = new DamengColumns(this.sourceClient.selectColumns(new DamengSelectColumnParam(this.sourceDatabase, tableName)));
-        boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
-        if (hasIdentity) {
-            String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
-            this.addInsert(line0);
-        }
-        long start = 0;
-        while (true) {
+        try {
             this.checkInterrupt();
-            DamengSelectRecordParam param = new DamengSelectRecordParam();
-            param.setStart(start);
-            param.setReadonly(true);
-            param.setTableName(tableName);
-            param.setSchema(this.sourceDatabase);
-            param.setLimit((long) this.selectLimit);
-            List<DamengRecord> records = this.sourceClient.selectRecords(param);
-            if (CollectionUtil.isEmpty(records)) {
-                break;
+            // 删除表
+            String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(tableName, DBDialect.DAMENG) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Table " + tableName);
+            this.processedIncr();
+
+            // 创建表
+            String createDefinition = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
+            // TODO: 去除特定架构
+//            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+            createDefinition = ShellDamengUtil.removeSchema(createDefinition,this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Table " + tableName);
+            this.processedIncr();
+
+            // 传输表数据
+            if (this.dataType == 0) {
+                this.message("Transport Table " + tableName + " Starting");
+                DamengColumns columns = new DamengColumns(this.sourceClient.selectColumns(new DamengSelectColumnParam(this.sourceDatabase, tableName)));
+                boolean hasIdentity = columns.hasAutoIncrement() && !StringUtil.containsIgnoreCase(createDefinition, " AUTO_INCREMENT ");
+                if (hasIdentity) {
+                    String line0 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " ON;";
+                    this.addInsert(line0);
+                }
+                long start = 0;
+                while (true) {
+                    this.checkInterrupt();
+                    try {
+                        DamengSelectRecordParam param = new DamengSelectRecordParam();
+                        param.setStart(start);
+                        param.setReadonly(true);
+                        param.setTableName(tableName);
+                        param.setSchema(this.sourceDatabase);
+                        param.setLimit((long) this.selectLimit);
+                        List<DamengRecord> records = this.sourceClient.selectRecords(param);
+                        if (CollectionUtil.isEmpty(records)) {
+                            break;
+                        }
+                        List<String> list = ShellDamengDataUtil.toInsertSql(columns, records, true);
+                        this.addInsert(list);
+                        start += this.selectLimit;
+                        // 更新状态
+                        this.processed(0);
+                    } catch (Exception ex) {
+                        if (this.isContinueWithErrors()) {
+                            this.exception(ex);
+                            this.processedDecr();
+                            this.getInsertList().clear();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+                if (hasIdentity) {
+                    String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
+                    this.addInsert(line1);
+                }
+                // 收尾批量插入
+                this.doBatchInsert();
+                this.message("Transport Table " + tableName + " Finished");
             }
-            List<String> list = ShellDamengDataUtil.toInsertSql(columns, records, true);
-            this.addInsert(list);
-            start += this.selectLimit;
-            // 更新状态
-            this.processed(0);
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
         }
-        if (hasIdentity) {
-            String line1 = "SET IDENTITY_INSERT " + DBUtil.wrap(tableName, DBDialect.DAMENG) + " OFF;";
-            this.addInsert(line1);
-        }
-        // 收尾批量插入
-        this.doBatchInsert();
-        this.message("Transport Table " + tableName + " Finished");
     }
 
     /**
@@ -183,21 +206,32 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      * @param viewName 视图名称
      * @throws InterruptedException 异常
      */
-    private void transportView(String viewName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除视图
-        String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(viewName, DBDialect.DAMENG) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop View " + viewName);
-        this.processedIncr();
+    private void transportView(String viewName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除视图
+            String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(viewName, DBDialect.DAMENG) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop View " + viewName);
+            this.processedIncr();
 
-        // 创建视图
-        String createDefinition = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
-        // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
-        this.message("Create View " + viewName);
-        this.processedIncr();
+            // 创建视图
+            String createDefinition = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
+            // TODO: 去除特定架构
+//            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+            createDefinition = ShellDamengUtil.removeSchema(createDefinition,this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create View " + viewName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -206,21 +240,32 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      * @param functionName 函数名称
      * @throws InterruptedException 异常
      */
-    private void transportFunction(String functionName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除函数
-        String dropTable = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(functionName, DBDialect.DAMENG) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Function " + functionName);
-        this.processedIncr();
+    private void transportFunction(String functionName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除函数
+            String dropTable = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(functionName, DBDialect.DAMENG) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Function " + functionName);
+            this.processedIncr();
 
-        // 创建函数
-        String createDefinition = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
-        // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
-        this.message("Create Function " + functionName);
-        this.processedIncr();
+            // 创建函数
+            String createDefinition = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
+            // TODO: 去除特定架构
+//            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+            createDefinition = ShellDamengUtil.removeSchema(createDefinition,this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Function " + functionName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -229,21 +274,32 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      * @param procedureName 过程名称
      * @throws InterruptedException 异常
      */
-    private void transportProcedure(String procedureName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除过程
-        String dropTable = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(procedureName, DBDialect.DAMENG) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Procedure " + procedureName);
-        this.processedIncr();
+    private void transportProcedure(String procedureName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除过程
+            String dropTable = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(procedureName, DBDialect.DAMENG) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Procedure " + procedureName);
+            this.processedIncr();
 
-        // 创建过程
-        String createDefinition = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
-        // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
-        this.message("Create Procedure " + procedureName);
-        this.processedIncr();
+            // 创建过程
+            String createDefinition = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
+            // TODO: 去除特定架构
+//            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+            createDefinition = ShellDamengUtil.removeSchema(createDefinition,this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Procedure " + procedureName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -252,21 +308,32 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
      * @param triggerName 触发器名称
      * @throws InterruptedException 异常
      */
-    private void transportTrigger(String triggerName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除触发器
-        String dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.DAMENG) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Trigger " + triggerName);
-        this.processedIncr();
+    private void transportTrigger(String triggerName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除触发器
+            String dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.DAMENG) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Trigger " + triggerName);
+            this.processedIncr();
 
-        // 创建触发器
-        String createDefinition = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
-        // TODO: 去除特定架构
-        createDefinition = createDefinition.replaceAll(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-        this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
-        this.message("Create Trigger " + triggerName);
-        this.processedIncr();
+            // 创建触发器
+            String createDefinition = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
+            // TODO: 去除特定架构
+//            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
+            createDefinition = ShellDamengUtil.removeSchema(createDefinition,this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Trigger " + triggerName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     @Override

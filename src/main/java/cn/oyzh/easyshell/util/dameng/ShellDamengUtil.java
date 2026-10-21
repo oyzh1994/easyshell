@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -688,5 +689,38 @@ public class ShellDamengUtil {
                 callback.accept(table);
             }
         }
+    }
+
+    /**
+     * 移除 SQL 中指定模式名前缀，保留对象名。
+     * 严格大小写、不容忍空白字符。
+     * 例如（schema = "a"）：
+     *   CREATE TABLE "a"."t" (...)      -> CREATE TABLE "t" (...)
+     *   ALTER TABLE "a"."c" ... REFERENCES "a"."p" -> ... REFERENCES "p"
+     *   CREATE TABLE a.t (...)          -> CREATE TABLE t (...)   （无引号形式）
+     * 而 "A"."t"、a1.t、x.a.t、列名 "a" 均不会被误伤。
+     *
+     * @param sql    原始 SQL
+     * @param schema 模式名（不带引号，大小写需与 DDL 中完全一致，例如 a）
+     * @return 处理后的 SQL
+     */
+    public static String removeSchema(String sql, String schema) {
+        if (sql == null || sql.isEmpty() || schema == null || schema.isEmpty()) {
+            return sql;
+        }
+
+        String q = Pattern.quote(schema);
+
+        // 1) 带双引号："schema".
+        String quoted = "\"" + q + "\"\\.";
+
+        // 2) 不带引号：schema.
+        //    - 前一个字符不能是标识符字符 / $ / 双引号 / 点（Unicode 感知，兼容中文标识符）
+        //    - 后一个字符不能是标识符字符 / $（防止 a1. / ab. 误伤）
+        String unquoted = "(?<![\\p{L}\\p{N}_$.])" + q + "(?![\\p{L}\\p{N}_$])\\.";
+
+        String result = sql.replaceAll(quoted, "");
+        result = result.replaceAll(unquoted, "");
+        return result;
     }
 }

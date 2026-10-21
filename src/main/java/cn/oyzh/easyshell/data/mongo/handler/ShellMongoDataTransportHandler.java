@@ -77,36 +77,61 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
      * @throws Exception 异常
      */
     private void transportTable(String tableName) throws Exception {
-        this.checkInterrupt();
-        // 删除表
-        this.targetClient.dropCollection(this.targetDatabase, tableName);
-        this.message("Drop Collection " + tableName);
-        this.processedIncr();
-
-        // 创建表
-        this.targetClient.createCollection(this.targetDatabase, tableName);
-        this.message("Create Collection " + tableName);
-        this.processedIncr();
-
-        // 传输表
-        this.message("Transport Collection " + tableName + " Starting");
-        long start = 0;
-        while (true) {
+        try {
             this.checkInterrupt();
-            MongoSelectRecordParam param = new MongoSelectRecordParam();
-            param.setStart(start);
-            param.setReadonly(true);
-            param.setCollectionName(tableName);
-            param.setDbName(this.sourceDatabase);
-            param.setLimit((long) this.selectLimit);
-            List<MongoRecord> records = this.sourceClient.selectCollectionRecords(param);
-            if (CollectionUtil.isEmpty(records)) {
-                break;
+            // 删除表
+            this.targetClient.dropCollection(this.targetDatabase, tableName);
+            this.message("Drop Collection " + tableName);
+            this.processedIncr();
+
+            // 创建表
+            this.targetClient.createCollection(this.targetDatabase, tableName);
+            this.message("Create Collection " + tableName);
+            this.processedIncr();
+
+            // 传输表数据
+            if (this.dataType == 0) {
+                this.message("Transport Collection " + tableName + " Starting");
+                long start = 0;
+                while (true) {
+                    this.checkInterrupt();
+                    try {
+                        MongoSelectRecordParam param = new MongoSelectRecordParam();
+                        param.setStart(start);
+                        param.setReadonly(true);
+                        param.setCollectionName(tableName);
+                        param.setDbName(this.sourceDatabase);
+                        param.setLimit((long) this.selectLimit);
+                        List<MongoRecord> records = this.sourceClient.selectCollectionRecords(param);
+                        if (CollectionUtil.isEmpty(records)) {
+                            break;
+                        }
+                        this.addInsert(records);
+                        start += this.selectLimit;
+                        this.processed(0);
+                    } catch (Exception ex) {
+                        if (this.isContinueWithErrors()) {
+                            this.exception(ex);
+                            this.processedDecr();
+                            this.getInsertList().clear();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+                // 收尾批量插入
+                this.doBatchInsert();
+                this.message("Transport Collection " + tableName + " Finished");
             }
-            this.addInsert(records);
-            start += this.selectLimit;
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
         }
-        this.message("Transport Collection " + tableName + " Finished");
     }
 
     /**
@@ -115,18 +140,28 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
      * @param functionName 函数名称
      * @throws InterruptedException 异常
      */
-    private void transportFunction(String functionName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除函数
-        this.targetClient.dropFunction(this.targetDatabase, functionName);
-        this.message("Drop Function " + functionName);
-        this.processedIncr();
+    private void transportFunction(String functionName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除函数
+            this.targetClient.dropFunction(this.targetDatabase, functionName);
+            this.message("Drop Function " + functionName);
+            this.processedIncr();
 
-        // 创建函数
-        MongoFunction function = this.sourceClient.selectFunction(this.sourceDatabase, functionName);
-        this.targetClient.createFunction(this.targetDatabase, functionName, function.getCode());
-        this.message("Create Function " + functionName);
-        this.processedIncr();
+            // 创建函数
+            MongoFunction function = this.sourceClient.selectFunction(this.sourceDatabase, functionName);
+            this.targetClient.createFunction(this.targetDatabase, functionName, function.getCode());
+            this.message("Create Function " + functionName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     @Override
@@ -217,4 +252,3 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
         this.tables = tables;
     }
 }
-

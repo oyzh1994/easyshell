@@ -120,43 +120,66 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
      * @throws Exception 异常
      */
     private void transportTable(String tableName) throws Exception {
-        this.checkInterrupt();
-        // 删除表
-        String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(tableName, DBDialect.MARIADB) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Table " + tableName);
-        this.processedIncr();
-
-        // 创建表
-        String createTable = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createTable);
-        this.message("Create Table " + tableName);
-        this.processedIncr();
-
-        // 传输表
-        this.message("Transport Table " + tableName + " Starting");
-        List<MariadbColumn> columns = this.sourceClient.selectColumns(new MariadbSelectColumnParam(this.sourceDatabase, tableName));
-        MariadbColumns dbColumns = new MariadbColumns(columns);
-        long start = 0;
-        while (true) {
+        try {
             this.checkInterrupt();
-            MariadbSelectRecordParam param = new MariadbSelectRecordParam();
-            param.setStart(start);
-            param.setReadonly(true);
-            param.setTableName(tableName);
-            param.setDbName(this.sourceDatabase);
-            param.setLimit((long) this.selectLimit);
-            List<MariadbRecord> records = this.sourceClient.selectRecords(param);
-            if (CollectionUtil.isEmpty(records)) {
-                break;
+            // 删除表
+            String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(tableName, DBDialect.MARIADB) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Table " + tableName);
+            this.processedIncr();
+
+            // 创建表
+            String createTable = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createTable);
+            this.message("Create Table " + tableName);
+            this.processedIncr();
+
+            // 传输表数据
+            if (this.dataType == 0) {
+                this.message("Transport Table " + tableName + " Starting");
+                List<MariadbColumn> columns = this.sourceClient.selectColumns(new MariadbSelectColumnParam(this.sourceDatabase, tableName));
+                MariadbColumns dbColumns = new MariadbColumns(columns);
+                long start = 0;
+                while (true) {
+                    this.checkInterrupt();
+                    try {
+                        MariadbSelectRecordParam param = new MariadbSelectRecordParam();
+                        param.setStart(start);
+                        param.setReadonly(true);
+                        param.setTableName(tableName);
+                        param.setDbName(this.sourceDatabase);
+                        param.setLimit((long) this.selectLimit);
+                        List<MariadbRecord> records = this.sourceClient.selectRecords(param);
+                        if (CollectionUtil.isEmpty(records)) {
+                            break;
+                        }
+                        List<String> list = ShellMariadbDataUtil.toInsertSql(dbColumns, records);
+                        this.addInsert(list);
+                        start += this.selectLimit;
+                        this.processed(0);
+                    } catch (Exception ex) {
+                        if (this.isContinueWithErrors()) {
+                            this.exception(ex);
+                            this.processedDecr();
+                            this.getInsertList().clear();
+                        } else {
+                            throw ex;
+                        }
+                    }
+                }
+                // 收尾批量插入
+                this.doBatchInsert();
+                this.message("Transport Table " + tableName + " Finished");
             }
-            List<String> list = ShellMariadbDataUtil.toInsertSql(dbColumns, records);
-            this.addInsert(list);
-            start += this.selectLimit;
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
         }
-        // 收尾批量插入
-        this.doBatchInsert();
-        this.message("Transport Table " + tableName + " Finished");
     }
 
     /**
@@ -165,19 +188,29 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
      * @param viewName 视图名称
      * @throws InterruptedException 异常
      */
-    private void transportView(String viewName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除视图
-        String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(viewName, DBDialect.MARIADB) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop View " + viewName);
-        this.processedIncr();
+    private void transportView(String viewName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除视图
+            String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(viewName, DBDialect.MARIADB) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop View " + viewName);
+            this.processedIncr();
 
-        // 创建视图
-        String createView = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
-        this.message("Create View " + viewName);
-        this.processedIncr();
+            // 创建视图
+            String createView = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+            this.message("Create View " + viewName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -186,19 +219,29 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
      * @param functionName 函数名称
      * @throws InterruptedException 异常
      */
-    private void transportFunction(String functionName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除函数
-        String dropTable = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(functionName, DBDialect.MARIADB) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Function " + functionName);
-        this.processedIncr();
+    private void transportFunction(String functionName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除函数
+            String dropTable = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(functionName, DBDialect.MARIADB) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Function " + functionName);
+            this.processedIncr();
 
-        // 创建函数
-        String createView = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
-        this.message("Create Function " + functionName);
-        this.processedIncr();
+            // 创建函数
+            String createView = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+            this.message("Create Function " + functionName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -207,19 +250,29 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
      * @param procedureName 过程名称
      * @throws InterruptedException 异常
      */
-    private void transportProcedure(String procedureName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除过程
-        String dropTable = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(procedureName, DBDialect.MARIADB) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Procedure " + procedureName);
-        this.processedIncr();
+    private void transportProcedure(String procedureName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除过程
+            String dropTable = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(procedureName, DBDialect.MARIADB) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Procedure " + procedureName);
+            this.processedIncr();
 
-        // 创建过程
-        String createView = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
-        this.message("Create Procedure " + procedureName);
-        this.processedIncr();
+            // 创建过程
+            String createView = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+            this.message("Create Procedure " + procedureName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -228,19 +281,29 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
      * @param triggerName 触发器名称
      * @throws InterruptedException 异常
      */
-    private void transportTrigger(String triggerName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除触发器
-        String dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.MARIADB) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Trigger " + triggerName);
-        this.processedIncr();
+    private void transportTrigger(String triggerName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除触发器
+            String dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.MARIADB) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Trigger " + triggerName);
+            this.processedIncr();
 
-        // 创建触发器
-        String createView = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createView);
-        this.message("Create Trigger " + triggerName);
-        this.processedIncr();
+            // 创建触发器
+            String createView = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createView);
+            this.message("Create Trigger " + triggerName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     /**
@@ -249,19 +312,29 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
      * @param eventName 事件名称
      * @throws InterruptedException 异常
      */
-    private void transportEvent(String eventName) throws InterruptedException {
-        this.checkInterrupt();
-        // 删除事件
-        String dropTable = "DROP EVENT IF EXISTS " + DBUtil.wrap(eventName, DBDialect.MARIADB) + ";";
-        this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-        this.message("Drop Event " + eventName);
-        this.processedIncr();
+    private void transportEvent(String eventName) throws Exception {
+        try {
+            this.checkInterrupt();
+            // 删除事件
+            String dropTable = "DROP EVENT IF EXISTS " + DBUtil.wrap(eventName, DBDialect.MARIADB) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
+            this.message("Drop Event " + eventName);
+            this.processedIncr();
 
-        // 创建事件
-        String createEvent = this.sourceClient.showCreateEvent(this.sourceDatabase, eventName);
-        this.targetClient.executeSqlSimple(this.targetDatabase, createEvent);
-        this.message("Create Event " + eventName);
-        this.processedIncr();
+            // 创建事件
+            String createEvent = this.sourceClient.showCreateEvent(this.sourceDatabase, eventName);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createEvent);
+            this.message("Create Event " + eventName);
+            this.processedIncr();
+        } catch (Exception ex) {
+            if (this.isContinueWithErrors()) {
+                this.exception(ex);
+                this.processedDecr();
+                this.getInsertList().clear();
+            } else {
+                throw ex;
+            }
+        }
     }
 
     @Override

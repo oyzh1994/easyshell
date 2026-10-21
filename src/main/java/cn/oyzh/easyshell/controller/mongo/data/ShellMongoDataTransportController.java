@@ -9,14 +9,18 @@ import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView;
+import cn.oyzh.fx.db.data.ui.DBDataTransportObjectListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.pane.FXTitledPane;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
@@ -26,6 +30,7 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.stage.WindowEvent;
 
 
@@ -65,6 +70,12 @@ public class ShellMongoDataTransportController extends StageController {
      */
     @FXML
     private FXVBox step3;
+
+    /**
+     * 第四步
+     */
+    @FXML
+    private FXVBox step4;
 
     /**
      * 来源信息名称
@@ -179,16 +190,22 @@ public class ShellMongoDataTransportController extends StageController {
     private MsgTextArea transportMsg;
 
     /**
+     * 对象选择容器
+     */
+    @FXML
+    private FXTabPane tableRoot;
+
+    /**
      * 表组件
      */
     @FXML
-    private FXTitledPane tablePane;
+    private FXTab tablePane;
 
     /**
      * 函数组件
      */
     @FXML
-    private FXTitledPane functionPane;
+    private FXTab functionPane;
 
     /**
      * 表列表
@@ -201,6 +218,18 @@ public class ShellMongoDataTransportController extends StageController {
      */
     @FXML
     private DBDataTransportNameListView functionList;
+
+    /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithErrors;
+
+    /**
+     * 数据类型
+     */
+    @FXML
+    private DBDataDumpTypeComboBox dataType;
 
     /**
      * 传输操作任务
@@ -238,6 +267,10 @@ public class ShellMongoDataTransportController extends StageController {
         } else {
             this.transportHandler.interrupt(false);
         }
+        // 数据类型
+        this.transportHandler.setDataType(this.dataType.getSelectedIndex());
+        // 错误时继续
+        this.transportHandler.setContinueWithErrors(this.continueWithErrors.isSelected());
         // 来源客户端
         this.transportHandler.setSourceClient(this.sourceClient);
         // 目标客户端
@@ -466,14 +499,9 @@ public class ShellMongoDataTransportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseCheckDatabase(), this.getWindow());
             return;
         }
-        if (this.tableList.isItemEmpty()) {
-            this.tableList.of(this.sourceClient.listCollections(this.sourceDatabase.getSelectedItem()));
-        }
-        if (this.functionList.isItemEmpty()) {
-            this.functionList.of(this.sourceClient.listFunctions(this.sourceDatabase.getSelectedItem()));
-        }
         this.step1.disappear();
         this.step3.disappear();
+        this.step4.disappear();
         this.step2.display();
     }
 
@@ -482,8 +510,24 @@ public class ShellMongoDataTransportController extends StageController {
      */
     @FXML
     private void showStep3() {
+        if (this.tableList.isItemEmpty()) {
+            this.tableList.of(this.sourceClient.listCollections(this.sourceDatabase.getSelectedItem()));
+        }
+        if (this.functionList.isItemEmpty()) {
+            this.functionList.of(this.sourceClient.listFunctions(this.sourceDatabase.getSelectedItem()));
+        }
         this.step2.disappear();
+        this.step4.disappear();
         this.step3.display();
+    }
+
+    /**
+     * 显示第四步
+     */
+    @FXML
+    private void showStep4() {
+        this.step3.disappear();
+        this.step4.display();
     }
 
     /**
@@ -506,6 +550,35 @@ public class ShellMongoDataTransportController extends StageController {
         } else if (StringUtil.equalsIgnoreCase(name, "function")) {
             String functionTipText = "(" + this.functionList.getSelectedSize() + "/" + this.functionList.getItemSize() + ")";
             this.functionPane.setAppendText(functionTipText);
+        }
+    }
+
+    /**
+     * 全选当前对象列表
+     */
+    @FXML
+    private void selectAll() {
+        this.selectObjects(true);
+    }
+
+    /**
+     * 取消全选当前对象列表
+     */
+    @FXML
+    private void unselectAll() {
+        this.selectObjects(false);
+    }
+
+    /**
+     * 设置当前对象列表的选中状态
+     *
+     * @param selected 选中状态
+     */
+    private void selectObjects(boolean selected) {
+        Tab tab = this.tableRoot.getSelectedItem();
+        DBDataTransportObjectListView listView = (DBDataTransportObjectListView) tab.getContent();
+        for (FXCheckBox item : listView.getItems()) {
+            item.setSelected(selected);
         }
     }
 }

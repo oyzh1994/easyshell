@@ -9,14 +9,18 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.fx.dameng.ShellDamengSchemaComboBox;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView;
+import cn.oyzh.fx.db.data.ui.DBDataTransportObjectListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.pane.FXTitledPane;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
@@ -25,6 +29,7 @@ import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.stage.WindowEvent;
 
 
@@ -63,6 +68,12 @@ public class ShellDamengDataTransportController extends StageController {
      */
     @FXML
     private FXVBox step3;
+
+    /**
+     * 第四步
+     */
+    @FXML
+    private FXVBox step4;
 
     /**
      * 来源信息名称
@@ -177,34 +188,40 @@ public class ShellDamengDataTransportController extends StageController {
     private MsgTextArea transportMsg;
 
     /**
+     *
+     */
+    @FXML
+    private FXTabPane tableRoot;
+
+    /**
      * 表组件
      */
     @FXML
-    private FXTitledPane tablePane;
+    private FXTab tablePane;
 
     /**
      * 视图组件
      */
     @FXML
-    private FXTitledPane viewPane;
+    private FXTab viewPane;
 
     /**
      * 函数组件
      */
     @FXML
-    private FXTitledPane functionPane;
+    private FXTab functionPane;
 
     /**
      * 过程组件
      */
     @FXML
-    private FXTitledPane procedurePane;
+    private FXTab procedurePane;
 
     /**
      * 触发器组件
      */
     @FXML
-    private FXTitledPane triggerPane;
+    private FXTab triggerPane;
 
     /**
      * 表列表
@@ -235,6 +252,18 @@ public class ShellDamengDataTransportController extends StageController {
      */
     @FXML
     private DBDataTransportNameListView triggerList;
+
+    /**
+     * 遇到错误时继续
+     */
+    @FXML
+    private FXCheckBox continueWithErrors;
+
+    /**
+     * 数据类型
+     */
+    @FXML
+    private DBDataDumpTypeComboBox dataType;
 
     /**
      * 传输操作任务
@@ -272,6 +301,10 @@ public class ShellDamengDataTransportController extends StageController {
         } else {
             this.transportHandler.interrupt(false);
         }
+        // 数据类型
+        this.transportHandler.setDataType(this.dataType.getSelectedIndex());
+        // 错误时继续
+        this.transportHandler.setContinueWithErrors(this.continueWithErrors.isSelected());
         // 来源客户端
         this.transportHandler.setSourceClient(this.sourceClient);
         // 目标客户端
@@ -503,6 +536,16 @@ public class ShellDamengDataTransportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseCheckDatabase(), this.getWindow());
             return;
         }
+        this.step1.disappear();
+        this.step3.disappear();
+        this.step2.display();
+    }
+
+    /**
+     * 显示第三步
+     */
+    @FXML
+    private void showStep3() {
         if (this.viewList.isItemEmpty()) {
             this.viewList.of(this.sourceClient.selectViews(this.sourceDatabase.getSelectedItem()));
         }
@@ -518,18 +561,18 @@ public class ShellDamengDataTransportController extends StageController {
         if (this.procedureList.isItemEmpty()) {
             this.procedureList.of(this.sourceClient.selectProcedures(this.sourceDatabase.getSelectedItem()));
         }
-        this.step1.disappear();
-        this.step3.disappear();
-        this.step2.display();
+        this.step2.disappear();
+        this.step4.disappear();
+        this.step3.display();
     }
 
     /**
-     * 显示第三步
+     * 显示第四步
      */
     @FXML
-    private void showStep3() {
-        this.step2.disappear();
-        this.step3.display();
+    private void showStep4() {
+        this.step3.disappear();
+        this.step4.display();
     }
 
     /**
@@ -563,6 +606,30 @@ public class ShellDamengDataTransportController extends StageController {
         } else if (StringUtil.equalsIgnoreCase(name, "procedure")) {
             String procedureTipText = "(" + this.procedureList.getSelectedSize() + "/" + this.procedureList.getItemSize() + ")";
             this.procedurePane.setAppendText(procedureTipText);
+        }
+    }
+
+    /**
+     * 取消全选表
+     */
+    @FXML
+    private void unselectAll() {
+        Tab tab = this.tableRoot.getSelectedItem();
+        DBDataTransportObjectListView listView = (DBDataTransportObjectListView) tab.getContent();
+        for (FXCheckBox item : listView.getItems()) {
+            item.setSelected(false);
+        }
+    }
+
+    /**
+     * 全选字段
+     */
+    @FXML
+    private void selectAll() {
+        Tab tab = this.tableRoot.getSelectedItem();
+        DBDataTransportObjectListView listView = (DBDataTransportObjectListView) tab.getContent();
+        for (FXCheckBox item : listView.getItems()) {
+            item.setSelected(true);
         }
     }
 }
