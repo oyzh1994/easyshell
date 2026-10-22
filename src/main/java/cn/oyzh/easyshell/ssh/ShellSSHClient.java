@@ -39,6 +39,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -530,8 +532,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             try {
                 this.ensureSessionConnected(this.connectTimeout());
                 channel = (ChannelShell) this.session.openChannel("shell");
-                channel.setInputStream(null);
-                channel.setOutputStream(null);
                 //// 用户环境
                 // Map<String, String> userEnvs = this.shellConnect.environments();
                 // if (CollectionUtil.isNotEmpty(userEnvs)) {
@@ -565,7 +565,12 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 // 设置终端类型
                 channel.setPty(true);
                 channel.setPtyType(this.shellConnect.getTermType());
-                this.shell = new ShellSSHShell(channel);
+                // JSch 必须在 connect 前取得输入输出流，否则连接建立后到达的 MOTD、
+                // 登录信息和首批提示符会写入空输出流而丢失。
+                channel.setInputStream(null);
+                InputStream inputStream = channel.getInputStream();
+                OutputStream outputStream = channel.getOutputStream();
+                this.shell = new ShellSSHShell(channel, inputStream, outputStream);
                 this.shell.connect(this.connectTimeout());
             } catch (Exception ex) {
                 if (this.shell != null) {

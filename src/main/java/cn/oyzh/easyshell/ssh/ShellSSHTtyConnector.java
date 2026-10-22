@@ -33,9 +33,19 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
     public boolean ready() throws IOException {
         if (this.reader == null || !this.isConnected()) {
             try {
-                super.close();
-                ShellSSHShell shell = this.client.reopenShell();
-                this.client.waitShellReady(1000);
+                if (this.reader != null) {
+                    IOUtil.close(this.reader);
+                    IOUtil.close(this.writer);
+                    this.reader = null;
+                    this.writer = null;
+                }
+                ShellSSHShell shell;
+                if (this.isConnected()) {
+                    shell = this.client.getShell();
+                } else {
+                    shell = this.client.reopenShell();
+                    this.client.waitShellReady(1000);
+                }
                 this.reader = new InputStreamReader(shell.getInputStream(), this.charset());
                 this.writer = new OutputStreamWriter(shell.getOutputStream(), this.charset());
             } catch (Exception ex) {
