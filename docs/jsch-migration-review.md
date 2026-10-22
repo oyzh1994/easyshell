@@ -882,8 +882,82 @@ bash docker/ssh/2fa/test-2fa.sh
 - 未注入验证码供应器时保持原有 GUI 输入方式，不影响既有密码、公钥和 Agent 认证。
 - 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本代码。
 
+### 11.13 SSH Agent 认证实机回归
+
+#### 测试环境
+
+- 目标主机：本机 Docker 容器 `easyshell-ssh-agent-test`，镜像
+  `kevinwang15/quick-ssh-server:latest`，地址 `127.0.0.1:2222`。
+- 服务端 OpenSSH 开启 `PubkeyAuthentication`；密码认证仅用于临时安装测试公钥。
+- 本机启动独立 `ssh-agent`，通过 Unix socket 提供身份；测试结束后自动关闭。
+- Agent 中放入两把 Ed25519 密钥：一把未授权干扰密钥，一把已授权测试密钥。
+- 两把私钥文件在 `ssh-add` 后立即删除，认证只能由 Agent 完成。
+- 目标主机 `~/.ssh/authorized_keys` 仅临时追加测试公钥，测试结束恢复原内容或删除临时文件。
+
+#### 调用链
+
+- `ShellConnect.authMethod=sshAgent` -> `ShellBaseSSHClient.initClient()` ->
+  `JschUtil.initAgentIdentityRepository()` -> `SSHAgentConnector`（Unix socket）->
+  JSch `AgentIdentityRepository` -> `JSch.setIdentityRepository()` ->
+  `UserAuthPublicKey` -> 服务端公钥认证。
+- `initSession()` 对 Agent 认证保持 `PreferredAuthentications=publickey`，
+  不会在 Agent 失败后回退到密码认证。
+- 未引入 MINA sshd 类型；实现仅使用 JSch `AgentIdentityRepository`、
+  `SSHAgentConnector` 和既有 `UIKeyboardInteractive` 适配层。
+
+#### 回归结果
+
+测试日期：2026-10-22。
+
+| 场景 | 结果 |
+| --- | --- |
+| 本机 Agent 身份枚举 | 通过，识别 2 把密钥 |
+| Agent 含未授权干扰密钥时的认证 | 通过，自动选择已授权密钥 |
+| 私钥文件删除后认证 | 通过，证明签名由 Agent 完成 |
+| 连续新建 8 个 Agent 会话并执行命令 | 8/8 通过，约 2080 ms |
+| 单连接复用执行 5 条命令 | 5/5 通过，约 373 ms |
+| Agent 会话 SFTP 上传、元数据、下载校验 | 通过 |
+| 6 路并发 Agent 会话 | 6/6 通过，约 327 ms |
+| 移除授权后未授权 Agent 密钥 | 拒绝，约 98 ms |
+| `authorized_keys` 恢复 | 通过，临时文件已删除 |
+
+测试日志末尾输出：
+
+```text
+ssh-agent identities=2
+agent public key authorized: existed=false
+sequential agent connections= 8, elapsed=2080ms
+agent connection reuse=5, elapsed=373ms
+agent SFTP upload/download=PASS
+concurrent agent connections=6, elapsed=327ms
+unauthorized agent key rejected: elapsed=98ms
+temporary authorized_keys removed
+agent auth verified: sequential=8, reuse=5, concurrent=6, sftp=PASS, unauthorized=rejected
+JSch agent authentication regression passed
+```
+
+#### 测试入口
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchAgentAuthRegression.java`
+- `docker/ssh/agent/test-agent.sh`
+- `docker/ssh/agent/README.md`
+
+测试命令：
+
+```bash
+bash docker/ssh/agent/test-agent.sh
+```
+
+#### 可靠性结论与兼容性
+
+- Agent 认证不读取或依赖私钥文件；删除私钥后连续、复用、SFTP 和并发连接均正常。
+- Agent 持有多把密钥时 JSch 能遍历身份并选中服务端授权的那一把。
+- 单会话多命令复用正常，未出现会话断开、通道泄漏或并发认证串扰。
+- 未授权 Agent 密钥快速失败，未回退到密码认证。
+- 未修改 `ShellConnect`、`ShellKey`、认证方式枚举、配置格式或任何 sshd 版本代码。
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、公钥认证、双因素认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
+本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、双因素认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。
