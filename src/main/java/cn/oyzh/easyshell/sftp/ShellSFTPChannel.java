@@ -113,10 +113,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
                 continue;
             }
             ShellSFTPFile file = new ShellSFTPFile(filePath, entry);
-            // 处理链接文件
-            if (file.isLink()) {
-                this.realpathCache.realpath(file, this);
-            }
+            // 目录列举只判断链接类型，链接目标在用户点击时按需解析。
+            // 提前 realpath + stat 会对每个链接增加两次串行 SFTP 往返。
             fileCallback.accept(file);
         }
     }

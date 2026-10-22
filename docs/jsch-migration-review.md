@@ -2,7 +2,7 @@
 
 ## 1. 审查结论
 
-本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/多跳跳板、真实 HTTP CONNECT 代理、真实 SOCKS5 代理及 Windows/macOS/Linux 主机矩阵的只读回归。
+本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/多跳跳板、真实 HTTP CONNECT 代理、真实 SOCKS5 代理及 Windows/macOS/Linux 主机矩阵的只读回归，并修复了 SFTP 目录列举阶段逐链接预解析导致的严重性能问题。
 
 构建和回归结论：
 
@@ -13,6 +13,7 @@
 - 单跳和多跳跳板通过，跳板会话数、目标主机、SFTP 和转发资源释放均完成断言。
 - HTTP CONNECT 与 SOCKS5 无认证代理通过，代理日志确认 SSH 和 SFTP 流量均由代理转发。
 - Windows 虚拟机、Windows 真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 的只读平台/压缩协商探测通过。
+- SFTP 目录列举只判断链接类型，点击时才解析目标；阿里云 `/bin` 从 16.9 秒降至 0.54–0.58 秒，虚拟机为毫秒级。
 - 密钥与 Agent 初始化回归通过。
 - Docker 临时容器、镜像、卷和归档清理验证通过，主机无测试资源残留。
 - 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本文件。
@@ -251,6 +252,9 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 | HTTP CONNECT 真实代理 | 通过 |
 | SOCKS5 无认证真实代理 | 通过 |
 | 6 主机平台/架构/压缩协商矩阵 | 6/6 通过 |
+| SFTP 链接列表性能（阿里云 `/bin`） | 通过（修复前 16893 ms，修复后 538–579 ms） |
+| SFTP 链接列表性能（`/sbin`） | 通过（阿里云 259–282 ms；Ubuntu/UOS 虚拟机 7–54 ms） |
+| SFTP 链接懒解析（列表不解析、点击解析） | 通过 |
 | Docker 真实容器/镜像生命周期回归 | 通过 |
 | Docker 解析器容错与旧 history 格式兼容 | 通过 |
 | Docker 带空格参数（env/label/save path） | 通过 |
@@ -287,6 +291,13 @@ JSch proxy regression passed
 JSch platform regression passed
 ```
 
+SFTP 链接性能与修复后完整回归日志末尾输出：
+
+```text
+JSch SFTP link performance regression passed
+JSch integration regression passed
+```
+
 本次验证日志：
 
 - `/tmp/easyshell-jsch-docker-final.log`
@@ -297,6 +308,12 @@ JSch platform regression passed
 - `/tmp/easyshell-jsch-jump-final.log`
 - `/tmp/easyshell-jsch-proxy-final.log`
 - `/tmp/easyshell-jsch-platform-final.log`
+- `/tmp/easyshell-sftp-link-baseline-aliyun.log`
+- `/tmp/easyshell-sftp-link-fixed-aliyun.log`
+- `/tmp/easyshell-sftp-link-profile-aliyun.log`
+- `/tmp/easyshell-sftp-link-fixed-vm1.log`
+- `/tmp/easyshell-sftp-link-fixed-vm3.log`
+- `/tmp/easyshell-jsch-integration-sftp-link-fix.log`
 - `/tmp/easyshell-cleanup-check.log`
 
 回归过程中出现的 `PortForwardingL: local port ... cannot be bound` 是“启动失败资源清理”用例的预期异常，该用例随后验证会话已释放，整体回归通过。
@@ -314,6 +331,7 @@ JSch platform regression passed
 - 大文件、长时间空闲和长时间稳定性仍需专项压测。
 - 跳板已完成虚拟机单跳/双跳；旧版弱 KEX 算法仍建议在目标服务器矩阵上补充兼容性测试。
 - 本次证明的是活跃 JSch 调用链可在仅 JSch classpath 下独立编译和运行；若要彻底移除项目级 MINA sshd，还需项目维护者自行屏蔽遗留的 `ssh2/sftp2` 目录及其依赖。
+- 阿里云 `/bin` 的 0.54–0.58 秒主要受 1369 条目录数据的网络传输限制；原始 `ChannelSftp.ls` 耗时与完整 `lsFile` 基本一致，本地对象构造不是瓶颈。跨地域高延迟环境不保证稳定低于 0.5 秒，但已验证低于 1 秒。
 
 ## 10. Docker 专项迁移与回归记录
 
@@ -471,8 +489,60 @@ proxy_processes=0
 - 代理临时脚本和日志：`/tmp/easyshell-jsch-proxy-*`
 - Docker 容器/镜像/卷/归档：`easyshell-jsch-*`
 
+### 11.7 SFTP 链接判定性能修复
+
+#### 根因
+
+JSch 版 `ShellSFTPChannel.lsFile()` 在目录列举时对每个 `isLink()` 条目立即执行：
+
+1. `SSH_FXP_REALPATH`：解析链接目标。
+2. `SSH_FXP_STAT`：读取目标属性并填充 `linkAttrs`。
+
+这两次操作都是串行 SFTP 往返。阿里云 `/bin` 有 1369 个条目、225 个链接，修复前需要额外约 450 次请求，实测冷启动列表耗时 `16893 ms`。该行为也与 sshd 版本不一致：sshd 版本目录列举阶段只使用 READDIR 返回的属性判断 `isSymbolicLink()`，不解析目标。
+
+#### 修复
+
+- `ShellSFTPChannel.lsFile()` 只根据 `SftpATTRS.isLink()` 生成链接类型，不再调用 `ShellSFTPCache.realpath()`，列表阶段 `linkAttrs` 保持为空。
+- 保留现有双击行为：`ShellFileTableView.onMouseClicked()` 在链接 `linkAttrs == null` 时按需调用 `ShellSFTPUtil.realpath()`，随后执行 `realpath + stat` 并完成目录跳转或文件查看。
+- `ShellSFTPFile`、`ShellSFTPCache` 和 UI 调用 API 未改变；`fileInfo()` 等单文件入口仍按原逻辑解析目标。
+- 列表阶段未解析的链接与 sshd 版本一致：`isFile()`、`isDirectory()` 返回 `false`，图标显示为通用链接，点击后再确定目标类型。
+
+#### 性能结果
+
+测试目录均为真实远端目录，数值为 3 次列表的 warm best/worst；`raw` 为直接 JSch `ChannelSftp.ls()` 的对照耗时，用于确认本地解析开销。
+
+| 主机角色 | 目录 | 条目/链接 | cold | best/worst | raw | 结果 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Ubuntu 虚拟机 | `/bin` | 1619 / 289 | 270 ms | 20 / 24 ms | 28 ms | 通过 |
+| Ubuntu 虚拟机 | `/sbin` | 539 / 89 | - | 7 / 8 ms | 30 ms | 通过 |
+| UOS 虚拟机 | `/bin` | 1993 / 319 | 371 ms | 23 / 30 ms | 34 ms | 通过 |
+| UOS 虚拟机 | `/sbin` | 444 / 99 | - | 20 / 54 ms | 10 ms | 通过 |
+| 阿里云 Ubuntu | `/bin` | 1369 / 225 | 1427 ms | 538 / 579 ms | 545 ms | 通过（<1 s） |
+| 阿里云 Ubuntu | `/sbin` | 447 / 150 | - | 259 / 282 ms | 258 ms | 通过（<0.5 s） |
+
+阿里云 `/usr/bin` 与 `/bin` 指向同一目录，实测 best/worst 为 `535/628 ms`；`/usr/sbin` 与 `/sbin` 为 `257/284 ms`。原始 `ChannelSftp.ls()` 与完整 `lsFile()` 基本同值，说明剩余耗时来自目录数据传输而不是链接判定或文件对象构造。
+
+#### 回归断言
+
+- 列表返回的所有链接条目 `getLinkAttrs() == null`，证明目录列举没有预解析。
+- `/bin`、`/sbin` 均存在链接条目，避免空列表误判通过。
+- 选取 `/bin` 中一个未解析链接执行点击路径，`realpath + stat` 后 `linkAttrs != null`，证明跳转能力保留。
+- 修复后 `ShellJSchConcurrentRegression` 完整通过，覆盖 SFTP 上传下载、权限、重命名、删除、端口转发、Shell、Exec、隧道重连和并发。
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchSftpLinkPerformanceRegression.java`
+
+测试命令示例：
+
+```bash
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=6 \
+  -Dtest.sftp.link.iterations=3 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchSftpLinkPerformanceRegression
+```
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、`tgz/xz/bz2` 文件压缩、单跳/双跳跳板、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、端口转发、并发和重连。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。
+本轮验证覆盖了连接、密码认证、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳跳板、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、端口转发、并发和重连。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。
