@@ -914,11 +914,11 @@ bash docker/ssh/2fa/test-2fa.sh
 | 本机 Agent 身份枚举 | 通过，识别 2 把密钥 |
 | Agent 含未授权干扰密钥时的认证 | 通过，自动选择已授权密钥 |
 | 私钥文件删除后认证 | 通过，证明签名由 Agent 完成 |
-| 连续新建 8 个 Agent 会话并执行命令 | 8/8 通过，约 2080 ms |
-| 单连接复用执行 5 条命令 | 5/5 通过，约 373 ms |
+| 连续新建 8 个 Agent 会话并执行命令 | 8/8 通过，约 2032 ms |
+| 单连接复用执行 5 条命令 | 5/5 通过，约 369 ms |
 | Agent 会话 SFTP 上传、元数据、下载校验 | 通过 |
-| 6 路并发 Agent 会话 | 6/6 通过，约 327 ms |
-| 移除授权后未授权 Agent 密钥 | 拒绝，约 98 ms |
+| 6 路并发 Agent 会话 | 6/6 通过，约 358 ms |
+| 移除授权后未授权 Agent 密钥 | 拒绝，约 101 ms |
 | `authorized_keys` 恢复 | 通过，临时文件已删除 |
 
 测试日志末尾输出：
@@ -926,11 +926,11 @@ bash docker/ssh/2fa/test-2fa.sh
 ```text
 ssh-agent identities=2
 agent public key authorized: existed=false
-sequential agent connections= 8, elapsed=2080ms
-agent connection reuse=5, elapsed=373ms
+sequential agent connections= 8, elapsed=2032ms
+agent connection reuse=5, elapsed=369ms
 agent SFTP upload/download=PASS
-concurrent agent connections=6, elapsed=327ms
-unauthorized agent key rejected: elapsed=98ms
+concurrent agent connections=6, elapsed=358ms
+unauthorized agent key rejected: elapsed=101ms
 temporary authorized_keys removed
 agent auth verified: sequential=8, reuse=5, concurrent=6, sftp=PASS, unauthorized=rejected
 JSch agent authentication regression passed
@@ -945,7 +945,7 @@ JSch agent authentication regression passed
 测试命令：
 
 ```bash
-bash docker/ssh/agent/test-agent.sh
+EASYSHELL_AGENT_PASSWORD='<local-test-password>' bash docker/ssh/agent/test-agent.sh
 ```
 
 #### 可靠性结论与兼容性
@@ -956,8 +956,93 @@ bash docker/ssh/agent/test-agent.sh
 - 未授权 Agent 密钥快速失败，未回退到密码认证。
 - 未修改 `ShellConnect`、`ShellKey`、认证方式枚举、配置格式或任何 sshd 版本代码。
 
+### 11.14 SSH Agent 转发与 SSH 环境变量实机回归
+
+#### 测试环境
+
+- 目标主机：本机 Docker 容器 `easyshell-ssh-agent-test`，地址
+  `127.0.0.1:2222`，在测试网络中的别名为 `target`。
+- 跳板主机：本机 Docker 容器 `easyshell-ssh-agent-jump`，地址
+  `127.0.0.1:2223`，与目标主机加入同一 Docker 网络
+  `easyshell-agent-forward`。
+- 本机启动独立 `ssh-agent`，放入两把 Ed25519 身份：一把未授权干扰密钥，
+  一把已授权测试密钥；`ssh-add` 后删除两把私钥文件，后续签名只能由 Agent 完成。
+- 两台主机临时追加同一把 Agent 公钥到 `authorized_keys`，仅用于测试；
+  测试结束恢复原内容或删除临时文件。两台主机均开启
+  `PubkeyAuthentication`、`AllowAgentForwarding`，并配置
+  `AcceptEnv EASYSHELL_TEST_*`。
+- 测试环境变量为 `EASYSHELL_TEST_ENV` 和 `EASYSHELL_TEST_SECOND`，
+  未使用生产凭据。
+
+#### 调用链
+
+- Agent 转发：`ShellConnect.forwardAgent` ->
+  `ShellBaseSSHClient.initEnvironments(ChannelExec/ChannelShell/ChannelSftp)` ->
+  JSch `Channel.setAgentForwarding(true)` -> 通道 connect 时发送
+  `auth-agent-req@openssh.com` -> 服务端设置 `SSH_AUTH_SOCK` ->
+  外层会话执行 `ssh target` 时由该 socket 完成内层公钥认证。
+- 环境变量：`ShellConnect.environment` -> `ShellConnect.environments()` ->
+  `Channel.setEnv(name, value)`（必须在通道 connect 前设置）->
+  服务端按 `AcceptEnv` 接受并注入 Exec/Shell 进程环境。
+- 内层 SSH 使用 `SendEnv EASYSHELL_TEST_ENV`，目标机使用 `AcceptEnv`
+  接收，用于验证环境变量能随跳板链路继续传递。
+
+#### 回归结果
+
+测试日期：2026-10-22。
+
+| 场景 | 结果 |
+| --- | --- |
+| 本机 Agent 身份枚举 | 通过，识别 2 把 Ed25519 身份 |
+| 跳板机和目标机临时授权同一 Agent 公钥 | 通过，两台均只追加一次 |
+| Exec 注入两个环境变量 | 通过，`EXEC_ENV`、`EXEC_SECOND` 均匹配 |
+| Exec 暴露转发 Agent | 通过，`SSH_AUTH_SOCK` 为远端 socket，`ssh-add -l` 识别 Ed25519 |
+| 跳板机通过转发 Agent 连接目标机 | 通过，连续 3 次内层 SSH 均成功 |
+| 内层 SSH 环境变量传递 | 通过，目标机读取到 `EASYSHELL_TEST_ENV` |
+| Shell 注入环境变量与转发 Agent | 通过，环境值、`SSH_AUTH_SOCK` 和 Ed25519 身份均可见 |
+| 关闭 `forwardAgent` 的对照 | 通过，`SSH_AUTH_SOCK=none`，内层 SSH 返回非 0 且未到达目标命令 |
+| 资源清理 | 通过，两台 `authorized_keys` 已恢复/删除，无备份文件残留，测试 Agent 进程和临时目录已清理 |
+
+测试日志关键输出：
+
+```text
+ssh-agent identities=2
+agent public key authorized: role=...-jump, existed=false
+agent public key authorized: role=...-target, existed=false
+agent forwarding Exec and nested SSH=3/3
+agent forwarding Shell and environment=PASS
+agent forwarding disabled control=rejected
+authorized_keys cleaned: /root/.ssh/authorized_keys
+authorized_keys cleaned: /root/.ssh/authorized_keys
+agent forwarding verified: exec=PASS, shell=PASS, nested-env=PASS, forward-disabled=rejected
+JSch agent forwarding and environment regression passed
+```
+
+#### 测试入口
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchAgentForwardingRegression.java`
+- `docker/ssh/agent/test-agent-forwarding.sh`
+- `docker/ssh/agent/README.md`
+
+测试命令：
+
+```bash
+/Users/oyzh/.m2/wrapper/dists/apache-maven-3.9.10-bin/53h08a94dg6djh6umvruv7q564/apache-maven-3.9.10/bin/mvn -q -DskipTests test-compile
+EASYSHELL_FORWARD_PASSWORD='<local-test-password>' bash docker/ssh/agent/test-agent-forwarding.sh
+```
+
+#### 差异与兼容性说明
+
+- OpenSSH 服务端只有配置 `AcceptEnv` 才会接受 `Channel.setEnv` 发送的变量；
+  这是 SSH 协议和服务端策略行为，与 JSch/sshd 客户端实现无关。EasyShell 的
+  `ShellConnect.environment` 配置格式、字段和调用方式均未改变。
+- Agent 转发只在 `forwardAgent=true` 时启用；关闭时不创建转发 socket，不会
+  静默借用本机或跳板机上的其他私钥。
+- 仅使用 JSch 通道 API，未引入 MINA sshd 类型，未修改 `ssh2`、`sftp2`、
+  `ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本代码。
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、双因素认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
+本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路验证：外层 JSch `forwardAgent=true` 连接跳板机，跳板机仅依赖转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。

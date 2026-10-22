@@ -5,7 +5,12 @@ ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
 CONTAINER="${EASYSHELL_AGENT_CONTAINER:-easyshell-ssh-agent-test}"
 HOST_PORT="${EASYSHELL_AGENT_PORT:-2222}"
 SSH_USER="${EASYSHELL_AGENT_USER:-root}"
-SSH_PASSWORD="${EASYSHELL_AGENT_PASSWORD:-123456}"
+SSH_PASSWORD="${EASYSHELL_AGENT_PASSWORD:-}"
+
+if [ -z "$SSH_PASSWORD" ]; then
+    echo "EASYSHELL_AGENT_PASSWORD is required for the local test host" >&2
+    exit 1
+fi
 
 if [ -z "${DOCKER_BIN:-}" ]; then
     if command -v docker >/dev/null 2>&1; then
