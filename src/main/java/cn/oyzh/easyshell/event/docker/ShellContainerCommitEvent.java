@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.event.docker;
 
 
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.event.Event;
 
 /**

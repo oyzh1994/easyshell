@@ -24,7 +24,7 @@ import cn.oyzh.easyshell.terminal.redis2.RedisCommandDescriptor;
 import cn.oyzh.easyshell.terminal.redis2.RedisCommandRegistry;
 import cn.oyzh.easyshell.util.redis.ShellRedisVersionUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
+import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -148,7 +148,7 @@ public class ShellRedisClient implements ShellBaseClient {
     /**
      * ssh端口转发器
      */
-    private SSHJumpForwarder2 jumpForwarder;
+    private SSHJumpForwarder jumpForwarder;
 
     /**
      * redis信息
@@ -264,7 +264,7 @@ public class ShellRedisClient implements ShellBaseClient {
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder2();
+                this.jumpForwarder = new SSHJumpForwarder();
             }
             // 初始化跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();

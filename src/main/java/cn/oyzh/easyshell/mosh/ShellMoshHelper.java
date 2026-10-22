@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.mosh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import javafx.scene.input.KeyEvent;
 import org.mosh4j.core.MoshClientSession;
 import org.mosh4j.core.MoshTerminalFrontend;

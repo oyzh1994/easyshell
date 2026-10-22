@@ -52,8 +52,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
-import org.eclipse.jgit.internal.transport.sshd.agent.connector.PageantConnector;
-import org.eclipse.jgit.internal.transport.sshd.agent.connector.UnixDomainSocketConnector;
+import cn.oyzh.ssh.jsch.JSchAgentDescriptors;
 
 /**
  * ssh连接修改业务
@@ -711,9 +710,9 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.x11Cookie.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         this.x11CookieBth.disableProperty().bind(this.x11forwarding.selectedProperty().not());
         if (OSUtil.isWindows()) {
-            this.sshAgent.setText(PageantConnector.DESCRIPTOR.getIdentityAgent());
+            this.sshAgent.setText(JSchAgentDescriptors.PAGEANT_IDENTITY_AGENT);
         } else {
-            this.sshAgent.setText(UnixDomainSocketConnector.DESCRIPTOR.getIdentityAgent());
+            this.sshAgent.setText(JSchAgentDescriptors.UNIX_IDENTITY_AGENT);
         }
     }
 

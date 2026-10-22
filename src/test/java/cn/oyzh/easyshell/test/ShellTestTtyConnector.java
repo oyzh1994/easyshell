@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.test;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.tty.TtyStreamConnector;
 import com.jcraft.jsch.ChannelShell;
 import net.schmizz.sshj.connection.channel.direct.Session;

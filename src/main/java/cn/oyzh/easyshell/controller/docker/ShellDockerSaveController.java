@@ -2,11 +2,11 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
-import cn.oyzh.easyshell.sftp2.ShellSFTPClient;
-import cn.oyzh.easyshell.sftp2.ShellSFTPFile;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerImage;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerSave;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerImage;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerSave;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;

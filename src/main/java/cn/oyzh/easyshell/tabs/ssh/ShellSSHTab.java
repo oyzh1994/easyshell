@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.ssh;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.ssh2.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
@@ -58,7 +58,7 @@ public class ShellSSHTab extends ShellTermTab {
     }
 
     @Override
-    public ShellSSHTabController controller() {
+    protected ShellSSHTabController controller() {
         return (ShellSSHTabController) super.controller();
     }
 

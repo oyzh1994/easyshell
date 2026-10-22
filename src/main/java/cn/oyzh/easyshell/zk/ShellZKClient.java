@@ -28,7 +28,7 @@ import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
 import cn.oyzh.easyshell.util.zk.ShellZKAuthUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKClientActionUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
+import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -108,7 +108,7 @@ public class ShellZKClient implements ShellBaseClient {
     /**
      * ssh端口转发器
      */
-    private SSHJumpForwarder2 jumpForwarder;
+    private SSHJumpForwarder jumpForwarder;
 
     // /**
     //  * 是否已初始化
@@ -236,7 +236,7 @@ public class ShellZKClient implements ShellBaseClient {
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder2();
+                this.jumpForwarder = new SSHJumpForwarder();
             }
             // 初始化跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();

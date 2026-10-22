@@ -73,7 +73,7 @@ import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
+import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -104,7 +104,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
     /**
      * ssh端口转发器
      */
-    private SSHJumpForwarder2 jumpForwarder;
+    private SSHJumpForwarder jumpForwarder;
 
     /**
      * db信息
@@ -223,7 +223,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder2();
+                this.jumpForwarder = new SSHJumpForwarder();
             }
             // 初始化跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();

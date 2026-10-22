@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerCommit;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerContainer;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerCommit;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerContainer;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;

@@ -47,7 +47,7 @@ import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.ssh.SSHException;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.jump.SSHJumpForwarder2;
+import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoNamespace;
@@ -121,7 +121,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     /**
      * ssh端口转发器
      */
-    private SSHJumpForwarder2 jumpForwarder;
+    private SSHJumpForwarder jumpForwarder;
 
     /**
      * ssl配置
@@ -221,7 +221,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
-                this.jumpForwarder = new SSHJumpForwarder2();
+                this.jumpForwarder = new SSHJumpForwarder();
             }
             // 初始化跳板配置
             List<ShellJumpConfig> jumpConfigs = this.shellConnect.getEnableJumpConfigs();

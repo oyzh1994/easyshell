@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.test;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
-import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
+import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
 import cn.oyzh.fx.tty.TtyTermWidget;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
@@ -100,8 +100,11 @@ public class ShellTestTermWidget extends TtyTermWidget {
 //        PtyProcess process = this.createProcess();
 //        String[] command = this.getProcessCommand();
 //        ShellTestTtyConnector connector = new ShellTestTtyConnector(process, charset, Arrays.asList(command));
-        ShellTestTtyConnector connector = new ShellTestTtyConnector(charset);
-        return connector;
+        return new ShellTestTtyConnector(charset);
+    }
+
+    public ShellJSchTestTtyConnector createJSchTtyConnector(Charset charset) throws IOException {
+        return new ShellJSchTestTtyConnector(charset);
     }
 
     @Override

@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
  */
 public class ShellTerminalApp2 extends Application {
 
-    private ShellTestTermWidget widget;
+    private ShellJSchTestTermWidget widget;
     private TextField inputField, hostField, userField;
     private VBox root;
     private TextField passField;
@@ -53,7 +53,7 @@ public class ShellTerminalApp2 extends Application {
 
     private void initWidget(String user, String host, String pass) throws JSchException, IOException {
         JSch jsch = new JSch();
-        widget = new ShellTestTermWidget();
+        widget = new ShellJSchTestTermWidget();
         root.getChildren().add(widget);
         widget.setPrefHeight(600);
         widget.setPrefWidth(800);
@@ -78,7 +78,7 @@ public class ShellTerminalApp2 extends Application {
         in = channel.getInputStream();
         out = channel.getOutputStream();
 
-        ShellTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
+        ShellJSchTestTtyConnector connector = widget.createTtyConnector(Charset.defaultCharset());
         connector.init(channel);
         // connector.setReset(()->FXUtil.runLater(this::connect));
         TtyZModemTtyConnector adaptor = new TtyZModemTtyConnector(widget.getTerminal(), connector);
@@ -200,9 +200,9 @@ public class ShellTerminalApp2 extends Application {
         // widget.setPrefHeight(600);
         // widget.setPrefWidth(800);
 
-        userField.setText("root");
-        passField.setText("user@147");
-        hostField.setText("192.168.22.152");
+        userField.setText(System.getProperty("test.user", ""));
+        passField.setText(System.getProperty("test.password", ""));
+        hostField.setText(System.getProperty("test.host", ""));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("SSH Terminal");
@@ -217,4 +217,3 @@ public class ShellTerminalApp2 extends Application {
         }
     }
 }
-

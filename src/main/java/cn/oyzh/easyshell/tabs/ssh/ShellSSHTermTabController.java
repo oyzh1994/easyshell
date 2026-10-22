@@ -6,11 +6,11 @@
 //import cn.oyzh.common.thread.ThreadUtil;
 //import cn.oyzh.common.util.NumberUtil;
 //import cn.oyzh.easyshell.domain.ShellConnect;
-//import cn.oyzh.easyshell.ssh2.ShellSSHClient;
-//import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget;
-//import cn.oyzh.easyshell.ssh2.ShellSSHTtyConnector;
-//import cn.oyzh.easyshell.ssh2.server.ShellServerExec;
-//import cn.oyzh.easyshell.ssh2.server.ShellServerMonitor;
+//import cn.oyzh.easyshell.ssh.ShellSSHClient;
+//import cn.oyzh.easyshell.ssh.ShellSSHTermWidget;
+//import cn.oyzh.easyshell.ssh.ShellSSHTtyConnector;
+//import cn.oyzh.easyshell.ssh.server.ShellServerExec;
+//import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 //import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 //import cn.oyzh.easyshell.util.ShellConnectUtil;
 //import cn.oyzh.easyshell.util.ShellViewFactory;

@@ -17,7 +17,7 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.util.SSHKeyUtil;
+import cn.oyzh.ssh.jsch.JSchKeyUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -162,19 +162,19 @@ public class ShellAddKeyController extends StageController {
                 String password = this.keyPassword.getPassword();
                 String[] key;
                 if (this.keyType.isRsaType()) {
-                    key = SSHKeyUtil.generateRsa(length, password);
+                    key = JSchKeyUtil.generateRsa(length, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else if (this.keyType.isEd25519Type()) {
-                    key = SSHKeyUtil.generateEd25519(256, password);
+                    key = JSchKeyUtil.generateEd25519(256, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else if (this.keyType.isEcdsaType()) {
-                    key = SSHKeyUtil.generateEcdsa(length, password);
+                    key = JSchKeyUtil.generateEcdsa(length, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 } else {
-                    key = SSHKeyUtil.generateDsa(length, password);
+                    key = JSchKeyUtil.generateDsa(length, password);
                     // ssh公钥
                     this.publicKey.setText(key[0]);
                 }

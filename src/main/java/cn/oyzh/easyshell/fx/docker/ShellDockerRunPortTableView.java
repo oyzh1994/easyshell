@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.docker;
 
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerRun;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerRun;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 
 /**

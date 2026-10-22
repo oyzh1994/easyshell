@@ -21,7 +21,7 @@ import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.ssh.util.SSHKeyUtil;
+import cn.oyzh.ssh.jsch.JSchKeyUtil;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
@@ -269,10 +269,10 @@ public class ShellImportKeyController extends StageController {
      */
     private void fillKeyType() throws Exception {
         String privateKey = this.privateKey.getTextTrim();
-        String keyType = SSHKeyUtil.getKeyType(privateKey, this.keyPassword.getPassword());
+        String keyType = JSchKeyUtil.getKeyType(privateKey, this.keyPassword.getPassword());
         if (keyType == null) {
             String publicKey = this.publicKey.getTextTrim();
-            keyType = SSHKeyUtil.getKeyType(publicKey, this.keyPassword.getPassword());
+            keyType = JSchKeyUtil.getKeyType(publicKey, this.keyPassword.getPassword());
         }
         if (keyType != null) {
             this.keyType.setText(ShellKeyTypeComboBox.getTypeName(keyType));
@@ -302,7 +302,7 @@ public class ShellImportKeyController extends StageController {
         //    this.keyLength.setValue(256);
         //} else if ("RSA".equals(keyType)) {
         //    String priKey = this.privateKey.getTextTrim();
-        //    int len = SSHKeyUtil.getKeySize(priKey);
+        //    int len = JSchKeyUtil.getKeySize(priKey);
         //    this.keyLength.setValue(len);
         //} else if ("ECDSA".equals(keyType)) {
         //    String pubKey = this.publicKey.getTextTrim();
@@ -312,10 +312,10 @@ public class ShellImportKeyController extends StageController {
         //    this.keyLength.clear();
         //}
         String privateKey = this.privateKey.getTextTrim();
-        int len = SSHKeyUtil.getKeySize(privateKey, this.keyPassword.getPassword());
+        int len = JSchKeyUtil.getKeySize(privateKey, this.keyPassword.getPassword());
         if (len == -1) {
             String publicKey = this.publicKey.getTextTrim();
-            len = SSHKeyUtil.getKeySize(publicKey, this.keyPassword.getPassword());
+            len = JSchKeyUtil.getKeySize(publicKey, this.keyPassword.getPassword());
         }
         if (len != -1) {
             this.keyLength.setValue(len);

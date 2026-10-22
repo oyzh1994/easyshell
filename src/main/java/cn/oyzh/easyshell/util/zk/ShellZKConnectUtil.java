@@ -21,7 +21,7 @@ public class ShellZKConnectUtil {
     // public static void testSSHConnect(StageAdapter adapter, SSHConnect sshConnect) {
     //     StageManager.showMask(adapter, () -> {
     //         try {
-    //             SSHJumpForwarder2 forwarder = new SSHJumpForwarder2();
+    //             SSHJumpForwarder forwarder = new SSHJumpForwarder();
     //             ClientSession session = forwarder.initSession(sshConnect);
     //             // 判断是否成功
     //             if (session != null && session.isOpen()) {

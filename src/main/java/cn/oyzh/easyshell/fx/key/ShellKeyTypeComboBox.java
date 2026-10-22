@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.fx.key;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
-import org.apache.sshd.common.keyprovider.KeyPairProvider;
+import cn.oyzh.ssh.jsch.JSchKeyType;
 
 /**
  * shell密钥类型选择框
@@ -62,16 +62,16 @@ public class ShellKeyTypeComboBox extends FXComboBox<String> {
      * @return 密钥类型名称
      */
     public static String getTypeName(String type) {
-        if (type.equalsIgnoreCase(KeyPairProvider.SSH_RSA)) {
+        if (type.equalsIgnoreCase(JSchKeyType.SSH_RSA)) {
             return "RSA";
         }
-        if (type.equalsIgnoreCase(KeyPairProvider.SSH_DSS)) {
+        if (type.equalsIgnoreCase(JSchKeyType.SSH_DSS)) {
             return "DSA";
         }
-        if (type.equalsIgnoreCase(KeyPairProvider.SSH_ED25519)) {
+        if (type.equalsIgnoreCase(JSchKeyType.SSH_ED25519)) {
             return "ED25519";
         }
-        if (StringUtil.equalsAnyIgnoreCase(type, KeyPairProvider.ECDSA_SHA2_NISTP256, KeyPairProvider.ECDSA_SHA2_NISTP384, KeyPairProvider.ECDSA_SHA2_NISTP521)) {
+        if (StringUtil.equalsAnyIgnoreCase(type, JSchKeyType.ECDSA_SHA2_NISTP256, JSchKeyType.ECDSA_SHA2_NISTP384, JSchKeyType.ECDSA_SHA2_NISTP521)) {
             return "ECDSA";
         }
         throw new IllegalStateException("Unexpected value: " + type);

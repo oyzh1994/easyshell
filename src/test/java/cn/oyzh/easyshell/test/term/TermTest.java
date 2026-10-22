@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test.term;
 
 import cn.oyzh.common.system.RuntimeUtil;
-import cn.oyzh.easyshell.ssh2.ShellSSHUtil;
+import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.ssh.util.SSHUtil;
 import org.junit.Test;
 

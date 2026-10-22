@@ -533,7 +533,6 @@
             <groupId>com.github.mwiede</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

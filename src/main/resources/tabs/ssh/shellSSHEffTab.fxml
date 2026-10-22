@@ -3,7 +3,7 @@
 <?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
-<?import cn.oyzh.easyshell.ssh2.ShellSSHTermWidget?>
+<?import cn.oyzh.easyshell.ssh.ShellSSHTermWidget?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.file.FileAddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.file.FileUploadSVGGlyph?>

@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.controller.docker;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerExec;
-import cn.oyzh.easyshell.ssh2.docker.ShellDockerResource;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
+import cn.oyzh.easyshell.ssh.docker.ShellDockerResource;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -85,7 +85,7 @@ public class ShellDockerResourceController extends StageController {
         this.memorySwap.setValue(resource.getMemorySwap() / 1024 / 1024);
         this.cpuQuota.setValue(resource.getCpuQuota());
         this.cpuShares.setValue(resource.getCpuShares());
-        this.nanoCpus.setValue(resource.getNanoCpus() / 1000000000);
+        this.nanoCpus.setValue(resource.getNanoCpus() / 1000000000d);
         this.cpuPeriod.setValue(resource.getCpuPeriod() / 1000);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
@@ -113,7 +113,7 @@ public class ShellDockerResourceController extends StageController {
             resource.setMemorySwap(memorySwap);
             resource.setCpuQuota(cpuQuota);
             resource.setCpuShares(cpuShares);
-            resource.setNanoCpus((long) (nanoCpus));
+            resource.setNanoCpus((long) (nanoCpus * 1000000000L));
             resource.setCpuPeriod((long) cpuPeriod * 1000);
             String output = this.exec.docker_update(resource, this.containerId);
             if (JulLog.isInfoEnabled()) {

@@ -30,7 +30,7 @@ public class ShellRedisQueryMsgTab extends RichTab {
     }
 
     @Override
-    protected ShellRedisQueryMsgTabController controller() {
+    public ShellRedisQueryMsgTabController controller() {
         return (ShellRedisQueryMsgTabController) super.controller();
     }
 
