@@ -42,8 +42,9 @@ EASYSHELL_AGENT_PASSWORD='<local-test-password>' bash docker/ssh/agent/test-agen
 - 两台主机加入同一 Docker 网络，目标机在跳板机侧可通过别名 `target` 访问。
 - 本机独立 `ssh-agent` 放入已授权密钥和一把未授权干扰密钥，`ssh-add` 后
   删除私钥文件。
-- 外层 JSch 使用 Agent 认证连接跳板机并开启 `forwardAgent`，跳板机通过
-  转发的 `SSH_AUTH_SOCK` 执行内层 `ssh target`。
+- 先验证“外层密码认证 + `forwardAgent`”：此时 Agent 公钥尚未授权给跳板机，
+  跳板机仍通过转发的 `SSH_AUTH_SOCK` 执行内层 `ssh target`。
+- 再授权跳板机并验证“外层 Agent 认证 + `forwardAgent`”链路。
 - Exec 和 Shell 验证环境变量、转发 socket 与 Agent 身份；内层 SSH 连续执行
   3 次并验证 `SendEnv`/`AcceptEnv` 环境传递。
 - 关闭 `forwardAgent` 后再执行内层 SSH，验证 `SSH_AUTH_SOCK=none` 且认证失败。
@@ -63,7 +64,8 @@ EASYSHELL_FORWARD_PASSWORD='<local-test-password>' bash docker/ssh/agent/test-ag
 最近一次验证结果：
 
 - Exec 两个环境变量、转发 `SSH_AUTH_SOCK` 和 Ed25519 身份均通过。
-- 跳板机经转发 Agent 连接目标机 3/3 通过，内层环境变量传递通过。
+- 密码认证外层和 Agent 认证外层均通过，内层 SSH 各 3/3 成功。
+- 密码场景中跳板机未授权 Agent 公钥，证明转发不依赖外层 Agent 认证。
 - Shell 环境变量、转发 socket 和 Agent 身份均通过。
 - 关闭转发后内层认证被拒绝，`SSH_AUTH_SOCK=none`。
 - 两台主机临时 `authorized_keys` 已清理，测试 Agent 进程和临时目录已清理。

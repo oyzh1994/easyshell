@@ -102,6 +102,7 @@ public final class ShellJSchConcurrentRegression {
             requireSftp(client);
             requireSftpPoolReuse(client);
             requireSftpPoolConcurrency(client);
+            requireSftpBorrowTimeout(client);
             requireSftpBorrowedCleanup(client);
             requireDockerCommand(client);
             requireProcessInfo(client.processExec().ps());
@@ -851,6 +852,39 @@ public final class ShellJSchConcurrentRegression {
                 }
             } finally {
                 pool.returnObject(replacement);
+            }
+        }
+    }
+
+    private static void requireSftpBorrowTimeout(ShellSSHClient client) throws Exception {
+        ShellConnect timeoutConnect = new ShellConnect();
+        timeoutConnect.setConnectTimeOut(3);
+        try (ShellSFTPClient shared = new ShellSFTPClient(timeoutConnect, client.getSession(), false)) {
+            shared.start(15000);
+            ShellSFTPChannelPool pool = sftpChannelPool(shared);
+            List<ShellSFTPChannel> held = new ArrayList<>();
+            try {
+                for (int index = 0; index < pool.getMaxSize(); index++) {
+                    ShellSFTPChannel channel = pool.borrowObject();
+                    if (channel == null) {
+                        throw new IllegalStateException("sftp channel pool exhausted before timeout test");
+                    }
+                    held.add(channel);
+                }
+                long started = System.nanoTime();
+                ShellSFTPChannel channel = pool.borrowObject();
+                long elapsed = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
+                if (channel != null) {
+                    pool.returnObject(channel);
+                    throw new IllegalStateException("sftp channel pool borrow did not time out");
+                }
+                if (elapsed < 2500 || elapsed > 8000) {
+                    throw new IllegalStateException("sftp channel pool borrow timeout was unexpected: " + elapsed + "ms");
+                }
+            } finally {
+                for (ShellSFTPChannel channel : held) {
+                    pool.returnObject(channel);
+                }
             }
         }
     }

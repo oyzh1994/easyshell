@@ -19,8 +19,10 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Identity;
+import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.JSchProxyException;
 import com.jcraft.jsch.JSchSessionDisconnectException;
 import com.jcraft.jsch.Session;
 
@@ -92,6 +94,17 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     private Supplier<String> verificationCodeSupplier;
 
+    /**
+     * 主机密钥确认回调，为空时由界面提示。
+     */
+    private Function<String, Boolean> hostKeyConfirmCallback;
+
+    /**
+     * Agent 身份仓库。密码或私钥认证开启 Agent 转发时，也需要把本地 Agent 仓库绑定到会话，
+     * 否则 JSch 会转发默认本地身份仓库而不是 SSH_AUTH_SOCK。
+     */
+    private volatile IdentityRepository agentIdentityRepository;
+
     private final Semaphore execChannelPermits = new Semaphore(4);
 
     public ShellBaseSSHClient(ShellConnect connect) {
@@ -121,6 +134,14 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     public Supplier<String> getVerificationCodeSupplier() {
         return this.verificationCodeSupplier;
+    }
+
+    public void setHostKeyConfirmCallback(Function<String, Boolean> hostKeyConfirmCallback) {
+        this.hostKeyConfirmCallback = hostKeyConfirmCallback;
+    }
+
+    public Function<String, Boolean> getHostKeyConfirmCallback() {
+        return this.hostKeyConfirmCallback;
     }
 
     @Override
@@ -551,7 +572,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setUserInfo(this.newAuthInteractive(null, this.shellConnect.getCertificatePwd()));
         } else if (this.shellConnect.isSSHAgentAuth()) {
-            var repository = JschUtil.initAgentIdentityRepository();
+            IdentityRepository repository = this.getAgentIdentityRepository();
             if (CollectionUtil.isEmpty(repository.getIdentities())) {
                 throw new AgentProxyException("identities is empty");
             }
@@ -583,6 +604,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     private ShellSSHAuthInteractive newAuthInteractive(String password, String passphrase) {
         ShellSSHAuthInteractive interactive = new ShellSSHAuthInteractive(password, passphrase);
         interactive.setVerificationCodeSupplier(this.verificationCodeSupplier);
+        interactive.setHostKeyConfirmCallback(this.hostKeyConfirmCallback);
         return interactive;
     }
 
@@ -593,6 +615,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 this.initClient();
                 this.session.setTimeout(timeout);
                 this.session.connect(timeout);
+                this.configureAgentForwarding();
                 this.onSessionConnected();
                 return;
             } catch (JSchException ex) {
@@ -613,16 +636,60 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 this.userHome = null;
                 this.remoteCharset = null;
                 this.environment = null;
+                this.agentIdentityRepository = null;
             }
         }
     }
 
+    /**
+     * 为 Agent 转发绑定本地 ssh-agent 身份仓库。必须在认证完成后设置，避免密钥认证
+     * 使用 Agent 仓库替代本次连接实际使用的私钥身份。
+     *
+     * @throws AgentProxyException Agent 不可用
+     */
+    private void configureAgentForwarding() throws AgentProxyException {
+        if (!this.shellConnect.isForwardAgent() || this.session == null) {
+            return;
+        }
+        this.session.setIdentityRepository(this.getAgentIdentityRepository());
+    }
+
+    private IdentityRepository getAgentIdentityRepository() throws AgentProxyException {
+        IdentityRepository repository = this.agentIdentityRepository;
+        if (repository == null) {
+            synchronized (this) {
+                repository = this.agentIdentityRepository;
+                if (repository == null) {
+                    repository = JschUtil.initAgentIdentityRepository();
+                    this.agentIdentityRepository = repository;
+                }
+            }
+        }
+        return repository;
+    }
+
     private boolean isAuthenticationFailure(JSchException ex) {
+        // 代理 407/认证握手失败的消息也可能包含 authentication failed，但这不是 SSH
+        // 账户认证失败，不能触发桌面认证页或重复提交 SSH 凭证。
+        if (this.isProxyFailure(ex)) {
+            return false;
+        }
         if (ex instanceof JSchSessionDisconnectException disconnectException
                 && this.isAuthenticationFailureMessage(disconnectException.getDescription())) {
             return true;
         }
         return this.isAuthenticationFailureMessage(ex.getMessage());
+    }
+
+    private boolean isProxyFailure(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof JSchProxyException) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private boolean isAuthenticationFailureMessage(String message) {

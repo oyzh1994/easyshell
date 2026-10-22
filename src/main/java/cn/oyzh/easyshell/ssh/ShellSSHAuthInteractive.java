@@ -10,6 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo {
@@ -22,6 +23,11 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
      * 验证码供应器，为空时由界面提示输入。
      */
     private Supplier<String> verificationCodeSupplier;
+
+    /**
+     * 主机密钥确认回调，为空时由界面提示。
+     */
+    private Function<String, Boolean> hostKeyConfirmCallback;
 
     /**
      * JSch 密码认证失败后会循环复用同一凭证，这里只允许提交一次。
@@ -48,6 +54,10 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     public void setVerificationCodeSupplier(Supplier<String> verificationCodeSupplier) {
         this.verificationCodeSupplier = verificationCodeSupplier;
+    }
+
+    public void setHostKeyConfirmCallback(Function<String, Boolean> hostKeyConfirmCallback) {
+        this.hostKeyConfirmCallback = hostKeyConfirmCallback;
     }
 
     @Override
@@ -153,6 +163,14 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     @Override
     public boolean promptYesNo(String message) {
+        if (this.hostKeyConfirmCallback != null) {
+            try {
+                return Boolean.TRUE.equals(this.hostKeyConfirmCallback.apply(message));
+            } catch (Exception ex) {
+                JulLog.warn("failed to confirm ssh host key", ex);
+                throw new ShellException(ex);
+            }
+        }
         String tip = StringUtil.containsAnyIgnoreCase(message, "changed", "IDENTIFICATION HAS CHANGED")
                 ? ShellI18nHelper.sshTip1()
                 : ShellI18nHelper.sshTip2();

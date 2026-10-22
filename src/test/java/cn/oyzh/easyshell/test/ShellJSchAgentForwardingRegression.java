@@ -66,14 +66,23 @@ public final class ShellJSchAgentForwardingRegression {
             targetPasswordClient.start(15000);
             require(jumpPasswordClient.isConnected(), "jump password session failed");
             require(targetPasswordClient.isConnected(), "target password session failed");
-            jumpAuthorizedKey = authorizePublicKey(jumpPasswordClient, publicKey, marker + "-jump");
             targetAuthorizedKey = authorizePublicKey(targetPasswordClient, publicKey, marker + "-target");
 
+            // Password auth to the jump host plus forwarded agent auth to the target. The agent key
+            // is deliberately not authorized on the jump host yet, proving forwardAgent works even
+            // when the outer connection did not authenticate through the agent.
+            try (ShellSSHClient client = newPasswordForwardClient(jumpHost, jumpPort, user, password, environment)) {
+                client.start(15000);
+                require(client.isConnected(), "password forwarding jump connection failed");
+                verifyExecForwarding(client, envName, envValue, targetSshHost, targetSshPort, user, marker, "password");
+                verifyShellEnvironment(client, envName, envValue);
+            }
+
+            jumpAuthorizedKey = authorizePublicKey(jumpPasswordClient, publicKey, marker + "-jump");
             try (ShellSSHClient client = newAgentClient(jumpHost, jumpPort, user, true, environment)) {
                 client.start(15000);
                 require(client.isConnected(), "agent forwarding jump connection failed");
-                verifyExecForwarding(client, envName, envValue, targetSshHost, targetSshPort, user, marker);
-                verifyShellEnvironment(client, envName, envValue);
+                verifyExecForwarding(client, envName, envValue, targetSshHost, targetSshPort, user, marker, "agent");
             }
             verifyForwardingDisabled(jumpHost, jumpPort, user, environment, targetSshHost, targetSshPort);
         } finally {
@@ -99,7 +108,8 @@ public final class ShellJSchAgentForwardingRegression {
     }
 
     private static void verifyExecForwarding(ShellSSHClient client, String envName, String envValue,
-                                             String targetHost, int targetPort, String user, String marker) {
+                                             String targetHost, int targetPort, String user, String marker,
+                                             String authMode) {
         String output = client.exec("printf 'EXEC_ENV=%s\\n' \"$" + envName + "\"; "
                 + "printf 'EXEC_SECOND=%s\\n' \"$EASYSHELL_TEST_SECOND\"; "
                 + "printf 'EXEC_AUTH_SOCK=%s\\n' \"${SSH_AUTH_SOCK:-none}\"; ssh-add -l", 15000);
@@ -123,7 +133,7 @@ public final class ShellJSchAgentForwardingRegression {
             require(forwarded.contains("AGENT_FORWARD_OK=" + index),
                     "nested SSH did not authenticate through the forwarded agent");
         }
-        System.out.println("agent forwarding Exec and nested SSH=3/3");
+        System.out.println("agent forwarding Exec and nested SSH(" + authMode + ")=3/3");
     }
 
     private static void verifyShellEnvironment(ShellSSHClient client, String envName, String envValue)
@@ -253,6 +263,11 @@ public final class ShellJSchAgentForwardingRegression {
 
     private static ShellSSHClient newPasswordClient(String host, int port, String user, String password) {
         return newClient(host, port, user, "password", password, false, null);
+    }
+
+    private static ShellSSHClient newPasswordForwardClient(String host, int port, String user,
+                                                           String password, String environment) {
+        return newClient(host, port, user, "password", password, true, environment);
     }
 
     private static ShellSSHClient newAgentClient(String host, int port, String user,

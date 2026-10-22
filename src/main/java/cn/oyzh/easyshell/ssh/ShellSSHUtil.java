@@ -29,6 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ShellSSHUtil {
 
+    private static final String KNOWN_HOSTS_PATH_PROPERTY = "easyshell.known_hosts.path";
+
     public static Proxy newProxy(ShellProxyConfig proxyConfig) {
         return JschUtil.newProxy(proxyConfig);
     }
@@ -240,6 +242,10 @@ public class ShellSSHUtil {
      * @return 已知主机路径
      */
     public static Path getKnownHostsPath() {
+        String override = System.getProperty(KNOWN_HOSTS_PATH_PROPERTY);
+        if (StringUtil.isNotBlank(override)) {
+            return Path.of(override);
+        }
         return Path.of(ShellConst.getStorePath(), "known_hosts");
     }
 
