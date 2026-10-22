@@ -2,7 +2,7 @@
 
 ## 1. 审查结论
 
-本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/多跳跳板、真实 HTTP CONNECT 代理、真实 SOCKS5 代理及 Windows/macOS/Linux 主机矩阵的只读回归，修复了 SFTP 目录列举阶段逐链接预解析导致的严重性能问题，并修复了 JSch Shell 首屏 MOTD/登录信息和提示符丢失问题。
+本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/双跳/三层跳板、多主机端口转发、真实 HTTP CONNECT 代理、真实 SOCKS5 代理及 Windows/macOS/Linux 主机矩阵的只读回归，修复了 SFTP 目录列举阶段逐链接预解析导致的严重性能问题，并修复了 JSch Shell 首屏 MOTD/登录信息、提示符丢失以及认证失败后无法及时弹出认证页的问题。
 
 构建和回归结论：
 
@@ -10,11 +10,13 @@
 - 活跃 JSch 调用链在不包含 MINA sshd/JGit 的隔离 classpath 下编译通过。
 - 虚拟机 Linux 主机回归通过，包含连接、认证、终端、Exec、SFTP、端口转发、跳板、Docker 完整生命周期、Process、Server、重连和并发。
 - SSH 双向压缩协商、4 MiB 传输校验、512 KiB SFTP 传输以及 `tgz/xz/bz2` 文件压缩/解压通过。
-- 单跳和多跳跳板通过，跳板会话数、目标主机、SFTP 和转发资源释放均完成断言。
+- 单跳、双跳和三层跳板通过（1/2/3 个跳板会话），目标主机身份、断线重连、Exec、SFTP 和转发资源释放均完成断言。
+- 多主机本地、远程、动态转发通过；两跳和三层跳板转发后的目标身份、并发连接和监听端口释放均完成断言。
 - HTTP CONNECT 与 SOCKS5 无认证代理通过，代理日志确认 SSH 和 SFTP 流量均由代理转发。
 - Windows 虚拟机、Windows 真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 的只读平台/压缩协商探测通过。
 - SFTP 目录列举只判断链接类型，点击时才解析目标；阿里云 `/bin` 从 16.9 秒降至 0.54–0.58 秒，虚拟机为毫秒级。
 - JSch Shell 在连接前安装并缓存输入输出流，首屏 MOTD、登录信息和提示符恢复；Ubuntu 虚拟机首屏从 60 字节恢复到 652 字节/19 行，阿里云为 1466 字节/41 行。
+- 错误密码或账户名现在只提交一次凭证即进入交互认证回调，不再等待 JSch 用同一凭证重试到服务端 `Too many authentication failures`；专项测试约 2.6 秒触发回调。
 - 密钥与 Agent 初始化回归通过。
 - Docker 临时容器、镜像、卷和归档清理验证通过，主机无测试资源残留。
 - 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本文件。
@@ -33,7 +35,7 @@
 | 功能 | 原 MINA sshd 实现 | JSch 实现 | 兼容结论 |
 | --- | --- | --- | --- |
 | SSH 连接 | `ClientSession` | `Session` | 已迁移，支持超时、keep-alive、重连 |
-| 密码认证 | sshd password auth | JSch `UserInfo` / password | 已迁移 |
+| 密码认证 | sshd password auth | JSch `UserInfo` / password | 已迁移；认证失败只提交一次凭证并进入交互认证 |
 | 密钥认证 | sshd key identity | JSch `addIdentity` | 已迁移，支持路径和内嵌密钥 |
 | Agent 认证 | sshd Agent 工厂 | JSch `AgentIdentityRepository` | 已迁移并完成初始化验证 |
 | 交互认证 | sshd keyboard-interactive | JSch `UIKeyboardInteractive` | 已迁移 |
@@ -44,17 +46,17 @@
 | SFTP 文件操作 | `SftpClient` | JSch `ChannelSftp` | 已验证上传、下载、权限、重命名、递归删除 |
 | SFTP 流操作 | sshd SFTP streams | JSch SFTP streams | 已验证进度回调和流关闭 |
 | SFTP 通道池 | `Pool<SftpClient>` | 独立条件队列池 + JSch 通道 | 已修复原实现死锁，验证并发借还 |
-| 本地转发 | `startLocalPortForwarding` | `setPortForwardingL` | 已验证 |
-| 远程转发 | `startRemotePortForwarding` | `setPortForwardingR` | 已验证，含动态远端端口解析 |
-| 动态转发 | sshd dynamic forwarding | SOCKS4/SOCKS5 + `ChannelDirectTCPIP` | 已验证无认证 SOCKS4/5 和半关闭 |
-| 跳板 | 多段转发 | 多段 `Session` + 本地端口 | 已验证虚拟机单跳/双跳、Exec、SFTP、会话数及关闭清理 |
+| 本地转发 | `startLocalPortForwarding` | `setPortForwardingL` | 已验证单主机、跨主机、并发和跳板链转发 |
+| 远程转发 | `startRemotePortForwarding` | `setPortForwardingR` | 已验证跨主机回环、动态远端端口解析和清理 |
+| 动态转发 | sshd dynamic forwarding | SOCKS4/SOCKS5 + `ChannelDirectTCPIP` | 已验证跨主机 SOCKS4/5、半关闭和畸形请求恢复 |
+| 跳板 | 多段转发 | 多段 `Session` + 本地端口 | 已验证三个不同跳板节点的三层链路、重连、Exec、SFTP、会话数及关闭清理 |
 | HTTP 代理 | sshd/JGit HTTP 代理连接器 | JSch `ProxyHTTP` | 已通过真实 HTTP CONNECT 代理完成 SSH/SFTP 回归 |
 | SOCKS5 代理 | sshd/JGit SOCKS 连接器 | JSch `ProxySOCKS5` | 已通过真实 SOCKS5 无认证代理完成 SSH/SFTP 回归；`socks` 历史配置映射到 SOCKS5 |
 | Docker | Exec 命令层 | Exec 命令层 + 容器/镜像生命周期 | 已在 Ubuntu 虚拟机验证 info/version、run、ps、exec、logs、资源更新、pause/unpause、rename、restart、start/stop/kill、port、commit、tag、save、rm/rmi；全局 prune 和 Docker 服务重启未执行 |
 | Process | Exec + 解析 | Exec + 解析 | 已验证并发采集和网络速率解析 |
 | Server | Exec + 解析 | Exec + 解析 | 已验证信息与监控并发 |
 | X11 | sshd X11 channel | JSch X11 session/channel 配置 | 已迁移，未做真实 X11 端到端验证 |
-| 异常处理 | sshd exception | `ShellException` / `SSHException` 包装 | 已迁移，增加可恢复通道错误重试 |
+| 异常处理 | sshd exception | `ShellException` / `SSHException` 包装 | 已迁移，增加可恢复通道错误重试和认证失败分类 |
 
 ## 4. 审查发现与修复
 
@@ -175,8 +177,8 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - Exec 输出、并发执行、超时中止、超时后恢复。
 - SFTP 文件上传下载、流上传下载、进度回调、权限、重命名、递归删除。
 - SFTP 通道池复用、失效通道替换、并发借还、关闭唤醒、`fileInfo` 稳定性。
-- 本地转发、远程转发、动态 SOCKS4/SOCKS5、SOCKS5 半关闭、畸形请求恢复。
-- 单级和多级跳板。
+- 跨主机本地转发、远程转发、动态 SOCKS4/SOCKS5、并发转发、SOCKS5 半关闭、畸形请求恢复和监听端口释放。
+- 单跳、双跳和三层跳板，包含目标身份、断线重连、SFTP 复验、跳板会话数和监听端口释放。
 - SSH 压缩关闭/开启协商、重复数据 4 MiB Exec 校验、压缩会话下 512 KiB SFTP 传输。
 - 文件压缩 `tgz/xz/bz2`、含空格和单引号路径、解压内容校验、未知类型处理。
 - 真实 HTTP CONNECT 代理和 SOCKS5 无认证代理下的 SSH、Exec、SFTP。
@@ -250,6 +252,8 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 | 文件压缩/解压 `tgz/xz/bz2` | 通过（含空格和单引号路径） |
 | 单跳跳板 Exec/SFTP/资源释放 | 通过（1 个跳板会话） |
 | 双跳跳板 Exec/SFTP/资源释放 | 通过（2 个跳板会话） |
+| 三层跳板 Exec/SFTP/重连/资源释放 | 通过（3 个跳板会话） |
+| 多主机本地/远程/动态端口转发 | 通过（含并发、半关闭和监听端口释放） |
 | HTTP CONNECT 真实代理 | 通过 |
 | SOCKS5 无认证真实代理 | 通过 |
 | 6 主机平台/架构/压缩协商矩阵 | 6/6 通过 |
@@ -259,6 +263,9 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 | Shell 首屏 MOTD/登录信息回显 | 通过（Ubuntu/UOS 虚拟机、阿里云） |
 | Shell 首次提示符与交互命令 | 通过（初始打开和关闭后重开） |
 | TTY `ready()` 复用已连接 Shell | 通过（通道 ID 不变，不再无条件重开） |
+| 错误密码/用户名触发交互认证 | 通过（回调 1 次，错误密码约 2.6 秒） |
+| 认证页返回正确凭证后重试 | 通过（错误密码、错误用户名均可恢复连接） |
+| `Too many authentication failures` 异常分类 | 通过 |
 | Docker 真实容器/镜像生命周期回归 | 通过 |
 | Docker 解析器容错与旧 history 格式兼容 | 通过 |
 | Docker 带空格参数（env/label/save path） | 通过 |
@@ -289,8 +296,9 @@ JSch Docker regression passed
 压缩、跳板、代理和平台矩阵日志末尾输出：
 
 ```text
-JSch compression regression passed
 JSch jump regression passed
+JSch port forwarding regression passed
+JSch compression regression passed
 JSch proxy regression passed
 JSch platform regression passed
 ```
@@ -333,6 +341,11 @@ JSch integration regression passed
 - `/tmp/easyshell-shell-banner-final-vm1.log`
 - `/tmp/easyshell-shell-banner-final-aliyun.log`
 - `/tmp/easyshell-jsch-integration-shell-banner-final.log`
+- `/tmp/easyshell-jsch-jump-multihost-final.log`
+- `/tmp/easyshell-jsch-port-forwarding-multihost-final.log`
+- `/tmp/easyshell-jsch-integration-forward-jump-final.log`
+- `/tmp/easyshell-jsch-auth-failure-final.log`
+- `/tmp/easyshell-jsch-integration-auth-fix-final.log`
 - `/tmp/easyshell-cleanup-check.log`
 
 回归过程中出现的 `PortForwardingL: local port ... cannot be bound` 是“启动失败资源清理”用例的预期异常，该用例随后验证会话已释放，整体回归通过。
@@ -445,22 +458,26 @@ JSch 的 `zlib@openssh.com` 是延迟压缩，只有认证完成后才启用压�
 
 文件压缩仍保持原有业务规则：`tgz/tar.gz/tar` 使用 `tar -z`，`xz` 使用 `tar -J`，`bz2` 使用 `tar -j`，归档命名规则不变。本轮只修复路径 shell 转义和未知类型处理；`7z/zip/rar/lzo/zst/lz` 依赖目标机工具，未纳入本轮通过项。
 
-### 11.3 单跳与多跳跳板
+### 11.3 单跳、双跳与三层跳板
 
-测试拓扑全部位于虚拟机网络内：
+测试链路使用四台不同主机，第二跳和第三跳均为独立节点：
 
-- 单跳：Ubuntu 虚拟机作为跳板，UOS 虚拟机作为目标。
-- 双跳：Ubuntu 虚拟机 -> UOS 虚拟机两段跳板，UOS 虚拟机作为目标。
+- 单跳：Ubuntu 虚拟机 -> 阿里云 Ubuntu。
+- 双跳：Ubuntu 虚拟机 -> UOS 虚拟机 -> 阿里云 Ubuntu。
+- 三层跳板：Ubuntu 虚拟机 -> UOS 虚拟机 -> Windows 虚拟机 -> 阿里云 Ubuntu。
 
-| 验证项 | 单跳 | 双跳 |
-| --- | --- | --- |
-| JSch 目标会话建立 | 通过 | 通过 |
-| 目标会话地址为本地转发地址 | 通过 | 通过 |
-| 目标 `hostname` 与直连一致 | 通过 | 通过 |
-| JSch 跳板会话数量 | 1 | 2 |
-| Exec 输出 | 通过 | 通过 |
-| SFTP 上传/下载内容 | 通过 | 通过 |
-| 关闭后转发会话和本地端口释放 | 通过 | 通过 |
+| 验证项 | 单跳 | 双跳 | 三层跳板 |
+| --- | --- | --- | --- |
+| JSch 目标会话建立 | 通过 | 通过 | 通过 |
+| 目标会话地址为本地转发地址 | 通过 | 通过 | 通过 |
+| 目标 `hostname` 与直连一致 | 通过 | 通过 | 通过 |
+| JSch 跳板会话数量 | 1 | 2 | 3 |
+| Exec 输出 | 通过 | 通过 | 通过 |
+| SFTP 上传/下载内容 | 通过 | 通过 | 通过 |
+| 目标会话断开后经原链路重连 | 通过 | 通过 | 通过 |
+| 重连后跳板会话数量 | 1 | 2 | 3 |
+| 重连后 SFTP 复验 | 通过 | 通过 | 通过 |
+| 关闭后转发会话和本地端口释放 | 通过 | 通过 | 通过 |
 
 跳板仍按每个节点自己的 `host`、`port`、`user`、认证方式和超时建立连接；主连接代理不会自动传播到跳板节点。跳板启用时保持旧行为不校验临时本地转发目标的 known_hosts，非跳板连接继续使用 known_hosts 校验配置。
 
@@ -609,8 +626,79 @@ java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 \
   -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchShellBannerRegression
 ```
 
+### 11.9 多主机端口转发专项
+
+端口转发专项使用四台不同主机组成
+`Ubuntu 虚拟机 -> UOS 虚拟机 -> Windows 虚拟机 -> 阿里云 Ubuntu` 的可达链路，分别验证单跳和跨主机目标：
+
+| 场景 | 验证内容 | 结果 |
+| --- | --- | --- |
+| 配置化本地转发 | Ubuntu 虚拟机上的 SSH 会话将本地随机端口转发到跨主机 SSH 服务；校验 SSH banner、Exec 和关闭后端口释放 | 通过 |
+| 并发本地转发 | 同一跳板会话同时建立到 UOS 虚拟机与阿里云目标的转发；多线程并发握手均成功 | 通过 |
+| 远程转发 | Ubuntu 虚拟机远端随机端口回连本机 echo 服务；在远端通过 `/dev/tcp` 完成双向往返校验 | 通过 |
+| 动态转发 SOCKS5 | 经 Ubuntu 跳板分别连接 UOS 虚拟机和阿里云 SSH；覆盖半关闭和远端动态端口 | 通过 |
+| 动态转发 SOCKS4 | 经 Ubuntu 跳板连接 UOS 虚拟机 SSH；畸形请求后仍可继续建立转发 | 通过 |
+| 双跳转发身份 | 经 Ubuntu -> UOS 转发到阿里云 SSH，使用目标凭据校验 `hostname` 与直连一致，并并发建立连接 | 通过 |
+| 三层跳板转发身份 | 经 Ubuntu -> UOS -> Windows 转发到阿里云 SSH，使用目标凭据校验 `hostname` 与直连一致，并并发建立连接 | 通过 |
+| 三层跳板上的配置化转发 | 目标会话经三个跳板建立后，再按隧道配置建立本地转发；校验 SSH banner、Exec 和三层会话数 | 通过 |
+| 转发资源释放 | 本地监听端口、动态代理端口、跳板会话和远端转发均在关闭后释放 | 通过 |
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchJumpRegression.java`
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchPortForwardingRegression.java`
+
+测试命令示例：
+
+```bash
+java -Dtest.hosts.file='<local-hosts-file>' \
+  -Dtest.jump.index=1 -Dtest.second.jump.index=3 \
+  -Dtest.third.jump.index=2 -Dtest.target.index=6 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchJumpRegression
+
+java -Dtest.hosts.file='<local-hosts-file>' \
+  -Dtest.forward.gateway.index=1 -Dtest.forward.relay.index=3 \
+  -Dtest.forward.windows.relay.index=2 -Dtest.forward.target.index=6 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPortForwardingRegression
+```
+
+### 11.10 认证失败与交互认证修复
+
+#### 根因
+
+JSch 的 `UserAuthPassword` 在服务端返回认证失败后会循环使用同一密码继续尝试，直到本地 `MaxAuthTries` 或服务端返回 `Too many authentication failures`。原实现中的 `ShellSSHAuthInteractive.promptPassword()` 只要已有密码就一直返回成功，因此错误密码会被重复提交多次。同时 `ShellBaseSSHClient.isAuthenticationFailure()` 只识别 `auth fail` 等少数文本，未识别 `Auth cancel`、`authentication failure(s)` 和 `Too many authentication failures`，导致 `verifyFailureCallback` 未执行，认证页无法及时弹出。
+
+#### 修复
+
+- `ShellSSHAuthInteractive` 对密码提示只允许提交一次；JSch 第二次请求同一密码时返回失败，立即结束密码认证循环。
+- 认证异常分类同时检查 `JSchSessionDisconnectException.getDescription()` 和异常消息，识别 `Auth cancel`、`authentication failure(s)`、`Too many authentication failures`、`no more auth methods` 等认证失败。
+- 认证失败后保留原有 `verifyFailureCallback` 交互页流程；用户提交正确凭证后，客户端重新初始化会话并重试连接。
+- 非认证错误（例如连接拒绝）不会误触发认证页。
+
+#### 回归结果
+
+| 场景 | 结果 |
+| --- | --- |
+| 错误密码且关闭认证页 | 回调 1 次，约 2.6 秒结束，不再等待多次重复认证 |
+| 错误密码后在认证页提交正确凭证 | 回调 1 次，连接成功，Exec 正常 |
+| 错误用户名后在认证页提交正确凭证 | 回调 1 次，连接成功，Exec 正常 |
+| `Too many authentication failures` 异常识别 | 通过 |
+| 非认证异常不触发认证页 | 通过 |
+| 修复后完整 SSH/SFTP/转发/Server 回归 | 通过 |
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchAuthFailureRegression.java`
+
+测试命令示例：
+
+```bash
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.auth.host.index=1 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchAuthFailureRegression
+```
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳跳板、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、端口转发、并发和重连。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
+本轮验证覆盖了连接、密码认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。

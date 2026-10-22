@@ -7,7 +7,11 @@ import cn.oyzh.ssh.SSHForwarder;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,11 +37,16 @@ public final class ShellJSchJumpRegression {
 
     private static void run() throws Exception {
         int jumpIndex = Integer.getInteger("test.jump.index", 1);
-        int targetIndex = Integer.getInteger("test.target.index", 3);
+        int secondJumpIndex = Integer.getInteger("test.second.jump.index", 3);
+        int thirdJumpIndex = Integer.getInteger("test.third.jump.index", 2);
+        int targetIndex = Integer.getInteger("test.target.index", 6);
         ShellJSchTestHosts.Host jump = ShellJSchTestHosts.load(jumpIndex);
-        ShellJSchTestHosts.Host secondJump = ShellJSchTestHosts.load(targetIndex);
+        ShellJSchTestHosts.Host secondJump = ShellJSchTestHosts.load(secondJumpIndex);
+        ShellJSchTestHosts.Host thirdJump = ShellJSchTestHosts.load(thirdJumpIndex);
         ShellJSchTestHosts.Host target = ShellJSchTestHosts.load(targetIndex);
-        System.out.println("Jump source: " + jump + ", target: " + target);
+        require(new java.util.HashSet<>(List.of(jumpIndex, secondJumpIndex, thirdJumpIndex, targetIndex)).size() == 4,
+                "jump and target indices must be distinct");
+        System.out.println("Jump chain: " + jump + " -> " + secondJump + " -> " + thirdJump + " -> " + target);
 
         String directHostname;
         try (ShellSSHClient direct = new ShellSSHClient(target.newConnect())) {
@@ -53,6 +62,10 @@ public final class ShellJSchJumpRegression {
         ShellConnect multiHop = target.newConnect();
         multiHop.setJumpConfigs(List.of(jump.newJumpConfig(), secondJump.newJumpConfig()));
         requireJump(multiHop, directHostname, 2, "multi-hop");
+
+        ShellConnect deepHop = target.newConnect();
+        deepHop.setJumpConfigs(List.of(jump.newJumpConfig(), secondJump.newJumpConfig(), thirdJump.newJumpConfig()));
+        requireJump(deepHop, directHostname, 3, "deep-hop");
     }
 
     private static void requireJump(ShellConnect connect, String expectedHostname, int expectedSessions, String name)
@@ -60,12 +73,14 @@ public final class ShellJSchJumpRegression {
         ShellSSHClient client = new ShellSSHClient(connect);
         client.setVerifyFailureCallback(current -> null);
         SSHJumpForwarder forwarder = null;
+        int localPort = -1;
         try {
             client.start(15000);
             require(client.getSession() != null && client.getSession().isConnected(), name + " session is not connected");
             require("127.0.0.1".equals(client.getSession().getHost()), name + " did not connect through local forwarding");
+            localPort = client.getSession().getPort();
             String hostname = requireNotBlank(client.exec("hostname"), name + " hostname output is blank");
-            require(expectedHostname.equals(hostname), name + " reached an unexpected target: " + hostname);
+            require(expectedHostname.equals(hostname), name + " reached an unexpected target");
 
             forwarder = jumpForwarder(client);
             Set<?> sessions = jumpSessions(forwarder);
@@ -73,13 +88,22 @@ public final class ShellJSchJumpRegression {
                     name + " forwarding session count mismatch: expected " + expectedSessions + ", actual " + sessions.size());
 
             requireSftp(client, name);
-            System.out.println(name + " verified: sessions=" + sessions.size() + ", target=" + hostname);
+            client.getSession().disconnect();
+            String reconnectedHostname = requireNotBlank(client.exec("hostname"), name + " reconnect hostname is blank");
+            require(expectedHostname.equals(reconnectedHostname), name + " reconnect reached an unexpected target");
+            Set<?> reconnectedSessions = jumpSessions(forwarder);
+            require(reconnectedSessions.size() == expectedSessions,
+                    name + " forwarding session count changed after reconnect: " + reconnectedSessions.size());
+            requireSftp(client, name);
+            System.out.println(name + " verified: sessions=" + sessions.size() + ", reconnectSessions="
+                    + reconnectedSessions.size() + ", targetMatched=true");
         } finally {
             client.close();
             if (forwarder != null) {
                 require(!forwarder.isAlive(), name + " forwarding resources were not released");
             }
         }
+        requirePortClosed(localPort, name + " forwarding port was not released");
     }
 
     private static void requireSftp(ShellSSHClient client, String name) throws Exception {
@@ -122,6 +146,19 @@ public final class ShellJSchJumpRegression {
     private static String requireNotBlank(String value, String message) {
         require(value != null && !value.isBlank(), message);
         return value;
+    }
+
+    private static void requirePortClosed(int port, String message) throws Exception {
+        long deadline = System.currentTimeMillis() + 5000;
+        while (System.currentTimeMillis() < deadline) {
+            try (Socket socket = new Socket()) {
+                socket.connect(new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 300);
+            } catch (IOException expected) {
+                return;
+            }
+            Thread.sleep(50);
+        }
+        throw new IllegalStateException(message);
     }
 
     private static void require(boolean condition, String message) {

@@ -16,6 +16,11 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     private String passphrase;
 
+    /**
+     * JSch 密码认证失败后会循环复用同一凭证，这里只允许提交一次。
+     */
+    private boolean passwordRequested;
+
     public ShellSSHAuthInteractive() {
     }
 
@@ -75,6 +80,11 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     @Override
     public boolean promptPassword(String message) {
+        if (this.passwordRequested) {
+            JulLog.debug("ssh password prompt already handled, stop repeated authentication");
+            return false;
+        }
+        this.passwordRequested = true;
         if (StringUtil.isNotEmpty(this.password)) {
             return true;
         }

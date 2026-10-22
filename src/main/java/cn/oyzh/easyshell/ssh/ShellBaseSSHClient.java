@@ -21,6 +21,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Identity;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.JSchSessionDisconnectException;
 import com.jcraft.jsch.Session;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
@@ -571,6 +573,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 if (retryCount++ >= 3 || !this.isAuthenticationFailure(ex) || this.verifyFailureCallback == null) {
                     throw ex;
                 }
+                JulLog.warn("ssh authentication failed, waiting for interactive authentication");
                 ShellConnect replacement = this.verifyFailureCallback.apply(this.shellConnect);
                 if (replacement == null) {
                     throw ex;
@@ -589,15 +592,24 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     private boolean isAuthenticationFailure(JSchException ex) {
-        String message = ex.getMessage();
+        if (ex instanceof JSchSessionDisconnectException disconnectException
+                && this.isAuthenticationFailureMessage(disconnectException.getDescription())) {
+            return true;
+        }
+        return this.isAuthenticationFailureMessage(ex.getMessage());
+    }
+
+    private boolean isAuthenticationFailureMessage(String message) {
         if (message == null) {
             return false;
         }
-        String value = message.toLowerCase();
+        String value = message.toLowerCase(Locale.ROOT);
         return value.contains("auth fail")
+                || value.contains("auth cancel")
                 || value.contains("userauth fail")
-                || value.contains("authentication failed")
-                || value.contains("no more auth methods available");
+                || value.contains("authentication fail")
+                || value.contains("no more auth methods")
+                || value.contains("too many authentication failures");
     }
 
     /**
