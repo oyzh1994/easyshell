@@ -40,9 +40,19 @@ public final class ShellJSchDockerRegression {
     }
 
     private static void run(String[] args) throws Exception {
-        String host = value("test.host", args, 0);
-        String user = value("test.user", args, 1);
-        String password = value("test.password", args, 2);
+        String host;
+        String user;
+        String password;
+        if (args.length < 3 && System.getProperty("test.host.index") != null) {
+            ShellJSchTestHosts.Host testHost = ShellJSchTestHosts.load(Integer.getInteger("test.host.index"));
+            host = testHost.host() + ":" + testHost.port();
+            user = testHost.user();
+            password = testHost.password();
+        } else {
+            host = value("test.host", args, 0);
+            user = value("test.user", args, 1);
+            password = value("test.password", args, 2);
+        }
         String image = System.getProperty("test.docker.image", System.getenv().getOrDefault("EASYSHELL_TEST_DOCKER_IMAGE", LOCAL_IMAGE));
 
         ShellConnect connect = new ShellConnect();

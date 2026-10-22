@@ -2,13 +2,17 @@
 
 ## 1. 审查结论
 
-本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。
+本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/多跳跳板、真实 HTTP CONNECT 代理、真实 SOCKS5 代理及 Windows/macOS/Linux 主机矩阵的只读回归。
 
 构建和回归结论：
 
 - `base-ssh` 与 `easyshell` 的 Maven 编译通过。
 - 活跃 JSch 调用链在不包含 MINA sshd/JGit 的隔离 classpath 下编译通过。
-- 真实 Linux 主机回归通过，包含连接、认证、终端、Exec、SFTP、端口转发、跳板、Docker 完整生命周期、Process、Server、重连和并发。
+- 虚拟机 Linux 主机回归通过，包含连接、认证、终端、Exec、SFTP、端口转发、跳板、Docker 完整生命周期、Process、Server、重连和并发。
+- SSH 双向压缩协商、4 MiB 传输校验、512 KiB SFTP 传输以及 `tgz/xz/bz2` 文件压缩/解压通过。
+- 单跳和多跳跳板通过，跳板会话数、目标主机、SFTP 和转发资源释放均完成断言。
+- HTTP CONNECT 与 SOCKS5 无认证代理通过，代理日志确认 SSH 和 SFTP 流量均由代理转发。
+- Windows 虚拟机、Windows 真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 的只读平台/压缩协商探测通过。
 - 密钥与 Agent 初始化回归通过。
 - Docker 临时容器、镜像、卷和归档清理验证通过，主机无测试资源残留。
 - 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本文件。
@@ -32,7 +36,7 @@
 | Agent 认证 | sshd Agent 工厂 | JSch `AgentIdentityRepository` | 已迁移并完成初始化验证 |
 | 交互认证 | sshd keyboard-interactive | JSch `UIKeyboardInteractive` | 已迁移 |
 | Known hosts | sshd verifier | JSch `known_hosts` | 已迁移，跳板保持旧行为不校验 |
-| 压缩 | sshd compression | JSch compression config | 已迁移，未做长时压测 |
+| 压缩 | sshd compression | JSch `compression.c2s/s2c` | 已验证关闭/开启协商、4 MiB Exec 传输、SFTP 传输和 `tgz/xz/bz2` 文件压缩/解压 |
 | Shell / PTY | `ChannelShell` | JSch `ChannelShell` | 已验证交互、PTY resize、关闭重开 |
 | Exec | `ChannelExec` | JSch `ChannelExec` | 已验证并发、超时和超时后恢复 |
 | SFTP 文件操作 | `SftpClient` | JSch `ChannelSftp` | 已验证上传、下载、权限、重命名、递归删除 |
@@ -41,8 +45,10 @@
 | 本地转发 | `startLocalPortForwarding` | `setPortForwardingL` | 已验证 |
 | 远程转发 | `startRemotePortForwarding` | `setPortForwardingR` | 已验证，含动态远端端口解析 |
 | 动态转发 | sshd dynamic forwarding | SOCKS4/SOCKS5 + `ChannelDirectTCPIP` | 已验证无认证 SOCKS4/5 和半关闭 |
-| 跳板 | 多段转发 | 多段 `Session` + 本地端口 | 已验证单级和多级跳板 |
-| Docker | Exec 命令层 | Exec 命令层 + 容器/镜像生命周期 | 已验证 info/version、run、ps、exec、logs、资源更新、pause/unpause、rename、restart、start/stop/kill、port、commit、tag、save、rm/rmi；全局 prune 和 Docker 服务重启未执行 |
+| 跳板 | 多段转发 | 多段 `Session` + 本地端口 | 已验证虚拟机单跳/双跳、Exec、SFTP、会话数及关闭清理 |
+| HTTP 代理 | sshd/JGit HTTP 代理连接器 | JSch `ProxyHTTP` | 已通过真实 HTTP CONNECT 代理完成 SSH/SFTP 回归 |
+| SOCKS5 代理 | sshd/JGit SOCKS 连接器 | JSch `ProxySOCKS5` | 已通过真实 SOCKS5 无认证代理完成 SSH/SFTP 回归；`socks` 历史配置映射到 SOCKS5 |
+| Docker | Exec 命令层 | Exec 命令层 + 容器/镜像生命周期 | 已在 Ubuntu 虚拟机验证 info/version、run、ps、exec、logs、资源更新、pause/unpause、rename、restart、start/stop/kill、port、commit、tag、save、rm/rmi；全局 prune 和 Docker 服务重启未执行 |
 | Process | Exec + 解析 | Exec + 解析 | 已验证并发采集和网络速率解析 |
 | Server | Exec + 解析 | Exec + 解析 | 已验证信息与监控并发 |
 | X11 | sshd X11 channel | JSch X11 session/channel 配置 | 已迁移，未做真实 X11 端到端验证 |
@@ -113,6 +119,12 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - `docker commit` 备注、`docker save` 路径，以及 `docker run` 的容器名、镜像、环境变量、标签和卷参数统一做 shell 参数保护；测试中包含空格的环境值、标签值和保存路径已验证通过。
 - `docker run` 首次拉取镜像、`docker commit` 和 `docker save` 分别使用 300 秒、120 秒和 300 秒超时，避免大镜像或慢速主机被默认连接超时误中断。
 
+### 4.13 文件压缩路径缺少 shell 参数保护
+
+`ShellServerExec.compress()` 和 `uncompress()` 原实现把父目录、文件名直接拼接到远端 shell 命令中。路径包含空格时会拆分成多个参数，包含单引号时还可能改变命令语义。
+
+修复：父目录、源文件名和归档文件名统一做 POSIX shell 单引号转义；无父目录时使用当前目录；未知压缩类型返回 `null` 并记录告警，不再执行空命令。`tgz`、`xz`、`bz2` 已用包含空格和单引号的真实目录/文件名验证。
+
 ## 5. 兼容性说明
 
 - 公开业务类名、连接配置字段、状态枚举和主要方法保持不变。
@@ -124,19 +136,25 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - Docker 公开方法名、参数对象和返回类型保持不变；`ShellDockerResource.nanoCpus` 明确采用纳秒单位，与 `docker inspect` 和 `docker_resource()` 保持一致。
 - Docker history 的新分隔符属于内部命令格式，解析器同时兼容旧 `\r\t` 输出，不影响既有调用方。
 - Docker 参数保护只改变远程 shell 的转义方式，不改变 Docker 参数顺序和业务含义；`docker run` 的自由文本 `params` 仍按原始 Docker CLI 选项处理。
+- `enableCompress=true` 时优先协商 `zlib@openssh.com`，其次 `zlib`；`false` 时强制 `none`。配置字段和默认值保持不变。
+- 代理协议映射保持历史语义：`http -> ProxyHTTP`、`socks4 -> ProxySOCKS4`、`socks5/socks -> ProxySOCKS5`；本轮真实代理验证覆盖 HTTP 和 SOCKS5 无认证场景。
+- 文件压缩方法名、参数和返回类型不变；仅修正远端 shell 参数转义和未知类型处理，不改变归档命名规则。
+- 新增测试统一支持 `-Dtest.hosts.file=<本地主机文件>` 与 `-Dtest.host.index=<序号>`，凭据只在测试进程运行时读取，不进入源码、文档或日志。
 
 ## 6. 风险与功能差异
 
 1. JSch 与 MINA sshd 的默认 KEX、MAC、主机密钥算法集合不同，旧服务器或弱算法环境可能需要额外算法配置。
 2. 动态转发目前只支持无认证 SOCKS4/SOCKS5；不支持 SOCKS5 用户名密码、UDP ASSOCIATE 和 BIND。
-3. JSch 的 X11、压缩、代理连接与 sshd 的实现细节不同，当前未做完整端到端验证。
-4. 跳板链路按每个跳板节点自身认证建立，主连接代理配置不会自动套用到每个跳板节点。
-5. SFTP 流式读写依赖调用方关闭流，并由客户端关闭延迟资源；长时间未关闭的流仍会占用通道。
-6. Docker 自动化已在 Linux 主机完成真实生命周期验证，但未执行全局 `prune` 和 `systemctl restart docker`，避免影响主机上其他容器；Windows/macOS 远端 Docker、Docker Compose 插件模式仍未实机验证。
-7. SFTP 通道池现在会关闭借出通道，因此客户端关闭属于强制终止语义，调用方不应在关闭后继续使用借出通道。
-8. 客户端连接仍主要依赖服务端命令输出解析；不同发行版、BusyBox、Windows 和 macOS 的输出差异需要继续覆盖。
-9. `docker run` 的 `params` 是面向高级用户的原始 CLI 片段，仍可能包含任意 Docker 选项；UI 调用方应将其视为可信输入。
-10. `docker_update` 在 `NanoCpus` 和 period/quota 同时存在时优先使用 `NanoCpus`。需要显式 period/quota 时应将该资源对象中的 `nanoCpus` 置为 0。
+3. JSch 的 X11 实现与 sshd 不同，当前仍未完成真实图形应用端到端验证。
+4. SSH 压缩已验证双向协商和 4 MiB 数据传输，但尚未执行多小时空闲、弱网和超大文件稳定性压测。
+5. 真实代理本轮只验证 HTTP CONNECT 与 SOCKS5 无认证；HTTP Basic/Digest、SOCKS5 用户名密码、UDP ASSOCIATE 和 BIND 未纳入本轮测试。
+6. 跳板链路按每个跳板节点自身认证建立，主连接代理配置不会自动套用到每个跳板节点；弱 KEX/旧算法服务器仍需单独做兼容矩阵。
+7. SFTP 流式读写依赖调用方关闭流，并由客户端关闭延迟资源；长时间未关闭的流仍会占用通道。
+8. Docker 自动化已在 Ubuntu 虚拟机完成真实生命周期验证，但未执行全局 `prune` 和 `systemctl restart docker`，避免影响主机上其他容器；Windows/macOS 远端 Docker 只完成了 CLI/平台探测，未执行完整容器生命周期。
+9. SFTP 通道池现在会关闭借出通道，因此客户端关闭属于强制终止语义，调用方不应在关闭后继续使用借出通道。
+10. 客户端连接仍主要依赖服务端命令输出解析；Windows 本地化输出已通过 `isWindows()` + `cmd.exe /c ver` 矩阵验证，但更多发行版差异仍需持续覆盖。
+11. `docker run` 的 `params` 是面向高级用户的原始 CLI 片段，仍可能包含任意 Docker 选项；UI 调用方应将其视为可信输入。
+12. `docker_update` 在 `NanoCpus` 和 period/quota 同时存在时优先使用 `NanoCpus`。需要显式 period/quota 时应将该资源对象中的 `nanoCpus` 置为 0。
 
 ## 7. 测试计划
 
@@ -157,20 +175,29 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - SFTP 通道池复用、失效通道替换、并发借还、关闭唤醒、`fileInfo` 稳定性。
 - 本地转发、远程转发、动态 SOCKS4/SOCKS5、SOCKS5 半关闭、畸形请求恢复。
 - 单级和多级跳板。
+- SSH 压缩关闭/开启协商、重复数据 4 MiB Exec 校验、压缩会话下 512 KiB SFTP 传输。
+- 文件压缩 `tgz/xz/bz2`、含空格和单引号路径、解压内容校验、未知类型处理。
+- 真实 HTTP CONNECT 代理和 SOCKS5 无认证代理下的 SSH、Exec、SFTP。
 - Docker info/version、容器 run/ps/exec/logs、资源更新、pause/unpause、rename、restart、start/stop/kill、端口、commit/tag/save/rm/rmi、解析器容错和资源清理。
 - Process 信息、Server 信息和并发监控。
 - 会话断开重连、隧道重建、SFTP 重连。
 - 启动失败后的会话、通道和转发清理。
 - 密钥生成、类型/长度解析、代理类型映射、Agent 初始化。
+- Windows 虚拟机/真实机器、macOS 真实机器、UOS 虚拟机、云端 Linux 的只读平台、架构、Docker CLI 和压缩协商矩阵。
 
 ### 7.3 命令示例
 
-凭据仅通过本地环境变量传入，不写入文档或源码：
+凭据仅由测试运行时从本地主机文件读取，不写入文档或源码：
 
 ```bash
-export EASYSHELL_TEST_HOST='<local-test-host>'
-export EASYSHELL_TEST_USER='<local-test-user>'
-export EASYSHELL_TEST_PASSWORD='<local-test-password>'
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchCompressionRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.jump.index=1 -Dtest.target.index=3 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchJumpRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchProxyRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.indices=1,2,3,4,5,6 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPlatformRegression
 ```
 
 ```bash
@@ -181,8 +208,8 @@ cd /Users/oyzh/IdeaProjects/oyzh/easyshell
 mvn -q -DskipTests test-compile
 
 java -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchKeyRegression
-java -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchConcurrentRegression
-java -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchDockerRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchConcurrentRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchDockerRegression
 ```
 
 Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且无法访问 Docker Hub 时，测试会从主机已有的静态 `/usr/bin/busybox` 构建临时镜像；也可通过 `EASYSHELL_TEST_DOCKER_IMAGE` 指定已存在镜像。测试资源均带唯一后缀，`finally` 中删除容器、临时镜像、卷和归档。
@@ -191,10 +218,11 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 
 - JavaFX `ShellTerminalApp2` 终端界面手工交互。
 - Windows Pageant、OpenSSH Agent、macOS Agent 实机登录。
-- 真实 HTTP/SOCKS4/SOCKS5 代理连接。
+- 带认证的 HTTP/SOCKS5 代理、SOCKS4 外部代理连接。
 - X11 图形应用转发。
 - 大文件、长时间空闲、弱网和多小时稳定性。
-- Windows/macOS 远端 Docker、Docker Compose 插件模式。
+- Windows/macOS 远端 Docker 完整生命周期、Docker Compose 插件模式。
+- `7z/zip/rar/lzo/zst/lz` 等可选压缩工具环境。
 - 全局 Docker prune、Docker 服务重启和宿主机级 Docker 故障恢复。
 
 ## 8. 验证结果
@@ -207,17 +235,28 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 | `easyshell` Maven `test-compile` | 通过 |
 | 隔离编译 `base-ssh` JSch 子集（21 个源文件） | 通过 |
 | 隔离编译 `easyshell` 活跃源码（2375 个源文件，排除 ssh2/sftp2） | 通过 |
+| 隔离生成的 `base-ssh` / `easyshell` class | 21 / 2278 |
 | 隔离编译 JSch 测试入口 | 通过 |
 | 活跃源码 sshd/JGit import 检查 | 0 处 |
 | 隔离 classpath sshd/JGit 检查 | 0 个 |
 | 隔离生成字节码 sshd/JGit 引用检查 | 0 处 |
 | 密钥与 Agent 回归 | 通过 |
 | 真实主机完整回归 | 通过 |
+| SSH 压缩关闭/开启协商 | 通过（`none/none` 与 `zlib@openssh.com/zlib@openssh.com`） |
+| 压缩会话 4 MiB Exec 校验 | 通过 |
+| 压缩会话 512 KiB SFTP 上传/下载校验 | 通过 |
+| 文件压缩/解压 `tgz/xz/bz2` | 通过（含空格和单引号路径） |
+| 单跳跳板 Exec/SFTP/资源释放 | 通过（1 个跳板会话） |
+| 双跳跳板 Exec/SFTP/资源释放 | 通过（2 个跳板会话） |
+| HTTP CONNECT 真实代理 | 通过 |
+| SOCKS5 无认证真实代理 | 通过 |
+| 6 主机平台/架构/压缩协商矩阵 | 6/6 通过 |
 | Docker 真实容器/镜像生命周期回归 | 通过 |
 | Docker 解析器容错与旧 history 格式兼容 | 通过 |
 | Docker 带空格参数（env/label/save path） | 通过 |
 | Docker 测试资源清理 | 容器、镜像、卷、归档均为 0 |
-| 测试日志凭据检查 | 主机、用户名、密码均未写入日志 |
+| 测试凭据检查 | 文档、改动源码、最终日志中完整凭据组合为 0；最终日志无密码字段 |
+| 虚拟机测试资源残留检查 | 临时文件、容器、镜像、卷、代理进程均为 0 |
 | sshd 版本文件 diff | 无 |
 | `git diff --check` | 通过 |
 
@@ -239,25 +278,41 @@ Docker 回归日志末尾输出：
 JSch Docker regression passed
 ```
 
+压缩、跳板、代理和平台矩阵日志末尾输出：
+
+```text
+JSch compression regression passed
+JSch jump regression passed
+JSch proxy regression passed
+JSch platform regression passed
+```
+
 本次验证日志：
 
 - `/tmp/easyshell-jsch-docker-final.log`
-- `/tmp/easyshell-jsch-regression-docker-review.log`
-- `/tmp/easyshell-jsch-key-docker-review.log`
+- `/tmp/easyshell-jsch-docker-vm-final.log`
+- `/tmp/easyshell-jsch-integration-final.log`
+- `/tmp/easyshell-jsch-key-final.log`
+- `/tmp/easyshell-jsch-compression-final.log`
+- `/tmp/easyshell-jsch-jump-final.log`
+- `/tmp/easyshell-jsch-proxy-final.log`
+- `/tmp/easyshell-jsch-platform-final.log`
+- `/tmp/easyshell-cleanup-check.log`
 
 回归过程中出现的 `PortForwardingL: local port ... cannot be bound` 是“启动失败资源清理”用例的预期异常，该用例随后验证会话已释放，整体回归通过。
 
 ## 9. 当前限制
 
-- 自动化运行主机为 Linux，Windows 和 macOS 远端分支未实机运行。
+- Windows 虚拟机/真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 已完成只读平台/压缩协商矩阵；完整 Shell/SFTP 端到端仍以 Linux 虚拟机为主。
 - Unix Agent 只验证了初始化；当前环境 Agent 无身份，未完成 Agent 登录。
 - Windows Pageant 和 Windows OpenSSH Agent 未实机验证。
-- 动态转发只验证无认证 SOCKS4/SOCKS5。
-- X11、压缩、真实 HTTP/SOCKS 代理未端到端验证。
-- Docker 自动化在 Linux 主机完成，未覆盖 Windows/macOS 远端 Docker；由于主机无法访问 Docker Hub，测试镜像由本地静态 busybox 构建。
+- 内置动态转发验证无认证 SOCKS4/SOCKS5；外部代理本轮验证 HTTP CONNECT 与 SOCKS5 无认证。
+- X11 仍未完成真实图形应用端到端验证。
+- SSH 压缩已验证协商与 4 MiB 传输，但未做长时间/超大文件稳定性压测；`7z/zip/rar/lzo/zst/lz` 因工具或环境未覆盖，未纳入本轮通过项。
+- Docker 完整生命周期在 Ubuntu 虚拟机完成；Windows/macOS 远端 Docker 仅完成 CLI/平台探测。由于测试主机无法访问 Docker Hub，测试镜像由本地静态 busybox 构建。
 - 未执行全局 prune 和 Docker 服务重启；`docker-compose version` 仍使用旧 standalone 命令，若环境只有 Compose v2 插件会返回命令不存在，这是当前方法语义。
 - 大文件、长时间空闲和长时间稳定性仍需专项压测。
-- 跳板和旧版弱 KEX 算法仍建议在目标服务器矩阵上补充兼容性测试。
+- 跳板已完成虚拟机单跳/双跳；旧版弱 KEX 算法仍建议在目标服务器矩阵上补充兼容性测试。
 - 本次证明的是活跃 JSch 调用链可在仅 JSch classpath 下独立编译和运行；若要彻底移除项目级 MINA sshd，还需项目维护者自行屏蔽遗留的 `ssh2/sftp2` 目录及其依赖。
 
 ## 10. Docker 专项迁移与回归记录
@@ -304,7 +359,7 @@ Docker 功能仍沿用原有业务模型：通过 SSH Exec 通道执行远端 Do
 
 ### 10.4 验证结果与限制
 
-最终隔离编译包含 2378 个活跃/兼容源码输入，生成 2278 个 class；隔离 classpath 和字节码中 sshd/JGit 引用均为 0。Docker 回归、完整 SSH/SFTP/转发/Process/Server 回归、密钥/Agent 回归均通过，日志末尾分别为：
+最终隔离编译包含 `base-ssh` 21 个源文件和 EasyShell 2375 个活跃/兼容源文件，共生成 2278 个 EasyShell class；隔离 classpath 和字节码中 sshd/JGit 引用均为 0。Docker 回归、完整 SSH/SFTP/转发/Process/Server 回归、密钥/Agent 回归均通过，日志末尾分别为：
 
 ```text
 JSch Docker regression passed
@@ -312,4 +367,112 @@ JSch integration regression passed
 JSch key and agent regression passed
 ```
 
-Docker 测试使用唯一资源名并验证了镜像不存在时的本地构建路径。由于测试主机无法直连 Docker Hub，测试镜像由主机已有静态 `/usr/bin/busybox` 导入；测试凭据仅从本地环境读取，未写入文档、日志或源码。全局 `docker prune`、`systemctl restart docker` 及 Windows/macOS 远端 Docker 未执行，保留为后续环境矩阵测试项。
+Docker 测试使用唯一资源名并验证了镜像不存在时的本地构建路径。由于测试主机无法直连 Docker Hub，测试镜像由主机已有静态 `/usr/bin/busybox` 导入；测试凭据仅由测试进程从本地主机文件读取，未写入文档、日志或源码。全局 `docker prune`、`systemctl restart docker` 及 Windows/macOS 远端 Docker 完整生命周期未执行，保留为后续环境矩阵测试项。
+
+## 11. 压缩、跳板与代理专项迁移记录
+
+### 11.1 实现位置与调用链
+
+本专项没有引入新的 MINA sshd 类型，也没有修改 sshd 版本代码。活跃调用链如下：
+
+- 传输压缩：`ShellSSHClient.start()` -> `ShellBaseSSHClient.initClient()` -> JSch `Session.setConfig("compression.c2s/s2c")` -> `Session.connect()`。
+- 文件压缩：`ShellSSHClient.serverExec()` -> `ShellServerExec.compress()/uncompress()` -> JSch `ChannelExec`。
+- 跳板：`ShellSSHClient.initHost()` -> `cn.oyzh.ssh.jump.SSHJumpForwarder` -> 多段 JSch `Session` + `setPortForwardingL`。
+- HTTP 代理：`ShellSSHClient.initProxy()` -> `JschUtil.newProxy()` -> JSch `ProxyHTTP`。
+- SOCKS5 代理：同一调用链 -> JSch `ProxySOCKS5`。
+
+涉及的活跃实现文件：
+
+- `src/main/java/cn/oyzh/easyshell/ssh/ShellBaseSSHClient.java`
+- `src/main/java/cn/oyzh/easyshell/ssh/ShellSSHClient.java`
+- `src/main/java/cn/oyzh/easyshell/ssh/ShellSSHUtil.java`
+- `src/main/java/cn/oyzh/easyshell/ssh/server/ShellServerExec.java`
+- `base-ssh/src/main/java/cn/oyzh/ssh/jump/SSHJumpForwarder.java`
+- `base-ssh/src/main/java/cn/oyzh/ssh/util/JschUtil.java`
+
+### 11.2 SSH 传输压缩与文件压缩
+
+| 场景 | 验证内容 | 结果 |
+| --- | --- | --- |
+| 压缩关闭 | `enableCompress=false`，双向算法均为 `none` | 通过 |
+| 压缩开启 | `enableCompress=true`，双向协商为 `zlib@openssh.com` | 通过 |
+| 大数据传输 | 压缩会话下 Exec 输出 4 MiB 重复数据，长度和 SHA-256 一致 | 通过 |
+| SFTP 传输 | 压缩会话下上传/下载 512 KiB 二进制数据，SHA-256 一致 | 通过 |
+| `tgz` | 目录含空格、文件名含单引号，压缩、删除源、解压、内容校验 | 通过 |
+| `xz` | 同上 | 通过 |
+| `bz2` | 同上 | 通过 |
+| 未知类型 | 返回 `null` 并记录告警，不执行空命令 | 通过 |
+
+JSch 的 `zlib@openssh.com` 是延迟压缩，只有认证完成后才启用压缩数据处理；这与 sshd 的压缩工厂实现方式不同，但对业务层表现为同一个 `enableCompress` 配置。服务端未提供压缩算法时，配置中的 `none` 兜底仍可建立连接。
+
+文件压缩仍保持原有业务规则：`tgz/tar.gz/tar` 使用 `tar -z`，`xz` 使用 `tar -J`，`bz2` 使用 `tar -j`，归档命名规则不变。本轮只修复路径 shell 转义和未知类型处理；`7z/zip/rar/lzo/zst/lz` 依赖目标机工具，未纳入本轮通过项。
+
+### 11.3 单跳与多跳跳板
+
+测试拓扑全部位于虚拟机网络内：
+
+- 单跳：Ubuntu 虚拟机作为跳板，UOS 虚拟机作为目标。
+- 双跳：Ubuntu 虚拟机 -> UOS 虚拟机两段跳板，UOS 虚拟机作为目标。
+
+| 验证项 | 单跳 | 双跳 |
+| --- | --- | --- |
+| JSch 目标会话建立 | 通过 | 通过 |
+| 目标会话地址为本地转发地址 | 通过 | 通过 |
+| 目标 `hostname` 与直连一致 | 通过 | 通过 |
+| JSch 跳板会话数量 | 1 | 2 |
+| Exec 输出 | 通过 | 通过 |
+| SFTP 上传/下载内容 | 通过 | 通过 |
+| 关闭后转发会话和本地端口释放 | 通过 | 通过 |
+
+跳板仍按每个节点自己的 `host`、`port`、`user`、认证方式和超时建立连接；主连接代理不会自动传播到跳板节点。跳板启用时保持旧行为不校验临时本地转发目标的 known_hosts，非跳板连接继续使用 known_hosts 校验配置。
+
+### 11.4 HTTP CONNECT 与 SOCKS5 代理
+
+代理测试在 Ubuntu 虚拟机内启动临时、高位随机端口的无认证 HTTP CONNECT 和 SOCKS5 服务，客户端从本机通过代理连接同一虚拟机的 SSH 服务。验证完成后按 PID 终止代理并删除临时目录。
+
+| 代理类型 | SSH 连接 | Exec | SFTP 上传/下载 | 代理确实被使用 | 结果 |
+| --- | --- | --- | --- | --- | --- |
+| HTTP CONNECT | 通过 | 通过 | 通过 | 通过代理日志计数断言 | 通过 |
+| SOCKS5 无认证 | 通过 | 通过 | 通过 | 通过代理日志计数断言 | 通过 |
+
+本轮按需求只测试 SOCKS5，不测试 SOCKS4 外部代理。历史配置 `protocol=socks` 仍映射到 SOCKS5，`protocol=socks4` 仍映射到 `ProxySOCKS4`。代理用户名密码认证、UDP ASSOCIATE 和 BIND 不在本轮范围内。
+
+### 11.5 主机平台矩阵
+
+所有平台探测均为只读命令，不写入远端文件，不创建容器。压缩算法列为开启 `enableCompress=true` 后的双向协商结果。
+
+| 主机角色 | 系统/架构 | Docker CLI | 压缩协商 | 结果 |
+| --- | --- | --- | --- | --- |
+| Ubuntu 虚拟机 | Linux / aarch64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+| Windows 虚拟机 | Windows 10 / ARM64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+| UOS 虚拟机 | Linux / aarch64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+| Windows 真实机器 | Windows 10 / AMD64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+| macOS 真实机器 | Darwin / arm64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+| 云端 Ubuntu | Linux / x86_64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+
+Windows 分支通过 `isWindows()` 和 `cmd.exe /c ver` 识别，避免依赖本地化“命令不存在”文案；Docker 完整生命周期仍只在 Ubuntu 虚拟机执行。
+
+### 11.6 资源释放、安全与凭据检查
+
+最终清理检查结果：
+
+```text
+temp_files=0
+containers=0
+images=0
+volumes=0
+proxy_processes=0
+```
+
+测试使用的主机文件只在运行进程内解析。按“主机 + 用户名 + 密码”完整组合扫描文档、改动源码和最终日志，命中文件数为 0；最终日志不包含密码字段。短密码与通用测试数据、公开 Maven groupId 等子串的巧合匹配已单独复核，不构成凭据记录。所有临时资源名义上均带 UUID/时间戳后缀：
+
+- 文件压缩：`/tmp/easyshell-jsch-compress-*`
+- 跳板 SFTP：`/tmp/easyshell-jsch-jump-*`
+- 代理临时脚本和日志：`/tmp/easyshell-jsch-proxy-*`
+- Docker 容器/镜像/卷/归档：`easyshell-jsch-*`
+
+## 12. 最终结论
+
+本轮验证覆盖了连接、密码认证、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、`tgz/xz/bz2` 文件压缩、单跳/双跳跳板、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、端口转发、并发和重连。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。
+
+未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。

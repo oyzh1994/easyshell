@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh.server;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
@@ -847,37 +848,46 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String compress(String file, String type) {
         try {
-            if (this.client.isLinux()) {
+            if (this.client.isLinux() && StringUtil.isNotBlank(file) && StringUtil.isNotBlank(type)) {
                 String fName = ShellFileUtil.name(file);
                 String pName = ShellFileUtil.parent(file);
-                String cmd = "";
+                if (StringUtil.isBlank(pName)) {
+                    pName = ".";
+                }
+                String source = this.quoteShellArgument(fName);
+                String parent = this.quoteShellArgument(pName);
+                String cmd = null;
                 if (StringUtil.equalsAnyIgnoreCase(type, "tgz", "tar.gz", "tar")) {
-                    String compressName = fName + "." + type;
-                    cmd = "cd " + pName + " && tar -zcvf " + compressName + " " + fName;
+                    String compressName = this.quoteShellArgument(fName + "." + type);
+                    cmd = "cd " + parent + " && tar -zcvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "xz")) {
-                    String compressName = fName + ".tar." + type;
-                    cmd = "cd " + pName + " && tar -Jcvf " + compressName + " " + fName;
+                    String compressName = this.quoteShellArgument(fName + ".tar." + type);
+                    cmd = "cd " + parent + " && tar -Jcvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "bz2")) {
-                    String compressName = fName + ".tar." + type;
-                    cmd = "cd " + pName + " && tar -jcvf " + compressName + " " + fName;
+                    String compressName = this.quoteShellArgument(fName + ".tar." + type);
+                    cmd = "cd " + parent + " && tar -jcvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "lz")) {
-                    String compressName = fName + ".tar." + type;
+                    String compressName = this.quoteShellArgument(fName + ".tar." + type);
                     // 需要安装lzip
-                    cmd = "cd " + pName + " && tar --lzma -cvf " + compressName + " " + fName;
+                    cmd = "cd " + parent + " && tar --lzma -cvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "lzo")) {
-                    String compressName = fName + ".tar." + type;
+                    String compressName = this.quoteShellArgument(fName + ".tar." + type);
                     // 需要安装lzop
-                    cmd = "cd " + pName + " && tar --lzop -cvf " + compressName + " " + fName;
+                    cmd = "cd " + parent + " && tar --lzop -cvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "zst")) {
-                    String compressName = fName + ".tar." + type;
+                    String compressName = this.quoteShellArgument(fName + ".tar." + type);
                     // 需要安装zstd
-                    cmd = "cd " + pName + " && tar --zstd -cvf " + compressName + " " + fName;
+                    cmd = "cd " + parent + " && tar --zstd -cvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
-                    String compressName = fName + "." + type;
-                    cmd = "cd " + pName + " && rar a " + compressName + " " + fName;
+                    String compressName = this.quoteShellArgument(fName + "." + type);
+                    cmd = "cd " + parent + " && rar a " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "7z", "zip")) {
-                    String compressName = fName + "." + type;
-                    cmd = "cd " + pName + " && 7z a " + compressName + " " + fName;
+                    String compressName = this.quoteShellArgument(fName + "." + type);
+                    cmd = "cd " + parent + " && 7z a " + compressName + " " + source;
+                }
+                if (cmd == null) {
+                    JulLog.warn("unsupported compress type: {}", type);
+                    return null;
                 }
                 return this.client.exec(cmd);
             }
@@ -899,15 +909,30 @@ public class ShellServerExec implements AutoCloseable {
                 String extName = FileNameUtil.extName(file);
                 String pName = ShellFileUtil.parent(file);
                 String fName = ShellFileUtil.name(file);
-                if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
-                    return this.client.exec("cd " + pName + " && 7z x " + fName + " -y");
+                if (StringUtil.isBlank(pName)) {
+                    pName = ".";
                 }
-                return this.client.exec("cd " + pName + " && tar -axof " + fName + " --owner=$(whoami) --group=$(id -gn)");
+                String parent = this.quoteShellArgument(pName);
+                String source = this.quoteShellArgument(fName);
+                if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
+                    return this.client.exec("cd " + parent + " && 7z x " + source + " -y");
+                }
+                return this.client.exec("cd " + parent + " && tar -axof " + source + " --owner=$(whoami) --group=$(id -gn)");
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 保护 shell 参数，避免空格、引号等字符被远端 shell 解释。
+     *
+     * @param value 参数值
+     * @return 处理后的参数
+     */
+    private String quoteShellArgument(String value) {
+        return "'" + value.replace("'", "'\"'\"'") + "'";
     }
 
     /**

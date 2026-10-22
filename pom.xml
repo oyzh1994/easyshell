@@ -329,6 +329,7 @@
             <groupId>org.apache.sshd</groupId>
             <artifactId>sshd-sftp</artifactId>
             <version>${sshd.version}</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -357,6 +358,7 @@
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit.ssh.apache.agent</artifactId>
             <version>${jgit.version}</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -527,13 +529,13 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ssh库 -->
-        <!-- https://mvnrepository.com/artifact/com.github.mwiede/jsch -->
-        <dependency>
-            <groupId>com.github.mwiede</groupId>
-            <artifactId>jsch</artifactId>
-            <version>${jsch.version}</version>
-        </dependency>
+        <!-- &lt;!&ndash; ssh库 &ndash;&gt; -->
+        <!-- &lt;!&ndash; https://mvnrepository.com/artifact/com.github.mwiede/jsch &ndash;&gt; -->
+        <!-- <dependency> -->
+        <!--     <groupId>com.github.mwiede</groupId> -->
+        <!--     <artifactId>jsch</artifactId> -->
+        <!--     <version>${jsch.version}</version> -->
+        <!-- </dependency> -->
 
         <dependency>
             <groupId>org.jsoup</groupId>
