@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.test.terminal.redis_v2;
 
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandBuilder;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandDescriptor;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandRegistry;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisHelpCommandHandler;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisResponseFormatter;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandBuilder;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandDescriptor;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandRegistry;
+import cn.oyzh.easyshell.terminal.redis2.RedisHelpCommandHandler;
+import cn.oyzh.easyshell.terminal.redis2.RedisResponseFormatter;
 import org.junit.Test;
 import redis.clients.jedis.CommandObject;
 import redis.clients.jedis.resps.CommandInfo;

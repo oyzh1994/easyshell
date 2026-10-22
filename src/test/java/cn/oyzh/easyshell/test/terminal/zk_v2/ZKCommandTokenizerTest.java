@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.test.terminal.zk_v2;
 
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandTokenizer;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandTokenizer;
 import org.junit.Test;
 
 import java.util.List;

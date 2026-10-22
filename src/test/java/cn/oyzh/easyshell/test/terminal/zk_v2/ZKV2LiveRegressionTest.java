@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.test.terminal.zk_v2;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandDescriptor;
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandExecutor;
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandRegistry;
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandTokenizer;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandDescriptor;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandExecutor;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandRegistry;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandTokenizer;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Assume;

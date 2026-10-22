@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.redis;
 
 
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandTokenizer;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandTokenizer;
 
 import java.util.ArrayList;
 import java.util.List;

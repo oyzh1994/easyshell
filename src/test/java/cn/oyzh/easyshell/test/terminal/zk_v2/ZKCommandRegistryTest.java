@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.test.terminal.zk_v2;
 
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandDescriptor;
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandExecutor;
-import cn.oyzh.easyshell.terminal.zk_v2.ZKCommandRegistry;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandDescriptor;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandExecutor;
+import cn.oyzh.easyshell.terminal.zk2.ZKCommandRegistry;
 import org.junit.Test;
 
 import java.util.List;

@@ -3,10 +3,10 @@ package cn.oyzh.easyshell.test.terminal.redis_v2;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisCommandSession;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandBuilder;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandExecutor;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandRegistry;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisResponseFormatter;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandBuilder;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandExecutor;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandRegistry;
+import cn.oyzh.easyshell.terminal.redis2.RedisResponseFormatter;
 import org.junit.Assume;
 import org.junit.Test;
 

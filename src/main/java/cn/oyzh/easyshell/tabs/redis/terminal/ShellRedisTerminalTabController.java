@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.tabs.redis.terminal;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisTerminalPane;
+import cn.oyzh.easyshell.terminal.redis2.RedisTerminalPane;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;

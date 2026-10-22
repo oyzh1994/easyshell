@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test.terminal.redis_v2;
 
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
-import cn.oyzh.easyshell.terminal.redis_v2.RedisCommandTokenizer;
+import cn.oyzh.easyshell.terminal.redis2.RedisCommandTokenizer;
 import org.junit.Test;
 
 import java.util.List;
