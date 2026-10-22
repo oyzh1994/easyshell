@@ -32,9 +32,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * shell客户端
@@ -86,6 +87,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected Function<ShellConnect, ShellConnect> verifyFailureCallback = ShellSSHUtil::onVerifyFailure;
 
+    /**
+     * 键盘交互认证验证码供应器，为空时由界面提示输入。
+     */
+    private Supplier<String> verificationCodeSupplier;
+
     private final Semaphore execChannelPermits = new Semaphore(4);
 
     public ShellBaseSSHClient(ShellConnect connect) {
@@ -107,6 +113,14 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     public Function<ShellConnect, ShellConnect> getVerifyFailureCallback() {
         return this.verifyFailureCallback;
+    }
+
+    public void setVerificationCodeSupplier(Supplier<String> verificationCodeSupplier) {
+        this.verificationCodeSupplier = verificationCodeSupplier;
+    }
+
+    public Supplier<String> getVerificationCodeSupplier() {
+        return this.verificationCodeSupplier;
     }
 
     @Override
@@ -527,7 +541,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
         if (this.shellConnect.isPasswordAuth()) {
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthInteractive(this.shellConnect.getPassword()));
+            this.session.setUserInfo(this.newAuthInteractive(this.shellConnect.getPassword(), null));
         } else if (this.shellConnect.isCertificateAuth()) {
             String priKeyFile = this.shellConnect.getCertificate();
             if (StringUtil.isBlank(priKeyFile) || !Files.isRegularFile(Path.of(priKeyFile))) {
@@ -535,7 +549,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             }
             this.jsch.addIdentity(priKeyFile, this.shellConnect.getCertificatePwd());
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthInteractive(null, this.shellConnect.getCertificatePwd()));
+            this.session.setUserInfo(this.newAuthInteractive(null, this.shellConnect.getCertificatePwd()));
         } else if (this.shellConnect.isSSHAgentAuth()) {
             var repository = JschUtil.initAgentIdentityRepository();
             if (CollectionUtil.isEmpty(repository.getIdentities())) {
@@ -548,7 +562,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 }
             }
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthInteractive());
+            this.session.setUserInfo(this.newAuthInteractive(null, null));
         } else if (this.shellConnect.isManagerAuth()) {
             ShellKey key = this.keyStore.selectOne(this.shellConnect.getKeyId());
             if (key == null) {
@@ -557,13 +571,19 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             String keyName = "key_" + key.getId();
             this.jsch.addIdentity(keyName, key.getPrivateKeyBytes(), key.getPublicKeyBytes(), key.getPasswordBytes());
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
-            this.session.setUserInfo(new ShellSSHAuthInteractive(null, key.getPassword()));
+            this.session.setUserInfo(this.newAuthInteractive(null, key.getPassword()));
         } else {
             throw new JSchException("unsupported ssh authentication type");
         }
 
         this.initSession();
         this.useCompression();
+    }
+
+    private ShellSSHAuthInteractive newAuthInteractive(String password, String passphrase) {
+        ShellSSHAuthInteractive interactive = new ShellSSHAuthInteractive(password, passphrase);
+        interactive.setVerificationCodeSupplier(this.verificationCodeSupplier);
+        return interactive;
     }
 
     protected synchronized void connectSession(int timeout) throws JSchException, AgentProxyException {

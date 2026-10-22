@@ -10,6 +10,8 @@ import cn.oyzh.i18n.I18nHelper;
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
 
+import java.util.function.Supplier;
+
 public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo {
 
     private String password;
@@ -17,9 +19,20 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
     private String passphrase;
 
     /**
+     * 验证码供应器，为空时由界面提示输入。
+     */
+    private Supplier<String> verificationCodeSupplier;
+
+    /**
      * JSch 密码认证失败后会循环复用同一凭证，这里只允许提交一次。
      */
     private boolean passwordRequested;
+
+    /**
+     * JSch 的 keyboard-interactive 在认证失败后会再次调用本对象。
+     * 验证码只允许提交一次，避免同一 TOTP 被反复提交直至触发服务端锁定。
+     */
+    private volatile boolean verificationCodeRequested;
 
     public ShellSSHAuthInteractive() {
     }
@@ -33,30 +46,63 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
         this.passphrase = passphrase;
     }
 
+    public void setVerificationCodeSupplier(Supplier<String> verificationCodeSupplier) {
+        this.verificationCodeSupplier = verificationCodeSupplier;
+    }
+
     @Override
     public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
         if (prompt == null || prompt.length == 0) {
             return null;
         }
+        if (this.verificationCodeRequested) {
+            JulLog.debug("ssh interactive verification code already submitted, stop repeated authentication");
+            return null;
+        }
         String[] responses = new String[prompt.length];
         for (int index = 0; index < prompt.length; index++) {
             String content = prompt[index] == null ? "" : prompt[index];
-            if (StringUtil.containsAnyIgnoreCase(content, "password", "密码")) {
+            if (this.isVerificationPrompt(content)) {
+                responses[index] = this.requestVerificationCode();
+            } else if (StringUtil.containsAnyIgnoreCase(content, "password", "密码")) {
                 responses[index] = this.password;
                 if (StringUtil.isEmpty(responses[index])) {
                     responses[index] = this.requestPassword(I18nHelper.pleaseInputPassword());
                 }
             } else {
-                String message = StringUtil.containsAnyIgnoreCase(content, "verification", "验证码")
-                        ? I18nHelper.pleaseInputVerificationCode()
-                        : content;
-                responses[index] = MessageBox.prompt(message, StageManager.getFrontWindow());
+                responses[index] = MessageBox.prompt(content, StageManager.getFrontWindow());
             }
             if (StringUtil.isEmpty(responses[index])) {
                 throw new ShellException("invalid interactive authentication response");
             }
         }
         return responses;
+    }
+
+    private boolean isVerificationPrompt(String prompt) {
+        return StringUtil.containsAnyIgnoreCase(prompt,
+                "verification", "one-time", "one time", "otp", "authenticator",
+                "验证码", "动态码", "动态口令", "一次性密码");
+    }
+
+    private String requestVerificationCode() {
+        String value;
+        if (this.verificationCodeSupplier == null) {
+            value = MessageBox.prompt(I18nHelper.pleaseInputVerificationCode(), StageManager.getFrontWindow());
+        } else {
+            try {
+                value = this.verificationCodeSupplier.get();
+            } catch (Exception ex) {
+                JulLog.warn("failed to obtain interactive verification code", ex);
+                throw new ShellException(ex);
+            }
+        }
+        if (StringUtil.isEmpty(value)) {
+            throw new ShellException("verification code is empty");
+        }
+        this.verificationCodeRequested = true;
+        JulLog.debug("ssh keyboard-interactive verification code supplied");
+        return value;
     }
 
     private String requestPassword(String message) {

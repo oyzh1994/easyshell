@@ -1,0 +1,22 @@
+name: easyshell-ssh-2fa
+
+services:
+  ssh-2fa:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: easyshell/ssh-2fa:local
+    container_name: easyshell-ssh-2fa
+    hostname: easyshell-ssh-2fa
+    environment:
+      SSH_PASSWORD: ${SSH_PASSWORD:-}
+    ports:
+      - "${SSH_2FA_PORT:-2224}:22"
+    volumes:
+      - easyshell-ssh-2fa-root:/root
+    restart: unless-stopped
+
+volumes:
+  easyshell-ssh-2fa-root:
+    name: easyshell-ssh-2fa-root

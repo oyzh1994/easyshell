@@ -790,8 +790,100 @@ java -Dtest.hosts.file='<local-hosts-file>' -Dtest.pubkey.host.index=3 \
   -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPublicKeyAuthRegression
 ```
 
+### 11.12 双因素认证（2FA）实机回归
+
+#### 测试环境
+
+- 环境目录：`docker/ssh/2fa`，基础镜像与既有 SSH 测试环境保持一致。
+- 容器：`easyshell-ssh-2fa`，镜像 `easyshell/ssh-2fa:local`，宿主机端口 `2224`。
+- 持久卷：`easyshell-ssh-2fa-root`。
+- 服务端：OpenSSH + PAM `pam_google_authenticator.so`，仅允许
+  `AuthenticationMethods keyboard-interactive`；密码认证、公钥认证均关闭。
+- 认证因子：Unix 账户密码 + 6 位 TOTP（30 秒周期）。
+- 本地测试容器使用 `WINDOW_SIZE 1`、允许 TOTP 重复使用并关闭 PAM 速率限制，
+  便于连续执行回归和手工复测；该设置仅用于本地测试环境，生产环境建议开启
+  `DISALLOW_REUSE`。
+- 本地测试凭据仅保存在容器内 `/root/.easyshell-2fa-credentials`，不写入镜像、
+  仓库、文档或测试日志。
+- 凭据文件为明文：`password` 是账户密码，`totp_secret` 是 Base32 共享密钥而不是
+  验证码；登录时需输入由该密钥生成的当前 6 位 TOTP，验证码每 30 秒变化。
+  `otpauth_uri` 可直接导入认证器，文件中的应急码不是当前 TOTP。
+
+#### 调用链与实现
+
+- `ShellConnect.authMethod=password` -> `ShellBaseSSHClient.initClient()` ->
+  JSch `PreferredAuthentications=password,keyboard-interactive` ->
+  服务端拒绝独立密码认证 -> JSch `UserAuthKeyboardInteractive` ->
+  `ShellSSHAuthInteractive.promptKeyboardInteractive()`。
+- 交互提示按内容分类：`password/密码` 使用连接密码；`verification/one-time/otp/
+  authenticator/验证码/动态码/动态口令/一次性密码` 使用验证码供应器，未注入供应器时
+  仍通过 `MessageBox.prompt()` 弹出输入框，保持桌面端行为。
+- `ShellBaseSSHClient` 新增 `setVerificationCodeSupplier()/getVerificationCodeSupplier()`，
+  所有密码、私钥、密钥管理器和 Agent 认证统一通过 `newAuthInteractive()` 注入供应器。
+- JSch 在 keyboard-interactive 失败后会重复调用同一交互对象。交互对象现在只允许提交
+  一次验证码，后续调用直接取消认证，避免同一 TOTP 被重复提交。
+- 取消认证产生的 `JSchAuthCancelException` 由既有异常分类识别为认证失败，继续触发
+  `verifyFailureCallback`，桌面端可以重新打开认证页并重建会话。
+
+#### 回归结果
+
+测试日期：2026-10-22。
+
+| 场景 | 结果 |
+| --- | --- |
+| 正确密码 + 当前 TOTP | 通过，验证码供应器调用 1 次 |
+| 2FA 会话 Exec 命令 | 通过 |
+| 2FA 会话 SFTP 上传、元数据读取、下载内容校验 | 通过 |
+| 正确认证总耗时（含连接、Exec、SFTP） | 约 529 ms |
+| 错误 TOTP | 拒绝，验证码供应器调用 1 次，认证回调 1 次 |
+| 错误 TOTP 失败耗时 | 约 4.4 秒；修复前约 13.2 秒 |
+| 认证失败异常映射 | `JSchAuthCancelException` -> `ShellException` |
+| 既有错误密码/错误用户名认证页回归 | 通过，均只回调 1 次 |
+| 公钥认证回归（管理器 6 种、私钥文件 3 种） | 通过，授权文件按原内容恢复 |
+
+测试日志末尾输出：
+
+```text
+2FA authentication verified: supplierCalls=1, exec=PASS, sftp=PASS, elapsed=529ms
+wrong TOTP rejected: supplierCalls=1, authCallbacks=1, elapsed=4361ms, failure=ShellException
+JSch 2FA authentication regression passed
+```
+
+#### 手工复测
+
+容器和命名卷已保留，可直接使用：
+
+```bash
+export PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH"
+docker ps --filter name=easyshell-ssh-2fa
+docker exec easyshell-ssh-2fa cat /root/.easyshell-2fa-credentials
+ssh -p 2224 root@127.0.0.1
+```
+
+手工 SSH 会依次提示密码和 `Verification code:`。也可重新执行自动回归：
+
+```bash
+bash docker/ssh/2fa/test-2fa.sh
+```
+
+#### 测试入口
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchTwoFactorAuthRegression.java`
+- `docker/ssh/2fa/Dockerfile`
+- `docker/ssh/2fa/entrypoint.sh`
+- `docker/ssh/2fa/docker-compose.yml`
+- `docker/ssh/2fa/test-2fa.sh`
+
+#### 兼容性说明
+
+- 未修改 `ShellConnect`、`ShellKey`、认证方式枚举及配置文件格式。
+- 未引入任何 MINA sshd 类型；2FA 仅使用 JSch 的
+  `UIKeyboardInteractive`/`UserInfo` 扩展点。
+- 未注入验证码供应器时保持原有 GUI 输入方式，不影响既有密码、公钥和 Agent 认证。
+- 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本代码。
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、公钥认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
+本轮验证覆盖了连接、密码认证、公钥认证、双因素认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。
