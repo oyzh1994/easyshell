@@ -72,6 +72,7 @@ public final class ShellJSchPublicKeyAuthRegression {
 
             passwordClient = new ShellSSHClient(host.newConnect());
             passwordClient.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(passwordClient);
             passwordClient.start((int) authTimeout);
             require(passwordClient.isConnected(), "password authentication failed");
             require(!passwordClient.isWindows(), "public key regression requires a Unix test host");
@@ -240,6 +241,7 @@ public final class ShellJSchPublicKeyAuthRegression {
         connect.setKeyId(keyId);
         ShellSSHClient client = new ShellSSHClient(connect);
         client.setVerifyFailureCallback(current -> null);
+        ShellJSchTestHosts.acceptHostKeys(client);
         long start = System.currentTimeMillis();
         try {
             client.start((int) timeout);
@@ -273,6 +275,7 @@ public final class ShellJSchPublicKeyAuthRegression {
         connect.setCertificatePwd(key.passphrase());
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
             client.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start((int) timeout);
             require(client.isConnected(), key.algorithm() + " certificate authentication failed");
             String output = client.exec("printf '%s' " + quote(marker + "-cert"), (int) timeout);
@@ -306,6 +309,7 @@ public final class ShellJSchPublicKeyAuthRegression {
         connect.setKeyId(keyId);
         ShellSSHClient client = new ShellSSHClient(connect);
         client.setVerifyFailureCallback(current -> null);
+        ShellJSchTestHosts.acceptHostKeys(client);
         long start = System.currentTimeMillis();
         try {
             try {

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.ssh.ShellSSHClient;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,8 @@ import java.util.Map;
 public final class ShellJSchTestHosts {
 
     private static final String HOSTS_FILE_PROPERTY = "test.hosts.file";
+    private static final String KNOWN_HOSTS_PATH_PROPERTY = "easyshell.known_hosts.path";
+    private static boolean temporaryKnownHostsPrepared;
 
     private ShellJSchTestHosts() {
     }
@@ -31,6 +34,33 @@ public final class ShellJSchTestHosts {
                 .filter(host -> host.index() == index)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("test host index not found: " + index));
+    }
+
+    /**
+     * 集成测试使用临时 known_hosts，首次连接时自动接受测试主机密钥。
+     * 主机密钥校验本身由 ShellJSchHostKeyRegression 单独覆盖。
+     */
+    public static synchronized void acceptHostKeys(ShellSSHClient client) {
+        prepareTemporaryKnownHosts();
+        client.setHostKeyConfirmCallback(message -> true);
+    }
+
+    private static void prepareTemporaryKnownHosts() {
+        if (temporaryKnownHostsPrepared) {
+            return;
+        }
+        temporaryKnownHostsPrepared = true;
+        String override = System.getProperty(KNOWN_HOSTS_PATH_PROPERTY);
+        if (override != null && !override.isBlank()) {
+            return;
+        }
+        try {
+            Path knownHosts = Files.createTempFile("easyshell-jsch-known_hosts-", ".txt");
+            knownHosts.toFile().deleteOnExit();
+            System.setProperty(KNOWN_HOSTS_PATH_PROPERTY, knownHosts.toString());
+        } catch (IOException ex) {
+            throw new IllegalStateException("failed to prepare temporary known_hosts", ex);
+        }
     }
 
     private static List<Host> parse(Path file) throws IOException {

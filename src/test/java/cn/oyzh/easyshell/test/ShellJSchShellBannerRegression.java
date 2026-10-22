@@ -38,6 +38,7 @@ public final class ShellJSchShellBannerRegression {
 
         try (ShellSSHClient client = new ShellSSHClient(host.newConnect())) {
             client.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
             verifyCycle(client, "initial", minInitialBytes, requireBanner);
             client.getShell().close();

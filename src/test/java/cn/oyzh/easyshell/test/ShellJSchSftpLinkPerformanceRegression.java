@@ -41,6 +41,7 @@ public final class ShellJSchSftpLinkPerformanceRegression {
 
         try (ShellSSHClient client = new ShellSSHClient(host.newConnect())) {
             client.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
 
             // 首次调用包含 SFTP 通道创建开销，单独记录但不作为链接判定性能门槛。

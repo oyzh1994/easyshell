@@ -134,7 +134,9 @@ public final class ShellJSchHostKeyRegression {
                 "changed host key confirmation was not requested");
         String after = Files.readString(knownHosts);
         require(!before.equals(after), "accepted changed host key did not update known_hosts");
-        requireContainsHost(after, host, port);
+        if (!before.contains("|1|")) {
+            requireContainsHost(after, host, port);
+        }
         System.out.println("changed host key accepted and persisted");
     }
 

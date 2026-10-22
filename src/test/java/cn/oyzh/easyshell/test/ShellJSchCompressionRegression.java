@@ -41,6 +41,7 @@ public final class ShellJSchCompressionRegression {
 
         try (ShellSSHClient client = new ShellSSHClient(host.newConnect())) {
             client.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
             requireFileCompression(client);
             requireSftpTransfer(client);
@@ -51,6 +52,7 @@ public final class ShellJSchCompressionRegression {
         try (ShellSSHClient client = new ShellSSHClient(host.newConnect())) {
             client.getShellConnect().setEnableCompress(enabled);
             client.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
             Session session = client.getSession();
             require(session != null && session.isConnected(), "ssh session is not connected");

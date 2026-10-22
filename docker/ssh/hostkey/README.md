@@ -32,7 +32,7 @@ EASYSHELL_HOSTKEY_PASSWORD='<local-test-password>' \
 | --- | --- | --- |
 | `reject-new` | 未知主机 | 拒绝，known_hosts 不变 |
 | `accept-new` | 未知主机 | 接受一次，写入 known_hosts |
-| `persist` | 已保存主机 | 不提示，Exec 正常 |
+| `persist` | 已保存主机，known_hosts 已转为 OpenSSH 哈希格式并含空行/注释 | 不提示，Exec 正常 |
 | `reject-changed` | host key 变化 | 拒绝，known_hosts 不变 |
 | `accept-changed` | host key 变化 | 接受，更新 known_hosts |
 | `persist-changed` | 已更新主机 | 不提示，重连正常 |

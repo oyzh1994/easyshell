@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
+import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -43,6 +44,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +54,12 @@ import java.util.stream.Collectors;
  * @since 2023/08/16
  */
 public class ShellSSHClient extends ShellBaseSSHClient {
+
+    /**
+     * 终端尺寸变化合并窗口。窗口最大化/还原会连续产生多个网格尺寸，
+     * JSch 每次 setPtySize 都会发送 window-change，必须只发送最终尺寸。
+     */
+    private static final int PTY_RESIZE_DEBOUNCE_MILLIS = 100;
 
     /**
      * shell类型
@@ -194,6 +202,24 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     private String connectHost;
 
     /**
+     * 本次连接使用的代理配置。直连时作用于主会话，跳板时作用于第一跳。
+     */
+    private ShellProxyConfig connectProxyConfig;
+
+    /**
+     * 待发送的 PTY 尺寸。
+     */
+    private ScheduledFuture<?> pendingPtyResizeFuture;
+
+    private int pendingPtyColumns;
+
+    private int pendingPtyRows;
+
+    private int pendingPtyWidth;
+
+    private int pendingPtyHeight;
+
+    /**
      * 连接状态
      */
     private final ObjectProperty<ShellConnState> state = new SimpleObjectProperty<>(ShellConnState.NOT_INITIALIZED);
@@ -275,7 +301,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             // 转换为目标连接
             SSHConnect target = ShellUtil.toSSHConnect(this.shellConnect);
             // 执行连接
-            int localPort = this.jumpForwarder.forward(jumpConfigs, target);
+            int localPort = this.jumpForwarder.forward(jumpConfigs, target, this.connectProxyConfig);
             // 连接信息
             host = "127.0.0.1:" + localPort;
         } else {// 直连
@@ -284,7 +310,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.jumpForwarder = null;
             }
             // 连接信息
-            host = this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
+            host = this.shellConnect.getHost();
         }
         this.connectHost = host;
         return this.connectHost;
@@ -294,23 +320,30 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 初始化代理
      */
     private void initProxy() {
-        // 开启了代理
-        if (this.shellConnect.isEnableProxy()) {
-            // 初始化ssh转发器
-            ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
-            // 从数据库获取
-            if (proxyConfig == null) {
-                proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
-            }
-            if (proxyConfig == null) {
-                JulLog.warn("proxy is enable but proxy config is null");
-                throw new SSHException("proxy is enable but proxy config is null");
-            }
-            // 初始化代理
-            Proxy proxy = ShellSSHUtil.newProxy(proxyConfig);
-            // 设置代理
-            this.session.setProxy(proxy);
+        // 跳板模式下代理已用于第一跳，主会话连接的是本地临时转发端口。
+        if (this.connectProxyConfig == null || this.shellConnect.isEnableJump()) {
+            return;
         }
+        Proxy proxy = ShellSSHUtil.newProxy(this.connectProxyConfig);
+        this.session.setProxy(proxy);
+    }
+
+    /**
+     * 加载代理配置。代理启用但配置缺失时保持原有失败语义。
+     */
+    private ShellProxyConfig resolveProxyConfig() {
+        if (!this.shellConnect.isEnableProxy()) {
+            return null;
+        }
+        ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
+        if (proxyConfig == null) {
+            proxyConfig = this.proxyConfigStore.getByIid(this.shellConnect.getId());
+        }
+        if (proxyConfig == null) {
+            JulLog.warn("proxy is enable but proxy config is null");
+            throw new SSHException("proxy is enable but proxy config is null");
+        }
+        return proxyConfig;
     }
 
     /**
@@ -372,6 +405,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     @Override
     protected void initClient() throws JSchException, AgentProxyException {
+        // 跳板转发需要先拿到代理配置，代理应作用于第一跳而不是本地转发端口。
+        this.connectProxyConfig = this.resolveProxyConfig();
         // 执行初始化
         super.initClient();
         // 初始化x11
@@ -392,6 +427,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     private void releaseResources() {
+        this.cancelPendingPtyResize();
         ShellClientChecker.remove(this);
         this.closeQuietly(this.sftpClient, "sftp client");
         this.sftpClient = null;
@@ -600,9 +636,32 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     public synchronized void setPtySize(int columns, int rows, int width, int height) {
+        if (columns <= 0 || rows <= 0) {
+            return;
+        }
+        this.pendingPtyColumns = columns;
+        this.pendingPtyRows = rows;
+        this.pendingPtyWidth = width;
+        this.pendingPtyHeight = height;
+        if (this.pendingPtyResizeFuture != null) {
+            this.pendingPtyResizeFuture.cancel(false);
+        }
+        this.pendingPtyResizeFuture = ExecutorUtil.start(this::flushPtySize, PTY_RESIZE_DEBOUNCE_MILLIS);
+    }
+
+    private synchronized void flushPtySize() {
+        this.pendingPtyResizeFuture = null;
         ShellSSHShell currentShell = this.getShell();
         if (currentShell != null && currentShell.isConnected()) {
-            currentShell.setPtySize(columns, rows, width, height);
+            currentShell.setPtySize(this.pendingPtyColumns, this.pendingPtyRows,
+                    this.pendingPtyWidth, this.pendingPtyHeight);
+        }
+    }
+
+    private synchronized void cancelPendingPtyResize() {
+        if (this.pendingPtyResizeFuture != null) {
+            this.pendingPtyResizeFuture.cancel(false);
+            this.pendingPtyResizeFuture = null;
         }
     }
 

@@ -93,6 +93,7 @@ public final class ShellJSchConcurrentRegression {
 
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
             client.setVerifyFailureCallback(current -> current);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
             requireOsTypeMatching();
             requirePathInjection(client);
@@ -572,6 +573,7 @@ public final class ShellJSchConcurrentRegression {
             connect.setTunnelingConfigs(List.of(tunneling));
 
             ShellSSHClient failedClient = new ShellSSHClient(connect);
+            ShellJSchTestHosts.acceptHostKeys(failedClient);
             try {
                 failedClient.start(15000);
                 throw new IllegalStateException("start should fail when tunnel binding is unavailable");
@@ -606,6 +608,7 @@ public final class ShellJSchConcurrentRegression {
 
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
             client.setVerifyFailureCallback(current -> current);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
             requireSshBanner(localPort);
             client.getSession().disconnect();

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -10,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -110,6 +112,7 @@ public final class ShellJSchProxyRegression {
                         host, port = authority[1:].split(']:', 1)
                     else:
                         host, port = authority.rsplit(':', 1)
+                    log('http-target-host-' + authority)
                     try:
                         socket.inet_aton(host)
                         log('http-target-ip')
@@ -176,6 +179,7 @@ public final class ShellJSchProxyRegression {
                         client.sendall(b'\\x05\\x08\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00')
                         return
                     port = struct.unpack('!H', read_exact(client, 2))[0]
+                    log('socks5-target-host-' + host + ':' + str(port))
                     upstream = socket.create_connection((host, port), timeout=20)
                     upstream.settimeout(120)
                     client.sendall(b'\\x05\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00')
@@ -293,6 +297,23 @@ public final class ShellJSchProxyRegression {
                     "SOCKS5 proxy did not receive a domain target");
             require(count(admin, directory, "http-error") == 0, "HTTP proxy reported errors");
             require(count(admin, directory, "socks5-error") == 0, "SOCKS5 proxy reported errors");
+            if (Boolean.getBoolean("test.proxy.jump")) {
+                int jumpIndex = Integer.getInteger("test.jump.index", 1);
+                int secondJumpIndex = Integer.getInteger("test.second.jump.index", 3);
+                int targetIndex = Integer.getInteger("test.target.index", 6);
+                require(hostIndex != targetIndex && jumpIndex != targetIndex && secondJumpIndex != targetIndex,
+                        "proxy jump indices must be distinct");
+                require(hostIndex == jumpIndex, "proxy host must be the first jump host for this test");
+                ShellJSchTestHosts.Host secondJump = ShellJSchTestHosts.load(secondJumpIndex);
+                ShellJSchTestHosts.Host target = ShellJSchTestHosts.load(targetIndex);
+                String targetHostname = directHostname(target);
+                requireProxyJump(admin, host, target, targetHostname, directory, httpPort, "http", List.of());
+                requireProxyJump(admin, host, target, targetHostname, directory, httpPort, "http",
+                        List.of(secondJump.newJumpConfig()));
+                requireProxyJump(admin, host, target, targetHostname, directory, socksPort, "socks5", List.of());
+                requireProxyJump(admin, host, target, targetHostname, directory, socksPort, "socks5",
+                        List.of(secondJump.newJumpConfig()));
+            }
         } finally {
             try {
                 stopProxy(admin, directory, pid);
@@ -360,6 +381,65 @@ public final class ShellJSchProxyRegression {
         }
     }
 
+    private static String directHostname(ShellJSchTestHosts.Host target) throws Exception {
+        try (ShellSSHClient client = new ShellSSHClient(target.newConnect())) {
+            client.setVerifyFailureCallback(current -> null);
+            client.setHostKeyConfirmCallback(message -> true);
+            client.start(15000);
+            return requireNotBlank(client.exec("hostname"), "direct target hostname is blank").trim();
+        }
+    }
+
+    private static void requireProxyJump(ShellSSHClient admin, ShellJSchTestHosts.Host firstJump,
+                                         ShellJSchTestHosts.Host target, String targetHostname,
+                                         String directory, int proxyPort, String protocol,
+                                         List<ShellJumpConfig> extraJumps) throws Exception {
+        String markerPrefix = "http".equals(protocol) ? "http-target-host-" : "socks5-target-host-";
+        String firstHopTarget = markerPrefix + firstJump.host() + ":" + firstJump.port();
+        String finalTarget = markerPrefix + target.host() + ":" + target.port();
+        int firstHopBefore = countLine(admin, directory, firstHopTarget);
+        int finalTargetBefore = countLine(admin, directory, finalTarget);
+        String errorMarker = "http".equals(protocol) ? "http-error" : "socks5-error";
+        int errorBefore = count(admin, directory, errorMarker);
+
+        ShellConnect connect = target.newConnect();
+        List<ShellJumpConfig> jumps = new java.util.ArrayList<>();
+        jumps.add(firstJump.newJumpConfig());
+        jumps.addAll(extraJumps);
+        connect.setJumpConfigs(jumps);
+        ShellProxyConfig proxy = new ShellProxyConfig();
+        proxy.setProtocol(protocol);
+        proxy.setHost(firstJump.host());
+        proxy.setPort(proxyPort);
+        connect.setEnableProxy(true);
+        connect.setProxyConfig(proxy);
+        String name = protocol + "-jump-" + jumps.size();
+
+        try (ShellSSHClient client = new ShellSSHClient(connect)) {
+            client.setVerifyFailureCallback(current -> null);
+            client.setHostKeyConfirmCallback(message -> true);
+            client.start(20000);
+            require(client.getSession() != null && client.getSession().isConnected(),
+                    name + " session is not connected");
+            require("127.0.0.1".equals(client.getSession().getHost()),
+                    name + " did not preserve the local forwarding endpoint");
+            String hostname = requireNotBlank(client.exec("hostname"), name + " hostname is blank").trim();
+            require(targetHostname.equals(hostname), name + " reached an unexpected target");
+            String marker = name + "-" + UUID.randomUUID();
+            require(marker.equals(client.exec("printf " + quote(marker))), name + " exec output mismatch");
+            requireSftp(client, name);
+        }
+
+        require(countLine(admin, directory, firstHopTarget) == firstHopBefore + 1,
+                name + " proxy did not connect to the first hop exactly once");
+        if (!firstJump.host().equals(target.host()) || firstJump.port() != target.port()) {
+            require(countLine(admin, directory, finalTarget) == finalTargetBefore,
+                    name + " proxy unexpectedly connected to the final target");
+        }
+        require(count(admin, directory, errorMarker) == errorBefore, name + " proxy reported errors");
+        System.out.println(name + " proxy SSH/SFTP verified: firstHopOnly=true, hops=" + jumps.size());
+    }
+
     private static void requireProxyAuthFailure(ShellSSHClient admin, ShellJSchTestHosts.Host host,
                                                 String protocol, int port, String proxyUser,
                                                 String proxyPassword) throws Exception {
@@ -420,6 +500,20 @@ public final class ShellJSchProxyRegression {
         } catch (NumberFormatException ex) {
             return 0;
         }
+    }
+
+    private static int countLine(ShellSSHClient admin, String directory, String line) {
+        String output = admin.exec("grep -Fxc " + quote(line) + " " + quote(directory + "/proxy.log") + " || true");
+        try {
+            return Integer.parseInt(output == null ? "0" : output.trim());
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private static String requireNotBlank(String value, String message) {
+        require(value != null && !value.isBlank(), message);
+        return value;
     }
 
     private static String requirePid(String output) {

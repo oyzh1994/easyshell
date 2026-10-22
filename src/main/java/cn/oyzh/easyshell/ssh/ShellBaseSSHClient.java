@@ -8,6 +8,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
@@ -21,6 +22,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Identity;
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchAlgoNegoFailException;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.JSchProxyException;
 import com.jcraft.jsch.JSchSessionDisconnectException;
@@ -106,6 +108,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     private volatile IdentityRepository agentIdentityRepository;
 
     private final Semaphore execChannelPermits = new Semaphore(4);
+
+    /**
+     * 当前客户端是否已降级到旧服务端算法。
+     */
+    private volatile boolean legacyAlgorithmFallback;
 
     public ShellBaseSSHClient(ShellConnect connect) {
         this.shellConnect = connect;
@@ -194,7 +201,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 return null;
             }
             // 操作
-            ShellSSHClientActionUtil.forAction(this.connectName(), command);
+            ShellClientActionUtil.forAction(this.connectName(), command);
             stream = new ByteArrayOutputStream();
             channel.setErrStream(stream);
             channel.setInputStream(null);
@@ -389,6 +396,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected void initSession() throws JSchException {
         if (this.session != null) {
+            if (this.legacyAlgorithmFallback) {
+                JschUtil.applyLegacyAlgorithms(this.session);
+            }
             // 认证方式与页面选择保持一致，避免密钥认证失败后意外回退到密码或交互认证。
             if (this.shellConnect.isPasswordAuth()) {
                 this.session.setConfig("PreferredAuthentications", "password,keyboard-interactive");
@@ -517,6 +527,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 连接
      */
     protected String initHost() {
+        String host = this.shellConnect.getHost();
+        if (StringUtil.isNotBlank(host)) {
+            return host.trim();
+        }
         return this.shellConnect.hostIp() + ":" + this.shellConnect.hostPort();
     }
 
@@ -553,8 +567,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             if (parent != null) {
                 Files.createDirectories(parent);
             }
-            Files.createFile(knownHosts);
-        } catch (java.nio.file.FileAlreadyExistsException ignored) {
+            try {
+                Files.createFile(knownHosts);
+            } catch (java.nio.file.FileAlreadyExistsException ex) {
+                if (!Files.isRegularFile(knownHosts)) {
+                    throw ex;
+                }
+            }
         } catch (Exception ex) {
             throw new JSchException("initialize known_hosts failed: " + knownHosts, ex);
         }
@@ -619,6 +638,15 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 this.onSessionConnected();
                 return;
             } catch (JSchException ex) {
+                if (!this.legacyAlgorithmFallback && this.isAlgorithmNegotiationFailure(ex)) {
+                    this.legacyAlgorithmFallback = true;
+                    JulLog.warn("ssh algorithm negotiation failed, retrying with legacy algorithms");
+                    if (this.session != null) {
+                        this.session.disconnect();
+                        this.session = null;
+                    }
+                    continue;
+                }
                 if (retryCount++ >= 3 || !this.isAuthenticationFailure(ex) || this.verifyFailureCallback == null) {
                     throw ex;
                 }
@@ -679,6 +707,21 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             return true;
         }
         return this.isAuthenticationFailureMessage(ex.getMessage());
+    }
+
+    private boolean isAlgorithmNegotiationFailure(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof JSchAlgoNegoFailException) {
+                return true;
+            }
+            String message = current.getMessage();
+            if (message != null && message.toLowerCase(Locale.ROOT).contains("algorithm negotiation fail")) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
     }
 
     private boolean isProxyFailure(Throwable throwable) {

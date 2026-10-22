@@ -42,6 +42,7 @@ public final class ShellJSchAuthFailureRegression {
 
     private static void requireExceptionClassification(ShellJSchTestHosts.Host host) throws Exception {
         ShellSSHClient client = new ShellSSHClient(host.newConnect());
+        ShellJSchTestHosts.acceptHostKeys(client);
         try {
             Method method = ShellSSHClient.class.getSuperclass()
                     .getDeclaredMethod("isAuthenticationFailure", JSchException.class);
@@ -65,6 +66,7 @@ public final class ShellJSchAuthFailureRegression {
         connect.setPassword("invalid-" + UUID.randomUUID());
         AtomicInteger callbacks = new AtomicInteger();
         ShellSSHClient client = new ShellSSHClient(connect);
+        ShellJSchTestHosts.acceptHostKeys(client);
         long start = System.currentTimeMillis();
         try {
             client.setVerifyFailureCallback(current -> {
@@ -92,6 +94,7 @@ public final class ShellJSchAuthFailureRegression {
         connect.setPassword("invalid-" + UUID.randomUUID());
         AtomicInteger callbacks = new AtomicInteger();
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.setVerifyFailureCallback(current -> {
                 callbacks.incrementAndGet();
                 return host.newConnect();
@@ -110,6 +113,7 @@ public final class ShellJSchAuthFailureRegression {
         connect.setUser("missing_" + UUID.randomUUID().toString().replace("-", ""));
         AtomicInteger callbacks = new AtomicInteger();
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.setVerifyFailureCallback(current -> {
                 callbacks.incrementAndGet();
                 return host.newConnect();

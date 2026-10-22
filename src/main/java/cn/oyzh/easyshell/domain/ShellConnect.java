@@ -828,7 +828,20 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         if (StringUtil.isBlank(this.host)) {
             return "";
         }
-        return this.host.split(":")[0];
+        String value = this.host.trim();
+        if (value.startsWith("[")) {
+            int bracket = value.indexOf(']');
+            if (bracket > 1) {
+                return value.substring(1, bracket);
+            }
+            return value;
+        }
+        int firstColon = value.indexOf(':');
+        int lastColon = value.lastIndexOf(':');
+        if (firstColon > 0 && firstColon == lastColon) {
+            return value.substring(0, firstColon);
+        }
+        return value;
     }
 
     /**
@@ -841,9 +854,21 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
             return -1;
         }
         try {
-            return Integer.parseInt(this.host.split(":")[1]);
+            String value = this.host.trim();
+            if (value.startsWith("[")) {
+                int bracket = value.indexOf(']');
+                if (bracket > 1 && bracket + 1 < value.length() && value.charAt(bracket + 1) == ':') {
+                    return Integer.parseInt(value.substring(bracket + 2));
+                }
+                return -1;
+            }
+            int firstColon = value.indexOf(':');
+            int lastColon = value.lastIndexOf(':');
+            if (firstColon > 0 && firstColon == lastColon) {
+                return Integer.parseInt(value.substring(firstColon + 1));
+            }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            // 保持原有失败语义，由调用方处理无效端口。
         }
         return -1;
     }

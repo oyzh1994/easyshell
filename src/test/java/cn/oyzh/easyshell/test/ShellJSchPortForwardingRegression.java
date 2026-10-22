@@ -214,6 +214,7 @@ public final class ShellJSchPortForwardingRegression {
     private static ShellSSHClient start(ShellJSchTestHosts.Host host) throws Exception {
         ShellSSHClient client = new ShellSSHClient(host.newConnect());
         client.setVerifyFailureCallback(current -> null);
+        ShellJSchTestHosts.acceptHostKeys(client);
         client.start(15000);
         return client;
     }
@@ -221,6 +222,7 @@ public final class ShellJSchPortForwardingRegression {
     private static ShellSSHClient start(ShellConnect connect) throws Exception {
         ShellSSHClient client = new ShellSSHClient(connect);
         client.setVerifyFailureCallback(current -> null);
+        ShellJSchTestHosts.acceptHostKeys(client);
         client.start(15000);
         return client;
     }

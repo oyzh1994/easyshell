@@ -15,8 +15,8 @@ import cn.oyzh.easyshell.file.ShellFileProgressMonitor;
 import cn.oyzh.easyshell.file.ShellFileTransportTask;
 import cn.oyzh.easyshell.file.ShellFileUploadTask;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.ssh.ShellSSHClientActionUtil;
 import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
@@ -367,7 +367,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void delete(String file) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "rm " + file);
+        ShellClientActionUtil.forAction(this.connectName(), "rm " + file);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rm(file);
@@ -381,7 +381,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void deleteDir(String dir) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "rmdir " + dir);
+        ShellClientActionUtil.forAction(this.connectName(), "rmdir " + dir);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rmdir(dir);
@@ -395,7 +395,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void deleteDirRecursive(String dir) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "rm -r " + dir);
+        ShellClientActionUtil.forAction(this.connectName(), "rm -r " + dir);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             this.deleteDirRecursive(channel, dir);
@@ -426,7 +426,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean createDir(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "mkdir " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "mkdir " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.mkdir(filePath);
@@ -441,7 +441,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void createDirRecursive(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "mkdir -p " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "mkdir -p " + filePath);
         filePath = ShellFileUtil.fixFilePath(filePath);
         String[] dirs = filePath.split("/");
         StringBuilder currentPath = new StringBuilder();
@@ -468,7 +468,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public String workDir() throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "pwd");
+        ShellClientActionUtil.forAction(this.connectName(), "pwd");
         ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.pwd();
@@ -482,7 +482,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void cd(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "cd " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "cd " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.cd(filePath);
@@ -495,7 +495,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     public SftpATTRS stat(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "stat " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "stat " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         if (channel == null) {
             return null;
@@ -512,7 +512,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean exist(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "exist " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "exist " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.exist(filePath);
@@ -526,7 +526,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public String realpath(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "realpath " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "realpath " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             return channel.realpath(filePath);
@@ -540,7 +540,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void touch(String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "touch " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "touch " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.touch(filePath);
@@ -554,7 +554,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void put(File localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             if (callback == null) {
@@ -569,7 +569,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void put(InputStream localFile, String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             if (callback == null) {
@@ -584,7 +584,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public OutputStream putStream(String remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
+        ShellClientActionUtil.forAction(this.connectName(), "put " + remoteFile);
         ShellSFTPChannel channel = this.newSFTPChannel();
         boolean handedOver = false;
         try {
@@ -612,7 +612,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     @Override
     public void get(ShellSFTPFile remoteFile, String localFile, Function<Long, Boolean> callback) throws Exception {
         String fPath = remoteFile.getFilePath();
-        ShellSSHClientActionUtil.forAction(this.connectName(), "get " + fPath);
+        ShellClientActionUtil.forAction(this.connectName(), "get " + fPath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             if (callback == null) {
@@ -627,7 +627,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public InputStream getStream(ShellSFTPFile remoteFile, Function<Long, Boolean> callback) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
+        ShellClientActionUtil.forAction(this.connectName(), "get " + remoteFile.getFilePath());
         ShellSFTPChannel channel = this.newSFTPChannel();
         boolean handedOver = false;
         try {
@@ -645,7 +645,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean chmod(int permission, String filePath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "chmod " + filePath + " " + permission);
+        ShellClientActionUtil.forAction(this.connectName(), "chmod " + filePath + " " + permission);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.chmod(permission, filePath);
@@ -660,7 +660,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public boolean chmodRecursive(int permissions, ShellSFTPFile file) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "chmod -R " + file.getFilePath() + " " + permissions);
+        ShellClientActionUtil.forAction(this.connectName(), "chmod -R " + file.getFilePath() + " " + permissions);
         String filePath = file.getFilePath();
         if (!this.isWindows()) {
             String safePath = ShellFileUtil.fixFilePath(filePath).replace("'", "'\"'\"'");
@@ -709,7 +709,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback ) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "ls " + filePath);
+        ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.lsFile(filePath, fileCallback);
@@ -719,7 +719,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     public boolean rename(String filePath, String newPath) throws Exception {
-        ShellSSHClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
+        ShellClientActionUtil.forAction(this.connectName(), "rename " + filePath + " " + newPath);
         ShellSFTPChannel channel = this.takeChannel();
         try {
             channel.rename(filePath, ShellFileUtil.fixFilePath(newPath));

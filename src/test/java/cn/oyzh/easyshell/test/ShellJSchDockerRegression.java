@@ -64,6 +64,7 @@ public final class ShellJSchDockerRegression {
         connect.setConnectTimeOut(15000);
 
         try (ShellSSHClient client = new ShellSSHClient(connect)) {
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.setVerifyFailureCallback(current -> current);
             client.start(15000);
             ShellDockerExec docker = client.dockerExec();

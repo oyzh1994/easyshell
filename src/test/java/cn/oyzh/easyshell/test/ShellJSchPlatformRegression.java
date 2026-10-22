@@ -47,6 +47,7 @@ public final class ShellJSchPlatformRegression {
         try (ShellSSHClient client = new ShellSSHClient(host.newConnect())) {
             client.getShellConnect().setEnableCompress(true);
             client.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
             String uname = client.exec("uname -s", 10000);
             boolean windows = client.isWindows();

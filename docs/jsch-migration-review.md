@@ -2,7 +2,7 @@
 
 ## 1. 审查结论
 
-本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/双跳/三层跳板、多主机端口转发、主机密钥校验、HTTP Basic/SOCKS5 用户名密码代理、SFTP 池有界等待及 Windows/macOS/Linux 主机矩阵的只读回归，修复了 SFTP 目录列举阶段逐链接预解析导致的严重性能问题，并修复了 JSch Shell 首屏 MOTD/登录信息、提示符丢失以及认证失败后无法及时弹出认证页的问题。
+本次审查确认：EasyShell 活跃的 `ssh`、`sftp` 调用链已经切换为 JSch 2.28.8，MINA sshd 类型不再出现在活跃源码、隔离 classpath 或隔离字节码中。审查中发现并修复了 SFTP 通道池死锁、通道泄漏、Agent/X11 条件错误、跳板配置过滤错误、SFTP 文件对象销毁不完整等确定性问题。Docker 专项审查还修复了资源更新参数、history 输出解析、参数保护、异常输出容错和长操作超时问题，并完成了真实容器与镜像生命周期回归。本轮继续完成 SSH 传输压缩、文件压缩、单跳/双跳/三层跳板、多主机端口转发、主机密钥校验、HTTP Basic/SOCKS5 用户名密码代理、SFTP 池有界等待及 Windows/macOS/Linux 主机矩阵的只读回归，修复了 SFTP 目录列举阶段逐链接预解析导致的严重性能问题，并修复了 JSch Shell 首屏 MOTD/登录信息、提示符丢失以及认证失败后无法及时弹出认证页的问题。收尾阶段又补齐了“带认证代理 + 单跳/双跳”组合、旧服务端算法按需降级、OpenSSH 哈希格式 known_hosts 兼容回归、IPv6/并发首次信任边界，以及最大化/还原时 PTY resize 连续发送的问题。
 
 构建和回归结论：
 
@@ -13,11 +13,15 @@
 - 单跳、双跳和三层跳板通过（1/2/3 个跳板会话），目标主机身份、断线重连、Exec、SFTP 和转发资源释放均完成断言。
 - 多主机本地、远程、动态转发通过；两跳和三层跳板转发后的目标身份、并发连接和监听端口释放均完成断言。
 - HTTP CONNECT 与 SOCKS5 无认证代理、HTTP Basic 和 SOCKS5 用户名密码代理通过，代理日志确认 SSH 和 SFTP 流量均由代理转发，且域名由代理解析；错误代理凭据被拒绝且不会触发 SSH 认证回调。
-- 主机密钥矩阵通过：未知主机可拒绝或接受并持久化，已知主机不重复提示，服务端换钥可拒绝或确认更新，跳板临时转发保持旧的不校验行为。
+- 代理与跳板组合通过：HTTP/SOCKS5 在单跳和双跳链路中只连接第一跳一次，后续跳板复用 SSH 本地转发，不再把代理错误地指向本地临时端口；Exec 和 SFTP 均通过。
+- 旧服务端算法兼容通过：仅当正常协商失败时追加 `group14-sha1/group-exchange-sha1/group1-sha1` 与 `ssh-rsa/ssh-dss`，现代算法优先级不变；直连和跳板场景均完成 SSH/Exec/SFTP 回归。
+- 主机密钥矩阵通过：未知主机可拒绝或接受并持久化，已知主机不重复提示，服务端换钥可拒绝或确认更新；OpenSSH 哈希主机名、空行和注释格式可正常读取，跳板临时转发保持旧的不校验行为。
+- known_hosts 边界通过：IPv6 明文与 OpenSSH 哈希记录均可复用；8 路并发首次信任最终只保留 1 条有效记录；父路径不可写时明确返回 `initialize known_hosts failed`，不再静默继续连接。
 - SFTP 通道池改为有界等待，等待超时返回 `null`；失效通道、关闭池和重复归还的关闭操作均移到锁外，避免慢速 `disconnect()` 阻塞借还线程。
-- Windows 虚拟机、Windows 真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 的只读平台/压缩协商探测通过。
-- SFTP 目录列举只判断链接类型，点击时才解析目标；阿里云 `/bin` 从 16.9 秒降至 0.54–0.58 秒，虚拟机为毫秒级。
+- Windows 虚拟机、macOS 真实机器、UOS 虚拟机和云端 Linux 的只读平台/压缩协商探测通过；Windows 真实机 index 4 标记关机且不可达，按计划跳过。
+- SFTP 目录列举只判断链接类型，点击时才解析目标；阿里云 `/bin` 从 16.9 秒降至 0.64–0.67 秒，虚拟机为毫秒级。
 - JSch Shell 在连接前安装并缓存输入输出流，首屏 MOTD、登录信息和提示符恢复；Ubuntu 虚拟机首屏从 60 字节恢复到 652 字节/19 行，阿里云为 1466 字节/41 行。
+- PTY resize 增加 100 ms 尾部合并：15 ms 间隔连续 5 组尺寸只发送 1 次 `window-change`，最终尺寸为 `40 120`；Ubuntu、UOS、macOS 本机和阿里云 4 台可用 Unix 主机均通过。
 - 错误密码或账户名现在只提交一次凭证即进入交互认证回调，不再等待 JSch 用同一凭证重试到服务端 `Too many authentication failures`；专项测试约 2.6 秒触发回调。
 - 公钥认证已在 Ubuntu 和 UOS 虚拟机完成矩阵回归：RSA（普通/带口令）、ECDSA 256/384/521、Ed25519 的密钥管理器认证、Exec 和 SFTP 全部通过；证书文件路径覆盖普通 RSA、带口令 RSA 和 Ed25519，未授权密钥约 150 ms 内拒绝。
 - 密钥与 Agent 初始化回归通过。
@@ -43,9 +47,9 @@
 | Agent 认证 | sshd Agent 工厂 | JSch `AgentIdentityRepository` | 已迁移；Unix `ssh-agent` 实机回归通过，删除私钥后连续、复用、SFTP 和并发认证均通过 |
 | Agent 转发 | sshd Agent forwarding | JSch `Channel.setAgentForwarding` | 双机 Docker 回归通过，跳板机可仅依赖转发的 `SSH_AUTH_SOCK` 登录目标机 |
 | 交互认证 | sshd keyboard-interactive | JSch `UIKeyboardInteractive` | 已迁移 |
-| Known hosts | sshd verifier | JSch `known_hosts` + `UserInfo.promptYesNo()` | 已迁移；未知、已保存、换钥、拒绝和接受更新矩阵通过，跳板保持旧行为不校验 |
+| Known hosts | sshd verifier | JSch `known_hosts` + `UserInfo.promptYesNo()` | 已迁移；未知、已保存、换钥、拒绝和接受更新矩阵通过，哈希主机名/注释/空行、IPv6、并发首次信任和错误路径兼容，跳板保持旧行为不校验 |
 | 压缩 | sshd compression | JSch `compression.c2s/s2c` | 已验证关闭/开启协商、4 MiB Exec 传输、SFTP 传输和 `tgz/xz/bz2` 文件压缩/解压 |
-| Shell / PTY | `ChannelShell` | JSch `ChannelShell` | 已验证交互、PTY resize、关闭重开 |
+| Shell / PTY | `ChannelShell` | JSch `ChannelShell` | 已验证交互、关闭重开；PTY resize 100 ms 尾部合并，连续尺寸只发送最终值 |
 | Exec | `ChannelExec` | JSch `ChannelExec` | 已验证并发、超时和超时后恢复 |
 | SFTP 文件操作 | `SftpClient` | JSch `ChannelSftp` | 已验证上传、下载、权限、重命名、递归删除 |
 | SFTP 流操作 | sshd SFTP streams | JSch SFTP streams | 已验证进度回调和流关闭 |
@@ -54,6 +58,8 @@
 | 远程转发 | `startRemotePortForwarding` | `setPortForwardingR` | 已验证跨主机回环、动态远端端口解析和清理 |
 | 动态转发 | sshd dynamic forwarding | SOCKS4/SOCKS5 + `ChannelDirectTCPIP` | 已验证跨主机 SOCKS4/5、半关闭和畸形请求恢复 |
 | 跳板 | 多段转发 | 多段 `Session` + 本地端口 | 已验证三个不同跳板节点的三层链路、重连、Exec、SFTP、会话数及关闭清理 |
+| 代理 + 跳板 | 代理连接首跳 | 第一跳 `Session.setProxy()`，后续复用本地转发 | HTTP/SOCKS5 单跳、双跳均通过；代理只命中第一跳，最终目标不直连 |
+| 旧服务端算法 | sshd 算法配置 | JSch 正常协商失败后追加旧算法并重试一次 | `group14-sha1` + `ssh-rsa` 的直连、跳板、Exec、SFTP 均通过；现代算法仍优先 |
 | HTTP 代理 | sshd/JGit HTTP 代理连接器 | JSch `ProxyHTTP` | 无认证和 Basic 认证均完成 SSH/Exec/SFTP 回归；错误凭据拒绝且不触发 SSH 认证回调 |
 | SOCKS5 代理 | sshd/JGit SOCKS 连接器 | JSch `ProxySOCKS5` | 无认证和用户名密码认证均完成 SSH/Exec/SFTP 回归；`socks` 历史配置映射到 SOCKS5 |
 | Docker | Exec 命令层 | Exec 命令层 + 容器/镜像生命周期 | 已在 Ubuntu 虚拟机验证 info/version、run、ps、exec、logs、资源更新、pause/unpause、rename、restart、start/stop/kill、port、commit、tag、save、rm/rmi；全局 prune 和 Docker 服务重启未执行 |
@@ -157,15 +163,16 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - 密钥认证方式保持 `manager`、`certificate`、`sshAgent` 配置值不变；密钥管理器仍使用内嵌公私钥和可选口令，证书认证仍使用私钥文件路径和可选口令。仅收紧了每种认证方式允许的底层 SSH 认证方法，避免跨方式回退。
 - DSA 是 OpenSSH 已弃用算法。密钥生成 UI 的长度选项已从不可用的 2048 位纠正为标准 1024 位，与 `JSchKeyUtil`、JSch 和 OpenSSH DSA key 格式保持一致。
 - 新增测试统一支持 `-Dtest.hosts.file=<本地主机文件>` 与 `-Dtest.host.index=<序号>`，凭据只在测试进程运行时读取，不进入源码、文档或日志。
+- 集成测试辅助类在未显式设置 `-Deasyshell.known_hosts.path` 时会自动创建临时 known_hosts，并在 JVM 退出时删除，避免回归测试写入开发者正式存储目录。
 
 ## 6. 风险与功能差异
 
-1. JSch 与 MINA sshd 的默认 KEX、MAC、主机密钥算法集合不同，旧服务器或弱算法环境可能需要额外算法配置。
+1. JSch 与 MINA sshd 的默认 KEX、MAC、主机密钥算法集合不同。JSch 路径已实现“正常协商失败后追加旧算法重试一次”，本轮验证了 `diffie-hellman-group14-sha1` 与 `ssh-rsa`；`group1-sha1`、`group-exchange-sha1`、`ssh-dss` 以及更旧的 MAC 组合仍需按实际存量服务器补充验证。
 2. 动态转发目前只支持无认证 SOCKS4/SOCKS5；不支持 SOCKS5 用户名密码、UDP ASSOCIATE 和 BIND。
 3. JSch 的 X11 实现与 sshd 不同；用户已完成真实图形应用手工验证，但尚未纳入可重复的自动回归。
 4. SSH 压缩已验证双向协商和 4 MiB 数据传输，但尚未执行多小时空闲、弱网和超大文件稳定性压测。
 5. 外部代理已验证 HTTP CONNECT（无认证/Basic）与 SOCKS5（无认证/用户名密码），包含错误凭据拒绝、代理域名透传和认证回调隔离；HTTP Digest、UDP ASSOCIATE 和 BIND 仍未覆盖。
-6. 跳板链路按每个跳板节点自身认证建立，主连接代理配置不会自动套用到每个跳板节点；弱 KEX/旧算法服务器仍需单独做兼容矩阵。
+6. 设置外部代理且启用跳板时，代理只作用于第一跳；后续跳板通过第一跳建立的 SSH 本地转发继续连接，不会再次套用代理。该语义已由 HTTP/SOCKS5 单跳、双跳矩阵验证。
 7. SFTP 流式读写依赖调用方关闭流，并由客户端关闭延迟资源；长时间未关闭的流仍会占用通道。
 8. Docker 自动化已在 Ubuntu 虚拟机完成真实生命周期验证，但未执行全局 `prune` 和 `systemctl restart docker`，避免影响主机上其他容器；Windows/macOS 远端 Docker 只完成了 CLI/平台探测，未执行完整容器生命周期。
 9. SFTP 通道池现在会关闭借出通道，因此客户端关闭属于强制终止语义，调用方不应在关闭后继续使用借出通道。
@@ -174,6 +181,8 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 12. `docker_update` 在 `NanoCpus` 和 period/quota 同时存在时优先使用 `NanoCpus`。需要显式 period/quota 时应将该资源对象中的 `nanoCpus` 置为 0。
 13. DSA 已从现代 OpenSSH 默认服务端算法中移除。本轮测试主机的 `sshd -T` 均未启用 `ssh-dss`，因此 DSA 只验证了 1024 位密钥生成和格式识别，未作为实机认证通过项；生产环境应优先使用 Ed25519 或 RSA/ECDSA。
 14. 公钥认证矩阵覆盖 Linux 虚拟机。Windows OpenSSH 的 `administrators_authorized_keys` 路径、权限继承和 Pageant/Agent 行为仍需在 Windows 实机补充。
+15. known_hosts 已覆盖 OpenSSH 哈希主机名、注释、空行、IPv6 明文/哈希、默认端口与带方括号的非默认端口，以及 8 路并发首次信任。无方括号的 IPv6 `host:port` 本身存在端口歧义，配置时应使用 `[IPv6]:port`；不可写路径已明确失败。
+16. 平台矩阵本轮为 5/5 通过；Windows 真实机 index 4 标记关机且不可达，按计划跳过，Windows 行为由 Windows 虚拟机覆盖。
 
 ## 7. 测试计划
 
@@ -198,9 +207,13 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - SSH 压缩关闭/开启协商、重复数据 4 MiB Exec 校验、压缩会话下 512 KiB SFTP 传输。
 - 文件压缩 `tgz/xz/bz2`、含空格和单引号路径、解压内容校验、未知类型处理。
 - 真实 HTTP CONNECT（无认证/Basic）和 SOCKS5（无认证/用户名密码）代理下的 SSH、Exec、SFTP，包含错误凭据、域名透传和认证回调隔离。
-- known_hosts 未知主机接受/拒绝、已知主机复用、服务端换钥拒绝/确认更新和持久化。
+- 带认证代理 + 单跳/双跳：HTTP/SOCKS5 只代理第一跳，后续跳板复用 SSH 本地转发，断言最终目标不直连。
+- known_hosts 未知主机接受/拒绝、已知主机复用、服务端换钥拒绝/确认更新和持久化；持久化文件转换为 OpenSSH 哈希主机名后追加空行和注释再复验。
+- known_hosts 边界：`[::1]:22` 明文和 `ssh-keygen -H` 哈希记录复用、8 路并发首次信任无重复行、父路径不可写时明确失败。
+- 旧服务端算法：正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，覆盖直连 SSH/Exec/SFTP、跳板会话降级和本地转发监听。
 - Docker info/version、容器 run/ps/exec/logs、资源更新、pause/unpause、rename、restart、start/stop/kill、端口、commit/tag/save/rm/rmi、解析器容错和资源清理。
 - Process 信息、Server 信息和并发监控。
+- PTY resize 突发合并：连续 5 组尺寸只发送最终 `window-change`，覆盖 Ubuntu、UOS、macOS 本机和阿里云主机。
 - 会话断开重连、隧道重建、SFTP 重连。
 - 启动失败后的会话、通道和转发清理。
 - 密钥生成、类型/长度解析、代理类型映射、Agent 初始化。
@@ -220,8 +233,16 @@ java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 \
   -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchProxyRegression
 EASYSHELL_HOSTKEY_PASSWORD='<local-test-password>' \
   bash docker/ssh/hostkey/test-host-key.sh
-java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.indices=1,2,3,4,5,6 \
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.indices=1,2,3,5,6 \
   -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPlatformRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=5 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchHostKeyEdgeRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchTerminalResizeRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 -Dtest.proxy.jump=true \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchProxyRegression
+EASYSHELL_LEGACY_PASSWORD='<local-test-password>' \
+  bash docker/ssh/legacy/test-legacy-algorithms.sh
 ```
 
 ```bash
@@ -286,17 +307,24 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 | 多主机本地/远程/动态端口转发 | 通过（含并发、半关闭和监听端口释放） |
 | HTTP CONNECT 无认证/Basic 真实代理 | 通过（SSH、Exec、SFTP；错误 Basic 凭据拒绝） |
 | SOCKS5 无认证/用户名密码真实代理 | 通过（SSH、Exec、SFTP；错误用户名密码拒绝） |
+| 代理 + 单跳/双跳（HTTP/SOCKS5） | 通过（代理只命中第一跳，后续复用本地转发；Exec/SFTP 通过） |
 | 代理目标域名透传 | 通过（HTTP 和 SOCKS5 日志均收到域名而非预解析 IP） |
 | 代理认证失败不触发 SSH 认证回调 | 通过（HTTP/SOCKS5 回调次数均为 0） |
 | 隔离 classpath 回归（主机密钥/认证代理/并发） | 通过（过滤 sshd/sshj/JGit 后运行） |
 | 主机密钥未知主机拒绝/接受 | 通过（拒绝不写 known_hosts；接受只提示一次并持久化） |
-| 主机密钥已保存主机复用 | 通过（不提示，Exec 正常） |
+| 主机密钥已保存主机复用 | 通过（不提示，Exec 正常；已覆盖 OpenSSH 哈希主机名、注释和空行） |
 | 主机密钥服务端换钥拒绝/接受 | 通过（拒绝不修改文件；接受更新文件并可重连） |
+| known_hosts IPv6 明文/OpenSSH 哈希 | 通过（默认端口记录 `::1`，重连不提示，Exec 正常） |
+| known_hosts 8 路并发首次信任 | 通过（全部连接成功，最终仅 1 条目标记录） |
+| known_hosts 不可写父路径 | 通过（明确返回 `initialize known_hosts failed`，不建立会话） |
+| 隔离 classpath known_hosts 边界/resize | 通过（过滤 sshd/sshj/JGit 后运行 edge 与 resize 回归） |
 | SFTP 池有界等待与关闭唤醒 | 通过（饱和后超时返回 `null`；关闭池唤醒等待线程） |
-| 6 主机平台/架构/压缩协商矩阵 | 6/6 通过 |
-| SFTP 链接列表性能（阿里云 `/bin`） | 通过（修复前 16893 ms，修复后 538–579 ms） |
-| SFTP 链接列表性能（`/sbin`） | 通过（阿里云 259–282 ms；Ubuntu/UOS 虚拟机 7–54 ms） |
+| 5 主机平台/架构/压缩协商矩阵 | 5/5 通过；Windows 真实机 index 4 标记关机且不可达，按计划跳过 |
+| 旧服务端算法（`group14-sha1` + `ssh-rsa`） | 通过（直连和跳板 SSH/Exec/SFTP；跳板本地转发监听通过） |
+| SFTP 链接列表性能（阿里云 `/bin`） | 通过（修复前 16893 ms；warm 494–508 ms，cold 1429 ms） |
+| SFTP 链接列表性能（`/sbin`） | 通过（阿里云 242–260 ms；Ubuntu/UOS 虚拟机 6–49 ms） |
 | SFTP 链接懒解析（列表不解析、点击解析） | 通过 |
+| PTY resize 突发合并 | 通过（Ubuntu/UOS/macOS/阿里云均 1 次 `window-change`，最终 `40 120`） |
 | Shell 首屏 MOTD/登录信息回显 | 通过（Ubuntu/UOS 虚拟机、阿里云） |
 | Shell 首次提示符与交互命令 | 通过（初始打开和关闭后重开） |
 | TTY `ready()` 复用已连接 Shell | 通过（通道 ID 不变，不再无条件重开） |
@@ -345,6 +373,8 @@ JSch platform regression passed
 ```text
 JSch host key regression passed
 JSch proxy regression passed
+JSch host key edge regression passed
+JSch terminal resize regression passed
 ```
 
 SFTP 链接性能与修复后完整回归日志末尾输出：
@@ -368,6 +398,16 @@ public key auth matrix completed: manager=6, certificate=3, unauthorized=rejecte
 JSch public key authentication regression passed
 ```
 
+代理 + 跳板与旧算法回归日志末尾输出：
+
+```text
+http-jump-2 proxy SSH/SFTP verified: firstHopOnly=true, hops=2
+socks5-jump-2 proxy SSH/SFTP verified: firstHopOnly=true, hops=2
+legacy kex + ssh-rsa SSH/Exec/SFTP verified, jump=false
+legacy kex + ssh-rsa SSH/Exec/SFTP verified, jump=true
+JSch legacy algorithm regression passed
+```
+
 本次验证日志：
 
 - `/tmp/easyshell-jsch-docker-final.log`
@@ -379,6 +419,18 @@ JSch public key authentication regression passed
 - `/tmp/easyshell-jsch-proxy-final.log`
 - `/tmp/easyshell-jsch-hostkey-final.log`
 - `/tmp/easyshell-jsch-concurrent-final.log`
+- `/tmp/easyshell-jsch-hostkey-edge-fixed.log`
+- `/tmp/easyshell-jsch-hostkey-edge-isolated.log`
+- `/tmp/easyshell-jsch-resize-isolated.log`
+- `/tmp/easyshell-jsch-resize-baseline.log`
+- `/tmp/easyshell-jsch-resize-fixed.log`
+- `/tmp/easyshell-jsch-resize-host-1.log` / `host-3.log` / `host-5.log` / `host-6.log`
+- `/tmp/easyshell-jsch-platform-rerun.log`
+- `/tmp/easyshell-jsch-auth-failure-rerun.log`
+- `/tmp/easyshell-jsch-concurrent-rerun.log`
+- `/tmp/easyshell-jsch-jump-rerun.log`
+- `/tmp/easyshell-jsch-portforwarding-rerun.log`
+- `/tmp/easyshell-jsch-docker-rerun.log`
 - `/tmp/easyshell-isolated-base-compile.log`
 - `/tmp/easyshell-isolated-compile.log`
 - `/tmp/easyshell-isolated-test-compile.log`
@@ -407,14 +459,33 @@ JSch public key authentication regression passed
 - `/tmp/easyshell-jsch-auth-after-pubkey.log`
 - `/tmp/easyshell-jsch-key-after-pubkey.log`
 - `/tmp/easyshell-cleanup-check.log`
+- `/tmp/easyshell-jsch-proxy-jump-final2.log`
+- `/tmp/easyshell-jsch-legacy-final.log`
+- `/tmp/easyshell-jsch-legacy-jump.log`
+- `/tmp/easyshell-jsch-hostkey-hashed.log`
+- `/tmp/easyshell-jsch-jump-final2.log`
+- `/tmp/easyshell-jsch-forward-final2.log`
+- `/tmp/easyshell-jsch-concurrent-final2.log`
+- `/tmp/easyshell-jsch-compress-final2.log`
+- `/tmp/easyshell-jsch-sftp-link-final2.log`
+- `/tmp/easyshell-jsch-banner-final2.log`
+- `/tmp/easyshell-jsch-auth-final2.log`
+- `/tmp/easyshell-jsch-docker-final2.log`
+- `/tmp/easyshell-jsch-pubkey-final2.log`
+- `/tmp/easyshell-jsch-platform-final2-pass.log`
+- `/tmp/easyshell-jsch-platform-final2.log`
+- `/tmp/easyshell-isolated-base-final2.log`
+- `/tmp/easyshell-isolated-main-final2.log`
+- `/tmp/easyshell-isolated-base-final3.log`
+- `/tmp/easyshell-isolated-main-final3.log`
+- `/tmp/easyshell-jsch-platform-isolation-final4.log`
 
 回归过程中出现的 `PortForwardingL: local port ... cannot be bound` 是“启动失败资源清理”用例的预期异常，该用例随后验证会话已释放，整体回归通过。
 
 ## 9. 当前限制
 
-- Windows 虚拟机/真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 已完成只读平台/压缩协商矩阵；完整 Shell/SFTP 端到端仍以 Linux 虚拟机为主。
+- Windows 虚拟机、macOS 真实机器、UOS 虚拟机和云端 Linux 已完成只读平台/压缩协商矩阵；Windows 真实机 index 4 标记关机且不可达，按计划跳过。完整 Shell/SFTP 端到端仍以 Linux 虚拟机为主。
 - Unix Agent 已完成独立 `ssh-agent` 登录回归；Windows Pageant 和 Windows OpenSSH Agent 仍未实机验证。
-- Windows Pageant 和 Windows OpenSSH Agent 未实机验证。
 - 公钥认证矩阵覆盖 Ubuntu/UOS 虚拟机；Windows OpenSSH 授权文件路径、ACL 和 Pageant 未完成公钥实机验证。
 - DSA 在测试主机服务端均被禁用，只验证生成和格式识别，未纳入认证通过项。
 - 内置动态转发验证无认证 SOCKS4/SOCKS5；外部代理已验证 HTTP CONNECT（无认证/Basic）和 SOCKS5（无认证/用户名密码）。
@@ -423,9 +494,9 @@ JSch public key authentication regression passed
 - Docker 完整生命周期在 Ubuntu 虚拟机完成；Windows/macOS 远端 Docker 仅完成 CLI/平台探测。由于测试主机无法访问 Docker Hub，测试镜像由本地静态 busybox 构建。
 - 未执行全局 prune 和 Docker 服务重启；`docker-compose version` 仍使用旧 standalone 命令，若环境只有 Compose v2 插件会返回命令不存在，这是当前方法语义。
 - 大文件、长时间空闲和长时间稳定性仍需专项压测。
-- 跳板已完成单跳、双跳和三层链路；旧版弱 KEX 算法仍建议在目标服务器矩阵上补充兼容性测试。
+- 跳板已完成单跳、双跳和三层链路；旧算法按需降级已验证 `group14-sha1` + `ssh-rsa` 的直连与跳板场景，`group1-sha1`、`group-exchange-sha1`、`ssh-dss` 及旧 MAC 组合仍需按存量服务器补充。
 - 本次证明的是活跃 JSch 调用链可在仅 JSch classpath 下独立编译和运行；若要彻底移除项目级 MINA sshd，还需项目维护者自行屏蔽遗留的 `ssh2/sftp2` 目录及其依赖。
-- 阿里云 `/bin` 的 0.54–0.58 秒主要受 1369 条目录数据的网络传输限制；原始 `ChannelSftp.ls` 耗时与完整 `lsFile` 基本一致，本地对象构造不是瓶颈。跨地域高延迟环境不保证稳定低于 0.5 秒，但已验证低于 1 秒。
+- 阿里云 `/bin` 的 0.64–0.67 秒主要受 1369 条目录数据的网络传输限制；原始 `ChannelSftp.ls` 耗时与完整 `lsFile` 基本一致，本地对象构造不是瓶颈。跨地域高延迟环境不保证稳定低于 0.5 秒，但已验证低于 1 秒。
 - Shell 首屏已恢复完整回显；MOTD 内容、长度和是否存在仍由远端 sshd、PAM、发行版配置决定，不同主机不保证相同。
 
 ## 10. Docker 专项迁移与回归记录
@@ -491,6 +562,7 @@ Docker 测试使用唯一资源名并验证了镜像不存在时的本地构建�
 - 传输压缩：`ShellSSHClient.start()` -> `ShellBaseSSHClient.initClient()` -> JSch `Session.setConfig("compression.c2s/s2c")` -> `Session.connect()`。
 - 文件压缩：`ShellSSHClient.serverExec()` -> `ShellServerExec.compress()/uncompress()` -> JSch `ChannelExec`。
 - 跳板：`ShellSSHClient.initHost()` -> `cn.oyzh.ssh.jump.SSHJumpForwarder` -> 多段 JSch `Session` + `setPortForwardingL`。
+- 旧算法降级：主会话在 `ShellBaseSSHClient.connectSession()` 捕获算法协商失败后重建会话并调用 `JschUtil.applyLegacyAlgorithms()`；跳板会话在 `SSHJumpForwarder.initSession()` 内按同一规则重试一次。
 - HTTP 代理：`ShellSSHClient.initProxy()` -> `JschUtil.newProxy()` -> JSch `ProxyHTTP`。
 - SOCKS5 代理：同一调用链 -> JSch `ProxySOCKS5`。
 
@@ -541,7 +613,22 @@ JSch 的 `zlib@openssh.com` 是延迟压缩，只有认证完成后才启用压�
 | 重连后 SFTP 复验 | 通过 | 通过 | 通过 |
 | 关闭后转发会话和本地端口释放 | 通过 | 通过 | 通过 |
 
-跳板仍按每个节点自己的 `host`、`port`、`user`、认证方式和超时建立连接；主连接代理不会自动传播到跳板节点。跳板启用时保持旧行为不校验临时本地转发目标的 known_hosts，非跳板连接继续使用 known_hosts 校验配置。
+跳板仍按每个节点自己的 `host`、`port`、`user`、认证方式和超时建立连接。启用外部代理时，代理只绑定第一跳；第二跳及后续跳板通过上一跳建立的 `127.0.0.1:<localPort>` SSH 链路连接，避免把本地临时转发端口再次交给代理。跳板启用时保持旧行为不校验临时本地转发目标的 known_hosts，非跳板连接继续使用 known_hosts 校验配置。
+
+代理与跳板组合使用同一套回归，覆盖 HTTP CONNECT 和 SOCKS5 的单跳、双跳：
+
+| 场景 | 代理命中 | 最终目标直连 | Exec | SFTP | 结果 |
+| --- | --- | --- | --- | --- | --- |
+| HTTP + 单跳 | 只命中第一跳 1 次 | 无 | 通过 | 通过 | 通过 |
+| HTTP + 双跳 | 只命中第一跳 1 次 | 无 | 通过 | 通过 | 通过 |
+| SOCKS5 + 单跳 | 只命中第一跳 1 次 | 无 | 通过 | 通过 | 通过 |
+| SOCKS5 + 双跳 | 只命中第一跳 1 次 | 无 | 通过 | 通过 | 通过 |
+
+旧算法回归使用临时 OpenSSH 容器，服务端只开放 `diffie-hellman-group14-sha1`、`ssh-rsa` 主机密钥和 `ssh-rsa` 公钥算法。修复前直连和跳板均稳定复现 `JSchAlgoNegoFailException: kex`；修复后正常协商仍使用现代算法，失败后才追加旧算法重试一次。测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchLegacyAlgorithmRegression.java`
+- `docker/ssh/legacy/test-legacy-algorithms.sh`
+- `docker/ssh/legacy/README.md`
 
 ### 11.4 HTTP CONNECT 与 SOCKS5 代理（含认证）
 
@@ -556,6 +643,8 @@ JSch 的 `zlib@openssh.com` 是延迟压缩，只有认证完成后才启用压�
 
 HTTP Basic 通过 `ProxyHTTP.setUserPasswd()` 发送 `Proxy-Authorization`，SOCKS5 通过 `ProxySOCKS5.setUserPasswd()` 完成 RFC 1929 握手。错误凭据的异常类型为 `JSchProxyException`，已从 SSH 认证失败分类中排除，保证错误代理密码不会误触发桌面认证页或重复提交 SSH 凭据。测试同时断言失败后没有残留已连接会话。
 
+同一代理回归还启用了 `-Dtest.proxy.jump=true`，验证 HTTP/SOCKS5 在单跳、双跳下的首跳语义。代理日志中第一跳目标各出现 1 次，最终目标直连计数保持 0，说明代理只作用于第一跳且没有把本地临时端口交给代理。
+
 历史配置 `protocol=socks` 仍映射到 SOCKS5，`protocol=socks4` 仍映射到 `ProxySOCKS4`。本轮未覆盖 SOCKS4 外部代理、HTTP Digest、SOCKS5 UDP ASSOCIATE 和 BIND。代理临时脚本、端口和日志均使用随机后缀，验证完成后按 PID 终止并删除临时目录。
 
 ### 11.5 主机平台矩阵
@@ -567,11 +656,11 @@ HTTP Basic 通过 `ProxyHTTP.setUserPasswd()` 发送 `Proxy-Authorization`，SOC
 | Ubuntu 虚拟机 | Linux / aarch64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
 | Windows 虚拟机 | Windows 10 / ARM64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
 | UOS 虚拟机 | Linux / aarch64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
-| Windows 真实机器 | Windows 10 / AMD64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
+| Windows 真实机器 | Windows 10 / AMD64 | - | - | 标记关机，按计划跳过 |
 | macOS 真实机器 | Darwin / arm64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
 | 云端 Ubuntu | Linux / x86_64 | 可用 | `zlib@openssh.com` 双向 | 通过 |
 
-Windows 分支通过 `isWindows()` 和 `cmd.exe /c ver` 识别，避免依赖本地化“命令不存在”文案；Docker 完整生命周期仍只在 Ubuntu 虚拟机执行。
+Windows 分支通过 `isWindows()` 和 `cmd.exe /c ver` 识别，避免依赖本地化“命令不存在”文案。Windows 真实机 index 4 标记关机且不可达，按计划跳过，平台矩阵 5/5 通过；Windows 行为由 Windows 虚拟机覆盖。Docker 完整生命周期仍只在 Ubuntu 虚拟机执行。
 
 ### 11.6 资源释放、安全与凭据检查
 
@@ -616,14 +705,14 @@ JSch 版 `ShellSFTPChannel.lsFile()` 在目录列举时对每个 `isLink()` 条�
 
 | 主机角色 | 目录 | 条目/链接 | cold | best/worst | raw | 结果 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Ubuntu 虚拟机 | `/bin` | 1619 / 289 | 270 ms | 20 / 24 ms | 28 ms | 通过 |
-| Ubuntu 虚拟机 | `/sbin` | 539 / 89 | - | 7 / 8 ms | 30 ms | 通过 |
-| UOS 虚拟机 | `/bin` | 1993 / 319 | 371 ms | 23 / 30 ms | 34 ms | 通过 |
-| UOS 虚拟机 | `/sbin` | 444 / 99 | - | 20 / 54 ms | 10 ms | 通过 |
-| 阿里云 Ubuntu | `/bin` | 1369 / 225 | 1427 ms | 538 / 579 ms | 545 ms | 通过（<1 s） |
-| 阿里云 Ubuntu | `/sbin` | 447 / 150 | - | 259 / 282 ms | 258 ms | 通过（<0.5 s） |
+| Ubuntu 虚拟机 | `/bin` | 1619 / 289 | 64 ms | 29 / 48 ms | 42 ms | 通过 |
+| Ubuntu 虚拟机 | `/sbin` | 539 / 89 | - | 10 / 13 ms | 15 ms | 通过 |
+| UOS 虚拟机 | `/bin` | 1993 / 319 | 100 ms | 23 / 34 ms | 52 ms | 通过 |
+| UOS 虚拟机 | `/sbin` | 444 / 99 | - | 6 / 49 ms | 7 ms | 通过 |
+| 阿里云 Ubuntu | `/bin` | 1369 / 225 | 1429 ms | 494 / 508 ms | 488 ms | 通过（warm <1 s） |
+| 阿里云 Ubuntu | `/sbin` | 447 / 150 | - | 242 / 260 ms | 241 ms | 通过（<0.5 s） |
 
-阿里云 `/usr/bin` 与 `/bin` 指向同一目录，实测 best/worst 为 `535/628 ms`；`/usr/sbin` 与 `/sbin` 为 `257/284 ms`。原始 `ChannelSftp.ls()` 与完整 `lsFile()` 基本同值，说明剩余耗时来自目录数据传输而不是链接判定或文件对象构造。
+阿里云 `/usr/bin` 与 `/bin` 指向同一目录，实测 best/worst 为 `496/565 ms`；`/usr/sbin` 与 `/sbin` 为 `239/261 ms`。原始 `ChannelSftp.ls()` 与完整 `lsFile()` 基本同值，说明剩余耗时来自目录数据传输而不是链接判定或文件对象构造。冷启动本轮受网络波动影响为 `1429 ms`，warm 稳定在 0.5 秒左右；链接点击解析本轮为 `50 ms`，仍保持按需解析。
 
 #### 回归断言
 
@@ -1095,7 +1184,7 @@ EASYSHELL_FORWARD_PASSWORD='<local-test-password>' bash docker/ssh/agent/test-ag
 | --- | --- | --- | --- |
 | `reject-new` | 未知主机 | 拒绝 | `JSchUnknownHostKeyException`，known_hosts 不变 |
 | `accept-new` | 未知主机 | 接受 | 只提示 1 次，known_hosts 写入 `[host]:port`，Exec 通过 |
-| `persist` | 已保存主机 | 不提示 | 无确认回调，Exec 通过 |
+| `persist` | 已保存主机，known_hosts 已转为 OpenSSH 哈希格式并追加空行/注释 | 不提示 | 无确认回调，Exec 通过 |
 | `reject-changed` | host key 已变化 | 拒绝 | `JSchChangedHostKeyException`，known_hosts 不变 |
 | `accept-changed` | host key 已变化 | 接受 | 更新 known_hosts，重连可用，Exec 通过 |
 | `persist-changed` | 已更新主机 | 不提示 | 无确认回调，重连和 Exec 通过 |
@@ -1107,7 +1196,20 @@ EASYSHELL_HOSTKEY_PASSWORD='<local-test-password>' \
   bash docker/ssh/hostkey/test-host-key.sh
 ```
 
-跳板连接继续对临时本地转发端点使用 `StrictHostKeyChecking=no`，与迁移前业务行为一致；跳板节点自身的认证和主机校验配置不由主连接代理配置隐式覆盖。
+`accept-new` 阶段写入的是 `[host]:port` 明文记录，脚本随后执行 `ssh-keygen -H` 转换为 OpenSSH 哈希主机名，并追加空行和注释再进入 `persist` 阶段。`reject-changed`、`accept-changed` 和 `persist-changed` 在同一哈希文件上继续验证。
+
+IPv6 和并发边界由 `ShellJSchHostKeyEdgeRegression` 单独覆盖，使用本机 `::1:22` 和临时 known_hosts：
+
+| 场景 | 断言 | 结果 |
+| --- | --- | --- |
+| IPv6 默认端口明文 | 首次提示 1 次，记录为 OpenSSH 兼容的 `::1`；重连不再提示，Exec 通过 | 通过 |
+| OpenSSH 哈希 IPv6 | `ssh-keygen -H` 转换并追加注释后，重连不再提示，Exec 通过 | 通过 |
+| 8 路并发首次信任 | 8 个连接均成功；最终 known_hosts 只保留 1 条目标记录 | 通过 |
+| known_hosts 父路径不可写 | 返回 `JSchException: initialize known_hosts failed`，不建立会话 | 通过 |
+
+默认端口 22 的记录沿用 OpenSSH/JSch 的 `host` 形式（IPv6 为 `::1`），非默认端口使用 `[host]:port`。端点解析同时支持 `[::1]:22` 和普通 `host:port`；无方括号 IPv6 与端口组合存在歧义，不作为支持的配置写法。
+
+跳板连接继续对临时本地转发端点使用 `StrictHostKeyChecking=no`，与迁移前业务行为一致；跳板节点自身的认证和主机校验配置不由主连接代理配置隐式覆盖。外部代理在跳板场景下只作用于第一跳。
 
 #### 带认证代理错误映射
 
@@ -1155,8 +1257,45 @@ classpath 下重新执行，不是仅在完整 Maven 依赖下通过。
 - 未修改 `ShellSFTPChannelPool` 的外部类型和 `borrowObject()/returnObject()/close()` 签名。
 - 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本代码。
 
+### 11.16 PTY resize 连续发送修复
+
+#### 根因
+
+JSch `ChannelSession.setPtySize()` 每调用一次就立即发送一个 SSH `window-change`，而 MINA sshd 版本在一次窗口布局结束后才更新 PTY。JavaFX 在最大化/还原过程中会连续产生多个网格尺寸，`htop` 等全屏程序会按每个中间尺寸重排并重绘，表现为窗口多次“一点点”放大或缩小。
+
+#### 修复
+
+- `ShellSSHClient.setPtySize()` 只记录最新的 columns、rows、pixel width 和 pixel height。
+- 新增 100 ms 尾部合并窗口；新尺寸到来时取消上一个待执行任务并重新调度。
+- 合并窗口结束后仅向当前已连接 Shell 发送最终尺寸，不阻塞 JavaFX UI 线程。
+- 客户端关闭时取消待执行 resize，避免向已断开的通道发送 `window-change`。
+- 未修改 `ShellSSHShell`、终端控件或 sshd 版本代码；调用 API 保持不变。
+
+#### 回归结果
+
+测试在远端 Shell 中安装 `trap 'stty size >> log' WINCH`，以 15 ms 间隔连续提交 5 组尺寸（最终 `120 x 40`），统计远端实际收到的 `window-change` 次数。
+
+| 主机角色 | 修复前 | 修复后 | 最终尺寸 | 结果 |
+| --- | --- | --- | --- | --- |
+| Ubuntu 虚拟机 | 5 次 | 1 次 | `40 120` | 通过 |
+| UOS 虚拟机 | - | 1 次 | `40 120` | 通过 |
+| macOS 真实机器 | - | 1 次 | `40 120` | 通过 |
+| 阿里云 Ubuntu | - | 1 次 | `40 120` | 通过 |
+
+Windows 虚拟机因无 Unix `stty` 不纳入该自动化项；Windows 真实机 index 4 标记关机并按计划跳过。用户仍需在 JavaFX `htop` 场景手工确认视觉上只发生一次布局变化。
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchTerminalResizeRegression.java`
+
+日志：
+
+- `/tmp/easyshell-jsch-resize-baseline.log`
+- `/tmp/easyshell-jsch-resize-fixed.log`
+- `/tmp/easyshell-jsch-resize-host-{1,3,5,6}.log`
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
+本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、PTY resize 合并、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、旧服务端算法降级、Docker 完整生命周期、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。带认证代理与单跳/双跳的组合已单独验证，HTTP 和 SOCKS5 都只命中第一跳，后续跳板复用本地转发，最终目标无直连。旧算法回归只在正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，直连与跳板均完成 SSH/Exec/SFTP，现代服务器不会默认请求弱算法。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化，并验证 OpenSSH 哈希主机名、空行、注释、IPv6 明文/哈希、8 路并发首次信任和不可写路径错误语义。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。平台/压缩协商矩阵本轮 5/5 通过，Windows 真实机 index 4 标记关机且不可达，按计划跳过。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` warm 列表为 494–508 ms，`/sbin` 为 242–260 ms，链接点击约 50 ms。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显；PTY resize 在 100 ms 内完成尾部合并，Ubuntu、UOS、macOS 本机和阿里云均只发送 1 次最终 `window-change`。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。

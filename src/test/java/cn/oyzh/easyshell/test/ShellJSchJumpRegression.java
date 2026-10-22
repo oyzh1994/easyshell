@@ -51,6 +51,7 @@ public final class ShellJSchJumpRegression {
         String directHostname;
         try (ShellSSHClient direct = new ShellSSHClient(target.newConnect())) {
             direct.setVerifyFailureCallback(current -> null);
+            ShellJSchTestHosts.acceptHostKeys(direct);
             direct.start(15000);
             directHostname = requireNotBlank(direct.exec("hostname"), "direct hostname is blank");
         }
@@ -72,6 +73,7 @@ public final class ShellJSchJumpRegression {
             throws Exception {
         ShellSSHClient client = new ShellSSHClient(connect);
         client.setVerifyFailureCallback(current -> null);
+        ShellJSchTestHosts.acceptHostKeys(client);
         SSHJumpForwarder forwarder = null;
         int localPort = -1;
         try {

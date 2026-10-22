@@ -28,6 +28,7 @@ known_hosts="$(mktemp /tmp/easyshell-hostkey-known_hosts.XXXXXX)"
 cleanup() {
     "$DOCKER_BIN" rm -f "$CONTAINER" >/dev/null 2>&1 || true
     rm -f "$known_hosts"
+    rm -f "$known_hosts.old"
 }
 trap cleanup EXIT
 
@@ -52,9 +53,6 @@ prepare_isolated_base() {
         return 0
     fi
     local base_dir="$ROOT_DIR/target/jsch-isolation/base-classes-isolated"
-    if [ -f "$base_dir/cn/oyzh/ssh/SSHException.class" ]; then
-        return 0
-    fi
     mkdir -p "$base_dir"
     local base_cp
     base_cp="$(paste -sd: "$ROOT_DIR/target/jsch-isolation/base-jsch.cp")"
@@ -88,6 +86,8 @@ prepare_isolated_base
 
 run_stage reject-new
 run_stage accept-new
+ssh-keygen -H -f "$known_hosts" >/dev/null 2>&1
+printf '\n# hashed known_hosts compatibility test\n\n' >> "$known_hosts"
 run_stage persist
 
 "$DOCKER_BIN" exec "$CONTAINER" sh -c \
