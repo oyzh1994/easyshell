@@ -354,6 +354,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected void initSession() throws JSchException {
         if (this.session != null) {
+            // 认证方式与页面选择保持一致，避免密钥认证失败后意外回退到密码或交互认证。
+            if (this.shellConnect.isPasswordAuth()) {
+                this.session.setConfig("PreferredAuthentications", "password,keyboard-interactive");
+            } else {
+                this.session.setConfig("PreferredAuthentications", "publickey");
+            }
             // 设置守护线程
             this.session.setDaemonThread(true);
             // 连续3次失败后断开连接

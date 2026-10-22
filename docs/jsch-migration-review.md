@@ -17,6 +17,7 @@
 - SFTP 目录列举只判断链接类型，点击时才解析目标；阿里云 `/bin` 从 16.9 秒降至 0.54–0.58 秒，虚拟机为毫秒级。
 - JSch Shell 在连接前安装并缓存输入输出流，首屏 MOTD、登录信息和提示符恢复；Ubuntu 虚拟机首屏从 60 字节恢复到 652 字节/19 行，阿里云为 1466 字节/41 行。
 - 错误密码或账户名现在只提交一次凭证即进入交互认证回调，不再等待 JSch 用同一凭证重试到服务端 `Too many authentication failures`；专项测试约 2.6 秒触发回调。
+- 公钥认证已在 Ubuntu 和 UOS 虚拟机完成矩阵回归：RSA（普通/带口令）、ECDSA 256/384/521、Ed25519 的密钥管理器认证、Exec 和 SFTP 全部通过；证书文件路径覆盖普通 RSA、带口令 RSA 和 Ed25519，未授权密钥约 150 ms 内拒绝。
 - 密钥与 Agent 初始化回归通过。
 - Docker 临时容器、镜像、卷和归档清理验证通过，主机无测试资源残留。
 - 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本文件。
@@ -36,7 +37,7 @@
 | --- | --- | --- | --- |
 | SSH 连接 | `ClientSession` | `Session` | 已迁移，支持超时、keep-alive、重连 |
 | 密码认证 | sshd password auth | JSch `UserInfo` / password | 已迁移；认证失败只提交一次凭证并进入交互认证 |
-| 密钥认证 | sshd key identity | JSch `addIdentity` | 已迁移，支持路径和内嵌密钥 |
+| 密钥认证 | sshd key identity | JSch `addIdentity` | 已迁移并完成实机矩阵；支持路径和内嵌密钥，普通/带口令私钥均通过 |
 | Agent 认证 | sshd Agent 工厂 | JSch `AgentIdentityRepository` | 已迁移并完成初始化验证 |
 | 交互认证 | sshd keyboard-interactive | JSch `UIKeyboardInteractive` | 已迁移 |
 | Known hosts | sshd verifier | JSch `known_hosts` | 已迁移，跳板保持旧行为不校验 |
@@ -129,6 +130,12 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 
 修复：父目录、源文件名和归档文件名统一做 POSIX shell 单引号转义；无父目录时使用当前目录；未知压缩类型返回 `null` 并记录告警，不再执行空命令。`tgz`、`xz`、`bz2` 已用包含空格和单引号的真实目录/文件名验证。
 
+### 4.14 密钥认证失败后的认证方式回退
+
+密钥管理器、证书文件路径和 Agent 认证只准备 `publickey` 身份，但 JSch 在公钥认证失败后仍可能继续尝试服务端提供的 `password` 方法。此时界面没有可用的登录密码，会触发额外的密码输入框，掩盖真正的公钥失败原因。
+
+修复：`ShellBaseSSHClient.initSession()` 按连接配置限制 `PreferredAuthentications`。密码认证使用 `password,keyboard-interactive`；证书、密钥管理器和 Agent 认证只使用 `publickey`。认证失败仍进入既有 `verifyFailureCallback` 流程，不会静默切换认证方式。
+
 ## 5. 兼容性说明
 
 - 公开业务类名、连接配置字段、状态枚举和主要方法保持不变。
@@ -143,6 +150,8 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - `enableCompress=true` 时优先协商 `zlib@openssh.com`，其次 `zlib`；`false` 时强制 `none`。配置字段和默认值保持不变。
 - 代理协议映射保持历史语义：`http -> ProxyHTTP`、`socks4 -> ProxySOCKS4`、`socks5/socks -> ProxySOCKS5`；本轮真实代理验证覆盖 HTTP 和 SOCKS5 无认证场景。
 - 文件压缩方法名、参数和返回类型不变；仅修正远端 shell 参数转义和未知类型处理，不改变归档命名规则。
+- 密钥认证方式保持 `manager`、`certificate`、`sshAgent` 配置值不变；密钥管理器仍使用内嵌公私钥和可选口令，证书认证仍使用私钥文件路径和可选口令。仅收紧了每种认证方式允许的底层 SSH 认证方法，避免跨方式回退。
+- DSA 是 OpenSSH 已弃用算法。密钥生成 UI 的长度选项已从不可用的 2048 位纠正为标准 1024 位，与 `JSchKeyUtil`、JSch 和 OpenSSH DSA key 格式保持一致。
 - 新增测试统一支持 `-Dtest.hosts.file=<本地主机文件>` 与 `-Dtest.host.index=<序号>`，凭据只在测试进程运行时读取，不进入源码、文档或日志。
 
 ## 6. 风险与功能差异
@@ -159,6 +168,8 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 10. 客户端连接仍主要依赖服务端命令输出解析；Windows 本地化输出已通过 `isWindows()` + `cmd.exe /c ver` 矩阵验证，但更多发行版差异仍需持续覆盖。
 11. `docker run` 的 `params` 是面向高级用户的原始 CLI 片段，仍可能包含任意 Docker 选项；UI 调用方应将其视为可信输入。
 12. `docker_update` 在 `NanoCpus` 和 period/quota 同时存在时优先使用 `NanoCpus`。需要显式 period/quota 时应将该资源对象中的 `nanoCpus` 置为 0。
+13. DSA 已从现代 OpenSSH 默认服务端算法中移除。本轮测试主机的 `sshd -T` 均未启用 `ssh-dss`，因此 DSA 只验证了 1024 位密钥生成和格式识别，未作为实机认证通过项；生产环境应优先使用 Ed25519 或 RSA/ECDSA。
+14. 公钥认证矩阵覆盖 Linux 虚拟机。Windows OpenSSH 的 `administrators_authorized_keys` 路径、权限继承和 Pageant/Agent 行为仍需在 Windows 实机补充。
 
 ## 7. 测试计划
 
@@ -187,6 +198,7 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - 会话断开重连、隧道重建、SFTP 重连。
 - 启动失败后的会话、通道和转发清理。
 - 密钥生成、类型/长度解析、代理类型映射、Agent 初始化。
+- 公钥认证矩阵：RSA 普通/带口令、ECDSA 256/384/521、Ed25519、DSA 生成；密钥管理器和私钥文件两种认证路径；密码会话上传、Exec、SFTP、未授权密钥拒绝、`authorized_keys` 恢复。
 - Windows 虚拟机/真实机器、macOS 真实机器、UOS 虚拟机、云端 Linux 的只读平台、架构、Docker CLI 和压缩协商矩阵。
 
 ### 7.3 命令示例
@@ -214,6 +226,8 @@ mvn -q -DskipTests test-compile
 java -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchKeyRegression
 java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchConcurrentRegression
 java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=1 -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchDockerRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.pubkey.host.index=1 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPublicKeyAuthRegression
 ```
 
 Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且无法访问 Docker Hub 时，测试会从主机已有的静态 `/usr/bin/busybox` 构建临时镜像；也可通过 `EASYSHELL_TEST_DOCKER_IMAGE` 指定已存在镜像。测试资源均带唯一后缀，`finally` 中删除容器、临时镜像、卷和归档。
@@ -245,6 +259,11 @@ Docker 回归默认使用 `easyshell-jsch-test:local`。本机没有该镜像且
 | 隔离 classpath sshd/JGit 检查 | 0 个 |
 | 隔离生成字节码 sshd/JGit 引用检查 | 0 处 |
 | 密钥与 Agent 回归 | 通过 |
+| 公钥认证生成矩阵（RSA/ECDSA/Ed25519/DSA） | 7 种密钥生成与格式识别通过；测试主机服务端启用 6 种 |
+| 公钥认证管理器路径（Ubuntu/UOS 虚拟机） | 6/6 通过，Exec 与 SFTP 均通过 |
+| 公钥认证文件路径（普通/带口令私钥） | 3/3 通过 |
+| 未授权公钥拒绝 | 通过（Ubuntu 145 ms；UOS 154 ms） |
+| 公钥授权清理 | 通过（`authorized_keys` 按原内容恢复） |
 | 真实主机完整回归 | 通过 |
 | SSH 压缩关闭/开启协商 | 通过（`none/none` 与 `zlib@openssh.com/zlib@openssh.com`） |
 | 压缩会话 4 MiB Exec 校验 | 通过 |
@@ -317,6 +336,13 @@ JSch shell banner regression passed
 JSch integration regression passed
 ```
 
+公钥认证回归日志末尾输出：
+
+```text
+public key auth matrix completed: manager=6, certificate=3, unauthorized=rejected
+JSch public key authentication regression passed
+```
+
 本次验证日志：
 
 - `/tmp/easyshell-jsch-docker-final.log`
@@ -346,6 +372,10 @@ JSch integration regression passed
 - `/tmp/easyshell-jsch-integration-forward-jump-final.log`
 - `/tmp/easyshell-jsch-auth-failure-final.log`
 - `/tmp/easyshell-jsch-integration-auth-fix-final.log`
+- `/tmp/easyshell-jsch-pubkey-ubuntu.log`
+- `/tmp/easyshell-jsch-pubkey-uos.log`
+- `/tmp/easyshell-jsch-auth-after-pubkey.log`
+- `/tmp/easyshell-jsch-key-after-pubkey.log`
 - `/tmp/easyshell-cleanup-check.log`
 
 回归过程中出现的 `PortForwardingL: local port ... cannot be bound` 是“启动失败资源清理”用例的预期异常，该用例随后验证会话已释放，整体回归通过。
@@ -355,6 +385,8 @@ JSch integration regression passed
 - Windows 虚拟机/真实机器、macOS 真实机器、UOS 虚拟机和云端 Linux 已完成只读平台/压缩协商矩阵；完整 Shell/SFTP 端到端仍以 Linux 虚拟机为主。
 - Unix Agent 只验证了初始化；当前环境 Agent 无身份，未完成 Agent 登录。
 - Windows Pageant 和 Windows OpenSSH Agent 未实机验证。
+- 公钥认证矩阵覆盖 Ubuntu/UOS 虚拟机；Windows OpenSSH 授权文件路径、ACL 和 Pageant 未完成公钥实机验证。
+- DSA 在测试主机服务端均被禁用，只验证生成和格式识别，未纳入认证通过项。
 - 内置动态转发验证无认证 SOCKS4/SOCKS5；外部代理本轮验证 HTTP CONNECT 与 SOCKS5 无认证。
 - X11 仍未完成真实图形应用端到端验证。
 - SSH 压缩已验证协商与 4 MiB 传输，但未做长时间/超大文件稳定性压测；`7z/zip/rar/lzo/zst/lz` 因工具或环境未覆盖，未纳入本轮通过项。
@@ -697,8 +729,69 @@ java -Dtest.hosts.file='<local-hosts-file>' -Dtest.auth.host.index=1 \
   -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchAuthFailureRegression
 ```
 
+### 11.11 公钥认证实机回归
+
+#### 调用链
+
+- 密钥生成：`ShellAddKeyController.generateKey()` -> `JSchKeyUtil.generateRsa/generateEcdsa/generateEd25519/generateDsa()`。
+- 密码会话上传：密码认证 `ShellSSHClient` -> `ShellKeyUtil.sshCopyId()` -> `ShellSFTPClient` / `ShellSSHExec.append()` 写入 `~/.ssh/authorized_keys`。
+- 密钥管理器认证：`ShellConnect.authMethod=manager` -> `ShellKeyStore.selectOne(keyId)` -> JSch `addIdentity(name, privateKey, publicKey, passphrase)` -> `publickey` 认证。
+- 私钥文件认证：`ShellConnect.authMethod=certificate` -> `ShellConnect.certificate` 指定私钥文件 -> JSch `addIdentity(path, passphrase)` -> `publickey` 认证。
+- 测试在密码会话中先备份原 `authorized_keys`，仅追加带唯一注释的公钥；结束时按原字节恢复，未修改已有授权内容。
+
+#### 回归矩阵
+
+测试日期：2026-10-22。主机为 Ubuntu 虚拟机（OpenSSH 9.6p1）和 UOS 虚拟机；测试凭据仅由本地主机清单在运行时读取。
+
+| 认证/算法 | 密钥管理器 | 私钥文件 | Exec | SFTP | 说明 |
+| --- | --- | --- | --- | --- | --- |
+| RSA 2048 | 通过 | 通过 | 通过 | 通过 | 普通私钥 |
+| RSA 2048 + 口令 | 通过 | 通过 | 通过 | 通过 | OpenSSH v1 加密私钥 |
+| ECDSA 256 | 通过 | 未重复执行 | 通过 | 通过 | `ecdsa-sha2-nistp256` |
+| ECDSA 384 | 通过 | 未重复执行 | 通过 | 通过 | `ecdsa-sha2-nistp384` |
+| ECDSA 521 | 通过 | 未重复执行 | 通过 | 通过 | `ecdsa-sha2-nistp521` |
+| Ed25519 256 | 通过 | 通过 | 通过 | 通过 | 普通私钥 |
+| DSA 1024 | 策略跳过 | 策略跳过 | - | - | 服务端有效配置未启用 `ssh-dss` |
+
+补充验证：
+
+| 场景 | Ubuntu 虚拟机 | UOS 虚拟机 |
+| --- | --- | --- |
+| 密码认证上传 6 个服务端可用公钥 | 通过 | 通过 |
+| 管理器认证、Exec、SFTP | 6/6 通过 | 6/6 通过 |
+| 私钥文件认证（RSA、带口令 RSA、Ed25519） | 3/3 通过 | 3/3 通过 |
+| 未授权公钥拒绝 | 145 ms | 154 ms |
+| 授权文件恢复并逐字节校验 | 通过 | 通过 |
+
+单次管理器认证包含连接、认证、Exec 和小文件 SFTP 往返，耗时约 431–647 ms。测试日志末尾输出：
+
+```text
+public key auth matrix completed: manager=6, certificate=3, unauthorized=rejected
+JSch public key authentication regression passed
+```
+
+#### 功能差异与兼容性
+
+- 密钥管理器和证书文件认证现在只允许 `publickey`，不会在公钥失败后弹出无关的密码框；失败仍由既有认证回调处理。
+- 密码认证保持 `password,keyboard-interactive`，原有错误密码/用户名认证页回归继续通过。
+- DSA 生成 UI 的长度选项纠正为 1024 位。现代 OpenSSH 默认禁用 DSA，生产环境建议使用 Ed25519 或 RSA/ECDSA。
+- 未改变 `ShellKey`、`ShellConnect` 字段和 `manager/certificate/sshAgent` 取值，也未修改任何 sshd 版本代码。
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchPublicKeyAuthRegression.java`
+
+测试命令：
+
+```bash
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.pubkey.host.index=1 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPublicKeyAuthRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.pubkey.host.index=3 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchPublicKeyAuthRegression
+```
+
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
+本轮验证覆盖了连接、密码认证、公钥认证、认证失败交互、Shell 首屏 MOTD/提示符、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT、SOCKS5、Docker 完整生命周期、Process、Server、并发和重连。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` 性能从 16.9 秒降至 0.54–0.58 秒。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显。
 
 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。
