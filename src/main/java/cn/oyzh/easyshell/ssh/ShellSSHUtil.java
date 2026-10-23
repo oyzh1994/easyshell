@@ -31,6 +31,33 @@ public class ShellSSHUtil {
 
     private static final String KNOWN_HOSTS_PATH_PROPERTY = "easyshell.known_hosts.path";
 
+    public static final String HEARTBEAT_INTERVAL_EXTRA = "heartbeatInterval";
+
+    public static final int DEFAULT_HEARTBEAT_INTERVAL = 60;
+
+    public static final int MAX_HEARTBEAT_INTERVAL = 3600;
+
+    public static void setHeartbeatInterval(ShellConnect connect, int seconds) {
+        connect.putExtra(HEARTBEAT_INTERVAL_EXTRA, seconds);
+    }
+
+    public static int getHeartbeatInterval(ShellConnect connect) {
+        Object value = connect == null ? null : connect.getExtra(HEARTBEAT_INTERVAL_EXTRA);
+        int interval;
+        if (value instanceof Number number) {
+            interval = number.intValue();
+        } else if (value != null) {
+            try {
+                interval = Integer.parseInt(value.toString());
+            } catch (NumberFormatException ex) {
+                return DEFAULT_HEARTBEAT_INTERVAL;
+            }
+        } else {
+            return DEFAULT_HEARTBEAT_INTERVAL;
+        }
+        return interval >= 0 && interval <= MAX_HEARTBEAT_INTERVAL ? interval : DEFAULT_HEARTBEAT_INTERVAL;
+    }
+
     public static Proxy newProxy(ShellProxyConfig proxyConfig) {
         return JschUtil.newProxy(proxyConfig);
     }

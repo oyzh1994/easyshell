@@ -185,6 +185,24 @@
                         </HBox.margin>
                     </FXLabel>
                 </FXHBox>
+                <InfoLabel text="%shell.info.heartbeatInterval">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField realHeight="30" flexWidth="100% - 180" min="0" max="3600" fx:id="heartbeatInterval"
+                                     tipText="%shell.info.heartbeatIntervalTip" value="60" require="true">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
                 <InfoLabel text="%base.remark">
                     <VBox.margin>
                         <Insets left="30" top="10"/>

@@ -487,8 +487,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             this.session.setDaemonThread(true);
             // 连续3次失败后断开连接
             this.session.setServerAliveCountMax(3);
-            // 每60秒发送一次TCP keep-alive包
-            this.session.setServerAliveInterval(60_000);
+            this.session.setServerAliveInterval(ShellSSHUtil.getHeartbeatInterval(this.shellConnect) * 1000);
             // 可选：设置TCP层面的keep-alive
             this.session.setConfig("TCPKeepAlive", "yes");
             // 与旧实现保持一致：跳板转发使用临时本地端口，不参与 known_hosts 校验。

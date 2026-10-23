@@ -165,6 +165,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                     throw new ShellException("ssh session is disconnected");
                 }
                 this.session = activeSession;
+                this.initSession();
             }
             if (this.isConnected()) {
                 this.state.set(ShellConnState.CONNECTED);
@@ -244,6 +245,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 throw new ShellException("ssh session is disconnected");
             }
             this.session = activeSession;
+            this.initSession();
             channel = (ChannelSftp) activeSession.openChannel("sftp");
             if (channel == null) {
                 throw new ShellException("create sftp channel returned null");

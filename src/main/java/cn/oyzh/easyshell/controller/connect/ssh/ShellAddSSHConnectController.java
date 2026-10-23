@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
@@ -161,6 +162,12 @@ public class ShellAddSSHConnectController extends StageController {
      */
     @FXML
     private NumberTextField connectTimeOut;
+
+    /**
+     * 心跳间隔
+     */
+    @FXML
+    private NumberTextField heartbeatInterval;
 
     /**
      * x11转发
@@ -394,6 +401,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setType("ssh");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
+            ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
             // 认证信息
             shellConnect.setKeyId(this.key.getKeyId());
             shellConnect.setUser(this.userName.getTextTrim());
@@ -497,6 +505,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setBackspaceType(backspaceType);
             shellConnect.setAltSendsEscape(altSendsEscape);
             shellConnect.setConnectTimeOut(connectTimeOut);
+            ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
             // 客户端转发
             shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem

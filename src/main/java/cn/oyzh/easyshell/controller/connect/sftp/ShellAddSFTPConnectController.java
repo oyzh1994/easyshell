@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.ssh.ShellSSHAuthTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
@@ -135,6 +136,12 @@ public class ShellAddSFTPConnectController extends StageController {
      */
     @FXML
     private NumberTextField connectTimeOut;
+
+    /**
+     * 心跳间隔
+     */
+    @FXML
+    private NumberTextField heartbeatInterval;
 
     /**
      * 认证方式
@@ -277,6 +284,7 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setType("sftp");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
+            ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
             // 认证信息
             shellConnect.setKeyId(this.key.getKeyId());
             shellConnect.setUser(this.userName.getTextTrim());
@@ -352,6 +360,7 @@ public class ShellAddSFTPConnectController extends StageController {
             shellConnect.setCharset(charset);
             shellConnect.setHost(host.trim());
             shellConnect.setConnectTimeOut(connectTimeOut);
+            ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
             // 启用压缩
             shellConnect.setEnableCompress(enableCompress);
             // 认证信息

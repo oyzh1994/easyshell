@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.fx.term.ShellTermBackspaceTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTermTypeComboBox;
 import cn.oyzh.easyshell.fx.tunneling.ShellTunnelingTableView;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.store.ShellJumpConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
@@ -167,6 +168,12 @@ public class ShellUpdateSSHConnectController extends StageController {
      */
     @FXML
     private NumberTextField connectTimeOut;
+
+    /**
+     * 心跳间隔
+     */
+    @FXML
+    private NumberTextField heartbeatInterval;
 
     /**
      * x11转发
@@ -413,6 +420,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             shellConnect.setType("ssh");
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
+            ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
             shellConnect.setId(this.shellConnect.getId());
             // 认证信息
             shellConnect.setKeyId(this.key.getKeyId());
@@ -516,6 +524,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setBackspaceType(backspaceType);
             this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
+            ShellSSHUtil.setHeartbeatInterval(this.shellConnect, this.heartbeatInterval.getIntValue());
             // 客户端转发
             this.shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem
@@ -644,6 +653,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.charset.setValue(this.shellConnect.getCharset());
         this.termType.select(this.shellConnect.getTermType());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
+        this.heartbeatInterval.setValue(ShellSSHUtil.getHeartbeatInterval(this.shellConnect));
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());
