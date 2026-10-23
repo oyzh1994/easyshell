@@ -28,6 +28,7 @@
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <FixedTab xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
           fx:controller="cn.oyzh.easyshell.tabs.ssh.ShellSSHEffTabController"
           text="%base.terminal" fx:id="root">
@@ -36,74 +37,72 @@
     </graphic>
     <FXSplitPane fx:id="splitPane" flexWidth="100%" flexHeight="100%" dividerPositions="0.25">
         <FXVBox flexHeight="100%" fx:id="leftBox" managedBindVisible="true">
+            <ClearableTextField realHeight="25" flexWidth="100% - 20" fx:id="filterFile"
+                                tipText="%base.searchKWTip">
+                <VBox.margin>
+                    <Insets left="10" top="5"/>
+                </VBox.margin>
+            </ClearableTextField>
+            <ShellFileLocationTextField prefHeight="25" fx:id="location" flexWidth="100% - 20">
+                <VBox.margin>
+                    <Insets left="10" top="5"/>
+                </VBox.margin>
+            </ShellFileLocationTextField>
             <FXHBox prefHeight="30" flexWidth="100%">
+                <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
+                    <FXHBox.margin>
+                        <Insets left="10" top="7"/>
+                    </FXHBox.margin>
+                </HomeSVGGlyph>
+                <ReturnFolderSVGGlyph onMousePrimaryClicked="#returnDir">
+                    <FXHBox.margin>
+                        <Insets left="10" top="7"/>
+                    </FXHBox.margin>
+                </ReturnFolderSVGGlyph>
                 <RefreshSVGGlyph fx:id="refreshFile" onMousePrimaryClicked="#refreshFile">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </FXHBox.margin>
                 </RefreshSVGGlyph>
                 <DeleteSVGGlyph fx:id="deleteFile" onMousePrimaryClicked="#deleteFile">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </FXHBox.margin>
                 </DeleteSVGGlyph>
-                <ClearableTextField flexWidth="100% - 197" realHeight="24" fx:id="filterFile"
-                                    tipText="%base.searchKWTip">
-                    <FXHBox.margin>
-                        <Insets left="5" top="3"/>
-                    </FXHBox.margin>
-                </ClearableTextField>
                 <FileUploadSVGGlyph tipText="%base.uploadFile" enableWaiting="false"
                                     onMousePrimaryClicked="#uploadFile">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </FXHBox.margin>
                 </FileUploadSVGGlyph>
                 <FolderUploadSVGGlyph tipText="%base.uploadDir" enableWaiting="false"
                                       onMousePrimaryClicked="#uploadFolder">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </FXHBox.margin>
                 </FolderUploadSVGGlyph>
                 <FileAddSVGGlyph onMousePrimaryClicked="#touchFile" tipText="%base.touchFile">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </FXHBox.margin>
                 </FileAddSVGGlyph>
                 <FolderAddSVGGlyph onMousePrimaryClicked="#mkdir" tipText="%base.mkdir">
                     <FXHBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </FXHBox.margin>
                 </FolderAddSVGGlyph>
                 <HiddenSVGLabel fx:id="hiddenPane" onMousePrimaryClicked="#hiddenFile">
                     <HBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </HBox.margin>
                 </HiddenSVGLabel>
                 <UploadDownloadSVGLabel fx:id="manage" onMousePrimaryClicked="#manage">
                     <HBox.margin>
-                        <Insets left="5" top="7"/>
+                        <Insets left="10" top="7"/>
                     </HBox.margin>
                 </UploadDownloadSVGLabel>
             </FXHBox>
-            <FXHBox prefHeight="30" flexWidth="100%">
-                <HomeSVGGlyph onMousePrimaryClicked="#intoHome">
-                    <FXHBox.margin>
-                        <Insets left="5" top="7"/>
-                    </FXHBox.margin>
-                </HomeSVGGlyph>
-                <ReturnFolderSVGGlyph  onMousePrimaryClicked="#returnDir">
-                    <FXHBox.margin>
-                        <Insets left="5" top="7"/>
-                    </FXHBox.margin>
-                </ReturnFolderSVGGlyph>
-                <ShellFileLocationTextField prefHeight="22" fx:id="location" flexWidth="100% - 70">
-                    <FXHBox.margin>
-                        <Insets left="5" top="4"/>
-                    </FXHBox.margin>
-                </ShellFileLocationTextField>
-            </FXHBox>
-            <ShellSSHSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 90">
+            <ShellSSHSFTPFileTableView fx:id="fileTable" flexWidth="100%" flexHeight="100% - 120">
                 <columns>
                     <!-- <FXTableColumn style="-fx-padding-right:0;-fx-padding-buttom:3" prefWidth="20" valueName="icon"/> -->
                     <FXTableColumn prefWidth="200" valueName="fileName" fx:id="fileName" text="%base.name"/>
