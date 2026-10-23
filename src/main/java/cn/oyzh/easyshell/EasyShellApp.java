@@ -8,6 +8,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.log.JulUtil;
 import cn.oyzh.common.object.ObjectWatcherManager;
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.system.ProcessInstanceLock;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
@@ -56,12 +57,15 @@ import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.util.TerminalManager;
+import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import com.mysql.cj.conf.PropertyDefinitions;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
 import java.io.File;
+import java.nio.file.Path;
 
 
 /**
@@ -78,12 +82,25 @@ public class EasyShellApp extends FXApplication implements EventListener {
     private static final Project PROJECT = Project.load();
 
     /**
+     * 实例锁文件名
+     */
+    private static final String INSTANCE_LOCK_FILE = "easyshell.lock";
+
+    /**
+     * 实例锁
+     */
+    private static ProcessInstanceLock instanceLock;
+
+    /**
      * 程序主入口
      *
      * @param args 启动参数
      */
     public static void main(String[] args) {
         try {
+            if (!checkSingleInstance()) {
+                return;
+            }
             //            // 初始化jfx缓存目录
             //            ShellConst.initJfxCache();
             // 禁用mysql主动清理线程
@@ -154,6 +171,42 @@ public class EasyShellApp extends FXApplication implements EventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.warn("main error", ex);
+        } finally {
+            releaseInstanceLock();
+        }
+    }
+
+    /**
+     * 检查程序是否重复启动。
+     *
+     * @return 是否允许启动
+     */
+    private static boolean checkSingleInstance() {
+        Path lockFile = Path.of(ShellConst.getStorePath(), INSTANCE_LOCK_FILE);
+        try {
+            ProcessInstanceLock lock = ProcessInstanceLock.tryAcquire(lockFile);
+            if (lock.isAcquired()) {
+                instanceLock = lock;
+                return true;
+            }
+            JulLog.warn("another EasyShell instance is running, lock:{}, status:{}, pid:{}",
+                    lock.getLockFile(), lock.getStatus(), lock.getOwnerPid());
+            MessageBox.warn(I18nHelper.programTip1(), (Window) null);
+        } catch (Exception ex) {
+            JulLog.error("check single instance failed, lock:{}", lockFile, ex);
+            String message = ex.getMessage() == null ? ex.toString() : ex.getMessage();
+            MessageBox.warn(message, (Window) null);
+        }
+        return false;
+    }
+
+    /**
+     * 释放实例锁。
+     */
+    private static void releaseInstanceLock() {
+        if (instanceLock != null) {
+            instanceLock.close();
+            instanceLock = null;
         }
     }
 
@@ -242,23 +295,28 @@ public class EasyShellApp extends FXApplication implements EventListener {
 
     @Override
     public void stop() {
-        // 停止客户端检测
-        ShellClientChecker.stop();
-        // 关闭x11服务
-        ShellX11Manager.stopXServer_built_in();
-        // 储存销毁
-        ShellStoreUtil.destroy();
-        // 取消注册事件处理
-        EventListener.super.unregister();
-        // 清理缓存
-        File cacheDir = new File(ShellConst.getCachePath());
-        FileUtil.clearDir(cacheDir, null, null, null, null);
-        // 清理日志，仅保留15天内的日志
-        File logsDir = new File(JulUtil.getLogsDir());
-        FileUtil.clearDir(logsDir, null, null, null, file -> {
-            long now = System.currentTimeMillis();
-            return now - file.lastModified() > 15 * 24 * 3600 * 1000L;
-        });
+        try {
+            // 停止客户端检测
+            ShellClientChecker.stop();
+            // 关闭x11服务
+            ShellX11Manager.stopXServer_built_in();
+            // 储存销毁
+            ShellStoreUtil.destroy();
+            // 取消注册事件处理
+            EventListener.super.unregister();
+            // 清理缓存
+            File cacheDir = new File(ShellConst.getCachePath());
+            FileUtil.clearDir(cacheDir, null, null, null, null);
+            // 清理日志，仅保留15天内的日志
+            File logsDir = new File(JulUtil.getLogsDir());
+            FileUtil.clearDir(logsDir, null, null, null, file -> {
+                long now = System.currentTimeMillis();
+                return now - file.lastModified() > 15 * 24 * 3600 * 1000L;
+            });
+        } finally {
+            // 所有资源释放后再移除实例锁
+            releaseInstanceLock();
+        }
         super.stop();
     }
 
