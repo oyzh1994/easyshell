@@ -768,18 +768,11 @@ public class ShellViewFactory {
      */
     public static void shellMain() {
         try {
-            StageAdapter adapter = StageManager.getStage(MainController.class);
-            if (adapter != null) {
-                if (JulLog.isInfoEnabled()) {
-                    JulLog.info("front main.");
-                }
-                adapter.toFront();
-            } else {
-                if (JulLog.isInfoEnabled()) {
-                    JulLog.info("show main.");
-                }
-                StageManager.showStage(MainController.class, StageManager.getPrimaryStage());
+            Class<?> clazz = MainController.class;
+            if (StageManager.frontStage(clazz)) {
+                return;
             }
+            StageManager.showStage(clazz);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -895,16 +888,12 @@ public class ShellViewFactory {
      * @param sourceConnect 来源连接
      */
     public static void fileTransport(ShellConnect sourceConnect) {
-        //        // 判断窗口是否存在
-        //        List<StageAdapter> list = StageManager.listStage(ShellFileTransportController.class);
-        //        for (StageAdapter adapter : list) {
-        //            if (adapter.getProp("sourceConnect") == sourceConnect) {
-        //                adapter.toFront();
-        //                return;
-        //            }
-        //        }
+        Class<?> clazz = ShellFileTransportController.class;
+        if (StageManager.frontStage(clazz, "sourceConnect", sourceConnect)) {
+            return;
+        }
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileTransportController.class);
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("sourceConnect", sourceConnect);
             adapter.display();
         } catch (Exception ex) {
@@ -990,7 +979,11 @@ public class ShellViewFactory {
      */
     public static void fileManage(ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileManageController.class);
+            Class<?> clazz = ShellFileManageController.class;
+            if (StageManager.frontStage(clazz, "client", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("client", client);
             adapter.display();
         } catch (Exception ex) {
@@ -1024,7 +1017,11 @@ public class ShellViewFactory {
      */
     public static void fileEdit(ShellFile file, ShellFileClient<?> client) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileEditController.class);
+            Class<?> clazz = ShellFileEditController.class;
+            if (StageManager.frontStage(clazz, "file", file)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("file", file);
             adapter.setProp("client", client);
             adapter.showAndWait();
@@ -1043,7 +1040,11 @@ public class ShellViewFactory {
      */
     public static void fileView(ShellFile file, ShellFileClient<?> client, String type) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellFileViewController.class);
+            Class<?> clazz = ShellFileViewController.class;
+            if (StageManager.frontStage(clazz, "file", file)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("file", file);
             adapter.setProp("type", type);
             adapter.setProp("client", client);
@@ -1083,6 +1084,10 @@ public class ShellViewFactory {
      */
     public static StageAdapter filePkgUpload(String dest, List<File> files, ShellSFTPClient client) {
         try {
+            Class<?> clazz = ShellFilePkgUploadController.class;
+            if (StageManager.frontStage(clazz, "client", client)) {
+                return StageManager.getStage(clazz, "client", client);
+            }
             StageAdapter adapter = StageManager.parseStage(ShellFilePkgUploadController.class);
             adapter.setProp("dest", dest);
             adapter.setProp("files", files);
@@ -1366,13 +1371,11 @@ public class ShellViewFactory {
      */
     public static void snippet() {
         try {
-            StageAdapter adapter = StageManager.getStage(ShellSnippetController.class);
-            if (adapter == null) {
-                adapter = StageManager.parseStage(ShellSnippetController.class);
-                adapter.display();
-            } else {
-                adapter.toFront();
+            Class<?> clazz = ShellSnippetController.class;
+            if (StageManager.frontStage(clazz)) {
+                return;
             }
+            StageManager.showStage(clazz, StageManager.getPrimaryStage());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -1479,7 +1482,11 @@ public class ShellViewFactory {
      */
     public static void saveImage(ShellDockerExec exec, ShellDockerImage image) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerSaveController.class);
+            Class<?> clazz = ShellDockerSaveController.class;
+            if (StageManager.frontStage(clazz, "image", image)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("exec", exec);
             adapter.setProp("image", image);
             adapter.display();
@@ -1515,7 +1522,11 @@ public class ShellViewFactory {
      */
     public static void commitContainer(ShellDockerExec exec, ShellDockerContainer container) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDockerCommitController.class);
+            Class<?> clazz = ShellDockerCommitController.class;
+            if (StageManager.frontStage(clazz, "container", container)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("exec", exec);
             adapter.setProp("container", container);
             adapter.display();

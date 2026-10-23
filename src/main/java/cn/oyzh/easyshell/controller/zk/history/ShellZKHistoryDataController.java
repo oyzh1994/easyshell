@@ -24,6 +24,7 @@ import javafx.stage.WindowEvent;
  */
 @StageAttribute(
 //        modality = Modality.WINDOW_MODAL,
+        multipliable  = true,
         stageStyle = FXStageStyle.EXTENDED,
         value = FXConst.FXML_PATH + "zk/history/shellZKHistoryData.fxml"
 )

@@ -56,7 +56,11 @@ public class ShellMariadbViewFactory {
      */
     public static void exportData(ShellMariadbClient client, String dbName, String tableName, int exportMode, ShellMariadbDataExportTable exportTable) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataExportController.class);
+            Class<?> clazz = ShellMariadbDataExportController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.setProp("tableName", tableName);
@@ -77,7 +81,11 @@ public class ShellMariadbViewFactory {
      */
     public static void importData(ShellMariadbClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataImportController.class);
+            Class<?> clazz = ShellMariadbDataImportController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -93,11 +101,15 @@ public class ShellMariadbViewFactory {
      * @param client    客户端
      * @param dbName    数据库名称
      * @param tableName 表名称
-     * @param dumpType 导出类型 1.库 2.表
+     * @param dumpType  导出类型 1.库 2.表
      */
     public static void dumpData(ShellMariadbClient client, String dbName, String tableName, int dumpType) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataDumpController.class);
+            Class<?> clazz = ShellMariadbDataDumpController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dumpType", dumpType);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
@@ -117,7 +129,11 @@ public class ShellMariadbViewFactory {
      */
     public static void runSqlFile(ShellMariadbClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataRunSqlFileController.class);
+            Class<?> clazz = ShellMariadbDataRunSqlFileController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -153,7 +169,11 @@ public class ShellMariadbViewFactory {
      */
     public static void transportData(ShellConnect connect, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMariadbDataTransportController.class);
+            Class<?> clazz = ShellMariadbDataTransportController.class;
+            if (StageManager.frontStage(clazz, "connect", connect)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", dbName);
             adapter.display();

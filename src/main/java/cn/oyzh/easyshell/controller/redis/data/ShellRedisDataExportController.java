@@ -48,6 +48,7 @@ import java.util.Set;
  * @since 2025-09-01
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
 //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "redis/data/shellRedisDataExport.fxml"

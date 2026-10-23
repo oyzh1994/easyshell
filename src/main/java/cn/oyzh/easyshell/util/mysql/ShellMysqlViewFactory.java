@@ -56,7 +56,11 @@ public class ShellMysqlViewFactory {
      */
     public static void exportData(ShellMysqlClient client, String dbName, String tableName, int exportMode, ShellMysqlDataExportTable exportTable) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataExportController.class);
+            Class<?> clazz = ShellMysqlDataExportController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.setProp("tableName", tableName);
@@ -77,7 +81,11 @@ public class ShellMysqlViewFactory {
      */
     public static void importData(ShellMysqlClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataImportController.class);
+            Class<?> clazz = ShellMysqlDataImportController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -97,7 +105,11 @@ public class ShellMysqlViewFactory {
      */
     public static void dumpData(ShellMysqlClient client, String dbName, String tableName, int dumpType) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataDumpController.class);
+            Class<?> clazz = ShellMysqlDataDumpController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dumpType", dumpType);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
@@ -117,7 +129,11 @@ public class ShellMysqlViewFactory {
      */
     public static void runSqlFile(ShellMysqlClient client, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataRunSqlFileController.class);
+            Class<?> clazz = ShellMysqlDataRunSqlFileController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", dbName);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -153,7 +169,11 @@ public class ShellMysqlViewFactory {
      */
     public static void transportData(ShellConnect connect, String dbName) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellMysqlDataTransportController.class);
+            Class<?> clazz = ShellMysqlDataTransportController.class;
+            if (StageManager.frontStage(clazz, "connect", connect)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", dbName);
             adapter.display();

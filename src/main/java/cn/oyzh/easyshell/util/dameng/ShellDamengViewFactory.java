@@ -56,7 +56,11 @@ public class ShellDamengViewFactory {
      */
     public static void exportData(ShellDamengClient client, String schema, String tableName, int exportMode, ShellDamengDataExportTable exportTable) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengDataExportController.class);
+            Class<?> clazz = ShellDamengDataExportController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", schema);
             adapter.setProp("dbClient", client);
             adapter.setProp("tableName", tableName);
@@ -77,7 +81,11 @@ public class ShellDamengViewFactory {
      */
     public static void importData(ShellDamengClient client, String schema) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengDataImportController.class);
+            Class<?> clazz = ShellDamengDataImportController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", schema);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -97,7 +105,11 @@ public class ShellDamengViewFactory {
      */
     public static void dumpData(ShellDamengClient client, String schema, String tableName, int dumpType) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengDataDumpController.class);
+            Class<?> clazz = ShellDamengDataDumpController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dumpType", dumpType);
             adapter.setProp("dbName", schema);
             adapter.setProp("dbClient", client);
@@ -117,7 +129,11 @@ public class ShellDamengViewFactory {
      */
     public static void runSqlFile(ShellDamengClient client, String schema) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengDataRunSqlFileController.class);
+            Class<?> clazz = ShellDamengDataRunSqlFileController.class;
+            if (StageManager.frontStage(clazz, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("dbName", schema);
             adapter.setProp("dbClient", client);
             adapter.display();
@@ -135,7 +151,11 @@ public class ShellDamengViewFactory {
      */
     public static void transportData(ShellConnect connect, String schema) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellDamengDataTransportController.class);
+            Class<?> clazz = ShellDamengDataTransportController.class;
+            if (StageManager.frontStage(clazz, "connect", connect)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("connect", connect);
             adapter.setProp("dbName", schema);
             adapter.display();

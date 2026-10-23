@@ -42,6 +42,7 @@ import java.io.File;
  * @since 2025-09-01
  */
 @StageAttribute(
+        multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
         //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "zk/data/shellZKDataExport.fxml"

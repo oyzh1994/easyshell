@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.test.projectcover;
 
 import cn.oyzh.fx.plus.util.FXCoverChecker;
+import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.application.Application;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URISyntaxException;
@@ -27,6 +29,17 @@ public class EasyShellCoverStarter extends Application {
         coverChecker.tabCheck();
         coverChecker.viewCheck();
         coverChecker.popupCheck();
+
+        for (Class<?> aClass : coverChecker.getClasses()) {
+            StageAttribute attribute = aClass.getAnnotation(StageAttribute.class);
+            if (attribute == null) {
+                continue;
+            }
+            if (attribute.modality()== Modality.NONE) {
+                System.out.println(aClass.getName());
+            }
+        }
+
         StageManager.exit();
     }
 }

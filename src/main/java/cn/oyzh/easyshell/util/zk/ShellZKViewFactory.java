@@ -116,7 +116,11 @@ public class ShellZKViewFactory {
      */
     public static void importData(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKDataImportController.class, StageManager.getPrimaryStage());
+            Class<?> clazz = ShellZKDataImportController.class;
+            if (StageManager.frontStage(clazz, "connect", connect)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("connect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -133,7 +137,11 @@ public class ShellZKViewFactory {
      */
     public static void exportData(ShellConnect connect, String nodePath) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKDataExportController.class);
+            Class<?> clazz = ShellZKDataExportController.class;
+            if (StageManager.frontStage(clazz, "connect", connect)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("connect", connect);
             adapter.setProp("nodePath", nodePath);
             adapter.display();
@@ -150,7 +158,11 @@ public class ShellZKViewFactory {
      */
     public static void transportData(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKDataTransportController.class);
+            Class<?> clazz = ShellZKDataTransportController.class;
+            if (StageManager.frontStage(clazz, "sourceConnect", connect)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("sourceConnect", connect);
             adapter.display();
         } catch (Exception ex) {
@@ -186,7 +198,11 @@ public class ShellZKViewFactory {
      */
     public static void historyData(ShellZKClient client, String nodePath) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellZKHistoryDataController.class);
+            Class<?> clazz = ShellZKHistoryDataController.class;
+            if (StageManager.frontStage(clazz, "client", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("client", client);
             adapter.setProp("nodePath", nodePath);
             adapter.display();
