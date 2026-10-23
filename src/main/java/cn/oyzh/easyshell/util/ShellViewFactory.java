@@ -204,7 +204,6 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddSerialConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
             adapter.display();
-            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -271,7 +270,6 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddVNCConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
             adapter.display();
-            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -320,7 +318,6 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddRedisConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
             adapter.display();
-            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -336,7 +333,6 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddZKConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
-            adapter.display();
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -354,7 +350,6 @@ public class ShellViewFactory {
             StageAdapter adapter = StageManager.parseStage(ShellAddRDPConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
             adapter.display();
-            adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
@@ -370,7 +365,6 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddWebdavConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
-            adapter.display();
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -419,7 +413,6 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddDamengConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
-            adapter.display();
             adapter.display();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1375,7 +1368,7 @@ public class ShellViewFactory {
             if (StageManager.frontStage(clazz)) {
                 return;
             }
-            StageManager.showStage(clazz, StageManager.getPrimaryStage());
+            StageManager.showStage(clazz);
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());

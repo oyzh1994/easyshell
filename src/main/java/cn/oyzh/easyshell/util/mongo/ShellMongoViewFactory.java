@@ -88,12 +88,12 @@ public class ShellMongoViewFactory {
     /**
      * 导出数据
      *
-     * @param client         客户端
+     * @param client     客户端
+     * @param dbName     数据库名称
      * @param collectionName 集合名称
-     * @param tableName      表名称
      */
-    public static void exportData(ShellMongoClient client, String collectionName, String tableName) {
-        exportData(client, collectionName, tableName, 0, null);
+    public static void exportData(ShellMongoClient client, String dbName, String collectionName) {
+        exportData(client, dbName, collectionName, 0, null);
     }
 
     /**
