@@ -8,10 +8,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 
 public class ShellSSHTtyConnector extends TtyStreamConnector {
 
     private ShellSSHClient client;
+
+    private Reader outputReader;
 
     public ShellSSHTtyConnector(ShellSSHClient client) throws Exception {
         super(client.getCharset());
@@ -34,8 +37,10 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
         if (this.reader == null || !this.isConnected()) {
             try {
                 if (this.reader != null) {
+                    IOUtil.close(this.outputReader);
                     IOUtil.close(this.reader);
                     IOUtil.close(this.writer);
+                    this.outputReader = null;
                     this.reader = null;
                     this.writer = null;
                 }
@@ -48,6 +53,13 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
                 }
                 this.reader = new InputStreamReader(shell.getInputStream(), this.charset());
                 this.writer = new OutputStreamWriter(shell.getOutputStream(), this.charset());
+                String remoteCharset = this.client.getRemoteCharset();
+                if (this.client.isWindows()
+                        && ("gbk".equalsIgnoreCase(remoteCharset) || "gb18030".equalsIgnoreCase(remoteCharset))) {
+                    this.outputReader = new ShellWindowsBomReader(this.reader);
+                } else {
+                    this.outputReader = this.reader;
+                }
             } catch (Exception ex) {
                 throw new IOException(ex);
             }
@@ -62,9 +74,21 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
 
     @Override
     public void close() {
+        IOUtil.close(this.outputReader);
+        this.outputReader = null;
         super.close();
         IOUtil.close(this.client);
         this.client = null;
+    }
+
+    @Override
+    public int read(char[] buffer, int offset, int length) throws IOException {
+        this.ready();
+        int read = this.outputReader.read(buffer, offset, length);
+        if (read > 0) {
+            this.doRead(buffer, offset, read);
+        }
+        return read;
     }
 
     @Override

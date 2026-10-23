@@ -263,21 +263,63 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     private String decodeExecOutput(ByteArrayOutputStream stream, boolean preferUtf8) {
+        byte[] bytes = stream.toByteArray();
+        String bomDecoded = this.decodeBomOutput(bytes);
+        if (bomDecoded != null) {
+            return bomDecoded;
+        }
         if (preferUtf8) {
             try {
-                return StandardCharsets.UTF_8.newDecoder()
+                return stripBom(StandardCharsets.UTF_8.newDecoder()
                         .onMalformedInput(CodingErrorAction.REPORT)
                         .onUnmappableCharacter(CodingErrorAction.REPORT)
-                        .decode(ByteBuffer.wrap(stream.toByteArray()))
-                        .toString();
+                        .decode(ByteBuffer.wrap(bytes))
+                        .toString());
             } catch (CharacterCodingException ex) {
                 JulLog.debug("ssh exec output is not utf-8, fallback to remote charset: {}", this.remoteCharset);
             }
         }
         if (StringUtil.isNotBlank(this.remoteCharset)) {
-            return stream.toString(Charset.forName(this.remoteCharset));
+            return stripBom(new String(bytes, Charset.forName(this.remoteCharset)));
         }
-        return stream.toString(this.getCharset());
+        return stripBom(new String(bytes, this.getCharset()));
+    }
+
+    /**
+     * 按输出 BOM 解码。Windows 下部分 UTF-8 文件会被 type 原样输出 BOM，而控制台代码页仍为
+     * GBK；若按控制台字符集解码，BOM 会显示为乱码。只对带 BOM 的输出切换编码，普通
+     * Windows 本地化错误信息继续使用控制台字符集。
+     */
+    private String decodeBomOutput(byte[] bytes) {
+        if (startsWith(bytes, 0xEF, 0xBB, 0xBF)) {
+            return new String(bytes, 3, bytes.length - 3, StandardCharsets.UTF_8);
+        }
+        if (startsWith(bytes, 0xFF, 0xFE)) {
+            return new String(bytes, 2, bytes.length - 2, StandardCharsets.UTF_16LE);
+        }
+        if (startsWith(bytes, 0xFE, 0xFF)) {
+            return new String(bytes, 2, bytes.length - 2, StandardCharsets.UTF_16BE);
+        }
+        return null;
+    }
+
+    private static boolean startsWith(byte[] bytes, int... prefix) {
+        if (bytes.length < prefix.length) {
+            return false;
+        }
+        for (int i = 0; i < prefix.length; i++) {
+            if ((bytes[i] & 0xFF) != prefix[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String stripBom(String value) {
+        if (!value.isEmpty() && value.charAt(0) == '\uFEFF') {
+            return value.substring(1);
+        }
+        return value;
     }
 
     /**

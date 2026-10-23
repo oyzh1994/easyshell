@@ -1344,11 +1344,85 @@ Windows 虚拟机和 Windows 真机均因无 Unix `stty` 不纳入该自动化�
 - `/tmp/easyshell-jsch-resize-fixed.log`
 - `/tmp/easyshell-jsch-resize-host-{1,3,5,6}.log`
 
+### 11.17 Windows UTF-8 BOM 输出修复
+
+#### 现象与根因
+
+Windows 真机 `192.168.3.50`（主机清单序号 4）的 `chcp` 为 `936`。执行：
+
+```text
+type "C:\Windows\System32\drivers\etc\hosts"
+```
+
+输出的 `hosts` 文件以 UTF-8 BOM（`EF BB BF`，Base64 前缀 `77u/`）开头，原文件首部字节为
+`EF BB BF 23 20 31 32 37 ...`。问题分为两条链路：
+
+1. `ChannelExec` 不经过交互式 PTY，JSch 收到的是原始 `EF BB BF ...` 字节；原逻辑按远端
+   `GBK` 解码，BOM 被解释成 `锘` 加替换字符，随后才是正常 ASCII 内容。
+2. `ChannelShell` 经过 Windows `conhost` 的代码页 936 转换，BOM 在服务端已经被转换成
+   Unicode 字符 `锘?`，再编码为 UTF-8 发给客户端；此时 SSH 字节流中已不存在原始 BOM，
+   客户端无法通过普通字符解码还原。
+
+#### 修复
+
+- `ShellBaseSSHClient.decodeExecOutput()` 先识别 UTF-8、UTF-16LE、UTF-16BE BOM，并按 BOM
+  指定编码解码后移除 `U+FEFF`；无 BOM 的输出继续使用原远端字符集，Windows 本地化错误
+  信息仍可按 GBK 解码。
+- `execUtf8()` 的严格 UTF-8 解码同样移除行首 BOM；遇到非 UTF-8 输出仍回退远端字符集。
+- 新增 `ShellWindowsBomReader`，仅在 Windows 且远端字符集为 `GBK/GB18030` 的交互式 Shell
+  链路启用。它只清理行首的原始 `U+FEFF` 和 conhost 已转换出的已知残片 `锘?`/`锘�`，
+  行中合法出现的同类字符不受影响。
+- `ShellSSHTtyConnector` 保持原 `TtyStreamConnector`、终端控件和对外 API 不变，仅替换
+  读取包装并在关闭/重连时释放包装 Reader。
+- 未自动执行 `chcp 65001`。该操作会改变远端会话代码页，并可能破坏旧 GBK 文件的 `type`
+  输出，因此不作为透明兼容修复。
+
+#### 兼容性与限制
+
+- Exec 路径可以完整保留 BOM 后的内容，仅移除 BOM 本身。
+- 交互式 Shell 路径受 Windows `conhost` 不可逆转换限制：conhost 在生成 `锘?` 时可能同时
+  吞掉 BOM 后的首个 ASCII 字节。本次 Windows `hosts` 的终端输出中，首个 `#` 会被吞掉，
+  但不再出现 `锘?` 乱码；Exec 路径仍返回完整 `# 127.0.0.1 ...` 内容。
+- 修复不改写远端文件，不修改 Windows 代码页，不修改 MINA sshd、`ssh1/sftp1` 或
+  `base-ssh` 代码。
+
+#### 回归结果
+
+| 场景 | 断言 | 结果 |
+| --- | --- | --- |
+| 文件编码 | `hosts` 前 3 字节 Base64 为 `77u/` | 确认 UTF-8 BOM |
+| Exec 通用解码 | `exec()` 不含 `U+9518`、`U+FFFD`、`U+FEFF`，包含 `127.0.0.1` | 通过 |
+| Exec UTF-8 解码 | `execUtf8()` 与 `exec()` 结果一致 | 通过 |
+| 交互式 Shell | 经 `ShellSSHTtyConnector.read()` 后不含 `锘?`、替换字符或原始 BOM | 通过 |
+| 非 Windows TTY | macOS 真机经重写后的 `ShellSSHTtyConnector.read()` 正常返回命令输出 | 通过 |
+| GBK 错误回退 | 不存在的 `where` 命令仍识别为 Windows command not found | 通过 |
+| Windows Docker | `version/info/ps/images/inspect/resource/port/history` 只读回归 | 通过 |
+| BOM Reader 边界 | 行首/行中、单字符分块、孤立 `锘`、原始 `U+FEFF` | 通过 |
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchWindowsEncodingRegression.java`
+- `src/test/java/cn/oyzh/easyshell/ssh/ShellWindowsBomReaderRegression.java`
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchTtyConnectorReadRegression.java`
+
+日志：
+
+- `/tmp/easyshell-jsch-windows-encoding.log`
+- `/tmp/easyshell-jsch-windows-bom-reader.log`
+- `/tmp/easyshell-jsch-docker-encoding-regression.log`
+- `/tmp/easyshell-jsch-tty-connector-read.log`
+
 ## 12. 最终结论
 
 本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、PTY resize 合并、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、旧服务端算法降级、Docker 完整生命周期、Windows/macOS 远端 Docker 只读查询、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。带认证代理与单跳/双跳的组合已单独验证，HTTP 和 SOCKS5 都只命中第一跳，后续跳板复用本地转发，最终目标无直连。旧算法回归只在正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，直连与跳板均完成 SSH/Exec/SFTP，现代服务器不会默认请求弱算法。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化，并验证 OpenSSH 哈希主机名、空行、注释、IPv6 明文/哈希、8 路并发首次信任和不可写路径错误语义。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码中 sshd/JGit 引用均为 0；测试代码按要求保留 sshd 引用，但不进入正式包。平台/压缩协商矩阵本轮 6/6 通过；Windows 真机与 macOS 真机完成 Docker version/info/ps/images/inspect/resource/port/history 和 Compose 只读回归，未创建、删除或修改 Docker 资源。Windows 虚拟机未安装 Docker CLI，Docker 项明确跳过。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` warm 列表为 494–508 ms，`/sbin` 为 242–260 ms，链接点击约 50 ms。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显；PTY resize 在 100 ms 内完成尾部合并，Ubuntu、UOS、macOS 本机和阿里云均只发送 1 次最终 `window-change`。
 
 已将 `ssh2`、`sftp2` 的 40 个主源码文件整体注释，活跃 JSch 路径不依赖这些类；`ssh1`、`sftp1` 和 `base-ssh` 未修改，测试代码按要求保留。`mvn clean test-compile`、`mvn -DskipTests package` 均通过，正式包内 sshd/JGit 和 ssh2/sftp2 条目均为 0。
+
+补充：Windows 真机 `type hosts` 的 UTF-8 BOM 已在 Exec 和交互式 Shell 两条链路修复。
+Exec 按 BOM 解码并移除 BOM，普通无 BOM 输出仍回退 GBK；交互式 Shell 仅清理 conhost 在
+代码页 936 下产生的已知行首 BOM 残片。`ShellJSchWindowsEncodingRegression`、
+`ShellWindowsBomReaderRegression`、macOS TTY 读取回归和 Windows Docker 只读回归均通过，
+`mvn -DskipTests package` 成功。
 
 ## 13. MINA sshd 主源码屏蔽记录
 
