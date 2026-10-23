@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -146,7 +148,7 @@ public class ShellSFTPUtil {
             try {
                 String linkPath = client.realpath(file.getFilePath());
                 if (linkPath != null) {
-//                    file.setLinkPath(linkPath);
+                    //                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(client.stat(linkPath));
                 }
                 return linkPath;
@@ -175,7 +177,7 @@ public class ShellSFTPUtil {
             try {
                 String linkPath = channel.realpath(file.getFilePath());
                 if (linkPath != null) {
-//                    file.setLinkPath(linkPath);
+                    //                    file.setLinkPath(linkPath);
                     file.setLinkAttrs(channel.stat(linkPath));
                 }
                 return linkPath;
@@ -188,5 +190,30 @@ public class ShellSFTPUtil {
             }
         }
         return null;
+    }
+
+    /**
+     * 解析路径，将~展开为用户home目录
+     * SFTP协议不支持~，这里在客户端展开
+     *
+     * @param filePath 文件路径
+     * @return 解析后的路径
+     */
+    public static String resolvePath(String filePath, String home) {
+        filePath = ShellFileUtil.fixFilePath(filePath);
+        if (StringUtil.isBlank(filePath) || !StringUtil.startWith(filePath, "~")) {
+            return filePath;
+        }
+        if (StringUtil.isBlank(home)) {
+            return filePath;
+        }
+        if ("~".equals(filePath)) {
+            return home;
+        }
+        if (StringUtil.startWith(filePath, "~/") || StringUtil.startWith(filePath, "~\\")) {
+            return home + filePath.substring(1);
+        }
+        // ~user形式无法确定目标用户的目录，保持原样
+        return filePath;
     }
 }

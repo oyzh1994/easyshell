@@ -283,7 +283,9 @@ public class ShellServerExec implements AutoCloseable {
                 if (StringUtil.isBlank(cpuUsage)) {
                     cpuUsage = this.client.exec("ps -aux | awk '{sum+=$3} END {print sum}'");
                 }
-                return Double.parseDouble(cpuUsage);
+                if (StringUtil.isNotBlank(cpuUsage)) {
+                    return Double.parseDouble(cpuUsage);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

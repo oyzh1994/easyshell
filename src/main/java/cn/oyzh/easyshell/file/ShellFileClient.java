@@ -11,7 +11,6 @@ import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -137,6 +136,17 @@ public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
      */
     default void deleteDirRecursive(E dir) throws Exception {
         this.deleteDirRecursive(dir.getFilePath());
+    }
+
+    /**
+     * 解析路径
+     *
+     * @param path 路径
+     * @return 结果
+     * @throws Exception 异常
+     */
+    default String resolvePath(String path) throws Exception {
+        return path;
     }
 
     /**

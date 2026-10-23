@@ -13,7 +13,6 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.util.JschUtil;
-import cn.oyzh.ssh.util.SSHUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelExec;
@@ -236,7 +235,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 if (timeout > 0 && System.currentTimeMillis() - start > timeout) {
                     break;
                 }
-                Thread.sleep(10);
+                ThreadUtil.sleep(5);
             }
             String result = this.decodeExecOutput(stream, preferUtf8);
             if (StringUtil.endsWith(result, "\r\n")) {

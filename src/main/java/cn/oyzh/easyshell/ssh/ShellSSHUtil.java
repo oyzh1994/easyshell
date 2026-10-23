@@ -19,6 +19,8 @@ import com.jcraft.jsch.Proxy;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -63,6 +65,26 @@ public class ShellSSHUtil {
     }
 
     /**
+     * osc转义序列（如终端标题、超链接），removeAnsi无法处理
+     */
+    private static final Pattern OSC_PATTERN = Pattern.compile("\u001B\\][^\u0007\u001B]*(?:\u0007|\u001B\\\\)");
+
+    /**
+     * 私有模式、字符集等残留的转义序列，如ESC[?25h、ESC[?2004h、ESC=
+     */
+    private static final Pattern ESCAPE_PATTERN = Pattern.compile("\u001B(?:\\[[?=>][0-9;]*[a-zA-Z]|[=>]|\\([0-9A-Za-z])");
+
+    /**
+     * 方括号形式的提示符，如[user@host dir]#、[user@host dir]$
+     */
+    private static final Pattern BRACKET_PROMPT_PATTERN = Pattern.compile(".*\\[([^\\[\\]]*@[^\\[\\]]*)\\][#$%\u276F]\\s*$");
+
+    /**
+     * 提示符末尾的额外修饰，如git分支信息"(master)"、"[main]"、"git:(master)"
+     */
+    private static final Pattern DECORATION_PATTERN = Pattern.compile("\\s*(?:git:\\([^()]*\\)|\\([^()]*\\)|\\[[^\\[\\]]*\\]|\\{[^{}]*\\})+$");
+
+    /**
      * 解析工作目录
      *
      * @param output  输出
@@ -70,65 +92,327 @@ public class ShellSSHUtil {
      * @return 工作目录
      */
     public static String resolveWorkerDir(String output, String homeDir) {
-        if (StringUtil.isBlank(output) || !StringUtil.contains(output, "@")) {
+        if (StringUtil.isBlank(output)) {
             return null;
         }
-        // 获取最后一行
-        String line = output.lines().toList().getLast();
-        if (StringUtil.isBlank(line) || !StringUtil.contains(line, "@")) {
-            return null;
+        List<String> lines = output.lines().toList();
+        boolean last = true;
+        // 从后往前查找，取最近一个可解析的提示符
+        for (int i = lines.size() - 1; i >= 0; i--) {
+            String line = cleanPromptLine(lines.get(i));
+            if (StringUtil.isBlank(line)) {
+                continue;
+            }
+            String dir = resolvePromptLine(line, homeDir, last);
+            if (dir != null) {
+                return dir;
+            }
+            last = false;
         }
-        // 移除ansi字符串
-        line = SSHUtil.removeAnsi(line);
-        // 移除控制字符串
-        line = SSHUtil.removeControl(line);
-        // 针对部分情况下返回的ansi字符做处理
-        if (line.endsWith("?25h")) {
-            line = line.substring(0, line.length() - 6);
-        } else if (line.endsWith("?2004h")) {
-            line = line.substring(0, line.length() - 8);
-        }
+        return null;
+    }
+
+    /**
+     * 解析单行提示符
+     *
+     * @param line     提示符行
+     * @param homeDir  用户home目录
+     * @param allowBare 是否允许解析无提示符字符的提示符
+     * @return 工作目录
+     */
+    private static String resolvePromptLine(String line, String homeDir, boolean allowBare) {
         // 目录
         String dir = null;
-        // linux特殊
-        if (StringUtil.endsWith(line, "]# ")) {
-            line = line.substring(0, line.length() - 3);
-            line = line.substring(line.lastIndexOf("["));
-            line = line.substring(line.lastIndexOf("@"));
-            dir = line.substring(line.lastIndexOf(" ") + 1);
-            if (!"~".equals(dir) && !dir.startsWith("/")) {
+        // linux特殊，如[user@host dir]#、[user@host dir]$
+        Matcher matcher = BRACKET_PROMPT_PATTERN.matcher(line);
+        if (matcher.matches()) {
+            dir = parseWorkerDir(matcher.group(1));
+            // 方括号形式的提示符通常省略前导斜杠，补全为绝对路径
+            if (dir != null && !"~".equals(dir) && !isAbsolutePath(dir)) {
                 dir = "/" + dir;
             }
-        } else if (StringUtil.endsWith(line, " # ")) {// unix
-            line = line.substring(0, line.length() - 3);
-            line = line.substring(line.lastIndexOf("@"));
-            dir = line.substring(line.lastIndexOf(":") + 1);
-        } else if (StringUtil.endsWithAny(line, "# ", "$ ")) {// linux
-            line = line.substring(0, line.length() - 2);
-            line = line.substring(line.lastIndexOf("@"));
-            dir = line.substring(line.lastIndexOf(":") + 1);
-        } else if (StringUtil.endWithAny(line, ">")) {// windows
-            line = line.substring(0, line.length() - 1);
-            line = line.substring(line.lastIndexOf("@"));
-            dir = line.substring(line.lastIndexOf(" ") + 1);
-            // 处理路径
-            dir = ShellFileUtil.fixFilePath(dir);
-        } else if (StringUtil.endWithAny(line, "% ")) {// macos
-            line = line.substring(0, line.length() - 3);
-            line = line.substring(line.lastIndexOf("@"));
-            dir = line.substring(line.lastIndexOf(" ") + 1);
         }
-        if (dir != null && homeDir != null) {
-            // home目录
+        // 普通提示符，如user@host:dir#、user@host dir$、user@host dir%、C:\dir>、PS C:\dir>
+        if (dir == null) {
+            String body = stripPromptSuffix(line);
+            if (body != null) {
+                dir = parseWorkerDir(body);
+                if (dir == null) {
+                    dir = parseWindowsDir(body);
+                }
+            }
+        }
+        // 部分主题（如powerlevel10k）的提示符末尾没有提示符字符，仅在路径特征明显时才解析
+        if (dir == null && allowBare) {
+            dir = parseBareDir(line);
+        }
+        // 仅包含目录的提示符，如~#、host:~#、[~/proj]$（没有user@host）
+        if (dir == null) {
+            dir = parseDirOnlyPrompt(line);
+        }
+        if (StringUtil.isBlank(dir)) {
+            return null;
+        }
+        // 移除提示符中的额外修饰，如git分支信息
+        dir = stripDecoration(dir);
+        if (StringUtil.isBlank(dir)) {
+            return null;
+        }
+        // windows路径统一
+        if (isWindowsPath(dir)) {
+            dir = ShellFileUtil.fixFilePath(dir);
+        }
+        // home目录
+        if (homeDir != null && !isAbsolutePath(dir)) {
             if ("~".equals(dir)) {
                 dir = homeDir;
-            } else if (StringUtil.startWith(dir, "~")) {// home目录开头
+            } else if (StringUtil.startWith(dir, "~/")) {// home目录开头
                 dir = ShellFileUtil.concat(homeDir, dir.substring(1));
-            } else if (!StringUtil.startWith(dir, "/")) {// home目录可能会被省略
+            } else if (!StringUtil.startWith(dir, "~")) {// home目录可能会被省略
                 dir = ShellFileUtil.concat(homeDir, dir);
             }
         }
         return dir;
+    }
+
+    /**
+     * 清理提示符行中的转义及控制字符
+     *
+     * @param line 原始行
+     * @return 清理后的行
+     */
+    private static String cleanPromptLine(String line) {
+        line = OSC_PATTERN.matcher(line).replaceAll("");
+        line = SSHUtil.removeAnsi(line);
+        line = ESCAPE_PATTERN.matcher(line).replaceAll("");
+        return SSHUtil.removeControl(line);
+    }
+
+    /**
+     * 移除提示符末尾的提示符字符
+     *
+     * @param line 提示符行
+     * @return 移除后的内容，不是提示符时返回null
+     */
+    private static String stripPromptSuffix(String line) {
+        int end = line.length();
+        while (end > 0 && Character.isWhitespace(line.charAt(end - 1))) {
+            end--;
+        }
+        if (end == 0) {
+            return null;
+        }
+        char suffix = line.charAt(end - 1);
+        if (suffix != '#' && suffix != '$' && suffix != '%' && suffix != '>' && suffix != '\u276F' && suffix != '\u03BB') {
+            return null;
+        }
+        return line.substring(0, end - 1).strip();
+    }
+
+    /**
+     * 解析用户主机段中的目录
+     *
+     * @param prompt 用户主机段，如user@host:dir、user@host dir
+     * @return 目录
+     */
+    private static String parseWorkerDir(String prompt) {
+        int at = prompt.lastIndexOf('@');
+        if (at < 0) {
+            return null;
+        }
+        String rest = prompt.substring(at + 1);
+        // 跳过ipv6地址中的冒号，如user@[::1]:/root
+        int offset = 0;
+        if (StringUtil.startWith(rest, "[")) {
+            int end = rest.indexOf(']');
+            if (end < 0) {
+                return null;
+            }
+            offset = end + 1;
+        }
+        int colon = rest.indexOf(':', offset);
+        int space = rest.indexOf(' ', offset);
+        // user@host:dir
+        if (colon >= 0 && (space < 0 || colon < space)) {
+            return trimDir(rest.substring(colon + 1));
+        }
+        // user@host dir
+        if (space >= 0) {
+            return trimDir(rest.substring(space + 1));
+        }
+        return null;
+    }
+
+    /**
+     * 修正目录首尾空白
+     *
+     * @param dir 目录
+     * @return 修正后的目录
+     */
+    private static String trimDir(String dir) {
+        dir = dir.strip();
+        return dir.isEmpty() ? null : dir;
+    }
+
+    /**
+     * 解析windows提示符中的目录，如C:\dir、PS C:\dir、user@host C:\dir
+     *
+     * @param prompt 提示符内容（已移除提示符字符）
+     * @return 目录
+     */
+    private static String parseWindowsDir(String prompt) {
+        String body = prompt.strip();
+        // powershell前缀
+        if (StringUtil.startWithIgnoreCase(body, "PS ")) {
+            body = body.substring(3).strip();
+        }
+        // user@host前缀
+        int at = body.lastIndexOf('@');
+        if (at >= 0) {
+            int space = body.indexOf(' ', at);
+            if (space >= 0) {
+                body = body.substring(space + 1).strip();
+            }
+        }
+        return isWindowsPath(body) ? body : null;
+    }
+
+    /**
+     * 解析无提示符字符的提示符中的目录，仅采用路径特征明显的值
+     *
+     * @param line 提示符行
+     * @return 目录
+     */
+    private static String parseBareDir(String line) {
+        String prompt = stripDecoration(line).strip();
+        int at = prompt.lastIndexOf('@');
+        if (at < 0) {
+            return null;
+        }
+        String rest = prompt.substring(at + 1);
+        int offset = 0;
+        if (StringUtil.startWith(rest, "[")) {
+            int end = rest.indexOf(']');
+            if (end < 0) {
+                return null;
+            }
+            offset = end + 1;
+        }
+        int space = rest.indexOf(' ', offset);
+        int colon = rest.indexOf(':', offset);
+        String dir;
+        if (colon >= 0 && (space < 0 || colon < space)) {
+            dir = rest.substring(colon + 1).strip();
+        } else if (space >= 0) {
+            dir = rest.substring(space + 1).strip();
+        } else {
+            return null;
+        }
+        // 无提示符字符时可能把已输入的命令误判为目录，需排除含空白的值
+        if (dir.isEmpty() || dir.indexOf(' ') >= 0 || dir.indexOf('\t') >= 0) {
+            return null;
+        }
+        if (StringUtil.startWithAny(dir, "~", "/", "./", "../") || isWindowsPath(dir)) {
+            return dir;
+        }
+        return null;
+    }
+
+    /**
+     * 解析仅包含目录的提示符，如~#、~/proj$、host:~#、[~]#、[/etc]$
+     *
+     * @param line 提示符行
+     * @return 目录
+     */
+    private static String parseDirOnlyPrompt(String line) {
+        String body = stripPromptSuffix(line);
+        if (body == null) {
+            return null;
+        }
+        body = body.strip();
+        // 移除提示符外的括号
+        while (body.length() >= 2 && (body.startsWith("[") && body.endsWith("]")
+                || body.startsWith("(") && body.endsWith(")")
+                || body.startsWith("{") && body.endsWith("}"))) {
+            body = body.substring(1, body.length() - 1).strip();
+        }
+        if (body.isEmpty()) {
+            return null;
+        }
+        // windows路径
+        if (isWindowsPath(body)) {
+            return body;
+        }
+        // hostname:dir
+        int colon = body.indexOf(':');
+        if (colon > 0 && body.indexOf(' ') < 0 && !StringUtil.startWith(body, "/")) {
+            String host = body.substring(0, colon);
+            if (!StringUtil.contains(host, "/")) {
+                String dir = body.substring(colon + 1).strip();
+                return isPathLike(dir) ? dir : null;
+            }
+        }
+        // 目录本身就是明显路径时才采用，避免把普通输出行当作目录
+        return isPathLike(body) ? body : null;
+    }
+
+    /**
+     * 是否为明显的路径
+     *
+     * @param path 路径
+     * @return 结果
+     */
+    private static boolean isPathLike(String path) {
+        if (StringUtil.isBlank(path)) {
+            return false;
+        }
+        return StringUtil.startWithAny(path, "~", "/", "./", "../") || isWindowsPath(path);
+    }
+
+    /**
+     * 移除目录末尾的修饰信息
+     *
+     * @param dir 目录
+     * @return 移除后的目录
+     */
+    private static String stripDecoration(String dir) {
+        dir = dir.strip();
+        String prev;
+        do {
+            prev = dir;
+            dir = DECORATION_PATTERN.matcher(dir).replaceFirst("").strip();
+        } while (!dir.equals(prev));
+        // 清理不完整/连续的方括号修饰，如dir][git]
+        while (dir.endsWith("]")) {
+            dir = dir.substring(0, dir.length() - 1).strip();
+        }
+        return dir;
+    }
+
+    /**
+     * 是否为windows路径
+     *
+     * @param path 路径
+     * @return 结果
+     */
+    private static boolean isWindowsPath(String path) {
+        if (StringUtil.isBlank(path)) {
+            return false;
+        }
+        if (path.length() >= 2 && path.charAt(1) == ':' && Character.isLetter(path.charAt(0))) {
+            return true;
+        }
+        return StringUtil.startWith(path, "\\\\") || StringUtil.startWith(path, "\\");
+    }
+
+    /**
+     * 是否为绝对路径
+     *
+     * @param path 路径
+     * @return 结果
+     */
+    private static boolean isAbsolutePath(String path) {
+        return StringUtil.startWith(path, "/") || isWindowsPath(path);
     }
 
 //    /**

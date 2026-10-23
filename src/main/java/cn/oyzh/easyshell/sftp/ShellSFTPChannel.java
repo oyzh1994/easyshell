@@ -23,14 +23,8 @@ import java.util.stream.Collectors;
  */
 public class ShellSFTPChannel extends ShellSSHChannel {
 
-    /**
-     * 链接管理器
-     */
-    private ShellSFTPCache realpathCache;
-
-    public ShellSFTPChannel(ChannelSftp channel, ShellSFTPCache realpathCache) {
+    public ShellSFTPChannel(ChannelSftp channel) {
         super(channel);
-        this.realpathCache = realpathCache;
     }
 
     @Override
@@ -38,13 +32,17 @@ public class ShellSFTPChannel extends ShellSSHChannel {
         return (ChannelSftp) super.getChannel();
     }
 
+    private String resolvePath(String file) throws SftpException {
+        return ShellSFTPUtil.resolvePath(file, this.pwd());
+    }
+
     public Vector<ChannelSftp.LsEntry> ls(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         return this.getChannel().ls(path);
     }
 
     public void cd(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         this.getChannel().cd(path);
     }
 
@@ -56,7 +54,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public String realpath(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         return this.getChannel().realpath(path);
     }
 
@@ -68,29 +66,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public List<ShellSFTPFile> lsFile(String path) throws Exception {
-        // String filePath = ShellFileUtil.fixFilePath(path);
         // 文件列表
         List<ShellSFTPFile> files = new ArrayList<>();
-        // // 总列表
-        // Vector<ChannelSftp.LsEntry> vector = this.ls(path);
-        // // 遍历列表
-        // for (ChannelSftp.LsEntry lsEntry : vector) {
-        //     ShellSFTPFile file = new ShellSFTPFile(filePath, lsEntry);
-        //     if (!file.isNormal()) {
-        //         continue;
-        //     }
-        //     files.add(file);
-        //     // 处理链接文件
-        //     if (file.isLink()) {
-        //         this.realpathCache.realpath(file, this);
-        //     }
-        // }
-        //// 过滤链接文件
-        // List<ShellSFTPFile> linkFiles = files.stream().filter(ShellSFTPFile::isLink).toList();
-        //// 处理链接文件
-        // this.realpathManager.put(linkFiles);
-        //// 等待完成
-        // this.realpathManager.waitComplete();
         this.lsFile(path, files::add);
         return files;
     }
@@ -103,7 +80,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public void lsFile(String path, Consumer<ShellSFTPFile> fileCallback) throws Exception {
-        String filePath = ShellFileUtil.fixFilePath(path);
+        String filePath = this.resolvePath(path);
         // 总列表
         Vector<ChannelSftp.LsEntry> vector = this.ls(path);
         // 遍历列表
@@ -126,12 +103,12 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     }
 
     public void rm(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         this.getChannel().rm(path);
     }
 
     public void rmdir(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         this.getChannel().rmdir(path);
     }
 
@@ -140,13 +117,13 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     }
 
     public void mkdir(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         this.getChannel().mkdir(path);
     }
 
     public boolean exist(String path) throws SftpException {
         try {
-            path = ShellFileUtil.fixFilePath(path);
+            path = this.resolvePath(path);
             return this.stat(path) != null;
         } catch (SftpException ex) {
             if (ex.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
@@ -157,7 +134,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     }
 
     public void touch(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
         try {
             this.getChannel().put(stream, path);
@@ -167,7 +144,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     }
 
     public void rename(String path, String newPath) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         this.getChannel().rename(path, newPath);
     }
 
@@ -179,7 +156,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public SftpATTRS stat(String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         return this.getChannel().stat(path);
     }
 
@@ -217,7 +194,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public OutputStream put(String dest) throws SftpException {
-        dest = ShellFileUtil.fixFilePath(dest);
+        dest = this.resolvePath(dest);
         return this.getChannel().put(dest);
     }
 
@@ -229,7 +206,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public InputStream get(String src) throws SftpException {
-        src = ShellFileUtil.fixFilePath(src);
+        src = this.resolvePath(src);
         return this.getChannel().get(src);
     }
 
@@ -241,8 +218,8 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public void get(String src, String dest) throws SftpException {
-        src = ShellFileUtil.fixFilePath(src);
-        dest = ShellFileUtil.fixFilePath(dest);
+        src = this.resolvePath(src);
+        dest = this.resolvePath(dest);
         this.getChannel().get(src, dest);
     }
 
@@ -254,7 +231,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @throws SftpException 异常
      */
     public void get(String src, OutputStream dest) throws SftpException {
-        src = ShellFileUtil.fixFilePath(src);
+        src = this.resolvePath(src);
         try {
             this.getChannel().get(src, dest);
         } finally {
@@ -269,14 +246,14 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     @Deprecated
     public void put(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        src = ShellFileUtil.fixFilePath(src);
-        dest = ShellFileUtil.fixFilePath(dest);
+        src = this.resolvePath(src);
+        dest = this.resolvePath(dest);
         this.getChannel().put(src, dest, monitor, mode);
     }
 
     @Deprecated
     public void put(InputStream src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        dest = ShellFileUtil.fixFilePath(dest);
+        dest = this.resolvePath(dest);
         try {
             this.getChannel().put(src, dest, monitor, mode);
         } finally {
@@ -291,7 +268,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     @Deprecated
     public OutputStream put(String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        dest = ShellFileUtil.fixFilePath(dest);
+        dest = this.resolvePath(dest);
         return this.getChannel().put(dest, monitor, mode);
     }
 
@@ -302,14 +279,14 @@ public class ShellSFTPChannel extends ShellSSHChannel {
 
     @Deprecated
     public void get(String src, String dest, SftpProgressMonitor monitor, int mode) throws SftpException {
-        src = ShellFileUtil.fixFilePath(src);
-        dest = ShellFileUtil.fixFilePath(dest);
+        src = this.resolvePath(src);
+        dest = this.resolvePath(dest);
         this.getChannel().get(src, dest, monitor, mode);
     }
 
     @Deprecated
     public InputStream get(String src, SftpProgressMonitor monitor) throws SftpException {
-        src = ShellFileUtil.fixFilePath(src);
+        src = this.resolvePath(src);
         return this.getChannel().get(src, monitor);
     }
 
@@ -320,13 +297,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      * @param path       文件路径
      */
     public void chmod(int permission, String path) throws SftpException {
-        path = ShellFileUtil.fixFilePath(path);
+        path = this.resolvePath(path);
         this.getChannel().chmod(permission, path);
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        this.realpathCache = null;
     }
 }

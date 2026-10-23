@@ -378,6 +378,12 @@ public class ShellFileUtil {
      * @return 修正后的路径
      */
     public static String fixFilePath(String filePath) {
+        if (filePath == null) {
+            return filePath;
+        }
+        if (filePath.startsWith("~")) {
+            return filePath;
+        }
         if (!filePath.startsWith("/")) {
             filePath = "/" + filePath;
         }

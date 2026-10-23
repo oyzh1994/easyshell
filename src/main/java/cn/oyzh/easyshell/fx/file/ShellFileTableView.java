@@ -886,8 +886,11 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     public void cd(String filePath) {
         if (!StringUtil.isBlank(filePath)) {
             try {
+                filePath = this.client.resolvePath(filePath);
                 if (this.client.exist(filePath)) {
                     this.intoDir(filePath);
+                } else {
+                    JulLog.warn("filePath:{} not exists", filePath);
                 }
             } catch (Exception ex) {
                 if (!this.client.isClosed()) {
