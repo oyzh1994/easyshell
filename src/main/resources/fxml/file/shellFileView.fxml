@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField?>
 <?import cn.oyzh.fx.gui.media.MediaControlBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph?>
@@ -42,11 +42,11 @@
                             <Insets left="5" top="8"/>
                         </FXHBox.margin>
                     </NextSVGGlyph>
-                    <EditorFormatTypeComboBox realHeight="22" fx:id="format" format="RAW">
+                    <EditorFormatTypeTextField realHeight="22" fx:id="format" format="RAW">
                         <FXHBox.margin>
                             <Insets left="10" top="4"/>
                         </FXHBox.margin>
-                    </EditorFormatTypeComboBox>
+                    </EditorFormatTypeTextField>
                     <FontSizeComboBox realHeight="22" fx:id="fontSize">
                         <FXHBox.margin>
                             <Insets left="10" top="4"/>

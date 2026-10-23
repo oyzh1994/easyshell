@@ -13,7 +13,7 @@
 //import cn.oyzh.easyshell.mongo.record.MongoRecord;
 //import cn.oyzh.easyshell.store.ShellSettingStore;
 //import cn.oyzh.fx.editor.incubator.EditorFormatType;
-//import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+//import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
 //import cn.oyzh.fx.editor.incubator.EditorUtil;
 //import cn.oyzh.fx.gui.media.MediaControlBox;
 //import cn.oyzh.fx.gui.svg.glyph.MusicSVGGlyph;
@@ -92,7 +92,7 @@
 //     * 格式
 //     */
 //    @FXML
-//    private EditorFormatTypeComboBox format;
+//    private EditorFormatTypeTextField format;
 //
 //    /**
 //     * 字体大小

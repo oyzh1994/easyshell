@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField?>
 <?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
@@ -18,11 +18,11 @@
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </HighlightTextField>
-        <EditorFormatTypeComboBox prefHeight="22" fx:id="format" initIndex="0">
+        <EditorFormatTypeTextField prefHeight="22" fx:id="format" initIndex="0">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
-        </EditorFormatTypeComboBox>
+        </EditorFormatTypeTextField>
         <SaveSVGGlyph enableWaiting="false" disable="true" tipText="%base.saveTip1" fx:id="save"  onMousePrimaryClicked="#save">
             <HBox.margin>
                 <Insets left="5" top="10"/>

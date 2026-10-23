@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.popups.redis.ShellRedisKeyQRCodePopupController;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStringKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
-import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
 import cn.oyzh.fx.editor.incubator.EditorUtil;
 import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.chooser.FXChooser;
@@ -70,7 +70,7 @@ public class ShellRedisStringKeyController extends ShellRedisKeyController<Shell
      * 格式
      */
     @FXML
-    private EditorFormatTypeComboBox format;
+    private EditorFormatTypeTextField format;
 
     /**
      * 数据组件

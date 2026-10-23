@@ -2,7 +2,7 @@
 
 <?import cn.oyzh.easyshell.fx.redis.ShellRedisKeyRowTableView?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField?>
 <?import cn.oyzh.fx.gui.page.PageBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
@@ -90,11 +90,11 @@
         </PageBox>
     </FXHBox>
     <FXHBox groupId="dataToBig" disable="true" realHeight="30" flexWidth="100%" fx:id="dataAction">
-        <EditorFormatTypeComboBox prefHeight="22" tipText="%base.format" fx:id="format">
+        <EditorFormatTypeTextField prefHeight="22" tipText="%base.format" fx:id="format">
             <HBox.margin>
                 <Insets left="5" top="5"/>
             </HBox.margin>
-        </EditorFormatTypeComboBox>
+        </EditorFormatTypeTextField>
         <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1"
                       onMousePrimaryClicked="#saveKeyValue">
             <HBox.margin>

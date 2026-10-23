@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.popups.zk.ShellZKNodeQRCodePopupController;
 import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
-import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
 import cn.oyzh.fx.editor.incubator.EditorUtil;
 import cn.oyzh.fx.gui.combobox.CharsetComboBox;
 import cn.oyzh.fx.gui.tabs.SubTabController;
@@ -99,7 +99,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
      * 格式
      */
     @FXML
-    protected EditorFormatTypeComboBox format;
+    protected EditorFormatTypeTextField format;
 
     /**
      * 数据面板

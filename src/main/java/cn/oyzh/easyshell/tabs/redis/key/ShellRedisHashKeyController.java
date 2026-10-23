@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.redis.key.ShellRedisHashValue;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisHashKeyTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
-import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
 import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
@@ -85,13 +85,13 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
      * 格式
      */
     @FXML
-    private EditorFormatTypeComboBox format;
+    private EditorFormatTypeTextField format;
 
     /**
      * 字段格式
      */
     @FXML
-    private EditorFormatTypeComboBox fieldFormat;
+    private EditorFormatTypeTextField fieldFormat;
 
     /**
      * 字段操作

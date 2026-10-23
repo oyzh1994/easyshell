@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
-import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.HighlightTextField;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -65,7 +65,7 @@ public class ShellZKQueryDataTabController extends RichTabController {
      * 格式
      */
     @FXML
-    private EditorFormatTypeComboBox format;
+    private EditorFormatTypeTextField format;
 
     /**
      * 初始化数据

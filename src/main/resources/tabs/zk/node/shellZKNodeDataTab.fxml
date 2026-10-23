@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
-<?import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox?>
+<?import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField?>
 <?import cn.oyzh.fx.gui.combobox.CharsetComboBox?>
 <?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
@@ -28,11 +28,11 @@
     </graphic>
     <FXVBox flexWidth="100%" flexHeight="100%">
         <FXHBox realHeight="30" flexWidth="100%">
-            <EditorFormatTypeComboBox prefHeight="22" fx:id="format" initIndex="0" groupId="dataToBig">
+            <EditorFormatTypeTextField prefHeight="22" fx:id="format" initIndex="0" groupId="dataToBig">
                 <HBox.margin>
                     <Insets left="5" top="5"/>
                 </HBox.margin>
-            </EditorFormatTypeComboBox>
+            </EditorFormatTypeTextField>
             <SaveSVGGlyph fx:id="dataSave" disable="true" tipText="%base.saveTip1"
                           onMousePrimaryClicked="#saveNodeData" groupId="dataToBig">
                 <HBox.margin>

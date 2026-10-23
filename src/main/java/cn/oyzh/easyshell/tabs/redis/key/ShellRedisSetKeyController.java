@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.trees.redis.key.ShellRedisSetKeyTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
-import cn.oyzh.fx.editor.incubator.EditorFormatTypeComboBox;
+import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
 import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel;
 import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -60,7 +60,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
      * 格式
      */
     @FXML
-    private EditorFormatTypeComboBox format;
+    private EditorFormatTypeTextField format;
 
     /**
      * 数据组件

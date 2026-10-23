@@ -61,7 +61,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
 //     * 格式
 //     */
 //    @FXML
-//    private EditorFormatTypeComboBox format;
+//    private EditorFormatTypeTextField format;
 
     /**
      * 数据组件
