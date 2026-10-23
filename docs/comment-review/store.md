@@ -246,10 +246,10 @@
 
 | 方法 | 说明 | 关键逻辑/调用 |
 |---|---|---|
-| `init()` | 初始化 JDBC 存储引擎 | `JdbcConst.dbCacheSize(1024)`、`dbDialect(JdbcDialect.H2)`、`dbFile(ShellConst.getStorePath()+"db")`，再 `JdbcManager.takeoff()`；捕获异常且消息含 `Database may be already in use` 时 `MessageBox.warn(I18nHelper.programTip1())` |
+| `init()` | 初始化 JDBC 存储引擎 | 先 `H2SqliteMigrator.migrateIfNeeded(storeDatabase, storeDatabase)` 静默迁移旧 H2 数据；再 `JdbcConst.dbCacheSize(1024)`、`dbDialect(JdbcDialect.SQLITE)`、`JdbcManager.dialect = JdbcDialect.SQLITE`、`dbFile(storeDatabase)`，之后 `JdbcManager.takeoff()`；捕获异常且消息含 `Database may be already in use` 时 `MessageBox.warn(I18nHelper.programTip1())` |
 | `destroy()` | 销毁存储引擎 | `JdbcManager.destroy()` |
 
-- 调用链：`ShellStoreUtil.init() → JdbcConst.* → JdbcManager.takeoff() → （异常）MessageBox.warn()`
+- 调用链：`ShellStoreUtil.init() → H2SqliteMigrator.migrateIfNeeded() → JdbcConst.* → JdbcManager.takeoff() → （异常）MessageBox.warn()`
 - 调用链：`ShellStoreUtil.destroy() → JdbcManager.destroy()`
 
 ## ShellTerminalHistoryStore
