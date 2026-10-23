@@ -15,11 +15,13 @@ import java.util.List;
 public class ShellUtil {
 
     public static boolean isCommandNotFound(String output) {
-        return StringUtil.containsAnyIgnoreCase(output, "not found", "未找到命令", "不是内部或外部");
+        return StringUtil.containsAnyIgnoreCase(output, "not found", "未找到命令", "不是内部或外部",
+                "无法找到文件", "找不到文件");
     }
 
     public static boolean isWindowsCommandNotFound(String output, String cmd) {
-        return StringUtil.containsIgnoreCase(output, "'" + cmd + "'");
+        return StringUtil.containsIgnoreCase(output, "'" + cmd + "'")
+                || StringUtil.containsAnyIgnoreCase(output, "不是内部或外部", "无法找到文件", "找不到文件");
     }
 
     //    public static String fixWindowsFilePath(String filePath) {

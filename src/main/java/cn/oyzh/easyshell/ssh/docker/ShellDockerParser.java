@@ -213,12 +213,13 @@ public class ShellDockerParser {
                 || ShellUtil.isWindowsCommandNotFound(output, "docker")) {
             return Collections.emptyList();
         }
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info(output);
-        }
         List<ShellDockerImageHistory> histories = new ArrayList<>();
         String[] lines = output.split("\n");
-        for (String line : lines) {
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("docker history lines:{}", lines.length);
+        }
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
             if (StringUtil.isBlank(line)) {
                 continue;
             }
@@ -231,7 +232,7 @@ public class ShellDockerParser {
                 columns = line.split("\r\t", -1);
             }
             if (columns.length < 4) {
-                JulLog.warn("ignore invalid docker history output line:{}", line);
+                JulLog.warn("ignore invalid docker history output line:{}, columns:{}", i + 1, columns.length);
                 continue;
             }
             String imageId = columns[0];

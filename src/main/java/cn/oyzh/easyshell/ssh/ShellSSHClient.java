@@ -718,21 +718,22 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             try {
                 if (this.isWindows()) {
                     String output = this.exec("where docker.exe");
-                    if (StringUtil.isBlank(output)) {
+                    String environmentPath = this.resolveCommandDirectory(output, "docker.exe");
+                    if (environmentPath == null) {
                         JulLog.warn("docker is not available");
-                    } else if (!ShellUtil.isWindowsCommandNotFound(output, "docker")) {
-                        String env = output.substring(0, output.lastIndexOf("\\"));
-                        this.addEnvironmentPath(env);
+                    } else {
+                        this.addEnvironmentPath(environmentPath);
                     }
                 } else {
                     String output = this.exec("which docker");
-                    if (StringUtil.isBlank(output)) {
-                        JulLog.warn("docker is not available");
-                    } else if (!ShellUtil.isCommandNotFound(output)) {
-                        String env = output.substring(0, output.lastIndexOf("/"));
-                        this.addEnvironmentPath(env);
-                    } else if (this.isMacos() && this.sftpClient().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
+                    String environmentPath = this.resolveCommandDirectory(output, "docker");
+                    if (environmentPath != null) {
+                        this.addEnvironmentPath(environmentPath);
+                    } else if (this.isMacos()
+                            && this.sftpClient().exist("/Applications/Docker.app/Contents/Resources/bin/docker")) {
                         this.addEnvironmentPath("/Applications/Docker.app/Contents/Resources/bin/");
+                    } else {
+                        JulLog.warn("docker is not available");
                     }
                 }
             } catch (Exception ex) {
@@ -740,6 +741,25 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             }
         }
         return this.dockerExec;
+    }
+
+    /**
+     * 从 which/where 输出中提取可执行文件目录。兼容多行输出和 Windows 本地化失败提示。
+     */
+    private String resolveCommandDirectory(String output, String command) {
+        if (StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || ShellUtil.isWindowsCommandNotFound(output, command)) {
+            return null;
+        }
+        for (String line : output.lines().toList()) {
+            String candidate = line.trim().replace("\"", "");
+            int separator = Math.max(candidate.lastIndexOf('\\'), candidate.lastIndexOf('/'));
+            if (separator > 0) {
+                return candidate.substring(0, separator);
+            }
+        }
+        return null;
     }
 
     private void addEnvironmentPath(String path) {

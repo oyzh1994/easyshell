@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.math.BigDecimal;
 
@@ -578,7 +579,20 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_compose_version() {
-        return this.client.exec("docker-compose version");
+        String output = this.client.exec("docker-compose version");
+        if (this.isCommandUnavailable(output, "docker-compose")) {
+            String pluginOutput = this.client.exec("docker compose version");
+            if (!this.isCommandUnavailable(pluginOutput, "docker")) {
+                return pluginOutput;
+            }
+        }
+        return output;
+    }
+
+    private boolean isCommandUnavailable(String output, String command) {
+        return StringUtil.isBlank(output)
+                || ShellUtil.isCommandNotFound(output)
+                || (this.client.isWindows() && ShellUtil.isWindowsCommandNotFound(output, command));
     }
 
     /**

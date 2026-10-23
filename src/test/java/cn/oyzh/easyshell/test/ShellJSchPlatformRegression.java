@@ -82,7 +82,8 @@ public final class ShellJSchPlatformRegression {
         }
         String value = output.toLowerCase();
         return value.contains("not recognized") || value.contains("not found")
-                || value.contains("command not found") || value.contains("不是内部或外部命令");
+                || value.contains("command not found") || value.contains("不是内部或外部命令")
+                || value.contains("无法找到文件") || value.contains("找不到文件");
     }
 
     private static String dockerAvailability(String output) {
