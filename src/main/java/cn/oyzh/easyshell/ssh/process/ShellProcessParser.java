@@ -62,6 +62,9 @@ public class ShellProcessParser {
      * @return 结果
      */
     public static List<ShellProcessInfo> psForUnix(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyList();
+        }
         try {
             String[] lines = output.split("\n");
             List<ShellProcessInfo> list = new ArrayList<>();
@@ -157,6 +160,9 @@ public class ShellProcessParser {
      * @return 结果
      */
     public static List<ShellProcessInfo> psForWindows(String output, Map<String, ShellProcessAttr> attrs, long totalMemory) {
+        if (StringUtil.isBlank(output) || attrs == null || totalMemory <= 0) {
+            return Collections.emptyList();
+        }
         try {
             String[] lines = output.split("\n");
             List<ShellProcessInfo> list = new ArrayList<>();
@@ -217,6 +223,9 @@ public class ShellProcessParser {
      * @param speed 速度信息
      */
     public static void parseNetworkSpeed_linux(List<ShellProcessInfo> infos, Map<String, double[]> speed) {
+        if (infos == null || speed == null) {
+            return;
+        }
         for (Map.Entry<String, double[]> entry : speed.entrySet()) {
             try {
                 int pid = Integer.parseInt(entry.getKey());
@@ -239,6 +248,9 @@ public class ShellProcessParser {
      * @param speed 速度信息
      */
     public static void parseNetworkSpeed_macos(List<ShellProcessInfo> infos, Map<String, double[]> speed) {
+        if (infos == null || speed == null) {
+            return;
+        }
         for (Map.Entry<String, double[]> entry : speed.entrySet()) {
             try {
                 String[] arr = entry.getKey().split("\\.");
@@ -264,6 +276,9 @@ public class ShellProcessParser {
      * @param speed 速度信息
      */
     public static void parseNetworkSpeed_windows(List<ShellProcessInfo> infos, Map<String, double[]> speed) {
+        if (infos == null || speed == null) {
+            return;
+        }
         for (Map.Entry<String, double[]> entry : speed.entrySet()) {
             try {
                 int pid = Integer.parseInt(entry.getKey());

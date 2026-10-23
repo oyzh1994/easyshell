@@ -30,7 +30,7 @@ public class ShellServerExec implements AutoCloseable {
     /**
      * shell客户端
      */
-    private ShellSSHClient client;
+    private volatile ShellSSHClient client;
 
     /**
      * 服务器磁盘对象
@@ -169,6 +169,9 @@ public class ShellServerExec implements AutoCloseable {
      * @return 服务监控信息
      */
     public synchronized ShellServerMonitor monitor() {
+        if (this.client == null) {
+            return new ShellServerMonitor();
+        }
         // 如果缓存的记录在指定时间内，则返回缓存记录
         if (this.lastMonitor != null && System.currentTimeMillis() - this.lastMonitorTime < 3000) {
             return this.lastMonitor;
@@ -197,7 +200,7 @@ public class ShellServerExec implements AutoCloseable {
         ThreadUtil.start(() -> {
             try {
                 double[] data = this.disk();
-                if (this.client.isUnix() || this.client.isWindows()) {
+                if (this.client != null && (this.client.isUnix() || this.client.isWindows())) {
                     monitor.setDiskReadSpeed(data[0]);
                     monitor.setDiskWriteSpeed(data[1]);
                 } else {
@@ -213,7 +216,7 @@ public class ShellServerExec implements AutoCloseable {
         ThreadUtil.start(() -> {
             try {
                 double[] data = this.network();
-                if (this.client.isWindows()) {
+                if (this.client != null && this.client.isWindows()) {
                     monitor.setNetworkSendSpeed(data[0]);
                     monitor.setNetworkReceiveSpeed(data[1]);
                 } else {
@@ -299,6 +302,9 @@ public class ShellServerExec implements AutoCloseable {
      * @return 内存使用率
      */
     public double memoryUsage() {
+        if (this.client == null) {
+            return -1;
+        }
         try {
             if (this.client.isMacos()) {
                 String output = this.client.exec("vm_stat | awk '/Pages active/ {active = $3} /Pages inactive/ {inactive = $3} /Pages speculative/ {speculative = $3} /Pages wired down/ {wired = $3} END {total = active + inactive + speculative + wired; used = active + wired; printf \"%.2f%%\\n\", (used / total) * 100}'");
@@ -626,6 +632,9 @@ public class ShellServerExec implements AutoCloseable {
      * @return 网络使用情况
      */
     public double[] network() {
+        if (this.client == null) {
+            return new double[]{-1L, -1L};
+        }
         try {
             if (this.client.isMacos()) {
                 String output = this.client.exec("top -l 1 -s 0 | grep -E '^Networks'");

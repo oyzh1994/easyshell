@@ -179,6 +179,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private Session tunnelSession;
 
+    private final Object tunnelLock = new Object();
+
     /**
      * shell密钥存储
      */
@@ -259,7 +261,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public synchronized ShellSFTPClient sftpClient() {
         try {
             if (this.sftpClient == null) {
-                this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session, false);
+                this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session, false, this.dynamicChannelPermits);
                 this.sftpClient.setSessionSupplier(() -> {
                     try {
                         this.ensureSessionConnected(this.connectTimeout());
@@ -416,7 +418,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    public synchronized void close() {
+    public void close() {
         try {
             this.releaseResources();
             this.state.set(ShellConnState.CLOSED);
@@ -441,11 +443,13 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         this.processExec = null;
         this.closeQuietly(this.dockerExec, "docker exec");
         this.dockerExec = null;
-        if (this.tunnelForwarder != null) {
-            this.tunnelForwarder.destroy();
-            this.tunnelForwarder = null;
+        synchronized (this.tunnelLock) {
+            if (this.tunnelForwarder != null) {
+                this.tunnelForwarder.destroy();
+                this.tunnelForwarder = null;
+            }
+            this.tunnelSession = null;
         }
-        this.tunnelSession = null;
         if (this.session != null) {
             this.session.disconnect();
             this.session = null;
@@ -469,7 +473,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    public synchronized void start(int timeout) {
+    public void start(int timeout) {
         if (this.isConnected() || this.isConnecting()) {
             return;
         }
@@ -505,14 +509,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     @Override
-    protected synchronized void onSessionConnected() {
-        if (this.tunnelSession != this.session) {
-            if (this.tunnelForwarder != null) {
-                this.tunnelForwarder.destroy();
-                this.tunnelForwarder = null;
+    protected void onSessionConnected() {
+        synchronized (this.tunnelLock) {
+            if (this.tunnelSession != this.session) {
+                if (this.tunnelForwarder != null) {
+                    this.tunnelForwarder.destroy();
+                    this.tunnelForwarder = null;
+                }
+                this.tunnelSession = this.session;
+                this.initTunneling();
             }
-            this.tunnelSession = this.session;
-            this.initTunneling();
         }
         this.state.set(ShellConnState.CONNECTED);
     }

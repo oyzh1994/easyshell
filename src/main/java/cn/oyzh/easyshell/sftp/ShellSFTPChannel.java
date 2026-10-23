@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHChannel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
@@ -14,6 +13,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -23,8 +23,28 @@ import java.util.stream.Collectors;
  */
 public class ShellSFTPChannel extends ShellSSHChannel {
 
+    private final Runnable closeCallback;
+
+    private final AtomicBoolean closeCallbackInvoked = new AtomicBoolean();
+
     public ShellSFTPChannel(ChannelSftp channel) {
+        this(channel, null);
+    }
+
+    public ShellSFTPChannel(ChannelSftp channel, Runnable closeCallback) {
         super(channel);
+        this.closeCallback = closeCallback;
+    }
+
+    @Override
+    public void close() {
+        try {
+            super.close();
+        } finally {
+            if (this.closeCallback != null && this.closeCallbackInvoked.compareAndSet(false, true)) {
+                this.closeCallback.run();
+            }
+        }
     }
 
     @Override
@@ -33,7 +53,7 @@ public class ShellSFTPChannel extends ShellSSHChannel {
     }
 
     private String resolvePath(String file) throws SftpException {
-        return ShellSFTPUtil.resolvePath(file, this.pwd());
+        return ShellSFTPUtil.resolvePath(file, this::pwd);
     }
 
     public Vector<ChannelSftp.LsEntry> ls(String path) throws SftpException {

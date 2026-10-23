@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sftp;
 
+import cn.oyzh.common.function.ExceptionSupplier;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
@@ -197,21 +198,30 @@ public class ShellSFTPUtil {
      * SFTP协议不支持~，这里在客户端展开
      *
      * @param filePath 文件路径
+     * @param homeFunc home目录获取函数
      * @return 解析后的路径
      */
-    public static String resolvePath(String filePath, String home) {
+    public static String resolvePath(String filePath, ExceptionSupplier<String> homeFunc) {
         filePath = ShellFileUtil.fixFilePath(filePath);
         if (StringUtil.isBlank(filePath) || !StringUtil.startWith(filePath, "~")) {
             return filePath;
         }
-        if (StringUtil.isBlank(home)) {
+        if (homeFunc == null) {
             return filePath;
         }
-        if ("~".equals(filePath)) {
-            return home;
-        }
-        if (StringUtil.startWith(filePath, "~/") || StringUtil.startWith(filePath, "~\\")) {
-            return home + filePath.substring(1);
+        try {
+            String home = homeFunc.get();
+            if (StringUtil.isBlank(home)) {
+                return filePath;
+            }
+            if ("~".equals(filePath)) {
+                return home;
+            }
+            if (StringUtil.startWith(filePath, "~/") || StringUtil.startWith(filePath, "~\\")) {
+                return home + filePath.substring(1);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         // ~user形式无法确定目标用户的目录，保持原样
         return filePath;

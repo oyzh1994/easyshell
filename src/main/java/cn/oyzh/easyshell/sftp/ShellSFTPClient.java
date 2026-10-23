@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
@@ -35,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -90,7 +92,13 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     public ShellSFTPClient(ShellConnect shellConnect, Session session, boolean ownsSession) {
-        super(shellConnect);
+        this(shellConnect, session, ownsSession,
+                new Semaphore(MAX_DYNAMIC_CHANNELS, true));
+    }
+
+    public ShellSFTPClient(ShellConnect shellConnect, Session session, boolean ownsSession,
+                           Semaphore dynamicChannelPermits) {
+        super(shellConnect, dynamicChannelPermits);
         this.ownsSession = ownsSession;
         this.session = session;
         this.cache = new ShellSFTPCache();
@@ -118,14 +126,22 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    public synchronized void close() {
+    protected void ensureSessionConnected(int timeout) throws Exception {
+        if (this.ownsSession) {
+            super.ensureSessionConnected(timeout);
+            return;
+        }
+        Session activeSession = this.sessionSupplier == null ? this.session : this.sessionSupplier.get();
+        if (activeSession == null || !activeSession.isConnected()) {
+            throw new JSchException("ssh session is disconnected");
+        }
+        this.session = activeSession;
+    }
+
+    @Override
+    public void close() {
         try {
             this.closeDelayResources();
-            //// 清除用户、分组信息
-            //if (this.attr != null) {
-            //    IOUtil.close(this.attr);
-            //    this.attr = null;
-            //}
             // 通道管理
             if (this.channelPool != null) {
                 IOUtil.close(this.channelPool);
@@ -148,7 +164,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    public synchronized void start(int timeout) {
+    public void start(int timeout) {
         if (this.isConnected()) {
             return;
         }
@@ -231,7 +247,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         }
         ChannelSftp channel = null;
         ShellSFTPChannel sftpChannel = null;
+        boolean permitAcquired = false;
         try {
+            // 元数据探测可能执行 Exec，必须在占用 SFTP 通道名额前完成。
+            this.ensureMetadata();
             Session activeSession = this.sessionSupplier == null ? this.session : this.sessionSupplier.get();
             if (activeSession == null || !activeSession.isConnected()) {
                 if (!this.ownsSession) {
@@ -245,6 +264,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             }
             this.session = activeSession;
             this.initSession();
+            permitAcquired = this.acquireDynamicChannel();
+            if (!permitAcquired) {
+                throw new ShellException("sftp channel acquire timeout");
+            }
             channel = (ChannelSftp) activeSession.openChannel("sftp");
             if (channel == null) {
                 throw new ShellException("create sftp channel returned null");
@@ -254,7 +277,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             // 设置字符集
             channel.setFilenameEncoding(this.getCharset());
             // 创建通道
-            sftpChannel = new ShellSFTPChannel(channel);
+            sftpChannel = new ShellSFTPChannel(channel, this::releaseDynamicChannel);
+            permitAcquired = false;
             // 通道参数必须在连接前设置
             super.initEnvironments(channel);
             // 连接
@@ -265,6 +289,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 sftpChannel.close();
             } else if (channel != null) {
                 channel.disconnect();
+            }
+            if (permitAcquired) {
+                this.releaseDynamicChannel();
             }
             throw ex;
         }
@@ -323,17 +350,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this.channelPool.returnObject(channel);
     }
 
-    // /**
-    //  * 关闭通道
-    //  *
-    //  * @param channel 通道
-    //  */
-    // protected void closeChannel(ShellSFTPChannel channel) {
-    //     if (channel != null && channel.isConnected()) {
-    //         channel.close();
-    //     }
-    // }
-
     /**
      * 获取用户名称
      *
@@ -377,8 +393,8 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    public String resolvePath(String file) throws Exception {
-        return ShellSFTPUtil.resolvePath(file, this.workDir());
+    public String resolvePath(String file) {
+        return ShellSFTPUtil.resolvePath(file, this::workDir);
     }
 
     @Override
@@ -448,15 +464,20 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         }
     }
 
+    private String pwd;
+
     @Override
     public String workDir() throws Exception {
-        ShellClientActionUtil.forAction(this.connectName(), "pwd");
-        ShellSFTPChannel channel = this.takeChannel();
-        try {
-            return channel.pwd();
-        } finally {
-            this.returnChannel(channel);
+        if (this.pwd == null) {
+            ShellClientActionUtil.forAction(this.connectName(), "pwd");
+            ShellSFTPChannel channel = this.takeChannel();
+            try {
+                this.pwd = channel.pwd();
+            } finally {
+                this.returnChannel(channel);
+            }
         }
+        return this.pwd;
     }
 
     @Override

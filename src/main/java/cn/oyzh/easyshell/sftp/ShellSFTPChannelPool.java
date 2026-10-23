@@ -47,7 +47,8 @@ public class ShellSFTPChannelPool extends Pool<ShellSFTPChannel> implements Auto
     private volatile boolean closed;
 
     public ShellSFTPChannelPool(ShellSFTPClient client) {
-        super(1, 5);
+        // 与 Exec 共用会话级动态通道预算；池上限为 Exec 和交互式 Shell 预留余量。
+        super(1, 3);
         this.client = client;
         super.setWaitingBorrow(true);
     }

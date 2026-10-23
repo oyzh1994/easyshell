@@ -26,7 +26,7 @@ public class ShellProcessExec implements AutoCloseable {
     /**
      * ssh客户端
      */
-    private ShellSSHClient client;
+    private volatile ShellSSHClient client;
 
     /**
      * 构造进程执行器
@@ -76,8 +76,12 @@ public class ShellProcessExec implements AutoCloseable {
      * @return 结果
      */
     public synchronized List<ShellProcessInfo> ps() {
-        if (this.client.isWindows()) {
-            ShellServerExec serverExec = this.client.serverExec();
+        ShellSSHClient currentClient = this.client;
+        if (currentClient == null) {
+            return Collections.emptyList();
+        }
+        if (currentClient.isWindows()) {
+            ShellServerExec serverExec = currentClient.serverExec();
             if (this.processAttr == null) {
                 this.processAttr = new ConcurrentHashMap<>();
             }
@@ -102,8 +106,11 @@ public class ShellProcessExec implements AutoCloseable {
 //            String command = "powershell -Command \"$os = Get-WmiObject -Class Win32_OperatingSystem; Get-WmiObject -Class Win32_Process | ForEach-Object { $owner = $_.GetOwner(); $user = if ($owner.User) { $owner.User } else { \\\"N/A\\\" }; $memUsage = ($_.WorkingSetSize / ($os.TotalVisibleMemorySize * 1024)) * 100; \\\"{0},{1},{2},{3:F2},{4},{5},{6}\\\" -f $user, $_.ProcessId, 0, $memUsage, $_.WorkingSetSize, $_.CreationDate, $_.Name }\"";
             String command1 = "powershell -Command \" Get-Process | Select-Object ID,CPU,WorkingSet,StartTime,NAME | ConvertTo-Csv -NoTypeInformation\"";
             String command2 = "tasklist /V /FO csv";
-            String output1 = this.client.exec(command1);
-            String output2 = this.client.exec(command2);
+            String output1 = currentClient.exec(command1);
+            String output2 = currentClient.exec(command2);
+            if (output1 == null || output2 == null) {
+                return Collections.emptyList();
+            }
             String[] arr = output2.split("\n");
             for (int i = 1; i < arr.length; i++) {
                 List<String> cols = ShellUtil.splitWindowsCommandResult(arr[i]);
@@ -143,8 +150,8 @@ public class ShellProcessExec implements AutoCloseable {
             latch.await();
             ShellProcessParser.parseNetworkSpeed_windows(processInfos.get(), networkSpeed.get());
             return processInfos.get();
-        } else if (this.client.isLinux()) {
-            String output = this.client.exec("ps -auxe");
+        } else if (currentClient.isLinux()) {
+            String output = currentClient.exec("ps -auxe");
             DownLatch latch = DownLatch.of(2);
             AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
             ThreadUtil.start(() -> {
@@ -165,8 +172,8 @@ public class ShellProcessExec implements AutoCloseable {
             latch.await();
             ShellProcessParser.parseNetworkSpeed_linux(processInfos.get(), networkSpeed.get());
             return processInfos.get();
-        } else if (this.client.isMacos()) {
-            String output = this.client.exec("ps -axo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command");
+        } else if (currentClient.isMacos()) {
+            String output = currentClient.exec("ps -axo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command");
             DownLatch latch = DownLatch.of(2);
             AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
             ThreadUtil.start(() -> {
@@ -187,8 +194,8 @@ public class ShellProcessExec implements AutoCloseable {
             latch.await();
             ShellProcessParser.parseNetworkSpeed_macos(processInfos.get(), networkSpeed.get());
             return processInfos.get();
-        } else if (this.client.isUnix()) {
-            String output = this.client.exec("ps -auxe");
+        } else if (currentClient.isUnix()) {
+            String output = currentClient.exec("ps -auxe");
             return ShellProcessParser.psForUnix(output);
         }
         return Collections.emptyList();
@@ -201,11 +208,15 @@ public class ShellProcessExec implements AutoCloseable {
      * @return 结果
      */
     public String kill(int pid) {
-        if (this.client.isWindows()) {
-            String command = "taskkill /PID " + pid;
-            return this.client.exec(command);
+        ShellSSHClient currentClient = this.client;
+        if (currentClient == null) {
+            return null;
         }
-        return this.client.exec("kill " + pid);
+        if (currentClient.isWindows()) {
+            String command = "taskkill /PID " + pid;
+            return currentClient.exec(command);
+        }
+        return currentClient.exec("kill " + pid);
     }
 
     /**
@@ -215,11 +226,15 @@ public class ShellProcessExec implements AutoCloseable {
      * @return 结果
      */
     public String forceKill(int pid) {
-        if (this.client.isWindows()) {
-            String command = "taskkill /F /PID " + pid;
-            return this.client.exec(command);
+        ShellSSHClient currentClient = this.client;
+        if (currentClient == null) {
+            return null;
         }
-        return this.client.exec("kill -9 " + pid);
+        if (currentClient.isWindows()) {
+            String command = "taskkill /F /PID " + pid;
+            return currentClient.exec(command);
+        }
+        return currentClient.exec("kill -9 " + pid);
     }
 
     /**
@@ -254,9 +269,13 @@ public class ShellProcessExec implements AutoCloseable {
      */
     public Map<String, double[]> getNetworkUplinkAndDownlink_linux() {
         Map<String, double[]> result = new HashMap<>();
+        ShellSSHClient currentClient = this.client;
+        if (currentClient == null) {
+            return result;
+        }
         try {
             String cmd = "sh -c 'for f in /proc/[0-9]*/net/dev; do pid=\"${f#/proc/}\"; pid=\"${pid%/net/dev}\"; awk -v pid=\"$pid\" \"NR>2 && !/^lo:/{rx+=\\$2; tx+=\\$10} END{if(rx+tx>0) print pid, rx, tx}\" \"$f\"; done'";
-            String output = this.client.exec(cmd);
+            String output = currentClient.exec(cmd);
             if (output == null || output.isBlank()) {
                 return result;
             }
@@ -313,8 +332,15 @@ public class ShellProcessExec implements AutoCloseable {
      */
     public Map<String, double[]> getNetworkUplinkAndDownlink_macos() {
         Map<String, double[]> result = new HashMap<>();
+        ShellSSHClient currentClient = this.client;
+        if (currentClient == null) {
+            return result;
+        }
         try {
-            String output = this.client.exec("nettop -P -x -l 1 | awk '{print $2, $4, $5}' | column -t");
+            String output = currentClient.exec("nettop -P -x -l 1 | awk '{print $2, $4, $5}' | column -t");
+            if (output == null) {
+                return result;
+            }
             String[] lines = output.split("\n");
             boolean first = true;
             for (String line : lines) {
@@ -345,9 +371,16 @@ public class ShellProcessExec implements AutoCloseable {
      */
     public Map<String, double[]> getNetworkUplinkAndDownlink_windows() {
         Map<String, double[]> result = new HashMap<>();
+        ShellSSHClient currentClient = this.client;
+        if (currentClient == null) {
+            return result;
+        }
         try {
             String cmd = "powershell -Command \"Get-Counter '\\Process(*)\\IO Read Bytes/sec','\\Process(*)\\IO Write Bytes/sec' -EA 0 | % { $_.CounterSamples | ? { $_.InstanceName -notmatch '^(_total|idle)$' -and $_.CookedValue -gt 0 } } | group InstanceName | % { $p=$_.Name; $r=($_.Group|? Path -like '*read*').CookedValue; $w=($_.Group|? Path -like '*write*').CookedValue; $pidObj=Get-Process |?{$_.ProcessName -eq $p -or $_.ProcessName -like '$p#*'} | select -First 1; [PSCustomObject]@{'Process'=$p;'PID'=if($pidObj){$pidObj.Id}else{'N/A'};'Read_B/s'=[int]$r;'Write_B/s'=[int]$w} } | sort 'Read_B/s' -Desc | select -First 15 | ft -AutoSize\"";
-            String output = this.client.exec(cmd);
+            String output = currentClient.exec(cmd);
+            if (output == null) {
+                return result;
+            }
             String[] lines = output.split("\n");
             boolean start = false;
             for (String line : lines) {

@@ -1412,6 +1412,79 @@ type "C:\Windows\System32\drivers\etc\hosts"
 - `/tmp/easyshell-jsch-docker-encoding-regression.log`
 - `/tmp/easyshell-jsch-tty-connector-read.log`
 
+### 11.18 高并发 Exec/SFTP 通道耗尽与卡死修复
+
+#### 现象与根因
+
+阿里云 Ubuntu 主机（`sshd MaxSessions=10`）在同一 SSH 会话上持续执行 Exec、SFTP 列目录、
+监控和进程查询后，出现 `JSchException: channel is not opened`，随后 Exec/SFTP 长时间无响应。
+复现与诊断确认了以下叠加问题：
+
+1. 原实现允许 12 路及以上 Exec、最多 5 个 SFTP 池通道、交互式 Shell 和监控通道同时占用服务端
+   session，峰值超过 `MaxSessions=10`；服务端拒绝新通道后，JSch 表现为 `channel is not opened`。
+2. `ShellProcessExec.ps()` 先持有客户端对象锁再等待 Exec 许可；监控线程可能持有许可后再进入
+   客户端锁，形成锁顺序倒置。高并发时线程互相等待，表现为 UI 中 Exec/SFTP 卡死。
+3. 系统类型、字符集和 PATH 的元数据探测复用公共 `exec()`，探测又会触发元数据初始化，造成递归
+   占用通道和锁。并发初始化时同一连接上的通道数被进一步放大。
+4. `exec(command, timeout)` 的同一个超时值同时用于等待许可、建立/重连会话、打开通道和执行命令。
+   通道排队时间稍长就会被错误截断，甚至关闭整条可用会话。
+5. 普通 SFTP 路径的 `resolvePath()` 会调用 `workDir()` 再借一个 SFTP 通道，而调用方此时通常已持有
+   一个通道；单次 `fileInfo()` 因此让池从 1 个通道增长到 2 个。`ShellSFTPChannel` 内部也对普通
+   路径无条件调用 `pwd()`，每次文件操作多一次无意义的 SFTP 往返。
+6. 长稳压测中旧会话约 40 轮后整条停止响应，但新建独立连接正常、服务端负载正常。将 JSch 会话
+   读线程从虚拟线程改为平台线程后长稳恢复，确认虚拟线程 socket 轮询在多路复用 JSch 会话下不稳定。
+
+#### 修复
+
+- `ShellBaseSSHClient` 增加 Exec 与 SFTP 共享的动态通道许可，上限为 6；交互式 Shell 独占一个
+  服务端 session，并保留 `MaxSessions=10` 的余量。SFTP 池上限同步调整为 3。
+- 动态通道许可等待与命令超时分离：许可等待最长 30 秒，建连和 `channel.connect()` 使用连接超时，
+  命令执行只受调用方传入的 `exec` 超时约束。
+- 拆分元数据锁、用户目录锁、会话锁和 Agent 锁；元数据探测走不注入 PATH、不递归初始化的内部 Exec。
+  探测失败不再永久锁定空系统类型，后续可重试。
+- 移除 `ShellProcessExec`、`ShellServerExec` 对客户端对象锁的依赖，关闭后判空，空输出安全返回。
+- SFTP 开通道前先完成元数据探测，再占用共享许可；通道关闭回调精确释放一次许可，避免重复释放和泄漏。
+  共享会话上的 SFTP 客户端禁止自行重连 owner session。
+- `resolvePath()` 仅在路径以 `~` 开头时查询工作目录；`ShellSFTPChannel` 同样只对 `~` 路径调用
+  `pwd()`，普通绝对/相对路径不再产生额外通道和 SFTP 往返。
+- JSch `Session` 的读线程改用平台线程；会话连接、重连和会话替换统一在会话锁内完成。
+
+#### 回归结果
+
+| 场景 | 条件 | 结果 |
+| --- | --- | --- |
+| Warm 长稳 | 12 Exec workers × 80 轮 + 4 SFTP 列目录 + 上传下载 + 监控 + 进程 | 通过 |
+| Cold 长稳 | 不预热元数据，其余同上 | 通过 |
+| 动态通道预算 5 / SFTP 池 2 | 12 × 80 + 平台线程 | 通过 |
+| 动态通道预算 6 / SFTP 池 3 + 虚拟线程 | 12 × 80 | 约 40 轮后旧会话停止响应 |
+| 动态通道预算 6 / SFTP 池 3 + 平台线程 | 12 × 80 | 通过 |
+| 普通路径 `fileInfo` × 100 | 池内空闲/已创建通道 | 修复前 2，修复后稳定为 1 |
+
+压力测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchExecStressRegression.java`
+
+运行参数：
+
+```text
+-Dtest.hosts.file=<hosts-file>
+-Dtest.host.index=<index>
+-Dtest.warmup=true|false
+-Dtest.exec.workers=12
+-Dtest.exec.rounds=80
+```
+
+日志：
+
+- `/tmp/easyshell-host6-stress-final-warm.log`
+- `/tmp/easyshell-host6-stress-final-cold.log`
+- `/tmp/easyshell-jsch-core-reflection.log`
+
+`ShellJSchConcurrentRegression` 的 Shell、Exec 超时、SFTP 传输与池复用/并发/超时/清理、进程、
+监控、失败启动清理和隧道重连均通过。完整入口在该主机上偶发卡在 SOCKS4 banner 读取超时；该超时点
+位于本次修改范围之外的转发测试项。本地/远程/动态转发及 SOCKS5、半关闭和畸形请求恢复在失败前
+均已执行通过。
+
 ## 12. 最终结论
 
 本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、PTY resize 合并、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、旧服务端算法降级、Docker 完整生命周期、Windows/macOS 远端 Docker 只读查询、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。带认证代理与单跳/双跳的组合已单独验证，HTTP 和 SOCKS5 都只命中第一跳，后续跳板复用本地转发，最终目标无直连。旧算法回归只在正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，直连与跳板均完成 SSH/Exec/SFTP，现代服务器不会默认请求弱算法。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化，并验证 OpenSSH 哈希主机名、空行、注释、IPv6 明文/哈希、8 路并发首次信任和不可写路径错误语义。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码中 sshd/JGit 引用均为 0；测试代码按要求保留 sshd 引用，但不进入正式包。平台/压缩协商矩阵本轮 6/6 通过；Windows 真机与 macOS 真机完成 Docker version/info/ps/images/inspect/resource/port/history 和 Compose 只读回归，未创建、删除或修改 Docker 资源。Windows 虚拟机未安装 Docker CLI，Docker 项明确跳过。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` warm 列表为 494–508 ms，`/sbin` 为 242–260 ms，链接点击约 50 ms。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显；PTY resize 在 100 ms 内完成尾部合并，Ubuntu、UOS、macOS 本机和阿里云均只发送 1 次最终 `window-change`。
