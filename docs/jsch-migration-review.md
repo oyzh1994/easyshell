@@ -1485,6 +1485,69 @@ type "C:\Windows\System32\drivers\etc\hosts"
 位于本次修改范围之外的转发测试项。本地/远程/动态转发及 SOCKS5、半关闭和畸形请求恢复在失败前
 均已执行通过。
 
+### 11.19 JSch 首屏内容分片渲染优化（默认关闭）
+
+#### 现象与根因
+
+JSch 路径首次打开 SSH 终端时，首屏 MOTD 偶尔只显示约 60%，随后很快补到约 90% 或完整内容；
+阿里云 Ubuntu 主机最明显，MINA sshd 路径没有该现象。PTY 尺寸不是根因：首屏 `stty size`
+与终端组件一致，resize 回归也只发送一次最终 `window-change`。
+
+实际根因有两层：
+
+1. Jediterm 自带 `TtyBasedArrayDataStream` 固定使用 `char[1024]` 缓冲。阿里云首屏一次输出
+   1390～1466 个字符，会被拆成 `1024 + 366` 等多个读取块。
+2. `FXTerminalPanel` 按屏幕刷新率触发重绘，可能在两个读取块之间、甚至解析一个读取块的过程中
+   绘制，于是先出现只包含前半段内容的中间帧，再出现完整帧，表现为光标先跳到中部、随后跳到末尾。
+
+#### 修复
+
+- `fx-tty` 新增 `TtyBufferedArrayDataStream`，将读取缓冲提升到 16 KiB；开关启用时替换
+  `FXJediTermWidget.createTerminalStarter()` 中的 Jediterm 默认数据流，首屏 MOTD 通常在
+  一次读取中返回。
+- 新增 `TtyRepaintGate`：数据流读到新块时暂停重绘，该块处理完再次读取时恢复；`FXTerminalPanel`
+  在暂停期间保留 `needRepaint` 状态但不绘制，恢复后只绘制完整帧，避免解析过程中的中间帧。
+- 该优化默认关闭，以保持原始首屏响应速度；需要时通过 `-Dfx-tty.firstScreenBuffer=true`
+  启用。关闭时仍使用 Jediterm 自带的 `TtyBasedArrayDataStream` 和原始重绘行为。
+- PTY 尺寸逻辑保持原样，未改动 `ShellSSHClient` 的初始 `pty-req` 和 `window-change` 合并。
+
+#### 回归结果
+
+| 场景 | 断言 | 结果 |
+| --- | --- | --- |
+| 默认配置 | `fx-tty.firstScreenBuffer=false`，保持原始 1024 缓冲和首屏响应 | 通过 |
+| 阿里云首屏读取（启用优化） | 修复前 `1024 + 366` 两段；启用后 1466 字符一次读取 | 通过 |
+| 首屏绘制（启用优化） | 连续 4 次运行，内容帧均为完整首屏，无部分内容中间帧 | 4/4 通过 |
+| 首屏 banner | 初始 MOTD、提示符完整，重开 Shell 正常 | 通过 |
+| PTY resize | 最终尺寸只发送 1 次，远端行列正确 | 通过 |
+| TTY 读取 | 经 `ShellSSHTtyConnector.read()` 正常读回命令输出 | 通过 |
+
+测试入口：
+
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchShellBannerRegression.java`
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchTerminalResizeRegression.java`
+- `src/test/java/cn/oyzh/easyshell/test/ShellJSchTtyConnectorReadRegression.java`
+
+测试命令示例：
+
+```bash
+java -Dfx-tty.firstScreenBuffer=true \
+  -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=6 \
+  -Dtest.shell.require.banner=true \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchShellBannerRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=6 \
+  -Dtest.shell.require.banner=true \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchShellBannerRegression
+java -Dtest.hosts.file='<local-hosts-file>' -Dtest.host.index=6 \
+  -cp '<isolated-classpath>' cn.oyzh.easyshell.test.ShellJSchTerminalResizeRegression
+```
+
+日志：
+
+- `/tmp/read-timing.log`、`/tmp/read-16k.log`
+- `/tmp/paint-fixed3.log`、`/tmp/paint-gate-1.log` ～ `/tmp/paint-gate-4.log`
+- `/tmp/banner-regression.log`、`/tmp/resize-regression.log`
+
 ## 12. 最终结论
 
 本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、PTY resize 合并、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、旧服务端算法降级、Docker 完整生命周期、Windows/macOS 远端 Docker 只读查询、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。带认证代理与单跳/双跳的组合已单独验证，HTTP 和 SOCKS5 都只命中第一跳，后续跳板复用本地转发，最终目标无直连。旧算法回归只在正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，直连与跳板均完成 SSH/Exec/SFTP，现代服务器不会默认请求弱算法。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化，并验证 OpenSSH 哈希主机名、空行、注释、IPv6 明文/哈希、8 路并发首次信任和不可写路径错误语义。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码中 sshd/JGit 引用均为 0；测试代码按要求保留 sshd 引用，但不进入正式包。平台/压缩协商矩阵本轮 6/6 通过；Windows 真机与 macOS 真机完成 Docker version/info/ps/images/inspect/resource/port/history 和 Compose 只读回归，未创建、删除或修改 Docker 资源。Windows 虚拟机未安装 Docker CLI，Docker 项明确跳过。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` warm 列表为 494–508 ms，`/sbin` 为 242–260 ms，链接点击约 50 ms。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显；PTY resize 在 100 ms 内完成尾部合并，Ubuntu、UOS、macOS 本机和阿里云均只发送 1 次最终 `window-change`。
