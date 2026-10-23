@@ -85,6 +85,18 @@ public final class ShellJSchDockerReadOnlyRegression {
             List<ShellDockerContainer> all = ShellDockerParser.ps(psAllOutput);
             List<ShellDockerContainer> exited = ShellDockerParser.ps(psExitedOutput);
             List<ShellDockerImage> images = ShellDockerParser.images(imagesOutput);
+            requireUtf8Clean(psOutput, "docker ps");
+            requireUtf8Clean(psAllOutput, "docker ps -a");
+            requireUtf8Clean(imagesOutput, "docker images");
+            for (ShellDockerContainer container : all) {
+                require(!container.getNames().contains("\r"), "docker ps names contains carriage return");
+                require(!container.getCommand().contains("\uFFFD"), "docker ps command contains replacement character");
+            }
+            if (client.isWindows()) {
+                String missing = client.execUtf8("where __easyshell_missing_docker_test_command__");
+                require(ShellUtil.isWindowsCommandNotFound(missing, "__easyshell_missing_docker_test_command__"),
+                        "execUtf8 did not fall back to the Windows remote charset");
+            }
 
             int inspectedContainers = 0;
             int parsedPorts = 0;
@@ -163,6 +175,13 @@ public final class ShellJSchDockerReadOnlyRegression {
         require(images.isEmpty(), "docker images parser accepted daemon error as an image");
         ShellDockerResource resource = ShellDockerParser.resource("invalid\t2\t3\t4\t5\t6");
         require(resource != null && resource.getMemory() == 0, "docker resource parser did not tolerate invalid memory");
+    }
+
+    private static void requireUtf8Clean(String output, String command) {
+        if (output == null) {
+            return;
+        }
+        require(!output.contains("\uFFFD"), command + " contains a UTF-8 replacement character");
     }
 
     private static String firstLine(String value) {

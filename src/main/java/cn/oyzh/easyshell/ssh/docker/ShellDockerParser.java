@@ -41,6 +41,7 @@ public class ShellDockerParser {
         List<ShellDockerContainer> containers = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
+            line = stripCarriageReturn(line);
             if (StringUtil.isBlank(line)) {
                 continue;
             }
@@ -89,6 +90,7 @@ public class ShellDockerParser {
         List<ShellDockerImage> images = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
+            line = stripCarriageReturn(line);
             if (StringUtil.isBlank(line)) {
                 continue;
             }
@@ -181,6 +183,7 @@ public class ShellDockerParser {
         List<ShellDockerPort> ports = new ArrayList<>();
         String[] lines = output.split("\n");
         for (String line : lines) { // 跳过表头
+            line = stripCarriageReturn(line);
             if (StringUtil.isBlank(line)) {
                 continue;
             }
@@ -219,7 +222,7 @@ public class ShellDockerParser {
             JulLog.info("docker history lines:{}", lines.length);
         }
         for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
+            String line = stripCarriageReturn(lines[i]);
             if (StringUtil.isBlank(line)) {
                 continue;
             }
@@ -255,5 +258,12 @@ public class ShellDockerParser {
             histories.add(history);
         }
         return histories;
+    }
+
+    private static String stripCarriageReturn(String line) {
+        if (line != null && line.endsWith("\r")) {
+            return line.substring(0, line.length() - 1);
+        }
+        return line;
     }
 }

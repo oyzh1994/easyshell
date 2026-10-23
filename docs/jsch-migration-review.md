@@ -481,6 +481,9 @@ JSch legacy algorithm regression passed
 - `/tmp/easyshell-jsch-docker-readonly-host-2-final8.log`
 - `/tmp/easyshell-jsch-docker-readonly-host-4-final8.log`
 - `/tmp/easyshell-jsch-docker-readonly-host-5-final8.log`
+- `/tmp/easyshell-jsch-docker-readonly-host-4-utf8.log`
+- `/tmp/easyshell-jsch-docker-readonly-host-5-utf8.log`
+- `/tmp/easyshell-jsch-docker-utf8-lifecycle.log`
 - `/tmp/easyshell-jsch-platform-all6-final.log`
 - `/tmp/easyshell-jsch-platform-all6-final8.log`
 - `/tmp/easyshell-jsch-pubkey-final2.log`
@@ -579,12 +582,15 @@ Windows 和 macOS 真机只执行无状态命令：`docker version/info/ps/image
 | Windows 虚拟机 | Windows 10 / ARM64 | 不可用 | - | - | - | - | 明确跳过 |
 | Ubuntu 虚拟机对照 | Linux / aarch64 | 可用 | 0 / 0 / 0 | 0 | 0 / 0 / 0 | standalone + plugin | 通过 |
 
-本轮发现并修复两项差异，并完成一项日志脱敏：
+本轮发现并修复三项差异，并完成一项日志脱敏：
 
 - Windows 中文系统 `where docker.exe` 返回“信息: 用提供的模式无法找到文件。”时，原路径解析会对 `-1` 执行 `substring`，现改为统一识别本地化命令缺失并跳过路径注入。
 - macOS 仅有 Compose v2 插件时，原 `docker-compose version` 返回不可用；现自动回退到 `docker compose version`，UI 可正确显示 Compose 版本。
+- Windows 真机 `chcp=936` 时会话字符集为 GBK，但 Docker CLI 输出 UTF-8；`…` 的 UTF-8 字节按 GBK 解码后显示为“鈥�”。Docker Exec 现优先严格按 UTF-8 解码，遇到本地化命令错误等非 UTF-8 输出时回退远端字符集，并清理 Windows CRLF 行尾。
 
 同时收紧了 Docker history 日志：镜像构建历史可能包含历史密码或环境变量，INFO 日志不再输出原始 history 文本，只记录行数；非法行只记录行号和列数。
+
+Windows 真机复验结果：`zookeeper` 命令字段由 `"/docker-entrypoint.鈥�"` 恢复为 `"/docker-entrypoint.…"`，无替换字符；macOS 真机只读回归和 Ubuntu 虚拟机 Docker 生命周期回归继续通过。
 
 测试入口：
 

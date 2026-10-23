@@ -29,6 +29,11 @@ import com.jcraft.jsch.JSchSessionDisconnectException;
 import com.jcraft.jsch.Session;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -185,6 +190,25 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     public String exec(String command, int timeout) {
+        return this.exec(command, timeout, false);
+    }
+
+    /**
+     * 执行命令并优先按 UTF-8 解码输出。Docker CLI 在 Windows GBK 会话中仍输出 UTF-8，
+     * 不能直接使用远端控制台字符集解码；遇到本地化命令错误等非 UTF-8 输出时回退到远端字符集。
+     *
+     * @param command 命令
+     * @return 结果
+     */
+    public String execUtf8(String command) {
+        return this.execUtf8(command, this.connectTimeout());
+    }
+
+    public String execUtf8(String command, int timeout) {
+        return this.exec(command, timeout, true);
+    }
+
+    private String exec(String command, int timeout, boolean preferUtf8) {
         // 获取通道
         ChannelExec channel = null;
         ByteArrayOutputStream stream = null;
@@ -214,13 +238,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 }
                 Thread.sleep(10);
             }
-            String result;
-            // 如果远程是windows，则要检查下字符集是否要指定
-            if (StringUtil.isNotBlank(this.remoteCharset)) {
-                result = stream.toString(this.remoteCharset);
-            } else {
-                result = stream.toString(this.getCharset());
-            }
+            String result = this.decodeExecOutput(stream, preferUtf8);
             if (StringUtil.endsWith(result, "\r\n")) {
                 result = result.substring(0, result.length() - 2);
             } else if (StringUtil.endWithAny(result, "\n", "\r")) {
@@ -242,6 +260,24 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             }
         }
         return null;
+    }
+
+    private String decodeExecOutput(ByteArrayOutputStream stream, boolean preferUtf8) {
+        if (preferUtf8) {
+            try {
+                return StandardCharsets.UTF_8.newDecoder()
+                        .onMalformedInput(CodingErrorAction.REPORT)
+                        .onUnmappableCharacter(CodingErrorAction.REPORT)
+                        .decode(ByteBuffer.wrap(stream.toByteArray()))
+                        .toString();
+            } catch (CharacterCodingException ex) {
+                JulLog.debug("ssh exec output is not utf-8, fallback to remote charset: {}", this.remoteCharset);
+            }
+        }
+        if (StringUtil.isNotBlank(this.remoteCharset)) {
+            return stream.toString(Charset.forName(this.remoteCharset));
+        }
+        return stream.toString(this.getCharset());
     }
 
     /**

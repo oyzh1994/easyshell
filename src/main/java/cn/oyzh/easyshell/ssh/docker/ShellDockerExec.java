@@ -84,7 +84,7 @@ public class ShellDockerExec implements AutoCloseable {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker ps --format  \"" + container_format.substring(1, container_format.length() - 1) + "\"");
 //        }
-        return this.client.exec("docker ps --format " + this.getContainerFormat());
+        return this.client.execUtf8("docker ps --format " + this.getContainerFormat());
     }
 
     /**
@@ -96,7 +96,7 @@ public class ShellDockerExec implements AutoCloseable {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker ps -a --format \"" + container_format + "\"");
 //        }
-        return this.client.exec("docker ps -a --format " + this.getContainerFormat());
+        return this.client.execUtf8("docker ps -a --format " + this.getContainerFormat());
     }
 
     /**
@@ -108,7 +108,7 @@ public class ShellDockerExec implements AutoCloseable {
 //        if (this.client.isWindows()) {
 //            return this.client.exec("docker ps -f \"status=exited\" --format \"" + container_format + "\"");
 //        }
-        return this.client.exec("docker ps -f \"status=exited\" --format " + this.getContainerFormat());
+        return this.client.execUtf8("docker ps -f \"status=exited\" --format " + this.getContainerFormat());
     }
 
     /**
@@ -118,7 +118,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_rm(String containerId) {
-        return this.client.exec("docker rm " + containerId);
+        return this.client.execUtf8("docker rm " + containerId);
     }
 
     /**
@@ -128,7 +128,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_logs(String containerId) {
-        return this.client.exec("docker logs " + containerId);
+        return this.client.execUtf8("docker logs " + containerId);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_rename(String containerId, String newName) {
-        return this.client.exec("docker rename " + containerId + " " + newName);
+        return this.client.execUtf8("docker rename " + containerId + " " + newName);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_port(String containerId) {
-        return this.client.exec("docker port " + containerId);
+        return this.client.execUtf8("docker port " + containerId);
     }
 
     /**
@@ -159,7 +159,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_rm_f(String containerId) {
-        return this.client.exec("docker rm -f " + containerId);
+        return this.client.execUtf8("docker rm -f " + containerId);
     }
 
     /**
@@ -169,7 +169,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_start(String containerId) {
-        return this.client.exec("docker start " + containerId);
+        return this.client.execUtf8("docker start " + containerId);
     }
 
     /**
@@ -179,7 +179,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_restart(String containerId) {
-        return this.client.exec("docker restart " + containerId);
+        return this.client.execUtf8("docker restart " + containerId);
     }
 
     /**
@@ -189,7 +189,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_pause(String containerId) {
-        return this.client.exec("docker pause " + containerId);
+        return this.client.execUtf8("docker pause " + containerId);
     }
 
     /**
@@ -199,7 +199,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_unpause(String containerId) {
-        return this.client.exec("docker unpause " + containerId);
+        return this.client.execUtf8("docker unpause " + containerId);
     }
 
     /**
@@ -209,7 +209,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_stop(String containerId) {
-        return this.client.exec("docker stop " + containerId);
+        return this.client.execUtf8("docker stop " + containerId);
     }
 
     /**
@@ -219,7 +219,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_kill(String containerId) {
-        return this.client.exec("docker kill " + containerId);
+        return this.client.execUtf8("docker kill " + containerId);
     }
 
     /**
@@ -230,7 +230,7 @@ public class ShellDockerExec implements AutoCloseable {
      */
     @Deprecated
     public String docker_rmi(String imageId) {
-        return this.client.exec("docker rmi " + imageId);
+        return this.client.execUtf8("docker rmi " + imageId);
     }
 
     /**
@@ -241,7 +241,7 @@ public class ShellDockerExec implements AutoCloseable {
      */
     @Deprecated
     public String docker_rmi_f(String imageId) {
-        return this.client.exec("docker rmi -f " + imageId);
+        return this.client.execUtf8("docker rmi -f " + imageId);
     }
 
     /**
@@ -262,7 +262,7 @@ public class ShellDockerExec implements AutoCloseable {
             builder.append(rmi.getImageName());
         }
         String cmd = builder.toString();
-        return this.client.exec(cmd);
+        return this.client.execUtf8(cmd);
     }
 
     /**
@@ -284,9 +284,9 @@ public class ShellDockerExec implements AutoCloseable {
      */
     public String docker_inspect(String id, String format) {
         if (format == null) {
-            return this.client.exec("docker inspect " + id);
+            return this.client.execUtf8("docker inspect " + id);
         }
-        return this.client.exec("docker inspect --format=" + format + " " + id);
+        return this.client.execUtf8("docker inspect --format=" + format + " " + id);
     }
 
     /**
@@ -295,7 +295,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_images() {
-        return this.client.exec("docker images --format " + this.getImageFormat());
+        return this.client.execUtf8("docker images --format " + this.getImageFormat());
     }
 
     /**
@@ -348,7 +348,7 @@ public class ShellDockerExec implements AutoCloseable {
         if (JulLog.isInfoEnabled()) {
             JulLog.info("docker update:{}", builder.toString());
         }
-        return this.client.exec(builder.toString());
+        return this.client.execUtf8(builder.toString());
     }
 
     /**
@@ -372,7 +372,7 @@ public class ShellDockerExec implements AutoCloseable {
      */
     public String docker_run(ShellDockerRun run) {
         String cmd = this.docker_run_cmd(run);
-        return this.client.exec(cmd, 300000);
+        return this.client.execUtf8(cmd, 300000);
     }
 
     /**
@@ -455,7 +455,7 @@ public class ShellDockerExec implements AutoCloseable {
      */
     public String docker_save(ShellDockerSave save) {
         String cmd = this.docker_save_cmd(save);
-        return this.client.exec(cmd, 300000);
+        return this.client.execUtf8(cmd, 300000);
     }
 
     /**
@@ -489,7 +489,7 @@ public class ShellDockerExec implements AutoCloseable {
      */
     public String docker_tag(ShellDockerTag tag) {
         String cmd = this.docker_tag_cmd(tag);
-        return this.client.exec(cmd);
+        return this.client.execUtf8(cmd);
     }
 
     /**
@@ -514,7 +514,7 @@ public class ShellDockerExec implements AutoCloseable {
      */
     public String docker_commit(ShellDockerCommit commit) {
         String cmd = this.docker_commit_cmd(commit);
-        return this.client.exec(cmd, 120000);
+        return this.client.execUtf8(cmd, 120000);
     }
 
     /**
@@ -561,7 +561,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_info() {
-        return this.client.exec("docker info");
+        return this.client.execUtf8("docker info");
     }
 
     /**
@@ -570,7 +570,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_version() {
-        return this.client.exec("docker version");
+        return this.client.execUtf8("docker version");
     }
 
     /**
@@ -579,9 +579,9 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_compose_version() {
-        String output = this.client.exec("docker-compose version");
+        String output = this.client.execUtf8("docker-compose version");
         if (this.isCommandUnavailable(output, "docker-compose")) {
-            String pluginOutput = this.client.exec("docker compose version");
+            String pluginOutput = this.client.execUtf8("docker compose version");
             if (!this.isCommandUnavailable(pluginOutput, "docker")) {
                 return pluginOutput;
             }
@@ -601,7 +601,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_restart() {
-        return this.client.exec("systemctl restart docker");
+        return this.client.execUtf8("systemctl restart docker");
     }
 
     // public String docker_v() {
@@ -615,7 +615,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_history(String imageId) {
-        return this.client.exec("docker history " + imageId + " --format " + this.getHistoryFormat());
+        return this.client.execUtf8("docker history " + imageId + " --format " + this.getHistoryFormat());
     }
 
     /**
@@ -624,7 +624,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_container_prune_f() {
-        return this.client.exec("docker container prune -f");
+        return this.client.execUtf8("docker container prune -f");
     }
 
     /**
@@ -633,7 +633,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_image_prune_f() {
-        return this.client.exec("docker image prune -f");
+        return this.client.execUtf8("docker image prune -f");
     }
 
     /**
@@ -642,7 +642,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_network_prune_f() {
-        return this.client.exec("docker network prune -f");
+        return this.client.execUtf8("docker network prune -f");
     }
 
     /**
@@ -651,7 +651,7 @@ public class ShellDockerExec implements AutoCloseable {
      * @return 结果
      */
     public String docker_volume_prune_f() {
-        return this.client.exec("docker volume prune -f");
+        return this.client.execUtf8("docker volume prune -f");
     }
 
     @Override
