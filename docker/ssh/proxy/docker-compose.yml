@@ -1,0 +1,52 @@
+name: easyshell-proxy
+
+x-proxy-service: &proxy-service
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: easyshell/tcp-proxy:local
+  restart: unless-stopped
+  environment:
+    PROXY_USER: ${PROXY_USER:-proxyuser}
+    PROXY_PASSWORD: ${PROXY_PASSWORD:-proxy-pass}
+
+services:
+  http-open:
+    <<: *proxy-service
+    container_name: easyshell-proxy-http-open
+    environment:
+      PROXY_TYPE: http
+      PROXY_AUTH: "0"
+    ports:
+      - "${HTTP_OPEN_PORT:-31280}:3128"
+
+  http-auth:
+    <<: *proxy-service
+    container_name: easyshell-proxy-http-auth
+    environment:
+      PROXY_TYPE: http
+      PROXY_AUTH: "1"
+      PROXY_USER: ${PROXY_USER:-proxyuser}
+      PROXY_PASSWORD: ${PROXY_PASSWORD:-proxy-pass}
+    ports:
+      - "${HTTP_AUTH_PORT:-31281}:3128"
+
+  socks-open:
+    <<: *proxy-service
+    container_name: easyshell-proxy-socks-open
+    environment:
+      PROXY_TYPE: socks
+      PROXY_AUTH: "0"
+    ports:
+      - "${SOCKS_OPEN_PORT:-31282}:1080"
+
+  socks-auth:
+    <<: *proxy-service
+    container_name: easyshell-proxy-socks-auth
+    environment:
+      PROXY_TYPE: socks
+      PROXY_AUTH: "1"
+      PROXY_USER: ${PROXY_USER:-proxyuser}
+      PROXY_PASSWORD: ${PROXY_PASSWORD:-proxy-pass}
+    ports:
+      - "${SOCKS_AUTH_PORT:-31283}:1080"

@@ -22,6 +22,7 @@ import javafx.beans.value.ChangeListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -69,6 +70,11 @@ public class ShellRDPClient implements ShellBaseClient {
     private FxRdpFrontend frontend;
 
     /**
+     * rdp代理隧道
+     */
+    private RDPProxyTunnel proxyTunnel;
+
+    /**
      * 初始化客户端
      *
      * @throws IOException 异常
@@ -86,12 +92,36 @@ public class ShellRDPClient implements ShellBaseClient {
         }
     }
 
+    private InetSocketAddress initProxyTunnel() throws IOException {
+        if (!this.shellConnect.isEnableProxy()) {
+            return new InetSocketAddress(this.shellConnect.hostIp(), this.shellConnect.hostPort());
+        }
+        if (this.proxyTunnel == null || !this.proxyTunnel.isRunning()) {
+            this.closeProxyTunnel();
+            this.proxyTunnel = new RDPProxyTunnel(
+                    this.shellConnect.getProxyConfig(),
+                    this.shellConnect.hostIp(),
+                    this.shellConnect.hostPort(),
+                    this.shellConnect.connectTimeOutMs()
+            );
+        }
+        return this.proxyTunnel.start();
+    }
+
+    private void closeProxyTunnel() {
+        if (this.proxyTunnel != null) {
+            this.proxyTunnel.close();
+            this.proxyTunnel = null;
+        }
+    }
+
     @Override
     public void start(int timeout) throws Throwable {
         if (ShellRDPUtil.isBuiltIn(this.shellConnect)) {
             try {
                 // 初始化客户端
                 this.initClient();
+                InetSocketAddress endpoint = this.initProxyTunnel();
                 // 开始连接时间
                 final AtomicLong starTime = new AtomicLong();
                 // 开始连接时间
@@ -103,8 +133,8 @@ public class ShellRDPClient implements ShellBaseClient {
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.startVirtual(() -> {
                     try {
-                        String host = this.shellConnect.hostIp();
-                        int port = this.shellConnect.hostPort();
+                        String host = endpoint.getHostString();
+                        int port = endpoint.getPort();
                         String user = this.shellConnect.getUser();
                         String password = this.shellConnect.getPassword();
                         String domain = this.shellConnect.getDomain();
@@ -162,6 +192,7 @@ public class ShellRDPClient implements ShellBaseClient {
                     }
                 }
             } catch (Throwable ex) {
+                this.closeProxyTunnel();
                 this.state.set(ShellConnState.FAILED);
                 if (ex.getCause() != null) {
                     ex = ex.getCause();
@@ -170,7 +201,8 @@ public class ShellRDPClient implements ShellBaseClient {
                 throw new ShellException(ex);
             }
         } else {
-            File rdpFile = ShellRDPUtil.initRDPFile(this.shellConnect);
+            InetSocketAddress endpoint = this.initProxyTunnel();
+            File rdpFile = ShellRDPUtil.initRDPFile(this.shellConnect, endpoint.getHostString(), endpoint.getPort());
             // 执行命令
             if (OSUtil.isMacOS()) {
                 ProcessBuilderUtil.exec("open", rdpFile.getPath());
@@ -203,6 +235,9 @@ public class ShellRDPClient implements ShellBaseClient {
         if (this.client != null) {
             return this.client.isConnected();
         }
+        if (this.proxyTunnel != null) {
+            return this.proxyTunnel.isRunning();
+        }
         String ip = this.getShellConnect().hostIp();
         int port = this.getShellConnect().hostPort();
         return NetworkUtil.reachable(ip, port, 1000);
@@ -219,6 +254,7 @@ public class ShellRDPClient implements ShellBaseClient {
             if (this.client != null) {
                 this.client.disconnect();
             }
+            this.closeProxyTunnel();
             this.state.set(ShellConnState.CLOSED);
             this.removeStateListener(this.stateListener);
             this.stateProperty().unbind();

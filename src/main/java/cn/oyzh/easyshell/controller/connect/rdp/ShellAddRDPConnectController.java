@@ -3,22 +3,30 @@ package cn.oyzh.easyshell.controller.connect.rdp;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
+import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.rdp.ShellRdpColorComboBox;
 import cn.oyzh.easyshell.fx.rdp.ShellRdpMethodComboBox;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.PortTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -130,6 +138,60 @@ public class ShellAddRDPConnectController extends StageController {
     private FXCheckBox redirectClipboard;
 
     /**
+     * 代理面板
+     */
+    @FXML
+    private FXTab proxyTab;
+
+    /**
+     * 开启代理
+     */
+    @FXML
+    private FXToggleSwitch enableProxy;
+
+    /**
+     * 代理协议
+     */
+    @FXML
+    private ShellProxyProtocolComboBox proxyProtocol;
+
+    /**
+     * 代理地址
+     */
+    @FXML
+    private ClearableTextField proxyHost;
+
+    /**
+     * 代理端口
+     */
+    @FXML
+    private NumberTextField proxyPort;
+
+    /**
+     * 代理认证方式
+     */
+    @FXML
+    private ShellProxyAuthTypeComboBox proxyAuthType;
+
+    /**
+     * 代理认证信息
+     */
+    @FXML
+    private FXHBox proxyAuthInfoBox;
+
+    /**
+     * 代理用户
+     */
+    @FXML
+    private ClearableTextField proxyUser;
+
+    /**
+     * 代理密码
+     */
+    @FXML
+    private PasswordTextField proxyPassword;
+
+    /**
      * 分组
      */
     private ShellGroup group;
@@ -160,11 +222,40 @@ public class ShellAddRDPConnectController extends StageController {
         return hostText;
     }
 
+    private ShellProxyConfig getProxyConfig() {
+        ShellProxyConfig config = new ShellProxyConfig();
+        config.setHost(this.proxyHost.getTextTrim());
+        config.setPort(this.proxyPort.getIntValue());
+        config.setUser(this.proxyAuthType.isPasswordAuth() ? this.proxyUser.getTextTrim() : null);
+        config.setPassword(this.proxyAuthType.isPasswordAuth() ? this.proxyPassword.getPassword() : null);
+        config.setAuthType(this.proxyAuthType.getAuthType());
+        config.setProtocol(this.proxyProtocol.getSelectedItem());
+        return config;
+    }
+
+    private boolean validateProxy() {
+        if (!this.enableProxy.isSelected()) {
+            return true;
+        }
+        if (!this.proxyHost.validate() || !this.proxyPort.validate()) {
+            this.tabPane.select(this.proxyTab);
+            return false;
+        }
+        if (this.proxyAuthType.isPasswordAuth() && (!this.proxyUser.validate() || !this.proxyPassword.validate())) {
+            this.tabPane.select(this.proxyTab);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * 测试连接
      */
     @FXML
     private void testConnect() {
+        if (!this.validateProxy()) {
+            return;
+        }
         // 检查连接地址
         String host = this.getHost();
         if (StringUtil.isBlank(host) || StringUtil.isBlank(host.split(":")[0])) {
@@ -189,7 +280,8 @@ public class ShellAddRDPConnectController extends StageController {
             shellConnect.putExtra("method", method);
             shellConnect.putExtra("remoteAudio", remoteAudio);
             shellConnect.putExtra("redirectClipboard", redirectClipboard);
-            // 代理
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect, 3000);
         }
     }
@@ -201,6 +293,9 @@ public class ShellAddRDPConnectController extends StageController {
     private void add() {
         String host = this.getHost();
         if (host == null) {
+            return;
+        }
+        if (!this.validateProxy()) {
             return;
         }
         // 名称未填，则直接以host为名称
@@ -236,6 +331,8 @@ public class ShellAddRDPConnectController extends StageController {
             // 认证信息
             shellConnect.setUser(userName);
             shellConnect.setPassword(password.trim());
+            shellConnect.setProxyConfig(this.getProxyConfig());
+            shellConnect.setEnableProxy(this.enableProxy.isSelected());
             // 分组及类型
             shellConnect.setType("rdp");
             shellConnect.setGroupId(this.group == null ? null : this.group.getGid());
@@ -267,6 +364,28 @@ public class ShellAddRDPConnectController extends StageController {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            }
+        });
+        this.enableProxy.selectedChanged((observable, oldValue, newValue) -> {
+            if (newValue) {
+                NodeGroupUtil.enable(this.proxyTab, "proxy");
+                if (this.proxyAuthType.isPasswordAuth()) {
+                    this.proxyAuthInfoBox.enable();
+                } else {
+                    this.proxyAuthInfoBox.disable();
+                }
+            } else {
+                NodeGroupUtil.disable(this.proxyTab, "proxy");
+            }
+        });
+        this.proxyAuthType.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.proxyAuthInfoBox == null) {
+                return;
+            }
+            if (this.proxyAuthType.isPasswordAuth() && this.enableProxy.isSelected()) {
+                this.proxyAuthInfoBox.enable();
+            } else {
+                this.proxyAuthInfoBox.disable();
             }
         });
     }

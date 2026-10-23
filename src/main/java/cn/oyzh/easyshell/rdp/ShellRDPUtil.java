@@ -52,8 +52,18 @@ public class ShellRDPUtil {
      * @return 结果
      */
     public static File initRDPFile(ShellConnect connect) {
-        String ip = connect.hostIp();
-        int port = connect.hostPort();
+        return initRDPFile(connect, connect.hostIp(), connect.hostPort());
+    }
+
+    /**
+     * 初始化rdp文件
+     *
+     * @param connect 连接
+     * @param ip 连接地址
+     * @param port 连接端口
+     * @return 结果
+     */
+    public static File initRDPFile(ShellConnect connect, String ip, int port) {
         String username = connect.getUser();
         String domain = connect.getDomain();
         String password = connect.getPassword();

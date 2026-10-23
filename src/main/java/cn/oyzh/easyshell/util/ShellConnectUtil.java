@@ -1,10 +1,11 @@
 package cn.oyzh.easyshell.util;
 
-import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.rdp.RDPProxyTunnel;
 import cn.oyzh.easyshell.rdp.ShellRDPUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -212,13 +213,14 @@ public class ShellConnectUtil {
                 //    client.close();
                 //}
                 if (shellConnect.isRDPType() && !ShellRDPUtil.isBuiltIn(shellConnect)) {
-                    String hostIp = shellConnect.hostIp();
-                    int port = shellConnect.hostPort();
-                    if (NetworkUtil.reachable(hostIp, port, timeout1)) {
-                        MessageBox.okToast(I18nHelper.connectSuccess(), adapter);
-                    } else {
-                        MessageBox.warn(I18nHelper.connectFail(), adapter);
-                    }
+                    ShellProxyConfig proxyConfig = shellConnect.isEnableProxy() ? shellConnect.getProxyConfig() : null;
+                    RDPProxyTunnel.verifyConnectivity(
+                            proxyConfig,
+                            shellConnect.hostIp(),
+                            shellConnect.hostPort(),
+                            timeout1
+                    );
+                    MessageBox.okToast(I18nHelper.connectSuccess(), adapter);
                 } else {
                     ShellBaseClient client = ShellClientUtil.newClient(shellConnect);
                     // 开始连接
