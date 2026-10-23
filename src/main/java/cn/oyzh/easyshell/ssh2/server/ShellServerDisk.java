@@ -1,51 +1,52 @@
-package cn.oyzh.easyshell.ssh2.server;
-
-/**
- * 服务器磁盘速度计算
- *
- * @author oyzh
- * @since 2025-03-16
- */
-public class ShellServerDisk {
-
-    /**
-     * 最后更新时间
-     */
-    private long lastUpdateTime;
-
-    /**
-     * 最后读取值
-     */
-    private double lastRead = -1;
-
-    /**
-     * 最后写入值
-     */
-    private double lastWrite = -1;
-
-    /**
-     * 计算速度
-     *
-     * @param data 数据
-     * @return 速度
-     */
-    public double[] calcSpeed(double[] data) {
-        double read = data[0];
-        double write = data[1];
-        if (this.lastRead == -1 || read == -1 || write == -1) {
-            this.lastRead = read;
-            this.lastWrite = write;
-            this.lastUpdateTime = System.currentTimeMillis();
-            return new double[]{-1, -1};
-        } else {
-            long now = System.currentTimeMillis();
-            double cost = (now - this.lastUpdateTime) / 1000d;
-            double readSpeed = (read - this.lastRead) * 512 / 1024 / 1024d / cost;
-            double writeSpeed = (write - this.lastWrite) * 512 / 1024 / 1024d / cost;
-            this.lastRead = read;
-            this.lastWrite = write;
-            this.lastUpdateTime = now;
-            return new double[]{readSpeed, writeSpeed};
-        }
-    }
-}
+// Legacy Apache MINA sshd implementation. Disabled after the JSch migration.
+// package cn.oyzh.easyshell.ssh2.server;
+//
+// /**
+//  * 服务器磁盘速度计算
+//  *
+//  * @author oyzh
+//  * @since 2025-03-16
+//  */
+// public class ShellServerDisk {
+//
+//     /**
+//      * 最后更新时间
+//      */
+//     private long lastUpdateTime;
+//
+//     /**
+//      * 最后读取值
+//      */
+//     private double lastRead = -1;
+//
+//     /**
+//      * 最后写入值
+//      */
+//     private double lastWrite = -1;
+//
+//     /**
+//      * 计算速度
+//      *
+//      * @param data 数据
+//      * @return 速度
+//      */
+//     public double[] calcSpeed(double[] data) {
+//         double read = data[0];
+//         double write = data[1];
+//         if (this.lastRead == -1 || read == -1 || write == -1) {
+//             this.lastRead = read;
+//             this.lastWrite = write;
+//             this.lastUpdateTime = System.currentTimeMillis();
+//             return new double[]{-1, -1};
+//         } else {
+//             long now = System.currentTimeMillis();
+//             double cost = (now - this.lastUpdateTime) / 1000d;
+//             double readSpeed = (read - this.lastRead) * 512 / 1024 / 1024d / cost;
+//             double writeSpeed = (write - this.lastWrite) * 512 / 1024 / 1024d / cost;
+//             this.lastRead = read;
+//             this.lastWrite = write;
+//             this.lastUpdateTime = now;
+//             return new double[]{readSpeed, writeSpeed};
+//         }
+//     }
+// }

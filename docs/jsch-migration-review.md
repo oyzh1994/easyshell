@@ -27,7 +27,7 @@
 - 公钥认证已在 Ubuntu 和 UOS 虚拟机完成矩阵回归：RSA（普通/带口令）、ECDSA 256/384/521、Ed25519 的密钥管理器认证、Exec 和 SFTP 全部通过；证书文件路径覆盖普通 RSA、带口令 RSA 和 Ed25519，未授权密钥约 150 ms 内拒绝。
 - 密钥与 Agent 初始化回归通过。
 - Docker 临时容器、镜像、卷和归档清理验证通过，主机无测试资源残留。
-- 未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中的 sshd 版本文件。
+- 已将 `src/main/java/cn/oyzh/easyshell/ssh2` 和 `sftp2` 的 40 个主源码文件整体注释；`ssh1`、`sftp1` 及 `base-ssh` 未修改。测试代码按用户要求保持原样。
 
 ## 2. 迁移方案
 
@@ -153,7 +153,7 @@ SSH `direct-tcpip` 无法提供远端 BND.ADDR/BND.PORT。成功响应改为规�
 - `ShellSFTPUtil` 的权限方法参数从 sshd 属性类型改为 JSch `SftpATTRS`，这是移除 MINA 类型依赖的必要变化；旧方法名已保留。
 - `ShellSFTPChannelPool` 继续继承原 `Pool` 类型以降低外部类型兼容风险，但借还逻辑由自身实现。
 - JSch 依赖由 test scope 调整为 compile scope，`base-ssh` 中 JSch 依赖也恢复为编译依赖。
-- `ssh2`、`sftp2`、`ssh1`、`sftp1` 未改动，仍保留原 sshd 实现，供后续由项目维护者统一移除。
+- `ssh2`、`sftp2` 主源码已整体注释，不再参与编译；`ssh1`、`sftp1` 未改动。测试代码仍保留 sshd 引用，但不进入正式包。
 - Docker 公开方法名、参数对象和返回类型保持不变；`ShellDockerResource.nanoCpus` 明确采用纳秒单位，与 `docker inspect` 和 `docker_resource()` 保持一致。
 - Docker history 的新分隔符属于内部命令格式，解析器同时兼容旧 `\r\t` 输出，不影响既有调用方。
 - Docker 参数保护只改变远程 shell 的转义方式，不改变 Docker 参数顺序和业务含义；`docker run` 的自由文本 `params` 仍按原始 Docker CLI 选项处理。
@@ -507,7 +507,7 @@ JSch legacy algorithm regression passed
 - 未执行全局 prune 和 Docker 服务重启；`docker_compose_version()` 优先使用旧 `docker-compose`，不可用时回退到 `docker compose version`，兼容 Compose v2 插件。
 - 大文件、长时间空闲和长时间稳定性仍需专项压测。
 - 跳板已完成单跳、双跳和三层链路；旧算法按需降级已验证 `group14-sha1` + `ssh-rsa` 的直连与跳板场景，`group1-sha1`、`group-exchange-sha1`、`ssh-dss` 及旧 MAC 组合仍需按存量服务器补充。
-- 本次证明的是活跃 JSch 调用链可在仅 JSch classpath 下独立编译和运行；若要彻底移除项目级 MINA sshd，还需项目维护者自行屏蔽遗留的 `ssh2/sftp2` 目录及其依赖。
+- 本次证明的是活跃 JSch 调用链可在仅 JSch classpath 下独立编译和运行；`ssh2/sftp2` 主源码已完成注释屏蔽，正式包内未发现 sshd/JGit 或 ssh2/sftp2 class。
 - 阿里云 `/bin` 的 warm 494–508 ms 主要受 1369 条目录数据的网络传输限制；cold 本轮为 1429 ms。原始 `ChannelSftp.ls` 耗时与完整 `lsFile` 基本一致，本地对象构造不是瓶颈。跨地域高延迟环境不保证稳定低于 0.5 秒，但 warm 已验证低于 1 秒。
 - Shell 首屏已恢复完整回显；MOTD 内容、长度和是否存在仍由远端 sshd、PAM、发行版配置决定，不同主机不保证相同。
 
@@ -515,7 +515,7 @@ JSch legacy algorithm regression passed
 
 ### 10.1 迁移说明
 
-Docker 功能仍沿用原有业务模型：通过 SSH Exec 通道执行远端 Docker CLI，并由 `ShellDockerExec`、`ShellDockerParser` 和参数对象完成命令生成、输出解析和 UI 适配。迁移后的执行传输完全由 JSch `ChannelExec` 承担，未引入 MINA sshd 类型，也未修改 `ssh2/docker` 或任何 sshd 版本代码。
+Docker 功能仍沿用原有业务模型：通过 SSH Exec 通道执行远端 Docker CLI，并由 `ShellDockerExec`、`ShellDockerParser` 和参数对象完成命令生成、输出解析和 UI 适配。迁移后的执行传输完全由 JSch `ChannelExec` 承担，未引入 MINA sshd 类型；`ssh2/docker` 已随旧 sshd 实现整体注释。
 
 本次涉及的 JSch 活跃文件：
 
@@ -554,7 +554,7 @@ Docker 功能仍沿用原有业务模型：通过 SSH Exec 通道执行远端 Do
 - `docker run` 的 `params` 保持原始高级参数语义；结构化字段（名称、镜像、env、label、volume）统一参数保护。
 - `docker_compose_version()` 保留 `docker-compose version` 首选语义；仅当该命令不可用时回退到 Compose v2 插件，两个命令都不可用才返回原失败输出。
 - Windows Docker 路径探测兼容 `where` 的本地化失败提示和正反斜杠；无 Docker CLI 时只记录 unavailable，不再产生路径越界异常。
-- Docker 方法名称、参数对象、返回类型和既有 UI 调用方式未改变；`ssh2`、`sftp2`、`ssh1`、`sftp1` 保持原样。
+- Docker 方法名称、参数对象、返回类型和既有 UI 调用方式未改变；`ssh2`、`sftp2` 主源码已整体注释，`ssh1`、`sftp1` 保持原样。
 
 ### 10.4 验证结果与限制
 
@@ -1340,6 +1340,15 @@ Windows 虚拟机和 Windows 真机均因无 Unix `stty` 不纳入该自动化�
 
 ## 12. 最终结论
 
-本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、PTY resize 合并、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、旧服务端算法降级、Docker 完整生命周期、Windows/macOS 远端 Docker 只读查询、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。带认证代理与单跳/双跳的组合已单独验证，HTTP 和 SOCKS5 都只命中第一跳，后续跳板复用本地转发，最终目标无直连。旧算法回归只在正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，直连与跳板均完成 SSH/Exec/SFTP，现代服务器不会默认请求弱算法。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化，并验证 OpenSSH 哈希主机名、空行、注释、IPv6 明文/哈希、8 路并发首次信任和不可写路径错误语义。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码与测试代码中 sshd/JGit 引用均为 0。平台/压缩协商矩阵本轮 6/6 通过；Windows 真机与 macOS 真机完成 Docker version/info/ps/images/inspect/resource/port/history 和 Compose 只读回归，未创建、删除或修改 Docker 资源。Windows 虚拟机未安装 Docker CLI，Docker 项明确跳过。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` warm 列表为 494–508 ms，`/sbin` 为 242–260 ms，链接点击约 50 ms。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显；PTY resize 在 100 ms 内完成尾部合并，Ubuntu、UOS、macOS 本机和阿里云均只发送 1 次最终 `window-change`。
+本轮验证覆盖了连接、密码认证、公钥认证、SSH Agent 认证、Agent 转发、SSH 环境变量、双因素认证、认证失败交互、主机密钥校验、Shell 首屏 MOTD/提示符、PTY resize 合并、Windows/macOS/Linux 平台识别、双向压缩协商、4 MiB Exec 传输、512 KiB SFTP 传输、SFTP 链接列表性能与懒解析、SFTP 通道池有界等待、`tgz/xz/bz2` 文件压缩、单跳/双跳/三层跳板、多主机本地/远程/动态端口转发、HTTP CONNECT（无认证/Basic）、SOCKS5（无认证/用户名密码）、旧服务端算法降级、Docker 完整生命周期、Windows/macOS 远端 Docker 只读查询、Process、Server、并发和重连。2FA 使用本机 Docker 的 OpenSSH + `pam_google_authenticator` 环境验证密码 + TOTP，正确认证完成 Exec 和 SFTP，错误 TOTP 只提交一次并触发认证回调。Agent 认证使用本机独立 `ssh-agent` 和 Docker SSH 主机，私钥文件删除后仍完成连续、复用、SFTP 和 6 路并发认证，Agent 含未授权干扰密钥时可正确选择已授权密钥，未授权密钥快速拒绝。Agent 转发通过 Docker 双机链路分别验证密码认证外层和 Agent 认证外层：密码场景中跳板机未授权 Agent 公钥，仍通过转发的 `SSH_AUTH_SOCK` 连续 3 次登录目标机；Agent 场景同样 3/3 通过。Exec、Shell 和内层 SSH 均验证环境变量注入，关闭转发后内层认证按预期失败。公钥认证在 Ubuntu 与 UOS 虚拟机使用工程内建生成器覆盖 RSA 普通/带口令、ECDSA 256/384/521、Ed25519，并分别验证密钥管理器和私钥文件路径；所有服务端启用算法均完成 Exec 和 SFTP，未授权密钥约 150 ms 拒绝，临时授权按原内容恢复。三层跳板使用三个不同节点，重连后跳板会话数和 SFTP 均再次校验；端口转发同时覆盖跨主机目标、并发连接、半关闭、畸形 SOCKS 请求恢复和监听端口释放。带认证代理与单跳/双跳的组合已单独验证，HTTP 和 SOCKS5 都只命中第一跳，后续跳板复用本地转发，最终目标无直连。旧算法回归只在正常协商失败后追加 SHA-1 KEX 和 `ssh-rsa`，直连与跳板均完成 SSH/Exec/SFTP，现代服务器不会默认请求弱算法。错误密码或用户名只提交一次凭证即进入交互认证，认证页返回正确凭证后可以恢复连接；`Too many authentication failures` 已完成异常映射。主机密钥测试覆盖未知主机拒绝/接受、已知主机不提示、服务端换钥拒绝/接受以及 known_hosts 持久化，并验证 OpenSSH 哈希主机名、空行、注释、IPv6 明文/哈希、8 路并发首次信任和不可写路径错误语义。带认证代理测试确认错误代理凭据不会被误判为 SSH 账户认证失败。活跃 JSch 路径在无 MINA sshd/JGit 的隔离 classpath 下完成全量编译和字节码审计，主代码中 sshd/JGit 引用均为 0；测试代码按要求保留 sshd 引用，但不进入正式包。平台/压缩协商矩阵本轮 6/6 通过；Windows 真机与 macOS 真机完成 Docker version/info/ps/images/inspect/resource/port/history 和 Compose 只读回归，未创建、删除或修改 Docker 资源。Windows 虚拟机未安装 Docker CLI，Docker 项明确跳过。SFTP 目录列举行为已恢复为与 sshd 版本一致的“只判断链接类型、点击时解析目标”，阿里云 `/bin` warm 列表为 494–508 ms，`/sbin` 为 242–260 ms，链接点击约 50 ms。Shell 流已在连接前安装并复用，首屏 MOTD、登录信息和提示符恢复稳定回显；PTY resize 在 100 ms 内完成尾部合并，Ubuntu、UOS、macOS 本机和阿里云均只发送 1 次最终 `window-change`。
 
-未修改 `ssh2`、`sftp2`、`ssh1`、`sftp1` 及 `base-ssh` 中已有的 sshd 版本文件；后续移除项目级 MINA sshd 依赖时，只需由维护者屏蔽这些遗留目录和依赖，不需要回退本轮 JSch 实现。
+已将 `ssh2`、`sftp2` 的 40 个主源码文件整体注释，活跃 JSch 路径不依赖这些类；`ssh1`、`sftp1` 和 `base-ssh` 未修改，测试代码按要求保留。`mvn clean test-compile`、`mvn -DskipTests package` 均通过，正式包内 sshd/JGit 和 ssh2/sftp2 条目均为 0。
+
+## 13. MINA sshd 主源码屏蔽记录
+
+- `src/main/java/cn/oyzh/easyshell/ssh2`：34 个 Java 文件整体注释。
+- `src/main/java/cn/oyzh/easyshell/sftp2`：6 个 Java 文件整体注释。
+- 注释文件仅保留注释内容，不再声明 package/class，因此不产生 class 文件。
+- 主源码中已无有效的 `org.apache.sshd`、`org.eclipse.jgit`、`cn.oyzh.easyshell.ssh2` 或 `cn.oyzh.easyshell.sftp2` 引用。
+- 同步注释 About 页面中的 MINA sshd/JGit 依赖链接，避免展示已停用依赖。
+- 测试代码未修改；正式包 `target/easyshell-1.2.3.jar` 中 sshd/JGit、ssh2/sftp2 匹配条目为 0。
