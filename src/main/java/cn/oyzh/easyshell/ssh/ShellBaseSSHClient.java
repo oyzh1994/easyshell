@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.util.JschUtil;
@@ -243,7 +244,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     public String exec(String command, int timeout) {
-        return this.exec(command, timeout, false);
+        return this.execInternal(command, timeout, false, true, true);
     }
 
     /**
@@ -259,10 +260,6 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     public String execUtf8(String command, int timeout) {
         return this.execInternal(command, timeout, true, true, true);
-    }
-
-    private String exec(String command, int timeout, boolean preferUtf8) {
-        return this.execInternal(command, timeout, preferUtf8, true, true);
     }
 
     /**
@@ -686,7 +683,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (command == null || this.osType == null) {
             return command;
         }
-        if (this.isMacos() || this.isLinux() || this.isUnix()) {
+        if (this.isMacos() || this.isLinux()) {
+            return "export PATH=" + this.getExportPath() + "; " + command;
+        }
+        if (this.isUnix()) {
+            if (this.isCshType() || this.isTcshType()) {
+                return "setenv PATH=" + this.getExportPath() + "; " + command;
+            }
             return "export PATH=" + this.getExportPath() + "; " + command;
         }
         return command;
@@ -1042,5 +1045,96 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (this.shellConnect.isX11forwarding()) {
             channel.setXForwarding(true);
         }
+    }
+
+    protected ShellServerExec serverExec;
+
+    public synchronized ShellServerExec serverExec() {
+        if (this.serverExec == null) {
+            this.serverExec = new ShellServerExec(this);
+        }
+        return this.serverExec;
+    }
+
+    /**
+     * shell类型
+     */
+    protected String shellType;
+
+    /**
+     * 获取终端类型
+     *
+     * @return 终端类型
+     */
+    public String getShellType() {
+        if (this.shellType == null) {
+            this.shellType = this.serverExec().getShellType();
+        }
+        return this.shellType;
+    }
+
+    /**
+     * 获取shell名称
+     *
+     * @return 结果
+     */
+    public String getShellName() {
+        String shellType = this.getShellType();
+        if (shellType == null) {
+            return null;
+        }
+        if (shellType.contains("/")) {
+            shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
+        } else if (shellType.contains("\\")) {
+            shellType = shellType.substring(shellType.lastIndexOf("\\") + 1);
+        }
+        return shellType;
+    }
+
+
+    /**
+     * 是否zsh的shell
+     *
+     * @return 结果
+     */
+    public boolean isZshType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "zsh");
+    }
+
+    /**
+     * 是否bash的shell
+     *
+     * @return 结果
+     */
+    public boolean isBashType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "bash");
+    }
+
+    /**
+     * 是否csh的shell
+     *
+     * @return 结果
+     */
+    public boolean isCshType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "csh");
+    }
+
+    /**
+     * 是否tcsh的shell
+     *
+     * @return 结果
+     */
+    public boolean isTcshType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "tcsh");
+    }
+
+    @Override
+    public void close() throws Exception {
+        IOUtil.closeQuietly(this.serverExec);
+        this.serverExec = null;
     }
 }

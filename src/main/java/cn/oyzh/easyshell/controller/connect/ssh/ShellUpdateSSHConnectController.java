@@ -332,6 +332,12 @@ public class ShellUpdateSSHConnectController extends StageController {
     private FXCheckBox forwardAgent;
 
     /**
+     * 启用OSC工作目录上报
+     */
+    @FXML
+    private FXCheckBox enableOscWorkerDir;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -421,6 +427,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
             ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
+            ShellSSHUtil.setEnableOscWorkerDir(shellConnect, this.enableOscWorkerDir.isSelected());
             shellConnect.setId(this.shellConnect.getId());
             // 认证信息
             shellConnect.setKeyId(this.key.getKeyId());
@@ -525,6 +532,7 @@ public class ShellUpdateSSHConnectController extends StageController {
             this.shellConnect.setAltSendsEscape(altSendsEscape);
             this.shellConnect.setConnectTimeOut(connectTimeOut);
             ShellSSHUtil.setHeartbeatInterval(this.shellConnect, this.heartbeatInterval.getIntValue());
+            ShellSSHUtil.setEnableOscWorkerDir(this.shellConnect, this.enableOscWorkerDir.isSelected());
             // 客户端转发
             this.shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem
@@ -654,6 +662,7 @@ public class ShellUpdateSSHConnectController extends StageController {
         this.termType.select(this.shellConnect.getTermType());
         this.connectTimeOut.setValue(this.shellConnect.getConnectTimeOut());
         this.heartbeatInterval.setValue(ShellSSHUtil.getHeartbeatInterval(this.shellConnect));
+        this.enableOscWorkerDir.setSelected(ShellSSHUtil.isEnableOscWorkerDir(this.shellConnect));
         // 认证处理
         this.userName.setText(this.shellConnect.getUser());
         this.password.setText(this.shellConnect.getPassword());

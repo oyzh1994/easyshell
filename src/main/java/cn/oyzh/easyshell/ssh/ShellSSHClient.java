@@ -62,9 +62,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     private static final int PTY_RESIZE_DEBOUNCE_MILLIS = 100;
 
     /**
-     * shell类型
+     * 终端输出安静后再安装 OSC hook，避免登录脚本和首屏输出期间注入命令。
      */
-    private String shellType;
+    private static final int OSC_INTEGRATION_QUIET_MILLIS = 600;
 
     /**
      * 最后一次输出
@@ -75,6 +75,21 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 解析工作目录
      */
     private boolean resolveWorkerDir;
+
+    /**
+     * 增量工作目录解析器，保留跨输出块的 OSC 与提示符状态
+     */
+    private final ShellWorkerDirResolver workerDirResolver = new ShellWorkerDirResolver();
+
+    /**
+     * 当前 shell 会话的 OSC 目录上报安装状态。不支持或安装失败后不再重复探测。
+     */
+    private volatile OscIntegrationState oscWorkerDirIntegrationState = OscIntegrationState.PENDING;
+
+    /**
+     * 延迟安装 OSC hook 的任务
+     */
+    private ScheduledFuture<?> oscWorkerDirIntegrationFuture;
 
     /**
      * 工作目录属性
@@ -103,7 +118,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     public void setResolveWorkerDir(boolean resolveWorkerDir) {
         this.resolveWorkerDir = resolveWorkerDir;
         if (resolveWorkerDir) {
+            this.scheduleOscWorkerDirIntegration();
             this.doResolveWorkerDir(this.lastOutput);
+        } else {
+            this.cancelOscWorkerDirIntegration();
         }
     }
 
@@ -118,6 +136,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         // }
         if (this.resolveWorkerDir) {
             this.doResolveWorkerDir(output);
+            this.scheduleOscWorkerDirIntegration();
         }
         this.lastOutput = output;
     }
@@ -128,11 +147,100 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * @param output 输出
      */
     private void doResolveWorkerDir(String output) {
-        String workDir = ShellSSHUtil.resolveWorkerDir(output, this.userHome);
+        String workDir = this.workerDirResolver.resolve(output, this.userHome);
         // 跟随目录
         if (StringUtil.isNotBlank(workDir)) {
             this.workDirProperty().set(workDir);
         }
+    }
+
+    /**
+     * 重置工作目录解析状态
+     */
+    void resetWorkerDirResolver() {
+        this.workerDirResolver.reset();
+    }
+
+    /**
+     * 在终端输出安静后安排安装 OSC hook。持续输出会重置计时。
+     */
+    synchronized void scheduleOscWorkerDirIntegration() {
+        if (!this.resolveWorkerDir || !ShellSSHUtil.isEnableOscWorkerDir(this.shellConnect)
+                || this.oscWorkerDirIntegrationState != OscIntegrationState.PENDING
+                || this.shell == null || this.shell.isClosed()) {
+            return;
+        }
+        if (this.oscWorkerDirIntegrationFuture != null) {
+            this.oscWorkerDirIntegrationFuture.cancel(false);
+        }
+        this.oscWorkerDirIntegrationFuture = ExecutorUtil.start(
+                this::installOscWorkerDirIntegration, OSC_INTEGRATION_QUIET_MILLIS);
+    }
+
+    /**
+     * 取消尚未执行的 OSC hook 安装任务
+     */
+    private synchronized void cancelOscWorkerDirIntegration() {
+        if (this.oscWorkerDirIntegrationFuture != null) {
+            this.oscWorkerDirIntegrationFuture.cancel(false);
+            this.oscWorkerDirIntegrationFuture = null;
+        }
+    }
+
+    /**
+     * 安装 OSC 工作目录上报 hook。同一次 shell 会话只安装一次。
+     */
+    void installOscWorkerDirIntegration() {
+        ShellSSHShell currentShell;
+        synchronized (this) {
+            this.oscWorkerDirIntegrationFuture = null;
+            if (!this.resolveWorkerDir || !ShellSSHUtil.isEnableOscWorkerDir(this.shellConnect)
+                    || this.oscWorkerDirIntegrationState != OscIntegrationState.PENDING
+                    || this.shell == null || this.shell.isClosed()) {
+                return;
+            }
+            // 先占位，避免终端读取线程在安装期间等待本对象的锁。
+            this.oscWorkerDirIntegrationState = OscIntegrationState.INSTALLING;
+            currentShell = this.shell;
+        }
+        boolean installed = false;
+        try {
+            String shellType = this.getShellType();
+            ShellOscShellIntegration.Platform platform;
+            if (this.isWindows()) {
+                platform = ShellOscShellIntegration.Platform.WINDOWS;
+            } else if (this.isFreeBSD()) {
+                platform = ShellOscShellIntegration.Platform.FREEBSD;
+            } else {
+                platform = ShellOscShellIntegration.Platform.UNIX;
+            }
+            if (!ShellOscShellIntegration.isSupported(shellType, platform)) {
+                return;
+            }
+            installed = ShellOscShellIntegration.install(
+                    currentShell.getOutputStream(), shellType, platform);
+        } catch (Exception ex) {
+            JulLog.warn("install osc worker dir integration failed", ex);
+        } finally {
+            synchronized (this) {
+                // shell 在安装期间关闭并重建时，openShell 会重置状态，旧任务不能覆盖新会话。
+                if (this.oscWorkerDirIntegrationState == OscIntegrationState.INSTALLING
+                        && currentShell == this.shell) {
+                    this.oscWorkerDirIntegrationState = installed
+                            ? OscIntegrationState.INSTALLED : OscIntegrationState.UNAVAILABLE;
+                }
+            }
+        }
+    }
+
+    /**
+     * OSC 目录上报的安装状态
+     */
+    private enum OscIntegrationState {
+        PENDING,
+        INSTALLING,
+        INSTALLED,
+        UNAVAILABLE
     }
 
     /**
@@ -430,6 +538,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
 
     private void releaseResources() {
         this.cancelPendingPtyResize();
+        this.cancelOscWorkerDirIntegration();
         ShellClientChecker.remove(this);
         this.closeQuietly(this.sftpClient, "sftp client");
         this.sftpClient = null;
@@ -437,8 +546,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         this.shell = null;
         this.closeQuietly(this.sshExec, "ssh exec");
         this.sshExec = null;
-        this.closeQuietly(this.serverExec, "server exec");
-        this.serverExec = null;
         this.closeQuietly(this.processExec, "process exec");
         this.processExec = null;
         this.closeQuietly(this.dockerExec, "docker exec");
@@ -523,18 +630,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         this.state.set(ShellConnState.CONNECTED);
     }
 
-    /**
-     * 是否连接中
-     *
-     * @return 结果
-     */
-    public boolean isConnecting() {
-        if (!this.isClosed()) {
-            return this.state.get() == ShellConnState.CONNECTING;
-        }
-        return false;
-    }
-
     @Override
     public boolean isConnected() {
         return this.session != null && this.session.isConnected()
@@ -570,6 +665,9 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     public synchronized ShellSSHShell openShell() throws Exception {
         if (this.shell == null || this.shell.isClosed()) {
+            this.cancelOscWorkerDirIntegration();
+            this.resetWorkerDirResolver();
+            this.oscWorkerDirIntegrationState = OscIntegrationState.PENDING;
             ChannelShell channel = null;
             try {
                 this.ensureSessionConnected(this.connectTimeout());
@@ -775,14 +873,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
-    private ShellServerExec serverExec;
 
-    public synchronized ShellServerExec serverExec() {
-        if (this.serverExec == null) {
-            this.serverExec = new ShellServerExec(this);
-        }
-        return this.serverExec;
-    }
 
     private ShellSSHExec sshExec;
 
@@ -817,55 +908,5 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             }
         }
         return this.whoami;
-    }
-
-    /**
-     * 获取终端类型
-     *
-     * @return 终端类型
-     */
-    public String getShellType() {
-        if (this.shellType == null) {
-            this.shellType = this.serverExec().getShellType();
-        }
-        return this.shellType;
-    }
-
-    /**
-     * 获取shell名称
-     *
-     * @return 结果
-     */
-    public String getShellName() {
-        String shellType = this.getShellType();
-        if (shellType == null) {
-            return null;
-        }
-        if (shellType.contains("/")) {
-            shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
-        } else if (shellType.contains("\\")) {
-            shellType = shellType.substring(shellType.lastIndexOf("\\") + 1);
-        }
-        return shellType;
-    }
-
-    /**
-     * 是否zsh的shell
-     *
-     * @return 结果
-     */
-    public boolean isZshType() {
-        String shellName = this.getShellName();
-        return StringUtil.endWithIgnoreCase(shellName, "zsh");
-    }
-
-    /**
-     * 是否bash的shell
-     *
-     * @return 结果
-     */
-    public boolean isBashType() {
-        String shellName = this.getShellName();
-        return StringUtil.endWithIgnoreCase(shellName, "bash");
     }
 }

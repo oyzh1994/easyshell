@@ -39,6 +39,8 @@ public class ShellSSHUtil {
 
     public static final int MAX_HEARTBEAT_INTERVAL = 3600;
 
+    public static final String OSC_WORKER_DIR_EXTRA = "enableOscWorkerDir";
+
     public static void setHeartbeatInterval(ShellConnect connect, int seconds) {
         connect.putExtra(HEARTBEAT_INTERVAL_EXTRA, seconds);
     }
@@ -60,14 +62,42 @@ public class ShellSSHUtil {
         return interval >= 0 && interval <= MAX_HEARTBEAT_INTERVAL ? interval : DEFAULT_HEARTBEAT_INTERVAL;
     }
 
-    public static Proxy newProxy(ShellProxyConfig proxyConfig) {
-        return JschUtil.newProxy(proxyConfig);
+    /**
+     * 设置是否启用 OSC 工作目录上报。该功能会临时修改远端当前 shell 会话，默认关闭。
+     *
+     * @param connect 连接
+     * @param enabled 是否启用
+     */
+    public static void setEnableOscWorkerDir(ShellConnect connect, boolean enabled) {
+        connect.putExtra(OSC_WORKER_DIR_EXTRA, enabled);
     }
 
     /**
-     * osc转义序列（如终端标题、超链接），removeAnsi无法处理
+     * 是否启用 OSC 工作目录上报。未配置或配置非法时默认关闭。
+     *
+     * @param connect 连接
+     * @return 结果
      */
-    private static final Pattern OSC_PATTERN = Pattern.compile("\u001B\\][^\u0007\u001B]*(?:\u0007|\u001B\\\\)");
+    public static boolean isEnableOscWorkerDir(ShellConnect connect) {
+        Object value = connect == null ? null : connect.getExtra(OSC_WORKER_DIR_EXTRA);
+        if (value instanceof Boolean enabled) {
+            return enabled;
+        }
+        if (value != null) {
+            String text = value.toString().strip();
+            if ("true".equalsIgnoreCase(text)) {
+                return true;
+            }
+            if ("false".equalsIgnoreCase(text)) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static Proxy newProxy(ShellProxyConfig proxyConfig) {
+        return JschUtil.newProxy(proxyConfig);
+    }
 
     /**
      * 私有模式、字符集等残留的转义序列，如ESC[?25h、ESC[?2004h、ESC=
@@ -85,13 +115,25 @@ public class ShellSSHUtil {
     private static final Pattern DECORATION_PATTERN = Pattern.compile("\\s*(?:git:\\([^()]*\\)|\\([^()]*\\)|\\[[^\\[\\]]*\\]|\\{[^{}]*\\})+$");
 
     /**
-     * 解析工作目录
+     * 解析工作目录。优先使用终端通过 OSC 7 或 OSC 9;9 上报的目录，
+     * 不支持或解析失败时回退到提示符解析。
      *
      * @param output  输出
      * @param homeDir 用户home目录
      * @return 工作目录
      */
     public static String resolveWorkerDir(String output, String homeDir) {
+        return new ShellWorkerDirResolver().resolve(output, homeDir);
+    }
+
+    /**
+     * 解析工作目录（提示符回退实现）
+     *
+     * @param output  输出
+     * @param homeDir 用户home目录
+     * @return 工作目录
+     */
+    static String resolvePromptWorkerDir(String output, String homeDir) {
         if (StringUtil.isBlank(output)) {
             return null;
         }
@@ -182,7 +224,7 @@ public class ShellSSHUtil {
      * @return 清理后的行
      */
     private static String cleanPromptLine(String line) {
-        line = OSC_PATTERN.matcher(line).replaceAll("");
+        line = ShellOscParser.removeOsc(line);
         line = SSHUtil.removeAnsi(line);
         line = ESCAPE_PATTERN.matcher(line).replaceAll("");
         return SSHUtil.removeControl(line);

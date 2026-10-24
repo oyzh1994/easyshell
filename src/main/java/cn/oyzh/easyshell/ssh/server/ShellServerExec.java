@@ -9,6 +9,8 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -30,7 +33,7 @@ public class ShellServerExec implements AutoCloseable {
     /**
      * shell客户端
      */
-    private volatile ShellSSHClient client;
+    private volatile ShellBaseSSHClient client;
 
     /**
      * 服务器磁盘对象
@@ -47,7 +50,7 @@ public class ShellServerExec implements AutoCloseable {
      *
      * @return ssh客户端
      */
-    public ShellSSHClient getClient() {
+    public ShellBaseSSHClient getClient() {
         return client;
     }
 
@@ -56,7 +59,7 @@ public class ShellServerExec implements AutoCloseable {
      *
      * @param client ssh客户端
      */
-    public ShellServerExec(ShellSSHClient client) {
+    public ShellServerExec(ShellBaseSSHClient client) {
         this.client = client;
         this.disk = new ShellServerDisk();
         this.network = new ShellServerNetwork();
@@ -178,11 +181,19 @@ public class ShellServerExec implements AutoCloseable {
         if (this.lastMonitor != null && System.currentTimeMillis() - this.lastMonitorTime < 3000) {
             return this.lastMonitor;
         }
+        if (!async && this.syncEexcuting.get()) {
+            return this.lastMonitor;
+        }
+        if (async && this.asyncEexcuting.get()) {
+            return this.lastMonitor;
+        }
         ShellServerMonitor monitor = async ? this.monitorAsync() : this.monitorSync();
         this.lastMonitor = monitor;
         this.lastMonitorTime = System.currentTimeMillis();
         return monitor;
     }
+
+    private final AtomicBoolean asyncEexcuting = new AtomicBoolean();
 
     /**
      * 获取服务监控信息，异步
@@ -193,69 +204,76 @@ public class ShellServerExec implements AutoCloseable {
         if (this.client == null) {
             return null;
         }
-        ShellServerMonitor monitor = new ShellServerMonitor();
-        DownLatch latch = DownLatch.of(4);
-        ThreadUtil.start(() -> {
-            if (this.client != null) {
-                try {
-                    double cpuUsage = this.cpuUsage();
-                    monitor.setCpuUsage(cpuUsage);
-                } finally {
-                    latch.countDown();
-                }
-            }
-        });
-
-        ThreadUtil.start(() -> {
-            if (this.client != null) {
-                try {
-                    double memoryUsage = this.memoryUsage();
-                    monitor.setMemoryUsage(memoryUsage);
-                } finally {
-                    latch.countDown();
-                }
-            }
-        });
-
-        ThreadUtil.start(() -> {
-            if (this.client != null) {
-                try {
-                    double[] data = this.disk();
-                    if (this.client.isUnix() || this.client.isWindows()) {
-                        monitor.setDiskReadSpeed(data[0]);
-                        monitor.setDiskWriteSpeed(data[1]);
-                    } else {
-                        double[] speed = this.disk.calcSpeed(data);
-                        monitor.setDiskReadSpeed(speed[0]);
-                        monitor.setDiskWriteSpeed(speed[1]);
+        this.asyncEexcuting.set(true);
+        try {
+            ShellServerMonitor monitor = new ShellServerMonitor();
+            DownLatch latch = DownLatch.of(4);
+            ThreadUtil.start(() -> {
+                if (this.client != null) {
+                    try {
+                        double cpuUsage = this.cpuUsage();
+                        monitor.setCpuUsage(cpuUsage);
+                    } finally {
+                        latch.countDown();
                     }
-                } finally {
-                    latch.countDown();
                 }
-            }
-        });
+            });
 
-        ThreadUtil.start(() -> {
-            if (this.client != null) {
-                try {
-                    double[] data = this.network();
-                    if (this.client.isWindows()) {
-                        monitor.setNetworkSendSpeed(data[0]);
-                        monitor.setNetworkReceiveSpeed(data[1]);
-                    } else {
-                        double[] speed = this.network.calcSpeed(data);
-                        monitor.setNetworkSendSpeed(speed[0]);
-                        monitor.setNetworkReceiveSpeed(speed[1]);
+            ThreadUtil.start(() -> {
+                if (this.client != null) {
+                    try {
+                        double memoryUsage = this.memoryUsage();
+                        monitor.setMemoryUsage(memoryUsage);
+                    } finally {
+                        latch.countDown();
                     }
-                } finally {
-                    latch.countDown();
                 }
-            }
-        });
+            });
 
-        latch.await();
-        return monitor;
+            ThreadUtil.start(() -> {
+                if (this.client != null) {
+                    try {
+                        double[] data = this.disk();
+                        if (this.client.isUnix() || this.client.isWindows()) {
+                            monitor.setDiskReadSpeed(data[0]);
+                            monitor.setDiskWriteSpeed(data[1]);
+                        } else {
+                            double[] speed = this.disk.calcSpeed(data);
+                            monitor.setDiskReadSpeed(speed[0]);
+                            monitor.setDiskWriteSpeed(speed[1]);
+                        }
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+
+            ThreadUtil.start(() -> {
+                if (this.client != null) {
+                    try {
+                        double[] data = this.network();
+                        if (this.client.isWindows()) {
+                            monitor.setNetworkSendSpeed(data[0]);
+                            monitor.setNetworkReceiveSpeed(data[1]);
+                        } else {
+                            double[] speed = this.network.calcSpeed(data);
+                            monitor.setNetworkSendSpeed(speed[0]);
+                            monitor.setNetworkReceiveSpeed(speed[1]);
+                        }
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+
+            latch.await();
+            return monitor;
+        } finally {
+            this.asyncEexcuting.set(false);
+        }
     }
+
+    private final AtomicBoolean syncEexcuting = new AtomicBoolean();
 
     /**
      * 获取服务监控信息，同步
@@ -266,30 +284,35 @@ public class ShellServerExec implements AutoCloseable {
         if (this.client == null) {
             return null;
         }
-        ShellServerMonitor monitor = new ShellServerMonitor();
-        double cpuUsage = this.cpuUsage();
-        monitor.setCpuUsage(cpuUsage);
-        double memoryUsage = this.memoryUsage();
-        monitor.setMemoryUsage(memoryUsage);
-        double[] data = this.disk();
-        if (this.client.isUnix() || this.client.isWindows()) {
-            monitor.setDiskReadSpeed(data[0]);
-            monitor.setDiskWriteSpeed(data[1]);
-        } else {
-            double[] speed = this.disk.calcSpeed(data);
-            monitor.setDiskReadSpeed(speed[0]);
-            monitor.setDiskWriteSpeed(speed[1]);
+        this.syncEexcuting.set(true);
+        try {
+            ShellServerMonitor monitor = new ShellServerMonitor();
+            double cpuUsage = this.cpuUsage();
+            monitor.setCpuUsage(cpuUsage);
+            double memoryUsage = this.memoryUsage();
+            monitor.setMemoryUsage(memoryUsage);
+            double[] data = this.disk();
+            if (this.client.isUnix() || this.client.isWindows()) {
+                monitor.setDiskReadSpeed(data[0]);
+                monitor.setDiskWriteSpeed(data[1]);
+            } else {
+                double[] speed = this.disk.calcSpeed(data);
+                monitor.setDiskReadSpeed(speed[0]);
+                monitor.setDiskWriteSpeed(speed[1]);
+            }
+            double[] data1 = this.network();
+            if (this.client.isWindows()) {
+                monitor.setNetworkSendSpeed(data1[0]);
+                monitor.setNetworkReceiveSpeed(data1[1]);
+            } else {
+                double[] speed = this.network.calcSpeed(data1);
+                monitor.setNetworkSendSpeed(speed[0]);
+                monitor.setNetworkReceiveSpeed(speed[1]);
+            }
+            return monitor;
+        } finally {
+            this.syncEexcuting.set(false);
         }
-        double[] data1 = this.network();
-        if (this.client.isWindows()) {
-            monitor.setNetworkSendSpeed(data1[0]);
-            monitor.setNetworkReceiveSpeed(data1[1]);
-        } else {
-            double[] speed = this.network.calcSpeed(data1);
-            monitor.setNetworkSendSpeed(speed[0]);
-            monitor.setNetworkReceiveSpeed(speed[1]);
-        }
-        return monitor;
     }
 
     /**
@@ -1108,13 +1131,67 @@ public class ShellServerExec implements AutoCloseable {
      * @return 终端类型
      */
     public String getShellType() {
-        String shellType;
-        if (this.client.isUnix() || this.client.isLinux() || this.client.isMacos()) {
-            shellType = this.client.exec("echo $SHELL");
-        } else {
-            shellType = this.client.exec("echo %ComSpec%");
+        if (!this.client.isWindows()) {
+            return parseUnixShellType(this.client.exec("echo $SHELL"));
+        }
+        // Windows 的 ComSpec 始终指向 cmd.exe，不能代表当前交互式 shell。
+        // PowerShell 能展开 $env:ComSpec，cmd 只会原样输出；Git Bash 的 $SHELL 则是 POSIX 路径。
+        String powerShellComspec = this.client.exec("echo $env:ComSpec");
+        if (isWindowsExecutablePath(powerShellComspec)) {
+            return "powershell.exe";
+        }
+        String posixShell = this.client.exec("echo $SHELL");
+        String posixShellPath = posixShell == null ? null : posixShell.strip();
+        if (StringUtil.isNotBlank(posixShellPath) && posixShellPath.startsWith("/")) {
+            return posixShellPath;
+        }
+        String comspec = this.client.exec("echo %ComSpec%");
+        if (isWindowsExecutablePath(comspec)) {
+            return comspec.strip();
+        }
+        if (StringUtil.isNotBlank(comspec)) {
+            return comspec;
+        }
+        return posixShell;
+    }
+
+    /**
+     * 从探测结果中提取 shell 路径。csh/tcsh 对内部注入的 export 命令会输出额外错误，
+     * 不能把整段输出直接当作 shell 类型。
+     *
+     * @param output 探测输出
+     * @return shell路径
+     */
+    static String parseUnixShellType(String output) {
+        if (StringUtil.isBlank(output)) {
+            return null;
+        }
+        String shellType = null;
+        for (String line : output.split("\\R")) {
+            String candidate = line.strip();
+            if (candidate.startsWith("/") && candidate.indexOf(' ') < 0) {
+                shellType = candidate;
+            }
         }
         return shellType;
+    }
+
+    /**
+     * 是否为 Windows 可执行文件路径
+     *
+     * @param value 值
+     * @return 结果
+     */
+    private static boolean isWindowsExecutablePath(String value) {
+        if (StringUtil.isBlank(value)) {
+            return false;
+        }
+        String path = value.strip();
+        if (path.length() >= 3 && Character.isLetter(path.charAt(0))
+                && path.charAt(1) == ':' && (path.charAt(2) == '\\' || path.charAt(2) == '/')) {
+            return true;
+        }
+        return path.startsWith("\\\\");
     }
 
     @Override

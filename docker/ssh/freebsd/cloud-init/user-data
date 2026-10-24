@@ -1,0 +1,39 @@
+#cloud-config
+hostname: freebsd-osc
+disable_root: false
+ssh_pwauth: true
+
+users:
+  - name: oscsh
+    shell: /bin/sh
+    groups: wheel
+    lock_passwd: false
+    plain_text_passwd: 123456
+  - name: osccsh
+    shell: /bin/csh
+    groups: wheel
+    lock_passwd: false
+    plain_text_passwd: 123456
+
+chpasswd:
+  expire: false
+  users:
+    - name: root
+      password: 123456
+      type: text
+    - name: oscsh
+      password: 123456
+      type: text
+    - name: osccsh
+      password: 123456
+      type: text
+
+runcmd:
+  - pw usershow oscsh >/dev/null 2>&1 || pw useradd -n oscsh -s /bin/sh -m -G wheel
+  - pw usershow osccsh >/dev/null 2>&1 || pw useradd -n osccsh -s /bin/csh -m -G wheel
+  - printf '123456\n' | pw usermod oscsh -h 0
+  - printf '123456\n' | pw usermod osccsh -h 0
+  - sed -i.bak -E 's/^#?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - sed -i.bak -E 's/^#?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+  - sysrc sshd_enable=YES
+  - service sshd restart

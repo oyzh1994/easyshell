@@ -111,6 +111,9 @@ public class ShellSSHMonitorTabController extends SubTabController {
      * @param monitor 监控信息
      */
     private void initCpuChart(ShellServerMonitor monitor) {
+        if (this.cpuChart == null) {
+            return;
+        }
         XYChart.Series<String, Double> data = this.cpuChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();
@@ -240,7 +243,7 @@ public class ShellSSHMonitorTabController extends SubTabController {
             }
             if (this.client != null) {
                 // 获取数据
-                ShellServerMonitor monitor = this.serverExec.monitor(false);
+                ShellServerMonitor monitor = this.serverExec.monitor(true);
                 this.init(monitor);
             }
             if (JulLog.isInfoEnabled()) {
@@ -273,12 +276,12 @@ public class ShellSSHMonitorTabController extends SubTabController {
             }
         });
     }
-//
-//    @Override
-//    public void onTabClosed(Event event) {
-//        super.onTabClosed(event);
-//        this.closeRefreshTask();
-//    }
+    //
+    //    @Override
+    //    public void onTabClosed(Event event) {
+    //        super.onTabClosed(event);
+    //        this.closeRefreshTask();
+    //    }
 
     @Override
     public void destroy() {

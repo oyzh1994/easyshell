@@ -158,6 +158,11 @@
                             <Insets left="10" top="5"/>
                         </HBox.margin>
                     </FXCheckBox>
+                    <FXCheckBox fx:id="enableOscWorkerDir" text="%shell.connect.tip19" tipText="%shell.connect.tip20">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
                 </FXHBox>
             </FXVBox>
         </FixedTab>

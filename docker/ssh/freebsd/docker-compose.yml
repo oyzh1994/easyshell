@@ -1,0 +1,17 @@
+services:
+  freebsd-osc:
+    build: .
+    container_name: easyshell-freebsd-osc
+    hostname: freebsd-osc
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${SSH_PORT:-2225}:22"
+    environment:
+      MEMORY: "${MEMORY:-2G}"
+      CPUS: "${CPUS:-2}"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -w 5 127.0.0.1 22 | grep -q '^SSH-'"]
+      interval: 15s
+      timeout: 15s
+      retries: 20
+      start_period: 600s

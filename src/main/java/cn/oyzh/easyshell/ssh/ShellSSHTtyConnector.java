@@ -60,6 +60,7 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
                 } else {
                     this.outputReader = this.reader;
                 }
+                this.client.scheduleOscWorkerDirIntegration();
             } catch (Exception ex) {
                 throw new IOException(ex);
             }

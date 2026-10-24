@@ -331,6 +331,12 @@ public class ShellAddSSHConnectController extends StageController {
     private FXCheckBox forwardAgent;
 
     /**
+     * 启用OSC工作目录上报
+     */
+    @FXML
+    private FXCheckBox enableOscWorkerDir;
+
+    /**
      * ssh连接储存对象
      */
     private final ShellConnectStore connectStore = ShellConnectStore.INSTANCE;
@@ -402,6 +408,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setHost(host);
             shellConnect.setConnectTimeOut(timeout);
             ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
+            ShellSSHUtil.setEnableOscWorkerDir(shellConnect, this.enableOscWorkerDir.isSelected());
             // 认证信息
             shellConnect.setKeyId(this.key.getKeyId());
             shellConnect.setUser(this.userName.getTextTrim());
@@ -506,6 +513,7 @@ public class ShellAddSSHConnectController extends StageController {
             shellConnect.setAltSendsEscape(altSendsEscape);
             shellConnect.setConnectTimeOut(connectTimeOut);
             ShellSSHUtil.setHeartbeatInterval(shellConnect, this.heartbeatInterval.getIntValue());
+            ShellSSHUtil.setEnableOscWorkerDir(shellConnect, this.enableOscWorkerDir.isSelected());
             // 客户端转发
             shellConnect.setForwardAgent(forwardAgent);
             // 启用ZModem
