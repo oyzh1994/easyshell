@@ -14,8 +14,8 @@ java-options = [
     #    "-Xms32m",
     # 最大内存
     "-Xmx2G",
-    # 禁用类共享，注意部分jdk不支持此参数
-    "-Xshare:off",
+    # 禁用类共享，注意部分jdk不支持此参数，此参数和aot冲突
+#    "-Xshare:off",
     # 内存软限制上限
     "-XX:SoftMaxHeapSize=512m",
     #    "-XX:ConcGCThreads=2",
