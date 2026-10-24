@@ -13,11 +13,10 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh.process.ShellProcessExec;
-import cn.oyzh.easyshell.ssh.server.ShellServerExec;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
@@ -96,10 +95,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private StringProperty workDirProperty;
 
-//    /**
-//     * 终端历史存储
-//     */
-//    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
+    //    /**
+    //     * 终端历史存储
+    //     */
+    //    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
 
     /**
      * 是否解析工作目录
@@ -255,22 +254,22 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.workDirProperty;
     }
 
-//    /**
-//     * 保存终端历史
-//     *
-//     * @param output 输出
-//     */
-//    public void saveTermHistory(String output) {
-//        String command = ShellSSHUtil.resolveCommand(output);
-//        if (StringUtil.isNotBlank(command)) {
-//            JulLog.error("command: " + command);
-//            ShellTermHistory history = new ShellTermHistory();
-//            history.setContent(command);
-//            history.setIid(this.shellConnect.getId());
-//            history.setSaveTime(System.currentTimeMillis());
-//            this.termHistoryStore.save(history);
-//        }
-//    }
+    //    /**
+    //     * 保存终端历史
+    //     *
+    //     * @param output 输出
+    //     */
+    //    public void saveTermHistory(String output) {
+    //        String command = ShellSSHUtil.resolveCommand(output);
+    //        if (StringUtil.isNotBlank(command)) {
+    //            JulLog.error("command: " + command);
+    //            ShellTermHistory history = new ShellTermHistory();
+    //            history.setContent(command);
+    //            history.setIid(this.shellConnect.getId());
+    //            history.setSaveTime(System.currentTimeMillis());
+    //            this.termHistoryStore.save(history);
+    //        }
+    //    }
 
     /**
      * ssh跳板转发器
@@ -370,6 +369,10 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         try {
             if (this.sftpClient == null) {
                 this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session, false, this.dynamicChannelPermits);
+                this.sftpClient.osType = this.osType;
+                this.sftpClient.userHome = this.userHome;
+                this.sftpClient.environment = this.environment;
+                this.sftpClient.remoteCharset = this.remoteCharset;
                 this.sftpClient.setSessionSupplier(() -> {
                     try {
                         this.ensureSessionConnected(this.connectTimeout());
@@ -769,50 +772,50 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
-//    /**
-//     * 通过shell通道执行命令
-//     *
-//     * @param command 命令
-//     * @return 结果
-//     */
-//    public String execShell(String command) throws Exception {
-//        ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
-//        // 客户端转发
-//        if (this.shellConnect.isJumpForward()) {
-//            channel.setAgentForwarding(true);
-//        }
-//        // x11转发
-//        if (this.shellConnect.isX11forwarding()) {
-//            channel.setXForwarding(true);
-//        }
-//        // 设置终端类型
-//        channel.setPty(true);
-//        channel.connect(this.connectTimeout());
-//        if (channel.isConnected()) {
-//            channel.setPtyType(this.shellConnect.getTermType());
-//            InputStream in = channel.getInputStream();
-//            OutputStream out = channel.getOutputStream();
-//            out.write(command.getBytes());
-//            out.flush();
-//            StringBuilder result = new StringBuilder();
-//            byte[] buffer = new byte[1024];
-//            boolean first = true;
-//            while (first || in.available() > 0) {
-//                if (first) {
-//                    ThreadUtil.sleep(50);
-//                    first = false;
-//                }
-//                int len = in.read(buffer);
-//                result.append(new String(buffer, 0, len, this.getCharset()));
-//                ThreadUtil.sleep(10);
-//            }
-//            IOUtil.close(in);
-//            IOUtil.close(out);
-//            channel.disconnect();
-//            return result.toString();
-//        }
-//        return null;
-//    }
+    //    /**
+    //     * 通过shell通道执行命令
+    //     *
+    //     * @param command 命令
+    //     * @return 结果
+    //     */
+    //    public String execShell(String command) throws Exception {
+    //        ChannelShell channel = (ChannelShell) this.session.openChannel("shell");
+    //        // 客户端转发
+    //        if (this.shellConnect.isJumpForward()) {
+    //            channel.setAgentForwarding(true);
+    //        }
+    //        // x11转发
+    //        if (this.shellConnect.isX11forwarding()) {
+    //            channel.setXForwarding(true);
+    //        }
+    //        // 设置终端类型
+    //        channel.setPty(true);
+    //        channel.connect(this.connectTimeout());
+    //        if (channel.isConnected()) {
+    //            channel.setPtyType(this.shellConnect.getTermType());
+    //            InputStream in = channel.getInputStream();
+    //            OutputStream out = channel.getOutputStream();
+    //            out.write(command.getBytes());
+    //            out.flush();
+    //            StringBuilder result = new StringBuilder();
+    //            byte[] buffer = new byte[1024];
+    //            boolean first = true;
+    //            while (first || in.available() > 0) {
+    //                if (first) {
+    //                    ThreadUtil.sleep(50);
+    //                    first = false;
+    //                }
+    //                int len = in.read(buffer);
+    //                result.append(new String(buffer, 0, len, this.getCharset()));
+    //                ThreadUtil.sleep(10);
+    //            }
+    //            IOUtil.close(in);
+    //            IOUtil.close(out);
+    //            channel.disconnect();
+    //            return result.toString();
+    //        }
+    //        return null;
+    //    }
 
     private ShellDockerExec dockerExec;
 
@@ -867,13 +870,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     private void addEnvironmentPath(String path) {
-        this.getExportPath();
+        this.initEnvironment();
         if (StringUtil.isNotBlank(path) && !this.environment.contains(path)) {
             this.environment.add(path);
         }
     }
-
-
 
     private ShellSSHExec sshExec;
 

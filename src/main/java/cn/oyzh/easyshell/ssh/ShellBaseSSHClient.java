@@ -17,8 +17,7 @@ import cn.oyzh.ssh.util.JschUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.ChannelShell;
+import com.jcraft.jsch.ChannelSession;
 import com.jcraft.jsch.Identity;
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
@@ -36,7 +35,6 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -76,6 +74,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     protected volatile Session session;
 
+    /**
+     * jsch实例
+     */
     protected JSch jsch;
 
     /**
@@ -84,39 +85,19 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     protected volatile String userHome;
 
     /**
-     * 远程字符集
-     */
-    protected volatile String remoteCharset;
-
-    /**
      * shell信息
      */
     protected ShellConnect shellConnect;
 
     /**
+     * 远程字符集
+     */
+    protected volatile String remoteCharset;
+
+    /**
      * 环境变量
      */
     protected volatile List<String> environment;
-
-    /**
-     * 远端元数据初始化锁。不得与客户端对象锁或通道许可混用，避免锁顺序倒置。
-     */
-    private final Object metadataLock = new Object();
-
-    /**
-     * 用户目录锁
-     */
-    private final Object userHomeLock = new Object();
-
-    /**
-     * 会话连接锁。连接、重连和会话替换只在该锁内进行。
-     */
-    private final Object sessionLock = new Object();
-
-    /**
-     * agent锁
-     */
-    private final Object agentLock = new Object();
 
     /**
      * shell密钥存储
@@ -148,11 +129,6 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * Exec 与 SFTP 共用的动态通道许可。同一 SSH 会话派生的 SFTP 客户端必须复用该许可。
      */
     protected final Semaphore dynamicChannelPermits;
-
-    /**
-     * 元数据初始化标识位
-     */
-    private volatile boolean metadataInitialized;
 
     /**
      * 当前客户端是否已降级到旧服务端算法。
@@ -224,12 +200,15 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 系统类型
      */
-    protected String osType() {
-        String current = this.osType;
-        if (current != null) {
-            return current;
+    protected synchronized String getOsType() {
+        if (this.osType == null) {
+            String type = this.execMetadata("uname -s");
+            if (StringUtil.isNotBlank(type) && ShellUtil.isWindowsCommandNotFound(type, "uname")) {
+                type = this.execMetadata("cmd.exe /c ver");
+            }
+            JulLog.info("osType:{}", type);
+            this.osType = type;
         }
-        this.ensureMetadata();
         return this.osType;
     }
 
@@ -244,7 +223,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     public String exec(String command, int timeout) {
-        return this.execInternal(command, timeout, false, true, true);
+        return this.execInternal(command, timeout, false, true);
     }
 
     /**
@@ -259,26 +238,25 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     public String execUtf8(String command, int timeout) {
-        return this.execInternal(command, timeout, true, true, true);
+        return this.execInternal(command, timeout, true, true);
     }
 
     /**
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
-    private String execMetadata(String command) {
-        return this.execInternal(command, this.connectTimeout(), false, false, false);
+    public String execMetadata(String command) {
+        return this.execInternal(command, this.connectTimeout(), false, false);
     }
 
-    private String execInternal(String command,
-                                int timeout,
-                                boolean preferUtf8,
-                                boolean resolveCommand,
-                                boolean configureEnvironment) {
+    protected String execInternal(String command,
+                                  int timeout,
+                                  boolean preferUtf8,
+                                  boolean configureEnvironment) {
         // 获取通道
         ChannelExec channel = null;
         ByteArrayOutputStream stream = null;
         boolean permitAcquired = false;
-        String resolvedCommand = resolveCommand ? this.prepareExecCommand(command) : command;
+        String resolvedCommand = this.resolveExecCommand(command);
         Session activeSession;
         try {
             // 命令超时只约束命令执行，建连和通道打开使用独立的连接超时。
@@ -345,10 +323,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return null;
     }
 
-    private String prepareExecCommand(String command) {
-        this.ensureMetadata();
-        return this.resolveExecCommand(command);
-    }
+    //    private String prepareExecCommand(String command) {
+    //        return this.resolveExecCommand(command);
+    //    }
 
     private String decodeExecOutput(ByteArrayOutputStream stream, boolean preferUtf8) {
         byte[] bytes = stream.toByteArray();
@@ -416,12 +393,22 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public String getExportPath() {
-        this.ensureMetadata();
+        this.initEnvironment();
+        if (this.osType == null) {
+            //        if (this.osType == null || this.shellType == null) {
+            return "";
+        }
         StringBuilder builder = new StringBuilder();
-        if (isWindowsType(this.osType)) {
+        if (this.isWindows()) {
             for (String string : this.environment) {
                 builder.append(";").append(string);
             }
+            builder.append(";%PATH%");
+            //        } else if (this.isTcshType() || this.isCshType()) {
+            //            for (String string : this.environment) {
+            //                builder.append(":").append(string);
+            //            }
+            //            builder.append(":$PATH");
         } else {
             for (String string : this.environment) {
                 builder.append(":").append(string);
@@ -434,60 +421,29 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * 初始化环境
      */
-    protected void initEnvironment() {
-        List<String> paths = new CopyOnWriteArrayList<>();
-        if (isWindowsType(this.osType)) {
-            paths.add("C:/Windows/System");
-            paths.add("C:/Windows/System32");
-            paths.add("C:/Windows/SysWOW64");
-            paths.add("C:/Program Files");
-            paths.add("C:/Program Files (x86)");
-        } else {
-            paths.add("/bin");
-            paths.add("/sbin");
-            paths.add("/usr/bin");
-            paths.add("/usr/sbin");
-            paths.add("/usr/games");
-            paths.add("/usr/local/bin");
-            paths.add("/usr/local/sbin");
-            paths.add("/usr/local/games");
-        }
-        if (isMacosType(this.osType)) {
-            paths.add("/Applications/Docker.app/Contents/Resources/bin/");
-        }
-        this.environment = paths;
-    }
-
-    /**
-     * 初始化远端系统类型和字符集。探测命令只走内部 Exec，不进入公共 Exec 的元数据预处理。
-     */
-    protected void ensureMetadata() {
-        if (this.metadataInitialized) {
-            return;
-        }
-        synchronized (this.metadataLock) {
-            if (this.metadataInitialized) {
-                return;
+    protected synchronized void initEnvironment() {
+        if (this.environment == null) {
+            List<String> paths = new CopyOnWriteArrayList<>();
+            if (this.isWindows()) {
+                paths.add("C:/Windows/System");
+                paths.add("C:/Windows/System32");
+                paths.add("C:/Windows/SysWOW64");
+                paths.add("C:/Program Files");
+                paths.add("C:/Program Files (x86)");
+            } else {
+                paths.add("/bin");
+                paths.add("/sbin");
+                paths.add("/usr/bin");
+                paths.add("/usr/sbin");
+                paths.add("/usr/games");
+                paths.add("/usr/local/bin");
+                paths.add("/usr/local/sbin");
+                paths.add("/usr/local/games");
             }
-            String type = this.execMetadata("uname -s");
-            if (StringUtil.isNotBlank(type) && ShellUtil.isWindowsCommandNotFound(type, "uname")) {
-                type = this.execMetadata("cmd.exe /c ver");
+            if (this.isMacos()) {
+                paths.add("/Applications/Docker.app/Contents/Resources/bin/");
             }
-            boolean resolved = StringUtil.isNotBlank(type);
-            this.osType = resolved ? type : null;
-            this.initEnvironment();
-            String charset = null;
-            if (resolved && isWindowsType(this.osType)) {
-                charset = ShellUtil.getCharsetFromChcp(this.execMetadata("chcp"));
-            } else if (resolved && (isUnixType(this.osType) || isMacosType(this.osType) || isLinuxType(this.osType))) {
-                charset = ShellUtil.getCharsetFromLang(this.execMetadata("echo $LANG"));
-            }
-            this.remoteCharset = charset;
-            // 探测失败时保留重试机会，避免一次网络抖动导致后续平台判断永久为空。
-            this.metadataInitialized = resolved;
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("remote charset: {}", charset);
-            }
+            this.environment = paths;
         }
     }
 
@@ -497,7 +453,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isMacos() {
-        return isMacosType(this.osType());
+        return isMacosType(this.getOsType());
     }
 
     /**
@@ -506,7 +462,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isLinux() {
-        return isLinuxType(this.osType());
+        return isLinuxType(this.getOsType());
     }
 
     /**
@@ -515,7 +471,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isUnix() {
-        return isUnixType(this.osType());
+        return isUnixType(this.getOsType());
     }
 
     /**
@@ -524,7 +480,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isFreeBSD() {
-        return StringUtil.containsIgnoreCase(this.osType(), "FreeBSD");
+        return StringUtil.containsIgnoreCase(this.getOsType(), "FreeBSD");
     }
 
     /**
@@ -533,7 +489,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public boolean isWindows() {
-        return isWindowsType(this.osType());
+        return isWindowsType(this.getOsType());
     }
 
     private static boolean isMacosType(String value) {
@@ -557,8 +513,19 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 远程字符集
      */
-    public String getRemoteCharset() {
-        this.ensureMetadata();
+    public synchronized String getRemoteCharset() {
+        if (this.remoteCharset == null) {
+            String charset = null;
+            if (this.isWindows()) {
+                charset = ShellUtil.getCharsetFromChcp(this.execMetadata("chcp"));
+            } else if (this.isLinux() || this.isMacos() || this.isUnix()) {
+                charset = ShellUtil.getCharsetFromLang(this.execMetadata("echo $LANG"));
+            }
+            if (JulLog.isInfoEnabled()) {
+                JulLog.info("remote charset: {}", charset);
+            }
+            this.remoteCharset = charset;
+        }
         return this.remoteCharset;
     }
 
@@ -579,23 +546,14 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 用户目录
      */
-    public String getUserHome() {
-        String home = this.userHome;
-        if (home != null) {
-            return home;
-        }
-        synchronized (this.userHomeLock) {
-            if (this.userHome != null) {
-                return this.userHome;
+    public synchronized String getUserHome() {
+        if (this.userHome == null) {
+            String output = this.execMetadata(this.isWindows() ? "echo %HOME%" : "echo $HOME");
+            if (StringUtil.isNotBlank(output)) {
+                this.userHome = output + (this.isWindows() ? "\\" : "/");
             }
-            this.ensureMetadata();
-            String output = this.execMetadata(isWindowsType(this.osType) ? "echo %HOME%" : "echo $HOME");
-            if (StringUtil.isBlank(output)) {
-                return null;
-            }
-            this.userHome = output + (isWindowsType(this.osType) ? "\\" : "/");
-            return this.userHome;
         }
+        return this.userHome;
     }
 
     /**
@@ -680,35 +638,35 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 修正后的命令
      */
     protected String resolveExecCommand(String command) {
-        if (command == null || this.osType == null) {
-            return command;
-        }
-        if (this.isMacos() || this.isLinux()) {
-            return "export PATH=" + this.getExportPath() + "; " + command;
-        }
-        if (this.isUnix()) {
-            if (this.isCshType() || this.isTcshType()) {
-                return "setenv PATH=" + this.getExportPath() + "; " + command;
-            }
-            return "export PATH=" + this.getExportPath() + "; " + command;
-        }
+        //        if (command == null || this.osType == null || this.shellType == null) {
+        //            return command;
+        //        }
+        //        if (this.isMacos() || this.isUnix() || this.isLinux()) {
+        //            return "env PATH=\"" + this.getExportPath() + "\"  " + command;
+        //        }
+        //        if (this.isWindows()) {
+        //            if (this.isCmdType()) {
+        //                return "set \"PATH=" + this.getExportPath() + ";%PATH%\" & " + command;
+        //            }
+        //            if (this.isCmdType()) {
+        //                return "$env:PATH=\"" + this.getExportPath() + ";$env:PATH\"; " + command;
+        //            }
+        //        }
         return command;
     }
 
-    protected void ensureSessionConnected(int timeout) throws Exception {
-        synchronized (this.sessionLock) {
-            if (this.session != null && this.session.isConnected()) {
-                if (this.getState() != ShellConnState.CONNECTED) {
-                    this.onSessionConnected();
-                }
-                return;
+    protected synchronized void ensureSessionConnected(int timeout) throws Exception {
+        if (this.session != null && this.session.isConnected()) {
+            if (this.getState() != ShellConnState.CONNECTED) {
+                this.onSessionConnected();
             }
-            if (this.session != null) {
-                this.session.disconnect();
-                this.session = null;
-            }
-            this.connectSession(timeout);
+            return;
         }
+        if (this.session != null) {
+            this.session.disconnect();
+            this.session = null;
+        }
+        this.connectSession(timeout);
     }
 
     protected void onSessionConnected() {
@@ -820,47 +778,44 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return interactive;
     }
 
-    protected void connectSession(int timeout) throws JSchException, AgentProxyException {
-        synchronized (this.sessionLock) {
-            int retryCount = 0;
-            while (true) {
-                try {
-                    this.initClient();
-                    this.session.setTimeout(timeout);
-                    this.session.connect(timeout);
-                    this.configureAgentForwarding();
-                    this.onSessionConnected();
-                    return;
-                } catch (JSchException ex) {
-                    if (!this.legacyAlgorithmFallback && this.isAlgorithmNegotiationFailure(ex)) {
-                        this.legacyAlgorithmFallback = true;
-                        JulLog.warn("ssh algorithm negotiation failed, retrying with legacy algorithms");
-                        if (this.session != null) {
-                            this.session.disconnect();
-                            this.session = null;
-                        }
-                        continue;
-                    }
-                    if (retryCount++ >= 3 || !this.isAuthenticationFailure(ex) || this.verifyFailureCallback == null) {
-                        throw ex;
-                    }
-                    JulLog.warn("ssh authentication failed, waiting for interactive authentication");
-                    ShellConnect replacement = this.verifyFailureCallback.apply(this.shellConnect);
-                    if (replacement == null) {
-                        throw ex;
-                    }
+    protected synchronized void connectSession(int timeout) throws JSchException, AgentProxyException {
+        int retryCount = 0;
+        while (true) {
+            try {
+                this.initClient();
+                this.session.setTimeout(timeout);
+                this.session.connect(timeout);
+                this.configureAgentForwarding();
+                this.onSessionConnected();
+                return;
+            } catch (JSchException ex) {
+                if (!this.legacyAlgorithmFallback && this.isAlgorithmNegotiationFailure(ex)) {
+                    this.legacyAlgorithmFallback = true;
+                    JulLog.warn("ssh algorithm negotiation failed, retrying with legacy algorithms");
                     if (this.session != null) {
                         this.session.disconnect();
                         this.session = null;
                     }
-                    this.shellConnect = replacement;
-                    this.osType = null;
-                    this.userHome = null;
-                    this.remoteCharset = null;
-                    this.environment = null;
-                    this.metadataInitialized = false;
-                    this.agentIdentityRepository = null;
+                    continue;
                 }
+                if (retryCount++ >= 3 || !this.isAuthenticationFailure(ex) || this.verifyFailureCallback == null) {
+                    throw ex;
+                }
+                JulLog.warn("ssh authentication failed, waiting for interactive authentication");
+                ShellConnect replacement = this.verifyFailureCallback.apply(this.shellConnect);
+                if (replacement == null) {
+                    throw ex;
+                }
+                if (this.session != null) {
+                    this.session.disconnect();
+                    this.session = null;
+                }
+                //                this.osType = null;
+                //                this.userHome = null;
+                //                this.environment = null;
+                //                this.remoteCharset = null;
+                this.shellConnect = replacement;
+                //                this.agentIdentityRepository = null;
             }
         }
     }
@@ -878,15 +833,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.session.setIdentityRepository(this.getAgentIdentityRepository());
     }
 
-    private IdentityRepository getAgentIdentityRepository() throws AgentProxyException {
+    private synchronized IdentityRepository getAgentIdentityRepository() throws AgentProxyException {
         IdentityRepository repository = this.agentIdentityRepository;
         if (repository == null) {
-            synchronized (this.agentLock) {
-                repository = this.agentIdentityRepository;
-                if (repository == null) {
-                    repository = JschUtil.initAgentIdentityRepository();
-                    this.agentIdentityRepository = repository;
-                }
+            repository = this.agentIdentityRepository;
+            if (repository == null) {
+                repository = JschUtil.initAgentIdentityRepository();
+                this.agentIdentityRepository = repository;
             }
         }
         return repository;
@@ -946,26 +899,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     /**
      * 初始化环境
-     */
-    public Map<String, String> initEnvironments() {
-        Map<String, String> environments = new LinkedHashMap<>();
-        Map<String, String> userEnvs = this.shellConnect.environments();
-        if (CollectionUtil.isNotEmpty(userEnvs)) {
-            environments.putAll(userEnvs);
-        }
-        if (this.osType != null) {
-            environments.put("PATH", this.getExportPath());
-        }
-        environments.put("LANG", "en_US." + this.getCharset().displayName());
-        return environments;
-    }
-
-    /**
-     * 初始化环境
      *
      * @param channel 通道
      */
-    public void initEnvironments(ChannelExec channel) {
+    public void initEnvironments(ChannelSession channel) {
         // 用户环境
         Map<String, String> userEnvs = this.shellConnect.environments();
         if (CollectionUtil.isNotEmpty(userEnvs)) {
@@ -974,9 +911,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             }
         }
         // 初始化环境变量
-        if (this.osType != null) {
-            channel.setEnv("PATH", this.getExportPath());
-        }
+        channel.setEnv("PATH", this.getExportPath());
         // 初始化字符集
         channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
         // 客户端转发
@@ -989,63 +924,59 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         }
     }
 
-    /**
-     * 初始化环境
-     *
-     * @param channel 通道
-     */
-    public void initEnvironments(ChannelShell channel) {
-        // 用户环境
-        Map<String, String> userEnvs = this.shellConnect.environments();
-        if (CollectionUtil.isNotEmpty(userEnvs)) {
-            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                channel.setEnv(entry.getKey(), entry.getValue());
-            }
-        }
-        // 初始化环境变量
-        if (this.osType != null) {
-            channel.setEnv("PATH", this.getExportPath());
-        }
-        // 初始化字符集
-        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-        // 客户端转发
-        if (this.shellConnect.isForwardAgent()) {
-            channel.setAgentForwarding(true);
-        }
-        // x11转发
-        if (this.shellConnect.isX11forwarding()) {
-            channel.setXForwarding(true);
-        }
-    }
-
-    /**
-     * 初始化环境
-     *
-     * @param channel 通道
-     */
-    public void initEnvironments(ChannelSftp channel) {
-        // 用户环境
-        Map<String, String> userEnvs = this.shellConnect.environments();
-        if (CollectionUtil.isNotEmpty(userEnvs)) {
-            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                channel.setEnv(entry.getKey(), entry.getValue());
-            }
-        }
-        // 初始化环境变量
-        if (this.osType != null) {
-            channel.setEnv("PATH", this.getExportPath());
-        }
-        // 初始化字符集
-        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-        // 客户端转发
-        if (this.shellConnect.isForwardAgent()) {
-            channel.setAgentForwarding(true);
-        }
-        // x11转发
-        if (this.shellConnect.isX11forwarding()) {
-            channel.setXForwarding(true);
-        }
-    }
+    //    /**
+    //     * 初始化环境
+    //     *
+    //     * @param channel 通道
+    //     */
+    //    public void initEnvironments(ChannelShell channel) {
+    //        // 用户环境
+    //        Map<String, String> userEnvs = this.shellConnect.environments();
+    //        if (CollectionUtil.isNotEmpty(userEnvs)) {
+    //            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+    //                channel.setEnv(entry.getKey(), entry.getValue());
+    //            }
+    //        }
+    //        // 初始化环境变量
+    //        channel.setEnv("PATH", this.getExportPath());
+    //        // 初始化字符集
+    //        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+    //        // 客户端转发
+    //        if (this.shellConnect.isForwardAgent()) {
+    //            channel.setAgentForwarding(true);
+    //        }
+    //        // x11转发
+    //        if (this.shellConnect.isX11forwarding()) {
+    //            channel.setXForwarding(true);
+    //        }
+    //    }
+    //
+    //    /**
+    //     * 初始化环境
+    //     *
+    //     * @param channel 通道
+    //     */
+    //    public void initEnvironments(ChannelSftp channel) {
+    //        // 用户环境
+    //        Map<String, String> userEnvs = this.shellConnect.environments();
+    //        if (CollectionUtil.isNotEmpty(userEnvs)) {
+    //            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
+    //                channel.setEnv(entry.getKey(), entry.getValue());
+    //            }
+    //        }
+    //        // 初始化环境变量
+    //        channel.setEnv("PATH", this.getExportPath());
+    //        // 初始化字符集
+    //        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+    //        // 客户端转发
+    //        if (this.shellConnect.isForwardAgent()) {
+    //            channel.setAgentForwarding(true);
+    //        }
+    //        // x11转发
+    //        if (this.shellConnect.isX11forwarding()) {
+    //            channel.setXForwarding(true);
+    //        }
+    //    }
 
     protected ShellServerExec serverExec;
 
@@ -1066,7 +997,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 终端类型
      */
-    public String getShellType() {
+    public synchronized String getShellType() {
         if (this.shellType == null) {
             this.shellType = this.serverExec().getShellType();
         }
@@ -1130,6 +1061,26 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     public boolean isTcshType() {
         String shellName = this.getShellName();
         return StringUtil.endWithIgnoreCase(shellName, "tcsh");
+    }
+
+    /**
+     * 是否cmd的shell
+     *
+     * @return 结果
+     */
+    public boolean isCmdType() {
+        String shellName = this.getShellName();
+        return StringUtil.containsIgnoreCase(shellName, "cmd");
+    }
+
+    /**
+     * 是否powershell的shell
+     *
+     * @return 结果
+     */
+    public boolean isPowershellType() {
+        String shellName = this.getShellName();
+        return StringUtil.containsIgnoreCase(shellName, "cmd");
     }
 
     @Override

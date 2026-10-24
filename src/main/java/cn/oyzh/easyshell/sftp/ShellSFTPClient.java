@@ -126,7 +126,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     @Override
-    protected void ensureSessionConnected(int timeout) throws Exception {
+    protected synchronized void ensureSessionConnected(int timeout) throws Exception {
         if (this.ownsSession) {
             super.ensureSessionConnected(timeout);
             return;
@@ -249,8 +249,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel sftpChannel = null;
         boolean permitAcquired = false;
         try {
-            // 元数据探测可能执行 Exec，必须在占用 SFTP 通道名额前完成。
-            this.ensureMetadata();
             Session activeSession = this.sessionSupplier == null ? this.session : this.sessionSupplier.get();
             if (activeSession == null || !activeSession.isConnected()) {
                 if (!this.ownsSession) {
