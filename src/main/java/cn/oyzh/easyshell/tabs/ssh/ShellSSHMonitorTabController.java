@@ -131,6 +131,9 @@ public class ShellSSHMonitorTabController extends SubTabController {
      * @param monitor 监控信息
      */
     private void initMemoryChart(ShellServerMonitor monitor) {
+        if (this.memoryChart == null) {
+            return;
+        }
         XYChart.Series<String, Double> data = this.memoryChart.getChartData(0);
         if (data == null) {
             data = new XYChart.Series<>();

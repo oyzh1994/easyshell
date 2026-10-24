@@ -9,9 +9,7 @@ import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.text.SimpleDateFormat;
@@ -1035,16 +1033,30 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isWindows()) {
                 return this.client.exec("tzutil /g");
-            } else if (this.client.isLinux()) {
+            }
+            if (this.client.isLinux()) {
                 String output = this.client.exec("cat /etc/timezone");
                 if (StringUtil.containsIgnoreCase(output, "Is a directory")) {
                     output = this.client.exec("cat /etc/timezone/timezone");
                 }
                 if (StringUtil.isNotBlank(output) && !StringUtil.containsIgnoreCase(output, "No such file")) {
+                    if (output.startsWith("/")) {
+                        output = output.substring(1);
+                    }
                     return output;
                 }
-            } else if (this.client.isUnix()) {
-                return this.client.exec("cat /var/db/zoneinfo 2>/dev/null");
+            }
+
+            if (this.client.isUnix()) {
+                String output = this.client.exec("cat /var/db/zoneinfo");
+                if (!StringUtil.containsAnyIgnoreCase(output, "没有这个文件", "No such file")) {
+                    return this.client.exec("cat /var/db/zoneinfo 2>/dev/null");
+                }
+                output = this.client.exec("ls -l /etc/localtime");
+                if (!StringUtil.containsAnyIgnoreCase(output, "没有这个文件", "No such file")) {
+                    return output;
+                }
+                return "UTC";
             }
             String output = this.client.exec("ls -l /etc/localtime");
             if (StringUtil.isBlank(output)) {

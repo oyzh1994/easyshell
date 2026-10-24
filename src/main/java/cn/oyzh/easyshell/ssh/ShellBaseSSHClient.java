@@ -204,7 +204,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (this.osType == null) {
             String type = this.execMetadata("uname -s");
             if (StringUtil.isNotBlank(type) && ShellUtil.isWindowsCommandNotFound(type, "uname")) {
-                type = this.execMetadata("cmd.exe /c ver");
+                type = this.execMetadataUtf8("cmd.exe /c ver");
             }
             JulLog.info("osType:{}", type);
             this.osType = type;
@@ -245,6 +245,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
     public String execMetadata(String command) {
+        return this.execInternal(command, this.connectTimeout(), false, false);
+    }
+
+    /**
+     * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
+     */
+    public String execMetadataUtf8(String command) {
         return this.execInternal(command, this.connectTimeout(), false, false);
     }
 
