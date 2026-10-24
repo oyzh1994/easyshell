@@ -142,10 +142,10 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        if (this.widget != null) {
-            this.widget.close();
-        }
-        IOUtil.close(this.client);
+//        if (this.widget != null) {
+//            this.widget.close();
+//        }
+        IOUtil.closeAsync(this.client);
     }
 
     /**

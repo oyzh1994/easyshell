@@ -126,10 +126,10 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        if (this.widget != null) {
-            this.widget.close();
-        }
-        IOUtil.close(this.client);
+//        if (this.widget != null) {
+//            this.widget.close();
+//        }
+        IOUtil.closeAsync(this.client);
     }
 
     /**

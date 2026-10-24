@@ -63,11 +63,11 @@ public class ShellTerminalTabController extends ShellBaseTabController implement
         }
     }
 
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        this.widget.close();
-    }
+//    @Override
+//    public void onTabClosed(Event event) {
+//        super.onTabClosed(event);
+//        this.widget.close();
+//    }
 
     /**
      * 片段列表

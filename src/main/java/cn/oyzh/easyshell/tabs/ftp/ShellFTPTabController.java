@@ -190,7 +190,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        IOUtil.close(this.client);
+        IOUtil.closeAsync(this.client);
         // 保存设置
         this.connectStore.update(this.shellConnect());
     }

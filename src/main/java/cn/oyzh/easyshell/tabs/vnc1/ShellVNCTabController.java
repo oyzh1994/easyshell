@@ -115,7 +115,7 @@ public class ShellVNCTabController extends ShellBaseTabController {
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-        IOUtil.close(this.client);
+        IOUtil.closeAsync(this.client);
     }
 
     @Override
