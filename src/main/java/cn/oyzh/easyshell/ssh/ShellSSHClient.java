@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -43,6 +44,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
@@ -315,18 +317,18 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private ShellProxyConfig connectProxyConfig;
 
-    /**
-     * 待发送的 PTY 尺寸。
-     */
-    private ScheduledFuture<?> pendingPtyResizeFuture;
+    //    /**
+    //     * 待发送的 PTY 尺寸。
+    //     */
+    //    private ScheduledFuture<?> pendingPtyResizeFuture;
 
-    private int pendingPtyColumns;
-
-    private int pendingPtyRows;
-
-    private int pendingPtyWidth;
-
-    private int pendingPtyHeight;
+    //    private int pendingPtyColumns;
+    //
+    //    private int pendingPtyRows;
+    //
+    //    private int pendingPtyWidth;
+    //
+    //    private int pendingPtyHeight;
 
     /**
      * 连接状态
@@ -540,7 +542,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     private void releaseResources() {
-        this.cancelPendingPtyResize();
+        //        this.cancelPendingPtyResize();
         this.cancelOscWorkerDirIntegration();
         ShellClientChecker.remove(this);
         this.closeQuietly(this.sftpClient, "sftp client");
@@ -742,35 +744,50 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
+    /**
+     * pty尺寸任务
+     */
+    private Future<?> ptySizeFeture;
+
     public synchronized void setPtySize(int columns, int rows, int width, int height) {
         if (columns <= 0 || rows <= 0) {
             return;
         }
-        this.pendingPtyColumns = columns;
-        this.pendingPtyRows = rows;
-        this.pendingPtyWidth = width;
-        this.pendingPtyHeight = height;
-        if (this.pendingPtyResizeFuture != null) {
-            this.pendingPtyResizeFuture.cancel(false);
-        }
-        this.pendingPtyResizeFuture = ExecutorUtil.start(this::flushPtySize, PTY_RESIZE_DEBOUNCE_MILLIS);
-    }
-
-    private synchronized void flushPtySize() {
-        this.pendingPtyResizeFuture = null;
         ShellSSHShell currentShell = this.getShell();
         if (currentShell != null && currentShell.isConnected()) {
-            currentShell.setPtySize(this.pendingPtyColumns, this.pendingPtyRows,
-                    this.pendingPtyWidth, this.pendingPtyHeight);
+            // 取消旧的任务
+            TaskManager.cancel(this.ptySizeFeture);
+            // 任务函数
+            Runnable func = () -> currentShell.setPtySize(columns, rows, width, height);
+            // 执行任务，异步，防止短时间多次重复调用
+            this.ptySizeFeture = TaskManager.startDelay(func, 10);
         }
+
+        //        this.pendingPtyColumns = columns;
+        //        this.pendingPtyRows = rows;
+        //        this.pendingPtyWidth = width;
+        //        this.pendingPtyHeight = height;
+        //        if (this.pendingPtyResizeFuture != null) {
+        //            this.pendingPtyResizeFuture.cancel(false);
+        //        }
+        //        this.pendingPtyResizeFuture = ExecutorUtil.start(this::flushPtySize, PTY_RESIZE_DEBOUNCE_MILLIS);
     }
 
-    private synchronized void cancelPendingPtyResize() {
-        if (this.pendingPtyResizeFuture != null) {
-            this.pendingPtyResizeFuture.cancel(false);
-            this.pendingPtyResizeFuture = null;
-        }
-    }
+    //    private synchronized void flushPtySize() {
+    //        this.pendingPtyResizeFuture = null;
+    //        ShellSSHShell currentShell = this.getShell();
+    //        if (currentShell != null && currentShell.isConnected()) {
+    //            currentShell.setPtySize(this.pendingPtyColumns, this.pendingPtyRows,
+    //                    this.pendingPtyWidth, this.pendingPtyHeight);
+    //        }
+    //    }
+    //
+    //    private synchronized void cancelPendingPtyResize() {
+    //        if (this.pendingPtyResizeFuture != null) {
+    //            this.pendingPtyResizeFuture.cancel(false);
+    //            this.pendingPtyResizeFuture = null;
+    //        }
+    //    }
 
     //    /**
     //     * 通过shell通道执行命令
