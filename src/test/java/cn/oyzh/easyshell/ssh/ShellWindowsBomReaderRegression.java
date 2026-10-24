@@ -1,10 +1,13 @@
 package cn.oyzh.easyshell.ssh;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-/** Windows GBK 控制台 BOM 残片清理的确定性回归。 */
+/**
+ * Windows GBK 控制台 BOM 残片清理的确定性回归。
+ */
 public final class ShellWindowsBomReaderRegression {
 
     private ShellWindowsBomReaderRegression() {
@@ -28,13 +31,13 @@ public final class ShellWindowsBomReaderRegression {
     }
 
     private static void verify(String input, String expected) throws IOException {
-        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new StringReader(input))) {
+        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new ByteArrayInputStream(input.getBytes()), new StringReader(input))) {
             require(expected.equals(readAll(reader)), "unexpected BOM repair result for: " + input);
         }
     }
 
     private static void verifyChunked(String input, String expected) throws IOException {
-        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new ChunkedReader(input))) {
+        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new ByteArrayInputStream(input.getBytes()), new ChunkedReader(input))) {
             require(expected.equals(readAll(reader)), "unexpected chunked BOM repair result");
         }
     }

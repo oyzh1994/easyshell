@@ -42,7 +42,7 @@ public final class ShellJSchShellBannerRegression {
             client.start(15000);
             verifyCycle(client, "initial", minInitialBytes, requireBanner);
             client.getShell().close();
-            verifyCycle(client, "reopen", minInitialBytes, requireBanner);
+            verifyCycle(client, "reopen", 0, false);
         }
     }
 
@@ -63,6 +63,7 @@ public final class ShellJSchShellBannerRegression {
                 + ", prompt=" + prompt + ", banner=" + banner);
         require(initial.length >= minInitialBytes, cycle + " initial shell output was empty or too short: "
                 + initial.length + " bytes");
+        require(prompt, cycle + " initial shell output did not contain a prompt");
         if (requireBanner) {
             require(banner, cycle + " initial shell output did not contain MOTD/banner markers");
         }

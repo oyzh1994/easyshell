@@ -1,6 +1,10 @@
 package cn.oyzh.easyshell.ssh;
 
+import org.jspecify.annotations.NonNull;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
@@ -8,7 +12,7 @@ import java.io.Reader;
  * conhost 在代码页 936 下会把 EF BB BF 转成 Unicode 的“锘?”再通过 SSH 输出，
  * 该过程不可逆，只能在展示层移除这个已知的行首残片和原样 BOM 字符。
  */
-final class ShellWindowsBomReader extends Reader {
+final class ShellWindowsBomReader extends InputStreamReader {
 
     private static final char UTF8_BOM = '\uFEFF';
     private static final char GBK_BOM_FIRST = '\u9518';
@@ -22,12 +26,13 @@ final class ShellWindowsBomReader extends Reader {
     private boolean lineStart = true;
     private boolean closed;
 
-    ShellWindowsBomReader(Reader delegate) {
+    ShellWindowsBomReader(InputStream stream, Reader delegate) {
+        super(stream);
         this.delegate = delegate;
     }
 
     @Override
-    public int read(char[] buffer, int offset, int length) throws IOException {
+    public int read(char @NonNull [] buffer, int offset, int length) throws IOException {
         if (offset < 0 || length < 0 || offset + length > buffer.length) {
             throw new IndexOutOfBoundsException();
         }
@@ -38,7 +43,7 @@ final class ShellWindowsBomReader extends Reader {
             throw new IOException("reader is closed");
         }
         int count = 0;
-        while (count < length) {
+        while (true) {
             int ch = this.nextChar();
             if (ch < 0) {
                 return count == 0 ? -1 : count;
@@ -62,10 +67,10 @@ final class ShellWindowsBomReader extends Reader {
             buffer[offset + count++] = (char) ch;
             this.lineStart = ch == '\r' || ch == '\n';
             if (count >= length) {
-                return count;
+                break;
             }
             if (this.sourcePos >= this.sourceLimit && !this.delegate.ready()) {
-                return count;
+                break;
             }
         }
         return count;

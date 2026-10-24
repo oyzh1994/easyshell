@@ -400,11 +400,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 结果
      */
     public String getExportPath() {
-        this.initEnvironment();
         if (this.osType == null) {
             //        if (this.osType == null || this.shellType == null) {
             return "";
         }
+        this.initEnvironment();
         StringBuilder builder = new StringBuilder();
         if (this.isWindows()) {
             for (String string : this.environment) {
