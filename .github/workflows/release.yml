@@ -149,7 +149,7 @@ jobs:
       - name: 设置 Java
         uses: actions/setup-java@main
         with:
-          java-version: '27'  # 指定 Java 版本
+          java-version: '27.0.1'  # 指定 Java 版本
           java-package: 'jdk+fx'  # 关键：请求包含 JavaFX 的 JDK
           distribution: 'liberica'  # 选择 OpenJDK 发行版（如 temurin、corretto、liberica、zulu、adopt-hotspot、oracle 等）
           cache: 'maven'  # 可选：缓存 Maven 依赖（加速构建）
@@ -273,7 +273,7 @@ jobs:
           # push tag 时 git 在 detached HEAD 状态
           [ "$BRANCH" = "HEAD" ] && BRANCH="master"
           BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-          JDK="27"
+          JDK="27.0.1"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "commit=${COMMIT}" >> $GITHUB_OUTPUT
           echo "branch=${BRANCH}" >> $GITHUB_OUTPUT

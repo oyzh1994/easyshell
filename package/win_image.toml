@@ -8,8 +8,8 @@ java-options = [
     "-XX:+ZUncommit",
     "-XX:+ZProactive",
     "-XX:ZUncommitDelay=1",
-    "-Dprism.forceUploadingPainter=true",
-    "-Dquantum.multithreaded=false"
+#    "-Dprism.forceUploadingPainter=true",
+#    "-Dquantum.multithreaded=false"
 ]
 type = "app-image"
 
