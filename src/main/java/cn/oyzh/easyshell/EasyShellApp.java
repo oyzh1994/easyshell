@@ -98,6 +98,12 @@ public class EasyShellApp extends FXApplication implements EventListener {
      */
     public static void main(String[] args) {
         try {
+            // 首先要初始化这部分信息
+            SysConst.projectName(PROJECT.getName());
+            //            SysConst.tempDir(ShellConst.getTempPath());
+            SysConst.storeDir(ShellConst.getStorePath());
+            SysConst.cacheDir(ShellConst.getCachePath());
+            // 单例检查
             if (!checkSingleInstance()) {
                 return;
             }
@@ -116,13 +122,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
                     JulLog.error("thread:{} caught error:{}", t.getName(), ex.getMessage(), ex);
                 }
             });
-            SysConst.projectName(PROJECT.getName());
-            //            SysConst.tempDir(ShellConst.getTempPath());
-            SysConst.storeDir(ShellConst.getStorePath());
-            SysConst.cacheDir(ShellConst.getCachePath());
             // 储存初始化
             ShellStoreUtil.init();
-
             // 配置对象
             ShellSetting setting = ShellSettingStore.SETTING;
             // 预处理管线
