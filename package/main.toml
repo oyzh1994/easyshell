@@ -179,11 +179,11 @@ compact = true
 removeEmpty = true
 javafxOptimize = true
 binlibOptimize = true
-skipsJar = [
-    "bctls-jdk18on-.*.jar",
-    "bcprov-jdk18on-.*.jar",
-    "bcutil-jdk18on-.*.jar"
-]
+#skipsJar = [
+#    "bctls-jdk18on-.*.jar",
+#    "bcprov-jdk18on-.*.jar",
+#    "bcutil-jdk18on-.*.jar"
+#]
 excludes = [
     # 各类杂项裁剪开始
     "AL2.0",
@@ -207,6 +207,7 @@ excludes = [
     "release-timestamp.txt",
     "ADDITIONAL_LICENSE_INFO",
     "reactor.blockhound.integration.BlockHoundIntegration",
+    # jar压缩需要这个，不能过滤
 #    "classpath.idx",
     "INDEX.LIST",
     "LICENSE",
@@ -224,8 +225,11 @@ excludes = [
     "io.netty.version.properties",
     "lombok-.*.jar",
     "spring-boot-jarmode-layertools-.*.jar",
-    ".*.SF",
-    ".*.RSA",
+    # 签名文件，默认过滤，影响压缩jar的启动速度
+    ".*META-INF/.*.SF",
+    ".*META-INF/.*.EC",
+    ".*META-INF/.*.RSA",
+    ".*META-INF/.*.DSA",
     ".*.md",
     ".*.pro",
     ".*.bss",
