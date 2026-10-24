@@ -84,7 +84,7 @@ public final class ShellJSchExecStressRegression {
                 futures.add(executor.submit(() -> {
                     for (int round = 0; round < 40 && !stopped.get(); round++) {
                         long started = System.currentTimeMillis();
-                        if (client.serverExec().monitor() == null) {
+                        if (client.serverExec().monitor(true) == null) {
                             record(failures, failureMessages, client, "monitor", "", System.currentTimeMillis() - started);
                             stopped.set(true);
                             return;

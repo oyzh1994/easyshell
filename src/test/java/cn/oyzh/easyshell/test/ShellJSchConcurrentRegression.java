@@ -624,7 +624,7 @@ public final class ShellJSchConcurrentRegression {
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
             List<Callable<Object>> tasks = new ArrayList<>();
             for (int index = 0; index < 4; index++) {
-                tasks.add(() -> requireMonitor(client.serverExec().monitor()));
+                tasks.add(() -> requireMonitor(client.serverExec().monitor(true)));
             }
             for (Future<Object> future : executor.invokeAll(tasks)) {
                 await(future);

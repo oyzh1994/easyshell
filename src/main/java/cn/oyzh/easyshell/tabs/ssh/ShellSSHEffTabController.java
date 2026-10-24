@@ -687,7 +687,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                     return;
                 }
                 // 获取数据
-                ShellServerMonitor monitor = serverExec.monitor();
+                ShellServerMonitor monitor = serverExec.monitor(false);
                 if (monitor == null) {
                     return;
                 }

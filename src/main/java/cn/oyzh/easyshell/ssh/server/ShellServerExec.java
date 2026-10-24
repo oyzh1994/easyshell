@@ -165,10 +165,12 @@ public class ShellServerExec implements AutoCloseable {
 
     /**
      * 获取服务监控信息
+     * TODO: 此方法很消耗资源和通道，尽量同步执行
      *
+     * @param async 异步执行
      * @return 服务监控信息
      */
-    public synchronized ShellServerMonitor monitor() {
+    public synchronized ShellServerMonitor monitor(boolean async) {
         if (this.client == null) {
             return new ShellServerMonitor();
         }
@@ -176,62 +178,117 @@ public class ShellServerExec implements AutoCloseable {
         if (this.lastMonitor != null && System.currentTimeMillis() - this.lastMonitorTime < 3000) {
             return this.lastMonitor;
         }
+        ShellServerMonitor monitor = async ? this.monitorAsync() : this.monitorSync();
+        this.lastMonitor = monitor;
+        this.lastMonitorTime = System.currentTimeMillis();
+        return monitor;
+    }
+
+    /**
+     * 获取服务监控信息，异步
+     *
+     * @return 服务监控信息
+     */
+    private ShellServerMonitor monitorAsync() {
+        if (this.client == null) {
+            return null;
+        }
         ShellServerMonitor monitor = new ShellServerMonitor();
         DownLatch latch = DownLatch.of(4);
-
         ThreadUtil.start(() -> {
-            try {
-                double cpuUsage = this.cpuUsage();
-                monitor.setCpuUsage(cpuUsage);
-            } finally {
-                latch.countDown();
-            }
-        });
-
-        ThreadUtil.start(() -> {
-            try {
-                double memoryUsage = this.memoryUsage();
-                monitor.setMemoryUsage(memoryUsage);
-            } finally {
-                latch.countDown();
-            }
-        });
-
-        ThreadUtil.start(() -> {
-            try {
-                double[] data = this.disk();
-                if (this.client != null && (this.client.isUnix() || this.client.isWindows())) {
-                    monitor.setDiskReadSpeed(data[0]);
-                    monitor.setDiskWriteSpeed(data[1]);
-                } else {
-                    double[] speed = this.disk.calcSpeed(data);
-                    monitor.setDiskReadSpeed(speed[0]);
-                    monitor.setDiskWriteSpeed(speed[1]);
+            if (this.client != null) {
+                try {
+                    double cpuUsage = this.cpuUsage();
+                    monitor.setCpuUsage(cpuUsage);
+                } finally {
+                    latch.countDown();
                 }
-            } finally {
-                latch.countDown();
             }
         });
 
         ThreadUtil.start(() -> {
-            try {
-                double[] data = this.network();
-                if (this.client != null && this.client.isWindows()) {
-                    monitor.setNetworkSendSpeed(data[0]);
-                    monitor.setNetworkReceiveSpeed(data[1]);
-                } else {
-                    double[] speed = this.network.calcSpeed(data);
-                    monitor.setNetworkSendSpeed(speed[0]);
-                    monitor.setNetworkReceiveSpeed(speed[1]);
+            if (this.client != null) {
+                try {
+                    double memoryUsage = this.memoryUsage();
+                    monitor.setMemoryUsage(memoryUsage);
+                } finally {
+                    latch.countDown();
                 }
-            } finally {
-                latch.countDown();
+            }
+        });
+
+        ThreadUtil.start(() -> {
+            if (this.client != null) {
+                try {
+                    double[] data = this.disk();
+                    if (this.client.isUnix() || this.client.isWindows()) {
+                        monitor.setDiskReadSpeed(data[0]);
+                        monitor.setDiskWriteSpeed(data[1]);
+                    } else {
+                        double[] speed = this.disk.calcSpeed(data);
+                        monitor.setDiskReadSpeed(speed[0]);
+                        monitor.setDiskWriteSpeed(speed[1]);
+                    }
+                } finally {
+                    latch.countDown();
+                }
+            }
+        });
+
+        ThreadUtil.start(() -> {
+            if (this.client != null) {
+                try {
+                    double[] data = this.network();
+                    if (this.client.isWindows()) {
+                        monitor.setNetworkSendSpeed(data[0]);
+                        monitor.setNetworkReceiveSpeed(data[1]);
+                    } else {
+                        double[] speed = this.network.calcSpeed(data);
+                        monitor.setNetworkSendSpeed(speed[0]);
+                        monitor.setNetworkReceiveSpeed(speed[1]);
+                    }
+                } finally {
+                    latch.countDown();
+                }
             }
         });
 
         latch.await();
-        this.lastMonitor = monitor;
-        this.lastMonitorTime = System.currentTimeMillis();
+        return monitor;
+    }
+
+    /**
+     * 获取服务监控信息，同步
+     *
+     * @return 服务监控信息
+     */
+    private ShellServerMonitor monitorSync() {
+        if (this.client == null) {
+            return null;
+        }
+        ShellServerMonitor monitor = new ShellServerMonitor();
+        double cpuUsage = this.cpuUsage();
+        monitor.setCpuUsage(cpuUsage);
+        double memoryUsage = this.memoryUsage();
+        monitor.setMemoryUsage(memoryUsage);
+        double[] data = this.disk();
+        if (this.client.isUnix() || this.client.isWindows()) {
+            monitor.setDiskReadSpeed(data[0]);
+            monitor.setDiskWriteSpeed(data[1]);
+        } else {
+            double[] speed = this.disk.calcSpeed(data);
+            monitor.setDiskReadSpeed(speed[0]);
+            monitor.setDiskWriteSpeed(speed[1]);
+        }
+        double[] data1 = this.network();
+        if (this.client.isWindows()) {
+            monitor.setNetworkSendSpeed(data1[0]);
+            monitor.setNetworkReceiveSpeed(data1[1]);
+        } else {
+            double[] speed = this.network.calcSpeed(data1);
+            monitor.setNetworkSendSpeed(speed[0]);
+            monitor.setNetworkReceiveSpeed(speed[1]);
+        }
         return monitor;
     }
 

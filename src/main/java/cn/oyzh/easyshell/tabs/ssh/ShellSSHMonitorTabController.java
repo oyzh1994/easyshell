@@ -240,7 +240,7 @@ public class ShellSSHMonitorTabController extends SubTabController {
             }
             if (this.client != null) {
                 // 获取数据
-                ShellServerMonitor monitor = this.serverExec.monitor();
+                ShellServerMonitor monitor = this.serverExec.monitor(false);
                 this.init(monitor);
             }
             if (JulLog.isInfoEnabled()) {
