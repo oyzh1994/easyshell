@@ -32,6 +32,9 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilterInputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Vector;
@@ -127,6 +130,11 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
 
     public void setSessionSupplier(Supplier<Session> sessionSupplier) {
         this.sessionSupplier = sessionSupplier;
+    }
+
+    @Override
+    public synchronized ShellSFTPClient sftpClient() {
+        return this;
     }
 
     @Override
@@ -579,7 +587,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel channel = this.newSFTPChannel();
         boolean handedOver = false;
         try {
-            OutputStream stream = callback == null ? channel.put(remoteFile) : ShellFileProgressMonitor.of(channel.put(remoteFile), callback);
+            OutputStream stream = callback == null ? channel.put(remoteFile)
+                    : ShellFileProgressMonitor.of(channel.put(remoteFile), callback);
+            stream = this.closeChannelOnClose(stream, channel);
             this.delayChannels.add(channel);
             handedOver = true;
             return stream;
@@ -623,7 +633,9 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         boolean handedOver = false;
         try {
             String fPath = remoteFile.getFilePath();
-            InputStream stream = callback == null ? channel.get(fPath) : ShellFileProgressMonitor.of(channel.get(fPath), callback);
+            InputStream stream = callback == null ? channel.get(fPath)
+                    : ShellFileProgressMonitor.of(channel.get(fPath), callback);
+            stream = this.closeChannelOnClose(stream, channel);
             this.delayChannels.add(channel);
             handedOver = true;
             return stream;
@@ -632,6 +644,71 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
                 channel.close();
             }
         }
+    }
+
+    /**
+     * 将长连接流绑定到对应的 SFTP 通道。调用方关闭流时立即归还通道和动态通道许可，
+     * 而不是等待 closeDelayResources 或客户端关闭。
+     */
+    private InputStream closeChannelOnClose(InputStream stream, ShellSFTPChannel channel) {
+        return new FilterInputStream(stream) {
+            private boolean closed;
+
+            @Override
+            public void close() throws IOException {
+                if (this.closed) {
+                    return;
+                }
+                this.closed = true;
+                try {
+                    super.close();
+                } finally {
+                    releaseStreamChannel(channel);
+                }
+            }
+        };
+    }
+
+    /**
+     * 将长连接流绑定到对应的 SFTP 通道。
+     */
+    private OutputStream closeChannelOnClose(OutputStream stream, ShellSFTPChannel channel) {
+        return new FilterOutputStream(stream) {
+            private boolean closed;
+
+            @Override
+            public void write(int value) throws IOException {
+                this.out.write(value);
+            }
+
+            @Override
+            public void write(byte[] bytes, int offset, int length) throws IOException {
+                this.out.write(bytes, offset, length);
+            }
+
+            @Override
+            public void flush() throws IOException {
+                this.out.flush();
+            }
+
+            @Override
+            public void close() throws IOException {
+                if (this.closed) {
+                    return;
+                }
+                this.closed = true;
+                try {
+                    super.close();
+                } finally {
+                    releaseStreamChannel(channel);
+                }
+            }
+        };
+    }
+
+    private void releaseStreamChannel(ShellSFTPChannel channel) {
+        this.delayChannels.remove(channel);
+        channel.close();
     }
 
     @Override

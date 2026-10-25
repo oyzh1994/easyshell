@@ -14,7 +14,6 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.docker.ShellDockerExec;
 import cn.oyzh.easyshell.ssh.exec.ShellSSHExec;
 import cn.oyzh.easyshell.ssh.process.ShellProcessExec;
@@ -319,35 +318,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
-    /**
-     * sftp客户端
-     */
-    private ShellSFTPClient sftpClient;
-
-    public synchronized ShellSFTPClient sftpClient() {
-        try {
-            if (this.sftpClient == null) {
-                this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session, false, this.dynamicChannelPermits);
-                this.sftpClient.osType = this.osType;
-                this.sftpClient.userHome = this.userHome;
-                this.sftpClient.shellType = this.shellType;
-                this.sftpClient.serverExec = this.serverExec;
-                this.sftpClient.environment = this.environment;
-                this.sftpClient.remoteCharset = this.remoteCharset;
-                this.sftpClient.setSessionSupplier(() -> {
-                    try {
-                        this.ensureSessionConnected(this.connectTimeout());
-                        return this.session;
-                    } catch (Exception ex) {
-                        throw new ShellException(ex);
-                    }
-                });
-            }
-            return this.sftpClient;
-        } catch (Throwable ex) {
-            JulLog.warn("create sftp client failed", ex);
-        }
-        return null;
+    @Override
+    protected ShellBaseSSHClient createSftpSessionClient(ShellConnect connect) {
+        ShellSSHClient connection = new ShellSSHClient(connect);
+        connection.removeStateListener(connection.stateListener);
+        return connection;
     }
 
     @Override
@@ -504,8 +479,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         //        this.cancelPendingPtyResize();
         this.cancelOscWorkerDirIntegration();
         ShellClientChecker.remove(this);
-        this.closeQuietly(this.sftpClient, "sftp client");
-        this.sftpClient = null;
+        this.closeSftpResources();
         this.closeQuietly(this.shell, "shell channel");
         this.shell = null;
         this.closeQuietly(this.sshExec, "ssh exec");

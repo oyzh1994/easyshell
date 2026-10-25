@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import com.jcraft.jsch.Session;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -69,11 +70,14 @@ public final class ShellJSchTwoFactorAuthRegression {
             long start = System.currentTimeMillis();
             client.start(15000);
             require(client.isConnected(), "2FA keyboard-interactive authentication failed");
+            require(client.isTwoFactorAuthenticationUsed(), "2FA authentication was not detected");
 
             String marker = "easyshell-2fa-" + UUID.randomUUID().toString().replace("-", "");
             String output = client.exec("printf '%s' " + quote(marker), 10000);
             require(output != null && output.contains(marker), "2FA Exec marker mismatch");
             verifySftp(client, marker, downloaded);
+            require(supplierCalls.get() == 1,
+                    "SFTP triggered authentication again on a 2FA host: " + supplierCalls.get());
             System.out.println("2FA authentication verified: supplierCalls=" + supplierCalls.get()
                     + ", exec=PASS, sftp=PASS, elapsed=" + (System.currentTimeMillis() - start) + "ms");
         } finally {
@@ -125,9 +129,12 @@ public final class ShellJSchTwoFactorAuthRegression {
     private static void verifySftp(ShellSSHClient client, String marker, Path downloaded) throws Exception {
         String remote = "/tmp/" + marker + ".txt";
         String content = marker + "-sftp";
+        Session primarySession = client.getSession();
         try {
             client.sftpClient().put(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)),
                     remote, null);
+            require(client.sftpClient().getSession() == primarySession,
+                    "2FA SFTP did not reuse the authenticated SSH session");
             ShellSFTPFile file = client.sftpClient().fileInfo(remote);
             require(file != null, "2FA SFTP metadata is missing");
             client.sftpClient().get(file, downloaded.toString(), null);

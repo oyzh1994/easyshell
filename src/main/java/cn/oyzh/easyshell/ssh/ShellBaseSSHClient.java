@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
+import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.ssh.util.JschUtil;
@@ -36,6 +37,7 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -112,6 +114,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     private Supplier<String> verificationCodeSupplier;
 
     /**
+     * 当前连接是否实际使用过 keyboard-interactive 验证码认证。
+     * 2FA 主机需要复用已认证会话，避免 SFTP 再次触发验证码。
+     */
+    private volatile boolean twoFactorAuthenticationUsed;
+
+    /**
      * 主机密钥确认回调，为空时由界面提示。
      */
     private Function<String, Boolean> hostKeyConfirmCallback;
@@ -126,6 +134,17 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * Exec 与 SFTP 共用的动态通道许可。同一 SSH 会话派生的 SFTP 客户端必须复用该许可。
      */
     protected final Semaphore dynamicChannelPermits;
+
+    /**
+     * 从当前 SSH 连接派生的 SFTP 客户端。
+     */
+    private ShellSFTPClient sftpClient;
+
+    /**
+     * SFTP 独立连接。大文件传输会占满单条 SSH 连接的数据窗口，
+     * 独立连接可避免终端、监控等控制命令被拖到通道打开超时。
+     */
+    private ShellBaseSSHClient sftpSessionClient;
 
     /**
      * 当前客户端是否已降级到旧服务端算法。
@@ -182,6 +201,140 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
 
     public Supplier<String> getVerificationCodeSupplier() {
         return this.verificationCodeSupplier;
+    }
+
+    /**
+     * 获取 SFTP 客户端。2FA 主机复用已完成认证的主会话，避免再次请求验证码；
+     * 普通主机使用独立会话，避免大文件传输影响终端和控制命令。
+     *
+     * @return SFTP 客户端
+     */
+    public synchronized ShellSFTPClient sftpClient() {
+        try {
+            if (this.sftpClient == null) {
+                if (this.isTwoFactorAuthenticationUsed()) {
+                    this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session, false, this.dynamicChannelPermits);
+                    this.sftpClient.setSessionSupplier(this::ensurePrimarySession);
+                } else {
+                    this.sftpClient = new ShellSFTPClient(this.shellConnect, null, false, new Semaphore(MAX_DYNAMIC_CHANNELS, true));
+                    this.sftpClient.setSessionSupplier(this::ensureSftpSession);
+                }
+                this.copyMetadataTo(this.sftpClient);
+            }
+            return this.sftpClient;
+        } catch (Throwable ex) {
+            JulLog.warn("create sftp client failed", ex);
+        }
+        return null;
+    }
+
+    /**
+     * 复制元信息
+     *
+     * @param client 客户端
+     */
+    private void copyMetadataTo(ShellSFTPClient client) {
+        client.osType = this.osType;
+        client.userHome = this.userHome;
+        client.shellType = this.shellType;
+        client.serverExec = this.serverExec;
+        client.environment = this.environment;
+        client.remoteCharset = this.remoteCharset;
+    }
+
+    /**
+     * 获取主会话，供需要复用认证结果的 2FA SFTP 使用。
+     */
+    private Session ensurePrimarySession() {
+        try {
+            this.ensureSessionConnected(this.connectTimeout());
+        } catch (Exception ex) {
+            throw ex instanceof ShellException ? (ShellException) ex : new ShellException(ex);
+        }
+        Session activeSession = this.session;
+        if (activeSession == null || !activeSession.isConnected()) {
+            throw new ShellException("ssh session is disconnected");
+        }
+        return activeSession;
+    }
+
+    /**
+     * 获取或建立 SFTP 专用会话。该会话只承载 SFTP 通道，不初始化终端、X11 和隧道。
+     */
+    private Session ensureSftpSession() {
+        ShellBaseSSHClient connection;
+        synchronized (this) {
+            if (this.sftpSessionClient == null) {
+                this.sftpSessionClient = this.createSftpSessionClient(this.newSftpConnect());
+                this.sftpSessionClient.setVerifyFailureCallback(this.getVerifyFailureCallback());
+                this.sftpSessionClient.setHostKeyConfirmCallback(this.getHostKeyConfirmCallback());
+                this.sftpSessionClient.setVerificationCodeSupplier(this.getVerificationCodeSupplier());
+            }
+            connection = this.sftpSessionClient;
+        }
+        try {
+            connection.ensureSessionConnected(this.connectTimeout());
+        } catch (Exception ex) {
+            throw ex instanceof ShellException ? (ShellException) ex : new ShellException(ex);
+        }
+        Session activeSession = connection.getSession();
+        if (activeSession == null || !activeSession.isConnected()) {
+            throw new ShellException("sftp ssh session is disconnected");
+        }
+        return activeSession;
+    }
+
+    /**
+     * 创建 SFTP 专用会话客户端。由具体 SSH 子类提供，以便复用自身的代理、跳板等连接能力。
+     *
+     * @param connect 已移除终端专属能力的连接配置
+     * @return 会话客户端
+     */
+    protected ShellBaseSSHClient createSftpSessionClient(ShellConnect connect) {
+        throw new UnsupportedOperationException("sftp session isolation is not supported");
+    }
+
+    /**
+     * 为 SFTP 专用连接复制配置。X11 和隧道只属于终端主连接，
+     * 关闭后可避免 SFTP 连接重复启动本地 X11 服务或占用隧道端口。
+     */
+    private ShellConnect newSftpConnect() {
+        ShellConnect connect = new ShellConnect();
+        connect.copy(this.shellConnect);
+        connect.setX11forwarding(false);
+        connect.setTunnelingConfigs(Collections.emptyList());
+        return connect;
+    }
+
+    /**
+     * 释放父类持有的 SFTP 客户端及独立会话。
+     */
+    protected synchronized void closeSftpResources() {
+        if (this.sftpClient != null) {
+            try {
+                this.sftpClient.close();
+            } catch (Exception ex) {
+                JulLog.warn("close sftp client error", ex);
+            }
+            this.sftpClient = null;
+        }
+        if (this.sftpSessionClient != null) {
+            try {
+                this.sftpSessionClient.close();
+            } catch (Exception ex) {
+                JulLog.warn("close sftp session client error", ex);
+            }
+            this.sftpSessionClient = null;
+        }
+    }
+
+    /**
+     * 当前连接认证过程中是否请求过验证码。用于让 SFTP 对 2FA 主机复用已认证会话。
+     *
+     * @return 是否使用过 2FA
+     */
+    public boolean isTwoFactorAuthenticationUsed() {
+        return this.twoFactorAuthenticationUsed;
     }
 
     public void setHostKeyConfirmCallback(Function<String, Boolean> hostKeyConfirmCallback) {
@@ -847,6 +1000,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         ShellSSHAuthInteractive interactive = new ShellSSHAuthInteractive(password, passphrase);
         interactive.setVerificationCodeSupplier(this.verificationCodeSupplier);
         interactive.setHostKeyConfirmCallback(this.hostKeyConfirmCallback);
+        interactive.setVerificationCodeRequestedCallback(() -> this.twoFactorAuthenticationUsed = true);
         return interactive;
     }
 
@@ -979,7 +1133,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * 初始化 Shell 通道环境
      *
-     * @param channel   通道
+     * @param channel 通道
      */
     protected void initEnvironments(ChannelShell channel) {
         this.initEnvironments(channel::setEnv, channel::setAgentForwarding);

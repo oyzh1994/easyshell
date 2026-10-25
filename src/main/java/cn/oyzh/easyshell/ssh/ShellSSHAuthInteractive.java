@@ -30,6 +30,11 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
     private Function<String, Boolean> hostKeyConfirmCallback;
 
     /**
+     * 验证码已请求回调，用于标记当前 SSH 连接实际使用了 2FA。
+     */
+    private Runnable verificationCodeRequestedCallback;
+
+    /**
      * JSch 密码认证失败后会循环复用同一凭证，这里只允许提交一次。
      */
     private boolean passwordRequested;
@@ -58,6 +63,10 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     public void setHostKeyConfirmCallback(Function<String, Boolean> hostKeyConfirmCallback) {
         this.hostKeyConfirmCallback = hostKeyConfirmCallback;
+    }
+
+    public void setVerificationCodeRequestedCallback(Runnable verificationCodeRequestedCallback) {
+        this.verificationCodeRequestedCallback = verificationCodeRequestedCallback;
     }
 
     @Override
@@ -91,8 +100,9 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
 
     private boolean isVerificationPrompt(String prompt) {
         return StringUtil.containsAnyIgnoreCase(prompt,
-                "verification", "one-time", "one time", "otp", "authenticator",
-                "验证码", "动态码", "动态口令", "一次性密码");
+                "verification", "one-time", "one time", "otp", "authenticator", "passcode", "pass code",
+                "authentication code", "auth code", "security code", "two-factor", "two factor", "2fa", "mfa",
+                "验证码", "动态码", "动态口令", "一次性密码", "安全码", "令牌");
     }
 
     private String requestVerificationCode() {
@@ -111,6 +121,9 @@ public class ShellSSHAuthInteractive implements UIKeyboardInteractive, UserInfo 
             throw new ShellException("verification code is empty");
         }
         this.verificationCodeRequested = true;
+        if (this.verificationCodeRequestedCallback != null) {
+            this.verificationCodeRequestedCallback.run();
+        }
         JulLog.debug("ssh keyboard-interactive verification code supplied");
         return value;
     }

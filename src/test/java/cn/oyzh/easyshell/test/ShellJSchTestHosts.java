@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.test;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +40,7 @@ public final class ShellJSchTestHosts {
      * 集成测试使用临时 known_hosts，首次连接时自动接受测试主机密钥。
      * 主机密钥校验本身由 ShellJSchHostKeyRegression 单独覆盖。
      */
-    public static synchronized void acceptHostKeys(ShellSSHClient client) {
+    public static synchronized void acceptHostKeys(ShellBaseSSHClient client) {
         prepareTemporaryKnownHosts();
         client.setHostKeyConfirmCallback(message -> true);
     }
