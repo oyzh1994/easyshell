@@ -14,3 +14,10 @@ PubkeyAuthentication yes
 #Match Group administrators
 #    AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
 然后去服务重启OpenSSH SSH Server服务
+5. 设置shell
+#Powershell
+New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
+Restart-Service sshd
+#Git bash
+New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Program Files\Git\bin\bash.exe" -PropertyType String -Force
+Restart-Service sshd
