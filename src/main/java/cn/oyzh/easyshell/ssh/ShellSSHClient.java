@@ -330,6 +330,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
                 this.sftpClient = new ShellSFTPClient(this.shellConnect, this.session, false, this.dynamicChannelPermits);
                 this.sftpClient.osType = this.osType;
                 this.sftpClient.userHome = this.userHome;
+                this.sftpClient.shellType = this.shellType;
+                this.sftpClient.serverExec = this.serverExec;
                 this.sftpClient.environment = this.environment;
                 this.sftpClient.remoteCharset = this.remoteCharset;
                 this.sftpClient.setSessionSupplier(() -> {
