@@ -121,7 +121,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
         String version = this.dbClient.selectVersion();
         String clientCharacter = this.dbClient.selectClientCharacter();
         String header = "/*\n";
-        header += " EasyDB Data Transfer";
+        header += " EasyShell Data Transfer";
         header += "\n\n";
         header += " Source Server : " + this.dbClient.getShellConnect().getName();
         header += "\n";
