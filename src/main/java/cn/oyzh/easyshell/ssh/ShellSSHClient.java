@@ -60,7 +60,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 终端尺寸变化合并窗口。窗口最大化/还原会连续产生多个网格尺寸，
      * JSch 每次 setPtySize 都会发送 window-change，必须只发送最终尺寸。
      */
-    private static final int PTY_RESIZE_DEBOUNCE_MILLIS = 10;
+    private static final int PTY_RESIZE_DEBOUNCE_MILLIS = 100;
 
     /**
      * 终端输出安静后再安装 OSC hook，避免登录脚本和首屏输出期间注入命令。
@@ -718,7 +718,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private Future<?> ptySizeFeture;
 
-    public void setPtySize(int columns, int rows, int width, int height) {
+    public synchronized void setPtySize(int columns, int rows, int width, int height) {
         if (columns <= 0 || rows <= 0) {
             return;
         }
