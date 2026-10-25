@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -101,18 +102,28 @@ public class ShellSFTPChannel extends ShellSSHChannel {
      */
     public void lsFile(String path, Consumer<ShellSFTPFile> fileCallback) throws Exception {
         String filePath = this.resolvePath(path);
-        // 总列表
-        Vector<ChannelSftp.LsEntry> vector = this.ls(path);
-        // 遍历列表
-        for (ChannelSftp.LsEntry entry : vector) {
-            // 非文件，跳过
-            if (".".equals(entry.getFilename()) || "..".equals(entry.getFilename())) {
-                continue;
+        AtomicReference<Exception> errRef = new AtomicReference<>();
+        // 直接流式处理服务端响应。jsch 的 ls() 会先收集完整列表，
+        // 大目录在远端往返期间无法向界面交付任何数据。
+        this.getChannel().ls(filePath, entry -> {
+            try {
+                // 非文件，跳过
+                if (".".equals(entry.getFilename()) || "..".equals(entry.getFilename())) {
+                    return ChannelSftp.LsEntrySelector.CONTINUE;
+                }
+                ShellSFTPFile file = new ShellSFTPFile(filePath, entry);
+                // 目录列举只判断链接类型，链接目标在用户点击时按需解析。
+                // 提前 realpath + stat 会对每个链接增加两次串行 SFTP 往返。
+                fileCallback.accept(file);
+                return ChannelSftp.LsEntrySelector.CONTINUE;
+            } catch (Exception ex) {
+                // BREAK 让 jsch 关闭远端目录句柄，异常在调用栈外层重新抛出。
+                errRef.set(ex);
+                return ChannelSftp.LsEntrySelector.BREAK;
             }
-            ShellSFTPFile file = new ShellSFTPFile(filePath, entry);
-            // 目录列举只判断链接类型，链接目标在用户点击时按需解析。
-            // 提前 realpath + stat 会对每个链接增加两次串行 SFTP 往返。
-            fileCallback.accept(file);
+        });
+        if (errRef.get() != null) {
+            throw errRef.get();
         }
     }
 

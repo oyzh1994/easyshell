@@ -67,7 +67,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
     /**
      * 开启加载动画
      */
-    private boolean enabledLoading = true;
+    private boolean enabledLoading = false;
 
     /**
      * 是否开启加载动画
@@ -259,10 +259,25 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * 加载文件
      */
     public void loadFile() {
-        // 防止重复执行
+        // 加载中，尝试中断加载
         if (this.loading.get()) {
-            return;
+            this.interrupt.set(true);
         }
+        // 等待中断完成
+        long start = System.currentTimeMillis();
+        while (this.interrupt.get()) {
+            ThreadUtil.sleep(5);
+            // 超时
+            long now = System.currentTimeMillis();
+            if (now - start > this.client.connectTimeout()) {
+                break;
+            }
+        }
+        // 等待超时
+        if (this.interrupt.get()) {
+            throw new ShellException("load timeout");
+        }
+        // 设置为加载中
         this.loading.set(true);
         // 执行函数
         Runnable func = () -> {
@@ -276,109 +291,25 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
                     MessageBox.exception(ex, this.getWindow());
                 }
             } finally {
+                this.enable();
                 this.loading.set(false);
+                this.interrupt.set(false);
             }
         };
+        this.disable();
         if (this.enabledLoading) {
             StageManager.showMask(this.getWindow(), func);
         } else {
-            ThreadUtil.start(() -> {
-                this.disable();
-                try {
-                    func.run();
-                } finally {
-                    this.enable();
-                }
-            });
+            ThreadUtil.start(func);
         }
     }
-
-    //    /**
-    //     * 加载文件，内部实现
-    //     *
-    //     * @throws Exception 异常
-    //     */
-    //    @Deprecated
-    //    protected synchronized void loadFileInner() throws Exception {
-    //        String currPath = this.getLocation();
-    //        if (currPath == null) {
-    //            if (this.client.isWorkDirSupport()) {
-    //                this.setLocation(this.client.workDir());
-    //            } else {
-    //                this.setLocation("/");
-    //            }
-    //            currPath = this.getLocation();
-    //        } else if (currPath.isBlank()) {
-    //            currPath = "/";
-    //        }
-    //        if (JulLog.isInfoEnabled()) {
-    //            JulLog.info("current path: {}", currPath);
-    //        }
-    //        // 更新当前列表
-    //        this.files = this.client.lsFile(currPath);
-    //        // 过滤出来待显示的列表
-    //        List<E> files = this.doFilter(this.files);
-    //        // 当前在显示的列表
-    //        List<E> items = this.getItems();
-    //        // 删除列表
-    //        List<E> delList = new ArrayList<>();
-    //        // 新增列表
-    //        List<E> addList = new ArrayList<>();
-    //        // 遍历已有集合，如果不在待显示列表，则删除，否则更新
-    //        for (E file : items) {
-    //            Optional<E> optional = files.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-    //            if (optional.isEmpty()) {
-    //                delList.add(file);
-    //            } else {
-    //                file.copy(optional.get());
-    //            }
-    //        }
-    //        // 遍历待显示列表，如果不在已显示列表，则新增
-    //        for (E file : files) {
-    //            Optional<E> optional = items.stream().filter(f -> StringUtil.equals(f.getFilePath(), file.getFilePath())).findAny();
-    //            if (optional.isEmpty()) {
-    //                addList.add(file);
-    //            }
-    //        }
-    //        // 删除数据
-    //        this.removeItem(delList);
-    //        // 新增数据
-    //        this.addItem(addList);
-    //    }
-
-    //    /**
-    //     * 动态加载文件，内部实现
-    //     *
-    //     * @throws Exception 异常
-    //     */
-    //    @Deprecated
-    //    protected synchronized void loadFileInnerDynamic() throws Exception {
-    //        String currPath = this.getLocation();
-    //        if (currPath == null) {
-    //            if (this.client.isWorkDirSupport()) {
-    //                this.setLocation(this.client.workDir());
-    //            } else {
-    //                this.setLocation("/");
-    //            }
-    //            currPath = this.getLocation();
-    //        } else if (currPath.isBlank()) {
-    //            currPath = "/";
-    //        }
-    //        if (JulLog.isInfoEnabled()) {
-    //            JulLog.info("current path: {}", currPath);
-    //        }
-    //        // 重建列表
-    //        this.files = new ArrayList<>();
-    //        // 动态加载
-    //        this.client.lsFileDynamic(currPath, this::addFile);
-    //    }
 
     /**
      * 批量加载文件，内部实现
      *
      * @throws Exception 异常
      */
-    protected synchronized void loadFileInnerBatch() throws Exception {
+    protected void loadFileInnerBatch() throws Exception {
         String currPath = this.getLocation();
         if (currPath == null) {
             if (this.client.isWorkDirSupport()) {
@@ -405,15 +336,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param f1 文件
      */
     private void addFile(E f1) {
-        // if (!this.filterFile(f1)) {
-        //     return;
-        // }
-        // // 添加到列表
-        // this.files.add(f1);
-        // // 进行排序
-        // this.sortFile();
-        // // 更新列表
-        // this.setItem(this.files);
         this.addFile(List.of(f1));
     }
 
@@ -428,8 +350,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.interrupt.set(false);
             throw new ShellException("interrupt");
         }
-        // // 过滤
-        // list = list.parallelStream().filter(this::filterFile).toList();
         // 为空
         if (list.isEmpty()) {
             return;
@@ -701,29 +621,19 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      * @param filePath 文件路径
      */
     public void intoDir(String filePath) {
+        if (ShellSSHUtil.isSamePath(this.getLocation(), filePath)) {
+            return;
+        }
         // 目录切换，取消删除任务
-        if (StringUtil.notEquals(this.getLocation(), filePath) && !this.client.isDeleteTaskEmpty()) {
+        if (!this.client.isDeleteTaskEmpty()) {
             List<ShellFileDeleteTask> deleteTasks = new ArrayList<>(this.client.deleteTasks());
             for (ShellFileDeleteTask deleteTask : deleteTasks) {
                 deleteTask.cancel();
             }
         }
-        // 加载中，尝试中断加载
-        if (this.loading.get()) {
-            this.interrupt.set(true);
-        }
-        // 等待中断完成
-        long start = System.currentTimeMillis();
-        while (this.interrupt.get()) {
-            ThreadUtil.sleep(5);
-            // 超时
-            long now = System.currentTimeMillis();
-            if (now - start > 5000) {
-                break;
-            }
-        }
-        // 更新新目录
+        // 更新目录
         this.setLocation(filePath);
+        // 加载文件
         this.loadFile();
     }
 
@@ -1030,8 +940,6 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
             this.files.parallelStream().filter(f -> StringUtil.equals(filePath, f.getFilePath())).findAny().ifPresent(f -> this.files.remove(f));
             // 添加文件
             this.addFile(file);
-            // this.files.add(file);
-            // this.refreshFile();
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, this.getWindow());

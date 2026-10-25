@@ -315,9 +315,9 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private void initFile() {
         this.fileTable.setSSHClient(this.client());
-        this.fileTable.setEnabledLoading(false);
+//        this.fileTable.setEnabledLoading(false);
         this.fileTable.refreshFile();
-        this.fileTable.setEnabledLoading(true);
+//        this.fileTable.setEnabledLoading(true);
         ShellSFTPClient sftpClient = this.sftpClient();
         // 任务数量监听
         this.taskSizeListener = sftpClient.addTaskSizeListener(() -> {
@@ -333,9 +333,9 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 return;
             }
             if (this.client().isResolveWorkerDir() && !ShellSSHUtil.isSamePath(newValue, this.fileTable.getLocation())) {
-                this.fileTable.setEnabledLoading(false);
+//                this.fileTable.setEnabledLoading(false);
                 this.fileTable.cd(newValue);
-                this.fileTable.setEnabledLoading(true);
+//                this.fileTable.setEnabledLoading(true);
             }
         });
         // 设置收藏处理
