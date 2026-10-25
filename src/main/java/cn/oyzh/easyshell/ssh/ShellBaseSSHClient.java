@@ -17,7 +17,8 @@ import cn.oyzh.ssh.util.JschUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.AgentProxyException;
 import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSession;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Identity;
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
@@ -41,6 +42,8 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -965,29 +968,53 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     /**
-     * 初始化环境
+     * 初始化 Exec 通道环境。X11 只对交互式 shell 有意义，非交互通道不能请求。
      *
      * @param channel 通道
      */
-    public void initEnvironments(ChannelSession channel) {
+    public void initEnvironments(ChannelExec channel) {
+        this.initEnvironments(channel::setEnv, channel::setAgentForwarding);
+    }
+
+    /**
+     * 初始化 Shell 通道环境
+     *
+     * @param channel   通道
+     */
+    protected void initEnvironments(ChannelShell channel) {
+        this.initEnvironments(channel::setEnv, channel::setAgentForwarding);
+    }
+
+    /**
+     * 初始化 SFTP 通道环境。SFTP 不是交互式 X11 会话，不能请求 X11 转发。
+     *
+     * @param channel 通道
+     */
+    public void initEnvironments(ChannelSftp channel) {
+        this.initEnvironments(channel::setEnv, channel::setAgentForwarding);
+    }
+
+    /**
+     * 初始化通道公共环境。不能直接引用 ChannelSession，当前 JSch 版本未公开该类。
+     *
+     * @param envSetter             环境变量设置器
+     * @param agentForwardingSetter agent 转发设置器
+     */
+    private void initEnvironments(BiConsumer<String, String> envSetter, Consumer<Boolean> agentForwardingSetter) {
         // 用户环境
         Map<String, String> userEnvs = this.shellConnect.environments();
         if (CollectionUtil.isNotEmpty(userEnvs)) {
             for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-                channel.setEnv(entry.getKey(), entry.getValue());
+                envSetter.accept(entry.getKey(), entry.getValue());
             }
         }
         // 初始化环境变量
-        channel.setEnv("PATH", this.getExportPath());
+        envSetter.accept("PATH", this.getExportPath());
         // 初始化字符集
-        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
+        envSetter.accept("LANG", "en_US." + this.getCharset().displayName());
         // 客户端转发
         if (this.shellConnect.isForwardAgent()) {
-            channel.setAgentForwarding(true);
-        }
-        // x11转发
-        if (this.shellConnect.isX11forwarding()) {
-            channel.setXForwarding(true);
+            agentForwardingSetter.accept(true);
         }
     }
 

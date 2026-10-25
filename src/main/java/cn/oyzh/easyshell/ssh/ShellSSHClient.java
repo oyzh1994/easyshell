@@ -599,6 +599,11 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private ShellSSHShell shell;
 
+    /**
+     * 服务端是否拒绝过 X11 转发。拒绝后同一连接不再重复请求，但 shell 仍可正常使用。
+     */
+    private volatile boolean x11ForwardingRejected;
+
     public ShellSSHShell getShell() {
         return shell;
     }
@@ -626,32 +631,94 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             this.cancelOscWorkerDirIntegration();
             this.resetWorkerDirResolver();
             this.oscWorkerDirIntegrationState = OscIntegrationState.PENDING;
-            ChannelShell channel = null;
+            boolean requestX11 = this.shellConnect.isX11forwarding() && !this.x11ForwardingRejected;
             try {
-                this.ensureSessionConnected(this.connectTimeout());
-                channel = (ChannelShell) this.session.openChannel("shell");
-                super.initEnvironments(channel);
-                // 设置终端类型
-                channel.setPty(true);
-                channel.setPtyType(this.shellConnect.getTermType());
-                // JSch 必须在 connect 前取得输入输出流，否则连接建立后到达的 MOTD、
-                // 登录信息和首批提示符会写入空输出流而丢失。
-                channel.setInputStream(null);
-                InputStream inputStream = channel.getInputStream();
-                OutputStream outputStream = channel.getOutputStream();
-                this.shell = new ShellSSHShell(channel, inputStream, outputStream);
-                this.shell.connect(this.connectTimeout());
+                this.shell = this.openShellChannel(requestX11);
             } catch (Exception ex) {
-                if (this.shell != null) {
-                    this.shell.close();
-                    this.shell = null;
-                } else if (channel != null) {
-                    channel.disconnect();
+                if (!requestX11 || !isX11ForwardingRejected(ex)) {
+                    throw new ShellException(ex);
                 }
-                throw new ShellException(ex);
+                // macOS/Windows OpenSSH 通常不支持 X11 转发。请求被拒绝时降级重试，
+                // 不能因为一个可选增强能力导致整个交互式终端不可用。
+                this.x11ForwardingRejected = true;
+                JulLog.warn("remote ssh rejected x11 forwarding, reopen shell without x11");
+                try {
+                    this.shell = this.openShellChannel(false);
+                } catch (Exception retryEx) {
+                    retryEx.addSuppressed(ex);
+                    throw new ShellException(retryEx);
+                }
             }
         }
         return this.shell;
+    }
+
+    /**
+     * 打开 shell 通道
+     *
+     * @param requestX11 是否请求 X11 转发
+     * @return shell
+     * @throws Exception 连接异常
+     */
+    private ShellSSHShell openShellChannel(boolean requestX11) throws Exception {
+        ChannelShell channel = null;
+        ShellSSHShell currentShell = null;
+        try {
+            this.ensureSessionConnected(this.connectTimeout());
+            channel = (ChannelShell) this.session.openChannel("shell");
+            // 初始化环境
+            super.initEnvironments(channel);
+            // X11 仅属于交互式 shell；exec/sftp 请求会被部分服务端拒绝并导致通道建立失败。
+            if (requestX11 && this.shellConnect.isX11forwarding()) {
+                channel.setXForwarding(true);
+            }
+            // 设置终端类型
+            channel.setPty(true);
+            channel.setPtyType(this.shellConnect.getTermType());
+            // JSch 必须在 connect 前取得输入输出流，否则连接建立后到达的 MOTD、
+            // 登录信息和首批提示符会写入空输出流而丢失。
+            channel.setInputStream(null);
+            InputStream inputStream = channel.getInputStream();
+            OutputStream outputStream = channel.getOutputStream();
+            currentShell = new ShellSSHShell(channel, inputStream, outputStream);
+            currentShell.connect(this.connectTimeout());
+            return currentShell;
+        } catch (Exception ex) {
+            if (currentShell != null) {
+                currentShell.close();
+            } else if (channel != null) {
+                channel.disconnect();
+            }
+            throw ex;
+        }
+    }
+
+    /**
+     * 是否为服务端拒绝 X11 请求导致的异常。
+     *
+     * @param throwable 异常
+     * @return 结果
+     */
+    private static boolean isX11ForwardingRejected(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            for (StackTraceElement element : current.getStackTrace()) {
+                if ("com.jcraft.jsch.RequestX11".equals(element.getClassName())) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    /**
+     * 当前连接是否因服务端不支持而禁用了 X11 转发。
+     *
+     * @return 结果
+     */
+    public boolean isX11ForwardingRejected() {
+        return this.x11ForwardingRejected;
     }
 
     public synchronized void waitShellReady(int timeout) throws IOException {
