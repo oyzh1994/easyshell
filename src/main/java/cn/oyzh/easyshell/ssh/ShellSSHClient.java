@@ -97,11 +97,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      */
     private StringProperty workDirProperty;
 
-    //    /**
-    //     * 终端历史存储
-    //     */
-    //    private final ShellTermHistoryStore termHistoryStore = ShellTermHistoryStore.INSTANCE;
-
     /**
      * 是否解析工作目录
      *
@@ -132,9 +127,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * @param output 输出
      */
     public void resolveWorkerDir(String output) {
-        // if (StringUtil.equals(this.lastOutput, output)) {
-        //     return;
-        // }
         if (this.resolveWorkerDir) {
             this.doResolveWorkerDir(output);
             this.scheduleOscWorkerDirIntegration();
@@ -258,23 +250,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         return this.workDirProperty;
     }
 
-    //    /**
-    //     * 保存终端历史
-    //     *
-    //     * @param output 输出
-    //     */
-    //    public void saveTermHistory(String output) {
-    //        String command = ShellSSHUtil.resolveCommand(output);
-    //        if (StringUtil.isNotBlank(command)) {
-    //            JulLog.error("command: " + command);
-    //            ShellTermHistory history = new ShellTermHistory();
-    //            history.setContent(command);
-    //            history.setIid(this.shellConnect.getId());
-    //            history.setSaveTime(System.currentTimeMillis());
-    //            this.termHistoryStore.save(history);
-    //        }
-    //    }
-
     /**
      * ssh跳板转发器
      */
@@ -289,13 +264,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 当前隧道绑定所属的会话
      */
     private Session tunnelSession;
-
-    private final Object tunnelLock = new Object();
-
-    /**
-     * shell密钥存储
-     */
-    private final ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
 
     /**
      * x11配置存储
@@ -318,19 +286,6 @@ public class ShellSSHClient extends ShellBaseSSHClient {
      * 本次连接使用的代理配置。直连时作用于主会话，跳板时作用于第一跳。
      */
     private ShellProxyConfig connectProxyConfig;
-
-    //    /**
-    //     * 待发送的 PTY 尺寸。
-    //     */
-    //    private ScheduledFuture<?> pendingPtyResizeFuture;
-
-    //    private int pendingPtyColumns;
-    //
-    //    private int pendingPtyRows;
-    //
-    //    private int pendingPtyWidth;
-    //
-    //    private int pendingPtyHeight;
 
     /**
      * 连接状态

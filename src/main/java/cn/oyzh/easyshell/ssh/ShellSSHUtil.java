@@ -13,8 +13,8 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.ssh.domain.SSHConnect;
-import cn.oyzh.ssh.util.SSHUtil;
 import cn.oyzh.ssh.util.JschUtil;
+import cn.oyzh.ssh.util.SSHUtil;
 import com.jcraft.jsch.Proxy;
 
 import java.nio.file.Path;
@@ -158,8 +158,8 @@ public class ShellSSHUtil {
     /**
      * 解析单行提示符
      *
-     * @param line     提示符行
-     * @param homeDir  用户home目录
+     * @param line      提示符行
+     * @param homeDir   用户home目录
      * @param allowBare 是否允许解析无提示符字符的提示符
      * @return 工作目录
      */
@@ -458,32 +458,32 @@ public class ShellSSHUtil {
         return StringUtil.startWith(path, "/") || isWindowsPath(path);
     }
 
-//    /**
-//     * 解析命令
-//     *
-//     * @param output 输出
-//     * @return 命令
-//     */
-//    public static String resolveCommand(String output) {
-//        if (StringUtil.isBlank(output)) {
-//            return null;
-//        }
-//        // 移除重复内容
-//        if (output.length() > 1 && output.charAt(1) == '\b') {
-//            output = output.substring(2);
-//        }
-//        // 移除换行字符
-//        while (output.endsWith("\r") || output.endsWith("\n") || output.endsWith("\b")) {
-//            output = output.substring(0, output.length() - 1).trim();
-//        }
-//        // 移除ansi字符串
-//        output = SSHUtil.removeAnsi(output);
-//        // 移除部分tty内容
-//        if (output.endsWith("?2004l")) {
-//            output = output.substring(0, output.length() - 8);
-//        }
-//        return output;
-//    }
+    //    /**
+    //     * 解析命令
+    //     *
+    //     * @param output 输出
+    //     * @return 命令
+    //     */
+    //    public static String resolveCommand(String output) {
+    //        if (StringUtil.isBlank(output)) {
+    //            return null;
+    //        }
+    //        // 移除重复内容
+    //        if (output.length() > 1 && output.charAt(1) == '\b') {
+    //            output = output.substring(2);
+    //        }
+    //        // 移除换行字符
+    //        while (output.endsWith("\r") || output.endsWith("\n") || output.endsWith("\b")) {
+    //            output = output.substring(0, output.length() - 1).trim();
+    //        }
+    //        // 移除ansi字符串
+    //        output = SSHUtil.removeAnsi(output);
+    //        // 移除部分tty内容
+    //        if (output.endsWith("?2004l")) {
+    //            output = output.substring(0, output.length() - 8);
+    //        }
+    //        return output;
+    //    }
 
     // /**
     //  * 初始化代理
@@ -578,17 +578,17 @@ public class ShellSSHUtil {
         return reference.get();
     }
 
-//    /**
-//     * 认证失败
-//     *
-//     * @param connect 连接
-//     * @return 处理后的连接
-//     */
-//    public static SSHConnect onVerifyFailure(SSHConnect connect) {
-//        ShellConnect shellConnect = convert(connect);
-//        ShellConnect shellConnect1 = onVerifyFailure(shellConnect);
-//        return convert(shellConnect1);
-//    }
+    //    /**
+    //     * 认证失败
+    //     *
+    //     * @param connect 连接
+    //     * @return 处理后的连接
+    //     */
+    //    public static SSHConnect onVerifyFailure(SSHConnect connect) {
+    //        ShellConnect shellConnect = convert(connect);
+    //        ShellConnect shellConnect1 = onVerifyFailure(shellConnect);
+    //        return convert(shellConnect1);
+    //    }
 
     /**
      * 获取已知主机路径
@@ -728,5 +728,18 @@ public class ShellSSHUtil {
      */
     public static boolean isUsableInfo(String output) {
         return StringUtil.isNotBlank(output) && !ShellUtil.isCommandNotFound(output);
+    }
+
+    /**
+     * 是否 POSIX 风格的 shell
+     *
+     * @param shellName shell名称
+     * @return 结果
+     */
+    public static boolean isPosixShellType(String shellName) {
+        return StringUtil.equalsAnyIgnoreCase(shellName,
+                "sh", "sh.exe", "bash", "bash.exe", "zsh", "zsh.exe",
+                "ksh", "ksh.exe", "ksh93", "ksh93.exe", "mksh", "mksh.exe",
+                "dash", "dash.exe", "ash", "ash.exe", "yash", "yash.exe");
     }
 }

@@ -406,7 +406,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     /**
-     * 获取path变量
+     * 获取配置的 PATH 列表，使用当前系统默认的路径分隔符。
      *
      * @return 结果
      */
@@ -414,26 +414,24 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (this.osType == null) {
             return "";
         }
-        this.initEnvironment();
-        StringBuilder builder = new StringBuilder();
-        if (this.isWindows()) {
-            for (String string : this.environment) {
-                builder.append(";").append(string);
-            }
-            if (this.shellType != null) {
-                if (this.isCmdType()) {
-                    builder.append(";%PATH%");
-                } else if (this.isPowershellType()) {
-                    builder.append(";$env:PATH");
-                }
-            }
-        } else {
-            for (String string : this.environment) {
-                builder.append(":").append(string);
-            }
-            builder.append(":$PATH");
+        return this.getExportPath(this.isWindows() ? ";" : ":");
+    }
+
+    /**
+     * 获取配置的可执行文件搜索路径。
+     *
+     * @param separator 路径分隔符
+     * @return 路径列表，不包含远端 PATH 变量表达式
+     */
+    protected String getExportPath(String separator) {
+        if (this.osType == null) {
+            return "";
         }
-        return builder.substring(1);
+        this.initEnvironment();
+        return String.join(separator, this.environment.stream()
+                .filter(StringUtil::isNotBlank)
+                .map(String::strip)
+                .toList());
     }
 
     /**
@@ -590,6 +588,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             this.session.setDaemonThread(true);
             // 连续3次失败后断开连接
             this.session.setServerAliveCountMax(3);
+            // 心跳处理
             this.session.setServerAliveInterval(ShellSSHUtil.getHeartbeatInterval(this.shellConnect) * 1000);
             // 可选：设置TCP层面的keep-alive
             this.session.setConfig("TCPKeepAlive", "yes");
@@ -602,9 +601,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     /**
-     * 启用压缩
+     * 初始化压缩
      */
-    protected void useCompression() {
+    protected void initCompression() {
         if (this.session != null) {
             // 启用压缩
             if (this.shellConnect.isEnableCompress()) {
@@ -655,27 +654,70 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (command == null || this.osType == null) {
             return command;
         }
-        if (this.isMacos() || this.isUnix() || this.isLinux()) {
-            // SSH exec 的 command 本身由远端 shell 解释。经 env 直接执行会丢失
-            // cd、export 等 shell 内建命令，统一交给 POSIX shell 解释。
-            String safeCommand = ShellSSHUtil.quoteCommand(command);
-            String safePath = ShellSSHUtil.quoteCommand(this.getExportPath());
-            return "env PATH=" + safePath + " /bin/sh -c " + safeCommand;
+        try {
+            ShellExecCommandResolver.Family family = this.resolveExecShellFamily();
+            if (family == ShellExecCommandResolver.Family.UNSUPPORTED) {
+                return command;
+            }
+            String separator = family == ShellExecCommandResolver.Family.CMD
+                    || family == ShellExecCommandResolver.Family.POWERSHELL ? ";" : ":";
+            return ShellExecCommandResolver.resolve(command, this.getExportPath(separator), family);
+        } catch (RuntimeException ex) {
+            // PATH 注入是可选增强，任何解析异常都不能阻止原命令执行。
+            JulLog.warn("resolve exec command environment failed, use original command", ex);
+            return command;
         }
+    }
+
+    /**
+     * 判断当前远端 shell 能否被安全包装。未知 shell 不注入 PATH，直接执行原命令。
+     *
+     * @return shell 家族
+     */
+    private ShellExecCommandResolver.Family resolveExecShellFamily() {
         if (this.isWindows()) {
             if (this.isCmdType()) {
-                return "set \"PATH=" + this.getExportPath() + ";\" & " + command;
+                return ShellExecCommandResolver.Family.CMD;
             }
             if (this.isPowershellType()) {
-                return "$env:PATH=\"" + this.getExportPath() + ";\"; " + command;
+                return ShellExecCommandResolver.Family.POWERSHELL;
             }
-            //            if (this.isShType() || this.isBashType()) {
-            //                String safeCommand = ShellSSHUtil.quoteCommand(command);
-            //                String safePath = ShellSSHUtil.quoteCommand(this.getExportPath());
-            //                return "env PATH=" + safePath + " " + safeCommand;
-            //            }
+            if (this.isWindowsPosixShellType()) {
+                return ShellExecCommandResolver.Family.POSIX;
+            }
+            return ShellExecCommandResolver.Family.UNSUPPORTED;
         }
-        return command;
+        if (this.isMacos() || this.isUnix() || this.isLinux()) {
+            if (this.isCshType() || this.isTcshType()) {
+                return ShellExecCommandResolver.Family.CSH;
+            }
+            if (this.isPosixShellType()) {
+                return ShellExecCommandResolver.Family.POSIX;
+            }
+        }
+        return ShellExecCommandResolver.Family.UNSUPPORTED;
+    }
+
+    /**
+     * 是否 POSIX 风格的 shell
+     *
+     * @return 结果
+     */
+    public boolean isPosixShellType() {
+        return ShellSSHUtil.isPosixShellType(this.getShellName());
+    }
+
+    /**
+     * Windows 上只有探测到明确的 Unix 风格 shell 路径时才允许 POSIX 语法。
+     * shell 探测失败会回退为裸名称 bash，这种结果不足以判断实际解释器，必须放弃注入。
+     *
+     * @return 结果
+     */
+    private boolean isWindowsPosixShellType() {
+        String shellType = this.getShellType();
+        return StringUtil.isNotBlank(shellType)
+                && shellType.strip().startsWith("/")
+                && this.isPosixShellType();
     }
 
     protected synchronized void ensureSessionConnected(int timeout) throws Exception {
@@ -692,6 +734,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.connectSession(timeout);
     }
 
+    /**
+     * 会话连接事件
+     */
     protected void onSessionConnected() {
     }
 
@@ -789,9 +834,10 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         } else {
             throw new JSchException("unsupported ssh authentication type");
         }
-
+        // 初始化会话
         this.initSession();
-        this.useCompression();
+        // 初始化压缩
+        this.initCompression();
     }
 
     private ShellSSHAuthInteractive newAuthInteractive(String password, String passphrase) {
@@ -808,7 +854,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 this.initClient();
                 this.session.setTimeout(timeout);
                 this.session.connect(timeout);
-                this.configureAgentForwarding();
+                // 初始化agent转发
+                this.initAgentForwarding();
+                // 会话已连接事件
                 this.onSessionConnected();
                 return;
             } catch (JSchException ex) {
@@ -844,23 +892,24 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @throws AgentProxyException Agent 不可用
      */
-    private void configureAgentForwarding() throws AgentProxyException {
+    private void initAgentForwarding() throws AgentProxyException {
         if (!this.shellConnect.isForwardAgent() || this.session == null) {
             return;
         }
         this.session.setIdentityRepository(this.getAgentIdentityRepository());
     }
 
+    /**
+     * 获取IdentityRepository
+     *
+     * @return 结果
+     * @throws AgentProxyException
+     */
     private synchronized IdentityRepository getAgentIdentityRepository() throws AgentProxyException {
-        IdentityRepository repository = this.agentIdentityRepository;
-        if (repository == null) {
-            repository = this.agentIdentityRepository;
-            if (repository == null) {
-                repository = JschUtil.initAgentIdentityRepository();
-                this.agentIdentityRepository = repository;
-            }
+        if (this.agentIdentityRepository == null) {
+            this.agentIdentityRepository = JschUtil.initAgentIdentityRepository();
         }
-        return repository;
+        return this.agentIdentityRepository;
     }
 
     private boolean isAuthenticationFailure(JSchException ex) {
@@ -942,7 +991,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         }
     }
 
-    protected ShellServerExec serverExec;
+    protected volatile ShellServerExec serverExec;
 
     public synchronized ShellServerExec serverExec() {
         if (this.serverExec == null) {
@@ -954,7 +1003,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * shell类型
      */
-    protected String shellType;
+    protected volatile String shellType;
 
     /**
      * 获取终端类型
@@ -1042,7 +1091,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public boolean isCmdType() {
         String shellName = this.getShellName();
-        return StringUtil.containsAnyIgnoreCase(shellName, "cmd", "cmd.exe");
+        return StringUtil.equalsAnyIgnoreCase(shellName, "cmd", "cmd.exe");
     }
 
     /**
@@ -1052,7 +1101,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public boolean isPowershellType() {
         String shellName = this.getShellName();
-        return StringUtil.containsAnyIgnoreCase(shellName, "pwsh", "pwsh.exe", "powershell", "powershell.exe");
+        return StringUtil.equalsAnyIgnoreCase(shellName,
+                "pwsh", "pwsh.exe", "powershell", "powershell.exe");
     }
 
     @Override

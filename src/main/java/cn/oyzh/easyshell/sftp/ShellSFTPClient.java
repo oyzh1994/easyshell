@@ -64,8 +64,14 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      */
     private final ConcurrentLinkedQueue<ShellSFTPChannel> delayChannels = new ConcurrentLinkedQueue<>();
 
+    /**
+     * 是否自身会话
+     */
     private final boolean ownsSession;
 
+    /**
+     * 会话提供者
+     */
     private Supplier<Session> sessionSupplier;
 
     /**
@@ -95,8 +101,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         this(shellConnect, session, ownsSession, new Semaphore(MAX_DYNAMIC_CHANNELS, true));
     }
 
-    public ShellSFTPClient(ShellConnect shellConnect, Session session, boolean ownsSession,
-                           Semaphore dynamicChannelPermits) {
+    public ShellSFTPClient(ShellConnect shellConnect, Session session, boolean ownsSession, Semaphore dynamicChannelPermits) {
         super(shellConnect, dynamicChannelPermits);
         this.ownsSession = ownsSession;
         this.session = session;
@@ -130,7 +135,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             super.ensureSessionConnected(timeout);
             return;
         }
-        Session activeSession = this.sessionSupplier == null ? this.session : this.sessionSupplier.get();
+        Session activeSession = this.getSessionWithSupplier();
         if (activeSession == null || !activeSession.isConnected()) {
             throw new JSchException("ssh session is disconnected");
         }
@@ -240,6 +245,10 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         }
     }
 
+    private Session getSessionWithSupplier(){
+        return this.sessionSupplier == null ? this.session : this.sessionSupplier.get();
+    }
+
     private ShellSFTPChannel openSFTPChannel() throws Exception {
         if (this.channelPool == null) {
             throw new ShellException("sftp client is closed");
@@ -248,7 +257,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         ShellSFTPChannel sftpChannel = null;
         boolean permitAcquired = false;
         try {
-            Session activeSession = this.sessionSupplier == null ? this.session : this.sessionSupplier.get();
+            Session activeSession = this.getSessionWithSupplier();
             if (activeSession == null || !activeSession.isConnected()) {
                 if (!this.ownsSession) {
                     throw new ShellException("ssh session is disconnected");
@@ -673,19 +682,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
         }
     }
 
-    // @Override
-    // public List<ShellSFTPFile> lsFile(String filePath) throws Exception {
-    //     ShellSFTPChannel channel = this.takeChannel();
-    //     try {
-    //         return channel.lsFile(filePath);
-    //         // } catch (Exception ex) {
-    //         //     this.closeChannel(channel);
-    //         //     throw ex;
-    //     } finally {
-    //         this.returnChannel(channel);
-    //     }
-    // }
-
     @Override
     public void lsFileDynamic(String filePath, Consumer<ShellSFTPFile> fileCallback) throws Exception {
         ShellClientActionUtil.forAction(this.connectName(), "ls " + filePath);
@@ -785,44 +781,6 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
             }
         }
         this.delayChannels.clear();
-    }
-
-    // @Deprecated
-    // private SftpProgressMonitor newMonitor(Function<Long, Boolean> callback) {
-    //     return callback == null ? null : new SftpProgressMonitor() {
-    //         @Override
-    //         public void init(int i, String s, String s1, long l) {
-    //
-    //         }
-    //
-    //         @Override
-    //         public boolean count(long l) {
-    //             return callback.apply(l);
-    //         }
-    //
-    //         @Override
-    //         public void end() {
-    //
-    //         }
-    //     };
-    // }
-
-    @Override
-    public ShellFileClient<ShellSFTPFile> forkClient() {
-        // try {
-        //     ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null) {
-        //         // ShellSFTPClient sftpClient = new ShellSFTPClient(this.shellConnect, null, this.realpathCache, this.sftpChannelPool) {
-        //         @Override
-        //         public boolean isForked() {
-        //             return true;
-        //         }
-        //     };
-        //     sftpClient.start();
-        //     return sftpClient;
-        // } catch (Exception ex) {
-        //     ex.printStackTrace();
-        // }
-        return this;
     }
 
     @Override

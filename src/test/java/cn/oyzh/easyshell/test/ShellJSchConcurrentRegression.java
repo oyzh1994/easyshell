@@ -707,15 +707,14 @@ public final class ShellJSchConcurrentRegression {
             return;
         }
         String exportPath = client.getExportPath();
-        int pathIndex = exportPath.lastIndexOf(":$PATH");
-        if (pathIndex < 0) {
-            throw new IllegalStateException("export path does not preserve remote PATH");
+        if (exportPath.isBlank()) {
+            throw new IllegalStateException("configured export path is blank");
         }
         String resolved = client.exec("printf '%s' \"$PATH\"");
-        if (resolved == null || !resolved.startsWith(exportPath.substring(0, pathIndex + 1))) {
+        if (resolved == null || !resolved.startsWith(exportPath + ":")) {
             throw new IllegalStateException("exec command did not apply the configured PATH");
         }
-        if (resolved.length() <= pathIndex + 1) {
+        if (resolved.length() <= exportPath.length() + 1) {
             throw new IllegalStateException("exec command replaced the remote PATH instead of extending it");
         }
     }
