@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.ssh;
 
 import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.tty.TtyStreamConnector;
 
 import java.io.IOException;
@@ -22,7 +23,6 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
     public ShellSSHTtyConnector(ShellSSHClient client) throws Exception {
         super(client.getCharset());
         this.client = client;
-        client.openShell();
     }
 
     public ShellSSHClient getClient() {
@@ -39,24 +39,11 @@ public class ShellSSHTtyConnector extends TtyStreamConnector {
     public boolean ready() throws IOException {
         if (this.reader == null || !this.isConnected()) {
             try {
-                if (this.reader != null) {
-                    IOUtil.close(this.reader);
-                    IOUtil.close(this.writer);
-                    this.reader = null;
-                    this.writer = null;
-                }
-                ShellSSHShell shell;
-                if (this.isConnected()) {
-                    shell = this.client.getShell();
-                } else {
-                    shell = this.client.reopenShell();
-                    this.client.waitShellReady(1000);
-                }
+                ShellSSHShell shell = this.client.openShell();
                 this.reader = new InputStreamReader(shell.getInputStream(), this.charset());
                 this.writer = new OutputStreamWriter(shell.getOutputStream(), this.charset());
                 String remoteCharset = this.client.getRemoteCharset();
-                if (this.client.isWindows()
-                        && ("gbk".equalsIgnoreCase(remoteCharset) || "gb18030".equalsIgnoreCase(remoteCharset))) {
+                if (this.client.isWindows() && StringUtil.equalsAnyIgnoreCase(remoteCharset, "gbk", "gb18030")) {
                     this.reader = new ShellWindowsBomReader(shell.getInputStream(), this.reader);
                 }
                 this.client.scheduleOscWorkerDirIntegration();

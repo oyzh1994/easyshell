@@ -7,6 +7,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellKey;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -59,12 +60,6 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     protected static final int MAX_DYNAMIC_CHANNELS = 6;
 
     /**
-     * 等待动态通道许可的最长时间。该时间与命令执行超时相互独立，避免高并发时
-     * 尚未取得通道就被误判为 Exec 失败。
-     */
-    protected static final long DYNAMIC_CHANNEL_ACQUIRE_TIMEOUT = 15_000L;
-
-    /**
      * 系统类型
      */
     protected volatile String osType;
@@ -75,19 +70,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     protected volatile Session session;
 
     /**
-     * jsch实例
-     */
-    protected JSch jsch;
-
-    /**
      * 用户目录
      */
     protected volatile String userHome;
-
-    /**
-     * shell信息
-     */
-    protected ShellConnect shellConnect;
 
     /**
      * 远程字符集
@@ -98,6 +83,16 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * 环境变量
      */
     protected volatile List<String> environment;
+
+    /**
+     * jsch实例
+     */
+    protected JSch jsch;
+
+    /**
+     * shell信息
+     */
+    protected ShellConnect shellConnect;
 
     /**
      * shell密钥存储
@@ -160,7 +155,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @throws InterruptedException 线程被中断
      */
     protected boolean acquireDynamicChannel() throws InterruptedException {
-        return this.acquireDynamicChannel(DYNAMIC_CHANNEL_ACQUIRE_TIMEOUT);
+        return this.acquireDynamicChannel(this.connectTimeout());
     }
 
     protected boolean acquireDynamicChannel(long timeout) throws InterruptedException {
@@ -200,16 +195,47 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 系统类型
      */
-    protected synchronized String getOsType() {
+    protected String getOsType() {
         if (this.osType == null) {
-            String type = this.execMetadata("uname -s");
-            if (StringUtil.isNotBlank(type) && ShellUtil.isWindowsCommandNotFound(type, "uname")) {
-                type = this.execMetadataUtf8("cmd.exe /c ver");
-            }
-            JulLog.info("osType:{}", type);
-            this.osType = type;
+            this.initMetadata();
         }
         return this.osType;
+    }
+
+    /**
+     * 初始化元数据
+     */
+    private synchronized void initMetadata() {
+        if (this.osType != null) {
+            return;
+        }
+        String type = this.execMetadata("uname -s");
+        if (StringUtil.isNotBlank(type) && ShellUtil.isWindowsCommandNotFound(type, "uname")) {
+            type = this.execMetadataUtf8("cmd.exe /c ver");
+        }
+        this.osType = type;
+        JulLog.info("os type:{}", type);
+        String charset = null;
+        if (this.isWindows()) {
+            charset = ShellUtil.getCharsetFromChcp(this.execMetadata("chcp"));
+        } else if (this.isLinux() || this.isMacos() || this.isUnix()) {
+            charset = ShellUtil.getCharsetFromLang(this.execMetadata("echo $LANG"));
+        }
+        this.remoteCharset = charset;
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("remote charset: {}", charset);
+        }
+        String userHome = this.execMetadata(this.isWindows() ? "echo %HOME%" : "echo $HOME");
+        if (StringUtil.isNotBlank(userHome)) {
+            this.userHome = userHome + (this.isWindows() ? "\\" : "/");
+        }
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("user home: {}", this.userHome);
+        }
+        this.initEnvironment();
+        if (JulLog.isInfoEnabled()) {
+            JulLog.info("environment: {}", this.environment);
+        }
     }
 
     /**
@@ -244,21 +270,18 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
-    public String execMetadata(String command) {
+    protected String execMetadata(String command) {
         return this.execInternal(command, this.connectTimeout(), false, false);
     }
 
     /**
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
-    public String execMetadataUtf8(String command) {
-        return this.execInternal(command, this.connectTimeout(), false, false);
+    protected String execMetadataUtf8(String command) {
+        return this.execInternal(command, this.connectTimeout(), true, false);
     }
 
-    protected String execInternal(String command,
-                                  int timeout,
-                                  boolean preferUtf8,
-                                  boolean configureEnvironment) {
+    protected String execInternal(String command, int timeout, boolean preferUtf8, boolean configureEnvironment) {
         // 获取通道
         ChannelExec channel = null;
         ByteArrayOutputStream stream = null;
@@ -277,15 +300,14 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             return null;
         }
         try {
-            long waitTimeout = Math.max(DYNAMIC_CHANNEL_ACQUIRE_TIMEOUT,
-                    timeout > 0 ? timeout : this.connectTimeout());
+            long waitTimeout = Math.max(this.connectTimeout(), timeout);
             permitAcquired = this.dynamicChannelPermits.tryAcquire(waitTimeout, TimeUnit.MILLISECONDS);
             if (!permitAcquired) {
-                JulLog.warn("ssh exec channel acquire timeout, command: " + command);
+                JulLog.warn("ssh exec channel acquire timeout, command:{} ", command);
                 return null;
             }
             if (activeSession == null || !activeSession.isConnected()) {
-                JulLog.warn("ssh session is disconnected before exec, command: " + command);
+                JulLog.warn("ssh session is disconnected before exec, command: {} ", command);
                 return null;
             }
             channel = this.newExecChannel(activeSession, resolvedCommand, configureEnvironment);
@@ -317,7 +339,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             if (ex instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
-            JulLog.warn("ssh exec failed, command: " + command, ex);
+            JulLog.warn("ssh exec failed, command: {}", command, ex);
+            throw new ShellException(ex);
         } finally {
             IOUtil.close(stream);
             if (channel != null) {
@@ -327,12 +350,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 this.dynamicChannelPermits.release();
             }
         }
-        return null;
     }
-
-    //    private String prepareExecCommand(String command) {
-    //        return this.resolveExecCommand(command);
-    //    }
 
     private String decodeExecOutput(ByteArrayOutputStream stream, boolean preferUtf8) {
         byte[] bytes = stream.toByteArray();
@@ -401,7 +419,6 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public String getExportPath() {
         if (this.osType == null) {
-            //        if (this.osType == null || this.shellType == null) {
             return "";
         }
         this.initEnvironment();
@@ -410,12 +427,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             for (String string : this.environment) {
                 builder.append(";").append(string);
             }
-            builder.append(";%PATH%");
-            //        } else if (this.isTcshType() || this.isCshType()) {
-            //            for (String string : this.environment) {
-            //                builder.append(":").append(string);
-            //            }
-            //            builder.append(":$PATH");
+            if (this.shellType != null) {
+                if (this.isCmdType()) {
+                    builder.append(";%PATH%");
+                } else if (this.isPowershellType()) {
+                    builder.append(";$env:PATH");
+                }
+            }
         } else {
             for (String string : this.environment) {
                 builder.append(":").append(string);
@@ -448,6 +466,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 paths.add("/usr/local/games");
             }
             if (this.isMacos()) {
+                paths.add("/opt/homebrew/bin");
                 paths.add("/Applications/Docker.app/Contents/Resources/bin/");
             }
             this.environment = paths;
@@ -520,18 +539,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 远程字符集
      */
-    public synchronized String getRemoteCharset() {
+    public String getRemoteCharset() {
         if (this.remoteCharset == null) {
-            String charset = null;
-            if (this.isWindows()) {
-                charset = ShellUtil.getCharsetFromChcp(this.execMetadata("chcp"));
-            } else if (this.isLinux() || this.isMacos() || this.isUnix()) {
-                charset = ShellUtil.getCharsetFromLang(this.execMetadata("echo $LANG"));
-            }
-            if (JulLog.isInfoEnabled()) {
-                JulLog.info("remote charset: {}", charset);
-            }
-            this.remoteCharset = charset;
+            this.initMetadata();
         }
         return this.remoteCharset;
     }
@@ -553,12 +563,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 用户目录
      */
-    public synchronized String getUserHome() {
+    public String getUserHome() {
         if (this.userHome == null) {
-            String output = this.execMetadata(this.isWindows() ? "echo %HOME%" : "echo $HOME");
-            if (StringUtil.isNotBlank(output)) {
-                this.userHome = output + (this.isWindows() ? "\\" : "/");
-            }
+            this.initMetadata();
         }
         return this.userHome;
     }
@@ -619,23 +626,21 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         ChannelExec channel = null;
         try {
             channel = (ChannelExec) activeSession.openChannel("exec");
-            if (channel == null) {
-                throw new JSchException("create ssh exec channel returned null");
+            if (channel != null) {
+                channel.setInputStream(null);
+                channel.setOutputStream(null);
+                channel.setCommand(command);
+                if (configureEnvironment) {
+                    this.initEnvironments(channel);
+                }
             }
-            channel.setInputStream(null);
-            channel.setOutputStream(null);
-            channel.setCommand(command);
-            if (configureEnvironment) {
-                this.initEnvironments(channel);
-            }
-            return channel;
         } catch (Exception ex) {
             if (channel != null) {
                 channel.disconnect();
             }
             JulLog.warn("create ssh exec channel failed", ex);
         }
-        return null;
+        return channel;
     }
 
     /**
@@ -645,20 +650,23 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * @return 修正后的命令
      */
     protected String resolveExecCommand(String command) {
-        //        if (command == null || this.osType == null || this.shellType == null) {
-        //            return command;
-        //        }
-        //        if (this.isMacos() || this.isUnix() || this.isLinux()) {
-        //            return "env PATH=\"" + this.getExportPath() + "\"  " + command;
-        //        }
-        //        if (this.isWindows()) {
-        //            if (this.isCmdType()) {
-        //                return "set \"PATH=" + this.getExportPath() + ";%PATH%\" & " + command;
-        //            }
-        //            if (this.isCmdType()) {
-        //                return "$env:PATH=\"" + this.getExportPath() + ";$env:PATH\"; " + command;
-        //            }
-        //        }
+        if (command == null || this.osType == null) {
+            return command;
+        }
+        if (this.isMacos() || this.isUnix() || this.isLinux()) {
+            return "env PATH=\"" + this.getExportPath() + "\" " + command;
+        }
+        if (this.isWindows()) {
+            if (this.isCmdType()) {
+                return "set \"PATH=" + this.getExportPath() + ";\" & " + command;
+            }
+            if (this.isPowershellType()) {
+                return "$env:PATH=\"" + this.getExportPath() + ";\"; " + command;
+            }
+            if (this.isShType() || this.isBashType()) {
+                return "$env:PATH=\"" + this.getExportPath() + ";\"; " + command;
+            }
+        }
         return command;
     }
 
@@ -736,7 +744,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             throw new JSchException("initialize known_hosts failed: " + knownHosts, ex);
         }
         this.jsch.setKnownHosts(knownHosts.toString());
-
+        // 认证处理
         if (this.shellConnect.isPasswordAuth()) {
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setUserInfo(this.newAuthInteractive(this.shellConnect.getPassword(), null));
@@ -745,7 +753,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             if (StringUtil.isBlank(priKeyFile) || !Files.isRegularFile(Path.of(priKeyFile))) {
                 throw new JSchException("certificate file not found: " + priKeyFile);
             }
-            this.jsch.addIdentity(priKeyFile, this.shellConnect.getCertificatePwd());
+            this.jsch.addIdentity(priKeyFile, StringUtil.toBytes(this.shellConnect.getCertificatePwd()));
             this.session = this.jsch.getSession(this.shellConnect.getUser(), hostIp, port);
             this.session.setUserInfo(this.newAuthInteractive(null, this.shellConnect.getCertificatePwd()));
         } else if (this.shellConnect.isSSHAgentAuth()) {
@@ -817,12 +825,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                     this.session.disconnect();
                     this.session = null;
                 }
-                //                this.osType = null;
-                //                this.userHome = null;
-                //                this.environment = null;
-                //                this.remoteCharset = null;
                 this.shellConnect = replacement;
-                //                this.agentIdentityRepository = null;
             }
         }
     }
@@ -931,60 +934,6 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         }
     }
 
-    //    /**
-    //     * 初始化环境
-    //     *
-    //     * @param channel 通道
-    //     */
-    //    public void initEnvironments(ChannelShell channel) {
-    //        // 用户环境
-    //        Map<String, String> userEnvs = this.shellConnect.environments();
-    //        if (CollectionUtil.isNotEmpty(userEnvs)) {
-    //            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-    //                channel.setEnv(entry.getKey(), entry.getValue());
-    //            }
-    //        }
-    //        // 初始化环境变量
-    //        channel.setEnv("PATH", this.getExportPath());
-    //        // 初始化字符集
-    //        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-    //        // 客户端转发
-    //        if (this.shellConnect.isForwardAgent()) {
-    //            channel.setAgentForwarding(true);
-    //        }
-    //        // x11转发
-    //        if (this.shellConnect.isX11forwarding()) {
-    //            channel.setXForwarding(true);
-    //        }
-    //    }
-    //
-    //    /**
-    //     * 初始化环境
-    //     *
-    //     * @param channel 通道
-    //     */
-    //    public void initEnvironments(ChannelSftp channel) {
-    //        // 用户环境
-    //        Map<String, String> userEnvs = this.shellConnect.environments();
-    //        if (CollectionUtil.isNotEmpty(userEnvs)) {
-    //            for (Map.Entry<String, String> entry : userEnvs.entrySet()) {
-    //                channel.setEnv(entry.getKey(), entry.getValue());
-    //            }
-    //        }
-    //        // 初始化环境变量
-    //        channel.setEnv("PATH", this.getExportPath());
-    //        // 初始化字符集
-    //        channel.setEnv("LANG", "en_US." + this.getCharset().displayName());
-    //        // 客户端转发
-    //        if (this.shellConnect.isForwardAgent()) {
-    //            channel.setAgentForwarding(true);
-    //        }
-    //        // x11转发
-    //        if (this.shellConnect.isX11forwarding()) {
-    //            channel.setXForwarding(true);
-    //        }
-    //    }
-
     protected ShellServerExec serverExec;
 
     public synchronized ShellServerExec serverExec() {
@@ -1018,26 +967,24 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public String getShellName() {
         String shellType = this.getShellType();
-        if (shellType == null) {
-            return null;
-        }
-        if (shellType.contains("/")) {
-            shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
-        } else if (shellType.contains("\\")) {
-            shellType = shellType.substring(shellType.lastIndexOf("\\") + 1);
+        if (StringUtil.isNotBlank(shellType)) {
+            if (shellType.contains("/")) {
+                shellType = shellType.substring(shellType.lastIndexOf("/") + 1);
+            } else if (shellType.contains("\\")) {
+                shellType = shellType.substring(shellType.lastIndexOf("\\") + 1);
+            }
         }
         return shellType;
     }
-
 
     /**
      * 是否zsh的shell
      *
      * @return 结果
      */
-    public boolean isZshType() {
+    public boolean isShType() {
         String shellName = this.getShellName();
-        return StringUtil.endWithIgnoreCase(shellName, "zsh");
+        return StringUtil.endWithAnyIgnoreCase(shellName, "sh", "sh.exe");
     }
 
     /**
@@ -1047,7 +994,17 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public boolean isBashType() {
         String shellName = this.getShellName();
-        return StringUtil.endWithIgnoreCase(shellName, "bash");
+        return StringUtil.endWithAnyIgnoreCase(shellName, "bash", "bash.exe");
+    }
+
+    /**
+     * 是否zsh的shell
+     *
+     * @return 结果
+     */
+    public boolean isZshType() {
+        String shellName = this.getShellName();
+        return StringUtil.endWithIgnoreCase(shellName, "zsh");
     }
 
     /**
@@ -1077,7 +1034,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public boolean isCmdType() {
         String shellName = this.getShellName();
-        return StringUtil.containsIgnoreCase(shellName, "cmd");
+        return StringUtil.containsAnyIgnoreCase(shellName, "cmd", "cmd.exe");
     }
 
     /**
@@ -1087,7 +1044,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public boolean isPowershellType() {
         String shellName = this.getShellName();
-        return StringUtil.containsIgnoreCase(shellName, "cmd");
+        return StringUtil.containsAnyIgnoreCase(shellName, "powershell", "powershell.exe");
     }
 
     @Override
