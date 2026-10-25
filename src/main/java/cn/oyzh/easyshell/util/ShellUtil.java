@@ -21,7 +21,7 @@ public class ShellUtil {
 
     public static boolean isWindowsCommandNotFound(String output, String cmd) {
         return StringUtil.containsIgnoreCase(output, "'" + cmd + "'")
-                || StringUtil.containsAnyIgnoreCase(output, "不是内部或外部", "无法找到文件", "找不到文件");
+                || StringUtil.containsAnyIgnoreCase(output, "不是内部或外部", "无法找到文件", "找不到文件", "ObjectNotFound", "CommandNotFoundException");
     }
 
     //    public static String fixWindowsFilePath(String filePath) {
