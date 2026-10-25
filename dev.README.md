@@ -26,10 +26,11 @@
     - 建议使用Maven管理javafx库
     - 二进制库使用Zulu或Bellsoft FX，标准fx库对glibc的要求较高、而且不支持Windows arm。
 5. **Window on arm特别说明**
-    - 步骤1 完成base模块的mvn安装。
-    - 步骤2 使用Bellsoft/Bellsoft Full JDK版本配合base的base-pkg模块处理javafx依赖，入口cn.oyzh.pkg.test.WoaPreHandler.run2。
-    - 步骤2 完成fx-base模块的mvn安装。
-    - 步骤4 重复步骤2，即完成。
+    - 步骤1 尽量保证jdk和jfx的版本一致。
+    - 步骤2 完成base模块的mvn安装。
+    - 步骤3 完成fx-base模块的mvn安装，命令mvn package "-Djavafx.platform=win" "-DskipTests"。
+    - 步骤4 使用Bellsoft Full JDK版本配合base的base-pkg模块处理javafx依赖，入口cn.oyzh.pkg.test.WoaPreHandler.run2。
+    - 步骤5 切换到Bellsoft JDK标准版或者Zulu JDK标准版。
 
 ---
 

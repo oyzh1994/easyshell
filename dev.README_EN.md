@@ -1,36 +1,44 @@
-###### Entry Point
+## Entry Point
+
 `cn.oyzh.easyshell.EasyShellBootstrap.main`
 
-> **Note**: To run the project, it is recommended to switch to the latest branch. The `master` branch code is merged periodically and may not be up to date.
-> **IDE**: IntelliJ IDEA Community or Ultimate Edition is recommended.
+> **Note**: If you want to run the project, it is best to switch to the latest branch; otherwise, it may fail to start. The `master` branch code is merged periodically and may not be the latest.  
+> **IDE**: IntelliJ IDEA Community Edition or Ultimate Edition is recommended.
 
-###### Dependencies
-1. **base** project
+---
+
+## Dependencies
+
+1. **base** project  
    https://gitee.com/oyzh1994/base
-2. **fx-base** project
+2. **fx-base** project  
    https://gitee.com/oyzh1994/fx-base
 3. **JDK Version**:
-   - 25 is required, 27 is recommended. JDK 25+ reduces memory usage significantly via object header compression.
-   - For Linux platforms, Zulu or Bellsoft JDK is recommended. Other JDKs have higher glibc requirements.
-   - For Windows ARM platforms, Zulu or Bellsoft JDK is recommended. Other JDKs do not support Windows on ARM.
-   - For other platforms, OpenJDK is preferred.
+   - Version 25 is required; version 27 is recommended. Object header compression in JDK 25 and later can significantly reduce memory usage.
+   - On Linux, Zulu or Bellsoft JDK is recommended; other JDKs have higher glibc requirements.
+   - On Windows ARM, Zulu or Bellsoft JDK is recommended; other JDKs do not support Windows on ARM.
+   - On other platforms, OpenJDK is preferred.
    - OpenJDK: https://jdk.java.net/archive/
    - Zulu JDK: https://www.azul.com/downloads/#zulu
    - Bellsoft JDK: https://bell-sw.com/pages/downloads/
 4. **JavaFX Version**:
-    - 27 is required and recommended, extended title bar and other features are now stable.
-    - Maven management is recommended for JavaFX libraries.
-    - For binary libraries, use Zulu or Bellsoft FX. Standard FX distributions have higher glibc requirements and do not support Windows on ARM.
+    - Version 27 is required and recommended; features such as extended title bars are now stable.
+    - It is recommended to use Maven to manage JavaFX libraries.
+    - For binary libraries, use Zulu or Bellsoft FX. The standard FX libraries have higher glibc requirements and do not support Windows ARM.
 5. **Windows on ARM Special Notes**
-    - Step 1: Complete `mvn install` for the `base` module.
-    - Step 2: Use the Bellsoft / Bellsoft Full JDK with the `base-pkg` module of `base` to preprocess JavaFX dependencies (entry: `cn.oyzh.pkg.test.WoaPreHandler.run2`).
-    - Step 3: Complete `mvn install` for the `fx-base` module.
-    - Step 4: Repeat Step 2 to finish.
+    - Step 1: Try to keep the JDK and JavaFX versions consistent.
+    - Step 2: Complete the Maven installation of the `base` module.
+    - Step 3: Complete the Maven installation of the `fx-base` module with the command `mvn package "-Djavafx.platform=win" "-DskipTests"`.
+    - Step 4: Use the Bellsoft Full JDK together with the `base-pkg` module of `base` to handle the JavaFX dependencies. Entry point: `cn.oyzh.pkg.test.WoaPreHandler.run2`.
+    - Step 5: Switch to the standard edition of Bellsoft JDK or Zulu JDK.
 
-###### Project Structure
+---
+
+## Project Structure
+
 ```
 .github    -> GitHub Actions configuration files
-changes    -> Version changelogs
+changes    -> Changelog for each version
 docker     -> Docker configuration files
 docs       -> Documentation resources
 package    -> Packaging configuration
@@ -38,76 +46,80 @@ resource   -> Project resource files
 src        -> Project source code
 ```
 
-# Maven
+---
 
-###### Build
+## Maven
+
+### Build
 ```bash
 mvn -X clean package -DskipTests
 ```
 Using GitHub Actions for packaging is recommended.
 
-###### Notes
-- Ensure that `java -version` in your terminal matches the project's JDK version. Mismatches cause errors like "invalid target release: 21".
-- For users in China, the Tencent Cloud Maven mirror is recommended as it can download dependencies from JetBrains repositories as well.
+### Notes
+- Check whether the version number of `java -version` in cmd matches the project version number; otherwise, problems such as "invalid target release: 21" may occur.
+- For users in China, the Tencent Cloud mirror is recommended; it can also download the JetBrains libraries, which may otherwise need to be handled separately.
 
-# Packaging
+---
 
-###### PNG Background Removal
+## Application Packaging
+
+### PNG Background Removal
 https://www.iloveimg.com/remove-background
 
-###### Icon Conversion
+### Icon Conversion
 
-**PNG to ICNS (Option 1)**
+**PNG to ICNS (Option 1)**  
 https://anyconv.com/png-to-icns-converter/
 
-**PNG to ICNS (Option 2)**
+**PNG to ICNS (Option 2)**  
 https://www.aconvert.com/image/png-to-icns/
 
-**PNG to ICO**
+**PNG to ICO**  
 https://www.freeconvert.com/png-to-ico
 
 ---
 
-###### Windows
+### Windows
 
-**EXE / MSI packaging dependency**
+**EXE / MSI Packaging Dependencies**  
 https://github.com/wixtoolset/wix3/releases
 
-**MSI Packaging (Recommended)**
-Config: `package/win_msi.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.win_msi`
+**MSI Packaging (Recommended)**  
+Config -> `package/win_msi.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.win_msi`
 
-**EXE Packaging**
-Config: `package/win_exe.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.win_exe`
+**EXE Packaging**  
+Config -> `package/win_exe.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.win_exe`
 
-**App Image Packaging**
-Config: `package/win_image.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.win_image`
+**App Image Packaging**  
+Config -> `package/win_image.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.win_image`
 
-> **Note**: EXE and MSI packaging must set `win-menu` and `win-shortcut` parameters to avoid missing desktop icons.
-
----
-
-###### macOS
-
-**PKG Packaging (Recommended)**
-Config: `package/macos_pkg.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.macos_pkg`
-
-**DMG Packaging**
-Config: `package/macos_dmg.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.macos_dmg`
-
-**App Image Packaging**
-Config: `package/macos_image.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.macos_image`
-
-> **Note**: DMG and PKG packaging must set `mac-package-identifier` to avoid missing app icons in Launchpad due to duplicate app names.
+> **Note**: EXE and MSI packaging require setting the `win-menu` and `win-shortcut` parameters to avoid the program icon not being displayed on the desktop.
 
 ---
 
-###### Linux (UOS, Ubuntu, CentOS examples)
+### macOS
+
+**PKG Packaging (Recommended)**  
+Config -> `package/macos_pkg.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.macos_pkg`
+
+**DMG Packaging**  
+Config -> `package/macos_dmg.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.macos_dmg`
+
+**App Image Packaging**  
+Config -> `package/macos_image.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.macos_image`
+
+> **Note**: DMG and PKG packaging require setting the `mac-package-identifier` parameter to avoid the program icon not being displayed in Launchpad because of duplicate App names.
+
+---
+
+### Linux (UOS, Ubuntu, and CentOS as examples)
 
 **DEB Packaging Dependencies (Ubuntu, Deepin)**
 ```bash
@@ -137,97 +149,107 @@ chmod +x appimagetool
 sudo mv appimagetool /usr/local/bin/appimagetool
 ```
 
-**AppImage Packaging (Recommended)**
-Config: `package/linux_AppImage.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.linux_AppImage`
+**AppImage Packaging (Recommended)**  
+Config -> `package/linux_AppImage.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.linux_AppImage`
 
-**DEB Packaging**
-Config: `package/linux_deb.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.linux_deb`
+**DEB Packaging**  
+Config -> `package/linux_deb.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.linux_deb`
 
-**RPM Packaging**
-Config: `package/linux_rpm.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.linux_rpm`
+**RPM Packaging**  
+Config -> `package/linux_rpm.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.linux_rpm`
 
-**App Image Packaging**
-Config: `package/linux_image.yaml`
-Entry: `cn.oyzh.easyshell.test.Pack.linux_image`
+**App Image Packaging**  
+Config -> `package/linux_image.yaml`  
+Entry -> `cn.oyzh.easyshell.test.Pack.linux_image`
 
-# X11 / X-Server
+---
 
-###### Windows
+## X11 / X-Server
+
+### Windows
 https://sourceforge.net/projects/vcxsrv/
 
-###### macOS
+### macOS
 https://www.xquartz.org/
 
-# Linux System
+---
 
-###### DEB Installation Failure
-If the error contains `xdg-desktop-menu: No writable system menu directory found.`, run:
+## Linux System
+
+### DEB Installation Reports Failure
+
+If the error details contain:
+```
+xdg-desktop-menu: No writable system menu directory found.
+```
+Perform the following operation, and then reinstall:
 ```bash
 sudo mkdir /usr/share/desktop-directories/
 ```
-Then reinstall.
 
-###### RPM Package Double-Click Failure or No Response
+### Double-Clicking the RPM Package Reports a Problem or Does Not Respond
 ```bash
 rpm -ivh xx.rpm
 ```
 
-###### RPM Upgrade
+### RPM Upgrade
 ```bash
 rpm -U xx.rpm
 ```
 
-###### RPM Uninstall
+### RPM Uninstall
 ```bash
 rpm -e easyshell
 ```
 
-###### DEB Upgrade
+### DEB Upgrade
 ```bash
 dpkg -r easyshell
 dpkg -i easyshell-xx.deb
 ```
 
-###### DEB Uninstall
+### DEB Uninstall
 ```bash
 dpkg -r easyshell
 ```
 
-# macOS System
+---
 
-###### App Icon Not Showing in Launchpad After DMG Install
+## macOS System
+
+### Program Icon Not Displayed in Launchpad After Installing with DMG on Mac
 ```bash
 defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock
 ```
 
-###### App Cannot Launch — Solution 1
+### Mac Cannot Launch — Solution 1
 ```bash
 sudo chmod +x EasyShell.app
 ```
 
-###### App Cannot Launch — Solution 2
+### Mac Cannot Launch — Solution 2
 ```bash
 chmod -R 755 /path/to/EasyShell.app
 ```
 
-###### App Cannot Launch — Solution 3
-If macOS reports "EasyShell.app cannot be opened" when running the `.app` file:
-1. Use a third-party unarchiver like FastZip instead of the built-in Archive Utility.
-2. Grant execute permissions in the terminal:
+### Mac Cannot Launch — Solution 3
+When running the `.app` file on macOS, the message "The application EasyShell.app cannot be opened" appears:
+1. Use a third-party extraction tool such as FastZip instead of the built-in Archive Utility.
+2. Grant permissions in the terminal:
    ```bash
    chmod +x EasyShell.app/Contents/MacOS/*
    ```
 
-###### App Cannot Launch — Solution 4 ("Damaged" Warning)
-If macOS reports the app is "damaged and cannot be opened":
-1. Allow apps from "Anywhere":
+### Mac Cannot Launch — Solution 4 ("Damaged" Warning)
+When running the `.app` file on macOS, the message "damaged and cannot be opened" appears:
+1. Allow apps downloaded from "Anywhere" to run:
    - Open **System Preferences** → **Security & Privacy** → **General**.
-   - Click the lock icon and select **Anywhere**.
-   - If "Anywhere" is not available, open the terminal and run:
+   - Select **Anywhere**.
+   - If **Anywhere** is not visible, open the terminal and run:
      ```bash
      sudo spctl --master-disable
      ```
-   - Enter your password when prompted.
+   - Enter your password and press Enter.
