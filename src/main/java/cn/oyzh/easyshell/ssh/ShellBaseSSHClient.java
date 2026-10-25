@@ -669,11 +669,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             if (this.isPowershellType()) {
                 return "$env:PATH=\"" + this.getExportPath() + ";\"; " + command;
             }
-//            if (this.isShType() || this.isBashType()) {
-//                String safeCommand = ShellSSHUtil.quoteCommand(command);
-//                String safePath = ShellSSHUtil.quoteCommand(this.getExportPath());
-//                return "env PATH=" + safePath + " " + safeCommand;
-//            }
+            //            if (this.isShType() || this.isBashType()) {
+            //                String safeCommand = ShellSSHUtil.quoteCommand(command);
+            //                String safePath = ShellSSHUtil.quoteCommand(this.getExportPath());
+            //                return "env PATH=" + safePath + " " + safeCommand;
+            //            }
         }
         return command;
     }
@@ -1052,7 +1052,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public boolean isPowershellType() {
         String shellName = this.getShellName();
-        return StringUtil.containsAnyIgnoreCase(shellName, "powershell", "powershell.exe");
+        return StringUtil.containsAnyIgnoreCase(shellName, "pwsh", "pwsh.exe", "powershell", "powershell.exe");
     }
 
     @Override
