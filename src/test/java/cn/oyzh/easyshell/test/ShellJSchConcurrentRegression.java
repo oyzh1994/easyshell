@@ -107,7 +107,11 @@ public final class ShellJSchConcurrentRegression {
             requireSftpBorrowedCleanup(client);
             requireDockerCommand(client);
             requireProcessInfo(client.processExec().ps());
-            requireProcessNetworkSpeed(client.processExec().ps());
+            if (client.isLinux() || client.isMacos()) {
+                requireProcessNetworkSpeed(client.processExec().ps());
+            } else {
+                System.out.println("per-process network speed skipped: unavailable on this platform");
+            }
             requireMonitorConcurrency(client);
             requireFailedStartCleanup(host, user, password);
             requireTunnelReconnect(host, user, password);
@@ -158,13 +162,6 @@ public final class ShellJSchConcurrentRegression {
             SSHTunneling remote = tunnel("remote", "127.0.0.1", echo.port, "127.0.0.1", 0);
             tunnelForwarder.forward(List.of(remote), session);
             int remotePort = newRemotePort(session, oldRemote);
-            String remoteToken = "jsch-remote-forward";
-            String command = "exec 3<>/dev/tcp/127.0.0.1/" + remotePort
-                    + "; printf '%s\\n' '" + remoteToken + "' >&3; IFS= read -r line <&3; printf '%s' \"$line\"";
-            String remoteOutput = client.exec(command);
-            if (!remoteToken.equals(remoteOutput)) {
-                throw new IllegalStateException("remote forwarding output mismatch: " + remoteOutput);
-            }
 
             int dynamicPort = freePort();
             SSHTunneling dynamic = tunnel("dynamic", "127.0.0.1", dynamicPort, null, 0);
@@ -174,12 +171,27 @@ public final class ShellJSchConcurrentRegression {
             requireSocks4Banner(dynamicPort, "127.0.0.1", 22);
             requireMalformedSocksRecovery(dynamicPort);
 
+            // 通过同一连接的反向本地隧道访问远程监听端口，避免依赖远端 bash 的 /dev/tcp。
+            SSHTunneling remoteProbe = tunnel("local", "127.0.0.1", freePort(), "127.0.0.1", remotePort);
+            tunnelForwarder.forward(List.of(remoteProbe), session);
+            requireSocketEcho(remoteProbe.getLocalPort(), "jsch-remote-forward");
+
             SSHConnect target = new SSHConnect();
             target.setHost("127.0.0.1");
             target.setPort(22);
             int jumpPort = jumpForwarder.forward(List.of(connect), target);
             requireSshBanner(jumpPort);
-            int multiHopPort = jumpForwarder.forward(List.of(connect, connect), target);
+
+            // 容器/端口映射场景下，连接地址与 guest 内部地址可能不同。第二跳必须
+            // 从第一跳所在主机的视角连接，不能直接复用宿主机映射端口。
+            SSHConnect secondHop = new SSHConnect();
+            secondHop.setHost(connect.getHost());
+            secondHop.setPort(Integer.getInteger("test.host.native.port", connect.getPort()));
+            secondHop.setUser(connect.getUser());
+            secondHop.setPassword(connect.getPassword());
+            secondHop.setAuthMethod(connect.getAuthMethod());
+            secondHop.setTimeout(connect.getTimeout());
+            int multiHopPort = jumpForwarder.forward(List.of(connect, secondHop), target);
             requireSshBanner(multiHopPort);
         }
     }
@@ -714,6 +726,7 @@ public final class ShellJSchConcurrentRegression {
         requireOsType("OS X", true, false, false, false);
         requireOsType("Linux", false, true, false, false);
         requireOsType("FreeBSD", false, false, true, false);
+        requireOsType("OpenBSD", false, false, true, false);
         requireOsType("AIX", false, false, true, false);
         requireOsType("HP-UX", false, false, true, false);
         requireOsType("SunOS", false, false, true, false);

@@ -11,7 +11,7 @@ import java.util.Locale;
  * 为交互式 shell 安装 OSC 工作目录上报能力。
  * <p>
  * 默认 shell 不会主动发送 OSC 7/9;9，需要安装一个仅对当前 shell 会话生效的 prompt hook。
- * bash/zsh 使用标准 OSC 7；FreeBSD sh/csh 和 Windows cmd/PowerShell 使用 OSC 9;9，
+ * bash/zsh 使用标准 OSC 7；OpenBSD ksh、FreeBSD sh/csh 和 Windows cmd/PowerShell 使用 OSC 9;9，
  * 直接上报原始绝对路径，避免 shell 缺少可靠的 URI 编码能力时路径失真。
  * hook 不修改用户配置文件，shell 退出后自动失效。
  *
@@ -62,6 +62,7 @@ public final class ShellOscShellIntegration {
     public enum Platform {
         UNIX,
         FREEBSD,
+        OPENBSD,
         WINDOWS
     }
 
@@ -162,6 +163,7 @@ public final class ShellOscShellIntegration {
         return switch (platform) {
             case WINDOWS -> windowsCommand(shellName);
             case FREEBSD -> freeBsdCommand(shellName);
+            case OPENBSD -> openBsdCommand(shellName);
             case UNIX -> unixCommand(shellName);
         };
     }
@@ -187,6 +189,17 @@ public final class ShellOscShellIntegration {
             return freeBsdShCommand();
         }
         return unixCommand(shellName);
+    }
+
+    /**
+     * 获取 OpenBSD shell 的安装命令。OpenBSD 的 /bin/sh 与 /bin/ksh 均为 ksh，
+     * 提示符原生支持 \e、\w、\a，可直接通过 PS1 上报目录且无需修改历史配置。
+     */
+    private static Command openBsdCommand(String shellName) {
+        return switch (shellName) {
+            case "ksh", "sh" -> openBsdKshCommand();
+            default -> unixCommand(shellName);
+        };
     }
 
     /**
@@ -298,6 +311,18 @@ public final class ShellOscShellIntegration {
     }
 
     /**
+     * OpenBSD ksh 使用 PS1 的转义能力上报原始路径。\[、\] 告诉行编辑器
+     * OSC 序列不参与光标宽度计算，避免长路径或更新提示符时错位。
+     */
+    private static Command openBsdKshCommand() {
+        return new Command(
+                " stty -echo; sleep 1",
+                clearPromptAndPreviousLine(),
+                "__easyshell_ps1__='\\[\\e]9;9;\\w\\a\\]'\"$__easyshell_ps1__\"",
+                "PS1=$__easyshell_ps1__; unset __easyshell_ps1__; stty echo");
+    }
+
+    /**
      * 清理当前提示符和上一条命令回显，并在安装期间隐藏提示符。
      *
      * @return 命令
@@ -326,7 +351,7 @@ public final class ShellOscShellIntegration {
         }
         name = name.toLowerCase(Locale.ROOT);
         return switch (name) {
-            case "bash", "zsh", "sh", "csh", "tcsh",
+            case "bash", "zsh", "ksh", "sh", "csh", "tcsh",
                     "cmd", "cmd.exe", "powershell", "powershell.exe", "pwsh", "pwsh.exe" -> name;
             default -> null;
         };

@@ -69,7 +69,7 @@ public final class ShellJSchExecStressRegression {
                     int workerId = worker;
                     futures.add(executor.submit(() -> {
                         for (int round = 0; round < execRounds && !stopped.get(); round++) {
-                            String command = command(workerId, round);
+                            String command = command(client, workerId, round);
                             long started = System.currentTimeMillis();
                             String output = client.exec(command, 5000);
                             long elapsed = System.currentTimeMillis() - started;
@@ -144,12 +144,19 @@ public final class ShellJSchExecStressRegression {
         }
     }
 
-    private static String command(int worker, int round) {
+    private static String command(ShellSSHClient client, int worker, int round) {
+        if (client.isWindows()) {
+            return switch (round % 3) {
+                case 1 -> "ver";
+                case 2 -> "set";
+                default -> "echo stress-" + worker + "-" + round;
+            };
+        }
         return switch (round % 5) {
-            case 1 -> "ps -aux | awk '{sum+=$3} END {print sum}'";
-            case 2 -> "free | awk '/^Mem:/ {printf \"%.2f%%\\n\", $3/$2 * 100.0}'";
-            case 3 -> "cat /proc/diskstats";
-            case 4 -> "cat /proc/net/dev";
+            case 1 -> "ps -A | awk 'END {print NR}'";
+            case 2 -> "df -k /tmp | awk 'END {print $2}'";
+            case 3 -> "ls -la /tmp | awk 'END {print NR}'";
+            case 4 -> "uname -a";
             default -> "echo stress-" + worker + "-" + round;
         };
     }

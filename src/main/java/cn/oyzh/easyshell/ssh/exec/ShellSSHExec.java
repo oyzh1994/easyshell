@@ -4,6 +4,7 @@ package cn.oyzh.easyshell.ssh.exec;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.util.Collections;
@@ -51,6 +52,10 @@ public class ShellSSHExec implements AutoCloseable {
                 return output;
             }
             return "N/A";
+        }
+        if (this.client.isOpenBSD()) {
+            // OpenBSD 没有 FreeBSD 的 hw.clockrate，混用会导致整条 sysctl 命令失败。
+            return this.client.exec("sysctl hw.model hw.machine hw.ncpu hw.pagesize");
         }
         if (this.client.isUnix()) {
             return this.client.exec("sysctl hw.model hw.machine hw.ncpu hw.clockrate");
@@ -120,6 +125,9 @@ public class ShellSSHExec implements AutoCloseable {
             }
             return "N/A";
         }
+        if (this.client.isOpenBSD()) {
+            return this.openBsdMemoryInfo();
+        }
         if (this.client.isUnix()) {
             return this.client.exec("dmesg | grep -i memory");
         }
@@ -155,6 +163,9 @@ public class ShellSSHExec implements AutoCloseable {
             }
             return "N/A";
         }
+        if (this.client.isOpenBSD()) {
+            return this.openBsdGpuInfo();
+        }
         if (this.client.isUnix()) {
             return this.client.exec("pciconf -lv | grep -i vga");
         }
@@ -172,6 +183,39 @@ public class ShellSSHExec implements AutoCloseable {
             output = this.client.exec("lsmod | grep -i drm");
         }
         return output;
+    }
+
+    /**
+     * 获取 OpenBSD 内存信息。sysctl 提供物理内存总量，vmstat 提供页级使用情况；
+     * 两者均不依赖可能被限制的 dmesg。
+     *
+     * @return 内存信息
+     */
+    private String openBsdMemoryInfo() {
+        String output = this.client.exec("sysctl hw.physmem hw.usermem hw.pagesize 2>/dev/null; vmstat -s 2>/dev/null");
+        if (ShellSSHUtil.isUsableInfo(output)) {
+            return output;
+        }
+        output = this.client.exec("dmesg 2>/dev/null | grep -Ei 'real mem|avail mem'");
+        return ShellSSHUtil.isUsableInfo(output) ? output : "N/A";
+    }
+
+    /**
+     * 获取 OpenBSD 显卡信息。dmesg 能给出驱动名，权限不足或输出为空时使用 pcidump
+     * 按 PCI Display 类筛选完整设备块。
+     *
+     * @return 显卡信息
+     */
+    private String openBsdGpuInfo() {
+        String output = this.client.exec("dmesg 2>/dev/null | grep -Ei 'vga|gpu|drm|display|wsdisplay|viogpu'");
+        if (ShellSSHUtil.isUsableInfo(output)) {
+            return output;
+        }
+        output = this.client.exec("pcidump -v 2>/dev/null | awk '"
+                + "/^[[:space:]]*[0-9]+:[0-9]+:[0-9]+:/ { if (display) print block; block=$0; display=0; next } "
+                + "{ block=block \"\\n\" $0; if ($0 ~ /Class: 03 Display/) display=1 } "
+                + "END { if (display) print block }'");
+        return ShellSSHUtil.isUsableInfo(output) ? output : "N/A";
     }
 
     /**

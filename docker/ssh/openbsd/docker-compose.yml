@@ -1,0 +1,72 @@
+name: easyshell-openbsd-osc
+
+services:
+  openbsd-osc:
+    image: ghcr.io/anyvm-org/anyvm:latest
+    container_name: easyshell-openbsd-osc
+    hostname: openbsd-osc
+    restart: unless-stopped
+    stop_grace_period: 30s
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -e
+        python3 /anyvm.org/anyvm.py \
+          --data-dir /data \
+          --os openbsd \
+          --release "${OPENBSD_RELEASE:-7.9}" \
+          --builder "${OPENBSD_BUILDER:-2.1.0}" \
+          --mem "${MEMORY:-1024}" \
+          --cpu "${CPUS:-2}" \
+          --ssh-port 22 \
+          --vnc off \
+          --tcg \
+          --detach
+
+        # Wait for the guest SSH service, then apply the test-only defaults on
+        # first boot. The password is not present in the upstream image and the
+        # default MaxSessions=10 is too low for the concurrency regression.
+        key="$$(find /data/openbsd -name '*-host.id_rsa' -type f | head -n 1)"
+        if [ -n "$$key" ]; then
+          chmod 600 "$$key"
+          ready=0
+          for _ in $$(seq 1 120); do
+            if ssh -o BatchMode=yes -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -i "$$key" \
+              -p 22 root@127.0.0.1 true >/dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 5
+          done
+          if [ "$$ready" = 1 ]; then
+            ssh -o BatchMode=yes -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null -i "$$key" \
+              -p 22 root@127.0.0.1 '
+                if ! grep -q "^MaxSessions 64$$" /etc/ssh/sshd_config; then
+                  cp /etc/ssh/sshd_config /etc/ssh/sshd_config.easyshell.bak
+                  sed -i "s/^#*MaxSessions .*/MaxSessions 64/" /etc/ssh/sshd_config
+                  grep -q "^MaxSessions 64$$" /etc/ssh/sshd_config || \
+                    echo "MaxSessions 64" >> /etc/ssh/sshd_config
+                  rcctl restart sshd
+                fi
+                hash=$$(printf %s openbsd | encrypt)
+                usermod -p "$$hash" root
+              ' >/dev/null 2>&1 || true
+          fi
+        fi
+        exec tail -f /dev/null
+    ports:
+      - "127.0.0.1:${SSH_PORT:-2226}:22"
+    volumes:
+      - openbsd-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 5 bash -c 'exec 3<>/dev/tcp/127.0.0.1/22'"]
+      interval: 15s
+      timeout: 10s
+      retries: 40
+      start_period: 600s
+
+volumes:
+  openbsd-data:
+    name: easyshell-openbsd-osc-data

@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 
 import static cn.oyzh.easyshell.ssh.ShellOscShellIntegration.Platform.FREEBSD;
+import static cn.oyzh.easyshell.ssh.ShellOscShellIntegration.Platform.OPENBSD;
 import static cn.oyzh.easyshell.ssh.ShellOscShellIntegration.Platform.UNIX;
 import static cn.oyzh.easyshell.ssh.ShellOscShellIntegration.Platform.WINDOWS;
 import static org.junit.Assert.assertEquals;
@@ -45,6 +46,9 @@ public class ShellSSHWorkerDirResolverTest {
         assertTrue(ShellOscShellIntegration.isSupported("/bin/csh", UNIX));
         assertTrue(ShellOscShellIntegration.isSupported("/bin/tcsh", FREEBSD));
         assertTrue(ShellOscShellIntegration.isSupported("/bin/sh", FREEBSD));
+        assertTrue(ShellOscShellIntegration.isSupported("/bin/ksh", OPENBSD));
+        assertTrue(ShellOscShellIntegration.isSupported("/bin/sh", OPENBSD));
+        assertFalse(ShellOscShellIntegration.isSupported("/bin/ksh", UNIX));
         assertFalse(ShellOscShellIntegration.isSupported("/bin/sh", UNIX));
         assertNull(ShellOscShellIntegration.command("/bin/sh", UNIX));
 
@@ -76,6 +80,13 @@ public class ShellSSHWorkerDirResolverTest {
         assertTrue(bash.restoreEcho().contains("history -d"));
         assertTrue(bash.restoreEcho().contains("set -o history"));
         assertTrue(bash.restoreEcho().contains("BASH_VERSINFO[0]"));
+
+        ShellOscShellIntegration.Command openBsdKsh = ShellOscShellIntegration.command("/bin/ksh", OPENBSD);
+        assertTrue(openBsdKsh.disableEcho().contains("stty -echo"));
+        assertTrue(openBsdKsh.prepare().contains("PS1="));
+        assertTrue(openBsdKsh.hook().contains("]9;9;\\w\\a"));
+        assertTrue(openBsdKsh.hook().contains("\\[\\e"));
+        assertTrue(openBsdKsh.restoreEcho().contains("stty echo"));
 
         ShellOscShellIntegration.Command zsh = ShellOscShellIntegration.command("/bin/zsh", UNIX);
         assertTrue(zsh.disableEcho().contains("unsetopt zle"));

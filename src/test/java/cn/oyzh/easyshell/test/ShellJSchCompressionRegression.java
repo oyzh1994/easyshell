@@ -89,7 +89,7 @@ public final class ShellJSchCompressionRegression {
         try {
             String content = "compression-content-" + token + "\n" + "line\n".repeat(2000);
             Files.writeString(local, content, StandardCharsets.UTF_8);
-            for (String type : List.of("tgz", "xz", "bz2")) {
+            for (String type : List.of("tgz", "xz", "bz2", "zst")) {
                 String root = "/tmp/easyshell-jsch-compress-" + token + "-" + type;
                 String source = root + "/source dir with space";
                 roots.add(root);
@@ -99,7 +99,7 @@ public final class ShellJSchCompressionRegression {
                 sftp.put(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), source + "/nested/it's file.txt", null);
 
                 String output = client.serverExec().compress(source, type);
-                String archive = source + (type.equals("xz") || type.equals("bz2") ? ".tar." + type : "." + type);
+                String archive = source + (type.equals("tgz") ? ".tgz" : ".tar." + type);
                 require(!client.exec("test -s " + quote(archive) + " && echo present").isBlank(),
                         "compressed archive is missing or empty: " + type + ", output=" + output);
                 client.exec("rm -rf " + quote(source));

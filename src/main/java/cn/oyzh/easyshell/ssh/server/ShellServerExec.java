@@ -17,7 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -340,6 +342,9 @@ public class ShellServerExec implements AutoCloseable {
                     }
                     return Double.parseDouble(cpuUsage.trim());
                 }
+                if (this.client.isOpenBSD()) {
+                    return this.openBsdCpuUsage();
+                }
                 if (this.client.isUnix()) {
                     String cpuUsage = this.client.exec("vmstat 1 2 | tail -1 | awk '{print $15\"=\"$19}'\n");
                     String[] arr = cpuUsage.split("=");
@@ -429,6 +434,9 @@ public class ShellServerExec implements AutoCloseable {
                     return -1;
                 }
                 return (total - free) * 1D / total * 100D;
+            }
+            if (this.client.isOpenBSD()) {
+                return this.openBsdMemoryUsage();
             }
             if (this.client.isUnix()) {
                 //                String output = this.client.exec("top -b -n 1 | awk '/Mem:/ {printf \"%.2f%%\\n\", ($3 / $2) * 100}'");
@@ -574,12 +582,15 @@ public class ShellServerExec implements AutoCloseable {
                 return -1;
             }
             if (this.client.isUnix()) {
+                if (this.client.isOpenBSD()) {
+                    String totalMemory = this.client.exec("sysctl -n hw.physmem");
+                    return StringUtil.isBlank(totalMemory) ? -1 : Long.parseLong(totalMemory.trim()) / 1024 / 1024;
+                }
                 String totalMemory = this.client.exec("sysctl hw.physmem");
                 if (StringUtil.isBlank(totalMemory)) {
                     return -1;
                 }
-                totalMemory = totalMemory.split(":")[1].trim();
-                return Long.parseLong(totalMemory) / 1024 / 1024;
+                return Long.parseLong(totalMemory.split(":")[1].trim()) / 1024 / 1024;
             }
             String totalMemory = this.client.exec("cat /proc/meminfo | awk '/MemTotal/ {print int($2/1024)}'");
             if (StringUtil.isBlank(totalMemory)) {
@@ -640,6 +651,9 @@ public class ShellServerExec implements AutoCloseable {
                         }
                     }
                     return new double[]{read / 1024 / 1024, write / 1024 / 1024};
+                }
+                if (this.client.isOpenBSD()) {
+                    return this.openBsdDiskUsage();
                 }
                 //            if (this.client.isUnix()) {
                 //                String output = this.client.exec("iostat -d -x 1 1");
@@ -751,6 +765,9 @@ public class ShellServerExec implements AutoCloseable {
                 }
                 return new double[]{send / 1024, receive / 1024};
             }
+            if (this.client.isOpenBSD()) {
+                return this.openBsdNetworkUsage();
+            }
             if (this.client.isUnix()) {
                 String output = this.client.exec("netstat -i");
                 if (StringUtil.isBlank(output)) {
@@ -787,6 +804,114 @@ public class ShellServerExec implements AutoCloseable {
             ex.printStackTrace();
         }
         return new double[]{-1L, -1L};
+    }
+
+    /**
+     * OpenBSD 的 vmstat 列布局与 FreeBSD 不同，直接按列号读取会得到错误结果。
+     */
+    private double openBsdCpuUsage() {
+        String output = this.client.exec("vmstat 1 2");
+        if (StringUtil.isBlank(output)) {
+            return -1;
+        }
+        String[] lines = output.lines().filter(line -> !line.isBlank()).toArray(String[]::new);
+        int idleIndex = -1;
+        for (String line : lines) {
+            String[] columns = line.trim().split("\\s+");
+            for (int i = 0; i < columns.length; i++) {
+                if ("id".equals(columns[i])) {
+                    idleIndex = i;
+                    break;
+                }
+            }
+            if (idleIndex >= 0) {
+                break;
+            }
+        }
+        if (idleIndex < 0) {
+            return -1;
+        }
+        String[] columns = lines[lines.length - 1].trim().split("\\s+");
+        if (columns.length <= idleIndex) {
+            return -1;
+        }
+        return 100 - Double.parseDouble(columns[idleIndex]);
+    }
+
+    /**
+     * 从 OpenBSD 的 vmstat -s 中读取受管页和空闲页，避免使用 FreeBSD 的 sysctl 键。
+     */
+    private double openBsdMemoryUsage() {
+        Long managed = null;
+        Long free = null;
+        String output = this.client.exec("vmstat -s");
+        if (StringUtil.isNotBlank(output)) {
+            for (String line : output.lines().toList()) {
+                String[] columns = line.trim().split("\\s+", 2);
+                if (columns.length != 2) {
+                    continue;
+                }
+                if ("pages managed".equals(columns[1])) {
+                    managed = Long.parseLong(columns[0]);
+                } else if ("pages free".equals(columns[1])) {
+                    free = Long.parseLong(columns[0]);
+                }
+            }
+        }
+        if (managed == null || managed <= 0 || free == null) {
+            return -1;
+        }
+        return (managed - free) * 100D / managed;
+    }
+
+    /**
+     * OpenBSD iostat -d 输出 MB/s 汇总值，无法区分读写方向，读速度使用汇总值。
+     */
+    private double[] openBsdDiskUsage() {
+        String output = this.client.exec("iostat -d");
+        if (StringUtil.isBlank(output)) {
+            return new double[]{-1L, -1L};
+        }
+        String last = null;
+        for (String line : output.lines().toList()) {
+            String value = line.trim();
+            if (!value.isEmpty() && Character.isDigit(value.charAt(0))) {
+                last = value;
+            }
+        }
+        if (last == null) {
+            return new double[]{-1L, -1L};
+        }
+        String[] columns = last.split("\\s+");
+        if (columns.length < 3) {
+            return new double[]{-1L, -1L};
+        }
+        return new double[]{Double.parseDouble(columns[2]), 0};
+    }
+
+    /**
+     * netstat -ibn 同时输出收发包和字节数，同一网卡的多行需要去重。
+     */
+    private double[] openBsdNetworkUsage() {
+        String output = this.client.exec("netstat -ibn");
+        if (StringUtil.isBlank(output)) {
+            return new double[]{-1L, -1L};
+        }
+        Set<String> interfaces = new HashSet<>();
+        double send = 0;
+        double receive = 0;
+        for (String line : output.lines().toList()) {
+            String[] columns = line.trim().split("\\s+");
+            if (columns.length < 6 || "Name".equals(columns[0]) || !interfaces.add(columns[0])) {
+                continue;
+            }
+            try {
+                receive += Double.parseDouble(columns[4]);
+                send += Double.parseDouble(columns[5]);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return interfaces.isEmpty() ? new double[]{-1L, -1L} : new double[]{send, receive};
     }
 
     /**
@@ -838,7 +963,7 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isLinux()
                     || this.client.isMacos()
-                    || this.client.isFreeBSD()) {
+                    || this.client.isUnix()) {
                 return this.client.exec("mv -f \"" + src + "\" \"" + dst + "\"");
             }
             if (this.client.isWindows()) {
@@ -864,7 +989,7 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isLinux()
                     || this.client.isMacos()
-                    || this.client.isFreeBSD()) {
+                    || this.client.isUnix()) {
                 return this.client.exec("cp -rf \"" + src + "\" \"" + dst + "\"");
             }
             if (this.client.isWindows()) {
@@ -889,7 +1014,7 @@ public class ShellServerExec implements AutoCloseable {
     public String forceDel(List<String> files) {
         if (this.client.isLinux()
                 || this.client.isMacos()
-                || this.client.isFreeBSD()) {
+                || this.client.isUnix()) {
             StringBuilder builder = new StringBuilder();
             for (String file : files) {
                 builder.append(" ").append("\"").append(file).append("\"");
@@ -910,7 +1035,7 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isLinux()
                     || this.client.isMacos()
-                    || this.client.isFreeBSD()) {
+                    || this.client.isUnix()) {
                 if (isFile) {
                     return this.client.exec("rm -f \"" + file + "\"");
                 }
@@ -938,7 +1063,9 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String compress(String file, String type) {
         try {
-            if (this.client.isLinux() && StringUtil.isNotBlank(file) && StringUtil.isNotBlank(type)) {
+            if ((this.client.isLinux() || this.client.isUnix())
+                    && StringUtil.isNotBlank(file)
+                    && StringUtil.isNotBlank(type)) {
                 String fName = ShellFileUtil.name(file);
                 String pName = ShellFileUtil.parent(file);
                 if (StringUtil.isBlank(pName)) {
@@ -952,7 +1079,9 @@ public class ShellServerExec implements AutoCloseable {
                     cmd = "cd " + parent + " && tar -zcvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "xz")) {
                     String compressName = this.quoteShellArgument(fName + ".tar." + type);
-                    cmd = "cd " + parent + " && tar -Jcvf " + compressName + " " + source;
+                    cmd = this.client.isOpenBSD()
+                            ? "cd " + parent + " && tar -cf - " + source + " | xz -c > " + compressName
+                            : "cd " + parent + " && tar -Jcvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "bz2")) {
                     String compressName = this.quoteShellArgument(fName + ".tar." + type);
                     cmd = "cd " + parent + " && tar -jcvf " + compressName + " " + source;
@@ -967,7 +1096,9 @@ public class ShellServerExec implements AutoCloseable {
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "zst")) {
                     String compressName = this.quoteShellArgument(fName + ".tar." + type);
                     // 需要安装zstd
-                    cmd = "cd " + parent + " && tar --zstd -cvf " + compressName + " " + source;
+                    cmd = this.client.isOpenBSD()
+                            ? "cd " + parent + " && tar -cf - " + source + " | zstd -c > " + compressName
+                            : "cd " + parent + " && tar --zstd -cvf " + compressName + " " + source;
                 } else if (StringUtil.equalsAnyIgnoreCase(type, "rar")) {
                     String compressName = this.quoteShellArgument(fName + "." + type);
                     cmd = "cd " + parent + " && rar a " + compressName + " " + source;
@@ -995,7 +1126,7 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String uncompress(String file) {
         try {
-            if (this.client.isLinux()) {
+            if (this.client.isLinux() || this.client.isUnix()) {
                 String extName = FileNameUtil.extName(file);
                 String pName = ShellFileUtil.parent(file);
                 String fName = ShellFileUtil.name(file);
@@ -1006,6 +1137,21 @@ public class ShellServerExec implements AutoCloseable {
                 String source = this.quoteShellArgument(fName);
                 if (StringUtil.equalsAnyIgnoreCase(extName, "7z", "rar", "zip")) {
                     return this.client.exec("cd " + parent + " && 7z x " + source + " -y");
+                }
+                if (this.client.isOpenBSD()) {
+                    if (StringUtil.equalsAnyIgnoreCase(extName, "tgz", "gz")) {
+                        return this.client.exec("cd " + parent + " && tar -zxf " + source);
+                    }
+                    if (StringUtil.equalsAnyIgnoreCase(extName, "bz2")) {
+                        return this.client.exec("cd " + parent + " && tar -jxf " + source);
+                    }
+                    if (StringUtil.equalsAnyIgnoreCase(extName, "xz")) {
+                        return this.client.exec("cd " + parent + " && xz -dc " + source + " | tar -xf -");
+                    }
+                    if (StringUtil.equalsAnyIgnoreCase(extName, "zst")) {
+                        return this.client.exec("cd " + parent + " && zstd -dc " + source + " | tar -xf -");
+                    }
+                    return this.client.exec("cd " + parent + " && tar -xf " + source);
                 }
                 return this.client.exec("cd " + parent + " && tar -axof " + source + " --owner=$(whoami) --group=$(id -gn)");
             }
@@ -1047,6 +1193,9 @@ public class ShellServerExec implements AutoCloseable {
                     return output;
                 }
             }
+            if (this.client.isOpenBSD()) {
+                return this.openBsdTimezone();
+            }
 
             if (this.client.isUnix()) {
                 String output = this.client.exec("cat /var/db/zoneinfo");
@@ -1073,6 +1222,55 @@ public class ShellServerExec implements AutoCloseable {
             ex.printStackTrace();
         }
         return "N/A";
+    }
+
+    /**
+     * 获取 OpenBSD 时区。OpenBSD 不维护 /etc/timezone 或 /var/db/zoneinfo，
+     * 通常通过 /etc/localtime 指向 zoneinfo 数据库的符号链接表示时区。
+     *
+     * @return 时区
+     */
+    private String openBsdTimezone() {
+        String timezone = this.timezoneFromLocaltime();
+        if (StringUtil.isNotBlank(timezone)) {
+            return timezone;
+        }
+        String abbreviation = this.client.exec("date +%Z 2>/dev/null");
+        return StringUtil.isBlank(abbreviation) ? "N/A" : abbreviation.trim();
+    }
+
+    /**
+     * 从 /etc/localtime 的链接目标中提取 zoneinfo 时区标识。
+     *
+     * @return 时区标识，无法解析时返回 null
+     */
+    private String timezoneFromLocaltime() {
+        String output = this.client.exec("readlink /etc/localtime 2>/dev/null");
+        String timezone = this.parseZoneinfoPath(output);
+        if (timezone != null) {
+            return timezone;
+        }
+        return this.parseZoneinfoPath(this.client.exec("ls -l /etc/localtime 2>/dev/null"));
+    }
+
+    /**
+     * 解析 zoneinfo 路径，兼容 readlink 原始目标和 ls -l 的链接展示。
+     *
+     * @param output 命令输出
+     * @return 时区标识，无法解析时返回 null
+     */
+    private String parseZoneinfoPath(String output) {
+        if (StringUtil.isBlank(output)
+                || StringUtil.containsAnyIgnoreCase(output, "No such file", "没有这个文件")) {
+            return null;
+        }
+        String marker = "/zoneinfo/";
+        int index = output.indexOf(marker);
+        if (index < 0) {
+            return null;
+        }
+        String timezone = output.substring(index + marker.length()).trim();
+        return timezone.isEmpty() ? null : timezone;
     }
 
     /**

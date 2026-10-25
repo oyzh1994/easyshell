@@ -13,7 +13,8 @@ import java.util.List;
  */
 public final class ShellJSchSftpLinkPerformanceRegression {
 
-    private static final List<String> DEFAULT_PATHS = List.of("/bin", "/sbin", "/usr/bin", "/usr/sbin");
+    private static final List<String> DEFAULT_PATHS = List.of(
+            "/usr/bin", "/usr/local/bin", "/bin", "/sbin", "/usr/sbin");
 
     private ShellJSchSftpLinkPerformanceRegression() {
     }
@@ -44,14 +45,8 @@ public final class ShellJSchSftpLinkPerformanceRegression {
             ShellJSchTestHosts.acceptHostKeys(client);
             client.start(15000);
 
-            // 首次调用包含 SFTP 通道创建开销，单独记录但不作为链接判定性能门槛。
-            long coldStart = System.nanoTime();
-            List<ShellSFTPFile> coldFiles = client.sftpClient().lsFile("/bin");
-            long coldMillis = elapsedMillis(coldStart);
-            System.out.println("/bin cold entries=" + coldFiles.size() + ", links=" + linkCount(coldFiles)
-                    + ", elapsed=" + coldMillis + "ms");
-            requireLinkEntries("/bin", coldFiles);
-            requireLazyLinks("/bin", coldFiles);
+            String linkPath = findLinkDirectory(client, paths);
+            System.out.println("link directory: " + linkPath);
 
             for (String path : paths) {
                 if (!directoryExists(client, path)) {
@@ -72,18 +67,29 @@ public final class ShellJSchSftpLinkPerformanceRegression {
                 System.out.println(path + " entries=" + files.size() + ", links=" + linkCount(files)
                         + ", raw=" + raw + "ms, best=" + best + "ms, worst=" + worst + "ms");
                 requireLazyLinks(path, files);
-                if (path.equals("/bin") || path.equals("/sbin")) {
-                    requireLinkEntries(path, files);
-                }
-                if (path.equals("/bin") || path.equals("/sbin")) {
+                if (path.equals(linkPath)) {
                     require(worst <= maxMillis, path + " directory listing took " + worst
                             + "ms, expected <= " + maxMillis + "ms");
                 }
             }
 
-            requireLazyClickResolution(client);
+            requireLazyClickResolution(client, linkPath);
             System.out.println("SFTP link lazy click resolution verified");
         }
+    }
+
+    private static String findLinkDirectory(ShellSSHClient client, List<String> paths) throws Exception {
+        for (String path : paths) {
+            if (!directoryExists(client, path)) {
+                continue;
+            }
+            List<ShellSFTPFile> files = client.sftpClient().lsFile(path);
+            if (linkCount(files) > 0) {
+                requireLazyLinks(path, files);
+                return path;
+            }
+        }
+        throw new IllegalStateException("no directory containing symlinks was found: " + paths);
     }
 
     private static boolean directoryExists(ShellSSHClient client, String path) throws Exception {
@@ -104,14 +110,14 @@ public final class ShellJSchSftpLinkPerformanceRegression {
         }
     }
 
-    private static void requireLazyClickResolution(ShellSSHClient client) throws Exception {
-        List<ShellSFTPFile> files = client.sftpClient().lsFile("/bin");
+    private static void requireLazyClickResolution(ShellSSHClient client, String path) throws Exception {
+        List<ShellSFTPFile> files = client.sftpClient().lsFile(path);
         ShellSFTPFile link = files.stream()
                 .filter(ShellSFTPFile::isLink)
                 .filter(file -> file.getLinkAttrs() == null)
                 .findFirst()
                 .orElse(null);
-        require(link != null, "no unresolved link found in /bin");
+        require(link != null, "no unresolved link found in " + path);
         long start = System.nanoTime();
         ShellSFTPUtil.realpath(link, client.sftpClient());
         long elapsed = elapsedMillis(start);

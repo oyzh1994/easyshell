@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.store.ShellKeyStore;
+import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -713,5 +714,19 @@ public class ShellSSHUtil {
             path1 = StringUtil.removeLast(path1);
         }
         return path1;
+    }
+
+    public static String quoteCommand(String command) {
+        return "'" + command.replace("'", "'\"'\"'") + "'";
+    }
+
+    /**
+     * 判断系统信息输出是否可用于展示，避免把命令缺失或权限错误当作有效结果。
+     *
+     * @param output 命令输出
+     * @return 结果
+     */
+    public static boolean isUsableInfo(String output) {
+        return StringUtil.isNotBlank(output) && !ShellUtil.isCommandNotFound(output);
     }
 }

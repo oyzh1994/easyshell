@@ -503,6 +503,15 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     /**
+     * 是否openbsd系统
+     *
+     * @return 结果
+     */
+    public boolean isOpenBSD() {
+        return StringUtil.containsIgnoreCase(this.getOsType(), "OpenBSD");
+    }
+
+    /**
      * 是否windows系统
      *
      * @return 结果
@@ -520,7 +529,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     private static boolean isUnixType(String value) {
-        return StringUtil.containsAnyIgnoreCase(value, "FreeBSD", "Aix", "HP-UX", "SunOS");
+        return StringUtil.containsAnyIgnoreCase(value, "FreeBSD", "OpenBSD", "Aix", "HP-UX", "SunOS");
     }
 
     private static boolean isWindowsType(String value) {
@@ -647,7 +656,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             return command;
         }
         if (this.isMacos() || this.isUnix() || this.isLinux()) {
-            return "env PATH=\"" + this.getExportPath() + "\" " + command;
+            // SSH exec 的 command 本身由远端 shell 解释。经 env 直接执行会丢失
+            // cd、export 等 shell 内建命令，统一交给 POSIX shell 解释。
+            String safeCommand = ShellSSHUtil.quoteCommand(command);
+            String safePath = ShellSSHUtil.quoteCommand(this.getExportPath());
+            return "env PATH=" + safePath + " /bin/sh -c " + safeCommand;
         }
         if (this.isWindows()) {
             if (this.isCmdType()) {
@@ -656,9 +669,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             if (this.isPowershellType()) {
                 return "$env:PATH=\"" + this.getExportPath() + ";\"; " + command;
             }
-            if (this.isShType() || this.isBashType()) {
-                return "$env:PATH=\"" + this.getExportPath() + ";\"; " + command;
-            }
+//            if (this.isShType() || this.isBashType()) {
+//                String safeCommand = ShellSSHUtil.quoteCommand(command);
+//                String safePath = ShellSSHUtil.quoteCommand(this.getExportPath());
+//                return "env PATH=" + safePath + " " + safeCommand;
+//            }
         }
         return command;
     }
