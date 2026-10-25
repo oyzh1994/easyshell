@@ -92,8 +92,7 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
     }
 
     public ShellSFTPClient(ShellConnect shellConnect, Session session, boolean ownsSession) {
-        this(shellConnect, session, ownsSession,
-                new Semaphore(MAX_DYNAMIC_CHANNELS, true));
+        this(shellConnect, session, ownsSession, new Semaphore(MAX_DYNAMIC_CHANNELS, true));
     }
 
     public ShellSFTPClient(ShellConnect shellConnect, Session session, boolean ownsSession,

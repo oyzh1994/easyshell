@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import cn.oyzh.easyshell.util.ShellUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1143,28 +1144,33 @@ public class ShellServerExec implements AutoCloseable {
      * @return 终端类型
      */
     public String getShellType() {
-        if (!this.client.isWindows()) {
-            return parseUnixShellType(this.client.exec("echo $SHELL"));
+        try {
+            if (!this.client.isWindows()) {
+                return parseUnixShellType(this.client.execMetadata("echo $SHELL"));
+            }
+            // Windows 的 ComSpec 始终指向 cmd.exe，不能代表当前交互式 shell。
+            // PowerShell 能展开 $env:ComSpec，cmd 只会原样输出；Git Bash 的 $SHELL 则是 POSIX 路径。
+            String powerShellComspec = this.client.execMetadata("echo $env:ComSpec");
+            if (isWindowsExecutablePath(powerShellComspec)) {
+                return "powershell.exe";
+            }
+            String posixShell = this.client.execMetadata("echo $SHELL");
+            String posixShellPath = posixShell == null ? null : posixShell.strip();
+            if (StringUtil.isNotBlank(posixShellPath) && posixShellPath.startsWith("/")) {
+                return posixShellPath;
+            }
+            String comspec = this.client.execMetadata("echo %ComSpec%");
+            if (isWindowsExecutablePath(comspec)) {
+                return comspec.strip();
+            }
+            if (StringUtil.isNotBlank(comspec)) {
+                return comspec;
+            }
+            return posixShell;
+        } catch (Exception ex) {
+            JulLog.error("getShellType error", ex);
         }
-        // Windows 的 ComSpec 始终指向 cmd.exe，不能代表当前交互式 shell。
-        // PowerShell 能展开 $env:ComSpec，cmd 只会原样输出；Git Bash 的 $SHELL 则是 POSIX 路径。
-        String powerShellComspec = this.client.exec("echo $env:ComSpec");
-        if (isWindowsExecutablePath(powerShellComspec)) {
-            return "powershell.exe";
-        }
-        String posixShell = this.client.exec("echo $SHELL");
-        String posixShellPath = posixShell == null ? null : posixShell.strip();
-        if (StringUtil.isNotBlank(posixShellPath) && posixShellPath.startsWith("/")) {
-            return posixShellPath;
-        }
-        String comspec = this.client.exec("echo %ComSpec%");
-        if (isWindowsExecutablePath(comspec)) {
-            return comspec.strip();
-        }
-        if (StringUtil.isNotBlank(comspec)) {
-            return comspec;
-        }
-        return posixShell;
+        return "bash";
     }
 
     /**
@@ -1206,8 +1212,64 @@ public class ShellServerExec implements AutoCloseable {
         return path.startsWith("\\\\");
     }
 
+    /**
+     * 获取字符集
+     *
+     * @return 结果
+     */
+    public String getCharset() {
+        try {
+            String charset = null;
+            if (this.client.isWindows()) {
+                charset = ShellUtil.getCharsetFromChcp(this.client.execMetadata("chcp"));
+            } else if (this.client.isLinux() || this.client.isMacos() || this.client.isUnix()) {
+                charset = ShellUtil.getCharsetFromLang(this.client.execMetadata("echo $LANG"));
+            }
+            return charset;
+        } catch (Exception ex) {
+            JulLog.error("getCharset error", ex);
+        }
+        return StandardCharsets.UTF_8.name();
+    }
+
+    /**
+     * 获取用户目录
+     *
+     * @return 结果
+     */
+    public String getUserHome() {
+        try {
+            String userHome = this.client.execMetadata(this.client.isWindows() ? "echo %HOME%" : "echo $HOME");
+            if (StringUtil.isNotBlank(userHome)) {
+                userHome = userHome + (this.client.isWindows() ? "\\" : "/");
+            }
+            return userHome;
+        } catch (Exception ex) {
+            JulLog.error("getUserHome error", ex);
+        }
+        return null;
+    }
+
+    /**
+     * 获取系统类型
+     *
+     * @return 结果
+     */
+    public String getOsType() {
+        try {
+            String osType = this.client.execMetadata("uname -s");
+            if (StringUtil.isNotBlank(osType) && ShellUtil.isWindowsCommandNotFound(osType, "uname")) {
+                osType = this.client.execMetadataUtf8("cmd.exe /c ver");
+            }
+            return osType;
+        } catch (Exception ex) {
+            JulLog.error("getOsType error", ex);
+        }
+        return "Linux";
+    }
+
     @Override
-    public synchronized void close() throws Exception {
+    public void close() throws Exception {
         this.disk = null;
         this.client = null;
         this.network = null;

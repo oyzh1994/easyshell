@@ -13,7 +13,6 @@ import cn.oyzh.easyshell.internal.ShellClientActionUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.store.ShellKeyStore;
-import cn.oyzh.easyshell.util.ShellUtil;
 import cn.oyzh.ssh.util.JschUtil;
 import cn.oyzh.ssh.util.SSHHolder;
 import com.jcraft.jsch.AgentProxyException;
@@ -57,7 +56,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * 单条 SSH 连接上可同时占用的动态通道数。交互式 Shell 独占一个服务端 session，
      * 动态通道统一预留给 Exec 和 SFTP，并保留服务端 MaxSessions 余量。
      */
-    protected static final int MAX_DYNAMIC_CHANNELS = 6;
+    protected static final int MAX_DYNAMIC_CHANNELS = 8;
 
     /**
      * 系统类型
@@ -206,36 +205,30 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      * 初始化元数据
      */
     private synchronized void initMetadata() {
+        // 已初始化，直接返回
         if (this.osType != null) {
             return;
         }
-        String type = this.execMetadata("uname -s");
-        if (StringUtil.isNotBlank(type) && ShellUtil.isWindowsCommandNotFound(type, "uname")) {
-            type = this.execMetadataUtf8("cmd.exe /c ver");
-        }
-        this.osType = type;
-        JulLog.info("os type:{}", type);
-        String charset = null;
-        if (this.isWindows()) {
-            charset = ShellUtil.getCharsetFromChcp(this.execMetadata("chcp"));
-        } else if (this.isLinux() || this.isMacos() || this.isUnix()) {
-            charset = ShellUtil.getCharsetFromLang(this.execMetadata("echo $LANG"));
-        }
-        this.remoteCharset = charset;
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("remote charset: {}", charset);
-        }
-        String userHome = this.execMetadata(this.isWindows() ? "echo %HOME%" : "echo $HOME");
-        if (StringUtil.isNotBlank(userHome)) {
-            this.userHome = userHome + (this.isWindows() ? "\\" : "/");
-        }
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("user home: {}", this.userHome);
-        }
+
+        // 系统
+        this.osType = this.serverExec().getOsType();
+        JulLog.info("os type:{}", this.osType);
+
+        // shell
+        this.shellType = this.serverExec().getShellType();
+        JulLog.info("shell type:{}", this.shellType);
+
+        // 字符集
+        this.remoteCharset = this.serverExec().getCharset();
+        JulLog.info("remote charset: {}", this.remoteCharset);
+
+        // 用户目录
+        this.userHome = this.serverExec().getUserHome();
+        JulLog.info("user home: {}", this.userHome);
+
+        // 环境
         this.initEnvironment();
-        if (JulLog.isInfoEnabled()) {
-            JulLog.info("environment: {}", this.environment);
-        }
+        JulLog.info("environment: {}", this.environment);
     }
 
     /**
@@ -270,14 +263,14 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     /**
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
-    protected String execMetadata(String command) {
+    public String execMetadata(String command) {
         return this.execInternal(command, this.connectTimeout(), false, false);
     }
 
     /**
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
-    protected String execMetadataUtf8(String command) {
+    public String execMetadataUtf8(String command) {
         return this.execInternal(command, this.connectTimeout(), true, false);
     }
 
@@ -955,7 +948,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      */
     public synchronized String getShellType() {
         if (this.shellType == null) {
-            this.shellType = this.serverExec().getShellType();
+            this.initMetadata();
         }
         return this.shellType;
     }

@@ -151,6 +151,9 @@ public class ShellSSHMonitorTabController extends SubTabController {
      * @param monitor 监控信息
      */
     private void initDiskChart(ShellServerMonitor monitor) {
+        if (this.diskChart == null) {
+            return;
+        }
         XYChart.Series<String, Double> read = this.diskChart.getChartData(0);
         XYChart.Series<String, Double> write = this.diskChart.getChartData(1);
         if (read == null) {
