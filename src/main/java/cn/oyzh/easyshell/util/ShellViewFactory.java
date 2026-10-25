@@ -782,7 +782,7 @@ public class ShellViewFactory {
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("front setting.");
                 }
-                adapter.toFront();
+                adapter.front();
             } else {
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("show setting.");
