@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -70,18 +71,30 @@ public class ShellProcessParser {
             List<ShellProcessInfo> list = new ArrayList<>();
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i];
-                String[] cols = line.split("\\s+");
+                String[] cols = line.trim().split("\\s+");
+                if (cols.length < 11) {
+                    continue;
+                }
                 ShellProcessInfo info = new ShellProcessInfo();
                 info.setUser(cols[0]);
                 info.setPid(Integer.parseInt(cols[1]));
                 info.setCpuUsage(Double.parseDouble(cols[2]));
                 info.setMemUsage(Double.parseDouble(cols[3]));
-                double rss = Double.parseDouble(cols[4]);
+                double rss = Double.parseDouble(cols[5]);
                 info.setRss(NumberUtil.scale(rss / 1024, 2));
                 info.setStat(cols[7]);
-                info.setStart(cols[8]);
-                info.setTime(cols[9]);
-                info.setCommand(cols[10]);
+                // Linux 的 start 可能是 "Oct 23" 两段，其它 Unix 通常只有一段。
+                int startIndex = 8;
+                int commandIndex = startIndex + 2;
+                if (isMonth(cols[startIndex]) && cols.length > 9 && cols[9].matches("\\d{1,2}")) {
+                    commandIndex++;
+                }
+                if (cols.length <= commandIndex) {
+                    continue;
+                }
+                info.setStart(String.join(" ", Arrays.copyOfRange(cols, startIndex, commandIndex - 1)));
+                info.setTime(cols[commandIndex - 1]);
+                info.setCommand(String.join(" ", Arrays.copyOfRange(cols, commandIndex, cols.length)));
                 list.add(info);
             }
             return list;
@@ -89,6 +102,12 @@ public class ShellProcessParser {
             ex.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    private static boolean isMonth(String value) {
+        return StringUtil.equalsAnyIgnoreCase(value,
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
     }
 
 //    /**
@@ -178,8 +197,8 @@ public class ShellProcessParser {
                 } else {
                     String stat = attr.getStat();
                     String user = attr.getUser();
-                    info.setStat(stat == null ? "N/A" : stat);
-                    info.setUser(user == null ? "N/A" : user);
+                    info.setStat(StringUtil.isBlank(stat) ? "N/A" : stat);
+                    info.setUser(StringUtil.isBlank(user) ? "N/A" : user);
                 }
                 info.setPid(Integer.parseInt(pid));
                 String cpuUsage = cols.get(1);
@@ -202,8 +221,7 @@ public class ShellProcessParser {
                     double usage = Double.parseDouble(memUsage);
                     usage = Math.abs(usage);
                     info.setRss(NumberUtil.scale(usage / 1024, 2));
-                    usage = NumberUtil.scale(usage / totalMemory, 2) * 100;
-                    info.setMemUsage(usage);
+                    info.setMemUsage(NumberUtil.scale(usage / totalMemory * 100, 2));
                 }
                 info.setStart(cols.get(3));
                 info.setCommand(cols.get(4));

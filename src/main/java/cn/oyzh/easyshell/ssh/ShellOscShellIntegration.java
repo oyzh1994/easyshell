@@ -11,7 +11,8 @@ import java.util.Locale;
  * 为交互式 shell 安装 OSC 工作目录上报能力。
  * <p>
  * 默认 shell 不会主动发送 OSC 7/9;9，需要安装一个仅对当前 shell 会话生效的 prompt hook。
- * bash/zsh 使用标准 OSC 7；OpenBSD ksh、FreeBSD sh/csh 和 Windows cmd/PowerShell 使用 OSC 9;9，
+ * Unix 的 bash/zsh 使用标准 OSC 7；OpenBSD ksh、FreeBSD sh/csh、Windows cmd/PowerShell
+ * 以及 Git Bash 使用 OSC 9;9，
  * 直接上报原始绝对路径，避免 shell 缺少可靠的 URI 编码能力时路径失真。
  * hook 不修改用户配置文件，shell 退出后自动失效。
  *
@@ -42,6 +43,21 @@ public final class ShellOscShellIntegration {
      */
     private static final String POWERSHELL_READ_HOOK =
             "$s='';while(($k=[Console]::ReadKey($true)).Key -ne 13){$s+=$k.KeyChar};iex $s #__rt";
+
+    /**
+     * Unix 的 bash/zsh 直接上报 POSIX 路径。
+     */
+    private static final String POSIX_OSC_REPORT =
+            "local p=${PWD//'%'/%25}; "
+                    + "printf '\\033]7;file://%s%s\\033\\\\' "
+                    + "\"${HOSTNAME:-${HOST:-localhost}}\" \"$p\";";
+
+    /**
+     * Git Bash 的终端目录最终会进入 SFTP 文件表，必须上报 Windows 路径而不是 /c/...。
+     */
+    private static final String WINDOWS_POSIX_OSC_REPORT =
+            "local p=${PWD//'%'/%25}; local w; w=$(cygpath -w \"$PWD\" 2>/dev/null); "
+                    + "printf '\\033]9;9;%s\\033\\\\' \"${w:-$p}\";";
 
     /**
      * 第一条命令会先在远端关闭回显并保持 1 秒，给后续命令留出无回显写入窗口。
@@ -78,8 +94,7 @@ public final class ShellOscShellIntegration {
     }
 
     /**
-     * 是否为 Windows 原生 shell。Windows 上的 Git Bash 使用 POSIX 路径，
-     * 不能直接作为 Windows 文件路径使用，继续保留提示符回退。
+     * 是否为 Windows 原生 shell。
      *
      * @param shellType shell类型
      * @return 结果
@@ -176,6 +191,8 @@ public final class ShellOscShellIntegration {
             case "cmd", "cmd.exe" -> new Command(null, null, CMD_OSC_HOOK, null);
             case "powershell", "powershell.exe", "pwsh", "pwsh.exe" ->
                     new Command(null, null, POWERSHELL_OSC_HOOK, null);
+            case "bash", "bash.exe" -> bashCommand(WINDOWS_POSIX_OSC_REPORT);
+            case "zsh", "zsh.exe" -> zshCommand(WINDOWS_POSIX_OSC_REPORT);
             default -> null;
         };
     }
@@ -218,14 +235,22 @@ public final class ShellOscShellIntegration {
      * Bash 使用 PROMPT_COMMAND 上报目录。
      */
     private static Command bashCommand() {
+        return bashCommand(POSIX_OSC_REPORT);
+    }
+
+    /**
+     * Bash 使用 PROMPT_COMMAND 上报目录。
+     *
+     * @param report 目录上报函数体
+     */
+    private static Command bashCommand(String report) {
         return new Command(
                     // 首条命令会进入历史，关闭历史后其余安装命令不会再被记录；
                     // 最后的清理命令按 __easyshell_osc7_hist__ 标记只删除这一条。
                     " __easyshell_hist_on__=; [[ -o history ]] && __easyshell_hist_on__=1; "
                             + "set +o history; stty -echo; sleep 1; __easyshell_osc7_hist__=1",
                     clearPromptAndPreviousLine(),
-                    "__easyshell_osc7__(){ local p=${PWD//'%'/%25}; "
-                            + "printf '\\033]7;file://%s%s\\033\\\\' \"${HOSTNAME:-localhost}\" \"$p\"; }; "
+                    "__easyshell_osc7__(){ " + report + " }; "
                             + "if [[ $(declare -p PROMPT_COMMAND 2>/dev/null) == 'declare -a'* ]]; then "
                             + "case \" ${PROMPT_COMMAND[*]} \" in *\" __easyshell_osc7__ \"*) ;; "
                             + "*) PROMPT_COMMAND=(__easyshell_osc7__ \"${PROMPT_COMMAND[@]}\");; esac; "
@@ -251,6 +276,15 @@ public final class ShellOscShellIntegration {
      * Zsh 使用 precmd hook 上报目录。
      */
     private static Command zshCommand() {
+        return zshCommand(POSIX_OSC_REPORT);
+    }
+
+    /**
+     * Zsh 使用 precmd hook 上报目录。
+     *
+     * @param report 目录上报函数体
+     */
+    private static Command zshCommand(String report) {
         return new Command(
                     // zsh 没有 history -d。fc -p 将后续安装命令隔离到临时历史，fc -P 恢复；
                     // 清理行再设置 HISTORY_IGNORE，使首条安装命令不会写入历史文件。
@@ -260,8 +294,7 @@ public final class ShellOscShellIntegration {
                             + "__easyshell_zle_on__=; [[ -o zle ]] && __easyshell_zle_on__=1; "
                             + "unsetopt zle; stty -echo; sleep 1",
                     clearPromptAndPreviousLine(),
-                    "__easyshell_osc7__(){ local p=${PWD//'%'/%25}; "
-                            + "printf '\\033]7;file://%s%s\\033\\\\' \"${HOST:-localhost}\" \"$p\"; }; "
+                    "__easyshell_osc7__(){ " + report + " }; "
                             + "autoload -Uz add-zsh-hook 2>/dev/null; "
                             + "if (( $+functions[add-zsh-hook] )); then "
                             + "add-zsh-hook precmd __easyshell_osc7__ 2>/dev/null; "
@@ -352,6 +385,7 @@ public final class ShellOscShellIntegration {
         name = name.toLowerCase(Locale.ROOT);
         return switch (name) {
             case "bash", "zsh", "ksh", "sh", "csh", "tcsh",
+                    "bash.exe", "zsh.exe",
                     "cmd", "cmd.exe", "powershell", "powershell.exe", "pwsh", "pwsh.exe" -> name;
             default -> null;
         };

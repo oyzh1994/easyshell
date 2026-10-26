@@ -721,6 +721,18 @@ public class ShellSSHUtil {
     }
 
     /**
+     * cmd.exe 参数。Windows 文件名不允许双引号，仍拒绝异常输入以免破坏命令。
+     */
+    public static String quoteCmdArgument(String value) {
+        return "\"" + value.replace("\"", "") + "\"";
+    }
+
+    public static String quotePowerShellArgument(String value) {
+        return "'" + value.replace("'", "''") + "'";
+    }
+
+
+    /**
      * 判断系统信息输出是否可用于展示，避免把命令缺失或权限错误当作有效结果。
      *
      * @param output 命令输出
@@ -755,4 +767,43 @@ public class ShellSSHUtil {
         }
         return StringUtil.containsAnyIgnoreCase(uname, "msys", "MINGW64_NT", "MINGW32_NT", "CYGWIN_NT", "MSYS_NT");
     }
+
+    /**
+     * 将 Windows 路径转换为 Git Bash、MSYS2 使用的 POSIX 路径。
+     * 例如 {@code C:/Program Files}、{@code C:\\Program Files} 和
+     * {@code /C:/Program Files} 都转换为 {@code /c/Program Files}。
+     *
+     * @param filePath 文件路径
+     * @return POSIX 路径；非 Windows 路径保持原样
+     */
+    public static String toWindowsPosixPath(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
+        String path = filePath.replace('\\', '/');
+        if (path.length() >= 3 && Character.isLetter(path.charAt(0))
+                && path.charAt(1) == ':' && path.charAt(2) == '/') {
+            return "/" + Character.toLowerCase(path.charAt(0)) + path.substring(2);
+        }
+        if (path.length() >= 4 && path.charAt(0) == '/'
+                && Character.isLetter(path.charAt(1))
+                && path.charAt(2) == ':' && path.charAt(3) == '/') {
+            return "/" + Character.toLowerCase(path.charAt(1)) + path.substring(3);
+        }
+        return path;
+    }
+
+    /**
+     * 针对windows路径做处理
+     *
+     * @param filePath 文件路径
+     * @return 结果
+     */
+    public static String fixWindowsFilePath(String filePath) {
+        if (filePath.startsWith("/")) {
+            filePath = filePath.substring(1);
+        }
+        return StringUtil.replace(filePath, "/", "\\");
+    }
+
 }

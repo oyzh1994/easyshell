@@ -48,6 +48,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * shell客户端
@@ -240,6 +241,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         client.serverExec = this.serverExec;
         client.environment = this.environment;
         client.remoteCharset = this.remoteCharset;
+        client.windowsNativeCharset = this.windowsNativeCharset;
     }
 
     /**
@@ -374,17 +376,23 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.shellType = this.serverExec().getShellType();
         JulLog.info("shell type:{}", this.shellType);
 
-        // 字符集
-        this.remoteCharset = this.serverExec().getCharset();
-        JulLog.info("remote charset: {}", this.remoteCharset);
+//        // 字符集
+//        this.remoteCharset = this.serverExec().getCharset();
+//        JulLog.info("remote charset: {}", this.remoteCharset);
 
-        // 用户目录
-        this.userHome = this.serverExec().getUserHome();
-        JulLog.info("user home: {}", this.userHome);
+//        // 用户目录
+//        this.userHome = this.serverExec().getUserHome();
+//        JulLog.info("user home: {}", this.userHome);
 
         // 环境
         this.initEnvironment();
         JulLog.info("environment: {}", this.environment);
+
+//        // windows专属配置
+//        if (this.isWindowsPosixShellType()) {
+//            this.windowsNativeCharset = this.serverExec().getWindowsNativeCharset();
+//            JulLog.info("windowsNativeCharset: {}", this.windowsNativeCharset);
+//        }
     }
 
     /**
@@ -417,6 +425,46 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
     }
 
     /**
+     * 执行 Windows 原生命令。Git Bash 会话本身是 UTF-8，但 wmic、ipconfig、powershell
+     * 等 Windows 工具按控制台代码页输出，因此必须使用原生代码页解码。
+     *
+     * @param command 命令
+     * @return 结果
+     */
+    public String execWindows(String command) {
+        return this.execWindows(command, this.connectTimeout());
+    }
+
+    public String execWindows(String command, int timeout) {
+        String charset = this.getWindowsNativeCharset();
+        if (StringUtil.isBlank(charset)) {
+            return this.exec(command, timeout);
+        }
+        return this.execInternal(command, timeout, false, true, charset);
+    }
+
+    /**
+     * Windows 原生控制台字符集。PowerShell/cmd 会话的远端字符集本身就来自 chcp，
+     * Git Bash 会话则需要单独探测 cmd.exe 的代码页。
+     */
+    protected volatile String windowsNativeCharset;
+
+    protected synchronized String getWindowsNativeCharset() {
+        if (!this.isWindows()) {
+            return null;
+        }
+        if (!this.isWindowsPosixShellType()) {
+            return this.getRemoteCharset();
+        }
+        if (this.windowsNativeCharset == null) {
+//            this.initMetadata();
+            this.windowsNativeCharset = this.serverExec().getWindowsNativeCharset();
+            JulLog.info("windowsNativeCharset: {}", this.windowsNativeCharset);
+        }
+        return this.windowsNativeCharset;
+    }
+
+    /**
      * 执行元数据探测命令。探测命令不注入 PATH，也不触发元数据初始化，避免递归占用通道。
      */
     public String execMetadata(String command) {
@@ -430,7 +478,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return this.execInternal(command, this.connectTimeout(), true, false);
     }
 
-    protected String execInternal(String command, int timeout, boolean preferUtf8, boolean configureEnvironment) {
+    public String execInternal(String command, int timeout, boolean preferUtf8, boolean configureEnvironment) {
+        return this.execInternal(command, timeout, preferUtf8, configureEnvironment, null);
+    }
+
+    public String execInternal(String command, int timeout, boolean preferUtf8, boolean configureEnvironment, String outputCharset) {
         // 获取通道
         ChannelExec channel = null;
         ByteArrayOutputStream stream = null;
@@ -477,7 +529,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 }
                 ThreadUtil.sleep(5);
             }
-            String result = this.decodeExecOutput(stream, preferUtf8);
+            String result = this.decodeExecOutput(stream, preferUtf8, outputCharset);
             if (StringUtil.endsWith(result, "\r\n")) {
                 result = result.substring(0, result.length() - 2);
             } else if (StringUtil.endWithAny(result, "\n", "\r")) {
@@ -501,7 +553,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         }
     }
 
-    private String decodeExecOutput(ByteArrayOutputStream stream, boolean preferUtf8) {
+    private String decodeExecOutput(ByteArrayOutputStream stream, boolean preferUtf8, String outputCharset) {
         byte[] bytes = stream.toByteArray();
         String bomDecoded = this.decodeBomOutput(bytes);
         if (bomDecoded != null) {
@@ -518,8 +570,13 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 JulLog.debug("ssh exec output is not utf-8, fallback to remote charset: {}", this.remoteCharset);
             }
         }
-        if (StringUtil.isNotBlank(this.remoteCharset)) {
-            return stripBom(new String(bytes, Charset.forName(this.remoteCharset)));
+        String charset = outputCharset;
+        if (StringUtil.isBlank(charset)) {
+            charset = preferUtf8 && this.osType != null && this.isWindows() && this.isWindowsPosixShellType()
+                    ? this.getWindowsNativeCharset() : this.remoteCharset;
+        }
+        if (StringUtil.isNotBlank(charset)) {
+            return stripBom(new String(bytes, Charset.forName(charset)));
         }
         return stripBom(new String(bytes, this.getCharset()));
     }
@@ -570,6 +627,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         if (this.osType == null) {
             return "";
         }
+        if (this.isWindowsPosixShellType()) {
+            return this.getExportPath(ShellExecCommandResolver.Family.WINDOWS_POSIX);
+        }
         return this.getExportPath(this.isWindows() ? ";" : ":");
     }
 
@@ -588,6 +648,27 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 .filter(StringUtil::isNotBlank)
                 .map(String::strip)
                 .toList());
+    }
+
+    /**
+     * 获取指定 shell 家族可用的 PATH。Windows POSIX shell 使用冒号分隔，
+     * 且盘符路径需要转换为 /c/... 形式，否则 C: 中的冒号会被当成分隔符。
+     *
+     * @param family shell 家族
+     * @return PATH
+     */
+    protected String getExportPath(ShellExecCommandResolver.Family family) {
+        if (family != ShellExecCommandResolver.Family.WINDOWS_POSIX) {
+            String separator = family == ShellExecCommandResolver.Family.CMD
+                    || family == ShellExecCommandResolver.Family.POWERSHELL ? ";" : ":";
+            return this.getExportPath(separator);
+        }
+        this.initEnvironment();
+        return this.environment.stream()
+                .filter(StringUtil::isNotBlank)
+                .map(String::strip)
+                .map(ShellSSHUtil::toWindowsPosixPath)
+                .collect(Collectors.joining(":"));
     }
 
     /**
@@ -695,9 +776,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 远程字符集
      */
-    public String getRemoteCharset() {
+    public synchronized String getRemoteCharset() {
         if (this.remoteCharset == null) {
-            this.initMetadata();
+//            this.initMetadata();
+            // 字符集
+            this.remoteCharset = this.serverExec().getCharset();
+            JulLog.info("remote charset: {}", this.remoteCharset);
         }
         return this.remoteCharset;
     }
@@ -719,9 +803,12 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 用户目录
      */
-    public String getUserHome() {
+    public synchronized String getUserHome() {
         if (this.userHome == null) {
-            this.initMetadata();
+//            this.initMetadata();
+            // 用户目录
+            this.userHome = this.serverExec().getUserHome();
+            JulLog.info("user home: {}", this.userHome);
         }
         return this.userHome;
     }
@@ -815,9 +902,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             if (family == ShellExecCommandResolver.Family.UNSUPPORTED) {
                 return command;
             }
-            String separator = family == ShellExecCommandResolver.Family.CMD
-                    || family == ShellExecCommandResolver.Family.POWERSHELL ? ";" : ":";
-            return ShellExecCommandResolver.resolve(command, this.getExportPath(separator), family);
+            return ShellExecCommandResolver.resolve(command, this.getExportPath(family), family);
         } catch (RuntimeException ex) {
             // PATH 注入是可选增强，任何解析异常都不能阻止原命令执行。
             JulLog.warn("resolve exec command environment failed, use original command", ex);
@@ -1166,7 +1251,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 对windows unix shell做扩展命令处理，不保证生效
         if (this.isWindowsPosixShellType()) {
             envSetter.accept("MSYS_NO_PATHCONV", "1");
-            envSetter.accept("MSYS2_ARG_CONV_EXCL", "'*'");
+            envSetter.accept("MSYS2_ARG_CONV_EXCL", "*");
         }
         // 客户端转发
         if (this.shellConnect.isForwardAgent()) {
@@ -1193,7 +1278,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 终端类型
      */
-    public synchronized String getShellType() {
+    public String getShellType() {
         if (this.shellType == null) {
             this.initMetadata();
         }

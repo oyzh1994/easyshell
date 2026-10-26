@@ -47,13 +47,13 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("sysctl machdep.cpu");
         }
         if (this.client.isWindows()) {
-            String output = !this.wmicUsable ? "" : this.client.exec("wmic cpu");
+            String output = !this.wmicUsable ? "" : this.client.execWindows("wmic cpu");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellUtil.wmicTableToText(output);
             }
             this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_Processor | Format-List *\"");
+            output = this.client.execWindows("powershell -NoProfile -c \"Get-CimInstance Win32_Processor | Format-List *\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return output;
             }
@@ -76,15 +76,21 @@ public class ShellSSHExec implements AutoCloseable {
      */
     public List<ShellSSHDiskInfo> disk_info() {
         if (this.client.isWindows()) {
-            String output = !this.wmicUsable ? "" : this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
-            if (!ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
-                return ShellSSHExecParser.diskForWindows(output);
+            String output = !this.wmicUsable ? "" : this.client.execWindows("wmic logicaldisk  get name, size, freespace, volumeName");
+            if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
+                List<ShellSSHDiskInfo> disks = ShellSSHExecParser.diskForWindows(output);
+                if (!disks.isEmpty()) {
+                    return disks;
+                }
             }
             this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,Size,FreeSpace,VolumeName | ConvertTo-Csv -NoTypeInformation\"");
+            output = this.client.execWindows("powershell -NoProfile -c \"Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,Size,FreeSpace,VolumeName | ConvertTo-Csv -NoTypeInformation\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
-                return ShellSSHExecParser.diskForWindows2(output);
+                List<ShellSSHDiskInfo> disks = ShellSSHExecParser.diskForWindows2(output);
+                if (!disks.isEmpty()) {
+                    return disks;
+                }
             }
             return Collections.emptyList();
         }
@@ -102,7 +108,7 @@ public class ShellSSHExec implements AutoCloseable {
      */
     public String network_interface_info() {
         if (this.client.isWindows()) {
-            return this.client.exec("ipconfig /all");
+            return this.client.execWindows("ipconfig /all");
         }
         String output = this.client.exec("ifconfig");
         if (ShellUtil.isCommandNotFound(output)) {
@@ -121,13 +127,13 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("system_profiler SPMemoryDataType");
         }
         if (this.client.isWindows()) {
-            String output = !this.wmicUsable ? "" : this.client.exec("wmic memorychip");
+            String output = !this.wmicUsable ? "" : this.client.execWindows("wmic memorychip");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellUtil.wmicTableToText(output);
             }
             this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_PhysicalMemory | Format-List *\"");
+            output = this.client.execWindows("powershell -NoProfile -c \"Get-CimInstance Win32_PhysicalMemory | Format-List *\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return output;
             }
@@ -156,17 +162,17 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("system_profiler SPDisplaysDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("nvidia-smi");
-            if (!ShellUtil.isWindowsCommandNotFound(output, "nvidia-smi")) {
+            String output = this.client.execWindows("nvidia-smi");
+            if (isNvidiaSmiOutput(output)) {
                 return output;
             }
-            output = !this.wmicUsable ? "" : this.client.exec("wmic path win32_VideoController");
+            output = !this.wmicUsable ? "" : this.client.execWindows("wmic path win32_VideoController");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellUtil.wmicTableToText(output);
             }
             this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_VideoController | Format-List *\"");
+            output = this.client.execWindows("powershell -NoProfile -c \"Get-CimInstance Win32_VideoController | Format-List *\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return output;
             }
@@ -192,6 +198,17 @@ public class ShellSSHExec implements AutoCloseable {
             output = this.client.exec("lsmod | grep -i drm");
         }
         return output;
+    }
+
+    /**
+     * nvidia-smi 在部分 Windows 环境中可能被同名程序占用并返回无关内容，
+     * 只有包含驱动或 GPU 标志的输出才可信。
+     */
+    private static boolean isNvidiaSmiOutput(String output) {
+        return StringUtil.isNotBlank(output)
+                && !ShellUtil.isCommandNotFound(output)
+                && StringUtil.containsAnyIgnoreCase(output,
+                "NVIDIA-SMI", "Driver Version", "CUDA Version", "GPU Name", "GPU  Name");
     }
 
     /**
@@ -244,6 +261,12 @@ public class ShellSSHExec implements AutoCloseable {
      */
     public String cat_environment() {
         if (this.client.isWindows()) {
+            if (this.client.isWindowsPosixShellType()) {
+                return this.client.exec("env");
+            }
+            if (this.client.isPowershellType()) {
+                return this.client.exec("Get-ChildItem Env: | ForEach-Object { $_.Name + '=' + $_.Value }");
+            }
             return this.client.exec("set");
         }
         // return this.client.exec("cat /etc/environment");
@@ -356,13 +379,18 @@ public class ShellSSHExec implements AutoCloseable {
      */
     public String cat_file(String filePath) {
         if (this.client.isWindows()) {
-            filePath = ShellFileUtil.fixWindowsFilePath(filePath);
             if (this.client.isWindowsPosixShellType()) {
-                return this.client.exec("cat " + ShellSSHUtil.quoteCommand(filePath));
+                return this.client.exec("cat -- " + ShellSSHUtil.quoteCommand(
+                        ShellSSHUtil.toWindowsPosixPath(filePath)));
             }
-            return this.client.exec("type \"" + ShellSSHUtil.quoteCommand(filePath) + "\"");
+            filePath = ShellSSHUtil.fixWindowsFilePath(filePath);
+            if (this.client.isPowershellType()) {
+                return this.client.exec("Get-Content -LiteralPath "
+                        + ShellSSHUtil.quotePowerShellArgument(filePath) + " -Raw -Encoding UTF8");
+            }
+            return this.client.exec("type " + ShellSSHUtil.quoteCmdArgument(filePath));
         }
-        return this.client.exec("cat " + ShellSSHUtil.quoteCommand(filePath));
+        return this.client.exec("cat -- " + ShellSSHUtil.quoteCommand(filePath));
     }
 
     /**
@@ -394,15 +422,26 @@ public class ShellSSHExec implements AutoCloseable {
      * @return 结果
      */
     public String cat_file(String sourceFile, String targetFile) {
+        if (this.client.isWindowsPosixShellType()) {
+            return this.client.exec("cp -f -- " + ShellSSHUtil.quoteCommand(
+                    ShellSSHUtil.toWindowsPosixPath(sourceFile)) + " "
+                    + ShellSSHUtil.quoteCommand(ShellSSHUtil.toWindowsPosixPath(targetFile)));
+        }
+        if (this.client.isWindows()) {
+            sourceFile = ShellSSHUtil.fixWindowsFilePath(sourceFile);
+            targetFile = ShellSSHUtil.fixWindowsFilePath(targetFile);
+            if (this.client.isPowershellType()) {
+                return this.client.exec("Copy-Item -LiteralPath " + ShellSSHUtil.quotePowerShellArgument(sourceFile)
+                        + " -Destination " + ShellSSHUtil.quotePowerShellArgument(targetFile) + " -Force");
+            }
+            return this.client.exec("copy /Y " + ShellSSHUtil.quoteCmdArgument(sourceFile) + " "
+                    + ShellSSHUtil.quoteCmdArgument(targetFile));
+        }
         if (this.client.isMacos() || this.client.isLinux()) {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
         }
-        if (this.client.isWindows()) {
-            sourceFile = ShellFileUtil.fixWindowsFilePath(sourceFile);
-            targetFile = ShellFileUtil.fixWindowsFilePath(targetFile);
-            return this.client.exec("type \"" + sourceFile + "\" > " + targetFile + "\"");
-        }
-        return this.client.exec("cat " + sourceFile + " > " + targetFile);
+        return this.client.exec("cat -- " + ShellSSHUtil.quoteCommand(sourceFile) + " > "
+                + ShellSSHUtil.quoteCommand(targetFile));
     }
 
     /**
@@ -424,15 +463,27 @@ public class ShellSSHExec implements AutoCloseable {
      * @return 结果
      */
     public String append_file(String sourceFile, String targetFile) {
+        if (this.client.isWindowsPosixShellType()) {
+            return this.client.exec("cat -- " + ShellSSHUtil.quoteCommand(
+                    ShellSSHUtil.toWindowsPosixPath(sourceFile)) + " >> "
+                    + ShellSSHUtil.quoteCommand(ShellSSHUtil.toWindowsPosixPath(targetFile)));
+        }
+        if (this.client.isWindows()) {
+            sourceFile = ShellSSHUtil.fixWindowsFilePath(sourceFile);
+            targetFile = ShellSSHUtil.fixWindowsFilePath(targetFile);
+            if (this.client.isPowershellType()) {
+                return this.client.exec("Get-Content -LiteralPath " + ShellSSHUtil.quotePowerShellArgument(sourceFile)
+                        + " -Encoding UTF8 | Add-Content -LiteralPath "
+                        + ShellSSHUtil.quotePowerShellArgument(targetFile) + " -Encoding UTF8");
+            }
+            return this.client.exec("type " + ShellSSHUtil.quoteCmdArgument(sourceFile) + " >> "
+                    + ShellSSHUtil.quoteCmdArgument(targetFile));
+        }
         if (this.client.isMacos() || this.client.isLinux()) {
             return this.echo("$(cat " + sourceFile + ")", targetFile);
         }
-        if (this.client.isWindows()) {
-            sourceFile = ShellFileUtil.fixWindowsFilePath(sourceFile);
-            targetFile = ShellFileUtil.fixWindowsFilePath(targetFile);
-            return this.client.exec("type \"" + sourceFile + "\" >> \"" + targetFile + "\"");
-        }
-        return this.client.exec("cat " + sourceFile + " >> " + targetFile);
+        return this.client.exec("cat -- " + ShellSSHUtil.quoteCommand(sourceFile) + " >> "
+                + ShellSSHUtil.quoteCommand(targetFile));
     }
 
     /**
@@ -448,17 +499,4 @@ public class ShellSSHExec implements AutoCloseable {
     public void close() throws Exception {
         this.client = null;
     }
-
-    // /**
-    //  * 修改权限，这个方法不能兼容windows，请用以下方法
-    //  *
-    //  * @param permission 权限
-    //  * @param filePath   文件路径
-    //  * @return 结果
-    //  * @see ShellSFTPChannel#chmod(int, String)
-    //  */
-    // @Deprecated
-    // public String chmod(String permission, String filePath) {
-    //     return this.client.exec("chmod " + permission + " " + filePath);
-    // }
 }

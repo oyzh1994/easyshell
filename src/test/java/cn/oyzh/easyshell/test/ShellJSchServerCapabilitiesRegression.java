@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.test;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.exec.ShellSSHDiskInfo;
 import cn.oyzh.easyshell.ssh.process.ShellProcessInfo;
 import cn.oyzh.easyshell.ssh.server.ShellServerInfo;
 import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
@@ -94,8 +95,20 @@ public final class ShellJSchServerCapabilitiesRegression {
         String display = client.exec("pcidump -v 2>/dev/null | grep 'Class: 03 Display'");
         boolean hasDisplay = display != null && !display.isBlank() && !display.toLowerCase().contains("not found");
         require(!hasDisplay || !gpu.equals("N/A"), "OpenBSD display device was found but gpu information is unavailable");
+
+        List<ShellSSHDiskInfo> disks = client.sshExec().disk_info();
+        require(disks != null && !disks.isEmpty(), "OpenBSD disk information is empty");
+        ShellSSHDiskInfo rootDisk = disks.stream()
+                .filter(disk -> "/".equals(disk.getMountedOn()))
+                .findFirst()
+                .orElse(null);
+        require(rootDisk != null, "OpenBSD root disk is missing: " + disks.size());
+        require(rootDisk.getSize() != null && !rootDisk.getSize().isBlank(), "OpenBSD root disk size is blank");
+
+        String networkInterfaces = client.sshExec().network_interface_info();
+        requireInfoText("network interfaces", networkInterfaces);
         System.out.println("OpenBSD details verified: cpu=" + cpu.replace('\n', ' ')
-                + ", gpu=" + gpu.replace('\n', ' '));
+                + ", gpu=" + gpu.replace('\n', ' ') + ", disks=" + disks.size());
     }
 
     private static void requireUsableInfo(String name, String output) {
@@ -125,21 +138,28 @@ public final class ShellJSchServerCapabilitiesRegression {
 
     private static void verifyProcesses(List<ShellProcessInfo> processes) {
         require(processes != null && !processes.isEmpty(), "process list is empty");
-        ShellProcessInfo process = processes.stream().filter(item -> item.getPid() > 0).findFirst().orElse(null);
-        require(process != null, "no process with a valid pid was found");
+        ShellProcessInfo process = processes.stream().filter(item -> item.getPid() > 0
+                        && item.getUser() != null && !item.getUser().isBlank()
+                        && item.getStat() != null && !item.getStat().isBlank()
+                        && item.getRss() > 0)
+                .findFirst().orElse(null);
+        require(process != null, "no process with user, stat and rss was found");
         require(process.getCommand() != null && !process.getCommand().isBlank(), "process command is blank");
+        require(process.getCommand().length() > 2, "process command appears truncated: " + process.getCommand());
         System.out.println("process verified: count=" + processes.size() + ", pid=" + process.getPid()
-                + ", command=" + process.getCommand());
+                + ", user=" + process.getUser() + ", stat=" + process.getStat()
+                + ", rssMB=" + process.getRss() + ", command=" + process.getCommand());
     }
 
     private static void verifyFileOperations(ShellSSHClient client) throws Exception {
         String root = "/tmp/easyshell-capability-" + UUID.randomUUID();
-        String source = root + "/source file.txt";
-        String copied = root + "/copied file.txt";
-        String moved = root + "/moved file.txt";
-        String content = "easyshell-capability-" + UUID.randomUUID();
+        String source = root + "/源 文件.txt";
+        String copied = root + "/复制 文件.txt";
+        String moved = root + "/移动 文件.txt";
+        String content = "easyshell-capability-" + UUID.randomUUID() + "-中文内容";
         Path downloaded = Files.createTempFile("easyshell-capability-", ".txt");
         ShellSFTPClient sftp = client.sftpClient();
+        boolean compressionVerified = false;
         try {
             sftp.createDir(root);
             sftp.put(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), source, null);
@@ -155,11 +175,22 @@ public final class ShellJSchServerCapabilitiesRegression {
             sftp.get(file, downloaded.toString());
             requireEquals(content, Files.readString(downloaded, StandardCharsets.UTF_8), "file content");
 
+            if (client.isLinux() || client.isUnix()) {
+                String archive = source + ".tgz";
+                client.serverExec().compress(source, "tgz");
+                require(sftp.exist(archive), "server tgz compression did not create archive");
+                client.serverExec().forceDel(source, true);
+                client.serverExec().uncompress(archive);
+                require(sftp.exist(source), "server tgz decompression did not restore source");
+                compressionVerified = true;
+            }
+
             client.serverExec().forceDel(moved, true);
             require(!sftp.exist(moved), "server delete did not remove file");
             client.serverExec().forceDel(root, false);
             require(!sftp.exist(root), "server delete did not remove directory");
-            System.out.println("server file operations verified: copy=move=get=delete");
+            System.out.println("server file operations verified: unicode=copy=move=get="
+                    + (compressionVerified ? "tgz=" : "") + "delete");
         } finally {
             try {
                 client.serverExec().forceDel(root, false);

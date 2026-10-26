@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
 import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -336,13 +337,13 @@ public class ShellServerExec implements AutoCloseable {
                     return 100 - Double.parseDouble(cpuUsage);
                 }
                 if (this.client.isWindows()) {
-                    String cpuUsage = !this.wmicUsable ? "" : this.client.exec("wmic cpu get loadpercentage");
+                    String cpuUsage = !this.wmicUsable ? "" : this.client.execWindows("wmic cpu get loadpercentage");
                     if (StringUtil.isNotBlank(cpuUsage) && !ShellUtil.isWindowsCommandNotFound(cpuUsage, "wmic")) {
                         cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
                     } else {
                         this.wmicUsable = false;
                         // wmic不可用时，使用powershell替代
-                        cpuUsage = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average).Average\"");
+                        cpuUsage = this.client.execWindows("powershell -NoProfile -c \"(Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average).Average\"");
                     }
                     if (StringUtil.isBlank(cpuUsage) || ShellUtil.isWindowsCommandNotFound(cpuUsage, "powershell")) {
                         return -1;
@@ -410,7 +411,7 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 long free = -1;
                 long total = -1;
-                String output = !this.wmicUsable ? "" : this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value");
+                String output = !this.wmicUsable ? "" : this.client.execWindows("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     String[] arr = output.split("\n");
                     for (String s : arr) {
@@ -426,7 +427,7 @@ public class ShellServerExec implements AutoCloseable {
                 } else {
                     this.wmicUsable = false;
                     // wmic不可用时，使用powershell替代
-                    output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize | ConvertTo-Csv -NoTypeInformation\"");
+                    output = this.client.execWindows("powershell -NoProfile -c \"Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize | ConvertTo-Csv -NoTypeInformation\"");
                     if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                         String[] lines = output.split("\n");
                         if (lines.length > 1) {
@@ -522,7 +523,7 @@ public class ShellServerExec implements AutoCloseable {
     public String uname() {
         try {
             if (this.client.isWindows()) {
-                String output = this.client.exec("hostname");
+                String output = this.client.execWindows("hostname");
                 return output == null ? "N/A" : output.trim();
             }
             return this.client.exec("uname -rs");
@@ -540,14 +541,14 @@ public class ShellServerExec implements AutoCloseable {
     public String arch() {
         try {
             if (this.client.isWindows()) {
-                String output = !this.wmicUsable ? "" : this.client.exec("wmic os get osarchitecture");
+                String output = !this.wmicUsable ? "" : this.client.execWindows("wmic os get osarchitecture");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     String arch = ArrayUtil.indexOf(output.split("\n"), 1);
                     return arch == null ? "N/A" : arch.trim();
                 }
                 this.wmicUsable = false;
                 // wmic不可用时，使用powershell替代
-                output = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).OSArchitecture\"");
+                output = this.client.execWindows("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).OSArchitecture\"");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                     return output.trim();
                 }
@@ -575,7 +576,7 @@ public class ShellServerExec implements AutoCloseable {
                 return Long.parseLong(totalMemory) / 1024 / 1024;
             }
             if (this.client.isWindows()) {
-                String totalMemory = !this.wmicUsable ? "" : this.client.exec("wmic memorychip get capacity");
+                String totalMemory = !this.wmicUsable ? "" : this.client.execWindows("wmic memorychip get capacity");
                 if (StringUtil.isNotBlank(totalMemory) && !ShellUtil.isWindowsCommandNotFound(totalMemory, "wmic")) {
                     totalMemory = ArrayUtil.indexOf(totalMemory.split("\n"), 1);
                     if (totalMemory == null) {
@@ -585,7 +586,7 @@ public class ShellServerExec implements AutoCloseable {
                 }
                 this.wmicUsable = false;
                 // wmic不可用时，使用powershell替代
-                totalMemory = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum\"");
+                totalMemory = this.client.execWindows("powershell -NoProfile -c \"(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum\"");
                 if (StringUtil.isNotBlank(totalMemory) && !ShellUtil.isWindowsCommandNotFound(totalMemory, "powershell")) {
                     return Long.parseLong(totalMemory.trim()) / 1024 / 1024;
                 }
@@ -639,7 +640,7 @@ public class ShellServerExec implements AutoCloseable {
                     return new double[]{read, write};
                 }
                 if (this.client.isWindows()) {
-                    String output = this.client.exec("typeperf \"\\PhysicalDisk(*)\\Disk Read Bytes/sec\" \"\\PhysicalDisk(*)\\Disk Write Bytes/sec\" -sc 1");
+                    String output = this.client.execWindows("typeperf \"\\PhysicalDisk(*)\\Disk Read Bytes/sec\" \"\\PhysicalDisk(*)\\Disk Write Bytes/sec\" -sc 1");
                     if (StringUtil.isBlank(output)) {
                         return new double[]{-1L, -1L};
                     }
@@ -752,7 +753,7 @@ public class ShellServerExec implements AutoCloseable {
                 return new double[]{send, receive};
             }
             if (this.client.isWindows()) {
-                String output = this.client.exec("typeperf \"\\Network Interface(*)\\Bytes Received/sec\" \"\\Network Interface(*)\\Bytes Sent/sec\" -sc 1");
+                String output = this.client.execWindows("typeperf \"\\Network Interface(*)\\Bytes Received/sec\" \"\\Network Interface(*)\\Bytes Sent/sec\" -sc 1");
                 if (StringUtil.isBlank(output)) {
                     return new double[]{-1L, -1L};
                 }
@@ -932,13 +933,13 @@ public class ShellServerExec implements AutoCloseable {
     public String uptime() {
         try {
             if (this.client.isWindows()) {
-                String output = !this.wmicUsable ? "" : this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime");
+                String output = !this.wmicUsable ? "" : this.client.execWindows("wmic path Win32_OperatingSystem get LastBootUpTime");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     output = ArrayUtil.indexOf(output.split("\n"), 1);
                 } else {
                     this.wmicUsable = false;
                     // wmic不可用时，使用powershell替代
-                    output = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString('yyyyMMddHHmmss')\"");
+                    output = this.client.execWindows("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString('yyyyMMddHHmmss')\"");
                     if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                         output = output.trim();
                     } else {
@@ -972,16 +973,24 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String move(String src, String dst) {
         try {
-            if (this.client.isLinux()
-                    || this.client.isMacos()
-                    || this.client.isUnix()) {
-                return this.client.exec("mv -f \"" + src + "\" \"" + dst + "\"");
+            if (this.client.isWindowsPosixShellType()) {
+                return this.client.exec("mv -f -- " + this.quoteShellArgument(ShellSSHUtil.toWindowsPosixPath(src))
+                        + " " + this.quoteShellArgument(ShellSSHUtil.toWindowsPosixPath(dst)));
             }
-            if (this.client.isWindows()) {
-                src = ShellFileUtil.fixWindowsFilePath(src);
-                dst = ShellFileUtil.fixWindowsFilePath(dst);
-                this.client.exec("move /Y \"" + src + "\" " + dst + "\"");
-                return null;
+            if (this.client.isPowershellType()) {
+                return this.client.exec("Move-Item -LiteralPath "
+                        + ShellSSHUtil.quotePowerShellArgument(ShellSSHUtil.fixWindowsFilePath(src))
+                        + " -Destination " + ShellSSHUtil.quotePowerShellArgument(ShellSSHUtil.fixWindowsFilePath(dst))
+                        + " -Force");
+            }
+            if (this.client.isCmdType()) {
+                return this.client.exec("move /Y "
+                        + ShellSSHUtil.quoteCmdArgument(ShellSSHUtil.fixWindowsFilePath(src)) + " "
+                        + ShellSSHUtil.quoteCmdArgument(ShellSSHUtil.fixWindowsFilePath(dst)));
+            }
+            if (this.client.isLinux() || this.client.isMacos() || this.client.isUnix()) {
+                return this.client.exec("mv -f -- " + this.quoteShellArgument(src) + " "
+                        + this.quoteShellArgument(dst));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -998,16 +1007,26 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String copy(String src, String dst) {
         try {
+            if (this.client.isWindowsPosixShellType()) {
+                return this.client.exec("cp -rf -- " + this.quoteShellArgument(ShellSSHUtil.toWindowsPosixPath(src))
+                        + " " + this.quoteShellArgument(ShellSSHUtil.toWindowsPosixPath(dst)));
+            }
+            if (this.client.isPowershellType()) {
+                return this.client.exec("Copy-Item -LiteralPath "
+                        + ShellSSHUtil.quotePowerShellArgument(ShellSSHUtil.fixWindowsFilePath(src))
+                        + " -Destination " + ShellSSHUtil.quotePowerShellArgument(ShellSSHUtil.fixWindowsFilePath(dst))
+                        + " -Force");
+            }
+            if (this.client.isCmdType()) {
+                return this.client.exec("copy /Y "
+                        + ShellSSHUtil.quoteCmdArgument(ShellSSHUtil.fixWindowsFilePath(src)) + " "
+                        + ShellSSHUtil.quoteCmdArgument(ShellSSHUtil.fixWindowsFilePath(dst)));
+            }
             if (this.client.isLinux()
                     || this.client.isMacos()
                     || this.client.isUnix()) {
-                return this.client.exec("cp -rf \"" + src + "\" \"" + dst + "\"");
-            }
-            if (this.client.isWindows()) {
-                src = ShellFileUtil.fixWindowsFilePath(src);
-                dst = ShellFileUtil.fixWindowsFilePath(dst);
-                this.client.exec("copy /Y \"" + src + "\" \"" + dst + "\"");
-                return null;
+                return this.client.exec("cp -rf -- " + this.quoteShellArgument(src) + " "
+                        + this.quoteShellArgument(dst));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1025,12 +1044,20 @@ public class ShellServerExec implements AutoCloseable {
     public String forceDel(List<String> files) {
         if (this.client.isLinux()
                 || this.client.isMacos()
-                || this.client.isUnix()) {
+                || this.client.isUnix()
+                || this.client.isWindowsPosixShellType()) {
             StringBuilder builder = new StringBuilder();
             for (String file : files) {
-                builder.append(" ").append("\"").append(file).append("\"");
+                String path = this.client.isWindowsPosixShellType()
+                        ? ShellSSHUtil.toWindowsPosixPath(file) : file;
+                builder.append(" ").append(this.quoteShellArgument(path));
             }
             return this.client.exec("rm -rf " + builder.substring(1));
+        }
+        if (this.client.isWindows()) {
+            for (String file : files) {
+                this.forceDel(file, false);
+            }
         }
         return null;
     }
@@ -1044,21 +1071,34 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String forceDel(String file, boolean isFile) {
         try {
+            if (this.client.isWindowsPosixShellType()) {
+                String path = ShellSSHUtil.toWindowsPosixPath(file);
+                if (isFile) {
+                    return this.client.exec("rm -f -- " + this.quoteShellArgument(path));
+                }
+                return this.client.exec("rm -rf -- " + this.quoteShellArgument(path));
+            }
+            if (this.client.isPowershellType()) {
+                String path = ShellSSHUtil.quotePowerShellArgument(ShellSSHUtil.fixWindowsFilePath(file));
+                if (isFile) {
+                    return this.client.exec("Remove-Item -LiteralPath " + path + " -Force");
+                }
+                return this.client.exec("Remove-Item -LiteralPath " + path + " -Force -Recurse");
+            }
+            if (this.client.isCmdType()) {
+                String path = ShellSSHUtil.quoteCmdArgument(ShellSSHUtil.fixWindowsFilePath(file));
+                if (isFile) {
+                    return this.client.exec("del /f /q " + path);
+                }
+                return this.client.exec("rmdir /s /q " + path);
+            }
             if (this.client.isLinux()
                     || this.client.isMacos()
-                    || this.client.isUnix()
-                    || this.client.isWindowsPosixShellType()) {
+                    || this.client.isUnix()) {
                 if (isFile) {
-                    return this.client.exec("rm -f \"" + file + "\"");
+                    return this.client.exec("rm -f -- " + this.quoteShellArgument(file));
                 }
-                return this.client.exec("rm -rf \"" + file + "\"");
-            }
-            if (this.client.isWindows()) {
-                file = ShellFileUtil.fixWindowsFilePath(file);
-                if (isFile) {
-                    return this.client.exec("del /f /q \"" + file + "\"");
-                }
-                return this.client.exec("rmdir /s /q \"" + file + "\"");
+                return this.client.exec("rm -rf -- " + this.quoteShellArgument(file));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1191,7 +1231,7 @@ public class ShellServerExec implements AutoCloseable {
     public String timezone() {
         try {
             if (this.client.isWindows()) {
-                return this.client.exec("tzutil /g");
+                return this.client.execWindows("tzutil /g");
             }
             if (this.client.isLinux()) {
                 String output = this.client.exec("cat /etc/timezone");
@@ -1293,7 +1333,11 @@ public class ShellServerExec implements AutoCloseable {
     public String locale() {
         try {
             if (this.client.isWindows()) {
-                String output = this.client.exec("chcp");
+                if (this.client.isWindowsPosixShellType()) {
+                    String output = this.client.execMetadata("echo $LANG");
+                    return StringUtil.isBlank(output) ? this.getCharset() : output.trim();
+                }
+                String output = this.client.execWindows("chcp");
                 return ShellUtil.getCharsetFromChcp(output);
             }
             return this.client.exec("echo $LANG");
@@ -1422,6 +1466,21 @@ public class ShellServerExec implements AutoCloseable {
     }
 
     /**
+     * 获取windows 原生字符集
+     *
+     * @return 结果
+     */
+    public String getWindowsNativeCharset() {
+        try {
+            String output = this.client.execInternal("cmd.exe /c chcp", this.client.connectTimeout(), false, false, "gbk");
+            return ShellUtil.getCharsetFromChcp(output);
+        } catch (Exception ex) {
+            JulLog.error("getWindowsNativeCharset error", ex);
+        }
+        return "gbk";
+    }
+
+    /**
      * 获取字符集
      *
      * @return 结果
@@ -1430,6 +1489,17 @@ public class ShellServerExec implements AutoCloseable {
         try {
             String charset = null;
             if (this.client.isWindows()) {
+                if (this.client.isWindowsPosixShellType()) {
+                    charset = ShellUtil.getCharsetFromLang(this.client.execMetadata("echo $LANG"));
+                    if (this.isSupportedCharset(charset)) {
+                        return charset;
+                    }
+                    charset = this.client.execMetadata("locale charmap");
+                    if (this.isSupportedCharset(charset)) {
+                        return charset.trim();
+                    }
+                    return StandardCharsets.UTF_8.name();
+                }
                 charset = ShellUtil.getCharsetFromChcp(this.client.execMetadata("chcp"));
             } else if (this.client.isLinux() || this.client.isMacos() || this.client.isUnix()) {
                 charset = ShellUtil.getCharsetFromLang(this.client.execMetadata("echo $LANG"));
@@ -1441,6 +1511,14 @@ public class ShellServerExec implements AutoCloseable {
         return StandardCharsets.UTF_8.name();
     }
 
+    private boolean isSupportedCharset(String charset) {
+        if (StringUtil.isBlank(charset)) {
+            return false;
+        }
+        String value = charset.trim();
+        return !StringUtil.equalsAnyIgnoreCase(value, "C", "POSIX") && Charset.isSupported(value);
+    }
+
     /**
      * 获取用户目录
      *
@@ -1448,9 +1526,35 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String getUserHome() {
         try {
-            String userHome = this.client.execMetadata(this.client.isWindows() ? "echo %HOME%" : "echo $HOME");
-            if (StringUtil.isNotBlank(userHome)) {
-                userHome = userHome + (this.client.isWindows() ? "\\" : "/");
+            String userHome;
+            if (this.client.isCmdType()) {
+                userHome = this.client.execMetadata("echo %USERPROFILE%");
+            } else if (this.client.isPowershellType()) {
+                userHome = this.client.execMetadata("echo $env:USERPROFILE");
+            } else if (this.client.isWindowsPosixShellType()) {
+                // Git Bash 继承 Windows 的 USERPROFILE；HOME 是 /c/... 形式，不能直接给 SFTP 使用。
+                userHome = this.client.execMetadata("echo $USERPROFILE");
+                if (StringUtil.isBlank(userHome) || userHome.contains("%USERPROFILE%")) {
+                    userHome = this.client.execMetadata("echo $HOME");
+                }
+            } else {
+                userHome = this.client.execMetadata("echo $HOME");
+            }
+            if (StringUtil.isBlank(userHome)) {
+                return null;
+            }
+            userHome = userHome.trim();
+            if (this.client.isWindows()) {
+                if (userHome.startsWith("/") && userHome.length() >= 3
+                        && Character.isLetter(userHome.charAt(1)) && userHome.charAt(2) == '/') {
+                    userHome = Character.toUpperCase(userHome.charAt(1)) + userHome.substring(2);
+                }
+                userHome = userHome.replace('/', '\\');
+                if (!userHome.endsWith("\\")) {
+                    userHome = userHome + "\\";
+                }
+            } else if (!userHome.endsWith("/")) {
+                userHome = userHome + "/";
             }
             return userHome;
         } catch (Exception ex) {

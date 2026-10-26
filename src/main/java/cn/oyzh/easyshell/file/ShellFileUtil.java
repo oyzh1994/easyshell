@@ -392,19 +392,6 @@ public class ShellFileUtil {
     }
 
     /**
-     * 针对windows路径做出来
-     *
-     * @param filePath 文件路径
-     * @return 结果
-     */
-    public static String fixWindowsFilePath(String filePath) {
-        if (filePath.startsWith("/")) {
-            filePath = filePath.substring(1);
-        }
-        return StringUtil.replace(filePath, "/", "\\");
-    }
-
-    /**
      * 获取文件收藏列表
      *
      * @param fileClient 文件客户端

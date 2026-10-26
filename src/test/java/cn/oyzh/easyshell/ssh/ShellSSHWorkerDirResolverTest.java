@@ -59,6 +59,9 @@ public class ShellSSHWorkerDirResolverTest {
         assertTrue(ShellOscShellIntegration.isSupported(
                 "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", WINDOWS));
         assertTrue(ShellOscShellIntegration.isSupported("pwsh", WINDOWS));
+        assertTrue(ShellOscShellIntegration.isSupported(
+                "/c/program files/git/bin/bash.exe", WINDOWS));
+        assertTrue(ShellOscShellIntegration.isSupported("/usr/bin/zsh.exe", WINDOWS));
         assertTrue(ShellOscShellIntegration.isWindowsShell("C:\\Windows\\System32\\cmd.exe"));
         assertTrue(ShellOscShellIntegration.isWindowsShell("pwsh.exe"));
         assertFalse(ShellOscShellIntegration.isWindowsShell("/usr/bin/bash"));
@@ -114,6 +117,12 @@ public class ShellSSHWorkerDirResolverTest {
         assertTrue(powershell.hook().contains("[char]27"));
         assertTrue(powershell.hook().contains("__easyshell_osc7_installed__"));
         assertNull(powershell.disableEcho());
+
+        ShellOscShellIntegration.Command gitBash = ShellOscShellIntegration.command("bash.exe", WINDOWS);
+        assertTrue(gitBash.disableEcho().contains("stty -echo"));
+        assertTrue(gitBash.hook().contains("]9;9;%s"));
+        assertTrue(gitBash.hook().contains("cygpath -w"));
+        assertTrue(gitBash.restoreEcho().contains("stty echo"));
     }
 
     @Test

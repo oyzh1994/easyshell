@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ExecutorUtil;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -43,7 +42,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
@@ -476,7 +474,7 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     private void releaseResources() {
-        //        this.cancelPendingPtyResize();
+        this.cancelPendingPtyResize();
         this.cancelOscWorkerDirIntegration();
         ShellClientChecker.remove(this);
         this.closeSftpResources();
@@ -712,22 +710,45 @@ public class ShellSSHClient extends ShellBaseSSHClient {
     }
 
     /**
-     * pty尺寸任务
+     * 待发送的 PTY 尺寸任务
      */
-    private Future<?> ptySizeFeture;
+    private ScheduledFuture<?> ptySizeFuture;
+
+    /**
+     * PTY 尺寸版本，用于丢弃已被后续尺寸覆盖的任务
+     */
+    private long ptySizeVersion;
 
     public synchronized void setPtySize(int columns, int rows, int width, int height) {
         if (columns <= 0 || rows <= 0) {
             return;
         }
         ShellSSHShell currentShell = this.getShell();
-        if (currentShell != null && currentShell.isConnected()) {
-            // 取消旧的任务
-            TaskManager.cancel(this.ptySizeFeture);
-            // 任务函数
-            Runnable func = () -> currentShell.setPtySize(columns, rows, width, height);
-            // 执行任务，异步，防止短时间多次重复调用
-            this.ptySizeFeture = TaskManager.startDelay(func, PTY_RESIZE_DEBOUNCE_MILLIS);
+        if (currentShell == null || !currentShell.isConnected()) {
+            return;
+        }
+        this.cancelPendingPtyResize();
+        long version = this.ptySizeVersion;
+        this.ptySizeFuture = ExecutorUtil.start(() -> this.flushPtySize(currentShell, version,
+                columns, rows, width, height), PTY_RESIZE_DEBOUNCE_MILLIS);
+    }
+
+    private synchronized void flushPtySize(ShellSSHShell shell, long version,
+                                           int columns, int rows, int width, int height) {
+        if (version != this.ptySizeVersion) {
+            return;
+        }
+        this.ptySizeFuture = null;
+        if (shell.isConnected()) {
+            shell.setPtySize(columns, rows, width, height);
+        }
+    }
+
+    private synchronized void cancelPendingPtyResize() {
+        this.ptySizeVersion++;
+        if (this.ptySizeFuture != null) {
+            this.ptySizeFuture.cancel(false);
+            this.ptySizeFuture = null;
         }
     }
 
@@ -738,7 +759,8 @@ public class ShellSSHClient extends ShellBaseSSHClient {
             this.dockerExec = new ShellDockerExec(this);
             try {
                 if (this.isWindows()) {
-                    String output = this.exec("where docker.exe");
+                    // PowerShell 中 where 是 Where-Object 的别名，必须显式调用 cmd.exe 的 where.exe。
+                    String output = this.execWindows("cmd.exe /c where docker.exe");
                     String environmentPath = this.resolveCommandDirectory(output, "docker.exe");
                     if (environmentPath == null) {
                         JulLog.warn("docker is not available");

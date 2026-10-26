@@ -24,7 +24,7 @@ final class ShellExecCommandResolver {
     /**
      * 远端 shell 家族
      */
-    enum Family {
+    public enum Family {
         CSH,
         CMD,
         POSIX,
@@ -73,7 +73,9 @@ final class ShellExecCommandResolver {
      * Windows POSIX shell 在当前 shell 内临时扩展 PATH，保留 cd、alias、函数、管道等原命令语义。
      */
     private static String resolveWindowsPosix(String command, String path) {
-        return "PATH=" + ShellSSHUtil.quoteCommand(path) + ":\"$PATH\"; export PATH; MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1 " + command;
+        String resolved = "PATH=" + ShellSSHUtil.quoteCommand(path) + ":\"$PATH\"; export PATH; "
+                + "export MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1; " + command;
+        return resolved.length() > MAX_WINDOWS_COMMAND_LENGTH ? command : resolved;
     }
 
     /**

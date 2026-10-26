@@ -16,7 +16,7 @@ public class ShellUtil {
 
     public static boolean isCommandNotFound(String output) {
         return StringUtil.containsAnyIgnoreCase(output, "not found", "未找到命令", "不是内部或外部",
-                "无法找到文件", "找不到文件");
+                "无法找到文件", "找不到文件", "not recognized", "无法将", "识别为 cmdlet");
     }
 
     public static boolean isWindowsCommandNotFound(String output, String cmd) {
@@ -24,7 +24,9 @@ public class ShellUtil {
             return true;
         }
         return StringUtil.containsIgnoreCase(output, "'" + cmd + "'")
-                || StringUtil.containsAnyIgnoreCase(output, "不是内部或外部", "无法找到文件", "找不到文件", "ObjectNotFound", "CommandNotFoundException");
+                || StringUtil.containsIgnoreCase(output, "“" + cmd + "”")
+                || StringUtil.containsAnyIgnoreCase(output, "不是内部或外部", "无法找到文件", "找不到文件",
+                "ObjectNotFound", "CommandNotFoundException", "The term", "is not recognized");
     }
 
     //    public static String fixWindowsFilePath(String filePath) {
@@ -130,6 +132,9 @@ public class ShellUtil {
      * @return 字符集
      */
     public static String getCharsetFromChcp(String chcp) {
+        if (chcp == null) {
+            return "gbk";
+        }
         if (chcp.contains("437")) {
             return "iso-8859-1";
         }

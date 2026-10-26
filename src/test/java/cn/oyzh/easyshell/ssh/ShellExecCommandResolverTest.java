@@ -75,6 +75,16 @@ public class ShellExecCommandResolverTest {
     }
 
     @Test
+    public void windowsPosixWrapperExportsMsysVariables() {
+        String command = "printf '%s' native";
+        String resolved = ShellExecCommandResolver.resolve(
+                command, "/c/Windows/System32:/c/Program Files", Family.WINDOWS_POSIX);
+        assertTrue(resolved.contains("PATH='/c/Windows/System32:/c/Program Files':\"$PATH\"; export PATH; "));
+        assertTrue(resolved.contains("export MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1; "));
+        assertTrue(resolved.endsWith(command));
+    }
+
+    @Test
     public void powershellUnsafePathFallsBackToOriginalCommand() {
         String command = "Write-Output 'safe'";
         assertEquals(command, ShellExecCommandResolver.resolve(command, "C:/bad\rpath", Family.POWERSHELL));
@@ -95,6 +105,7 @@ public class ShellExecCommandResolverTest {
         String path = "C:/" + "x".repeat(9000);
         assertEquals(command, ShellExecCommandResolver.resolve(command, path, Family.CMD));
         assertEquals(command, ShellExecCommandResolver.resolve(command, path, Family.POWERSHELL));
+        assertEquals(command, ShellExecCommandResolver.resolve(command, path, Family.WINDOWS_POSIX));
     }
 
     @Test

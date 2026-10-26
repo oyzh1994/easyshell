@@ -15,8 +15,6 @@ public final class ShellJSchOscWorkerDirRegression {
 
     private static final char ESC = '\u001B';
 
-    private static final String BEL = "\u0007";
-
     private ShellJSchOscWorkerDirRegression() {
     }
 
@@ -53,18 +51,26 @@ public final class ShellJSchOscWorkerDirRegression {
             try {
                 connector.ready();
                 reader.start();
-                // 首屏输出安静 600ms 后才会安装 hook；安装命令自身还需约 350ms 的无回显窗口。
-                sleep(1800);
-                connector.write("cd /tmp\r");
-                verify(client, output, readFailure, "/tmp", ESC + "]9;9;/tmp" + BEL, 10000);
+                // 首屏输出安静 600ms 后才会安装 hook；安装命令自身还需无回显窗口。
+                sleep(2200);
+                if (client.isWindows()) {
+                    if (client.isPowershellType()) {
+                        connector.write("Set-Location C:\\Windows\r");
+                    } else {
+                        connector.write("cd /c/Windows\r");
+                    }
+                    verify(client, output, readFailure, "/C:/Windows", 10000);
+                } else {
+                    connector.write("cd /tmp\r");
+                    verify(client, output, readFailure, "/tmp", 10000);
 
-                connector.write("mkdir -p '/tmp/easyshell osc 100%'\r");
-                connector.write("cd '/tmp/easyshell osc 100%'\r");
-                verify(client, output, readFailure, "/tmp/easyshell osc 100%",
-                        ESC + "]9;9;/tmp/easyshell osc 100%" + BEL, 10000);
+                    connector.write("mkdir -p '/tmp/easyshell osc 100%'\r");
+                    connector.write("cd '/tmp/easyshell osc 100%'\r");
+                    verify(client, output, readFailure, "/tmp/easyshell osc 100%", 10000);
 
-                connector.write("cd /tmp\r");
-                connector.write("rmdir '/tmp/easyshell osc 100%'\r");
+                    connector.write("cd /tmp\r");
+                    connector.write("rmdir '/tmp/easyshell osc 100%'\r");
+                }
             } finally {
                 reading.set(false);
                 connector.close();
@@ -97,7 +103,7 @@ public final class ShellJSchOscWorkerDirRegression {
 
     private static void verify(ShellSSHClient client, StringBuilder output,
                                AtomicReference<Throwable> readFailure, String expectedDir,
-                               String expectedOsc, long timeout) throws Exception {
+                               long timeout) throws Exception {
         long deadline = System.currentTimeMillis() + timeout;
         while (System.currentTimeMillis() < deadline) {
             Throwable failure = readFailure.get();
@@ -108,7 +114,8 @@ public final class ShellJSchOscWorkerDirRegression {
             synchronized (output) {
                 raw = output.toString();
             }
-            if (raw.contains(expectedOsc) && expectedDir.equals(client.workDirProperty().get())) {
+            boolean oscSeen = raw.contains(ESC + "]7;") || raw.contains(ESC + "]9;9;");
+            if (oscSeen && expectedDir.equals(client.workDirProperty().get())) {
                 System.out.println("OSC work directory verified: " + expectedDir);
                 return;
             }
@@ -120,7 +127,7 @@ public final class ShellJSchOscWorkerDirRegression {
         }
         throw new IllegalStateException("OSC work directory was not observed: expected=" + expectedDir
                 + ", actual=" + client.workDirProperty().get()
-                + ", osc=" + raw.contains(expectedOsc)
+                + ", osc=" + (raw.contains(ESC + "]7;") || raw.contains(ESC + "]9;9;"))
                 + ", output=" + visible(raw));
     }
 

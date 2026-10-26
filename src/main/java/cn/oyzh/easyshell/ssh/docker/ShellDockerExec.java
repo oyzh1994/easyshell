@@ -548,7 +548,13 @@ public class ShellDockerExec implements AutoCloseable {
         if (value == null) {
             return "";
         }
-        if (this.client.isWindows()) {
+        if (this.client.isPowershellType()) {
+            return "'" + value.replace("'", "''") + "'";
+        }
+        if (this.client.isWindowsPosixShellType()) {
+            return "'" + value.replace("'", "'\"'\"'") + "'";
+        }
+        if (this.client.isWindows() && this.client.isCmdType()) {
             return "\"" + value.replace("\"", "\\\"") + "\"";
         }
         return "'" + value.replace("'", "'\"'\"'") + "'";
