@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.util.ShellUtil;
 public final class ShellJSchWindowsEncodingRegression {
 
     private static final String HOSTS = "C:\\Windows\\System32\\drivers\\etc\\hosts";
-    private static final String MISSING_COMMAND = "where __easyshell_missing_encoding_test__";
+    private static final String MISSING_COMMAND = "__easyshell_missing_encoding_test__";
 
     private ShellJSchWindowsEncodingRegression() {
     }
@@ -56,7 +56,7 @@ public final class ShellJSchWindowsEncodingRegression {
 
             String missing = client.execUtf8(MISSING_COMMAND);
             require(ShellUtil.isWindowsCommandNotFound(missing, "__easyshell_missing_encoding_test__"),
-                    "execUtf8 did not fall back to the GBK console charset");
+                    "execUtf8 did not fall back to the GBK console charset: " + missing);
 
             System.out.println("UTF-8 BOM hosts output verified: chars=" + normal.length()
                     + ", lines=" + normal.lines().count()

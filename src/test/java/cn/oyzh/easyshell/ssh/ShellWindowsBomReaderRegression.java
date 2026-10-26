@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.ssh;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -22,6 +21,7 @@ public final class ShellWindowsBomReaderRegression {
             verify("text \u9518? keep", "text \u9518? keep");
             verify("\u9518 keep", "\u9518 keep");
             verifyChunked("\u9518?127.0.0.1", "127.0.0.1");
+            verifySingleCharRead("\u9518?127.0.0.1", "127.0.0.1");
             System.out.println("Windows BOM reader regression passed");
             System.exit(0);
         } catch (Throwable ex) {
@@ -31,14 +31,25 @@ public final class ShellWindowsBomReaderRegression {
     }
 
     private static void verify(String input, String expected) throws IOException {
-        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new ByteArrayInputStream(input.getBytes()), new StringReader(input))) {
+        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new StringReader(input))) {
             require(expected.equals(readAll(reader)), "unexpected BOM repair result for: " + input);
         }
     }
 
     private static void verifyChunked(String input, String expected) throws IOException {
-        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new ByteArrayInputStream(input.getBytes()), new ChunkedReader(input))) {
+        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new ChunkedReader(input))) {
             require(expected.equals(readAll(reader)), "unexpected chunked BOM repair result");
+        }
+    }
+
+    private static void verifySingleCharRead(String input, String expected) throws IOException {
+        try (ShellWindowsBomReader reader = new ShellWindowsBomReader(new StringReader(input))) {
+            StringBuilder result = new StringBuilder();
+            int ch;
+            while ((ch = reader.read()) >= 0) {
+                result.append((char) ch);
+            }
+            require(expected.equals(result.toString()), "unexpected single-char BOM repair result");
         }
     }
 

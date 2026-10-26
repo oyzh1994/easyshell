@@ -3,8 +3,6 @@ package cn.oyzh.easyshell.ssh;
 import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
@@ -12,7 +10,7 @@ import java.io.Reader;
  * conhost 在代码页 936 下会把 EF BB BF 转成 Unicode 的“锘?”再通过 SSH 输出，
  * 该过程不可逆，只能在展示层移除这个已知的行首残片和原样 BOM 字符。
  */
-final class ShellWindowsBomReader extends InputStreamReader {
+final class ShellWindowsBomReader extends Reader {
 
     private static final char UTF8_BOM = '\uFEFF';
     private static final char GBK_BOM_FIRST = '\u9518';
@@ -26,8 +24,7 @@ final class ShellWindowsBomReader extends InputStreamReader {
     private boolean lineStart = true;
     private boolean closed;
 
-    ShellWindowsBomReader(InputStream stream, Reader delegate) {
-        super(stream);
+    ShellWindowsBomReader(Reader delegate) {
         this.delegate = delegate;
     }
 

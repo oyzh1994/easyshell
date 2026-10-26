@@ -47,7 +47,8 @@ public class ShellBaseSSHClientExecCommandTest {
     public void windowsUnixShellUsesColonSeparatorAndPosixPrefix() {
         TestClient client = new TestClient("MINGW64_NT-10.0", "/usr/bin/bash",
                 "C:/Windows/System32", "C:/Program Files/Git/bin");
-        assertEquals("PATH='C:/Windows/System32:C:/Program Files/Git/bin':\"$PATH\"; export PATH; echo ok",
+        assertEquals("PATH='/c/Windows/System32:/c/Program Files/Git/bin':\"$PATH\"; export PATH; "
+                        + "export MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1; echo ok",
                 client.resolve("echo ok"));
     }
 

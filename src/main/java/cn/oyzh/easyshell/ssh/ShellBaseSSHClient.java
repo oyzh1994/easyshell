@@ -376,23 +376,23 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         this.shellType = this.serverExec().getShellType();
         JulLog.info("shell type:{}", this.shellType);
 
-//        // 字符集
-//        this.remoteCharset = this.serverExec().getCharset();
-//        JulLog.info("remote charset: {}", this.remoteCharset);
+        // 字符集
+        this.remoteCharset = this.serverExec().getCharset();
+        JulLog.info("remote charset: {}", this.remoteCharset);
 
-//        // 用户目录
-//        this.userHome = this.serverExec().getUserHome();
-//        JulLog.info("user home: {}", this.userHome);
+        // 用户目录
+        this.userHome = this.serverExec().getUserHome();
+        JulLog.info("user home: {}", this.userHome);
 
         // 环境
         this.initEnvironment();
         JulLog.info("environment: {}", this.environment);
 
-//        // windows专属配置
-//        if (this.isWindowsPosixShellType()) {
-//            this.windowsNativeCharset = this.serverExec().getWindowsNativeCharset();
-//            JulLog.info("windowsNativeCharset: {}", this.windowsNativeCharset);
-//        }
+        // windows专属配置
+        if (this.isWindowsPosixShellType()) {
+            this.windowsNativeCharset = this.serverExec().getWindowsNativeCharset();
+            JulLog.info("windowsNativeCharset: {}", this.windowsNativeCharset);
+        }
     }
 
     /**
@@ -457,9 +457,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
             return this.getRemoteCharset();
         }
         if (this.windowsNativeCharset == null) {
-//            this.initMetadata();
-            this.windowsNativeCharset = this.serverExec().getWindowsNativeCharset();
-            JulLog.info("windowsNativeCharset: {}", this.windowsNativeCharset);
+            this.initMetadata();
         }
         return this.windowsNativeCharset;
     }
@@ -755,6 +753,15 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         return isWindowsType(this.getOsType());
     }
 
+    /**
+     * 当前连接是否为 Windows GBK 控制台。该方法可能触发元数据探测，只能在后台线程调用。
+     *
+     * @return 结果
+     */
+    public boolean isWindowsGbkCharset() {
+        return this.isWindows() && StringUtil.equalsAnyIgnoreCase(this.getRemoteCharset(), "gbk", "gb18030");
+    }
+
     private static boolean isMacosType(String value) {
         return StringUtil.containsAnyIgnoreCase(value, "Darwin", "Macos", "OS X");
     }
@@ -776,12 +783,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 远程字符集
      */
-    public synchronized String getRemoteCharset() {
+    public String getRemoteCharset() {
         if (this.remoteCharset == null) {
-//            this.initMetadata();
-            // 字符集
-            this.remoteCharset = this.serverExec().getCharset();
-            JulLog.info("remote charset: {}", this.remoteCharset);
+            this.initMetadata();
         }
         return this.remoteCharset;
     }
@@ -803,12 +807,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 用户目录
      */
-    public synchronized String getUserHome() {
+    public String getUserHome() {
         if (this.userHome == null) {
-//            this.initMetadata();
-            // 用户目录
-            this.userHome = this.serverExec().getUserHome();
-            JulLog.info("user home: {}", this.userHome);
+            this.initMetadata();
         }
         return this.userHome;
     }
@@ -1249,7 +1250,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         // 初始化字符集
         envSetter.accept("LANG", "en_US." + this.getCharset().displayName());
         // 对windows unix shell做扩展命令处理，不保证生效
-        if (this.isWindowsPosixShellType()) {
+        if (this.shellType != null && this.isWindowsPosixShellType()) {
             envSetter.accept("MSYS_NO_PATHCONV", "1");
             envSetter.accept("MSYS2_ARG_CONV_EXCL", "*");
         }
