@@ -10,6 +10,7 @@ import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.ssh.ShellBaseSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.util.ShellUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -45,6 +46,11 @@ public class ShellServerExec implements AutoCloseable {
      * 服务器网络对象
      */
     private ShellServerNetwork network;
+
+    /**
+     * wmic命令可用
+     */
+    private boolean wmicUsable = true;
 
     /**
      * 获取ssh客户端
@@ -330,12 +336,13 @@ public class ShellServerExec implements AutoCloseable {
                     return 100 - Double.parseDouble(cpuUsage);
                 }
                 if (this.client.isWindows()) {
-                    String cpuUsage = this.client.exec("wmic cpu get loadpercentage", 5000);
+                    String cpuUsage = !this.wmicUsable ? "" : this.client.exec("wmic cpu get loadpercentage");
                     if (StringUtil.isNotBlank(cpuUsage) && !ShellUtil.isWindowsCommandNotFound(cpuUsage, "wmic")) {
                         cpuUsage = ShellUtil.getWindowsCommandResult(cpuUsage);
                     } else {
+                        this.wmicUsable = false;
                         // wmic不可用时，使用powershell替代
-                        cpuUsage = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average).Average\"", 5000);
+                        cpuUsage = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average).Average\"");
                     }
                     if (StringUtil.isBlank(cpuUsage) || ShellUtil.isWindowsCommandNotFound(cpuUsage, "powershell")) {
                         return -1;
@@ -403,7 +410,7 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 long free = -1;
                 long total = -1;
-                String output = this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value", 5000);
+                String output = !this.wmicUsable ? "" : this.client.exec("wmic OS get FreePhysicalMemory,TotalVisibleMemorySize /value");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     String[] arr = output.split("\n");
                     for (String s : arr) {
@@ -417,8 +424,9 @@ public class ShellServerExec implements AutoCloseable {
                         }
                     }
                 } else {
+                    this.wmicUsable = false;
                     // wmic不可用时，使用powershell替代
-                    output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize | ConvertTo-Csv -NoTypeInformation\"", 5000);
+                    output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory,TotalVisibleMemorySize | ConvertTo-Csv -NoTypeInformation\"");
                     if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                         String[] lines = output.split("\n");
                         if (lines.length > 1) {
@@ -532,13 +540,14 @@ public class ShellServerExec implements AutoCloseable {
     public String arch() {
         try {
             if (this.client.isWindows()) {
-                String output = this.client.exec("wmic os get osarchitecture", 5000);
+                String output = !this.wmicUsable ? "" : this.client.exec("wmic os get osarchitecture");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     String arch = ArrayUtil.indexOf(output.split("\n"), 1);
                     return arch == null ? "N/A" : arch.trim();
                 }
+                this.wmicUsable = false;
                 // wmic不可用时，使用powershell替代
-                output = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).OSArchitecture\"", 5000);
+                output = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).OSArchitecture\"");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                     return output.trim();
                 }
@@ -566,7 +575,7 @@ public class ShellServerExec implements AutoCloseable {
                 return Long.parseLong(totalMemory) / 1024 / 1024;
             }
             if (this.client.isWindows()) {
-                String totalMemory = this.client.exec("wmic memorychip get capacity", 5000);
+                String totalMemory = !this.wmicUsable ? "" : this.client.exec("wmic memorychip get capacity");
                 if (StringUtil.isNotBlank(totalMemory) && !ShellUtil.isWindowsCommandNotFound(totalMemory, "wmic")) {
                     totalMemory = ArrayUtil.indexOf(totalMemory.split("\n"), 1);
                     if (totalMemory == null) {
@@ -574,8 +583,9 @@ public class ShellServerExec implements AutoCloseable {
                     }
                     return Long.parseLong(totalMemory.trim()) / 1024 / 1024;
                 }
+                this.wmicUsable = false;
                 // wmic不可用时，使用powershell替代
-                totalMemory = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum\"", 5000);
+                totalMemory = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum\"");
                 if (StringUtil.isNotBlank(totalMemory) && !ShellUtil.isWindowsCommandNotFound(totalMemory, "powershell")) {
                     return Long.parseLong(totalMemory.trim()) / 1024 / 1024;
                 }
@@ -922,12 +932,13 @@ public class ShellServerExec implements AutoCloseable {
     public String uptime() {
         try {
             if (this.client.isWindows()) {
-                String output = this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime", 5000);
+                String output = !this.wmicUsable ? "" : this.client.exec("wmic path Win32_OperatingSystem get LastBootUpTime");
                 if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                     output = ArrayUtil.indexOf(output.split("\n"), 1);
                 } else {
+                    this.wmicUsable = false;
                     // wmic不可用时，使用powershell替代
-                    output = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString('yyyyMMddHHmmss')\"", 5000);
+                    output = this.client.exec("powershell -NoProfile -c \"(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString('yyyyMMddHHmmss')\"");
                     if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                         output = output.trim();
                     } else {
@@ -1035,7 +1046,8 @@ public class ShellServerExec implements AutoCloseable {
         try {
             if (this.client.isLinux()
                     || this.client.isMacos()
-                    || this.client.isUnix()) {
+                    || this.client.isUnix()
+                    || this.client.isWindowsPosixShellType()) {
                 if (isFile) {
                     return this.client.exec("rm -f \"" + file + "\"");
                 }
@@ -1283,9 +1295,8 @@ public class ShellServerExec implements AutoCloseable {
             if (this.client.isWindows()) {
                 String output = this.client.exec("chcp");
                 return ShellUtil.getCharsetFromChcp(output);
-            } else {
-                return this.client.exec("echo $LANG");
             }
+            return this.client.exec("echo $LANG");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1455,11 +1466,20 @@ public class ShellServerExec implements AutoCloseable {
      */
     public String getOsType() {
         try {
-            String osType = this.client.execMetadata("uname -s");
-            if (StringUtil.isNotBlank(osType) && ShellUtil.isWindowsCommandNotFound(osType, "uname")) {
-                osType = this.client.execMetadataUtf8("cmd.exe /c ver");
+            String msystem = this.client.execMetadata("echo $MSYSTEM");
+            if (StringUtil.isNotBlank(msystem)) {
+                return "Windows";
             }
-            return osType;
+            String osType = this.client.execMetadata("echo $OSTYPE");
+            if (StringUtil.isNotBlank(osType)) {
+                return osType;
+            }
+            String uname = this.client.execMetadata("uname -s");
+            if (StringUtil.isNotBlank(uname) && ShellSSHUtil.isOsType_Windows(uname)) {
+                //                return this.client.execMetadataUtf8("cmd.exe /c ver");
+                return "Windows";
+            }
+            return uname;
         } catch (Exception ex) {
             JulLog.error("getOsType error", ex);
         }

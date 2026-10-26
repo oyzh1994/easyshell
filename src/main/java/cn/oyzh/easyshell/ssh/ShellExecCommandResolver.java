@@ -25,10 +25,11 @@ final class ShellExecCommandResolver {
      * 远端 shell 家族
      */
     enum Family {
-        POSIX,
         CSH,
         CMD,
+        POSIX,
         POWERSHELL,
+        WINDOWS_POSIX,
         UNSUPPORTED
     }
 
@@ -53,6 +54,7 @@ final class ShellExecCommandResolver {
                 case CSH -> resolveCsh(command, path);
                 case CMD -> resolveCmd(command, path);
                 case POWERSHELL -> resolvePowershell(command, path);
+                case WINDOWS_POSIX -> resolveWindowsPosix(command, path);
                 case UNSUPPORTED -> command;
             };
         } catch (RuntimeException ignored) {
@@ -65,6 +67,13 @@ final class ShellExecCommandResolver {
      */
     private static String resolvePosix(String command, String path) {
         return "PATH=" + ShellSSHUtil.quoteCommand(path) + ":\"$PATH\"; export PATH; " + command;
+    }
+
+    /**
+     * Windows POSIX shell 在当前 shell 内临时扩展 PATH，保留 cd、alias、函数、管道等原命令语义。
+     */
+    private static String resolveWindowsPosix(String command, String path) {
+        return "PATH=" + ShellSSHUtil.quoteCommand(path) + ":\"$PATH\"; export PATH; MSYS2_ARG_CONV_EXCL='*' MSYS_NO_PATHCONV=1 " + command;
     }
 
     /**

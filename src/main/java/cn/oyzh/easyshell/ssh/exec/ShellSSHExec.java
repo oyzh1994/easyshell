@@ -24,6 +24,11 @@ public class ShellSSHExec implements AutoCloseable {
     private ShellSSHClient client;
 
     /**
+     * wmic命令可用
+     */
+    private boolean wmicUsable = true;
+
+    /**
      * 构造ssh执行器
      *
      * @param client ssh客户端
@@ -42,12 +47,13 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("sysctl machdep.cpu");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic cpu", 5000);
+            String output = !this.wmicUsable ? "" : this.client.exec("wmic cpu");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellUtil.wmicTableToText(output);
             }
+            this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_Processor | Format-List *\"", 5000);
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_Processor | Format-List *\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return output;
             }
@@ -70,12 +76,13 @@ public class ShellSSHExec implements AutoCloseable {
      */
     public List<ShellSSHDiskInfo> disk_info() {
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName", 5000);
+            String output = !this.wmicUsable ? "" : this.client.exec("wmic logicaldisk  get name, size, freespace, volumeName");
             if (!ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellSSHExecParser.diskForWindows(output);
             }
+            this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,Size,FreeSpace,VolumeName | ConvertTo-Csv -NoTypeInformation\"", 5000);
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID,Size,FreeSpace,VolumeName | ConvertTo-Csv -NoTypeInformation\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return ShellSSHExecParser.diskForWindows2(output);
             }
@@ -114,12 +121,13 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("system_profiler SPMemoryDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("wmic memorychip", 5000);
+            String output = !this.wmicUsable ? "" : this.client.exec("wmic memorychip");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellUtil.wmicTableToText(output);
             }
+            this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_PhysicalMemory | Format-List *\"", 5000);
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_PhysicalMemory | Format-List *\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return output;
             }
@@ -148,16 +156,17 @@ public class ShellSSHExec implements AutoCloseable {
             return this.client.exec("system_profiler SPDisplaysDataType");
         }
         if (this.client.isWindows()) {
-            String output = this.client.exec("nvidia-smi", 5000);
+            String output = this.client.exec("nvidia-smi");
             if (!ShellUtil.isWindowsCommandNotFound(output, "nvidia-smi")) {
                 return output;
             }
-            output = this.client.exec("wmic path win32_VideoController", 5000);
+            output = !this.wmicUsable ? "" : this.client.exec("wmic path win32_VideoController");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "wmic")) {
                 return ShellUtil.wmicTableToText(output);
             }
+            this.wmicUsable = false;
             // wmic不可用时，使用powershell替代
-            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_VideoController | Format-List *\"", 5000);
+            output = this.client.exec("powershell -NoProfile -c \"Get-CimInstance Win32_VideoController | Format-List *\"");
             if (StringUtil.isNotBlank(output) && !ShellUtil.isWindowsCommandNotFound(output, "powershell")) {
                 return output;
             }
@@ -348,9 +357,12 @@ public class ShellSSHExec implements AutoCloseable {
     public String cat_file(String filePath) {
         if (this.client.isWindows()) {
             filePath = ShellFileUtil.fixWindowsFilePath(filePath);
-            return this.client.exec("type \"" + filePath + "\"");
+            if (this.client.isWindowsPosixShellType()) {
+                return this.client.exec("cat " + ShellSSHUtil.quoteCommand(filePath));
+            }
+            return this.client.exec("type \"" + ShellSSHUtil.quoteCommand(filePath) + "\"");
         }
-        return this.client.exec("cat " + filePath);
+        return this.client.exec("cat " + ShellSSHUtil.quoteCommand(filePath));
     }
 
     /**

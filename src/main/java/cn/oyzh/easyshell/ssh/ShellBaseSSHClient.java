@@ -839,7 +839,7 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 return ShellExecCommandResolver.Family.POWERSHELL;
             }
             if (this.isWindowsPosixShellType()) {
-                return ShellExecCommandResolver.Family.POSIX;
+                return ShellExecCommandResolver.Family.WINDOWS_POSIX;
             }
             return ShellExecCommandResolver.Family.UNSUPPORTED;
         }
@@ -869,11 +869,8 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
      *
      * @return 结果
      */
-    private boolean isWindowsPosixShellType() {
-        String shellType = this.getShellType();
-        return StringUtil.isNotBlank(shellType)
-                && shellType.strip().startsWith("/")
-                && this.isPosixShellType();
+    public boolean isWindowsPosixShellType() {
+        return this.isWindows() && this.isPosixShellType();
     }
 
     protected synchronized void ensureSessionConnected(int timeout) throws Exception {
@@ -1166,6 +1163,11 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
         envSetter.accept("PATH", this.getExportPath());
         // 初始化字符集
         envSetter.accept("LANG", "en_US." + this.getCharset().displayName());
+        // 对windows unix shell做扩展命令处理，不保证生效
+        if (this.isWindowsPosixShellType()) {
+            envSetter.accept("MSYS_NO_PATHCONV", "1");
+            envSetter.accept("MSYS2_ARG_CONV_EXCL", "'*'");
+        }
         // 客户端转发
         if (this.shellConnect.isForwardAgent()) {
             agentForwardingSetter.accept(true);

@@ -742,4 +742,17 @@ public class ShellSSHUtil {
                 "ksh", "ksh.exe", "ksh93", "ksh93.exe", "mksh", "mksh.exe",
                 "dash", "dash.exe", "ash", "ash.exe", "yash", "yash.exe");
     }
+
+    /**
+     * 系统类型是否windwos
+     *
+     * @param uname 系统类型
+     * @return 结果
+     */
+    public static boolean isOsType_Windows(String uname) {
+        if (ShellUtil.isWindowsCommandNotFound(uname, "uname")) {
+            return true;
+        }
+        return StringUtil.containsAnyIgnoreCase(uname, "msys", "MINGW64_NT", "MINGW32_NT", "CYGWIN_NT", "MSYS_NT");
+    }
 }
