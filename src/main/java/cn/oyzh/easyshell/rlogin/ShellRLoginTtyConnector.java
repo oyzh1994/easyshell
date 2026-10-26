@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.rlogin;
 
 import cn.oyzh.common.util.IOUtil;
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.terminal.ShellTtyAuthUtil;
 import cn.oyzh.fx.tty.TtyStreamConnector;
 
 import java.io.IOException;
@@ -66,10 +66,7 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
     //        return 0;
     //    }
 
-    /**
-     * 是否已输入密码
-     */
-    private int inputPasswd;
+    private final ShellTtyAuthUtil authUtil = new ShellTtyAuthUtil();
 
     @Override
     protected int doRead(char[] buf, int offset, int len) throws IOException {
@@ -78,19 +75,10 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
         if (current == null) {
             return len;
         }
-        String line = new String(buf, offset, len);
-        // 说明结束了
-        if (line.contains("#")) {
-            this.inputPasswd = Integer.MAX_VALUE;
-            return len;
-        }
-        // 自动输入密码，第一次可能失败，最多重试3次
-        String password = current.getShellConnect().getPassword();
-        if (StringUtil.isNotBlank(password) && this.inputPasswd < 3 && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
-            this.inputPasswd++;
-            this.writer.write(password + "\r");
-            this.writer.flush();
-        }
+        this.authUtil.authenticate(buf, offset, len,
+                current.getShellConnect().getUser(),
+                current.getShellConnect().getPassword(),
+                this.writer, "\r");
         return len;
     }
 
