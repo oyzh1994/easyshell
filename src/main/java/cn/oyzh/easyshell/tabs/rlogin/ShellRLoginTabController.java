@@ -3,17 +3,18 @@ package cn.oyzh.easyshell.tabs.rlogin;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTtyConnector;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
+import cn.oyzh.easyshell.terminal.ShellTermWidgetUtil;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.ui.FXTerminalPanel;
@@ -23,7 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * shell连接rlogin内容组件
@@ -79,7 +79,18 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      * @throws IOException io异常
      */
     private void initWidget() throws IOException {
-        ShellRLoginTtyConnector connector = this.widget.createTtyConnector(this.client);
+        this.initWidget(this.widget, this.client);
+    }
+
+    /**
+     * 初始化终端组件
+     *
+     * @param widget 终端组件
+     * @param client 客户端
+     * @throws IOException io异常
+     */
+    private void initWidget(ShellRLoginTermWidget widget, ShellRLoginClient client) throws IOException {
+        ShellRLoginTtyConnector connector = widget.createTtyConnector(client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -87,13 +98,13 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
             }
         });
         // 初始化退格码
-        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
-        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         // 打开会话
-        this.widget.openSession(connector);
+        widget.openSession(connector);
         // 聚焦
-        this.widget.requestFocus();
+        widget.requestFocus();
     }
 
     /**
@@ -113,12 +124,7 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      */
     public void init(ShellConnect connect) {
         this.client = ShellClientUtil.newClient(connect);
-        // 监听连接状态
-        this.client.addStateListener((observableValue, shellConnState, t1) -> {
-            if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
-            }
-        });
+        this.initClientListener(this.client);
         StageManager.showMask(this.getWindow(), () -> {
             try {
                 if (!this.client.isConnected()) {
@@ -149,9 +155,9 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-//        if (this.widget != null) {
-//            this.widget.close();
-//        }
+        if (this.widget != null) {
+            this.widget.close();
+        }
         IOUtil.close(this.client);
         // // 展开左侧
         // if (this.setting.isHiddenLeftAfterConnected()) {
@@ -166,12 +172,67 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
      */
     @FXML
     private void refresh(MouseEvent event) {
+        StageManager.showMask(this.getWindow(), this::refreshWidget);
+    }
+
+    /**
+     * 原位刷新终端，保留当前标签页。
+     */
+    private void refreshWidget() {
+        ShellRLoginClient oldClient = this.client;
+        ShellRLoginClient newClient = null;
         try {
-            ShellEventUtil.connectionOpened(this.shellConnect());
-            this.closeTab();
-        } catch (Exception ex) {
+            newClient = ShellClientUtil.newClient(this.shellConnect());
+            this.initClientListener(newClient);
+            if (!newClient.isConnected()) {
+                newClient.start();
+            }
+            if (!newClient.isConnected()) {
+                throw new IllegalStateException(I18nHelper.connectFail());
+            }
+            ShellRLoginTermWidget oldWidget = this.widget;
+            this.client = newClient;
+            this.replaceWidget(oldWidget, newClient);
+            ShellTermWidgetUtil.close(oldWidget);
+            ThreadUtil.start(this::initBackground);
+        } catch (Throwable ex) {
+            IOUtil.close(newClient);
+            this.client = oldClient;
             MessageBox.exception(ex, this.getWindow());
         }
+    }
+
+    /**
+     * 监听客户端状态。
+     *
+     * @param client 客户端
+     */
+    private void initClientListener(ShellRLoginClient client) {
+        client.addStateListener((observableValue, shellConnState, t1) -> {
+            if (t1 == ShellConnState.INTERRUPTED) {
+                MessageBox.warn("[" + client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
+            }
+        });
+    }
+
+    /**
+     * 在 JavaFX 线程创建并替换终端组件。
+     *
+     * @param oldWidget 旧终端组件
+     * @param client    新客户端
+     */
+    private void replaceWidget(ShellRLoginTermWidget oldWidget, ShellRLoginClient client) {
+        FXUtil.runWait(() -> {
+            ShellRLoginTermWidget replacement = new ShellRLoginTermWidget();
+            try {
+                this.initWidget(replacement, client);
+                ShellTermWidgetUtil.replace(oldWidget, replacement);
+                this.widget = replacement;
+            } catch (Throwable ex) {
+                ShellTermWidgetUtil.close(replacement);
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     /**

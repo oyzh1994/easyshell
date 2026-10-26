@@ -549,6 +549,16 @@ public class ShellSSHClient extends ShellBaseSSHClient {
         }
     }
 
+    /**
+     * 重建 SSH 会话。复用当前客户端对象，使已持有客户端的页面无需重新绑定。
+     */
+    public synchronized void reconnect() {
+        this.releaseResources();
+        // 跳过 start 对旧连接状态的判断，同时保留状态监听器供页面继续使用
+        this.state.set(ShellConnState.NOT_INITIALIZED);
+        this.start(this.connectTimeout());
+    }
+
     @Override
     protected synchronized void onSessionConnected() {
         if (this.tunnelSession != this.session) {

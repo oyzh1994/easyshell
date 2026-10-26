@@ -21,7 +21,7 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
     /**
      * telnet客户端
      */
-    private ShellTelnetClient client;
+    private volatile ShellTelnetClient client;
 
     //    private InputStreamReader shellReader;
     //
@@ -90,12 +90,16 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
     @Override
     protected int doRead(char[] buf, int offset, int len) throws IOException {
         super.doRead(buf, offset, len);
+        ShellTelnetClient current = this.client;
+        if (current == null) {
+            return len;
+        }
         String line = new String(buf, offset, len);
 
         // 用户名
         if (!this.inputUser && StringUtil.containsAnyIgnoreCase(line, "login:", "Username:", "用户:", "User:")) {
             this.inputUser = true;
-            String user = this.client.getShellConnect().getUser();
+            String user = current.getShellConnect().getUser();
             if (StringUtil.isNotBlank(user)) {
                 this.writer.write(user + "\r\n");
                 this.writer.flush();
@@ -105,7 +109,7 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
         // 密码
         if (!this.inputPasswd && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
             this.inputPasswd = true;
-            String password = this.client.getShellConnect().getPassword();
+            String password = current.getShellConnect().getPassword();
             if (StringUtil.isNotBlank(password)) {
                 this.writer.write(password + "\r\n");
                 this.writer.flush();
@@ -137,11 +141,14 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
 
     @Override
     public boolean isConnected() {
-        return this.client.isConnected();
+        return this.client != null && this.client.isConnected();
     }
 
     @Override
     public boolean ready() throws IOException {
+        if (this.client == null) {
+            throw new IOException("telnet tty connector is closed");
+        }
         if (this.reader == null) {
             this.reader = new InputStreamReader(this.client.getInputStream(), this.charset());
             this.writer = new OutputStreamWriter(this.client.getOutputStream(), this.charset());
@@ -155,10 +162,14 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
     }
 
     @Override
-    public void close() {
-        super.close();
-        IOUtil.close(this.client);
+    public synchronized void close() {
+        if (this.client == null) {
+            return;
+        }
+        ShellTelnetClient current = this.client;
         this.client = null;
+        IOUtil.close(current);
+        super.close();
         //        this.client.close();
         //        IOUtil.close(this.shellReader);
         //        IOUtil.close(this.shellWriter);
@@ -168,11 +179,11 @@ public class ShellTelnetTtyConnector extends TtyStreamConnector {
 
     @Override
     public InputStream input() {
-        return this.client.getInputStream();
+        return this.client == null ? null : this.client.getInputStream();
     }
 
     @Override
     public OutputStream output() {
-        return this.client.getOutputStream();
+        return this.client == null ? null : this.client.getOutputStream();
     }
 }

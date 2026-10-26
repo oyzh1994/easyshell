@@ -61,6 +61,9 @@ public final class ShellJSchShellBannerRegression {
         boolean banner = containsBanner(initialText);
         System.out.println(cycle + ": bytes=" + initial.length + ", lines=" + lineCount(initialText)
                 + ", prompt=" + prompt + ", banner=" + banner);
+        if (Boolean.getBoolean("test.shell.dump.output")) {
+            System.out.println("--- " + cycle + " output ---\n" + initialText + "\n--- " + cycle + " output end ---");
+        }
         require(initial.length >= minInitialBytes, cycle + " initial shell output was empty or too short: "
                 + initial.length + " bytes");
         require(prompt, cycle + " initial shell output did not contain a prompt");

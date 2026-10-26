@@ -21,7 +21,7 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
     /**
      * rlogin客户端
      */
-    private ShellRLoginClient client;
+    private volatile ShellRLoginClient client;
     //
     //    private InputStreamReader shellReader;
     //
@@ -74,6 +74,10 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
     @Override
     protected int doRead(char[] buf, int offset, int len) throws IOException {
         super.doRead(buf, offset, len);
+        ShellRLoginClient current = this.client;
+        if (current == null) {
+            return len;
+        }
         String line = new String(buf, offset, len);
         // 说明结束了
         if (line.contains("#")) {
@@ -81,7 +85,7 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
             return len;
         }
         // 自动输入密码，第一次可能失败，最多重试3次
-        String password = this.client.getShellConnect().getPassword();
+        String password = current.getShellConnect().getPassword();
         if (StringUtil.isNotBlank(password) && this.inputPasswd < 3 && StringUtil.containsAnyIgnoreCase(line, "Password:", "密码:")) {
             this.inputPasswd++;
             this.writer.write(password + "\r");
@@ -115,11 +119,14 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
 
     @Override
     public boolean isConnected() {
-        return this.client.isConnected();
+        return this.client != null && this.client.isConnected();
     }
 
     @Override
     public boolean ready() throws IOException {
+        if (this.client == null) {
+            throw new IOException("rlogin tty connector is closed");
+        }
         if (this.reader == null) {
             this.reader = new InputStreamReader(this.client.getInputStream(), this.charset());
             this.writer = new OutputStreamWriter(this.client.getOutputStream(), this.charset());
@@ -133,21 +140,25 @@ public class ShellRLoginTtyConnector extends TtyStreamConnector {
     }
 
     @Override
-    public void close() {
-        super.close();
-        IOUtil.close(this.client);
+    public synchronized void close() {
+        if (this.client == null) {
+            return;
+        }
+        ShellRLoginClient current = this.client;
         this.client = null;
+        IOUtil.close(current);
+        super.close();
         //        this.shellReader = null;
         //        this.shellWriter = null;
     }
 
     @Override
     public InputStream input() {
-        return this.client.getInputStream();
+        return this.client == null ? null : this.client.getInputStream();
     }
 
     @Override
     public OutputStream output() {
-        return this.client.getOutputStream();
+        return this.client == null ? null : this.client.getOutputStream();
     }
 }

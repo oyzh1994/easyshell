@@ -17,7 +17,7 @@ public class ShellLocalTtyConnector extends TtyProcessTtyConnector {
     /**
      * 本地客户端
      */
-    private ShellLocalClient client;
+    private volatile ShellLocalClient client;
 
     /**
      * 获取本地客户端
@@ -46,9 +46,13 @@ public class ShellLocalTtyConnector extends TtyProcessTtyConnector {
     }
 
     @Override
-    public void close() {
-        super.close();
-        IOUtil.close(this.client);
+    public synchronized void close() {
+        if (this.client == null) {
+            return;
+        }
+        ShellLocalClient current = this.client;
         this.client = null;
+        IOUtil.close(current);
+        super.close();
     }
 }

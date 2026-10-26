@@ -24,7 +24,7 @@ public class ShellMoshTtyConnector extends TtyStreamConnector {
     /**
      * mosh客户端
      */
-    private ShellMoshClient client;
+    private volatile ShellMoshClient client;
 
     //    /**
     //     * 读取器
@@ -160,11 +160,14 @@ public class ShellMoshTtyConnector extends TtyStreamConnector {
 
     @Override
     public boolean isConnected() {
-        return this.client.isConnected();
+        return this.client != null && this.client.isConnected();
     }
 
     @Override
     public boolean ready() throws IOException {
+        if (this.client == null) {
+            throw new IOException("mosh tty connector is closed");
+        }
         if (this.reader == null) {
             final int pipeCapacity = 65536;
 
@@ -211,13 +214,16 @@ public class ShellMoshTtyConnector extends TtyStreamConnector {
     }
 
     @Override
-    public void close() {
-        super.close();
-        IOUtil.close(this.client);
+    public synchronized void close() {
+        if (this.client == null) {
+            return;
+        }
+        ShellMoshClient current = this.client;
         this.client = null;
-        //        if (this.heartbeat != null) {
+        IOUtil.close(current);
         TaskManager.cancel(this.heartbeat);
         this.heartbeat = null;
+        super.close();
         //        }
         //        if (this.shellReader != null) {
         //            IOUtil.close(this.shellReader);

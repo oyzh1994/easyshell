@@ -3,16 +3,18 @@ package cn.oyzh.easyshell.tabs.local;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.local.ShellLocalTtyConnector;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
+import cn.oyzh.easyshell.terminal.ShellTermWidgetUtil;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -20,7 +22,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * 本地终端tab内容组件
@@ -76,7 +77,18 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      * @throws IOException 抛出异常
      */
     private void initWidget() throws IOException {
-        ShellLocalTtyConnector connector = this.widget.createTtyConnector(this.client);
+        this.initWidget(this.widget, this.client);
+    }
+
+    /**
+     * 初始化终端组件
+     *
+     * @param widget 终端组件
+     * @param client 客户端
+     * @throws IOException 抛出异常
+     */
+    private void initWidget(ShellLocalTermWidget widget, ShellLocalClient client) throws IOException {
+        ShellLocalTtyConnector connector = widget.createTtyConnector(client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -84,13 +96,13 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
             }
         });
         // 初始化退格码
-        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
-        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
         // 打开会话
-        this.widget.openSession(connector);
+        widget.openSession(connector);
         // 聚焦
-        this.widget.requestFocus();
+        widget.requestFocus();
     }
 
     /**
@@ -126,9 +138,9 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
     @Override
     public void onTabClosed(Event event) {
         super.onTabClosed(event);
-//        if (this.widget != null) {
-//            this.widget.close();
-//        }
+        if (this.widget != null) {
+            this.widget.close();
+        }
         IOUtil.closeAsync(this.client);
     }
 
@@ -139,12 +151,47 @@ public class ShellLocalTabController extends ShellBaseTabController implements S
      */
     @FXML
     private void refresh(MouseEvent event) {
+        StageManager.showMask(this.getWindow(), this::refreshWidget);
+    }
+
+    /**
+     * 原位刷新终端，保留当前标签页。
+     */
+    private void refreshWidget() {
+        ShellLocalClient oldClient = this.client;
+        ShellLocalClient newClient = null;
         try {
-            ShellEventUtil.connectionOpened(this.shellConnect());
-            this.closeTab();
-        } catch (Exception ex) {
+            newClient = ShellClientUtil.newClient(this.shellConnect());
+            ShellLocalTermWidget oldWidget = this.widget;
+            this.client = newClient;
+            this.replaceWidget(oldWidget, newClient);
+            ShellTermWidgetUtil.close(oldWidget);
+            ThreadUtil.start(this::initBackground);
+        } catch (Throwable ex) {
+            IOUtil.close(newClient);
+            this.client = oldClient;
             MessageBox.exception(ex, this.getWindow());
         }
+    }
+
+    /**
+     * 在 JavaFX 线程创建并替换终端组件。
+     *
+     * @param oldWidget 旧终端组件
+     * @param client    新客户端
+     */
+    private void replaceWidget(ShellLocalTermWidget oldWidget, ShellLocalClient client) {
+        FXUtil.runWait(() -> {
+            ShellLocalTermWidget replacement = new ShellLocalTermWidget();
+            try {
+                this.initWidget(replacement, client);
+                ShellTermWidgetUtil.replace(oldWidget, replacement);
+                this.widget = replacement;
+            } catch (Throwable ex) {
+                ShellTermWidgetUtil.close(replacement);
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     /**

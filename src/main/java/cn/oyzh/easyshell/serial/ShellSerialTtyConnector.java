@@ -20,7 +20,7 @@ public class ShellSerialTtyConnector extends TtyStreamConnector {
     /**
      * 串口客户端
      */
-    private ShellSerialClient client;
+    private volatile ShellSerialClient client;
 
     /**
      * 串口数据监听器
@@ -67,6 +67,9 @@ public class ShellSerialTtyConnector extends TtyStreamConnector {
 
     @Override
     public void write(String str) throws IOException {
+        if (this.client == null) {
+            return;
+        }
         if (JulLog.isDebugEnabled()) {
             JulLog.debug("shell write : {}", str);
         }
@@ -76,6 +79,9 @@ public class ShellSerialTtyConnector extends TtyStreamConnector {
 
     @Override
     public void write(byte[] bytes) throws IOException {
+        if (this.client == null) {
+            return;
+        }
         super.write(bytes);
         String str = new String(bytes, this.charset());
         if (JulLog.isDebugEnabled()) {
@@ -86,11 +92,14 @@ public class ShellSerialTtyConnector extends TtyStreamConnector {
 
     @Override
     public boolean isConnected() {
-        return this.client.isConnected();
+        return this.client != null && this.client.isConnected();
     }
 
     @Override
     public boolean ready() throws IOException {
+        if (this.client == null) {
+            throw new IOException("serial tty connector is closed");
+        }
         if (this.listener == null) {
             this.listener = new ShellSerialDataListener(this.charset());
             this.client.addDataListener(this.listener);
@@ -104,11 +113,15 @@ public class ShellSerialTtyConnector extends TtyStreamConnector {
     }
 
     @Override
-    public void close() {
-        super.close();
-        IOUtil.close(this.client);
-        //        this.client.close();
+    public synchronized void close() {
+        if (this.client == null) {
+            return;
+        }
+        ShellSerialClient current = this.client;
         this.client = null;
+        IOUtil.close(current);
+        this.listener = null;
+        super.close();
     }
 
     @Override

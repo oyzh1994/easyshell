@@ -6,7 +6,6 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileTask;
@@ -23,6 +22,7 @@ import cn.oyzh.easyshell.ssh.ShellSSHUtil;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
+import cn.oyzh.easyshell.terminal.ShellTermWidgetUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
@@ -57,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * shell-效率模式tab内容组件
@@ -195,42 +196,45 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * @throws Exception 异常
      */
     private void initWidget() throws Exception {
-        // // 关闭和移除旧的组件
-        // if (this.widget != null) {
-        //     this.widget.close();
-        //     this.rightBox.removeChild(this.widget);
-        //     TtyConnector connector = this.widget.getTtyConnector();
-        //     if (connector != null) {
-        //         connector.close();
-        //     }
-        // }
-        // // 已关闭
-        // ShellSSHClient client = this.client();
-        // ChannelShell shell = client.openShell();
-        // if (shell == null) {
-        //     throw new Exception("shell is null");
-        // }
-        // if (!shell.isOpen()) {
-        //     shell.open().verify(client.connectTimeout());
-        // }
-        // // 已关闭
-        // if (shell == null) {
-        //     this.closeTab();
-        //     return;
-        // }
-        // 初始化组件
-        // this.widget = new ShellSSHTermWidget();
-        // this.widget.setFlexWidth("100%");
-        // this.widget.setFlexHeight("100% - 30");
-        // this.rightBox.addChild(0, this.widget);
+        this.initWidget(this.widget);
+    }
+
+    /**
+     * 初始化终端组件
+     *
+     * @param widget 终端组件
+     * @throws Exception 异常
+     */
+    private void initWidget(ShellSSHTermWidget widget) throws Exception {
+        this.initWidgetSettings(widget);
+        this.openWidget(widget, this.initTtyConnector(widget));
+    }
+
+    /**
+     * 初始化终端组件配置。
+     *
+     * @param widget 终端组件
+     */
+    private void initWidgetSettings(ShellSSHTermWidget widget) {
         // 初始化退格码
-        this.widget.initBackspaceCode(this.shellConnect().getBackspaceType());
+        widget.initBackspaceCode(this.shellConnect().getBackspaceType());
         // 设置alt修饰
-        this.widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+        widget.setAltSendsEscape(this.shellConnect().isAltSendsEscape());
+    }
+
+    /**
+     * 打开终端会话。调用前终端应已完成布局。
+     *
+     * @param widget    终端组件
+     * @param connector 终端连接器
+     */
+    private void openWidget(ShellSSHTermWidget widget, TtyConnector connector) {
         // 打开会话
-        this.widget.openSession(this.initTtyConnector());
+        widget.openSession(connector);
+        // 刷新后的终端已经挂载，立即同步一次pty大小，避免首屏按默认尺寸渲染
+        widget.initPtySize();
         // 聚焦
-        this.widget.requestFocus();
+        widget.requestFocus();
     }
 
     /**
@@ -239,11 +243,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * @return tty连接器
      * @throws Exception 异常
      */
-    private TtyConnector initTtyConnector() throws Exception {
+    private TtyConnector initTtyConnector(ShellSSHTermWidget widget) throws Exception {
         ShellSSHClient client = this.client();
         ShellConnect connect = client.getShellConnect();
         TtyConnector ttyConnector;
-        ShellSSHTtyConnector connector = this.widget.createTtyConnector(client);
+        ShellSSHTtyConnector connector = widget.createTtyConnector(client);
         // 监听窗口大小
         connector.terminalSizeProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -251,43 +255,12 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             }
         });
         if (connect.isEnableZModem()) {
-            // connector.setResetTtyConnectorCallback(this::openShell);
-            //            ttyConnector = this.widget.createZModemTtyConnector(connector);
-            ttyConnector = TtyTerminalUtil.createZModemTtyConnector(this.widget, connector);
+            ttyConnector = TtyTerminalUtil.createZModemTtyConnector(widget, connector);
         } else {
             ttyConnector = connector;
         }
         return ttyConnector;
     }
-
-    // /**
-    //  * 打开shell
-    //  *
-    //  * @return 结果
-    //  */
-    // private boolean openShell() {
-    //     DownLatch latch = DownLatch.of();
-    //     // ShellSSHClient client = this.client();
-    //     AtomicReference<Exception> ref = new AtomicReference<>();
-    //     ThreadUtil.start(() -> {
-    //         try {
-    //             // ChannelShell shell = client.reopenShell();
-    //             this.initWidget();
-    //             // shell.connect(client.connectTimeout());
-    //         } catch (Exception ex) {
-    //             ref.set(ex);
-    //         } finally {
-    //             latch.countDown();
-    //         }
-    //     });
-    //     latch.await();
-    //     if (ref.get() != null) {
-    //         MessageBox.exception(ref.get());
-    //         this.closeTab();
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     /**
      * 初始化背景
@@ -314,19 +287,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 初始化文件
      */
     private void initFile() {
-        this.fileTable.setSSHClient(this.client());
-//        this.fileTable.setEnabledLoading(false);
-        this.fileTable.refreshFile();
-//        this.fileTable.setEnabledLoading(true);
-        ShellSFTPClient sftpClient = this.sftpClient();
-        // 任务数量监听
-        this.taskSizeListener = sftpClient.addTaskSizeListener(() -> {
-            if (sftpClient.isTaskEmpty(this.taskTypes)) {
-                this.manage.clear();
-            } else {
-                this.manage.text("(" + sftpClient.getTaskSize() + ")");
-            }
-        }, this.taskTypes);
+        this.initFileTable();
         // 监听终端目录
         this.client().workDirProperty().addListener((observable, oldValue, newValue) -> {
             if (this.fileTable == null) {
@@ -340,6 +301,32 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         });
         // 设置收藏处理
         this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.sftpClient()));
+    }
+
+    /**
+     * 初始化文件表格及其 SFTP 任务监听。
+     */
+    private void initFileTable() {
+        this.fileTable.setSSHClient(this.client());
+//        this.fileTable.setEnabledLoading(false);
+        this.fileTable.refreshFile();
+//        this.fileTable.setEnabledLoading(true);
+        this.initSftpTaskListener();
+    }
+
+    /**
+     * 监听 SFTP 任务数量。
+     */
+    private void initSftpTaskListener() {
+        ShellSFTPClient sftpClient = this.sftpClient();
+        // 任务数量监听
+        this.taskSizeListener = sftpClient.addTaskSizeListener(() -> {
+            if (sftpClient.isTaskEmpty(this.taskTypes)) {
+                this.manage.clear();
+            } else {
+                this.manage.text("(" + sftpClient.getTaskSize() + ")");
+            }
+        }, this.taskTypes);
     }
 
     /**
@@ -764,12 +751,61 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     @FXML
     private void refresh(MouseEvent event) {
+        StageManager.showMask(this.getWindow(), this::refreshWidget);
+    }
+
+    /**
+     * 原位刷新终端，保留当前标签页以及共享的 SSH 客户端。
+     */
+    private void refreshWidget() {
+        ShellSSHTermWidget oldWidget = this.widget;
         try {
-            ShellEventUtil.connectionOpened(this.shellConnect());
-            this.closeTab();
-        } catch (Exception ex) {
+            ShellSSHTtyConnector oldConnector = oldWidget == null ? null : oldWidget.getTtyConnector();
+            if (oldConnector != null) {
+                // 旧终端退出时只能释放旧 shell，不能关闭仍被侧栏复用的 SSH 客户端。
+                oldConnector.detachClient();
+            }
+            ShellSFTPClient sftpClient = this.sftpClient();
+            if (sftpClient != null && this.taskSizeListener != null) {
+                sftpClient.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
+                this.taskSizeListener = null;
+            }
+            // 重建会话，服务端才会重新发送完整 MOTD 和登录首屏
+            this.client().reconnect();
+            ShellSSHTermWidget newWidget = this.replaceWidget(oldWidget);
+            ShellTermWidgetUtil.close(oldWidget);
+            // SFTP 随主会话重建，文件表格需要重新绑定新客户端
+            this.initFileTable();
+            ThreadUtil.start(this::initBackground);
+            JulLog.info("ssh terminal refreshed in place");
+        } catch (Throwable ex) {
             MessageBox.exception(ex, this.getWindow());
         }
+    }
+
+    /**
+     * 在 JavaFX 线程创建并替换终端组件。
+     *
+     * @param oldWidget 旧终端组件
+     * @return 新终端组件
+     */
+    private ShellSSHTermWidget replaceWidget(ShellSSHTermWidget oldWidget) {
+        AtomicReference<ShellSSHTermWidget> result = new AtomicReference<>();
+        FXUtil.runWait(() -> {
+            ShellSSHTermWidget replacement = new ShellSSHTermWidget();
+            try {
+                this.initWidgetSettings(replacement);
+                TtyConnector connector = this.initTtyConnector(replacement);
+                ShellTermWidgetUtil.replace(oldWidget, replacement);
+                this.widget = replacement;
+                this.openWidget(replacement, connector);
+                result.set(replacement);
+            } catch (Throwable ex) {
+                ShellTermWidgetUtil.close(replacement);
+                throw new RuntimeException(ex);
+            }
+        });
+        return result.get();
     }
 
     /**
