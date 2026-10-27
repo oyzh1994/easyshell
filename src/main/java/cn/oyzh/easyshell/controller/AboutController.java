@@ -11,10 +11,13 @@ import cn.oyzh.fx.plus.controls.button.FXViaFolder;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.rich.RichMsgTextArea;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.util.Properties;
 
 /**
  * 关于业务
@@ -96,11 +99,17 @@ public class AboutController extends StageController {
     @FXML
     private FXViaFolder developerLogs;
 
-  /**
+    /**
      * 程序缓存
      */
     @FXML
     private FXViaFolder developerCache;
+
+    /**
+     * 属性
+     */
+    @FXML
+    private RichMsgTextArea propertity;
 
     /**
      * 项目信息
@@ -127,6 +136,13 @@ public class AboutController extends StageController {
         this.developerLogs.setText(JulUtil.getLogsDir());
         this.developerData.setText(ShellConst.getStorePath());
         this.developerCache.setText(ShellConst.getCachePath());
+
+        // 属性
+        Properties properties = System.getProperties();
+        this.propertity.setLineMaxLength(100 * 1024);
+        for (Object object : properties.keySet()) {
+            this.propertity.appendLine(object + "=" + properties.getProperty((String) object));
+        }
 
         // 设置标题
         this.stage.appendTitle(" " + this.project.getName());

@@ -6,7 +6,7 @@ A powerful, modern, cross-platform, multi-protocol client.
 
 ## Features
 
-- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, Mosh, local terminals, and more.
+- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, Mosh, local terminals, and more.
 - **Connection Management**: Add, edit, delete, import, and export connections.
 - **Key Management**: Generate, import, export, edit, and copy keys to hosts.
 - **Snippet Execution**: Save and execute code snippets.
@@ -187,6 +187,12 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![mysql17.png](resource/screenshot/mysql17.png)
 ![mysql18.png](resource/screenshot/mysql18.png)
 ![mysql19.png](resource/screenshot/mysql19.png)
+![mysql20.png](resource/screenshot/mysql20.png)
+![mysql21.png](resource/screenshot/mysql21.png)
+![mysql22.png](resource/screenshot/mysql22.png)
+![mysql23.png](resource/screenshot/mysql23.png)
+![mysql24.png](resource/screenshot/mysql24.png)
+![mysql25.png](resource/screenshot/mysql25.png)
 
 ### MongoDB
 ![mongo1.png](resource/screenshot/mongo1.png)
@@ -237,6 +243,7 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![dameng23.png](resource/screenshot/dameng23.png)
 ![dameng24.png](resource/screenshot/dameng24.png)
 ![dameng25.png](resource/screenshot/dameng25.png)
+![dameng26.png](resource/screenshot/dameng26.png)
 
 ### MariaDB
 ![mariadb1.png](resource/screenshot/mariadb1.png)
@@ -265,6 +272,7 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![mariadb24.png](resource/screenshot/mariadb24.png)
 ![mariadb25.png](resource/screenshot/mariadb25.png)
 ![mariadb26.png](resource/screenshot/mariadb26.png)
+![mariadb27.png](resource/screenshot/mariadb27.png)
 
 ### Mosh
 ![mosh1.png](resource/screenshot/mosh1.png)
@@ -276,7 +284,6 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![gongju3.png](resource/screenshot/gongju3.png)
 ![gongju4.png](resource/screenshot/gongju4.png)
 ![gongju5.png](resource/screenshot/gongju5.png)
-![gongju6.png](resource/screenshot/gongju6.png)
 
 ### SSH Keys
 ![miyao1.png](resource/screenshot/miyao1.png)

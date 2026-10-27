@@ -10,6 +10,7 @@
 <?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.rich.RichMsgTextArea?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.AboutController" realWidth="650" realHeight="330">
     <FXHeaderBar/>
@@ -353,6 +354,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </FXHyperlink>
+                    <InfoLabel text="RDP">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://github.com/tangluobo/rdp4j">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
                     <InfoLabel text="Mysql Client">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
@@ -497,6 +508,10 @@
                     </VBox.margin>
                 </FXViaFolder>
             </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.propertity">
+            <RichMsgTextArea fx:id="propertity" flexWidth="100%" flexHeight="100%">
+            </RichMsgTextArea>
         </FixedTab>
     </FXTabPane>
     <FXText fx:id="copyright">

@@ -6,7 +6,7 @@
 
 ## 功能特性
 
-- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mosh、本地终端等多种连接方式。
+- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mariadb、达梦、Mosh、本地终端等多种连接方式。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、编辑、复制到主机等操作。
 - **片段执行**：支持代码片段的保存和执行。
@@ -187,6 +187,12 @@
 ![mysql17.png](resource/screenshot/mysql17.png)
 ![mysql18.png](resource/screenshot/mysql18.png)
 ![mysql19.png](resource/screenshot/mysql19.png)
+![mysql20.png](resource/screenshot/mysql20.png)
+![mysql21.png](resource/screenshot/mysql21.png)
+![mysql22.png](resource/screenshot/mysql22.png)
+![mysql23.png](resource/screenshot/mysql23.png)
+![mysql24.png](resource/screenshot/mysql24.png)
+![mysql25.png](resource/screenshot/mysql25.png)
 
 ### MongoDB
 ![mongo1.png](resource/screenshot/mongo1.png)
@@ -237,6 +243,7 @@
 ![dameng23.png](resource/screenshot/dameng23.png)
 ![dameng24.png](resource/screenshot/dameng24.png)
 ![dameng25.png](resource/screenshot/dameng25.png)
+![dameng26.png](resource/screenshot/dameng26.png)
 
 ### Mariadb
 ![mariadb1.png](resource/screenshot/mariadb1.png)
@@ -265,6 +272,7 @@
 ![mariadb24.png](resource/screenshot/mariadb24.png)
 ![mariadb25.png](resource/screenshot/mariadb25.png)
 ![mariadb26.png](resource/screenshot/mariadb26.png)
+![mariadb27.png](resource/screenshot/mariadb27.png)
 
 ### Mosh
 ![mosh1.png](resource/screenshot/mosh1.png)
@@ -276,7 +284,6 @@
 ![gongju3.png](resource/screenshot/gongju3.png)
 ![gongju4.png](resource/screenshot/gongju4.png)
 ![gongju5.png](resource/screenshot/gongju5.png)
-![gongju6.png](resource/screenshot/gongju6.png)
 
 ### 密钥
 ![miyao1.png](resource/screenshot/miyao1.png)
