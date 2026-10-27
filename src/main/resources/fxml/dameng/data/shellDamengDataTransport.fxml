@@ -340,20 +340,20 @@
                 </VBox.margin>
             </FXLabel>
         </FXVBox>
-        <FXHBox flexWidth="100%">
+        <FXHBox flexWidth="100%" realHeight="50">
             <PrevStepButton onAction="#showStep3" groupId="exec" realHeight="30">
                 <HBox.margin>
-                    <Insets left="30" top="15"/>
+                    <Insets left="30" top="10"/>
                 </HBox.margin>
             </PrevStepButton>
             <TransportButton tipText="%base.start" groupId="exec" onAction="#doTransport" realHeight="30">
                 <HBox.margin>
-                    <Insets left="15" top="15"/>
+                    <Insets left="15" top="10"/>
                 </HBox.margin>
             </TransportButton>
             <StopButton disable="true" fx:id="stopTransportBtn" onAction="#stopTransport" realHeight="30">
                 <HBox.margin>
-                    <Insets left="15" top="15"/>
+                    <Insets left="15" top="10"/>
                 </HBox.margin>
             </StopButton>
         </FXHBox>
