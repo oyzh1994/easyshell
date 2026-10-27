@@ -164,7 +164,9 @@ public class ShellRDPClient implements ShellBaseClient {
                         if (redirectClipboard == null) {
                             redirectClipboard = false;
                         }
-                        this.client.connect(host, port, user, password, domain, width, height, color, sslMode, remoteAudio, redirectClipboard);
+                        boolean enableWallpaper = ShellRDPUtil.isWallpaperEnabled(this.shellConnect);
+                        this.client.connect(host, port, user, password, domain, width, height, color,
+                                sslMode, remoteAudio, redirectClipboard, enableWallpaper);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         ref.set(ex);

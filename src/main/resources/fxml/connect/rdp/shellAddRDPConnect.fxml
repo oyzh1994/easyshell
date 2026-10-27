@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox?>
+<?import cn.oyzh.easyshell.fx.rdp.ShellRdpColorComboBox?>
+<?import cn.oyzh.easyshell.fx.rdp.ShellRdpMethodComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.button.TestButton?>
@@ -20,8 +22,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.rdp.ShellRdpMethodComboBox?>
-<?import cn.oyzh.easyshell.fx.rdp.ShellRdpColorComboBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController" realWidth="750"
         realHeight="580">
@@ -135,7 +135,7 @@
                     </VBox.margin>
                 </InfoLabel>
                 <ShellRdpColorComboBox initIndex="4" fx:id="color" tipText="%base.contentTip2" realHeight="30"
-                                        flexWidth="100% - 180">
+                                       flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
                     </VBox.margin>
@@ -157,6 +157,11 @@
                         </HBox.margin>
                     </FXCheckBox>
                     <FXCheckBox selected="true" fx:id="remoteAudio" text="%base.remoteAudio">
+                        <HBox.margin>
+                            <Insets left="10" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox selected="true" fx:id="enableWallpaper" text="%base.enableBackground">
                         <HBox.margin>
                             <Insets left="10" top="5"/>
                         </HBox.margin>

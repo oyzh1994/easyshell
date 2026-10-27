@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.fx.proxy.ShellProxyAuthTypeComboBox;
 import cn.oyzh.easyshell.fx.proxy.ShellProxyProtocolComboBox;
 import cn.oyzh.easyshell.fx.rdp.ShellRdpColorComboBox;
 import cn.oyzh.easyshell.fx.rdp.ShellRdpMethodComboBox;
+import cn.oyzh.easyshell.rdp.ShellRDPUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -139,6 +140,12 @@ public class ShellUpdateRDPConnectController extends StageController {
      */
     @FXML
     private FXCheckBox redirectClipboard;
+
+    /**
+     * 启用壁纸
+     */
+    @FXML
+    private FXCheckBox enableWallpaper;
 
     /**
      * 代理面板
@@ -274,10 +281,12 @@ public class ShellUpdateRDPConnectController extends StageController {
             int method = this.method.getMethod();
             boolean remoteAudio = this.remoteAudio.isSelected();
             boolean redirectClipboard = this.redirectClipboard.isSelected();
+            boolean enableWallpaper = this.enableWallpaper.isSelected();
             shellConnect.putExtra("color", color);
             shellConnect.putExtra("method", method);
             shellConnect.putExtra("remoteAudio", remoteAudio);
             shellConnect.putExtra("redirectClipboard", redirectClipboard);
+            shellConnect.putExtra(ShellRDPUtil.EXTRA_ENABLE_WALLPAPER, enableWallpaper);
             shellConnect.setProxyConfig(this.getProxyConfig());
             shellConnect.setEnableProxy(this.enableProxy.isSelected());
             ShellConnectUtil.testConnect(this.stage, shellConnect, 3000);
@@ -313,6 +322,7 @@ public class ShellUpdateRDPConnectController extends StageController {
             String resolution = this.resolution.getTextTrim();
             boolean remoteAudio = this.remoteAudio.isSelected();
             boolean redirectClipboard = this.redirectClipboard.isSelected();
+            boolean enableWallpaper = this.enableWallpaper.isSelected();
 
             this.shellConnect.setName(name);
             this.shellConnect.setDomain(domain);
@@ -325,6 +335,7 @@ public class ShellUpdateRDPConnectController extends StageController {
             this.shellConnect.putExtra("resolution", resolution);
             this.shellConnect.putExtra("remoteAudio", remoteAudio);
             this.shellConnect.putExtra("redirectClipboard", redirectClipboard);
+            this.shellConnect.putExtra(ShellRDPUtil.EXTRA_ENABLE_WALLPAPER, enableWallpaper);
             // 认证信息
             this.shellConnect.setUser(userName);
             this.shellConnect.setPassword(password.trim());
@@ -413,6 +424,7 @@ public class ShellUpdateRDPConnectController extends StageController {
         if (this.shellConnect.containsExtra("redirectClipboard")) {
             this.redirectClipboard.setSelected(this.shellConnect.getExtra("redirectClipboard"));
         }
+        this.enableWallpaper.setSelected(ShellRDPUtil.isWallpaperEnabled(this.shellConnect));
         this.enableProxy.setSelected(this.shellConnect.isEnableProxy());
         ShellProxyConfig proxyConfig = this.shellConnect.getProxyConfig();
         if (proxyConfig != null) {

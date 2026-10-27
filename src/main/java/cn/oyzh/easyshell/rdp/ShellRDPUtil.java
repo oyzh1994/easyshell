@@ -24,6 +24,11 @@ import java.util.ArrayList;
 public class ShellRDPUtil {
 
     /**
+     * 启用远程桌面壁纸的扩展参数
+     */
+    public static final String EXTRA_ENABLE_WALLPAPER = "enableWallpaper";
+
+    /**
      * 加密rdp密码
      *
      * @param password 密码
@@ -43,6 +48,17 @@ public class ShellRDPUtil {
     public static boolean isBuiltIn(ShellConnect connect) {
         Integer method = connect.getExtra("method");
         return method != null && method == 0;
+    }
+
+    /**
+     * 是否启用远程桌面壁纸，未配置时默认启用
+     *
+     * @param connect 连接
+     * @return 结果
+     */
+    public static boolean isWallpaperEnabled(ShellConnect connect) {
+        Boolean enabled = connect.getExtra(EXTRA_ENABLE_WALLPAPER);
+        return enabled == null || enabled;
     }
 
     /**
@@ -71,6 +87,7 @@ public class ShellRDPUtil {
         String resolution = connect.getExtra("resolution");
         Boolean remoteAudio = connect.getExtra("remoteAudio");
         Boolean redirectClipboard = connect.getExtra("redirectClipboard");
+        boolean enableWallpaper = isWallpaperEnabled(connect);
         String cachePath = ShellConst.getCachePath();
         File tempFile = new File(cachePath, UUIDUtil.uuidSimple() + ".rdp");
         ArrayList<String> list = new ArrayList<>();
@@ -94,6 +111,8 @@ public class ShellRDPUtil {
         } else {
             list.add("redirectclipboard:i:0");
         }
+        // 壁纸
+        list.add("disable wallpaper:i:" + (enableWallpaper ? 0 : 1));
         // 域
         if (StringUtil.isNotBlank(domain)) {
             list.add("domain:s" + domain);
