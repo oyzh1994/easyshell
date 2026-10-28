@@ -32,24 +32,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # --- Linux amd64 ---
+          # --- Linux x64 ---
           - os: ubuntu-22.04
             pack_arg: linux_image
-            artifact: EasyShell-Linux-amd64.tar.gz
+            artifact: EasyShell-Linux-x64.tar.gz
             artifact_glob: 'dist/*.tar.gz'
           - os: ubuntu-22.04
             pack_arg: linux_deb
-            artifact: EasyShell-Linux-amd64.deb
+            artifact: EasyShell-Linux-x64.deb
             artifact_glob: 'dist/*.deb'
           - os: ubuntu-22.04
             pack_arg: linux_AppImage
-            artifact: EasyShell-Linux-amd64.AppImage
+            artifact: EasyShell-Linux-x64.AppImage
             artifact_glob: 'dist/*.AppImage'
             appimagetool: true
             appimage_arch: x86_64
           - os: ubuntu-22.04
             pack_arg: linux_rpm
-            artifact: EasyShell-Linux-amd64.rpm
+            artifact: EasyShell-Linux-x64.rpm
             artifact_glob: 'dist/*.rpm'
 
           # --- Linux arm64 ---
@@ -72,18 +72,18 @@ jobs:
             artifact: EasyShell-Linux-arm64.rpm
             artifact_glob: 'dist/*.rpm'
 
-          # --- macOS amd64 ---
+          # --- macOS x64 ---
           - os: macos-15-intel
             pack_arg: macos_dmg
-            artifact: EasyShell-Macos-amd64.dmg
+            artifact: EasyShell-Macos-x64.dmg
             artifact_glob: 'dist/*.dmg'
           - os: macos-15-intel
             pack_arg: macos_pkg
-            artifact: EasyShell-Macos-amd64.pkg
+            artifact: EasyShell-Macos-x64.pkg
             artifact_glob: 'dist/*.pkg'
           - os: macos-15-intel
             pack_arg: macos_image
-            artifact: EasyShell-Macos-amd64.zip
+            artifact: EasyShell-Macos-x64.zip
             artifact_glob: 'dist/*.zip'
 
           # --- macOS arm64 ---
@@ -100,20 +100,20 @@ jobs:
             artifact: EasyShell-Macos-arm64.zip
             artifact_glob: 'dist/*.zip'
 
-          # --- Windows amd64 ---
+          # --- Windows x64 ---
           - os: windows-latest
             pack_arg: windows_exe
-            artifact: EasyShell-Win-amd64.exe
+            artifact: EasyShell-Win-x64.exe
             artifact_glob: 'dist/*.exe'
             is_windows: true
           - os: windows-latest
             pack_arg: windows_image
-            artifact: EasyShell-Win-amd64.zip
+            artifact: EasyShell-Win-x64.zip
             artifact_glob: 'dist/*.zip'
             is_windows: true
           - os: windows-latest
             pack_arg: windows_msi
-            artifact: EasyShell-Win-amd64.msi
+            artifact: EasyShell-Win-x64.msi
             artifact_glob: 'dist/*.msi'
             is_windows: true
 
@@ -299,11 +299,11 @@ jobs:
 
           | Platform | Arch | Format |
           |----------|------|--------|
-          | Linux | amd64 | deb / rpm / AppImage / tar.gz |
+          | Linux | x64 | deb / rpm / AppImage / tar.gz |
           | Linux | arm64 | deb / rpm / AppImage / tar.gz |
-          | macOS | amd64 | dmg / pkg / zip |
+          | macOS | x64 | dmg / pkg / zip |
           | macOS | arm64 | dmg / pkg / zip |
-          | Windows | amd64 | exe / msi / zip |
+          | Windows | x64 | exe / msi / zip |
           | Windows | arm64 | exe / msi / zip |
 
           ### SHA256 Checksums

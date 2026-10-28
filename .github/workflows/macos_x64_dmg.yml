@@ -1,9 +1,6 @@
-name: Macos_amd64_pkg
+name: Macos_x64_dmg
 
 # 监听 push 事件（可根据需求改为 pull_request）
-#on:
-#  push:
-#    branches: [ v1.1.2 ]
 on: workflow_dispatch
 
 jobs:
@@ -42,7 +39,7 @@ jobs:
       - name: 执行打包
         run: |
           chmod +x ./package/pack.sh
-          ./package/pack.sh macos_pkg
+          ./package/pack.sh macos_dmg
       - name: 显示项目结构
         run: |
           brew install tree
@@ -50,8 +47,8 @@ jobs:
           tree -L 3
       - name: 列举生成的构建物
         run: ls -lh dist
-      - name: 上传pkg构建物
+      - name: 上传dmg构建物
         uses: actions/upload-artifact@main
         with:
-          name: EasyShell-Macos-amd64.pkg
-          path: dist/*.pkg
+          name: EasyShell-Macos-x64.dmg
+          path: dist/*.dmg
