@@ -864,7 +864,7 @@ public class ShellViewFactory {
      */
     public static StageAdapter sshAuth(ShellConnect connect) {
         try {
-            StageAdapter adapter = StageManager.parseStage(ShellSSHAuthController.class, StageManager.getPrimaryStage());
+            StageAdapter adapter = StageManager.parseStage(ShellSSHAuthController.class, StageManager.resolveDialogOwner());
             adapter.setProp("connect", connect);
             adapter.showAndWait();
             return adapter;
