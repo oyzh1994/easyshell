@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.rdp;
 
+import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -10,6 +11,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rdp.RdpView;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 
@@ -31,6 +33,11 @@ public class ShellRdpTabController extends ShellBaseTabController {
      * rdp客户端
      */
     private ShellRDPClient client;
+
+    /**
+     * 标签页选中状态监听
+     */
+    private ChangeListener<Boolean> keyboardCaptureListener;
 
     /**
      * 获取客户端
@@ -76,6 +83,15 @@ public class ShellRdpTabController extends ShellBaseTabController {
                     return;
                 }
                 this.rdpView.setScaleToFit(true);
+                if (OSUtil.isWindows()) {
+                    this.keyboardCaptureListener = (observable, oldValue, selected) -> {
+                        if (this.client != null) {
+                            this.client.setKeyboardCaptureActive(selected);
+                        }
+                    };
+                    this.getTab().selectedProperty().addListener(this.keyboardCaptureListener);
+                    this.client.setKeyboardCaptureActive(this.getTab().isSelected());
+                }
                 this.hideLeft();
             } catch (Throwable ex) {
                 ex.printStackTrace();
@@ -87,6 +103,9 @@ public class ShellRdpTabController extends ShellBaseTabController {
 
     @Override
     public void onTabClosed(Event event) {
+        if (this.getTab() != null && this.keyboardCaptureListener != null) {
+            this.getTab().selectedProperty().removeListener(this.keyboardCaptureListener);
+        }
         super.onTabClosed(event);
         IOUtil.closeAsync(this.client);
     }

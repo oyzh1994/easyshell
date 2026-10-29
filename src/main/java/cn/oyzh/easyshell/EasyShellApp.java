@@ -56,16 +56,21 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.terminal.util.TerminalManager;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import com.mysql.cj.conf.PropertyDefinitions;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.bouncycastle.crypto.encodings.PKCS1Encoding;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -306,6 +311,30 @@ public class EasyShellApp extends FXApplication implements EventListener {
         //     JulLog.warn("showMainView error", ex);
         // }
         ShellViewFactory.shellMain();
+        // 绑定全屏按钮
+        if (!OSUtil.isMacOS()) {
+            Stage stage = StageManager.getPrimaryStage();
+            stage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11));
+            AtomicBoolean fullScreen = new AtomicBoolean();
+            stage.fullScreenProperty().addListener((observable, oldValue, newValue) -> {
+                if (oldValue && !newValue) {
+                    fullScreen.set(true);
+                    FXUtil.runLater(() -> fullScreen.set(false));
+                }
+            });
+            stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.F11) {
+                    if (fullScreen.get() || stage.isFullScreen()) {
+                        event.consume();
+                    } else if (!event.isConsumed()) {
+                        stage.setFullScreen(true);
+                        event.consume();
+                    }
+                } else if (stage.isFullScreen()) {
+                    event.consume();
+                }
+            });
+        }
     }
 
     //    @Override

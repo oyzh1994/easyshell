@@ -7,6 +7,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.ProcessBuilderUtil;
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.exception.ShellException;
@@ -73,6 +74,11 @@ public class ShellRDPClient implements ShellBaseClient {
      * rdp代理隧道
      */
     private RDPProxyTunnel proxyTunnel;
+
+    /**
+     * 全屏键盘捕获
+     */
+    private ShellRDPFullScreenKeyboardCapture keyboardCapture;
 
     /**
      * 初始化客户端
@@ -225,6 +231,21 @@ public class ShellRDPClient implements ShellBaseClient {
             this.initClient();
         }
         rdpView.steup(this.client, this.frontend);
+        if (OSUtil.isWindows()) {
+            IOUtil.close(this.keyboardCapture);
+            this.keyboardCapture = new ShellRDPFullScreenKeyboardCapture(rdpView, this.frontend);
+        }
+    }
+
+    /**
+     * 更新全屏键盘捕获状态
+     *
+     * @param active 是否激活
+     */
+    public void setKeyboardCaptureActive(boolean active) {
+        if (this.keyboardCapture != null) {
+            this.keyboardCapture.setActive(active);
+        }
     }
 
     @Override
@@ -253,6 +274,10 @@ public class ShellRDPClient implements ShellBaseClient {
     @Override
     public void close() throws Exception {
         try {
+            if (this.keyboardCapture != null) {
+                IOUtil.close(this.keyboardCapture);
+                this.keyboardCapture = null;
+            }
             if (this.client != null) {
                 this.client.disconnect();
             }
