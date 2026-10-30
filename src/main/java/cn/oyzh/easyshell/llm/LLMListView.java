@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.llm;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.beans.binding.Bindings;
@@ -17,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LLMListView extends FXListView<LLMMessage> {
 
@@ -56,41 +58,46 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     public void addMessage(LLMMessage message) {
-        FXUtil.runLater(() -> {
-            this.getItems().add(message);
-            this.scrollToBottom();
-        });
+        this.addItem(message);
+        this.scrollToBottom();
     }
 
     public void appendMessage(LLMMessage message, String text) {
-        FXUtil.runLater(() -> {
-            message.appendMessage(text);
-            this.scrollToBottom();
-        });
+        message.appendMessage(text);
+        this.scrollToBottom();
     }
 
     public void clearMessages() {
-        FXUtil.runLater(() -> this.getItems().clear());
+        this.clearItems();
     }
 
+    private final AtomicInteger scrollToBottomFlag = new AtomicInteger();
+
     public void scrollToBottom() {
+        this.scrollToBottom(this.scrollToBottomFlag.incrementAndGet());
+    }
+
+    private void scrollToBottom(int flag) {
         FXUtil.runLater(() -> {
-            int last = this.getItems().size() - 1;
-            if (last < 0) {
+            if (flag != scrollToBottomFlag.get()) {
                 return;
             }
-            this.scrollTo(last);
-            int index = this.getItems().size() - 1;
-            if (index < 0) {
-                return;
-            }
-            this.scrollTo(index);
+            super.scrollTo((LLMMessage) super.lastItem());
             for (Node node : this.lookupAll(".scroll-bar")) {
                 if (node instanceof ScrollBar scrollBar && scrollBar.getOrientation() == Orientation.VERTICAL) {
-                    scrollBar.setValue(scrollBar.getMax());
+                    scrollBar.setValue(Double.MAX_VALUE);
                 }
             }
         });
+    }
+
+    public LLMMessage findMessage(String messageId) {
+        for (LLMMessage item : this.getItems()) {
+            if (StringUtil.equals(item.getMessageId(), messageId)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     private static final class LLMMessageCell extends ListCell<LLMMessage> {

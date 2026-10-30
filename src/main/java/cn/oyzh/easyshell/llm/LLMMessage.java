@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.llm;
 
+import cn.oyzh.common.util.UUIDUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +17,8 @@ public class LLMMessage {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final LLMMessageType type;
+
+    private String messageId = UUIDUtil.uuidSimple();
 
     private final long time;
 
@@ -66,6 +70,14 @@ public class LLMMessage {
         return TIME_FORMATTER.format(Instant.ofEpochMilli(this.time).atZone(ZoneId.systemDefault()));
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
     public String getMessage() {
         return message.get();
     }
@@ -80,7 +92,7 @@ public class LLMMessage {
 
     public void appendMessage(String message) {
         if (message != null && !message.isEmpty()) {
-            this.message.set(this.message.get() + message);
+            FXUtil.runWait(() -> this.message.set(this.message.get() + message));
         }
     }
 

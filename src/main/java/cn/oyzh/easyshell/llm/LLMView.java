@@ -96,7 +96,7 @@ public class LLMView extends FXBorderPane {
         Region attachmentSpacer = new Region();
         FXHBox.setHgrow(attachmentSpacer, Priority.ALWAYS);
         this.attachmentBar.addChild(
-                this.labeledCombo("会话Tab", this.sessionTabComboBox, 150),
+                this.labeledCombo("会话Tab", this.sessionTabComboBox),
                 this.buildContextUsage(),
                 this.buildAttachButton(),
                 this.attachmentLabel,
@@ -129,9 +129,9 @@ public class LLMView extends FXBorderPane {
         FXHBox.setHgrow(spacer, Priority.ALWAYS);
 
         toolbar.getChildren().addAll(
-                this.labeledCombo("供应商", this.providerComboBox, 98),
-                this.labeledCombo("模型", this.modelComboBox, 136),
-                this.labeledCombo("思考强度", this.thinkingLevelComboBox, 100),
+                this.labeledCombo("供应商", this.providerComboBox),
+                this.labeledCombo("模型", this.modelComboBox),
+                this.labeledCombo("思考强度", this.thinkingLevelComboBox),
                 spacer,
                 this.buildSendButton()
         );
@@ -139,13 +139,10 @@ public class LLMView extends FXBorderPane {
         return composer;
     }
 
-    private <T> FXHBox labeledCombo(String labelText, FXComboBox<T> comboBox, double width) {
+    private <T> FXHBox labeledCombo(String labelText, FXComboBox<T> comboBox) {
         FXLabel label = new FXLabel(labelText);
         label.getStyleClass().add("llm-field-label");
         comboBox.getStyleClass().add("llm-combo");
-        comboBox.setPrefWidth(width);
-        comboBox.setMinWidth(width);
-        comboBox.setMaxWidth(width);
         FXHBox box = new FXHBox(label, comboBox);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(5);
@@ -320,6 +317,10 @@ public class LLMView extends FXBorderPane {
 
     public LLMListView getMessageListView() {
         return messageListView;
+    }
+
+    public LLMMessage findMessage(String messageId) {
+        return messageListView.findMessage(messageId);
     }
 
     public FXTextArea getInputArea() {

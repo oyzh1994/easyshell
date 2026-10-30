@@ -37,6 +37,7 @@
         <!-- 锁定 -->
         <curator-version>4.3.0</curator-version>
         <!-- <jediterm.version>3.73</jediterm.version> -->
+        <langchain4j.version>1.23.0</langchain4j.version>
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <!-- <commons-net.version>3.13.0</commons-net.version> -->
         <nashorn.version>15.7</nashorn.version>
@@ -319,13 +320,25 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j</artifactId>
-            <version>1.23.0</version>
+            <version>${langchain4j.version}</version>
         </dependency>
         <!-- OpenAI 兼容模型集成 -->
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai</artifactId>
-            <version>1.23.0</version>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-anthropic -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-anthropic</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-ollama -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-ollama</artifactId>
+            <version>${langchain4j.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->

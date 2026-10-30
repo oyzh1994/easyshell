@@ -115,26 +115,6 @@
     -fx-font-size: 13px;
 }
 
-/*.llm-message-list .scroll-bar:vertical {*/
-/*    -fx-pref-width: 8;*/
-/*    -fx-padding: 0 2 0 0;*/
-/*}*/
-
-/*.llm-message-list .scroll-bar .track {*/
-/*    -fx-background-color: transparent;*/
-/*}*/
-
-/*.llm-message-list .scroll-bar .thumb {*/
-/*    -fx-background-color: -llm-scroll;*/
-/*    -fx-background-radius: 4;*/
-/*}*/
-
-/*.llm-message-list .scroll-bar .increment-button,*/
-/*.llm-message-list .scroll-bar .decrement-button {*/
-/*    -fx-padding: 0;*/
-/*    -fx-background-color: transparent;*/
-/*}*/
-
 .llm-composer {
     -fx-background-color: -llm-surface;
     -fx-border-color: -llm-border;

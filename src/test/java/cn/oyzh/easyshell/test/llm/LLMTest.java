@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.test.llm;
 
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMView;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.editor.incubator.Editor;
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LLMTest extends FXApplication {
 
@@ -34,12 +36,13 @@ public class LLMTest extends FXApplication {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        StageManager.setPrimaryStage(primaryStage);
         ThemeManager.apply(Themes.PRIMER_LIGHT);
+        StageManager.setPrimaryStage(primaryStage);
         try {
             //test1(primaryStage);
             //test2(primaryStage);
-            test3(primaryStage);
+            //test3(primaryStage);
+            test4(primaryStage);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
@@ -166,6 +169,54 @@ public class LLMTest extends FXApplication {
 //            String msg = assistant.chat("帮我看下服务器是否启动了docker");
 //            chatArea.addAssistantMessage(msg);
 //        }).start();
+
+        stage.setWidth(600);
+        stage.setHeight(800);
+        stage.show();
+    }
+
+    public void test4(Stage stage) throws Throwable {
+        OpenAiStreamingChatModel.OpenAiStreamingChatModelBuilder builder = new OpenAiStreamingChatModel.OpenAiStreamingChatModelBuilder()
+                .apiKey(System.getenv(this.sk))
+                .modelName("deepseek-flash")
+                .baseUrl("https://api.deepseek.com");
+
+        SSHTools tools = new SSHTools();
+
+        ShellConnect connect = new ShellConnect();
+        connect.setHost("192.168.3.21:22");
+        connect.setUser("root");
+        connect.setPassword("user@147");
+        ShellSSHClient sshClient = new ShellSSHClient(connect);
+        sshClient.start();
+        tools.setClient(sshClient);
+        OpenAiStreamingChatModel model = new OpenAiStreamingChatModel(builder);
+        Assistant assistant = AiServices.builder(Assistant.class)
+                .streamingChatModel(model)
+                .tools(tools)   // 注册工具实例
+                .build();
+
+        LLMView chatArea = new LLMView();
+        chatArea.setFlexWidth("100%");
+        chatArea.setFlexHeight("100%");
+        stage.setScene(new Scene(chatArea));
+
+        chatArea.setSendHandler(message -> {
+            ThreadUtil.startVirtual(() -> {
+                AtomicReference<LLMMessage> ref = new AtomicReference<>();
+                assistant.chatStream(message.getMessage())
+                        .onPartialResponse(token -> {
+                            if (ref.get() == null) {
+                                ref.set(chatArea.addAssistantMessage(token));
+                            } else {
+                                chatArea.appendMessage(ref.get(), token);
+                            }
+                        })
+                        .onToolExecuted(response -> { /* 流式结束 */ })
+                        .onError(error -> { /* 异常处理 */ })
+                        .start();
+            });
+        });
 
         stage.setWidth(600);
         stage.setHeight(800);
