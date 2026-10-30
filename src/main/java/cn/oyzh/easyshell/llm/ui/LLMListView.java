@@ -1,6 +1,5 @@
 package cn.oyzh.easyshell.llm.ui;
 
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -74,22 +73,12 @@ public class LLMListView extends FXListView<LLMMessage> {
             if (flag != scrollToBottomFlag.get()) {
                 return;
             }
-            super.scrollTo((LLMMessage) super.lastItem());
+            LLMMessage lastItem = (LLMMessage) super.lastItem();
+            super.scrollTo(lastItem);
             ScrollBar scrollBar = FXUtil.getVScrollBar(this);
             if (scrollBar != null) {
                 scrollBar.setValue(Double.MAX_VALUE);
             }
         });
     }
-
-    public LLMMessage findMessage(String messageId) {
-        for (LLMMessage item : this.getItems()) {
-            if (StringUtil.equals(item.getMessageId(), messageId)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-
 }

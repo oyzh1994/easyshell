@@ -324,10 +324,6 @@ public class LLMView extends FXBorderPane {
         return messageListView;
     }
 
-    public LLMMessage findMessage(String messageId) {
-        return messageListView.findMessage(messageId);
-    }
-
     public FXTextArea getInputArea() {
         return inputArea;
     }

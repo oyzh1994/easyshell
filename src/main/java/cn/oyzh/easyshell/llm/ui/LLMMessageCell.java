@@ -27,7 +27,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
 
     private final Label meta = new Label();
 
-    private LLMMessageCell() {
+    public LLMMessageCell() {
         this.getStyleClass().add("llm-message-cell");
         this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         this.setPadding(Insets.EMPTY);
