@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.test.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
-import cn.oyzh.easyshell.llm.LLMView;
+import cn.oyzh.easyshell.llm.ui.LLMView;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.Themes;
 import javafx.animation.KeyFrame;

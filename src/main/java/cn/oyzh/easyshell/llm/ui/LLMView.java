@@ -1,5 +1,10 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.ui;
 
+import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.LLMSendHandler;
+import cn.oyzh.easyshell.llm.LLMSessionTab;
+import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;

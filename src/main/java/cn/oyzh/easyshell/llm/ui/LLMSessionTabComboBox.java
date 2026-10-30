@@ -1,5 +1,6 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.ui;
 
+import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
