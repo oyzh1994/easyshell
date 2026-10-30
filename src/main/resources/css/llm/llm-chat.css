@@ -1,0 +1,303 @@
+.llm-view {
+    -llm-bg: #f5f6f8;
+    -llm-surface: #ffffff;
+    -llm-surface-soft: #f0f2f5;
+    -llm-text: #20242b;
+    -llm-muted: #8a919c;
+    -llm-border: #e2e6eb;
+    -llm-hover: #eef1f5;
+    -llm-accent: #2f6fed;
+    -llm-accent-hover: #235bd0;
+    -llm-input-bg: #ffffff;
+    -llm-scroll: #cbd2dc;
+    -fx-background-color: -llm-bg;
+}
+
+.llm-view.llm-dark {
+    -llm-bg: #15181d;
+    -llm-surface: #1b1f25;
+    -llm-surface-soft: #262b33;
+    -llm-text: #e6e9ee;
+    -llm-muted: #8d95a3;
+    -llm-border: #30363f;
+    -llm-hover: #2c323b;
+    -llm-accent: #4c8dff;
+    -llm-accent-hover: #6aa1ff;
+    -llm-input-bg: #1f242b;
+    -llm-scroll: #3a414b;
+}
+
+.llm-message-list,
+.llm-message-list .virtual-flow,
+.llm-message-list .clipped-container,
+.llm-message-list .sheet {
+    -fx-background-color: transparent;
+}
+
+.llm-message-list {
+    -fx-padding: 8 0 8 0;
+    -fx-background-insets: 0;
+}
+
+.llm-message-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-cell-size: -1;
+    -fx-pref-height: -1;
+}
+
+.llm-message-list .list-cell:filled:hover,
+.llm-message-list .list-cell:filled:selected,
+.llm-message-list .list-cell:filled:selected:hover {
+    -fx-background-color: transparent;
+}
+
+.llm-message-cell {
+    -fx-padding: 4 14 4 14;
+}
+
+.llm-message-row {
+    -fx-padding: 2 0 2 0;
+}
+
+.llm-bubble {
+    -fx-padding: 10 14 10 14;
+}
+
+.llm-bubble-user {
+    -fx-background-color: -llm-accent;
+    -fx-background-radius: 16 16 5 16;
+}
+
+.llm-bubble-assistant {
+    -fx-background-color: -llm-surface-soft;
+    -fx-background-radius: 16 16 16 5;
+}
+
+.llm-bubble-text {
+    -fx-font-size: 13px;
+}
+
+.llm-bubble-text-user {
+    -fx-text-fill: #ffffff;
+}
+
+.llm-bubble-text-assistant {
+    -fx-text-fill: -llm-text;
+}
+
+.llm-meta {
+    -fx-text-fill: -llm-muted;
+    -fx-font-size: 10.5px;
+    -fx-padding: 0 3 0 3;
+}
+
+.llm-bubble-attachment {
+    -fx-font-size: 11px;
+    -fx-padding: 4 8 4 8;
+    -fx-background-radius: 8;
+}
+
+.llm-bubble-attachment-user {
+    -fx-text-fill: rgba(255, 255, 255, 0.92);
+    -fx-background-color: rgba(255, 255, 255, 0.16);
+}
+
+.llm-bubble-attachment-assistant {
+    -fx-text-fill: -llm-text;
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+.llm-placeholder,
+.llm-message-list .placeholder .label {
+    -fx-text-fill: -llm-muted;
+    -fx-font-size: 13px;
+}
+
+/*.llm-message-list .scroll-bar:vertical {*/
+/*    -fx-pref-width: 8;*/
+/*    -fx-padding: 0 2 0 0;*/
+/*}*/
+
+/*.llm-message-list .scroll-bar .track {*/
+/*    -fx-background-color: transparent;*/
+/*}*/
+
+/*.llm-message-list .scroll-bar .thumb {*/
+/*    -fx-background-color: -llm-scroll;*/
+/*    -fx-background-radius: 4;*/
+/*}*/
+
+/*.llm-message-list .scroll-bar .increment-button,*/
+/*.llm-message-list .scroll-bar .decrement-button {*/
+/*    -fx-padding: 0;*/
+/*    -fx-background-color: transparent;*/
+/*}*/
+
+.llm-composer {
+    -fx-background-color: -llm-surface;
+    -fx-border-color: -llm-border;
+    -fx-border-width: 1 0 0 0;
+}
+
+.llm-input {
+    -fx-background-color: -llm-input-bg;
+    -fx-background-radius: 12;
+    -fx-border-color: -llm-border;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-text-fill: -llm-text;
+    -fx-prompt-text-fill: -llm-muted;
+    -fx-font-size: 13px;
+}
+
+.llm-input:focused {
+    -fx-background-color: -llm-input-bg;
+    -fx-border-color: -llm-accent;
+}
+
+.llm-input .content,
+.llm-input .scroll-pane,
+.llm-input .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.llm-input .content {
+    -fx-padding: 7 9 7 9;
+}
+
+.llm-input .text {
+    -fx-fill: -llm-text;
+}
+
+.llm-toolbar {
+    -fx-padding: 0 1 0 1;
+}
+
+.llm-field-label {
+    -fx-text-fill: -llm-muted;
+    -fx-font-size: 10.5px;
+}
+
+.llm-combo {
+    -fx-background-color: -llm-surface-soft;
+    -fx-background-radius: 7;
+    -fx-border-color: transparent;
+    -fx-border-radius: 7;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+    -fx-font-size: 11.5px;
+    -fx-pref-height: 28;
+}
+
+.llm-combo:hover {
+    -fx-background-color: -llm-hover;
+}
+
+.llm-combo:focused {
+    -fx-border-color: -llm-accent;
+}
+
+.llm-combo > .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -llm-text;
+    -fx-padding: 3 8 3 8;
+}
+
+.llm-combo > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 2;
+}
+
+.llm-combo > .arrow-button > .arrow {
+    -fx-background-color: -llm-muted;
+}
+
+.llm-file-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-border-color: -llm-border;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 5 7 5 7;
+    -fx-cursor: hand;
+}
+
+.llm-file-button:hover {
+    -fx-background-color: -llm-hover;
+}
+
+.llm-send-button {
+    -fx-background-color: -llm-accent;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 8;
+    -fx-padding: 6 14 6 14;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.llm-send-button:hover {
+    -fx-background-color: -llm-accent-hover;
+}
+
+.llm-send-button:disabled {
+    -fx-opacity: 0.42;
+}
+
+.llm-context {
+    -fx-min-width: 100;
+}
+
+.llm-context-label {
+    -fx-text-fill: -llm-muted;
+    -fx-font-size: 10.5px;
+}
+
+.llm-context-progress {
+    -fx-pref-height: 4;
+    -fx-accent: -llm-accent;
+}
+
+.llm-context-progress > .track {
+    -fx-background-color: -llm-border;
+    -fx-background-radius: 4;
+}
+
+.llm-context-progress > .bar {
+    -fx-background-color: -llm-accent;
+    -fx-background-radius: 4;
+}
+
+.llm-context-progress.llm-warning > .bar {
+    -fx-background-color: #e8a33c;
+}
+
+.llm-context-progress.llm-danger > .bar {
+    -fx-background-color: #df5b5b;
+}
+
+.llm-attachment-bar {
+    -fx-padding: 0 0 1 0;
+}
+
+.llm-attachment-chip {
+    -fx-text-fill: -llm-text;
+    -fx-font-size: 11px;
+    -fx-padding: 4 9 4 9;
+    -fx-background-color: -llm-surface-soft;
+    -fx-background-radius: 8;
+}
+
+.llm-attachment-remove {
+    -fx-background-color: transparent;
+    -fx-text-fill: -llm-muted;
+    -fx-font-size: 14px;
+    -fx-padding: 0 4 0 4;
+    -fx-cursor: hand;
+}
+
+.llm-attachment-remove:hover {
+    -fx-text-fill: -llm-text;
+}
