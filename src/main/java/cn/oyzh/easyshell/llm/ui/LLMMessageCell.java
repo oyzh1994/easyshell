@@ -82,16 +82,21 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
 
         this.setGraphic(this.row);
         boolean user = item.isUser();
+        boolean error = item.isError();
         this.row.setAlignment(user ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
 
-        this.row.getStyleClass().removeAll("llm-message-row-user", "llm-message-row-llm");
-        this.row.getStyleClass().add(user ? "llm-message-row-user" : "llm-message-row-llm");
+        this.row.getStyleClass().removeAll("llm-message-row-user", "llm-message-row-llm", "llm-message-row-error");
+        this.row.getStyleClass().add(error ? "llm-message-row-error"
+                : user ? "llm-message-row-user" : "llm-message-row-llm");
 
-        this.bubble.getStyleClass().removeAll("llm-bubble-user", "llm-bubble-assistant");
-        this.bubble.getStyleClass().add(user ? "llm-bubble-user" : "llm-bubble-assistant");
+        this.bubble.getStyleClass().removeAll("llm-bubble-user", "llm-bubble-assistant", "llm-bubble-error");
+        this.bubble.getStyleClass().add(error ? "llm-bubble-error"
+                : user ? "llm-bubble-user" : "llm-bubble-assistant");
 
-        this.text.getStyleClass().removeAll("llm-bubble-text-user", "llm-bubble-text-assistant");
-        this.text.getStyleClass().add(user ? "llm-bubble-text-user" : "llm-bubble-text-assistant");
+        this.text.getStyleClass().removeAll("llm-bubble-text-user", "llm-bubble-text-assistant",
+                "llm-bubble-text-error");
+        this.text.getStyleClass().add(error ? "llm-bubble-text-error"
+                : user ? "llm-bubble-text-user" : "llm-bubble-text-assistant");
         this.text.textProperty().bind(item.messageProperty());
 
         File file = item.getFile();
@@ -105,7 +110,14 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         }
 
         String model = item.getModel();
-        String prefix = user ? "" : (model == null || model.isBlank() ? "AI" : model) + " · ";
+        String prefix;
+        if (user) {
+            prefix = "";
+        } else if (error) {
+            prefix = "错误 · ";
+        } else {
+            prefix = (model == null || model.isBlank() ? "AI" : model) + " · ";
+        }
         this.meta.setText(prefix + item.getTimeText());
         this.meta.setAlignment(user ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
     }

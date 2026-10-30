@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LLMTest extends FXApplication {
 
@@ -203,17 +203,27 @@ public class LLMTest extends FXApplication {
 
         chatArea.setSendHandler(message -> {
             ThreadUtil.startVirtual(() -> {
-                AtomicReference<LLMMessage> ref = new AtomicReference<>();
+                LLMMessage message1 = chatArea.addAssistantMessage("思考中...");
+                AtomicBoolean first = new AtomicBoolean(true);
+                //AtomicReference<LLMMessage> ref = new AtomicReference<>();
                 assistant.chatStream(message.getMessage())
                         .onPartialResponse(token -> {
-                            if (ref.get() == null) {
-                                ref.set(chatArea.addAssistantMessage(token));
+                            //if (ref.get() == null) {
+                            //    ref.set(chatArea.addAssistantMessage(token));
+                            //} else {
+                            //    chatArea.appendMessage(ref.get(), token);
+                            //}
+                            if (first.get()) {
+                                first.set(false);
+                                chatArea.replaceMessage(message1, token);
                             } else {
-                                chatArea.appendMessage(ref.get(), token);
+                                chatArea.appendMessage(message1, token);
                             }
                         })
                         .onToolExecuted(response -> { /* 流式结束 */ })
-                        .onError(error -> { /* 异常处理 */ })
+                        .onError(error -> {
+                            chatArea.addErrorMessage(error.getMessage());
+                        })
                         .start();
             });
         });

@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 public class LLMMessage {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final LLMMessageType type;
 
@@ -54,12 +54,22 @@ public class LLMMessage {
         return result;
     }
 
+    public static LLMMessage error(String message) {
+        LLMMessage result = new LLMMessage(LLMMessageType.ERROR);
+        result.setMessage(message);
+        return result;
+    }
+
     public LLMMessageType getType() {
         return type;
     }
 
     public boolean isUser() {
         return this.type == LLMMessageType.USER;
+    }
+
+    public boolean isError() {
+        return this.type == LLMMessageType.ERROR;
     }
 
     public long getTime() {
@@ -84,6 +94,15 @@ public class LLMMessage {
 
     public void setMessage(String message) {
         this.message.set(message == null ? "" : message);
+    }
+
+    /**
+     * 覆盖消息内容，适用于将占位消息替换为真实回复
+     *
+     * @param message 消息内容
+     */
+    public void replaceMessage(String message) {
+        FXUtil.runWait(() -> this.message.set(message == null ? "" : message));
     }
 
     public StringProperty messageProperty() {

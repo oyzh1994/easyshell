@@ -10,6 +10,9 @@
     -llm-accent-hover: #235bd0;
     -llm-input-bg: #ffffff;
     -llm-scroll: #cbd2dc;
+    -llm-error-bg: #fff1f0;
+    -llm-error-border: #f2b8b5;
+    -llm-error-text: #b42318;
     -fx-background-color: -llm-bg;
 }
 
@@ -25,6 +28,9 @@
     -llm-accent-hover: #6aa1ff;
     -llm-input-bg: #1f242b;
     -llm-scroll: #3a414b;
+    -llm-error-bg: #3a1d20;
+    -llm-error-border: #7c3b42;
+    -llm-error-text: #ffb4ab;
 }
 
 .llm-message-list,
@@ -75,6 +81,14 @@
     -fx-background-radius: 16 16 16 5;
 }
 
+.llm-bubble-error {
+    -fx-background-color: -llm-error-bg;
+    -fx-border-color: -llm-error-border;
+    -fx-border-width: 1;
+    -fx-background-radius: 16 16 16 5;
+    -fx-border-radius: 16 16 16 5;
+}
+
 .llm-bubble-text {
     -fx-font-size: 13px;
 }
@@ -85,6 +99,10 @@
 
 .llm-bubble-text-assistant {
     -fx-text-fill: -llm-text;
+}
+
+.llm-bubble-text-error {
+    -fx-text-fill: -llm-error-text;
 }
 
 .llm-meta {

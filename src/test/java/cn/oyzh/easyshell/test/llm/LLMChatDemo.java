@@ -59,7 +59,9 @@ public class LLMChatDemo extends Application {
         view.addUserMessage("服务器上的 Docker 没有启动，帮我看看可能是什么原因。");
         view.addAssistantMessage("先确认服务状态和最近日志：\n\nsystemctl status docker --no-pager\njournalctl -u docker -n 80 --no-pager\n\n把输出贴给我，我继续判断是配置、磁盘还是权限问题。");
         view.addUserMessage("这是刚才的日志，顺便帮我生成一个重启脚本。", new File("docker-diagnose.log"));
-        view.addAssistantMessage("收到。我会先检查 docker.socket，再尝试启动服务；如果启动失败，会输出最近 50 行日志，方便继续定位。");
+        LLMMessage placeholder = view.addAssistantMessage("思考中...");
+        view.replaceMessage(placeholder, "收到。我会先检查 docker.socket，再尝试启动服务；如果启动失败，会输出最近 50 行日志，方便继续定位。");
+        view.addErrorMessage("连接模型服务失败：请求超时，请检查网络或 Base URL 配置。");
         view.setContextUsage(12_600, 64_000);
         view.setSelectedFile(new File("docker-diagnose.log"));
     }

@@ -270,8 +270,22 @@ public class LLMView extends FXBorderPane {
         return this.messageListView.addUserMessage(text, file);
     }
 
+    public LLMMessage addErrorMessage(String text) {
+        return this.messageListView.addErrorMessage(text);
+    }
+
     public void appendMessage(LLMMessage message, String text) {
         this.messageListView.appendMessage(message, text);
+    }
+
+    /**
+     * 覆盖已有消息内容，可用于将思考占位消息替换为真实回复
+     *
+     * @param message 目标消息
+     * @param text    新内容
+     */
+    public void replaceMessage(LLMMessage message, String text) {
+        this.messageListView.replaceMessage(message, text);
     }
 
     public void clearMessages() {
