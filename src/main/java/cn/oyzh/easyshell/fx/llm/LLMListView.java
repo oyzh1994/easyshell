@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class LLMListView extends FXListView<LLMMessage> {
 
-    private static final double BOTTOM_TOLERANCE = 0.01;
+    private static final double BOTTOM_TOLERANCE = 0.0001;
 
     private Runnable messageUpdateHandler;
 
@@ -47,7 +47,7 @@ public class LLMListView extends FXListView<LLMMessage> {
         //        FXUtil.runLater(this::installScrollBarListener);
         //    }
         //});
-        this.addEventFilter(ScrollEvent.SCROLL, event -> this.onUserScroll());
+        this.addEventFilter(ScrollEvent.SCROLL, this::onUserScroll);
         FXUtil.runLater(this::installScrollBarListener);
     }
 
@@ -244,8 +244,11 @@ public class LLMListView extends FXListView<LLMMessage> {
         }
     }
 
-    private void onUserScroll() {
+    private void onUserScroll(ScrollEvent event) {
         this.beginUserScroll();
+        if (event.getDeltaY() > 0) {
+            this.autoScroll = false;
+        }
         this.endUserScrollLater();
     }
 

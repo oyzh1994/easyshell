@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.ShellMainController;
 import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.llm.LLMAssistant;
+import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
@@ -27,15 +28,21 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.Content;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.service.memory.ChatMemoryService;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Future;
@@ -124,30 +131,32 @@ public class ChatController extends SubStageController {
 
     private LLMAssistant assistant;
 
-    private LLMAssistant initAssistant() {
+    private LLMAssistant initAssistant(LLMMessage currentMessage) {
         // 提供商
         LLMProvider provider = this.view.getSelectedProvider();
         if (provider == null) {
             MessageBox.warn(I18nHelper.pleaseSelectProvider(), this.getWindow());
             return null;
         }
+        // 思考等级
+        LLMThinkingLevel thinkingLevel = this.view.getSelectedThinkingLevel();
+        // 服务
+        AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
         // 会话
         LLMSessionTab sessionTab = this.view.getSelectedSession();
         LLMTools tools = null;
         if (sessionTab != null && sessionTab.getToolsFunc() != null) {
             tools = sessionTab.getToolsFunc().get();
         }
-        // 思考等级
-        LLMThinkingLevel thinkingLevel = this.view.getSelectedThinkingLevel();
-        AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
+        // 执行模式
+        LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
+        // 工具
         if (tools != null) {
             services.tools(tools);
+            services.systemMessage(tools.systemMessage(executionMode));
         }
-        // 设置消息上限
-        services.chatMemoryProvider(memoryId -> MessageWindowChatMemory.builder()
-                .id(memoryId)
-                .maxMessages(this.view.getLlmMaxMessages())
-                .build());
+        // 使用当前会话历史初始化内存，当前消息由大模型服务负责追加
+        services.chatMemory(this.buildChatMemory(currentMessage));
         if (this.view.isStreamingEnabled()) {
             // 创建模型
             StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);
@@ -164,6 +173,30 @@ public class ChatController extends SubStageController {
         return this.assistant;
     }
 
+    private ChatMemory buildChatMemory(LLMMessage currentMessage) {
+        String memoryId = this.currentSession == null ? ChatMemoryService.DEFAULT : this.currentSession.getUid();
+        MessageWindowChatMemory memory = MessageWindowChatMemory.builder()
+                .id(memoryId)
+                .maxMessages(this.view.getLlmMaxMessages())
+                .build();
+        List<ChatMessage> history = new ArrayList<>();
+        for (LLMMessage item : this.view.getMessages()) {
+            if (item == null || item.isError()) {
+                continue;
+            }
+            if (currentMessage != null && Objects.equals(item.getMessageId(), currentMessage.getMessageId())) {
+                continue;
+            }
+            String text = item.getMessage();
+            if (text == null || text.isBlank()) {
+                continue;
+            }
+            history.add(item.isUser() ? UserMessage.from(text) : AiMessage.from(text));
+        }
+        memory.set(history);
+        return memory;
+    }
+
     /**
      * 初始化大模型
      */
@@ -173,7 +206,7 @@ public class ChatController extends SubStageController {
             if (!this.validateSessionForSend()) {
                 return;
             }
-            LLMAssistant assistant = this.initAssistant();
+            LLMAssistant assistant = this.initAssistant(message);
             if (assistant == null) {
                 this.view.addErrorMessage(I18nHelper.initLLMFail());
                 return;

@@ -6,6 +6,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.store.jdbc.Column;
@@ -71,6 +72,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Integer llmMaxMessages = 20;
+
+    /**
+     * LLM执行模式
+     */
+    @Column
+    private Integer llmExecutionMode = LLMExecutionMode.APPROVE.ordinal();
 
     /**
      * 终端类型
@@ -396,6 +403,27 @@ public class ShellSetting extends AppSetting {
         this.llmMaxMessages = llmMaxMessages;
     }
 
+    /**
+     * 获取LLM执行模式
+     *
+     * @return 执行模式序号
+     */
+    public int getLlmExecutionMode() {
+        if (this.llmExecutionMode == null) {
+            return LLMExecutionMode.APPROVE.ordinal();
+        }
+        return LLMExecutionMode.fromOrdinal(this.llmExecutionMode).ordinal();
+    }
+
+    /**
+     * 设置LLM执行模式
+     *
+     * @param llmExecutionMode 执行模式序号
+     */
+    public void setLlmExecutionMode(int llmExecutionMode) {
+        this.llmExecutionMode = LLMExecutionMode.fromOrdinal(llmExecutionMode).ordinal();
+    }
+
     @Override
     public void copy(Object o) {
         super.copy(o);
@@ -412,6 +440,7 @@ public class ShellSetting extends AppSetting {
             this.llmProviderUid = setting.llmProviderUid;
             this.llmMaxMessages = setting.llmMaxMessages;
             this.llmThinkingLevel = setting.llmThinkingLevel;
+            this.llmExecutionMode = setting.llmExecutionMode;
             // 终端
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
@@ -28,6 +29,7 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -43,6 +45,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -56,6 +59,8 @@ public class LLMView extends FXBorderPane {
     private static final double SELECTOR_LABEL_WIDTH = 44;
 
     private static final double SELECTOR_WIDTH = 120;
+
+    private static final String EXECUTION_MODE_TOOLTIP = "llm.executionMode.tooltip";
 
     private final LLMListView messageListView = new LLMListView();
 
@@ -230,6 +235,7 @@ public class LLMView extends FXBorderPane {
         menu.getItems().addAll(
                 this.buildProviderMenu(),
                 this.buildThinkingMenu(),
+                this.buildExecutionModeMenu(),
                 this.buildStreamingMenu(),
                 this.buildMessageLimitMenu()
         );
@@ -271,6 +277,59 @@ public class LLMView extends FXBorderPane {
             menu.getItems().add(item);
         }
         return menu;
+    }
+
+    private Menu buildExecutionModeMenu() {
+        LLMExecutionMode selected = this.getSelectedExecutionMode();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.executionMode"));
+        ToggleGroup group = new ToggleGroup();
+        for (LLMExecutionMode mode : LLMExecutionMode.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getExecutionModeName(mode));
+            item.setToggleGroup(group);
+            item.setSelected(mode == selected);
+            item.setOnAction(event -> this.setExecutionMode(mode));
+            item.getProperties().put(EXECUTION_MODE_TOOLTIP, this.getExecutionModeDescription(mode));
+            menu.getItems().add(item);
+        }
+        menu.setOnShown(event -> FXUtil.runLater(() -> {
+            for (MenuItem item : menu.getItems()) {
+                this.installMenuItemTooltip(item);
+            }
+        }));
+        return menu;
+    }
+
+    private void installMenuItemTooltip(MenuItem item) {
+        Node node = item.getStyleableNode();
+        Object text = item.getProperties().get(EXECUTION_MODE_TOOLTIP);
+        if (node == null || !(text instanceof String tooltipText) || tooltipText.isBlank()) {
+            return;
+        }
+        if (node.getProperties().containsKey(EXECUTION_MODE_TOOLTIP)) {
+            return;
+        }
+        Tooltip tooltip = new Tooltip(tooltipText);
+        tooltip.setWrapText(true);
+        tooltip.setMaxWidth(360);
+        tooltip.setShowDelay(Duration.millis(250));
+        Tooltip.install(node, tooltip);
+        node.getProperties().put(EXECUTION_MODE_TOOLTIP, tooltip);
+    }
+
+    private String getExecutionModeName(LLMExecutionMode mode) {
+        return switch (mode) {
+            case SUGGEST -> I18nResourceBundle.i18nString("shell.llm.executionMode.suggest");
+            case APPROVE -> I18nResourceBundle.i18nString("shell.llm.executionMode.approve");
+            case UNRESTRICTED -> I18nResourceBundle.i18nString("shell.llm.executionMode.unrestricted");
+        };
+    }
+
+    private String getExecutionModeDescription(LLMExecutionMode mode) {
+        return switch (mode) {
+            case SUGGEST -> I18nResourceBundle.i18nString("shell.llm.executionMode.suggest.desc");
+            case APPROVE -> I18nResourceBundle.i18nString("shell.llm.executionMode.approve.desc");
+            case UNRESTRICTED -> I18nResourceBundle.i18nString("shell.llm.executionMode.unrestricted.desc");
+        };
     }
 
     private Menu buildStreamingMenu() {
@@ -564,6 +623,27 @@ public class LLMView extends FXBorderPane {
 
     public LLMThinkingLevel getSelectedThinkingLevel() {
         return thinkingLevelComboBox.getSelectedLevel();
+    }
+
+    /**
+     * 获取执行模式
+     *
+     * @return 执行模式
+     */
+    public LLMExecutionMode getSelectedExecutionMode() {
+        return LLMExecutionMode.fromOrdinal(this.setting.getLlmExecutionMode());
+    }
+
+    /**
+     * 设置执行模式，并持久化到设置
+     *
+     * @param executionMode 执行模式
+     */
+    public void setExecutionMode(LLMExecutionMode executionMode) {
+        if (executionMode != null) {
+            this.setting.setLlmExecutionMode(executionMode.ordinal());
+            this.settingStore.replace(this.setting);
+        }
     }
 
     /**
