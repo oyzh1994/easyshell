@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm.ui;
 
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import javafx.scene.control.ListCell;
@@ -43,6 +44,15 @@ public class LLMProviderComboBox extends FXComboBox<LLMProvider> {
             if (selectedUid == null && selectedName != null && selectedName.equals(provider.getName())) {
                 target = provider;
                 break;
+            }
+        }
+        if (target == null) {
+            String settingUid = ShellSettingStore.SETTING.getLlmProviderUid();
+            for (LLMProvider provider : providers) {
+                if (settingUid != null && settingUid.equals(provider.getUid())) {
+                    target = provider;
+                    break;
+                }
             }
         }
         if (target == null && !providers.isEmpty()) {

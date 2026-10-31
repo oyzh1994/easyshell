@@ -22,6 +22,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.service.AiServices;
 import javafx.collections.ListChangeListener;
@@ -91,13 +92,23 @@ public class ChatController extends SubStageController {
         }
         // 思考等级
         LLMThinkingLevel thinkingLevel = this.view.getSelectedThinkingLevel();
-        // 创建模型
-        StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);
-        // 创建工具
-        this.assistant = AiServices.builder(LLMAssistant.class)
-                .streamingChatModel(model)
-                .tools(tools)
-                .build();
+        if (this.view.isStreamingEnabled()) {
+            // 创建模型
+            StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);
+            // 创建工具
+            this.assistant = AiServices.builder(LLMAssistant.class)
+                    .streamingChatModel(model)
+                    .tools(tools)
+                    .build();
+        } else {
+            // 创建模型
+            ChatModel model = LLMUtil.createChatModel(provider, thinkingLevel);
+            // 创建工具
+            this.assistant = AiServices.builder(LLMAssistant.class)
+                    .chatModel(model)
+                    .tools(tools)
+                    .build();
+        }
         return this.assistant;
     }
 
@@ -112,23 +123,34 @@ public class ChatController extends SubStageController {
                 this.view.addErrorMessage(I18nHelper.initLLMFail());
                 return;
             }
+            boolean streaming = this.view.isStreamingEnabled();
             ThreadUtil.startVirtual(() -> {
                 LLMMessage message1 = this.view.addAssistantMessage(I18nHelper.thinking());
-                AtomicBoolean first = new AtomicBoolean(true);
-                assistant.chatStream(message.getMessage())
-                        .onPartialResponse(token -> {
-                            if (first.get()) {
-                                first.set(false);
-                                this.view.replaceMessage(message1, token);
-                            } else {
-                                this.view.appendMessage(message1, token);
-                            }
-                        })
-                        .onError(ex -> {
-                            JulLog.error("llm error", ex);
-                            this.view.addErrorMessage(ex.getMessage());
-                        })
-                        .start();
+                if (streaming) {
+                    AtomicBoolean first = new AtomicBoolean(true);
+                    assistant.chatStream(message.getMessage())
+                            .onPartialResponse(token -> {
+                                if (first.get()) {
+                                    first.set(false);
+                                    this.view.replaceMessage(message1, token);
+                                } else {
+                                    this.view.appendMessage(message1, token);
+                                }
+                            })
+                            .onError(ex -> {
+                                JulLog.error("llm error", ex);
+                                this.view.addErrorMessage(ex.getMessage());
+                            })
+                            .start();
+                } else {
+                    try {
+                        String response = assistant.chat(message.getMessage());
+                        this.view.replaceMessage(message1, response);
+                    } catch (Exception ex) {
+                        JulLog.error("llm error", ex);
+                        this.view.addErrorMessage(ex.getMessage());
+                    }
+                }
             });
         });
     }

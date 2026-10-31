@@ -38,22 +38,30 @@ public class LLMThinkingLevelComboBox extends FXComboBox<LLMThinkingLevel> {
         this.getSelectionModel().select(level);
     }
 
+    /**
+     * 获取思考强度显示名称
+     *
+     * @param level 思考强度
+     * @return 显示名称
+     */
+    public static String getDisplayName(LLMThinkingLevel level) {
+        if (level == null) {
+            return null;
+        }
+        return switch (level) {
+            case OFF -> I18nHelper.off();
+            case LOW -> I18nHelper.low();
+            case MEDIUM -> I18nHelper.medium();
+            case HIGH -> I18nHelper.high();
+        };
+    }
+
     private static final class LLMThinkingLevelCell extends ListCell<LLMThinkingLevel> {
 
         @Override
         protected void updateItem(LLMThinkingLevel item, boolean empty) {
             super.updateItem(item, empty);
-            if (empty || item == null) {
-                this.setText(null);
-            } else if (item == LLMThinkingLevel.OFF) {
-                this.setText(I18nHelper.off());
-            } else if (item == LLMThinkingLevel.LOW) {
-                this.setText(I18nHelper.low());
-            } else if (item == LLMThinkingLevel.MEDIUM) {
-                this.setText(I18nHelper.medium());
-            } else if (item == LLMThinkingLevel.HIGH) {
-                this.setText(I18nHelper.high());
-            }
+            this.setText(empty || item == null ? null : LLMThinkingLevelComboBox.getDisplayName(item));
         }
     }
 }

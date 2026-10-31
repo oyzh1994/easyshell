@@ -226,13 +226,24 @@
     -fx-background-color: -llm-hover;
 }
 
+.llm-settings-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-border-color: -llm-border;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 5 7 5 7;
+    -fx-cursor: hand;
+}
+
+.llm-settings-button:hover {
+    -fx-background-color: -llm-hover;
+}
+
 .llm-send-button {
     -fx-background-color: -llm-accent;
-    -fx-text-fill: #ffffff;
     -fx-background-radius: 8;
-    -fx-padding: 6 14 6 14;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
+    -fx-padding: 5 7 5 7;
     -fx-cursor: hand;
 }
 

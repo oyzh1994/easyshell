@@ -31,7 +31,7 @@ public class ShellMainController extends ParentStageController {
     /**
      * 默认聊天分栏值
      */
-    private static final double DEFAULT_CHAT_DIVIDER_POSITION = 0.6;
+    private static final double DEFAULT_CHAT_DIVIDER_POSITION = 0.65;
 
     /**
      * 跟节点

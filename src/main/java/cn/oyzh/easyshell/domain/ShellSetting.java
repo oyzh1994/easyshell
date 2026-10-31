@@ -6,6 +6,7 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
@@ -44,6 +45,24 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Boolean hiddenLeftAfterConnected;
+
+    /**
+     * LLM思考强度
+     */
+    @Column
+    private Integer llmThinkingLevel = LLMThinkingLevel.MEDIUM.ordinal();
+
+    /**
+     * LLM当前使用的供应商id
+     */
+    @Column
+    private String llmProviderUid;
+
+    /**
+     * LLM是否启用流式传输
+     */
+    @Column
+    private Boolean llmStreaming = true;
 
     /**
      * 终端类型
@@ -297,6 +316,60 @@ public class ShellSetting extends AppSetting {
         this.hiddenLeftAfterConnected = hiddenLeftAfterConnected;
     }
 
+    /**
+     * 获取LLM思考强度
+     *
+     * @return 思考强度序号
+     */
+    public int getLlmThinkingLevel() {
+        return this.llmThinkingLevel == null ? LLMThinkingLevel.MEDIUM.ordinal() : this.llmThinkingLevel;
+    }
+
+    /**
+     * 设置LLM思考强度
+     *
+     * @param llmThinkingLevel 思考强度序号
+     */
+    public void setLlmThinkingLevel(int llmThinkingLevel) {
+        this.llmThinkingLevel = llmThinkingLevel;
+    }
+
+    /**
+     * 获取LLM当前使用的供应商id
+     *
+     * @return 供应商id
+     */
+    public String getLlmProviderUid() {
+        return this.llmProviderUid;
+    }
+
+    /**
+     * 设置LLM当前使用的供应商id
+     *
+     * @param llmProviderUid 供应商id
+     */
+    public void setLlmProviderUid(String llmProviderUid) {
+        this.llmProviderUid = llmProviderUid;
+    }
+
+    /**
+     * 是否启用LLM流式传输
+     *
+     * @return 是否启用
+     */
+    public boolean isLlmStreaming() {
+        return this.llmStreaming == null || this.llmStreaming;
+    }
+
+    /**
+     * 设置是否启用LLM流式传输
+     *
+     * @param llmStreaming 是否启用
+     */
+    public void setLlmStreaming(boolean llmStreaming) {
+        this.llmStreaming = llmStreaming;
+    }
+
     @Override
     public void copy(Object o) {
         super.copy(o);
@@ -308,6 +381,10 @@ public class ShellSetting extends AppSetting {
             this.enableShortcutKey = setting.enableShortcutKey;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
+            // 大模型
+            this.llmStreaming = setting.llmStreaming;
+            this.llmProviderUid = setting.llmProviderUid;
+            this.llmThinkingLevel = setting.llmThinkingLevel;
             // 终端
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;

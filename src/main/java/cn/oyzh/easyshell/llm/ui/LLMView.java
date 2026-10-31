@@ -1,11 +1,17 @@
 package cn.oyzh.easyshell.llm.ui;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.llm.LLMProviderStore;
+import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -13,16 +19,22 @@ import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXBorderPane;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Priority;
@@ -36,8 +48,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class LLMView extends FXBorderPane {
+
+    private static final double SELECTOR_LABEL_WIDTH = 44;
+
+    private static final double SELECTOR_WIDTH = 120;
 
     private final LLMListView messageListView = new LLMListView();
 
@@ -51,9 +68,11 @@ public class LLMView extends FXBorderPane {
 
     private final LLMSessionTabComboBox sessionTabComboBox = new LLMSessionTabComboBox();
 
-    private final FXButton sendButton = new FXButton(I18nHelper.send());
+    private final FXButton sendButton = new FXButton();
 
     private final FXButton attachButton = new FXButton();
+
+    private final FXButton settingsButton = new FXButton();
 
     private final FXProgressBar contextProgress = new FXProgressBar();
 
@@ -64,6 +83,10 @@ public class LLMView extends FXBorderPane {
     private final FXHBox attachmentBar = new FXHBox();
 
     private final FXButton attachmentRemoveButton = new FXButton("×");
+
+    private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     private LLMSendHandler sendHandler;
 
@@ -103,8 +126,7 @@ public class LLMView extends FXBorderPane {
         Region attachmentSpacer = new Region();
         FXHBox.setHgrow(attachmentSpacer, Priority.ALWAYS);
         this.attachmentBar.addChild(
-                this.labeledCombo("会话Tab", this.sessionTabComboBox),
-                this.buildContextUsage(),
+                this.labeledCombo(I18nResourceBundle.i18nString(I18nHelper.SESSION), this.sessionTabComboBox),
                 this.buildAttachButton(),
                 this.attachmentLabel,
                 this.attachmentRemoveButton,
@@ -136,9 +158,8 @@ public class LLMView extends FXBorderPane {
         FXHBox.setHgrow(spacer, Priority.ALWAYS);
 
         toolbar.getChildren().addAll(
-                this.labeledCombo(I18nHelper.provider(), this.providerComboBox),
                 this.labeledCombo(I18nHelper.model(), this.modelComboBox),
-                this.labeledCombo(I18nHelper.thinkingIntensity(), this.thinkingLevelComboBox),
+                this.buildSettingsButton(),
                 spacer,
                 this.buildSendButton()
         );
@@ -149,10 +170,13 @@ public class LLMView extends FXBorderPane {
     private <T> FXHBox labeledCombo(String labelText, FXComboBox<T> comboBox) {
         FXLabel label = new FXLabel(labelText);
         label.getStyleClass().add("llm-field-label");
+        label.setMinWidth(SELECTOR_LABEL_WIDTH);
+        label.setPrefWidth(SELECTOR_LABEL_WIDTH);
         comboBox.getStyleClass().add("llm-combo");
+        comboBox.setPrefWidth(SELECTOR_WIDTH);
         FXHBox box = new FXHBox(label, comboBox);
         box.setAlignment(Pos.CENTER_LEFT);
-        box.setSpacing(5);
+        box.setSpacing(3);
         return box;
     }
 
@@ -170,7 +194,7 @@ public class LLMView extends FXBorderPane {
     }
 
     private FXButton buildAttachButton() {
-        SVGGlyph glyph = new SVGGlyph("/fx-svg/file.svg", 15);
+        FileSVGGlyph glyph = new FileSVGGlyph();
         this.attachButton.setGraphic(glyph);
         this.attachButton.getStyleClass().add("llm-file-button");
         this.attachButton.setTooltip(new Tooltip(I18nHelper.pleaseSelectFile()));
@@ -179,19 +203,111 @@ public class LLMView extends FXBorderPane {
     }
 
     private FXButton buildSendButton() {
-        SVGGlyph glyph = new SVGGlyph("/fx-svg/arrow-up-filling.svg", 13);
+        SendSVGGlyph glyph = new SendSVGGlyph();
         glyph.setColor(Color.WHITE);
         this.sendButton.setGraphic(glyph);
-        this.sendButton.setContentDisplay(ContentDisplay.RIGHT);
-        this.sendButton.setGraphicTextGap(6);
+        this.sendButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        this.sendButton.setTooltip(new Tooltip(I18nHelper.send()));
         this.sendButton.getStyleClass().add("llm-send-button");
         this.sendButton.setOnAction(event -> this.sendMessage());
         return this.sendButton;
     }
 
+    private FXButton buildSettingsButton() {
+        SettingSVGGlyph glyph = new SettingSVGGlyph();
+        this.settingsButton.setGraphic(glyph);
+        this.settingsButton.getStyleClass().add("llm-settings-button");
+        this.settingsButton.setTooltip(new Tooltip(I18nHelper.setting()));
+        this.settingsButton.setOnAction(event -> this.showSettingsMenu());
+        return this.settingsButton;
+    }
+
+    private void showSettingsMenu() {
+        ContextMenu menu = new ContextMenu();
+        menu.getItems().addAll(
+                this.buildProviderMenu(),
+                this.buildThinkingMenu(),
+                this.buildStreamingMenu()
+        );
+        menu.show(this.settingsButton, Side.TOP, 0, -4);
+    }
+
+    private Menu buildProviderMenu() {
+        LLMProvider selected = this.providerComboBox.getSelectedProvider();
+        String selectedName = selected == null ? I18nHelper.none() : selected.getName();
+        Menu menu = new Menu(I18nHelper.provider() + ": " + selectedName);
+        List<LLMProvider> providers = LLMProviderStore.INSTANCE.selectList();
+        if (providers.isEmpty()) {
+            MenuItem emptyItem = new MenuItem(I18nHelper.none());
+            emptyItem.setDisable(true);
+            menu.getItems().add(emptyItem);
+            return menu;
+        }
+        ToggleGroup group = new ToggleGroup();
+        for (LLMProvider provider : providers) {
+            RadioMenuItem item = new RadioMenuItem(provider.getName());
+            item.setToggleGroup(group);
+            item.setSelected(provider.isActive());
+            item.setOnAction(event -> {
+                LLMProviderStore.INSTANCE.activate(provider);
+                this.refreshProviders();
+            });
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private Menu buildThinkingMenu() {
+        LLMThinkingLevel selected = this.getSelectedThinkingLevel();
+        Menu menu = new Menu(I18nHelper.thinkingIntensity());
+        ToggleGroup group = new ToggleGroup();
+        for (LLMThinkingLevel level : LLMThinkingLevel.values()) {
+            RadioMenuItem item = new RadioMenuItem(LLMThinkingLevelComboBox.getDisplayName(level));
+            item.setToggleGroup(group);
+            item.setSelected(level == selected);
+            item.setOnAction(event -> this.setThinkingLevel(level));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private Menu buildStreamingMenu() {
+        boolean streaming = this.isStreamingEnabled();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("base.streaming"));
+        ToggleGroup group = new ToggleGroup();
+        RadioMenuItem enabledItem = new RadioMenuItem(I18nHelper.enable());
+        enabledItem.setToggleGroup(group);
+        enabledItem.setSelected(streaming);
+        enabledItem.setOnAction(event -> this.setStreamingEnabled(true));
+        RadioMenuItem disabledItem = new RadioMenuItem(I18nHelper.disable());
+        disabledItem.setToggleGroup(group);
+        disabledItem.setSelected(!streaming);
+        disabledItem.setOnAction(event -> this.setStreamingEnabled(false));
+        menu.getItems().addAll(enabledItem, disabledItem);
+        return menu;
+    }
+
     private void initSelectors() {
         this.providerComboBox.valueProperty().addListener((observable, oldValue, newValue) -> this.updateModels(newValue));
-        this.updateModels(this.providerComboBox.getSelectedProvider());
+        this.thinkingLevelComboBox.selectLevel(this.getSavedThinkingLevel());
+        this.thinkingLevelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                this.setting.setLlmThinkingLevel(newValue.ordinal());
+                this.settingStore.replace(this.setting);
+            }
+        });
+        LLMProvider provider = this.providerComboBox.getSelectedProvider();
+        this.syncProviderSetting(provider);
+        this.updateModels(provider);
+    }
+
+    private LLMThinkingLevel getSavedThinkingLevel() {
+        LLMThinkingLevel[] levels = LLMThinkingLevel.values();
+        int ordinal = this.setting.getLlmThinkingLevel();
+        if (ordinal < 0 || ordinal >= levels.length) {
+            return LLMThinkingLevel.MEDIUM;
+        }
+        return levels[ordinal];
     }
 
     private void updateModels(LLMProvider provider) {
@@ -211,7 +327,7 @@ public class LLMView extends FXBorderPane {
 
     private void chooseFile() {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("选择附件");
+        chooser.setTitle(I18nHelper.pleaseSelectFile());
         Window window = this.getScene() == null ? null : this.getScene().getWindow();
         File file = chooser.showOpenDialog(window);
         if (file != null) {
@@ -346,7 +462,6 @@ public class LLMView extends FXBorderPane {
 
     public void setBusy(boolean busy) {
         this.busy = busy;
-        this.sendButton.setText(busy ? "生成中" : "发送");
         this.updateSendState();
     }
 
@@ -368,7 +483,18 @@ public class LLMView extends FXBorderPane {
 
     public void refreshProviders() {
         this.providerComboBox.reloadProviders();
-        this.updateModels(this.providerComboBox.getSelectedProvider());
+        LLMProvider provider = this.providerComboBox.getSelectedProvider();
+        this.syncProviderSetting(provider);
+        this.updateModels(provider);
+    }
+
+    private void syncProviderSetting(LLMProvider provider) {
+        String uid = provider == null ? null : provider.getUid();
+        if (Objects.equals(this.setting.getLlmProviderUid(), uid)) {
+            return;
+        }
+        this.setting.setLlmProviderUid(uid);
+        this.settingStore.replace(this.setting);
     }
 
     public void refreshSessions() {
@@ -403,6 +529,36 @@ public class LLMView extends FXBorderPane {
 
     public LLMThinkingLevel getSelectedThinkingLevel() {
         return thinkingLevelComboBox.getSelectedLevel();
+    }
+
+    /**
+     * 设置思考强度，并持久化到设置
+     *
+     * @param level 思考强度
+     */
+    public void setThinkingLevel(LLMThinkingLevel level) {
+        if (level != null) {
+            this.thinkingLevelComboBox.selectLevel(level);
+        }
+    }
+
+    /**
+     * 是否启用流式传输
+     *
+     * @return 是否启用
+     */
+    public boolean isStreamingEnabled() {
+        return this.setting.isLlmStreaming();
+    }
+
+    /**
+     * 设置是否启用流式传输，并持久化到设置
+     *
+     * @param streaming 是否启用
+     */
+    public void setStreamingEnabled(boolean streaming) {
+        this.setting.setLlmStreaming(streaming);
+        this.settingStore.replace(this.setting);
     }
 
     public LLMSessionTabComboBox getSessionTabComboBox() {
