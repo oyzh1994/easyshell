@@ -356,10 +356,11 @@ public class LLMView extends FXBorderPane {
             return;
         }
         String text = this.inputArea.getText();
-        if (text == null || text.isBlank()) {
+        boolean hasText = text != null && !text.isBlank();
+        if (!hasText && this.selectedFile == null) {
             return;
         }
-        LLMMessage message = this.messageListView.addUserMessage(text.trim(), this.selectedFile);
+        LLMMessage message = this.messageListView.addUserMessage(hasText ? text.trim() : "", this.selectedFile);
         this.inputArea.clear();
         this.setSelectedFile(null);
         this.updateSendState();
@@ -370,7 +371,8 @@ public class LLMView extends FXBorderPane {
 
     private void updateSendState() {
         String text = this.inputArea.getText();
-        this.sendButton.setDisable(this.busy || text == null || text.isBlank());
+        boolean hasText = text != null && !text.isBlank();
+        this.sendButton.setDisable(this.busy || (!hasText && this.selectedFile == null));
     }
 
     /**
@@ -601,6 +603,7 @@ public class LLMView extends FXBorderPane {
             this.attachmentLabel.setText("");
             this.attachmentLabel.setTooltip(null);
         }
+        this.updateSendState();
     }
 
     private static String formatTokens(long value) {

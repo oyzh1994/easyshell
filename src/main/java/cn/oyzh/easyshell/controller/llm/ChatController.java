@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.ShellMainController;
 import cn.oyzh.easyshell.llm.LLMAssistant;
+import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
@@ -22,6 +23,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
+import dev.langchain4j.data.message.Content;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.service.AiServices;
@@ -92,22 +94,22 @@ public class ChatController extends SubStageController {
         }
         // 思考等级
         LLMThinkingLevel thinkingLevel = this.view.getSelectedThinkingLevel();
+        AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
+        if (tools != null) {
+            services.tools(tools);
+        }
         if (this.view.isStreamingEnabled()) {
             // 创建模型
             StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);
+            services.streamingChatModel(model);
             // 创建工具
-            this.assistant = AiServices.builder(LLMAssistant.class)
-                    .streamingChatModel(model)
-                    .tools(tools)
-                    .build();
+            this.assistant = services.build();
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider, thinkingLevel);
+            services.chatModel(model);
             // 创建工具
-            this.assistant = AiServices.builder(LLMAssistant.class)
-                    .chatModel(model)
-                    .tools(tools)
-                    .build();
+            this.assistant = services.build();
         }
         return this.assistant;
     }
@@ -124,11 +126,24 @@ public class ChatController extends SubStageController {
                 return;
             }
             boolean streaming = this.view.isStreamingEnabled();
+            // 异步执行
             ThreadUtil.startVirtual(() -> {
-                LLMMessage message1 = this.view.addAssistantMessage(I18nHelper.thinking());
+                List<Content> contents;
+                try {
+                    contents = LLMFileContentUtil.toUserContents(message.getMessage(), message.getFile());
+                } catch (Exception ex) {
+                    JulLog.error("llm file content error", ex);
+                    this.view.addErrorMessage(ex.getMessage());
+                    return;
+                }
+                if (contents.isEmpty()) {
+                    this.view.addErrorMessage(I18nHelper.invalidFile());
+                    return;
+                }
+                LLMMessage message1 = this.view.addAssistantMessage(I18nHelper.thinking() + "...");
                 if (streaming) {
                     AtomicBoolean first = new AtomicBoolean(true);
-                    assistant.chatStream(message.getMessage())
+                    assistant.chatStream(contents)
                             .onPartialResponse(token -> {
                                 if (first.get()) {
                                     first.set(false);
@@ -144,7 +159,7 @@ public class ChatController extends SubStageController {
                             .start();
                 } else {
                     try {
-                        String response = assistant.chat(message.getMessage());
+                        String response = assistant.chat(contents);
                         this.view.replaceMessage(message1, response);
                     } catch (Exception ex) {
                         JulLog.error("llm error", ex);
