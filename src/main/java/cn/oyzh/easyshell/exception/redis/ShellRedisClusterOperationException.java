@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.exception.redis;
 
 import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 
 /**
  * Redis集群操作异常

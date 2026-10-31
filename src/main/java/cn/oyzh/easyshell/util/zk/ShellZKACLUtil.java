@@ -8,7 +8,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dto.zk.ShellZKACL;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
 import org.apache.zookeeper.ZooDefs;

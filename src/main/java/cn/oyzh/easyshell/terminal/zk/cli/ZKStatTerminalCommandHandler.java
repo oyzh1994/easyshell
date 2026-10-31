@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import org.apache.zookeeper.cli.CliCommand;
 import org.apache.zookeeper.cli.StatCommand;

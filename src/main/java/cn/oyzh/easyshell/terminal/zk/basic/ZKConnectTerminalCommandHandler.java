@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.terminal.zk.basic;
 
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.terminal.command.TerminalCommand;
 import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
 import cn.oyzh.i18n.I18nHelper;

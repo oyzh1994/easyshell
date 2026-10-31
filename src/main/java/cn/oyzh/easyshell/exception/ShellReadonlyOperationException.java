@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.exception;
 
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 
 /**
  * 只读操作异常

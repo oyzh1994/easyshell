@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.tabs.mongo.home;
 import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.scene.Cursor;
 
 /**
