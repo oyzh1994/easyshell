@@ -1,7 +1,9 @@
 package cn.oyzh.easyshell.controller;
 
+import cn.oyzh.easyshell.controller.llm.ChatController;
 import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.llm.ShellChatEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
@@ -25,16 +27,10 @@ import java.util.List;
  */
 public class ShellMainController extends ParentStageController {
 
-    // /**
-    //  * 配置对象
-    //  */
-    // private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    //     /**
-    //      * 左侧组件
-    //      */
-    //     @FXML
-    //     private FXTabPane tabPaneLeft;
+    /**
+     * 默认聊天分栏值
+     */
+    private static final double DEFAULT_CHAT_DIVIDER_POSITION = 0.6;
 
     /**
      * 跟节点
@@ -43,10 +39,16 @@ public class ShellMainController extends ParentStageController {
     private FXSplitPane root;
 
     /**
-     * 左侧组件
+     * 连接组件
      */
     @FXML
     private FXVBox connect;
+
+    /**
+     * 聊天组件
+     */
+    @FXML
+    private FXVBox chat;
 
     /**
      * shell切换面板
@@ -60,11 +62,15 @@ public class ShellMainController extends ParentStageController {
     @FXML
     private ConnectController connectController;
 
-    // /**
-    //  * ssh消息
-    //  */
-    // @FXML
-    // private MessageController messageController;
+    /**
+     * 聊天
+     */
+    @FXML
+    private ChatController chatController;
+
+    public ShellTabPane getTabPane() {
+        return tabPane;
+    }
 
     /**
      * 刷新窗口标题
@@ -78,60 +84,6 @@ public class ShellMainController extends ParentStageController {
             this.stage.restoreTitle();
         }
     }
-
-    // @Override
-    // public void onWindowShown(WindowEvent event) {
-    //     super.onWindowShown(event);
-    //     // 设置上次保存的页面拉伸
-    //     if (this.setting.isRememberPageResize()) {
-    //         this.resizeLeft(this.setting.getPageLeftWidth());
-    //     }
-    // }
-    //
-    // @Override
-    // public void onWindowHidden(WindowEvent event) {
-    //     super.onWindowHidden(event);
-    //     // 保存页面拉伸
-    //     this.savePageResize();
-    // }
-
-    //    /**
-    //     * 左侧组件重新布局
-    //     *
-    //     * @param newWidth 新宽度
-    //     */
-    //    private void resizeLeft(Float newWidth) {
-    //        if (newWidth != null && !Double.isNaN(newWidth)) {
-    //            // 设置组件宽
-    //            this.connect.setRealWidth(newWidth);
-    //            this.tabPane.setLayoutX(newWidth);
-    //            this.tabPane.setFlexWidth("100% - " + newWidth);
-    //            //this.tabPaneLeft.parentAutosize();
-    //        }
-    //    }
-
-    // @Override
-    // public void onSystemExit() {
-    //     // 保存页面拉伸
-    //     this.savePageResize();
-    // }
-
-    // /**
-    //  * 保存页面拉伸
-    //  */
-    // private void savePageResize() {
-    //     if (this.setting.isRememberPageResize()) {
-    //         this.setting.setPageLeftWidth((float) this.tabPaneLeft.getMinWidth());
-    //         ShellSettingStore.INSTANCE.replace(this.setting);
-    //     }
-    // }
-    //
-    //    @Override
-    //    protected void bindListeners() {
-    //        super.bindListeners();
-    //        // 大小调整增强
-    //        NodeWidthResizer.of(this.connect, this::resizeLeft, 240, 650);
-    //    }
 
     /**
      * 树节点变化事件
@@ -155,14 +107,11 @@ public class ShellMainController extends ParentStageController {
     @EventSubscribe
     private void layout2(Layout2Event event) {
         this.connect.display();
-        //        double w = this.connect.getRealWidth();
-        //        this.tabPane.setLayoutX(w);
-        //        this.tabPane.setFlexWidth("100% - " + w);
-        //        this.connect.parentAutosize();
-        if (!this.root.isShowDivider()) {
-            this.root.setShowDivider(true);
+        if (!this.root.isShowDivider0()) {
+            this.root.setShowDivider0(true);
             double positions_0 = this.root.getPosition0(0.25);
-            this.root.setDividerPositions(positions_0, 1 - positions_0);
+            double positions_1 = this.chat.isVisible() ? this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION) : 1;
+            this.root.setDividerPositions(positions_0, positions_1);
         }
     }
 
@@ -174,29 +123,42 @@ public class ShellMainController extends ParentStageController {
     @EventSubscribe
     private void layout1(Layout1Event event) {
         this.connect.disappear();
-        //        this.tabPane.setLayoutX(0);
-        //        this.tabPane.setFlexWidth("100%");
-        //        this.connect.parentAutosize();
-        if (this.root.isShowDivider()) {
+        if (this.root.isShowDivider0()) {
             this.root.recordPosition0();
-            this.root.setShowDivider(false);
-            this.root.setDividerPositions(0, 1);
+            this.root.setShowDivider0(false);
+            double positions_1 = this.chat.isVisible() ? this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION) : 1;
+            this.root.setDividerPositions(0, positions_1);
+        }
+    }
+
+    /**
+     * 聊天
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    public void chat(ShellChatEvent event) {
+        if (this.chat.isVisible()) {
+            this.root.recordPosition1();
+            this.chat.disappear();
+            this.root.setShowDivider1(false);
+            double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
+            this.root.setDividerPositions(positions_0, 1);
+            this.root.requestLayout();
+            this.root.layout();
+        } else {
+            double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
+            double positions_1 = this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION);
+            this.chat.display();
+            this.root.setShowDivider1(true);
+            this.root.setDividerPositions(positions_0, positions_1);
+            this.root.requestLayout();
+            this.root.layout();
         }
     }
 
     @Override
     public List<SubStageController> getSubControllers() {
-        //         return List.of(this.connectController, this.messageController);
-        return List.of(this.connectController);
+        return List.of(this.connectController, this.chatController);
     }
-
-    // /**
-    //  * 显示消息
-    //  *
-    //  * @param event 事件
-    //  */
-    // @EventSubscribe
-    // private void showMessage(ShellShowMessageEvent event) {
-    //     this.tabPaneLeft.select(1);
-    // }
 }

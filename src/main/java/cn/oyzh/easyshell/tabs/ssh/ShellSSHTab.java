@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
+import cn.oyzh.easyshell.ssh.ShellSSHLLMTools;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * ssh-组件tab
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSSHTab extends ShellTermTab {
+public class ShellSSHTab extends ShellTermTab implements LLMTabCapability {
 
     //public ShellSSHTab(ShellConnect connect) {
     //    this.init(connect);
@@ -25,7 +30,7 @@ public class ShellSSHTab extends ShellTermTab {
 //        ShellSetting setting = ShellSettingStore.SETTING;
         // 效率模式
 //        if (setting.isEfficiencyMode()) {
-            return "/tabs/ssh/shellSSHTab2.fxml";
+        return "/tabs/ssh/shellSSHTab2.fxml";
 //        }
 //        return "/tabs/ssh/shellSSHTab.fxml";
     }
@@ -87,6 +92,7 @@ public class ShellSSHTab extends ShellTermTab {
 //        super.onTabClosed(event);
 //        this.destroy();
 //    }
+
     /**
      * 创建ssh tab
      *
@@ -97,5 +103,26 @@ public class ShellSSHTab extends ShellTermTab {
         ShellSSHTab tab = new ShellSSHTab();
         tab.init(connect);
         return tab;
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellSSHLLMTools> getLLMTools() {
+        return () -> {
+            ShellSSHLLMTools llmTools = new ShellSSHLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
     }
 }

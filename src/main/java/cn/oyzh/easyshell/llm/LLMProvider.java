@@ -1,5 +1,10 @@
 package cn.oyzh.easyshell.llm;
 
+import cn.oyzh.store.jdbc.Column;
+import cn.oyzh.store.jdbc.PrimaryKey;
+import com.alibaba.fastjson2.annotation.JSONField;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,27 +15,53 @@ import java.util.List;
  * @author oyzh
  * @since 2026-10-30
  */
-public class LLMProvider {
+public class LLMProvider implements Serializable {
+
+    /**
+     * 数据id
+     */
+    @Column
+    @PrimaryKey
+    private String uid;
 
     /**
      * 名称
      */
+    @Column
     private String name;
 
     /**
      * 基础地址
      */
+    @Column
     private String baseUrl;
 
     /**
      * API密钥（SK）
      */
+    @Column
     private String sk;
 
     /**
      * 默认模型
      */
+    @Column
     private String defaultModel;
+
+    /**
+     * api类型
+     * 0: openai
+     * 1: anthropic
+     * 2: ollama
+     */
+    @Column
+    private int apiType;
+
+    /**
+     * 是否被激活
+     */
+    @Column
+    private boolean active;
 
     /**
      * 模型列表
@@ -102,24 +133,6 @@ public class LLMProvider {
     }
 
     /**
-     * 获取API密钥
-     *
-     * @return API密钥
-     */
-    public String getApiKey() {
-        return sk;
-    }
-
-    /**
-     * 设置API密钥
-     *
-     * @param apiKey API密钥
-     */
-    public void setApiKey(String apiKey) {
-        this.sk = apiKey;
-    }
-
-    /**
      * 获取默认模型
      *
      * @return 默认模型
@@ -145,6 +158,7 @@ public class LLMProvider {
      *
      * @return 模型列表
      */
+    @JSONField(serialize = false, deserialize = false)
     public List<String> getModels() {
         return Collections.unmodifiableList(this.models);
     }
@@ -154,6 +168,7 @@ public class LLMProvider {
      *
      * @param models 模型列表
      */
+    @JSONField(serialize = false, deserialize = false)
     public void setModels(List<String> models) {
         this.models.clear();
         if (models != null) {
@@ -170,6 +185,30 @@ public class LLMProvider {
         if (model != null && !model.isBlank() && !this.models.contains(model)) {
             this.models.add(model);
         }
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public int getApiType() {
+        return apiType;
+    }
+
+    public void setApiType(int apiType) {
+        this.apiType = apiType;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

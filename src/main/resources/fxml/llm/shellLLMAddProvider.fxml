@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.llm.ui.LLMApiTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.SelectTextFiled?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMAddProviderController" realWidth="750"
+        realHeight="320">
+    <FXHeaderBar/>
+    <InfoLabel text="%base.name">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="name" tipText="%base.nameTip" require="true" realHeight="30"
+                        flexWidth="100% - 180" maxLen="1024">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.host">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="baseUrl" require="true" realHeight="30"
+                        flexWidth="100% - 180" tipText="%base.contentTip1">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="SK">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="sk" require="true" realHeight="30"
+                        flexWidth="100% - 180" tipText="%base.contentTip1">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.type">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <LLMApiTypeComboBox fx:id="apiType">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </LLMApiTypeComboBox>
+    <InfoLabel text="%base.model">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <SelectTextFiled fx:id="model">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </SelectTextFiled>
+        <Button text="%base.fetch">
+            <HBox.margin>
+                <Insets left="5" top="20"/>
+            </HBox.margin>
+        </Button>
+    </FXHBox>
+    <FXHBox>
+        <SubmitButton onAction="#add">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

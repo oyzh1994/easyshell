@@ -22,6 +22,7 @@ import cn.oyzh.easyshell.event.group.ShellGroupDeletedEvent;
 import cn.oyzh.easyshell.event.group.ShellGroupRenamedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
+import cn.oyzh.easyshell.event.llm.ShellChatEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
@@ -798,4 +799,8 @@ public class ShellEventUtil {
         EventUtil.post(event);
     }
 
+    public static void chat() {
+        ShellChatEvent event = new ShellChatEvent();
+        EventUtil.post(event);
+    }
 }

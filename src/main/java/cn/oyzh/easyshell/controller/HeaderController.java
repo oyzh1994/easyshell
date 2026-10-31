@@ -156,6 +156,14 @@ public class HeaderController extends StageController {
     }
 
     /**
+     * 聊天
+     */
+    @FXML
+    private void chat() {
+        ShellEventUtil.chat();
+    }
+
+    /**
      * 布局
      */
     @FXML

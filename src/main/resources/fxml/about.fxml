@@ -509,8 +509,8 @@
                 </FXViaFolder>
             </FXVBox>
         </FixedTab>
-        <FixedTab text="%base.propertity">
-            <RichMsgTextArea fx:id="propertity" flexWidth="100%" flexHeight="100%">
+        <FixedTab text="%base.property">
+            <RichMsgTextArea fx:id="property" flexWidth="100%" flexHeight="100%">
             </RichMsgTextArea>
         </FixedTab>
     </FXTabPane>

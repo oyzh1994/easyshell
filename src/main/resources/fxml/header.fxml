@@ -12,6 +12,7 @@
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.svg.label.ChatSVGLabel?>
 <FXHeaderBar xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.controller.HeaderController"
              fx:id="root">
     <content>
@@ -41,6 +42,11 @@
                     <Insets left="10" top="7"/>
                 </HBox.margin>
             </ToolsSVGLabel>
+            <ChatSVGLabel tipText="%base.chat" onMousePrimaryClicked="#chat">
+                <HBox.margin>
+                    <Insets left="10" top="7"/>
+                </HBox.margin>
+            </ChatSVGLabel>
             <AboutSVGLabel tipText="%base.about" onMousePrimaryClicked="#about">
                 <HBox.margin>
                     <Insets left="10" top="7"/>

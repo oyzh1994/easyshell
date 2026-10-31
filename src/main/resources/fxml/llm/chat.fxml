@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.easyshell.llm.ui.LLMView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddFillSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.LLMSVGGlyph?>
+<FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ChatController"
+        flexHeight="100%" visible="false" managed="false" managedBindVisible="true">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <AddFillSVGGlyph tipText="%base.add">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </AddFillSVGGlyph>
+        <HistorySVGGlyph tipText="%base.history">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </HistorySVGGlyph>
+        <LLMSVGGlyph tipText="%base.llm">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </LLMSVGGlyph>
+    </FXHBox>
+    <LLMView fx:id="view" flexHeight="100% - 30" flexWidth="100%"/>
+</FXVBox>
+

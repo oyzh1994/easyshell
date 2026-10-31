@@ -109,7 +109,7 @@ public class AboutController extends StageController {
      * 属性
      */
     @FXML
-    private RichMsgTextArea propertity;
+    private RichMsgTextArea property;
 
     /**
      * 项目信息
@@ -139,9 +139,9 @@ public class AboutController extends StageController {
 
         // 属性
         Properties properties = System.getProperties();
-        this.propertity.setLineMaxLength(100 * 1024);
+        this.property.setLineMaxLength(100 * 1024);
         for (Object object : properties.keySet()) {
-            this.propertity.appendLine(object + "=" + properties.getProperty((String) object));
+            this.property.appendLine(object + "=" + properties.getProperty((String) object));
         }
 
         // 设置标题

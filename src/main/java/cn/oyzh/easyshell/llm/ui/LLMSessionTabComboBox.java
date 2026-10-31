@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.llm.ui;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import javafx.scene.control.ListCell;
@@ -26,8 +27,11 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
      * @param tabs Tab列表
      */
     public void setTabs(List<LLMSessionTab> tabs) {
+        if (tabs == null) {
+            return;
+        }
         String selectedId = this.getSelectedTabId();
-        this.getItems().setAll(tabs == null ? List.of() : tabs);
+        this.setItem(tabs);
         if (selectedId != null) {
             this.selectTab(selectedId);
         }
@@ -97,6 +101,19 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
             this.getItems().add(tab);
         }
         this.getSelectionModel().select(tab);
+    }
+
+    public void removeTab(String tabId) {
+        LLMSessionTab removed = null;
+        for (LLMSessionTab item : this.getItems()) {
+            if (StringUtil.equals(item.getId(), tabId)) {
+                removed = item;
+                break;
+            }
+        }
+        if (removed != null) {
+            this.removeItem(removed);
+        }
     }
 
     private static final class LLMSessionTabCell extends ListCell<LLMSessionTab> {

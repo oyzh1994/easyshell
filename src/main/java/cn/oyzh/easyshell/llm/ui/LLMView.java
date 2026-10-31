@@ -255,6 +255,24 @@ public class LLMView extends FXBorderPane {
         this.sendButton.setDisable(this.busy || text == null || text.isBlank());
     }
 
+    /**
+     * 初始化全量消息，用于会话恢复
+     *
+     * @param messages 完整消息列表
+     */
+    public void setMessages(List<LLMMessage> messages) {
+        this.messageListView.setMessages(messages);
+    }
+
+    /**
+     * 获取当前消息快照，用于会话持久化
+     *
+     * @return 当前消息列表
+     */
+    public List<LLMMessage> getMessages() {
+        return this.messageListView.getMessages();
+    }
+
     public LLMMessage addAssistantMessage(String text) {
         LLMMessage message = LLMMessage.llm(text);
         message.setModel(this.getSelectedModel());

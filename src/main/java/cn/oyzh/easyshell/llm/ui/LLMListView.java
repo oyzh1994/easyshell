@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.llm.ui;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -14,7 +15,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LLMListView extends FXListView<LLMMessage> {
 
@@ -34,16 +37,16 @@ public class LLMListView extends FXListView<LLMMessage> {
 
         this.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
-                Platform.runLater(this::installScrollBarListener);
+                FXUtil.runLater(this::installScrollBarListener);
             }
         });
         this.skinProperty().addListener((observable, oldSkin, newSkin) -> {
             if (newSkin != null) {
-                Platform.runLater(this::installScrollBarListener);
+                FXUtil.runLater(this::installScrollBarListener);
             }
         });
         this.addEventFilter(ScrollEvent.SCROLL, event -> this.onUserScroll());
-        Platform.runLater(this::installScrollBarListener);
+        FXUtil.runLater(this::installScrollBarListener);
     }
 
     @Override
@@ -123,6 +126,32 @@ public class LLMListView extends FXListView<LLMMessage> {
 
     public void clearMessages() {
         this.clearItems();
+        this.resetScrollState();
+    }
+
+    /**
+     * 初始化全量消息，用于会话恢复
+     *
+     * @param messages 完整消息列表
+     */
+    public void setMessages(List<LLMMessage> messages) {
+        if(CollectionUtil.isEmpty(messages)){
+            return;
+        }
+        this.setItem(List.copyOf(messages));
+        FXUtil.runWait(() -> {
+            this.resetScrollState();
+            this.scrollToBottom();
+        });
+    }
+
+    public List<LLMMessage> getMessages() {
+        AtomicReference<List<LLMMessage>> result = new AtomicReference<>(List.of());
+        FXUtil.runWait(() -> result.set(List.copyOf(this.getItems())));
+        return result.get();
+    }
+
+    private void resetScrollState() {
         this.scrollToBottomFlag.incrementAndGet();
         this.userScrollActivity++;
         this.userScrolling = false;
