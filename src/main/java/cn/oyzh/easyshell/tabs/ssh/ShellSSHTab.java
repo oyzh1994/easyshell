@@ -118,7 +118,7 @@ public class ShellSSHTab extends ShellTermTab implements LLMTabCapability {
     }
 
     @Override
-    public Supplier<ShellSSHLLMTools> getLLMTools() {
+    public Supplier<ShellSSHLLMTools> getToolsFunc() {
         return () -> {
             ShellSSHLLMTools llmTools = new ShellSSHLLMTools();
             llmTools.setClient(this.client());

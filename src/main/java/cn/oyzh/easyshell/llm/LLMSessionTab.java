@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * LLM会话绑定的Tab
@@ -19,6 +20,11 @@ public class LLMSessionTab {
      * Tab名称
      */
     private String name;
+
+    /**
+     * 会话函数
+     */
+    private Supplier<? extends LLMTools> toolsFunc;
 
     public LLMSessionTab() {
     }
@@ -62,6 +68,14 @@ public class LLMSessionTab {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Supplier<? extends LLMTools> getToolsFunc() {
+        return toolsFunc;
+    }
+
+    public void setToolsFunc(Supplier<? extends LLMTools> toolsFunc) {
+        this.toolsFunc = toolsFunc;
     }
 
     @Override

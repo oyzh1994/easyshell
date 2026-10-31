@@ -8,7 +8,7 @@ public interface LLMTabCapability {
 
     String getTabName();
 
-    Supplier<? extends LLMTools> getLLMTools();
+    Supplier<? extends LLMTools> getToolsFunc();
 
 }
 

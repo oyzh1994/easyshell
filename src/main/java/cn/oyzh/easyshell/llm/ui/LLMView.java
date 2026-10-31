@@ -381,6 +381,10 @@ public class LLMView extends FXBorderPane {
         return providerComboBox.getSelectedProvider();
     }
 
+    public LLMSessionTab getSelectedSession() {
+        return sessionTabComboBox.getSelectedItem();
+    }
+
     public String getSelectedModel() {
         return modelComboBox.getValue();
     }

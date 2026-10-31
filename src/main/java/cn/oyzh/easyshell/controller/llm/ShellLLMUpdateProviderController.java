@@ -9,7 +9,6 @@ import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -107,6 +106,6 @@ public class ShellLLMUpdateProviderController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString(I18nHelper.EDIT, I18nHelper.provider);
+        return I18nHelper.editProvider();
     }
 }
