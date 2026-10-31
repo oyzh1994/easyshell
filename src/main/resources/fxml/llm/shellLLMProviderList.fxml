@@ -13,7 +13,7 @@
         fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMProviderListController"
         realWidth="900" realHeight="500">
     <FXHeaderBar/>
-    <FXVBox flexWidth="100%" flexHeight="100%">
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
         <FXHBox realHeight="30">
             <AddSVGGlyph onMousePrimaryClicked="#add">
                 <FXHBox.margin>
@@ -34,13 +34,13 @@
                 <Insets top="10"/>
             </FXVBox.margin>
         </FXHBox>
-        <LLMProviderTableView fx:id="providerTableView" flexWidth="100% - 50" flexHeight="100% - 50">
+        <LLMProviderTableView fx:id="providerTableView" flexWidth="100% - 50" flexHeight="100% - 60">
             <columns>
                 <FXTableColumn prefWidth="170" valueName="name" text="%base.name"/>
                 <FXTableColumn prefWidth="110" valueName="apiTypeName" text="%base.type"/>
-                <FXTableColumn flexWidth="100% - 510" valueName="baseUrl" text="%base.host"/>
+                <FXTableColumn flexWidth="100% - 555" valueName="baseUrl" text="%base.url"/>
                 <FXTableColumn prefWidth="160" valueName="modelsText" text="%base.model"/>
-                <LLMProviderActiveTableColumn prefWidth="70" text="%base.use"/>
+                <LLMProviderActiveTableColumn prefWidth="100" text="%base.status"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="30" top="7"/>

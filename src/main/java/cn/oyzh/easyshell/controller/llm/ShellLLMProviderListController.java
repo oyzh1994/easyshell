@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.fx.plus.i18n.I18nResourceBundle;
+import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
@@ -82,6 +82,9 @@ public class ShellLLMProviderListController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
+        this.providerTableView.setAddAction(this::add);
+        this.providerTableView.setEditAction(this::update);
+        this.providerTableView.setDeleteAction(this::delete);
         this.providerTableView.setItem(this.providerStore.selectList());
         this.stage.switchOnTab();
         this.stage.hideOnEscape();

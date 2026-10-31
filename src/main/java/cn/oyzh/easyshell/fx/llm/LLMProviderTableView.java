@@ -1,8 +1,15 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import javafx.scene.control.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LLM provider table.
@@ -14,5 +21,64 @@ public class LLMProviderTableView extends FXTableView<LLMProvider> {
 
     {
         TableViewUtil.copyCellDataOnDoubleClicked(this);
+    }
+
+    private Runnable addAction;
+
+    private Runnable editAction;
+
+    private Runnable deleteAction;
+
+    public Runnable getAddAction() {
+        return addAction;
+    }
+
+    public void setAddAction(Runnable addAction) {
+        this.addAction = addAction;
+    }
+
+    public Runnable getEditAction() {
+        return editAction;
+    }
+
+    public void setEditAction(Runnable editAction) {
+        this.editAction = editAction;
+    }
+
+    public Runnable getDeleteAction() {
+        return deleteAction;
+    }
+
+    public void setDeleteAction(Runnable deleteAction) {
+        this.deleteAction = deleteAction;
+    }
+
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
+        this.setOnContextMenuRequested(event -> {
+            List<? extends MenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, event.getScreenX(), event.getScreenY());
+            } else {
+                this.clearContextMenu();
+            }
+        });
+    }
+
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        List<FXMenuItem> menuItems = new ArrayList<>();
+        List<LLMProvider> rows = this.getSelectedItems();
+        menuItems.add(MenuItemHelper.add(this.addAction));
+
+        FXMenuItem edit = MenuItemHelper.edit(this.editAction);
+        edit.setDisable(rows.isEmpty());
+        menuItems.add(edit);
+
+        FXMenuItem delete = MenuItemHelper.delete(this.deleteAction);
+        delete.setDisable(rows.isEmpty());
+        menuItems.add(delete);
+        return menuItems;
     }
 }

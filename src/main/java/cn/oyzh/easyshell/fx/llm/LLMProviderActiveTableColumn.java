@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.plus.controls.table.FXTableCell;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -48,9 +49,11 @@ public class LLMProviderActiveTableColumn extends FXTableColumn<LLMProvider, LLM
                 if (!success) {
                     this.updating = true;
                     this.toggleSwitch.setSelected(oldValue);
+                    this.updateText(oldValue);
                     this.updating = false;
                     return;
                 }
+                this.updateText(newValue);
                 TableView<LLMProvider> tableView = this.getTableView();
                 if (tableView != null) {
                     if (newValue) {
@@ -75,8 +78,13 @@ public class LLMProviderActiveTableColumn extends FXTableColumn<LLMProvider, LLM
             this.provider = item;
             this.updating = true;
             this.toggleSwitch.setSelected(item.isActive());
+            this.updateText(item.isActive());
             this.updating = false;
             super.setGraphic(this.toggleSwitch);
+        }
+
+        private void updateText(boolean active) {
+            this.toggleSwitch.setText(active ? I18nResourceBundle.i18nString("shell.llm.inUse") : "");
         }
     }
 }

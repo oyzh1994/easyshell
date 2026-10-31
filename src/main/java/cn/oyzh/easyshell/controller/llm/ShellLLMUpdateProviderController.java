@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
@@ -47,9 +48,17 @@ public class ShellLLMUpdateProviderController extends StageController {
     @FXML
     private SelectTextFiled<String> model;
 
+    @FXML
+    private Button fetchModelButton;
+
     private LLMProvider provider;
 
     private final LLMProviderStore providerStore = LLMProviderStore.INSTANCE;
+
+    @FXML
+    private void fetchModels() {
+        LLMProviderFetchUtil.fetch(this.baseUrl, this.sk, this.apiType, this.model, this.fetchModelButton, this.getWindow());
+    }
 
     @FXML
     private void update() {
