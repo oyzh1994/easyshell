@@ -54,7 +54,8 @@ public class LLMProvider implements Serializable {
      * api类型
      * 0: openai
      * 1: anthropic
-     * 2: ollama
+     * 2: gemini
+     * 3: ollama
      */
     @Column
     private int apiType;

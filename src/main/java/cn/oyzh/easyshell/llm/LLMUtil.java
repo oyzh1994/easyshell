@@ -26,7 +26,7 @@ public class LLMUtil {
             }
             return new OpenAiChatModel(builder);
         }
-        if (provider.getApiType() == 2) {
+        if (provider.getApiType() == 1) {
             AnthropicChatModel.AnthropicChatModelBuilder builder = new AnthropicChatModel.AnthropicChatModelBuilder()
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
@@ -37,7 +37,7 @@ public class LLMUtil {
             }
             return new AnthropicChatModel(builder);
         }
-        if (provider.getApiType() == 3) {
+        if (provider.getApiType() == 2) {
             GoogleAiGeminiChatModel.GoogleAiGeminiChatModelBuilder builder = GoogleAiGeminiChatModel.builder();
             builder.apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
@@ -73,7 +73,7 @@ public class LLMUtil {
             }
             return new OpenAiStreamingChatModel(builder);
         }
-        if (provider.getApiType() == 2) {
+        if (provider.getApiType() == 1) {
             AnthropicStreamingChatModel.AnthropicStreamingChatModelBuilder builder = new AnthropicStreamingChatModel.AnthropicStreamingChatModelBuilder()
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
@@ -84,7 +84,7 @@ public class LLMUtil {
             }
             return new AnthropicStreamingChatModel(builder);
         }
-        if (provider.getApiType() == 3) {
+        if (provider.getApiType() == 2) {
             GoogleAiGeminiStreamingChatModel.GoogleAiGeminiStreamingChatModelBuilder builder = GoogleAiGeminiStreamingChatModel.builder();
             builder.apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())

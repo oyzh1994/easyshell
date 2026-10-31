@@ -11,6 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -24,6 +25,9 @@ import java.util.Set;
  * @since 2026-10-31
  */
 public final class LLMModelFetcher {
+
+    private record ModelEndpoint(String url, LLMApiType authType) {
+    }
 
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(8);
 
@@ -46,37 +50,41 @@ public final class LLMModelFetcher {
         if (apiType == null) {
             throw new IllegalArgumentException("LLM api type is required");
         }
-        List<String> urls = buildUrls(baseUrl, apiType);
-        if (urls.isEmpty()) {
+        List<ModelEndpoint> endpoints = buildEndpoints(baseUrl, apiType);
+        if (endpoints.isEmpty()) {
             throw new IllegalArgumentException("LLM base url is required");
         }
         Exception lastException = null;
-        for (String candidate : urls) {
-            String url = candidate;
-            if (apiType == LLMApiType.GEMINI && hasText(sk)) {
+        Exception meaningfulException = null;
+        for (ModelEndpoint endpoint : endpoints) {
+            String url = endpoint.url();
+            LLMApiType authType = endpoint.authType();
+            if (authType == LLMApiType.GEMINI && hasText(sk)) {
                 url = appendQuery(url, "key", sk);
             }
             HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(url))
                     .timeout(REQUEST_TIMEOUT)
                     .header("Accept", "application/json");
             if (hasText(sk)) {
-                if (apiType == LLMApiType.ANTHROPIC) {
+                if (authType == LLMApiType.ANTHROPIC) {
                     builder.header("x-api-key", sk).header("anthropic-version", "2023-06-01");
-                } else if (apiType == LLMApiType.OPENAI) {
+                } else if (authType == LLMApiType.OPENAI) {
                     builder.header("Authorization", "Bearer " + sk);
                 }
             }
             HttpResponse<String> response = HTTP_CLIENT.send(builder.GET().build(),
                     HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
             int status = response.statusCode();
-            if (status == 404 || status == 405) {
-                lastException = new IllegalStateException("HTTP " + status);
-                continue;
+            if (status >= 200 && status < 300) {
+                return parseModels(response.body(), apiType);
             }
-            if (status < 200 || status >= 300) {
-                throw new IllegalStateException(formatHttpError(status, response.body()));
+            lastException = new IllegalStateException(formatHttpError(status, response.body()));
+            if (status != 404 && status != 405 && meaningfulException == null) {
+                meaningfulException = lastException;
             }
-            return parseModels(response.body(), apiType);
+        }
+        if (meaningfulException != null) {
+            throw meaningfulException;
         }
         throw lastException == null ? new IllegalStateException("No model endpoint available") : lastException;
     }
@@ -89,30 +97,83 @@ public final class LLMModelFetcher {
      * @return candidate URLs
      */
     public static List<String> buildUrls(String baseUrl, LLMApiType apiType) {
+        return buildEndpoints(baseUrl, apiType).stream()
+                .map(ModelEndpoint::url)
+                .distinct()
+                .toList();
+    }
+
+    private static List<ModelEndpoint> buildEndpoints(String baseUrl, LLMApiType apiType) {
         if (apiType == null || !hasText(baseUrl)) {
-            return Collections.emptyList();
+            return List.of();
         }
         String base = normalizeBaseUrl(baseUrl, apiType);
         if (base.isEmpty()) {
-            return Collections.emptyList();
+            return List.of();
         }
         base = stripEndpoint(base);
+        List<ModelEndpoint> endpoints = new ArrayList<>();
+        Set<String> seen = new LinkedHashSet<>();
         if (apiType == LLMApiType.OPENAI) {
-            if (endsWithPath(base, "/v1")) {
-                return List.of(base + "/models");
-            }
-            return List.of(base + "/models", base + "/v1/models");
+            addOpenAiEndpoints(endpoints, seen, base);
+            return endpoints;
         }
         if (apiType == LLMApiType.ANTHROPIC) {
-            return List.of(endsWithPath(base, "/v1") ? base + "/models" : base + "/v1/models");
+            addEndpoint(endpoints, seen,
+                    endsWithPath(base, "/v1") ? base + "/models" : base + "/v1/models",
+                    LLMApiType.ANTHROPIC);
+            addOpenAiEndpoints(endpoints, seen, anthropicOpenAiBase(base));
+            return endpoints;
         }
         if (apiType == LLMApiType.GEMINI) {
             if (endsWithPath(base, "/v1beta") || endsWithPath(base, "/v1")) {
-                return List.of(base + "/models");
+                addEndpoint(endpoints, seen, base + "/models", LLMApiType.GEMINI);
+            } else {
+                addEndpoint(endpoints, seen, base + "/v1beta/models", LLMApiType.GEMINI);
             }
-            return List.of(base + "/v1beta/models");
+            return endpoints;
         }
-        return List.of(endsWithPath(base, "/api") ? base + "/tags" : base + "/api/tags");
+        addEndpoint(endpoints, seen,
+                endsWithPath(base, "/api") ? base + "/tags" : base + "/api/tags",
+                LLMApiType.OLLAMA);
+        return endpoints;
+    }
+
+    private static void addOpenAiEndpoints(List<ModelEndpoint> endpoints, Set<String> seen, String base) {
+        if (endsWithPath(base, "/v1")) {
+            addEndpoint(endpoints, seen, base + "/models", LLMApiType.OPENAI);
+        } else {
+            addEndpoint(endpoints, seen, base + "/models", LLMApiType.OPENAI);
+            addEndpoint(endpoints, seen, base + "/v1/models", LLMApiType.OPENAI);
+        }
+    }
+
+    private static void addEndpoint(List<ModelEndpoint> endpoints, Set<String> seen,
+                                    String url, LLMApiType authType) {
+        if (seen.add(url + "|" + authType)) {
+            endpoints.add(new ModelEndpoint(url, authType));
+        }
+    }
+
+    private static String anthropicOpenAiBase(String base) {
+        if (endsWithPath(base, "/anthropic/v1")) {
+            return stripPathSuffix(base, "/anthropic/v1");
+        }
+        if (endsWithPath(base, "/anthropic")) {
+            return stripPathSuffix(base, "/anthropic");
+        }
+        if (endsWithPath(base, "/v1")) {
+            return stripPathSuffix(base, "/v1");
+        }
+        return base;
+    }
+
+    private static String stripPathSuffix(String value, String suffix) {
+        String result = value.substring(0, value.length() - suffix.length());
+        while (result.endsWith("/")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 
     /**

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.llm.LLMProviderTemplateTextField?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -15,8 +16,19 @@
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMUpdateProviderController" realWidth="750"
-        realHeight="550">
+        realHeight="600">
     <FXHeaderBar/>
+    <InfoLabel text="%shell.llm.template">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <LLMProviderTemplateTextField fx:id="template" flexWidth="100% - 140" prefHeight="30"
+                                  tipText="%shell.llm.templateTip">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </LLMProviderTemplateTextField>
     <InfoLabel text="%base.name">
         <VBox.margin>
             <Insets left="30" top="10"/>

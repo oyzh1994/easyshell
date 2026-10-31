@@ -1,20 +1,25 @@
 package cn.oyzh.easyshell.controller.llm;
 
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox;
+import cn.oyzh.easyshell.fx.llm.LLMProviderTemplateTextField;
 import cn.oyzh.easyshell.llm.LLMApiType;
 import cn.oyzh.easyshell.llm.LLMProvider;
-import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox;
+import cn.oyzh.easyshell.llm.LLMProviderFetchUtil;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
@@ -34,6 +39,9 @@ import java.util.List;
 public class ShellLLMAddProviderController extends StageController {
 
     @FXML
+    private LLMProviderTemplateTextField template;
+
+    @FXML
     private ClearableTextField name;
 
     @FXML
@@ -49,13 +57,51 @@ public class ShellLLMAddProviderController extends StageController {
     private SelectTextFiled<String> model;
 
     @FXML
-    private Button fetchModelButton;
+    private FXButton fetchModelButton;
 
     private final LLMProviderStore providerStore = LLMProviderStore.INSTANCE;
 
     @FXML
     private void fetchModels() {
-        LLMProviderFetchUtil.fetch(this.baseUrl, this.sk, this.apiType, this.model, this.fetchModelButton, this.getWindow());
+        if (!this.baseUrl.validate()) {
+            return;
+        }
+        LLMApiType type = this.apiType.getSelectedType();
+        if (type == null) {
+            return;
+        }
+        String currentModel = this.model.getTextTrim();
+        this.fetchModelButton.disable();
+        LLMProviderFetchUtil.fetch(
+                this.baseUrl.getTextTrim(),
+                this.sk.getPassword(),
+                type,
+                models -> this.applyFetchedModels(models, currentModel),
+                this::showFetchModelsFailure,
+                () -> this.fetchModelButton.enable()
+        );
+    }
+
+    private void applyFetchedModels(List<String> models, String currentModel) {
+        if (models == null || models.isEmpty()) {
+            MessageBox.warn(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsEmpty", "No models found"), this.getWindow());
+            return;
+        }
+        this.model.setItemList(models);
+        if (StringUtil.isBlank(currentModel)) {
+            this.model.text(models.getFirst());
+        }
+        FXUtil.runWait(this.model::requestFocus);
+        MessageBox.okToast(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsSuccess", "Model list updated"), this.getWindow());
+    }
+
+    private void showFetchModelsFailure(Exception ex) {
+        String message = I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsFail", "Failed to fetch models");
+        String detail = ex == null ? null : ex.getClass().getSimpleName();
+        if (StringUtil.isNotBlank(detail)) {
+            message += ": " + detail;
+        }
+        MessageBox.warn(message, this.getWindow());
     }
 
     @FXML
@@ -102,6 +148,17 @@ public class ShellLLMAddProviderController extends StageController {
         super.onWindowShown(event);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.template.selectedItemChanged(template -> {
+            if (template != null) {
+                this.baseUrl.setText(template.getBaseUrl());
+                this.apiType.getSelectionModel().select(template.getApiType());
+            }
+        });
     }
 
     @Override

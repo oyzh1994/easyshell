@@ -22,7 +22,9 @@ public class LLMModelFetcherTest {
 
     @Test
     public void buildsProviderSpecificUrls() {
-        assertEquals(List.of("https://api.anthropic.com/v1/models"),
+        assertEquals(List.of(
+                        "https://api.anthropic.com/v1/models",
+                        "https://api.anthropic.com/models"),
                 LLMModelFetcher.buildUrls("https://api.anthropic.com", LLMApiType.ANTHROPIC));
 
         assertEquals(List.of("https://generativelanguage.googleapis.com/v1beta/models"),
@@ -33,6 +35,21 @@ public class LLMModelFetcherTest {
 
         assertEquals(List.of("https://example.com/v1beta/models"),
                 LLMModelFetcher.buildUrls("example.com/v1beta", LLMApiType.GEMINI));
+    }
+
+    @Test
+    public void buildsOpenAiFallbacksForAnthropicCompatibility() {
+        assertEquals(List.of(
+                        "https://api.deepseek.com/anthropic/v1/models",
+                        "https://api.deepseek.com/models",
+                        "https://api.deepseek.com/v1/models"),
+                LLMModelFetcher.buildUrls("https://api.deepseek.com/anthropic/v1", LLMApiType.ANTHROPIC));
+
+        assertEquals(List.of(
+                        "https://token-plan-cn.xiaomimimo.com/anthropic/v1/models",
+                        "https://token-plan-cn.xiaomimimo.com/models",
+                        "https://token-plan-cn.xiaomimimo.com/v1/models"),
+                LLMModelFetcher.buildUrls("https://token-plan-cn.xiaomimimo.com/anthropic/v1", LLMApiType.ANTHROPIC));
     }
 
     @Test

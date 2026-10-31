@@ -236,9 +236,7 @@ public class LLMView extends FXBorderPane {
     }
 
     private Menu buildProviderMenu() {
-        LLMProvider selected = this.providerComboBox.getSelectedProvider();
-        String selectedName = selected == null ? I18nHelper.none() : selected.getName();
-        Menu menu = new Menu(I18nHelper.provider() + ": " + selectedName);
+        Menu menu = new Menu(I18nHelper.provider());
         List<LLMProvider> providers = LLMProviderStore.INSTANCE.selectList();
         if (providers.isEmpty()) {
             MenuItem emptyItem = new MenuItem(I18nHelper.none());
