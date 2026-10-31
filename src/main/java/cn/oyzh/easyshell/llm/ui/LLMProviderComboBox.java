@@ -1,10 +1,12 @@
 package cn.oyzh.easyshell.llm.ui;
 
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,19 +18,41 @@ import java.util.List;
 public class LLMProviderComboBox extends FXComboBox<LLMProvider> {
 
     public LLMProviderComboBox() {
-        this.getItems().setAll(
-                new LLMProvider("DeepSeek", "https://api.deepseek.com/v1", null,
-                        List.of("deepseek-chat", "deepseek-reasoner")),
-                new LLMProvider("OpenAI", "https://api.openai.com/v1", null,
-                        List.of("gpt-4.1", "gpt-4.1-mini", "o3-mini")),
-                new LLMProvider("Anthropic", "https://api.anthropic.com/v1", null,
-                        List.of("claude-sonnet-4", "claude-opus-4")),
-                new LLMProvider("Ollama", "http://localhost:11434/v1", null,
-                        List.of("qwen3:8b", "llama3.3"))
-        );
         this.setCellFactory(list -> new LLMProviderCell());
         this.setButtonCell(new LLMProviderCell());
-        this.getSelectionModel().selectFirst();
+        this.reloadProviders();
+    }
+
+    public void reloadProviders() {
+        LLMProvider selected = this.getValue();
+        String selectedUid = selected == null ? null : selected.getUid();
+        String selectedName = selected == null ? null : selected.getName();
+        List<LLMProvider> providers = new ArrayList<>();
+        for (LLMProvider provider : LLMProviderStore.INSTANCE.selectList()) {
+            if (provider.isActive()) {
+                providers.add(provider);
+            }
+        }
+        this.getItems().setAll(providers);
+        LLMProvider target = null;
+        for (LLMProvider provider : providers) {
+            if (selectedUid != null && selectedUid.equals(provider.getUid())) {
+                target = provider;
+                break;
+            }
+            if (selectedUid == null && selectedName != null && selectedName.equals(provider.getName())) {
+                target = provider;
+                break;
+            }
+        }
+        if (target == null && !providers.isEmpty()) {
+            target = providers.getFirst();
+        }
+        if (target == null) {
+            this.setValue(null);
+        } else {
+            this.getSelectionModel().select(target);
+        }
     }
 
     /**

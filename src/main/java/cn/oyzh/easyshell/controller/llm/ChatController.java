@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.ui.LLMView;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
+import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -33,6 +34,12 @@ public class ChatController extends SubStageController {
     private LLMView view;
 
     private ShellTabPane tabPane;
+
+    @FXML
+    private void llm() {
+        ShellViewFactory.llmProviders(this.getWindow());
+        this.view.refreshProviders();
+    }
 
     @Override
     protected void bindListeners() {

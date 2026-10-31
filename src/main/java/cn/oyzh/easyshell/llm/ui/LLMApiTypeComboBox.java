@@ -16,4 +16,15 @@ public class LLMApiTypeComboBox extends FXComboBox<LLMApiType> {
         this.getSelectionModel().select(LLMApiType.OPENAI);
     }
 
+    public LLMApiType getSelectedType() {
+        return this.getValue();
+    }
+
+    public void setApiType(int apiType) {
+        LLMApiType[] types = LLMApiType.values();
+        if (apiType >= 0 && apiType < types.length) {
+            this.getSelectionModel().select(types[apiType]);
+        }
+    }
+
 }

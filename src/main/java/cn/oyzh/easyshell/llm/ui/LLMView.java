@@ -360,6 +360,11 @@ public class LLMView extends FXBorderPane {
         return inputArea;
     }
 
+    public void refreshProviders() {
+        this.providerComboBox.reloadProviders();
+        this.updateModels(this.providerComboBox.getSelectedProvider());
+    }
+
     public LLMProviderComboBox getProviderComboBox() {
         return providerComboBox;
     }

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
+import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-10-30
  */
+@Table("t_llm_provider")
 public class LLMProvider implements Serializable {
 
     /**
@@ -58,15 +60,16 @@ public class LLMProvider implements Serializable {
     private int apiType;
 
     /**
-     * 是否被激活
+     * 是否为当前使用中的供应商
      */
     @Column
     private boolean active;
 
     /**
-     * 模型列表
+     * 模型列表，多个模型以换行符分隔
      */
-    private final List<String> models = new ArrayList<>();
+    @Column
+    private String modelsText;
 
     public LLMProvider() {
     }
@@ -141,7 +144,8 @@ public class LLMProvider implements Serializable {
         if (this.defaultModel != null && !this.defaultModel.isBlank()) {
             return this.defaultModel;
         }
-        return this.models.isEmpty() ? null : this.models.getFirst();
+        List<String> models = this.getModels();
+        return models.isEmpty() ? null : models.getFirst();
     }
 
     /**
@@ -160,7 +164,7 @@ public class LLMProvider implements Serializable {
      */
     @JSONField(serialize = false, deserialize = false)
     public List<String> getModels() {
-        return Collections.unmodifiableList(this.models);
+        return parseModels(this.modelsText);
     }
 
     /**
@@ -170,10 +174,7 @@ public class LLMProvider implements Serializable {
      */
     @JSONField(serialize = false, deserialize = false)
     public void setModels(List<String> models) {
-        this.models.clear();
-        if (models != null) {
-            this.models.addAll(models);
-        }
+        this.modelsText = joinModels(models);
     }
 
     /**
@@ -182,9 +183,94 @@ public class LLMProvider implements Serializable {
      * @param model 模型
      */
     public void addModel(String model) {
-        if (model != null && !model.isBlank() && !this.models.contains(model)) {
-            this.models.add(model);
+        if (model == null || model.isBlank()) {
+            return;
         }
+        List<String> models = new ArrayList<>(this.getModels());
+        if (!models.contains(model)) {
+            models.add(model);
+            this.setModels(models);
+        }
+    }
+
+    /**
+     * 获取模型列表显示文本
+     *
+     * @return 模型列表显示文本
+     */
+    public String getModelsText() {
+        StringBuilder builder = new StringBuilder();
+        for (String model : this.getModels()) {
+            if (!builder.isEmpty()) {
+                builder.append((char) 44).append(' ');
+            }
+            builder.append(model);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 设置模型列表文本
+     *
+     * @param modelsText 模型列表文本
+     */
+    public void setModelsText(String modelsText) {
+        this.modelsText = modelsText;
+    }
+
+    /**
+     * 获取api类型名称
+     *
+     * @return api类型名称
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public String getApiTypeName() {
+        LLMApiType[] types = LLMApiType.values();
+        if (this.apiType >= 0 && this.apiType < types.length) {
+            return types[this.apiType].name();
+        }
+        return String.valueOf(this.apiType);
+    }
+
+    /**
+     * 解析模型列表
+     *
+     * @param text 模型文本
+     * @return 模型列表
+     */
+    public static List<String> parseModels(String text) {
+        if (text == null || text.isBlank()) {
+            return Collections.emptyList();
+        }
+        String normalized = text.replace((char) 44, '\n')
+                .replace((char) 0xFF0C, '\n')
+                .replace((char) 59, '\n')
+                .replace((char) 0xFF1B, '\n');
+        List<String> models = new ArrayList<>();
+        for (String model : normalized.lines().toList()) {
+            model = model.trim();
+            if (!model.isEmpty() && !models.contains(model)) {
+                models.add(model);
+            }
+        }
+        return Collections.unmodifiableList(models);
+    }
+
+    private static String joinModels(List<String> models) {
+        if (models == null || models.isEmpty()) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        for (String model : models) {
+            if (model == null || model.isBlank()) {
+                continue;
+            }
+            if (!builder.isEmpty()) {
+                builder.append('\n');
+            }
+            builder.append(model.trim());
+        }
+        return builder.isEmpty() ? null : builder.toString();
     }
 
     public String getUid() {
@@ -213,6 +299,6 @@ public class LLMProvider implements Serializable {
 
     @Override
     public String toString() {
-        return this.name == null ? "" : this.name;
+        return this.name == null ? new String() : this.name;
     }
 }

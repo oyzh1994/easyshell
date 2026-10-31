@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
+import cn.oyzh.fx.plus.window.StageAdapter;
 import javafx.fxml.FXML;
 
 import java.util.List;
@@ -132,6 +133,34 @@ public class ShellMainController extends ParentStageController {
     }
 
     /**
+     * 显示聊天
+     */
+    private void showChat() {
+        double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
+        double positions_1 = this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION);
+        this.chat.display();
+        this.root.setShowDivider1(true);
+        this.root.setDividerPositions(positions_0, positions_1);
+        this.root.requestLayout();
+        this.root.layout();
+    }
+
+    /**
+     * 隐藏聊天
+     */
+    private void hideChat() {
+        if (this.chat.isVisible()) {
+            this.root.recordPosition1();
+        }
+        this.chat.disappear();
+        this.root.setShowDivider1(false);
+        double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
+        this.root.setDividerPositions(positions_0, 1);
+        this.root.requestLayout();
+        this.root.layout();
+    }
+
+    /**
      * 聊天
      *
      * @param event 事件
@@ -139,22 +168,16 @@ public class ShellMainController extends ParentStageController {
     @EventSubscribe
     public void chat(ShellChatEvent event) {
         if (this.chat.isVisible()) {
-            this.root.recordPosition1();
-            this.chat.disappear();
-            this.root.setShowDivider1(false);
-            double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
-            this.root.setDividerPositions(positions_0, 1);
-            this.root.requestLayout();
-            this.root.layout();
+            this.hideChat();
         } else {
-            double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
-            double positions_1 = this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION);
-            this.chat.display();
-            this.root.setShowDivider1(true);
-            this.root.setDividerPositions(positions_0, positions_1);
-            this.root.requestLayout();
-            this.root.layout();
+            this.showChat();
         }
+    }
+
+    @Override
+    public void onStageInitialize(StageAdapter stage) {
+        super.onStageInitialize(stage);
+        this.hideChat();
     }
 
     @Override

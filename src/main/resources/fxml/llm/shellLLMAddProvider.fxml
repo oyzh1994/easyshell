@@ -4,17 +4,18 @@
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.text.field.SelectTextFiled?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMAddProviderController" realWidth="750"
-        realHeight="320">
+        realHeight="550">
     <FXHeaderBar/>
     <InfoLabel text="%base.name">
         <VBox.margin>
@@ -33,7 +34,7 @@
         </VBox.margin>
     </InfoLabel>
     <ClearableTextField fx:id="baseUrl" require="true" realHeight="30"
-                        flexWidth="100% - 180" tipText="%base.contentTip1">
+                        flexWidth="100% - 180" tipText="%base.hostTip">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -43,18 +44,18 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ClearableTextField fx:id="sk" require="true" realHeight="30"
-                        flexWidth="100% - 180" tipText="%base.contentTip1">
+    <PasswordTextField fx:id="sk" require="true" realHeight="30"
+                       flexWidth="100% - 180" tipText="%base.contentTip1">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ClearableTextField>
+    </PasswordTextField>
     <InfoLabel text="%base.type">
         <VBox.margin>
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <LLMApiTypeComboBox fx:id="apiType">
+    <LLMApiTypeComboBox fx:id="apiType" flexWidth="100% - 180" prefHeight="30">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -65,14 +66,14 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <SelectTextFiled fx:id="model">
-            <VBox.margin>
+        <SelectTextFiled fx:id="model" flexWidth="100% - 285" prefHeight="30">
+            <HBox.margin>
                 <Insets left="30" top="5"/>
-            </VBox.margin>
+            </HBox.margin>
         </SelectTextFiled>
         <Button text="%base.fetch">
             <HBox.margin>
-                <Insets left="5" top="20"/>
+                <Insets left="5" top="5"/>
             </HBox.margin>
         </Button>
     </FXHBox>
