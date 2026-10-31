@@ -9,5 +9,6 @@ package cn.oyzh.easyshell.llm;
 public enum LLMApiType {
     OPENAI,
     ANTHROPIC,
+    GEMINI,
     OLLAMA,
 }

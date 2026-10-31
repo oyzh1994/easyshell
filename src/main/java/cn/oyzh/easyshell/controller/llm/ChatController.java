@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.ui.LLMView;
@@ -56,34 +57,63 @@ public class ChatController extends SubStageController {
     @Override
     protected void bindListeners() {
         this.initLLM();
+        this.view.getModelComboBox().selectedItemChanged((observable, oldValue, newValue) -> {
+            this.initLLM();
+        });
         this.view.getSessionTabComboBox().selectedItemChanged((observable, oldValue, newValue) -> {
             this.initLLM();
         });
+        this.view.getThinkingLevelComboBox().selectedItemChanged((observable, oldValue, newValue) -> {
+            this.initLLM();
+        });
+        this.root.visibleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue && this.view.isMessageEmpty() && this.tabPane.getSelectedItem() instanceof LLMTabCapability capability) {
+                this.view.getSessionTabComboBox().selectTab(capability.getTabId());
+            }
+        });
         super.bindListeners();
+    }
+
+    private LLMAssistant assistant;
+
+    private LLMAssistant initAssistant() {
+        // 提供商
+        LLMProvider provider = this.view.getSelectedProvider();
+        if (provider == null) {
+            MessageBox.warn(I18nHelper.pleaseSelectProvider(), this.getWindow());
+            return null;
+        }
+        // 会话
+        LLMSessionTab sessionTab = this.view.getSelectedSession();
+        LLMTools tools = null;
+        if (sessionTab != null && sessionTab.getToolsFunc() != null) {
+            tools = sessionTab.getToolsFunc().get();
+        }
+        // 思考等级
+        LLMThinkingLevel thinkingLevel = this.view.getSelectedThinkingLevel();
+        // 创建模型
+        StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);
+        // 创建工具
+        this.assistant = AiServices.builder(LLMAssistant.class)
+                .streamingChatModel(model)
+                .tools(tools)
+                .build();
+        return this.assistant;
     }
 
     /**
      * 初始化大模型
      */
     private void initLLM() {
+        this.assistant = null;
         this.view.setSendHandler(message -> {
-            LLMProvider provider = this.view.getSelectedProvider();
-            if (provider == null) {
-                MessageBox.warn(I18nHelper.pleaseSelectProvider(), this.getWindow());
+            LLMAssistant assistant = this.initAssistant();
+            if (assistant == null) {
+                this.view.addErrorMessage(I18nHelper.initLLMFail());
                 return;
             }
-            LLMSessionTab sessionTab = this.view.getSelectedSession();
-            LLMTools tools = null;
-            if (sessionTab != null && sessionTab.getToolsFunc() != null) {
-                tools = sessionTab.getToolsFunc().get();
-            }
-            StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider);
-            LLMAssistant assistant = AiServices.builder(LLMAssistant.class)
-                    .streamingChatModel(model)
-                    .tools(tools)
-                    .build();
             ThreadUtil.startVirtual(() -> {
-                LLMMessage message1 = this.view.addAssistantMessage("思考中...");
+                LLMMessage message1 = this.view.addAssistantMessage(I18nHelper.thinking());
                 AtomicBoolean first = new AtomicBoolean(true);
                 assistant.chatStream(message.getMessage())
                         .onPartialResponse(token -> {
@@ -116,22 +146,7 @@ public class ChatController extends SubStageController {
             }
             this.init();
         });
-
     }
-
-    //private void update() {
-    //    List<LLMSessionTab> list = new ArrayList<>();
-    //    List<Tab> tabs = this.tabPane.getTabs();
-    //    for (Tab tab : tabs) {
-    //        if (tab instanceof LLMTabCapability capability) {
-    //            LLMSessionTab tab1 = new LLMSessionTab();
-    //            tab1.setId(capability.getTabId());
-    //            tab1.setName(capability.getTabName());
-    //            list.add(tab1);
-    //        }
-    //    }
-    //    this.view.getSessionTabComboBox().setTabs(list);
-    //}
 
     private void init() {
         this.tabPane.getTabs().addListener((ListChangeListener<Tab>) c -> {

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm.ui;
 
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.ListCell;
 
 /**
@@ -42,7 +43,17 @@ public class LLMThinkingLevelComboBox extends FXComboBox<LLMThinkingLevel> {
         @Override
         protected void updateItem(LLMThinkingLevel item, boolean empty) {
             super.updateItem(item, empty);
-            this.setText(empty || item == null ? null : item.getDisplayName());
+            if (empty || item == null) {
+                this.setText(null);
+            } else if (item == LLMThinkingLevel.OFF) {
+                this.setText(I18nHelper.off());
+            } else if (item == LLMThinkingLevel.LOW) {
+                this.setText(I18nHelper.low());
+            } else if (item == LLMThinkingLevel.MEDIUM) {
+                this.setText(I18nHelper.medium());
+            } else if (item == LLMThinkingLevel.HIGH) {
+                this.setText(I18nHelper.high());
+            }
         }
     }
 }

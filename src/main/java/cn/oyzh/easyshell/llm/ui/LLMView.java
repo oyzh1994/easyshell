@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.llm.ui;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
@@ -17,6 +18,7 @@ import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
@@ -49,7 +51,7 @@ public class LLMView extends FXBorderPane {
 
     private final LLMSessionTabComboBox sessionTabComboBox = new LLMSessionTabComboBox();
 
-    private final FXButton sendButton = new FXButton("发送");
+    private final FXButton sendButton = new FXButton(I18nHelper.send());
 
     private final FXButton attachButton = new FXButton();
 
@@ -134,9 +136,9 @@ public class LLMView extends FXBorderPane {
         FXHBox.setHgrow(spacer, Priority.ALWAYS);
 
         toolbar.getChildren().addAll(
-                this.labeledCombo("供应商", this.providerComboBox),
-                this.labeledCombo("模型", this.modelComboBox),
-                this.labeledCombo("思考强度", this.thinkingLevelComboBox),
+                this.labeledCombo(I18nHelper.provider(), this.providerComboBox),
+                this.labeledCombo(I18nHelper.model(), this.modelComboBox),
+                this.labeledCombo(I18nHelper.thinkingIntensity(), this.thinkingLevelComboBox),
                 spacer,
                 this.buildSendButton()
         );
@@ -171,7 +173,7 @@ public class LLMView extends FXBorderPane {
         SVGGlyph glyph = new SVGGlyph("/fx-svg/file.svg", 15);
         this.attachButton.setGraphic(glyph);
         this.attachButton.getStyleClass().add("llm-file-button");
-        this.attachButton.setTooltip(new Tooltip("选择附件"));
+        this.attachButton.setTooltip(new Tooltip(I18nHelper.pleaseSelectFile()));
         this.attachButton.setOnAction(event -> this.chooseFile());
         return this.attachButton;
     }
@@ -273,6 +275,10 @@ public class LLMView extends FXBorderPane {
         return this.messageListView.getMessages();
     }
 
+    public boolean isMessageEmpty() {
+        return CollectionUtil.isEmpty(this.getMessages());
+    }
+
     public LLMMessage addAssistantMessage(String text) {
         LLMMessage message = LLMMessage.llm(text);
         message.setModel(this.getSelectedModel());
@@ -363,6 +369,12 @@ public class LLMView extends FXBorderPane {
     public void refreshProviders() {
         this.providerComboBox.reloadProviders();
         this.updateModels(this.providerComboBox.getSelectedProvider());
+    }
+
+    public void refreshSessions() {
+        if (!this.sessionTabComboBox.isItemEmpty() && this.sessionTabComboBox.getSelectedTab() == null) {
+            this.sessionTabComboBox.selectFirst();
+        }
     }
 
     public LLMProviderComboBox getProviderComboBox() {
