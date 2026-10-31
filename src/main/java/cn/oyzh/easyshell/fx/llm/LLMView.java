@@ -230,7 +230,8 @@ public class LLMView extends FXBorderPane {
         menu.getItems().addAll(
                 this.buildProviderMenu(),
                 this.buildThinkingMenu(),
-                this.buildStreamingMenu()
+                this.buildStreamingMenu(),
+                this.buildMessageLimitMenu()
         );
         menu.show(this.settingsButton, Side.TOP, 0, -4);
     }
@@ -285,6 +286,25 @@ public class LLMView extends FXBorderPane {
         disabledItem.setSelected(!streaming);
         disabledItem.setOnAction(event -> this.setStreamingEnabled(false));
         menu.getItems().addAll(enabledItem, disabledItem);
+        return menu;
+    }
+
+    /**
+     * LLM消息上限可选项
+     */
+    public static final List<Integer> LLM_MAX_MESSAGE_OPTIONS = List.of(10, 20, 50, 100);
+
+    private Menu buildMessageLimitMenu() {
+        int selected = this.setting.getLlmMaxMessages();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.messageLimit"));
+        ToggleGroup group = new ToggleGroup();
+        for (Integer limit : LLM_MAX_MESSAGE_OPTIONS) {
+            RadioMenuItem item = new RadioMenuItem(String.valueOf(limit));
+            item.setToggleGroup(group);
+            item.setSelected(limit == selected);
+            item.setOnAction(event -> this.setLlmMaxMessages(limit));
+            menu.getItems().add(item);
+        }
         return menu;
     }
 
@@ -564,6 +584,25 @@ public class LLMView extends FXBorderPane {
      */
     public boolean isStreamingEnabled() {
         return this.setting.isLlmStreaming();
+    }
+
+    /**
+     * 获取消息上限
+     *
+     * @return 消息上限
+     */
+    public int getLlmMaxMessages() {
+        return this.setting.getLlmMaxMessages();
+    }
+
+    /**
+     * 设置消息上限，并持久化到设置
+     *
+     * @param limit 消息上限
+     */
+    public void setLlmMaxMessages(int limit) {
+        this.setting.setLlmMaxMessages(limit);
+        this.settingStore.replace(this.setting);
     }
 
     /**

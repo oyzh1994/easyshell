@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.ShellMainController;
+import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
@@ -16,7 +17,6 @@ import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
-import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -28,6 +28,7 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import dev.langchain4j.data.message.Content;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.service.AiServices;
@@ -142,6 +143,11 @@ public class ChatController extends SubStageController {
         if (tools != null) {
             services.tools(tools);
         }
+        // 设置消息上限
+        services.chatMemoryProvider(memoryId -> MessageWindowChatMemory.builder()
+                .id(memoryId)
+                .maxMessages(this.view.getLlmMaxMessages())
+                .build());
         if (this.view.isStreamingEnabled()) {
             // 创建模型
             StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);

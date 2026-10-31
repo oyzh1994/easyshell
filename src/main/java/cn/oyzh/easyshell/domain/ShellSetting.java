@@ -12,6 +12,8 @@ import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson2.annotation.JSONField;
 
+import java.util.List;
+
 /**
  * shell设置
  *
@@ -63,6 +65,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Boolean llmStreaming = true;
+
+    /**
+     * LLM消息上限
+     */
+    @Column
+    private Integer llmMaxMessages = 20;
 
     /**
      * 终端类型
@@ -370,6 +378,24 @@ public class ShellSetting extends AppSetting {
         this.llmStreaming = llmStreaming;
     }
 
+    /**
+     * 获取LLM消息上限
+     *
+     * @return 消息上限
+     */
+    public int getLlmMaxMessages() {
+        return this.llmMaxMessages == null ? 20 : this.llmMaxMessages;
+    }
+
+    /**
+     * 设置LLM消息上限
+     *
+     * @param llmMaxMessages 消息上限
+     */
+    public void setLlmMaxMessages(int llmMaxMessages) {
+        this.llmMaxMessages = llmMaxMessages;
+    }
+
     @Override
     public void copy(Object o) {
         super.copy(o);
@@ -384,6 +410,7 @@ public class ShellSetting extends AppSetting {
             // 大模型
             this.llmStreaming = setting.llmStreaming;
             this.llmProviderUid = setting.llmProviderUid;
+            this.llmMaxMessages = setting.llmMaxMessages;
             this.llmThinkingLevel = setting.llmThinkingLevel;
             // 终端
             this.termBeep = setting.termBeep;
