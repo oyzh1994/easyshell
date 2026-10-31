@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.test.llm;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.llm.LLMMessage;
-import cn.oyzh.easyshell.llm.ui.LLMView;
+import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.plus.ext.FXApplication;

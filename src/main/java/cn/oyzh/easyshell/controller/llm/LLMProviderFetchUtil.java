@@ -4,7 +4,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMApiType;
 import cn.oyzh.easyshell.llm.LLMModelFetcher;
-import cn.oyzh.easyshell.llm.ui.LLMApiTypeComboBox;
+import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;

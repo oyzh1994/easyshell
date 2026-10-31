@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.easyshell.llm.LLMApiType;
 import cn.oyzh.easyshell.llm.LLMProvider;
-import cn.oyzh.easyshell.llm.ui.LLMApiTypeComboBox;
+import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;

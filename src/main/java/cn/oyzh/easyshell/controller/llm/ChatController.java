@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
-import cn.oyzh.easyshell.llm.ui.LLMView;
+import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;

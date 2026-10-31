@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm.ui;
+package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
