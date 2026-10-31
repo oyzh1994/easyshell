@@ -73,6 +73,7 @@ import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddProviderController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMProviderListController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMSessionListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateProviderController;
 import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
 import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
@@ -1622,5 +1623,23 @@ public class ShellViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex, owner);
         }
+    }
+
+    /**
+     * LLM会话历史
+     *
+     * @param owner 父窗口
+     * @return 页面
+     */
+    public static StageAdapter llmSessions(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMSessionListController.class, owner);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
     }
 }

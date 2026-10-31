@@ -49,6 +49,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 
 public class LLMView extends FXBorderPane {
 
@@ -89,6 +90,8 @@ public class LLMView extends FXBorderPane {
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     private LLMSendHandler sendHandler;
+
+    private BooleanSupplier sendValidator;
 
     private File selectedFile;
 
@@ -355,6 +358,9 @@ public class LLMView extends FXBorderPane {
         if (this.busy) {
             return;
         }
+        if (this.sendValidator != null && !this.sendValidator.getAsBoolean()) {
+            return;
+        }
         String text = this.inputArea.getText();
         boolean hasText = text != null && !text.isBlank();
         if (!hasText && this.selectedFile == null) {
@@ -473,6 +479,15 @@ public class LLMView extends FXBorderPane {
 
     public void setSendHandler(LLMSendHandler sendHandler) {
         this.sendHandler = sendHandler;
+    }
+
+    /**
+     * 设置发送前校验器
+     *
+     * @param sendValidator 发送前校验器
+     */
+    public void setSendValidator(BooleanSupplier sendValidator) {
+        this.sendValidator = sendValidator;
     }
 
     public LLMListView getMessageListView() {
@@ -614,5 +629,21 @@ public class LLMView extends FXBorderPane {
             return String.format(Locale.ROOT, "%.1fK", value / 1_000.0);
         }
         return Long.toString(value);
+    }
+
+    public LLMSessionTab findSessionTab(String tabId) {
+        if (tabId == null) {
+            return null;
+        }
+        for (LLMSessionTab tab : this.getSessionTabComboBox().getItems()) {
+            if (Objects.equals(tab.getId(), tabId)) {
+                return tab;
+            }
+        }
+        return null;
+    }
+
+    public void clearSessionTab() {
+        this.sessionTabComboBox.clearSelection();
     }
 }

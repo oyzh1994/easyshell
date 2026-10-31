@@ -11,12 +11,12 @@
         fx:controller="cn.oyzh.easyshell.controller.llm.ChatController"
         flexHeight="100%" visible="false" managed="false" managedBindVisible="true">
     <FXHBox realHeight="30" flexWidth="100%">
-        <AddSVGGlyph tipText="%base.add">
+        <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#newSession">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </AddSVGGlyph>
-        <HistorySVGGlyph tipText="%base.history">
+        <HistorySVGGlyph tipText="%base.history" onMousePrimaryClicked="#history">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>

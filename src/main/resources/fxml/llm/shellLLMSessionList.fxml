@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.llm.LLMSessionTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.RestoreSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMSessionListController"
+        realWidth="720" realHeight="460">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <FXHBox realHeight="30">
+            <RestoreSVGGlyph tipText="%base.restore" onMousePrimaryClicked="#restore">
+                <FXHBox.margin>
+                    <Insets left="30" top="7"/>
+                </FXHBox.margin>
+            </RestoreSVGGlyph>
+            <EditSVGGlyph tipText="%base.edit" onMousePrimaryClicked="#update">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </EditSVGGlyph>
+            <DeleteSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#delete">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
+            <FXVBox.margin>
+                <Insets top="10"/>
+            </FXVBox.margin>
+        </FXHBox>
+        <LLMSessionTableView fx:id="sessionTableView" flexWidth="100% - 50" flexHeight="100% - 60">
+            <columns>
+                <FXTableColumn prefWidth="360" valueName="title" text="%base.title"/>
+                <FXTableColumn prefWidth="90" valueName="messageCount" text="%shell.llm.messageCount"/>
+                <FXTableColumn flexWidth="100% - 465" valueName="updateTimeText" text="%base.updateTime"/>
+            </columns>
+            <FXVBox.margin>
+                <Insets left="30" top="7"/>
+            </FXVBox.margin>
+        </LLMSessionTableView>
+    </FXVBox>
+</FXVBox>

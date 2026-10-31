@@ -23,6 +23,8 @@ public class LLMListView extends FXListView<LLMMessage> {
 
     private static final double BOTTOM_TOLERANCE = 0.01;
 
+    private Runnable messageUpdateHandler;
+
     public LLMListView() {
         this.getStyleClass().add("llm-message-list");
         this.setFocusTraversable(false);
@@ -35,16 +37,16 @@ public class LLMListView extends FXListView<LLMMessage> {
         placeholder.getStyleClass().add("llm-placeholder");
         this.setPlaceholder(placeholder);
 
-        this.sceneProperty().addListener((observable, oldScene, newScene) -> {
-            if (newScene != null) {
-                FXUtil.runLater(this::installScrollBarListener);
-            }
-        });
-        this.skinProperty().addListener((observable, oldSkin, newSkin) -> {
-            if (newSkin != null) {
-                FXUtil.runLater(this::installScrollBarListener);
-            }
-        });
+        //this.sceneProperty().addListener((observable, oldScene, newScene) -> {
+        //    if (newScene != null) {
+        //        FXUtil.runLater(this::installScrollBarListener);
+        //    }
+        //});
+        //this.skinProperty().addListener((observable, oldSkin, newSkin) -> {
+        //    if (newSkin != null) {
+        //        FXUtil.runLater(this::installScrollBarListener);
+        //    }
+        //});
         this.addEventFilter(ScrollEvent.SCROLL, event -> this.onUserScroll());
         FXUtil.runLater(this::installScrollBarListener);
     }
@@ -94,6 +96,7 @@ public class LLMListView extends FXListView<LLMMessage> {
     public void addMessage(LLMMessage message) {
         boolean shouldScroll = this.autoScroll && !this.userScrolling;
         this.addItem(message);
+        this.notifyMessageUpdated();
         if (shouldScroll) {
             this.scheduleScrollToBottom();
         }
@@ -102,6 +105,7 @@ public class LLMListView extends FXListView<LLMMessage> {
     public void appendMessage(LLMMessage message, String text) {
         boolean shouldScroll = this.autoScroll && !this.userScrolling;
         message.appendMessage(text);
+        this.notifyMessageUpdated();
         if (shouldScroll) {
             this.scheduleScrollToBottom();
         }
@@ -119,6 +123,7 @@ public class LLMListView extends FXListView<LLMMessage> {
         }
         boolean shouldScroll = this.autoScroll && !this.userScrolling;
         message.replaceMessage(text);
+        this.notifyMessageUpdated();
         if (shouldScroll) {
             this.scheduleScrollToBottom();
         }
@@ -135,20 +140,30 @@ public class LLMListView extends FXListView<LLMMessage> {
      * @param messages 完整消息列表
      */
     public void setMessages(List<LLMMessage> messages) {
-        if(CollectionUtil.isEmpty(messages)){
-            return;
-        }
-        this.setItem(List.copyOf(messages));
-        FXUtil.runWait(() -> {
-            this.resetScrollState();
-            this.scrollToBottom();
-        });
+        this.setItem(CollectionUtil.isEmpty(messages) ? List.of() : List.copyOf(messages));
+        this.resetScrollState();
+        this.scrollToBottom();
     }
 
     public List<LLMMessage> getMessages() {
         AtomicReference<List<LLMMessage>> result = new AtomicReference<>(List.of());
         FXUtil.runWait(() -> result.set(List.copyOf(this.getItems())));
         return result.get();
+    }
+
+    /**
+     * 设置消息变更处理器
+     *
+     * @param messageUpdateHandler 消息变更处理器
+     */
+    public void setMessageUpdateHandler(Runnable messageUpdateHandler) {
+        this.messageUpdateHandler = messageUpdateHandler;
+    }
+
+    private void notifyMessageUpdated() {
+        if (this.messageUpdateHandler != null) {
+            this.messageUpdateHandler.run();
+        }
     }
 
     private void resetScrollState() {
