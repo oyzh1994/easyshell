@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.redis;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.redis.ShellRedisLLMTools;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * redis标签页
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellRedisTab extends ShellConnectTab {
+public class ShellRedisTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellRedisTab(ShellConnect connect) {
     //    super();
@@ -59,8 +64,29 @@ public class ShellRedisTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellBaseClient client() {
+    public ShellRedisClient client() {
         return this.controller().getClient();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellRedisLLMTools> getToolsFunc() {
+        return () -> {
+            ShellRedisLLMTools llmTools = new ShellRedisLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
     }
 
     //    @Override

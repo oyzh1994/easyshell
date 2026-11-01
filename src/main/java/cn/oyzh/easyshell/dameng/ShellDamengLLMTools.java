@@ -26,10 +26,10 @@ public class ShellDamengLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool("Execute SQL on the bound Dameng connection")
+    @Tool(name = "executeSql", value = "Execute SQL on the bound Dameng connection")
     public String executeSql(
-            @P("Dameng schema name") String schema,
-            @P("SQL statement") String sql) {
+            @P(name = "schema", value = "Dameng schema name") String schema,
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return "Database client is unavailable.";
         }
@@ -46,9 +46,9 @@ public class ShellDamengLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute SQL on the bound Dameng connection")
+    @Tool(name = "executeSqlDefaultSchema", value = "Execute SQL on the bound Dameng connection")
     public String executeSql(
-            @P("SQL statement") String sql) {
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return "Database client is unavailable.";
         }
@@ -62,10 +62,10 @@ public class ShellDamengLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute SQL and return raw JDBC result sets")
+    @Tool(name = "executeSqlRaw", value = "Execute SQL and return raw JDBC result sets")
     public List<ResultSet> executeSqlRaw(
-            @P("Dameng schema name") String schema,
-            @P("SQL statement") String sql) {
+            @P(name = "schema", value = "Dameng schema name") String schema,
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return Collections.emptyList();
         }
@@ -81,9 +81,9 @@ public class ShellDamengLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute SQL and return raw JDBC result sets")
+    @Tool(name = "executeSqlRawDefaultSchema", value = "Execute SQL and return raw JDBC result sets")
     public List<ResultSet> executeSqlRaw(
-            @P("SQL statement") String sql) {
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return Collections.emptyList();
         }

@@ -233,8 +233,7 @@ public class ChatController extends SubStageController {
             this.activeRequest = request;
             this.view.setBusy(true);
             // 异步执行
-            Thread thread = ThreadUtil.startVirtual(() -> this.executeRequest(request, assistant, message, streaming));
-            request.thread = thread;
+            request.thread = ThreadUtil.startVirtual(() -> this.executeRequest(request, assistant, message, streaming));
         });
     }
 

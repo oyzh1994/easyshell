@@ -84,7 +84,6 @@ import org.bson.types.Code;
 import org.bson.types.ObjectId;
 
 import javax.net.ssl.SSLContext;
-import javax.script.ScriptException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -1394,15 +1393,35 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         try {
             Object obj = this.shellEngine().eval(script);
             this.parseResult(result, obj, dbName, null);
-        } catch (ScriptException ex) {
+            result.setMsg("ok");
+        } catch (Exception ex) {
             ex.printStackTrace();
             result.setSuccess(false);
-            result.setMsg(ex.getMessage());
+            result.setMsg(ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage());
         }
-        result.setMsg("ok");
         long end = System.currentTimeMillis();
         result.setUsed(end - start);
         return result;
+    }
+
+    /**
+     * Execute a MongoDB database command.
+     *
+     * @param dbName  database name
+     * @param command command
+     * @return command result
+     */
+    public Document runCommand(String dbName, Bson command) {
+        if (this.mongoClient == null) {
+            throw new IllegalStateException("MongoDB client is not connected");
+        }
+        if (StringUtil.isBlank(dbName)) {
+            throw new IllegalArgumentException("Database is required");
+        }
+        if (command == null) {
+            throw new IllegalArgumentException("Command is required");
+        }
+        return this.mongoClient.getDatabase(dbName).runCommand(command);
     }
 
     /**
@@ -1488,6 +1507,10 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         try {
             MongoScriptParser parser = MongoScriptParser.getParser(script);
             List<String> sqlList = parser.parseScript();
+            if (sqlList.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "No executable MongoDB statement found. Statements must start with db. and end with ';'.");
+            }
             for (String sql1 : sqlList) {
                 ShellMongoExecuteResult result = this.executeSingleScript(dbName, sql1);
                 results.addResult(result);

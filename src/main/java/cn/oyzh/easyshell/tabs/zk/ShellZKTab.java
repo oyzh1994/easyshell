@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.zk;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
+import cn.oyzh.easyshell.zk.ShellZKClient;
+import cn.oyzh.easyshell.zk.ShellZKLLMTools;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * zk连接标签页
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellZKTab extends ShellConnectTab {
+public class ShellZKTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellZKTab(ShellConnect connect) {
     //    super();
@@ -59,8 +64,29 @@ public class ShellZKTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellBaseClient client() {
+    public ShellZKClient client() {
         return this.controller().getClient();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellZKLLMTools> getToolsFunc() {
+        return () -> {
+            ShellZKLLMTools llmTools = new ShellZKLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
     }
 
     //    @Override

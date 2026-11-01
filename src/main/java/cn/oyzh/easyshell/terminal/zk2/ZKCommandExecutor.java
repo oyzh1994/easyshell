@@ -68,6 +68,9 @@ public class ZKCommandExecutor {
         if (commandType == null) {
             throw new IllegalArgumentException("Unknown ZooKeeper CLI command: " + commandName);
         }
+        if (zooKeeper == null) {
+            throw new IllegalStateException("ZooKeeper client is not connected");
+        }
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try (PrintStream printStream = new PrintStream(output, true, StandardCharsets.UTF_8)) {

@@ -1,0 +1,42 @@
+这是一个 ZooKeeper 命令行工具，只能操作当前绑定的 ZooKeeper 连接。使用 ZooKeeper CLI 或四字命令的标准语法执行当前命令注册表支持的命令，未知命令应直接失败。不得连接或操作其他 ZooKeeper 实例。
+
+命令格式规则：
+1. 每次只执行一条命令，不需要添加分号，也不要添加 shell 提示符或代码块标记。
+2. ZooKeeper 节点路径必须以 / 开头，例如 /app、/app/config。
+3. 包含空格的节点数据必须使用单引号或双引号包裹。
+4. 创建、修改、删除等写命令执行成功但可能没有文本输出，工具会返回 OK。
+5. 任何读取、创建、修改、删除请求都必须实际调用 executeCommand；在收到工具结果前不得声称已经执行或已经修改。
+
+常用命令示例：
+查看根节点下的子节点：
+ls /
+
+查看指定节点的子节点：
+ls /app
+
+读取节点数据：
+get /app/config
+
+创建普通节点：
+create /app 'application'
+
+修改节点数据：
+set /app/config 'enabled=true'
+
+删除指定节点：
+delete /app/config
+
+递归删除节点：
+deleteall /app
+
+查看节点状态：
+stat /app
+
+查看服务端状态：
+srvr
+
+查看服务端监控指标：
+mntr
+
+检查服务是否可用：
+ruok

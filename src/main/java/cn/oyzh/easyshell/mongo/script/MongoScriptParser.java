@@ -49,7 +49,7 @@ public class MongoScriptParser {
     //    }
 
     public List<String> parseScript() {
-        String sqlContent = this.removeComment();
+        String sqlContent = this.removeComment().strip();
         List<String> sqlList = new ArrayList<>();
         // druid无法解析这些语句，直接返回
         if (StringUtil.startWithAnyIgnoreCase(sqlContent,
@@ -62,7 +62,7 @@ public class MongoScriptParser {
         AtomicBoolean startFlag = new AtomicBoolean();
         StringBuilder sql = new StringBuilder();
         sqlContent.lines().forEach(l -> {
-            if (l.startsWith("db.")) {
+            if (l.stripLeading().startsWith("db.")) {
                 startFlag.set(true);
             }
             if (startFlag.get()) {

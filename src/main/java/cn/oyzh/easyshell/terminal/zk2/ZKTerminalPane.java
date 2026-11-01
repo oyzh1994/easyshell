@@ -42,7 +42,7 @@ public class ZKTerminalPane extends TerminalPane {
     public static final String TERMINAL_NAME = "zookeeper-v2";
 
     /** 不需要 ZooKeeper 连接即可执行的 CLI 命令。 */
-    private static final Set<String> CLI_COMMANDS_WITHOUT_CONNECTION = Set.of("version");
+    public static final Set<String> CLI_COMMANDS_WITHOUT_CONNECTION = Set.of("version");
 
     /** ZooKeeper 命令执行器。 */
     private final ZKCommandExecutor commandExecutor = new ZKCommandExecutor();

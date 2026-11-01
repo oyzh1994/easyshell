@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.mongo;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.ShellMongoLLMTools;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * MongoDB 数据库连接标签页
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellMongoTab extends ShellConnectTab {
+public class ShellMongoTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellMongoTab(ShellConnect connect) {
     //    super();
@@ -59,9 +64,31 @@ public class ShellMongoTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellBaseClient client() {
+    public ShellMongoClient client() {
         return this.controller().getClient();
     }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellMongoLLMTools> getToolsFunc() {
+        return () -> {
+            ShellMongoLLMTools llmTools = new ShellMongoLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
+    }
+
     /**
      * 创建实例
      *

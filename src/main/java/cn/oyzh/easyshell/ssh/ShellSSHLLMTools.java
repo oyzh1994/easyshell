@@ -16,7 +16,7 @@ public class ShellSSHLLMTools implements LLMTools {
 
     @Tool("执行ssh命令")
     public String execCommand(
-            @P("命令") String command) {
+            @P(name = "command", value = "命令") String command) {
         return this.client.exec(command);
     }
 

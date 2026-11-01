@@ -26,10 +26,10 @@ public class ShellMysqlLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool("Execute SQL on the bound MySQL connection")
+    @Tool(name = "executeSql", value = "Execute SQL on the bound MySQL connection")
     public String executeSql(
-            @P("MySQL database name") String database,
-            @P("SQL statement") String sql) {
+            @P(name = "database", value = "MySQL database name") String database,
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return "Database client is unavailable.";
         }
@@ -46,9 +46,9 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute SQL on the bound MySQL connection")
+    @Tool(name = "executeSqlDefaultDatabase", value = "Execute SQL on the bound MySQL connection")
     public String executeSql(
-            @P("SQL statement") String sql) {
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return "Database client is unavailable.";
         }
@@ -62,10 +62,10 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute SQL and return raw JDBC result sets")
+    @Tool(name = "executeSqlRaw", value = "Execute SQL and return raw JDBC result sets")
     public List<ResultSet> executeSqlRaw(
-            @P("MySQL database name") String database,
-            @P("SQL statement") String sql) {
+            @P(name = "database", value = "MySQL database name") String database,
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return Collections.emptyList();
         }
@@ -81,9 +81,9 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute SQL and return raw JDBC result sets")
+    @Tool(name = "executeSqlRawDefaultDatabase", value = "Execute SQL and return raw JDBC result sets")
     public List<ResultSet> executeSqlRaw(
-            @P("SQL statement") String sql) {
+            @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
             return Collections.emptyList();
         }

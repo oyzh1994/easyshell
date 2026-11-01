@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.easyshell.query.dameng.DamengQueryResult;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResult;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbQueryResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResult;
 import cn.oyzh.fx.db.DBColumn;
@@ -70,6 +71,11 @@ public final class LLMDBToolsUtil {
                 && damengResult.getRecords() != null
                 && !damengResult.getRecords().isEmpty()) {
             return formatRows(damengResult.columnList(), damengResult.getRecords(), result);
+        }
+        if (result instanceof ShellMongoQueryResult mongoResult
+                && mongoResult.getRecords() != null
+                && !mongoResult.getRecords().isEmpty()) {
+            return formatRows(mongoResult.columnList(), mongoResult.getRecords(), result);
         }
         return "OK";
     }

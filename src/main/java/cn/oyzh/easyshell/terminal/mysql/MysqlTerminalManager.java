@@ -23,9 +23,9 @@ public class MysqlTerminalManager {
         TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, HelpTerminalCommandHandler.class);
         TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, ClearTerminalCommandHandler.class);
 
-        TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlShowDatabasesTerminalCommandHandler.class);
+        TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlUseTerminalCommandHandler.class);
         TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlShowDbsTerminalCommandHandler.class);
         TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlShowTablesTerminalCommandHandler.class);
-        TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlUseTerminalCommandHandler.class);
+        TerminalManager.registerHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlShowDatabasesTerminalCommandHandler.class);
     }
 }

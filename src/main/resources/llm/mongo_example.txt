@@ -1,0 +1,113 @@
+MongoDB 脚本使用规则：
+1. 调用 runCommand 时必须传入 database 和 command；command 只包含一个严格 JSON 对象，所有键和字符串都使用双引号，不要添加分号、shell 提示符或代码块标记。
+2. 调用 executeScript 时必须传入 database 和 script；优先使用 db.getCollection('集合名') 获取集合，不要假设 db 后面可以直接接集合名。
+3. 普通语句必须以 db. 开头并以分号结束。可以一次传入多条语句，每条语句单独占一行。
+4. 查询条件、更新内容和聚合管道使用 JavaScript 对象或数组表示。
+5. 写操作会影响真实数据。执行删除、更新等操作前，应确认筛选条件准确，并优先使用范围更小的条件。
+6. 任何查询、写入、更新、删除请求都必须实际调用 runCommand 或 executeScript；在收到工具结果前不得声称已经执行或已经修改。
+
+基础命令示例：
+
+查询集合中的全部文档：
+db.getCollection('users').find();
+
+带条件、跳过和限制数量的查询：
+db.getCollection('users').find({status: 'active'}).skip(0).limit(20);
+
+查询单条文档：
+db.getCollection('users').findOne({email: 'alice@example.com'});
+
+按 ObjectId 查询：
+db.getCollection('users').findOne({_id: ObjectId('507f1f77bcf86cd799439011')});
+
+统计全部文档：
+db.getCollection('users').countDocuments();
+
+按条件统计文档：
+db.getCollection('users').countDocuments({status: 'active'});
+
+估算集合文档数量：
+db.getCollection('users').estimatedDocumentCount();
+
+插入单条文档：
+db.getCollection('users').insertOne({name: 'Alice', status: 'active'});
+
+插入多条文档：
+db.getCollection('users').insertMany([{name: 'Bob', status: 'active'}, {name: 'Carol', status: 'inactive'}]);
+
+更新单条文档：
+db.getCollection('users').updateOne({email: 'alice@example.com'}, {$set: {verified: true}});
+
+更新多条文档：
+db.getCollection('users').updateMany({status: 'active'}, {$set: {verified: true}});
+
+替换单条文档：
+db.getCollection('users').replaceOne({email: 'alice@example.com'}, {name: 'Alice', status: 'active', verified: true});
+
+删除单条文档：
+db.getCollection('users').deleteOne({status: 'deleted'});
+
+删除多条文档：
+db.getCollection('users').deleteMany({status: 'deleted'});
+
+聚合统计：
+db.getCollection('users').aggregate([{$match: {status: 'active'}}, {$group: {_id: '$city', total: {$sum: 1}}}]);
+
+查询字段去重值：
+db.getCollection('users').distinct('city', {status: 'active'});
+
+创建集合：
+db.createCollection('events');
+
+查看当前数据库的集合：
+db.listCollectionNames();
+
+查看集合详细信息：
+db.listCollections();
+
+创建索引：
+db.getCollection('users').createIndex({email: 1}, {unique: true});
+
+查看索引：
+db.getCollection('users').listIndexes();
+
+重命名集合：
+db.getCollection('users').rename('accounts');
+
+删除集合：
+db.getCollection('events').drop();
+
+runCommand 标准数据库命令示例：
+
+检查数据库连通性：
+{"ping": 1}
+
+查询文档：
+{"find": "users", "filter": {"status": "active"}, "limit": 20}
+
+插入文档：
+{"insert": "users", "documents": [{"name": "Alice", "status": "active"}]}
+
+更新文档：
+{"update": "users", "updates": [{"q": {"email": "alice@example.com"}, "u": {"$set": {"verified": true}}, "multi": false}]}
+
+删除文档：
+{"delete": "users", "deletes": [{"q": {"status": "deleted"}, "limit": 0}]}
+
+统计文档：
+{"count": "users", "query": {"status": "active"}}
+
+字段去重：
+{"distinct": "users", "key": "city", "query": {"status": "active"}}
+
+聚合查询：
+{"aggregate": "users", "pipeline": [{"$match": {"status": "active"}}, {"$group": {"_id": "$city", "total": {"$sum": 1}}}], "cursor": {}}
+
+创建索引：
+{"createIndexes": "users", "indexes": [{"key": {"email": 1}, "name": "email_1", "unique": true}]}
+
+查看索引：
+{"listIndexes": "users"}
+
+删除集合：
+{"drop": "events"}

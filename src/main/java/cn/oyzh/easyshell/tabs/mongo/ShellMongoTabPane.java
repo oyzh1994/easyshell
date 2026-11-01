@@ -99,6 +99,9 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * 刷新主页标签
      */
     private void flushHomeTab() {
+        if (this.getClient() == null || this.getClient().isClosed()) {
+            return;
+        }
         if (this.tabsEmpty()) {
             this.initHomeTab();
         } else if (this.tabsSize() > 1) {
@@ -142,7 +145,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     /**
      * 获取集合记录标签
      *
-     * @param dbItem 数据库树节点
+     * @param dbItem    数据库树节点
      * @param tableName 参数
      * @return 集合记录标签
      */
@@ -176,7 +179,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
     /**
      * 获取桶记录标签
      *
-     * @param dbItem 数据库树节点
+     * @param dbItem     数据库树节点
      * @param bucketName 参数
      * @return 桶记录标签
      */
