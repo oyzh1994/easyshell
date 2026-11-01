@@ -1,11 +1,17 @@
 package cn.oyzh.easyshell.tabs.sftp;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileLLMTools;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
+import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * sftp标签页
@@ -13,7 +19,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSFTPTab extends ShellConnectTab {
+public class ShellSFTPTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellSFTPTab(ShellConnect connect) {
     //    this.init(connect);
@@ -60,6 +66,23 @@ public class ShellSFTPTab extends ShellConnectTab {
     @Override
     public ShellSFTPClient client() {
         return this.controller().client();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellFileLLMTools<ShellSFTPFile>> getToolsFunc() {
+        return () -> new ShellFileLLMTools<>(this.client());
     }
 
 //    @Override

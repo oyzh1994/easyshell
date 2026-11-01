@@ -1,11 +1,17 @@
 package cn.oyzh.easyshell.tabs.smb;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileLLMTools;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
+import cn.oyzh.easyshell.smb.ShellSMBFile;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * smb标签页
@@ -13,7 +19,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellSMBTab extends ShellConnectTab {
+public class ShellSMBTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellSMBTab(ShellConnect connect) {
     //    this.init(connect);
@@ -60,6 +66,23 @@ public class ShellSMBTab extends ShellConnectTab {
     @Override
     public ShellSMBClient client() {
         return this.controller().client();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellFileLLMTools<ShellSMBFile>> getToolsFunc() {
+        return () -> new ShellFileLLMTools<>(this.client());
     }
 
     //    @Override

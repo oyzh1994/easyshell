@@ -1,11 +1,17 @@
 package cn.oyzh.easyshell.tabs.webdav;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.file.ShellFileLLMTools;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.webdav.ShellWebdavClient;
+import cn.oyzh.easyshell.webdav.ShellWebdavFile;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * webdav标签页
@@ -13,7 +19,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellWebdavTab extends ShellConnectTab {
+public class ShellWebdavTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellWebdavTab(ShellConnect connect) {
     //    this.init(connect);
@@ -60,6 +66,23 @@ public class ShellWebdavTab extends ShellConnectTab {
     @Override
     public ShellWebdavClient client() {
         return this.controller().client();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellFileLLMTools<ShellWebdavFile>> getToolsFunc() {
+        return () -> new ShellFileLLMTools<>(this.client());
     }
 
 //    @Override

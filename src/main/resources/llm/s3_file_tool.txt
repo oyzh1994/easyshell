@@ -1,0 +1,10 @@
+# S3 路径规则
+
+S3 路径格式为 `/bucket/key`。路径 `/` 表示存储桶根列表。
+
+1. S3 的“目录”通常是 key 前缀，也可能由零字节目录标记表示，并非真实目录。
+2. `listFiles("/bucket")` 列出该存储桶的直接对象或前缀；`listFiles("/")` 列出存储桶。
+3. `createRemoteDirectory` 会创建目录标记，`createRemoteDirectoryRecursive` 会创建缺失前缀标记。
+4. `deleteRemoteDirectory` 在部分 S3 实现中会按前缀删除对象，可能比传统文件系统更危险。不要在用户只要求删除空目录时贸然调用；无法确认时先列出内容并说明差异。
+5. `renameRemoteFileOrDirectory` 只能在同一存储桶的同一父路径内改名，不支持跨桶移动。
+6. S3 不支持传统 Unix 权限修改。

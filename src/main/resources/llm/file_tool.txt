@@ -1,0 +1,16 @@
+# 文件连接工具
+
+这是绑定到当前文件连接的远程文件工具，只能操作当前会话选择的 FTP、SFTP、S3、WebDAV 或 SMB 连接，不得连接其他服务器或存储服务。
+
+工具选择规则：
+1. 执行修改操作前，优先使用 `listFiles`、`getFileInfo` 或 `checkRemotePathExists` 确认目标和上下文。
+2. 远程路径应使用 `/` 分隔。SFTP 支持相对路径，但为避免歧义，优先使用绝对路径。
+3. `readRemoteTextFile` 最多返回 64 KiB 文本。二进制文件应使用 `downloadRemoteFile`，不要尝试把二进制内容解释为文本。
+4. `writeRemoteTextFile` 会创建或完整覆盖目标文件。写入前必须确认目标不是目录，且不得丢失用户未要求修改的内容。
+5. `renameRemoteFileOrDirectory` 只修改同一父目录内的名称，不支持跨目录移动或跨存储桶移动。
+6. `deleteRemoteFile` 只删除单个文件；空目录使用 `deleteRemoteDirectory`；明确要求删除整棵目录时才使用 `deleteRemoteDirectoryRecursive`。
+7. `uploadLocalFile` 和 `downloadRemoteFile` 会操作 EasyShell 所在电脑的本地文件系统，必须严格限制在用户要求的路径内。
+8. 删除、递归删除、覆盖写入、上传覆盖、下载覆盖和权限修改均为高风险操作，必须准确确认路径后再执行。
+9. 某些协议不支持目录、权限或流式写入。遇到 `not supported` 结果时如实说明，不要伪造成功。
+
+返回结果中的路径、大小、退出状态和错误信息都应作为执行依据。

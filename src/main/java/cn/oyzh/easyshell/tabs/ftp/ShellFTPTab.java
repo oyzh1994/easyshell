@@ -1,8 +1,12 @@
 package cn.oyzh.easyshell.tabs.ftp;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.ftp.ShellFTPFile;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
+import cn.oyzh.easyshell.file.ShellFileLLMTools;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
@@ -10,13 +14,15 @@ import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.scene.Cursor;
 
+import java.util.function.Supplier;
+
 /**
  * ftp标签页
  *
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
+public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle, LLMTabCapability {
 
     //public ShellFTPTab(ShellConnect connect) {
     //    this.init(connect);
@@ -63,6 +69,23 @@ public class ShellFTPTab extends ShellConnectTab implements NodeLifeCycle {
     @Override
     public ShellFTPClient client() {
         return this.controller().client();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellFileLLMTools<ShellFTPFile>> getToolsFunc() {
+        return () -> new ShellFileLLMTools<>(this.client());
     }
 
      @Override

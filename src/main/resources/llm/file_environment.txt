@@ -1,0 +1,5 @@
+## 文件连接环境
+连接名称：{name}
+协议：{type}
+连接字符集：{charset}
+当前工作目录：{workingDirectory}
