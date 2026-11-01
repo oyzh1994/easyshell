@@ -12,8 +12,11 @@ import cn.oyzh.i18n.I18nHelper;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -330,11 +333,25 @@ public class ShellZKNodeUtil {
      *
      * @param client        zk客户端
      * @param parentPath    父节点路径
-     * @param existingNodes 查询属性
-     * @param limit         过滤器
+     * @param existingNodes 已存在节点路径
+     * @param limit         限制数量
      * @return 子节点列表
      */
     public static List<ShellZKNode> getChildNode(ShellZKClient client, String parentPath, List<String> existingNodes, int limit) throws Exception {
+        return getChildNode(client, parentPath, existingNodes, limit, null);
+    }
+
+    /**
+     * 获取子节点
+     *
+     * @param client        zk客户端
+     * @param parentPath    父节点路径
+     * @param existingNodes 已存在节点路径
+     * @param limit         限制数量
+     * @param removedNodes  服务端已删除节点路径
+     * @return 子节点列表
+     */
+    public static List<ShellZKNode> getChildNode(ShellZKClient client, String parentPath, List<String> existingNodes, int limit, Collection<String> removedNodes) throws Exception {
         // 获取子节点
         List<String> children = null;
         try {
@@ -342,6 +359,18 @@ public class ShellZKNodeUtil {
             children = client.getChildren(parentPath);
         } catch (Exception ignore) {
 
+        }
+        // 获取成功时，找出服务端已删除的节点
+        if (children != null && removedNodes != null && existingNodes != null) {
+            Set<String> currentNodes = new HashSet<>(children.size());
+            for (String child : children) {
+                currentNodes.add(ShellZKNodeUtil.concatPath(parentPath, child));
+            }
+            for (String existingNode : existingNodes) {
+                if (!currentNodes.contains(existingNode)) {
+                    removedNodes.add(existingNode);
+                }
+            }
         }
         // 为空，直接返回
         if (CollectionUtil.isEmpty(children)) {

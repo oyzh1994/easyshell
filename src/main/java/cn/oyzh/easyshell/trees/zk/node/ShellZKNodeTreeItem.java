@@ -36,8 +36,10 @@ import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * zk节点树节点
@@ -999,9 +1001,18 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             // 移除列表
             List<TreeItem<?>> delList = new ArrayList<>();
             // 已存在节点
-            List<String> paths = this.itemChildren().parallelStream().map(ShellZKNodeTreeItem::nodePath).toList();
+            List<ShellZKNodeTreeItem> itemChildren = this.itemChildren();
+            List<String> paths = itemChildren.parallelStream().map(ShellZKNodeTreeItem::nodePath).toList();
+            // 服务端已删除节点
+            Set<String> removedPaths = new HashSet<>();
             // 获取节点列表
-            List<ShellZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit);
+            List<ShellZKNode> list = ShellZKNodeUtil.getChildNode(this.client(), this.nodePath(), paths, limit, removedPaths);
+            // 移除服务端已删除的节点
+            for (ShellZKNodeTreeItem item : itemChildren) {
+                if (removedPaths.contains(item.nodePath())) {
+                    delList.add(item);
+                }
+            }
             // 遍历列表寻找待更新或者待添加节点
             for (ShellZKNode node : list) {
                 // 添加到集合
