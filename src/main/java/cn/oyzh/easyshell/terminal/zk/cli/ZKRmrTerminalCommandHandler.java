@@ -1,20 +1,20 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-/**
- * zk rmr 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKRmrTerminalCommandHandler extends ZKDeleteallTerminalCommandHandler {
+// /**
+//  * zk rmr 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKRmrTerminalCommandHandler extends ZKDeleteallTerminalCommandHandler {
 
-    @Override
-    public String commandName() {
-        return "rmr";
-    }
+//     @Override
+//     public String commandName() {
+//         return "rmr";
+//     }
 
-    @Override
-    public boolean commandDeprecated() {
-        return true;
-    }
-}
+//     @Override
+//     public boolean commandDeprecated() {
+//         return true;
+//     }
+// }

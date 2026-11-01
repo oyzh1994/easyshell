@@ -1,26 +1,26 @@
 package cn.oyzh.easyshell.terminal.redis.geo;
 
-import cn.oyzh.easyshell.redis.ShellRedisKeyType;
-import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+// import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis GEOPOS 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis GEOPOS 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisGeoposTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+// public class RedisGeoposTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    protected ShellRedisKeyType getKeyType() {
-        return ShellRedisKeyType.ZSET;
-    }
+//     @Override
+//     protected ShellRedisKeyType getKeyType() {
+//         return ShellRedisKeyType.ZSET;
+//     }
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.GEOPOS;
-    }
-}
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.GEOPOS;
+//     }
+// }

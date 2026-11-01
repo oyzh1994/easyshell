@@ -1,26 +1,26 @@
 package cn.oyzh.easyshell.terminal.redis.zset;
 
-import cn.oyzh.easyshell.redis.ShellRedisKeyType;
-import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+// import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis ZINCRBY 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis ZINCRBY 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisZincrbyTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+// public class RedisZincrbyTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.ZINCRBY;
-    }
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.ZINCRBY;
+//     }
 
-    @Override
-    protected ShellRedisKeyType getKeyType() {
-        return ShellRedisKeyType.ZSET;
-    }
-}
+//     @Override
+//     protected ShellRedisKeyType getKeyType() {
+//         return ShellRedisKeyType.ZSET;
+//     }
+// }

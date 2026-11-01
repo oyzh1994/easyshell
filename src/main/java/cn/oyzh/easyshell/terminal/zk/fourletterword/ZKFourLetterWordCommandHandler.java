@@ -1,62 +1,62 @@
 package cn.oyzh.easyshell.terminal.zk.fourletterword;
 
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalCommandHandler;
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
-import cn.oyzh.fx.terminal.util.TerminalUtil;
+// import cn.oyzh.easyshell.domain.ShellConnect;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalCommandHandler;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
+// import cn.oyzh.fx.terminal.util.TerminalUtil;
 
-/**
- * zk四字命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public abstract class ZKFourLetterWordCommandHandler<C extends TerminalCommand> extends ZKTerminalCommandHandler<C> {
+// /**
+//  * zk四字命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public abstract class ZKFourLetterWordCommandHandler<C extends TerminalCommand> extends ZKTerminalCommandHandler<C> {
 
-    /**
-     * 获取四字命令
-     *
-     * @return 四字命令
-     */
-    protected abstract ZKFourLetterWordCommand furLetterWordCommand();
+//     /**
+//      * 获取四字命令
+//      *
+//      * @return 四字命令
+//      */
+//     protected abstract ZKFourLetterWordCommand furLetterWordCommand();
 
-    @Override
-    public String commandName() {
-        ZKFourLetterWordCommand cmd = this.furLetterWordCommand();
-        if (cmd.getAlias() != null) {
-            return cmd.getAlias();
-        }
-        return cmd.getCmd();
-    }
+//     @Override
+//     public String commandName() {
+//         ZKFourLetterWordCommand cmd = this.furLetterWordCommand();
+//         if (cmd.getAlias() != null) {
+//             return cmd.getAlias();
+//         }
+//         return cmd.getCmd();
+//     }
 
-    @Override
-    public String commandDesc() {
-        return "FourLetterWord Command " + this.furLetterWordCommand().getCmd();
-    }
+//     @Override
+//     public String commandDesc() {
+//         return "FourLetterWord Command " + this.furLetterWordCommand().getCmd();
+//     }
 
-    @Override
-    public C parseCommand(String line) {
-        String[] args = TerminalUtil.split(line);
-        TerminalCommand command = new TerminalCommand();
-        command.setArgs(args);
-        return (C) command;
-    }
+//     @Override
+//     public C parseCommand(String line) {
+//         String[] args = TerminalUtil.split(line);
+//         TerminalCommand command = new TerminalCommand();
+//         command.setArgs(args);
+//         return (C) command;
+//     }
 
-    @Override
-    public TerminalExecuteResult execute(C command, ZKTerminalPane terminal) {
-        TerminalExecuteResult result = new TerminalExecuteResult();
-        try {
-            terminal.disable();
-            ShellConnect connect = terminal.shellConnect();
-            String execResult = this.furLetterWordCommand().exec(connect.hostIp(), connect.hostPort());
-            result.setResult(execResult);
-        } catch (Exception ex) {
-            result.setException(ex);
-        } finally {
-            terminal.enable();
-        }
-        return result;
-    }
-}
+//     @Override
+//     public TerminalExecuteResult execute(C command, ZKTerminalPane terminal) {
+//         TerminalExecuteResult result = new TerminalExecuteResult();
+//         try {
+//             terminal.disable();
+//             ShellConnect connect = terminal.shellConnect();
+//             String execResult = this.furLetterWordCommand().exec(connect.hostIp(), connect.hostPort());
+//             result.setResult(execResult);
+//         } catch (Exception ex) {
+//             result.setException(ex);
+//         } finally {
+//             terminal.enable();
+//         }
+//         return result;
+//     }
+// }

@@ -1,20 +1,20 @@
 package cn.oyzh.easyshell.terminal.redis.other;
 
-import cn.oyzh.easyshell.terminal.redis.RedisNKeysTerminalCommandHandler;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.easyshell.terminal.redis.RedisNKeysTerminalCommandHandler;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis TOUCH 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis TOUCH 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisTouchTerminalCommandHandler extends RedisNKeysTerminalCommandHandler<TerminalCommand> {
+// public class RedisTouchTerminalCommandHandler extends RedisNKeysTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.TOUCH;
-    }
-}
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.TOUCH;
+//     }
+// }

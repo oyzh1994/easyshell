@@ -1,18 +1,18 @@
 package cn.oyzh.easyshell.terminal.redis.program.script;
 
-import redis.clients.jedis.Protocol;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis SCRIPT KILL 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis SCRIPT KILL 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisScriptKillTerminalCommandHandler extends RedisScriptTerminalCommandHandler {
+// public class RedisScriptKillTerminalCommandHandler extends RedisScriptTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return Protocol.Keyword.KILL.name();
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return Protocol.Keyword.KILL.name();
+//     }
+// }

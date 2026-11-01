@@ -1,59 +1,59 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.DelQuotaCommand;
+// import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
+// import org.apache.zookeeper.cli.CliCommand;
+// import org.apache.zookeeper.cli.DelQuotaCommand;
 
-/**
- * zk delquota 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKDelQuotaTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk delquota 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKDelQuotaTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new DelQuotaCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new DelQuotaCommand();
 
-    @Override
-    public CliCommand cliCommand() {
-        return this.cliCommand;
-    }
+//     @Override
+//     public CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
 
-    @Override
-    public String commandName() {
-        return "delquota";
-    }
+//     @Override
+//     public String commandName() {
+//         return "delquota";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "[-n|-b] path";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "[-n|-b] path";
+//     }
 
-    @Override
-    public String commandDesc() {
-        // return "删除配额";
-        return I18nResourceBundle.i18nString("base.delete", "base.quota");
-    }
+//     @Override
+//     public String commandDesc() {
+//         // return "删除配额";
+//         return I18nResourceBundle.i18nString("base.delete", "base.quota");
+//     }
 
-    @Override
-    public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) +
-                terminal.lineEndingText() + "-n num quota" +
-                terminal.lineEndingText() + "-b bytes quota";
-    }
+//     @Override
+//     public String commandHelp(ZKTerminalPane terminal) {
+//         return super.commandHelp(terminal) +
+//                 terminal.lineEndingText() + "-n num quota" +
+//                 terminal.lineEndingText() + "-b bytes quota";
+//     }
 
-    @Override
-    public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
-        if (terminal.getClient().isReadonly()) {
-            return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
-        }
-        return super.execute(command, terminal);
-    }
-}
+//     @Override
+//     public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
+//         if (terminal.getClient().isReadonly()) {
+//             return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
+//         }
+//         return super.execute(command, terminal);
+//     }
+// }

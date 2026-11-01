@@ -1,45 +1,45 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.GetAllChildrenNumberCommand;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import org.apache.zookeeper.cli.CliCommand;
+// import org.apache.zookeeper.cli.GetAllChildrenNumberCommand;
 
-/**
- * zk getAllChildrenNumber 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKGetAllChildrenNumberCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk getAllChildrenNumber 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKGetAllChildrenNumberCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new GetAllChildrenNumberCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new GetAllChildrenNumberCommand();
 
-    @Override
-    public CliCommand cliCommand() {
-        return this.cliCommand;
-    }
+//     @Override
+//     public CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
 
-    @Override
-    public String commandName() {
-        return "getAllChildrenNumber";
-    }
+//     @Override
+//     public String commandName() {
+//         return "getAllChildrenNumber";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "path";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "path";
+//     }
 
-    @Override
-    public String commandDesc() {
-        return I18nResourceBundle.i18nString("base.get", "base.all", "base.childNumber");
-    }
+//     @Override
+//     public String commandDesc() {
+//         return I18nResourceBundle.i18nString("base.get", "base.all", "base.childNumber");
+//     }
 
-    @Override
-    public String commandSupportedVersion() {
-        return "3.5.0";
-    }
-}
+//     @Override
+//     public String commandSupportedVersion() {
+//         return "3.5.0";
+//     }
+// }

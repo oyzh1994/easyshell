@@ -1,20 +1,20 @@
 package cn.oyzh.easyshell.terminal.redis.server;
 
-import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis SORT_RO 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis SORT_RO 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisSort_r0TerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+// public class RedisSort_r0TerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.SORT_RO;
-    }
-}
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.SORT_RO;
+//     }
+// }

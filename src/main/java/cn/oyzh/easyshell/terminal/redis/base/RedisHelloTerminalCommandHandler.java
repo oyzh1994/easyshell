@@ -1,20 +1,20 @@
 package cn.oyzh.easyshell.terminal.redis.base;
 
-import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis HELLO 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis HELLO 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisHelloTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {
+// public class RedisHelloTerminalCommandHandler extends RedisTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.HELLO;
-    }
-}
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.HELLO;
+//     }
+// }

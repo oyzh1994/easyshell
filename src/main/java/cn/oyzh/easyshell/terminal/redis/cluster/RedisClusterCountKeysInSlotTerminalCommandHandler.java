@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.terminal.redis.cluster;
 
-/**
- * Redis CLUSTER COUNTKEYSINSLOT 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis CLUSTER COUNTKEYSINSLOT 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisClusterCountKeysInSlotTerminalCommandHandler extends RedisClusterTerminalCommandHandler {
+// public class RedisClusterCountKeysInSlotTerminalCommandHandler extends RedisClusterTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return "COUNTKEYSINSLOT";
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return "COUNTKEYSINSLOT";
+//     }
+// }

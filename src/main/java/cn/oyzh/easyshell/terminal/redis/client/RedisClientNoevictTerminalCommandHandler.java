@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.terminal.redis.client;
 
-/**
- * Redis CLIENT NO-EVICT 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis CLIENT NO-EVICT 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisClientNoevictTerminalCommandHandler extends RedisClientTerminalCommandHandler {
+// public class RedisClientNoevictTerminalCommandHandler extends RedisClientTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return "NO-EVICT";
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return "NO-EVICT";
+//     }
+// }

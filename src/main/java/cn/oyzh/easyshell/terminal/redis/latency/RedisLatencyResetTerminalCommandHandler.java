@@ -1,18 +1,18 @@
 package cn.oyzh.easyshell.terminal.redis.latency;
 
-import redis.clients.jedis.Protocol;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis LATENCY RESET 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis LATENCY RESET 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisLatencyResetTerminalCommandHandler extends RedisLatencyTerminalCommandHandler {
+// public class RedisLatencyResetTerminalCommandHandler extends RedisLatencyTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return Protocol.Keyword.RESET.name();
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return Protocol.Keyword.RESET.name();
+//     }
+// }

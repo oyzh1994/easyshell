@@ -1,19 +1,19 @@
 package cn.oyzh.easyshell.terminal.redis.program;
 
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis FCALL 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis FCALL 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisFcallTerminalCommandHandler extends cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler<TerminalCommand> {
+// public class RedisFcallTerminalCommandHandler extends cn.oyzh.easyshell.terminal.redis.RedisTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.FCALL;
-    }
-}
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.FCALL;
+//     }
+// }

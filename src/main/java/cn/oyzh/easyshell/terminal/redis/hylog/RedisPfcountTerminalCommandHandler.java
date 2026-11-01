@@ -1,26 +1,26 @@
 package cn.oyzh.easyshell.terminal.redis.hylog;
 
-import cn.oyzh.easyshell.redis.ShellRedisKeyType;
-import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import redis.clients.jedis.Protocol;
+// import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+// import cn.oyzh.easyshell.terminal.redis.RedisKeyTerminalCommandHandler;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis PFCOUNT 命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis PFCOUNT 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisPfcountTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
+// public class RedisPfcountTerminalCommandHandler extends RedisKeyTerminalCommandHandler<TerminalCommand> {
 
-    @Override
-    protected ShellRedisKeyType getKeyType() {
-        return ShellRedisKeyType.STRING;
-    }
+//     @Override
+//     protected ShellRedisKeyType getKeyType() {
+//         return ShellRedisKeyType.STRING;
+//     }
 
-    @Override
-    public Protocol.Command getCommandType() {
-        return Protocol.Command.PFCOUNT;
-    }
-}
+//     @Override
+//     public Protocol.Command getCommandType() {
+//         return Protocol.Command.PFCOUNT;
+//     }
+// }

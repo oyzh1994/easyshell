@@ -1,18 +1,18 @@
 package cn.oyzh.easyshell.terminal.redis.client;
 
-import redis.clients.jedis.Protocol;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis CLIENT SETINFO 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis CLIENT SETINFO 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisClientSetinfoTerminalCommandHandler extends RedisClientTerminalCommandHandler {
+// public class RedisClientSetinfoTerminalCommandHandler extends RedisClientTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return Protocol.Keyword.SETINFO.name();
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return Protocol.Keyword.SETINFO.name();
+//     }
+// }

@@ -1,349 +1,349 @@
 package cn.oyzh.easyshell.terminal.redis;
 
-import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.dto.redis.ShellRedisConnectInfo;
-import cn.oyzh.easyshell.exception.ShellExceptionParser;
-import cn.oyzh.easyshell.internal.ShellConnState;
-import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.redis.ShellRedisConnectUtil;
-import cn.oyzh.easyshell.store.ShellSettingStore;
-import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.plus.font.FontManager;
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.plus.util.FXUtil;
-import cn.oyzh.fx.terminal.TerminalPane;
-import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
-import javafx.scene.text.Font;
+// import cn.oyzh.common.log.JulLog;
+// import cn.oyzh.common.thread.TaskManager;
+// import cn.oyzh.easyshell.domain.ShellConnect;
+// import cn.oyzh.easyshell.domain.ShellSetting;
+// import cn.oyzh.easyshell.dto.redis.ShellRedisConnectInfo;
+// import cn.oyzh.easyshell.exception.ShellExceptionParser;
+// import cn.oyzh.easyshell.internal.ShellConnState;
+// import cn.oyzh.easyshell.redis.ShellRedisClient;
+// import cn.oyzh.easyshell.redis.ShellRedisConnectUtil;
+// import cn.oyzh.easyshell.store.ShellSettingStore;
+// import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
+// import cn.oyzh.easyshell.util.ShellI18nHelper;
+// import cn.oyzh.fx.plus.font.FontManager;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.plus.util.FXUtil;
+// import cn.oyzh.fx.terminal.TerminalPane;
+// import cn.oyzh.i18n.I18nHelper;
+// import javafx.beans.value.ChangeListener;
+// import javafx.scene.text.Font;
 
-/**
- * redis终端文本域
- *
- * @author oyzh
- * @since 2025-09-01
- */
-public class RedisTerminalPane extends TerminalPane {
+// /**
+//  * redis终端文本域
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
+// public class RedisTerminalPane extends TerminalPane {
 
-    @Override
-    public Font getEditorFont() {
-        ShellSetting setting = ShellSettingStore.SETTING;
-        return FontManager.toFont(setting.terminalFontConfig());
-    }
+//     @Override
+//     public Font getEditorFont() {
+//         ShellSetting setting = ShellSettingStore.SETTING;
+//         return FontManager.toFont(setting.terminalFontConfig());
+//     }
 
-    /**
-     * redis客户端
-     */
-    private ShellRedisClient client;
+//     /**
+//      * redis客户端
+//      */
+//     private ShellRedisClient client;
 
-    /**
-     * 获取redis客户端
-     *
-     * @return redis客户端
-     */
-    public ShellRedisClient getClient() {
-        return client;
-    }
+//     /**
+//      * 获取redis客户端
+//      *
+//      * @return redis客户端
+//      */
+//     public ShellRedisClient getClient() {
+//         return client;
+//     }
 
-    /**
-     * redis连接
-     */
-    private ShellRedisConnectInfo connectInfo;
+//     /**
+//      * redis连接
+//      */
+//     private ShellRedisConnectInfo connectInfo;
 
-    /**
-     * redis客户端连接状态监听器
-     */
-    private ChangeListener<ShellConnState> stateChangeListener;
+//     /**
+//      * redis客户端连接状态监听器
+//      */
+//     private ChangeListener<ShellConnState> stateChangeListener;
 
-    /**
-     * db索引
-     */
-    private Integer dbIndex;
+//     /**
+//      * db索引
+//      */
+//     private Integer dbIndex;
 
-    /**
-     * 获取db索引
-     *
-     * @return db索引
-     */
-    public Integer getDbIndex() {
-        return dbIndex;
-    }
+//     /**
+//      * 获取db索引
+//      *
+//      * @return db索引
+//      */
+//     public Integer getDbIndex() {
+//         return dbIndex;
+//     }
 
-    @Override
-    public void flushPrompt() {
-        String str;
-        if (this.isTemporary()) {
-            str = "redis " + I18nHelper.connection();
-        } else {
-            str = this.client.connectName();
-        }
-        if (this.shellConnect().getHost() != null) {
-            str += "@" + this.shellConnect().getHost();
-        }
-        if (this.isConnecting()) {
-            str += "(" + I18nHelper.connectIng() + this.getDbName() + ")> ";
-        } else if (this.isConnected()) {
-            if (this.client.isReadonly()) {
-                str += "(" + I18nHelper.connected() + "/" + I18nHelper.readonlyMode() + this.getDbName() + ")> ";
-            } else {
-                str += "(" + I18nHelper.connected() + this.getDbName() + ")> ";
-            }
-        } else {
-            str += this.getDbName() + "> ";
-        }
-        this.prompt(str);
-    }
+//     @Override
+//     public void flushPrompt() {
+//         String str;
+//         if (this.isTemporary()) {
+//             str = "redis " + I18nHelper.connection();
+//         } else {
+//             str = this.client.connectName();
+//         }
+//         if (this.shellConnect().getHost() != null) {
+//             str += "@" + this.shellConnect().getHost();
+//         }
+//         if (this.isConnecting()) {
+//             str += "(" + I18nHelper.connectIng() + this.getDbName() + ")> ";
+//         } else if (this.isConnected()) {
+//             if (this.client.isReadonly()) {
+//                 str += "(" + I18nHelper.connected() + "/" + I18nHelper.readonlyMode() + this.getDbName() + ")> ";
+//             } else {
+//                 str += "(" + I18nHelper.connected() + this.getDbName() + ")> ";
+//             }
+//         } else {
+//             str += this.getDbName() + "> ";
+//         }
+//         this.prompt(str);
+//     }
 
-    /**
-     * 终端名称
-     */
-    public static final String TERMINAL_NAME = "redis";
+//     /**
+//      * 终端名称
+//      */
+//     public static final String TERMINAL_NAME = "redis";
 
-    @Override
-    public String terminalName() {
-        return TERMINAL_NAME;
-    }
+//     @Override
+//     public String terminalName() {
+//         return TERMINAL_NAME;
+//     }
 
-    /**
-     * 获取db名称
-     *
-     * @return db名称
-     */
-    private String getDbName() {
-        return this.dbIndex == null ? "" : "@db" + this.dbIndex;
-    }
+//     /**
+//      * 获取db名称
+//      *
+//      * @return db名称
+//      */
+//     private String getDbName() {
+//         return this.dbIndex == null ? "" : "@db" + this.dbIndex;
+//     }
 
-    /**
-     * 初始化
-     *
-     * @param client  redis客户端
-     * @param dbIndex db索引
-     */
-    public void init(ShellRedisClient client, Integer dbIndex) {
-        this.client = client;
-        this.dbIndex = dbIndex;
-        FXUtil.runPulse(() -> {
-            this.disableInput();
-            this.outputLine(ShellI18nHelper.welcome());
-            this.outputLine("Powered By oyzh(2023-2026).");
-            this.flushPrompt();
-            if (this.isTemporary()) {
-                this.initByTemporary();
-            } else {
-                this.initByPermanent();
-            }
-        });
-    }
+//     /**
+//      * 初始化
+//      *
+//      * @param client  redis客户端
+//      * @param dbIndex db索引
+//      */
+//     public void init(ShellRedisClient client, Integer dbIndex) {
+//         this.client = client;
+//         this.dbIndex = dbIndex;
+//         FXUtil.runPulse(() -> {
+//             this.disableInput();
+//             this.outputLine(ShellI18nHelper.welcome());
+//             this.outputLine("Powered By oyzh(2023-2026).");
+//             this.flushPrompt();
+//             if (this.isTemporary()) {
+//                 this.initByTemporary();
+//             } else {
+//                 this.initByPermanent();
+//             }
+//         });
+//     }
 
-    /**
-     * 是否临时连接
-     *
-     * @return 结果
-     */
-    public boolean isTemporary() {
-        return this.client.iid() == null;
-    }
+//     /**
+//      * 是否临时连接
+//      *
+//      * @return 结果
+//      */
+//     public boolean isTemporary() {
+//         return this.client.iid() == null;
+//     }
 
-    @Override
-    public void outputPrompt() {
-        if (!this.client.isConnecting()) {
-            super.outputPrompt();
-        }
-    }
+//     @Override
+//     public void outputPrompt() {
+//         if (!this.client.isConnecting()) {
+//             super.outputPrompt();
+//         }
+//     }
 
-    /**
-     * 是否已连接
-     *
-     * @return 结果
-     */
-    public boolean isConnected() {
-        return this.client != null && this.client.isConnected();
-    }
+//     /**
+//      * 是否已连接
+//      *
+//      * @return 结果
+//      */
+//     public boolean isConnected() {
+//         return this.client != null && this.client.isConnected();
+//     }
 
-    /**
-     * 是否连接中
-     *
-     * @return 结果
-     */
-    public boolean isConnecting() {
-        return this.client != null && this.client.isConnecting();
-    }
+//     /**
+//      * 是否连接中
+//      *
+//      * @return 结果
+//      */
+//     public boolean isConnecting() {
+//         return this.client != null && this.client.isConnecting();
+//     }
 
-    /**
-     * 是否已关闭
-     *
-     * @return 结果
-     */
-    public boolean isClosed() {
-        return this.client != null && this.client.isClosed();
-    }
+//     /**
+//      * 是否已关闭
+//      *
+//      * @return 结果
+//      */
+//     public boolean isClosed() {
+//         return this.client != null && this.client.isClosed();
+//     }
 
-    /**
-     * 执行连接
-     *
-     * @param input 输入内容
-     */
-    public void connect(String input) {
-        this.connectInfo = ShellRedisConnectUtil.parse(input);
-        if (this.connectInfo != null) {
-            this.disable();
-            ShellRedisConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
-            this.start(this.connectInfo.getDb());
-        }
-    }
+//     /**
+//      * 执行连接
+//      *
+//      * @param input 输入内容
+//      */
+//     public void connect(String input) {
+//         this.connectInfo = ShellRedisConnectUtil.parse(input);
+//         if (this.connectInfo != null) {
+//             this.disable();
+//             ShellRedisConnectUtil.copyConnect(this.connectInfo, this.shellConnect());
+//             this.start(this.connectInfo.getDb());
+//         }
+//     }
 
-    /**
-     * 临时连接处理
-     */
-    private void initByTemporary() {
-        this.outputLine("connect [-timeout timeout] -h host [-p port] [-u user] [-a password] [-n db] [-r]");
-        this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
-        this.outputLine("-h " + I18nHelper.host());
-        this.outputLine("-p " + I18nHelper.port());
-        this.outputLine("-u " + I18nHelper.userName());
-        this.outputLine("-a " + I18nHelper.password());
-        this.outputLine("-n " + I18nHelper.database());
-        this.outputLine("-r " + I18nHelper.readonlyMode());
-        this.appendByPrompt("connect -timeout 3000 -h 127.0.0.1 -p 6379 -n 0");
-        this.enableInput();
-        this.flushAndMoveCaretEnd();
-    }
+//     /**
+//      * 临时连接处理
+//      */
+//     private void initByTemporary() {
+//         this.outputLine("connect [-timeout timeout] -h host [-p port] [-u user] [-a password] [-n db] [-r]");
+//         this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
+//         this.outputLine("-h " + I18nHelper.host());
+//         this.outputLine("-p " + I18nHelper.port());
+//         this.outputLine("-u " + I18nHelper.userName());
+//         this.outputLine("-a " + I18nHelper.password());
+//         this.outputLine("-n " + I18nHelper.database());
+//         this.outputLine("-r " + I18nHelper.readonlyMode());
+//         this.appendByPrompt("connect -timeout 3000 -h 127.0.0.1 -p 6379 -n 0");
+//         this.enableInput();
+//         this.flushAndMoveCaretEnd();
+//     }
 
-    /**
-     * 常驻连接处理
-     */
-    private void initByPermanent() {
-//        this.start(0);
-        this.flushPrompt();
-        this.appendByPrompt("");
-        this.enableInput();
-        this.flushAndMoveCaretEnd();
-    }
+//     /**
+//      * 常驻连接处理
+//      */
+//     private void initByPermanent() {
+// //        this.start(0);
+//         this.flushPrompt();
+//         this.appendByPrompt("");
+//         this.enableInput();
+//         this.flushAndMoveCaretEnd();
+//     }
 
-    /**
-     * 开始连接
-     */
-    private void start(int db) {
-        TaskManager.startSync(() -> {
-            try {
-                this.initStatListener();
-                this.client.startDatabase(db);
-            } catch (Exception ex) {
-                this.onError(ShellExceptionParser.INSTANCE.apply(ex));
-            } finally {
-                this.enable();
-            }
-        });
-    }
+//     /**
+//      * 开始连接
+//      */
+//     private void start(int db) {
+//         TaskManager.startSync(() -> {
+//             try {
+//                 this.initStatListener();
+//                 this.client.startDatabase(db);
+//             } catch (Exception ex) {
+//                 this.onError(ShellExceptionParser.INSTANCE.apply(ex));
+//             } finally {
+//                 this.enable();
+//             }
+//         });
+//     }
 
-    // /**
-    //  * 刷新光标并移动到尾部
-    //  */
-    // private void flushAndMoveCaretEnd() {
-    //     ExecutorUtil.start(() -> {
-    //         this.flushCaret();
-    //         this.moveCaretEnd();
-    //     }, 50);
-    // }
+//     // /**
+//     //  * 刷新光标并移动到尾部
+//     //  */
+//     // private void flushAndMoveCaretEnd() {
+//     //     ExecutorUtil.start(() -> {
+//     //         this.flushCaret();
+//     //         this.moveCaretEnd();
+//     //     }, 50);
+//     // }
 
-    /**
-     * 初始化连接状态监听器
-     */
-    private void initStatListener() {
-        if (this.stateChangeListener == null) {
-            this.stateChangeListener = (observableValue, state, t1) -> {
-                this.flushPrompt();
-                // 获取连接
-                String host = this.client.shellConnect().getHost();
-                if (t1 == ShellConnState.CONNECTED) {
-                    this.outputLine(host + I18nHelper.connectSuccess() + " .");
-                    this.outputLine(I18nHelper.terminalTip2());
-                    this.outputLine(I18nHelper.terminalTip1());
-                    this.outputPrompt();
-                    this.flushCaret();
-                    super.enableInput();
-                } else if (t1 == ShellConnState.CLOSED) {
-                    this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
-                    this.enableInput();
-                } else if (t1 == ShellConnState.CONNECTING) {
-                    this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .");
-                    this.disableInput();
-                } else if (t1 == ShellConnState.INTERRUPTED) {
-                    this.outputLine(host + " " + I18nHelper.connectionBroken() + " .");
-                    this.enableInput();
-                } else if (t1 == ShellConnState.FAILED) {
-                    this.outputLine(host + " " + I18nHelper.connectFail() + " .");
-                    if (this.connectInfo != null) {
-                        this.appendByPrompt(this.connectInfo.getInput());
-                    }
-                    this.flushAndMoveCaretEnd();
-                    this.enableInput();
-                }
-                JulLog.info("connState={}", t1);
-            };
-            this.getClient().addStateListener(this.stateChangeListener);
-        }
-    }
+//     /**
+//      * 初始化连接状态监听器
+//      */
+//     private void initStatListener() {
+//         if (this.stateChangeListener == null) {
+//             this.stateChangeListener = (observableValue, state, t1) -> {
+//                 this.flushPrompt();
+//                 // 获取连接
+//                 String host = this.client.shellConnect().getHost();
+//                 if (t1 == ShellConnState.CONNECTED) {
+//                     this.outputLine(host + I18nHelper.connectSuccess() + " .");
+//                     this.outputLine(I18nHelper.terminalTip2());
+//                     this.outputLine(I18nHelper.terminalTip1());
+//                     this.outputPrompt();
+//                     this.flushCaret();
+//                     super.enableInput();
+//                 } else if (t1 == ShellConnState.CLOSED) {
+//                     this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
+//                     this.enableInput();
+//                 } else if (t1 == ShellConnState.CONNECTING) {
+//                     this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .");
+//                     this.disableInput();
+//                 } else if (t1 == ShellConnState.INTERRUPTED) {
+//                     this.outputLine(host + " " + I18nHelper.connectionBroken() + " .");
+//                     this.enableInput();
+//                 } else if (t1 == ShellConnState.FAILED) {
+//                     this.outputLine(host + " " + I18nHelper.connectFail() + " .");
+//                     if (this.connectInfo != null) {
+//                         this.appendByPrompt(this.connectInfo.getInput());
+//                     }
+//                     this.flushAndMoveCaretEnd();
+//                     this.enableInput();
+//                 }
+//                 JulLog.info("connState={}", t1);
+//             };
+//             this.getClient().addStateListener(this.stateChangeListener);
+//         }
+//     }
 
-    @Override
-    public void enableInput() {
-        if (this.isConnecting()) {
-            return;
-        }
-        if (this.isConnected() || (!this.isConnected() && this.isTemporary())) {
-            super.enableInput();
-        }
-    }
+//     @Override
+//     public void enableInput() {
+//         if (this.isConnecting()) {
+//             return;
+//         }
+//         if (this.isConnected() || (!this.isConnected() && this.isTemporary())) {
+//             super.enableInput();
+//         }
+//     }
 
-    /**
-     * 获取连接信息
-     *
-     * @return 连接信息
-     */
-    public ShellConnect shellConnect() {
-        return this.getClient().shellConnect();
-    }
+//     /**
+//      * 获取连接信息
+//      *
+//      * @return 连接信息
+//      */
+//     public ShellConnect shellConnect() {
+//         return this.getClient().shellConnect();
+//     }
 
-    @Override
-    public void fontSizeIncr() {
-        super.fontSizeIncr();
-        this.saveFontSize();
-    }
+//     @Override
+//     public void fontSizeIncr() {
+//         super.fontSizeIncr();
+//         this.saveFontSize();
+//     }
 
-    @Override
-    public void fontSizeDecr() {
-        super.fontSizeDecr();
-        this.saveFontSize();
-    }
+//     @Override
+//     public void fontSizeDecr() {
+//         super.fontSizeDecr();
+//         this.saveFontSize();
+//     }
 
-    /**
-     * 保存字体大小
-     */
-    private void saveFontSize() {
-        ShellSetting setting = ShellSettingStore.SETTING;
-        setting.setTerminalFontSize((byte) this.getFontSize());
-        ShellSettingStore.INSTANCE.replace(setting);
-    }
+//     /**
+//      * 保存字体大小
+//      */
+//     private void saveFontSize() {
+//         ShellSetting setting = ShellSettingStore.SETTING;
+//         setting.setTerminalFontSize((byte) this.getFontSize());
+//         ShellSettingStore.INSTANCE.replace(setting);
+//     }
 
-    @Override
-    public void initNode() {
-        this.keyHandler(RedisTerminalKeyHandler.INSTANCE);
-        this.helpHandler(RedisTerminalHelpHandler.INSTANCE);
-        this.mouseHandler(RedisTerminalMouseHandler.INSTANCE);
-        this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
-        this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
-        super.initNode();
-    }
+//     @Override
+//     public void initNode() {
+//         this.keyHandler(RedisTerminalKeyHandler.INSTANCE);
+//         this.helpHandler(RedisTerminalHelpHandler.INSTANCE);
+//         this.mouseHandler(RedisTerminalMouseHandler.INSTANCE);
+//         this.historyHandler(ShellTerminalHistoryHandler.INSTANCE);
+//         this.completeHandler(RedisTerminalCompleteHandler.INSTANCE);
+//         super.initNode();
+//     }
 
-    @Override
-    public void destroy() {
-        if (this.client != null && this.stateChangeListener != null) {
-            this.client.stateProperty().removeListener(this.stateChangeListener);
-        }
-        this.stateChangeListener = null;
-        super.destroy();
-    }
-}
+//     @Override
+//     public void destroy() {
+//         if (this.client != null && this.stateChangeListener != null) {
+//             this.client.stateProperty().removeListener(this.stateChangeListener);
+//         }
+//         this.stateChangeListener = null;
+//         super.destroy();
+//     }
+// }

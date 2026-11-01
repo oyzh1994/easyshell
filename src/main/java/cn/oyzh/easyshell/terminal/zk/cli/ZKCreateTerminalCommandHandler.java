@@ -1,59 +1,59 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.CreateCommand;
+// import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
+// import org.apache.zookeeper.cli.CliCommand;
+// import org.apache.zookeeper.cli.CreateCommand;
 
-/**
- * zk create 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKCreateTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk create 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKCreateTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new CreateCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new CreateCommand();
 
-    @Override
-    public CliCommand cliCommand() {
-        return this.cliCommand;
-    }
+//     @Override
+//     public CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
 
-    @Override
-    public String commandName() {
-        return "create";
-    }
+//     @Override
+//     public String commandName() {
+//         return "create";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "[-s] [-e] [-c] path [data] [acl]";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "[-s] [-e] [-c] path [data] [acl]";
+//     }
 
-    @Override
-    public String commandDesc() {
-        return I18nResourceBundle.i18nString("base.create", "base.node");
-    }
+//     @Override
+//     public String commandDesc() {
+//         return I18nResourceBundle.i18nString("base.create", "base.node");
+//     }
 
-    @Override
-    public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) +
-                terminal.lineEndingText() + "-s sequential" +
-                terminal.lineEndingText() + "-e ephemeral" +
-                terminal.lineEndingText() + "-c container";
-    }
+//     @Override
+//     public String commandHelp(ZKTerminalPane terminal) {
+//         return super.commandHelp(terminal) +
+//                 terminal.lineEndingText() + "-s sequential" +
+//                 terminal.lineEndingText() + "-e ephemeral" +
+//                 terminal.lineEndingText() + "-c container";
+//     }
 
-    @Override
-    public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
-        if (terminal.getClient().isReadonly()) {
-            return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
-        }
-        return super.execute(command, terminal);
-    }
-}
+//     @Override
+//     public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
+//         if (terminal.getClient().isReadonly()) {
+//             return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
+//         }
+//         return super.execute(command, terminal);
+//     }
+// }

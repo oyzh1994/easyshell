@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.terminal.redis.program.script;
 
-/**
- * Redis SCRIPT DEBUG 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis SCRIPT DEBUG 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisScriptDebugTerminalCommandHandler extends RedisScriptTerminalCommandHandler {
+// public class RedisScriptDebugTerminalCommandHandler extends RedisScriptTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return "DEBUG";
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return "DEBUG";
+//     }
+// }

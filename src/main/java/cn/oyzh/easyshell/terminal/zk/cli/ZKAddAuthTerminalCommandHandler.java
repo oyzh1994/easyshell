@@ -1,40 +1,40 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import org.apache.zookeeper.cli.AddAuthCommand;
-import org.apache.zookeeper.cli.CliCommand;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import org.apache.zookeeper.cli.AddAuthCommand;
+// import org.apache.zookeeper.cli.CliCommand;
 
-/**
- * zk addauth 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKAddAuthTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk addauth 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKAddAuthTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new AddAuthCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new AddAuthCommand();
 
-    @Override
-    public String commandName() {
-        return "addauth";
-    }
+//     @Override
+//     public String commandName() {
+//         return "addauth";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "scheme auth";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "scheme auth";
+//     }
 
-    @Override
-    public String commandDesc() {
-        return I18nResourceBundle.i18nString("base.add", "base.auth");
-    }
+//     @Override
+//     public String commandDesc() {
+//         return I18nResourceBundle.i18nString("base.add", "base.auth");
+//     }
 
-    @Override
-    protected CliCommand cliCommand() {
-        return this.cliCommand;
-    }
-}
+//     @Override
+//     protected CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
+// }

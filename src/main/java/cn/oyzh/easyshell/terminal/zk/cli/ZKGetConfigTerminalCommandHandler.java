@@ -1,48 +1,48 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.GetConfigCommand;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import org.apache.zookeeper.cli.CliCommand;
+// import org.apache.zookeeper.cli.GetConfigCommand;
 
-/**
- * zk config 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKGetConfigTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk config 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKGetConfigTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new GetConfigCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new GetConfigCommand();
 
-    @Override
-    public CliCommand cliCommand() {
-        return this.cliCommand;
-    }
+//     @Override
+//     public CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
 
-    @Override
-    public String commandName() {
-        return "config";
-    }
+//     @Override
+//     public String commandName() {
+//         return "config";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "[-c] [-s]";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "[-c] [-s]";
+//     }
 
-    @Override
-    public String commandDesc() {
-        return I18nResourceBundle.i18nString("base.get", "base.config");
-    }
+//     @Override
+//     public String commandDesc() {
+//         return I18nResourceBundle.i18nString("base.get", "base.config");
+//     }
 
-    @Override
-    public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) +
-                terminal.lineEndingText() + "-c client connection string" +
-                terminal.lineEndingText() + "-s stats";
-    }
-}
+//     @Override
+//     public String commandHelp(ZKTerminalPane terminal) {
+//         return super.commandHelp(terminal) +
+//                 terminal.lineEndingText() + "-c client connection string" +
+//                 terminal.lineEndingText() + "-s stats";
+//     }
+// }

@@ -1,53 +1,53 @@
 package cn.oyzh.easyshell.terminal.redis;
 
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.easyshell.redis.ShellRedisKeyType;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import cn.oyzh.fx.terminal.util.TerminalUtil;
+// import cn.oyzh.common.util.CollectionUtil;
+// import cn.oyzh.common.util.StringUtil;
+// import cn.oyzh.common.util.TextUtil;
+// import cn.oyzh.easyshell.redis.ShellRedisKeyType;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import cn.oyzh.fx.terminal.util.TerminalUtil;
 
-import java.util.Set;
+// import java.util.Set;
 
-/**
- * redis多键命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
-public abstract class RedisNKeysTerminalCommandHandler<C extends TerminalCommand> extends RedisTerminalCommandHandler<C> {
+// /**
+//  * redis多键命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
+// public abstract class RedisNKeysTerminalCommandHandler<C extends TerminalCommand> extends RedisTerminalCommandHandler<C> {
 
-    @Override
-    public boolean completion(String line, RedisTerminalPane terminal) {
-        String[] words = TerminalUtil.split(line);
-        if (words.length >= 1) {
-            String key = line.substring(this.commandFullName().length());
-            String pattern = StringUtil.isBlank(key) ? "*" : key + "*";
-            Set<String> keys = terminal.getClient().keys(null, pattern, this.getKeyType());
-            if (CollectionUtil.isEmpty(keys)) {
-                return false;
-            }
-            if (keys.size() == 1) {
-                terminal.coverInput(words[0] + " " + CollectionUtil.getFirst(keys));
-            } else {
-//                String textFormat = TextUtil.beautifyFormat(keys, 3, 0);
-                String textFormat = TextUtil.format(keys);
-                terminal.outputByPrompt(textFormat);
-                terminal.outputPrompt();
-                terminal.output(line);
-            }
-            terminal.moveCaretEnd();
-            return true;
-        }
-        return false;
-    }
+//     @Override
+//     public boolean completion(String line, RedisTerminalPane terminal) {
+//         String[] words = TerminalUtil.split(line);
+//         if (words.length >= 1) {
+//             String key = line.substring(this.commandFullName().length());
+//             String pattern = StringUtil.isBlank(key) ? "*" : key + "*";
+//             Set<String> keys = terminal.getClient().keys(null, pattern, this.getKeyType());
+//             if (CollectionUtil.isEmpty(keys)) {
+//                 return false;
+//             }
+//             if (keys.size() == 1) {
+//                 terminal.coverInput(words[0] + " " + CollectionUtil.getFirst(keys));
+//             } else {
+// //                String textFormat = TextUtil.beautifyFormat(keys, 3, 0);
+//                 String textFormat = TextUtil.format(keys);
+//                 terminal.outputByPrompt(textFormat);
+//                 terminal.outputPrompt();
+//                 terminal.output(line);
+//             }
+//             terminal.moveCaretEnd();
+//             return true;
+//         }
+//         return false;
+//     }
 
-    /**
-     * 获取键类型
-     *
-     * @return 键类型
-     */
-    protected ShellRedisKeyType getKeyType() {
-        return null;
-    }
-}
+//     /**
+//      * 获取键类型
+//      *
+//      * @return 键类型
+//      */
+//     protected ShellRedisKeyType getKeyType() {
+//         return null;
+//     }
+// }

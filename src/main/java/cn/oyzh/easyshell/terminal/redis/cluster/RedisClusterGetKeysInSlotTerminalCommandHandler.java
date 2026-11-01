@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.terminal.redis.cluster;
 
-/**
- * Redis CLUSTER GETKEYSINSLOT 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis CLUSTER GETKEYSINSLOT 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisClusterGetKeysInSlotTerminalCommandHandler extends RedisClusterTerminalCommandHandler {
+// public class RedisClusterGetKeysInSlotTerminalCommandHandler extends RedisClusterTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return "GETKEYSINSLOT";
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return "GETKEYSINSLOT";
+//     }
+// }

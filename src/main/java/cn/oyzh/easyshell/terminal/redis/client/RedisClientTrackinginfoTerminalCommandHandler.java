@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.terminal.redis.client;
 
-/**
- * Redis CLIENT TRACKINGINFO 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis CLIENT TRACKINGINFO 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisClientTrackinginfoTerminalCommandHandler extends RedisClientTerminalCommandHandler {
+// public class RedisClientTrackinginfoTerminalCommandHandler extends RedisClientTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return "TRACKINGINFO";
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return "TRACKINGINFO";
+//     }
+// }

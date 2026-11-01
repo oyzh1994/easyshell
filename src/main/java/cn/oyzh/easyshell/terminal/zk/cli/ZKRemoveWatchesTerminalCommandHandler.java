@@ -1,50 +1,50 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.RemoveWatchesCommand;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import org.apache.zookeeper.cli.CliCommand;
+// import org.apache.zookeeper.cli.RemoveWatchesCommand;
 
-/**
- * zk removewatches 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKRemoveWatchesTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk removewatches 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKRemoveWatchesTerminalCommandHandler extends ZKCliTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new RemoveWatchesCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new RemoveWatchesCommand();
 
-    @Override
-    public CliCommand cliCommand() {
-        return this.cliCommand;
-    }
+//     @Override
+//     public CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
 
-    @Override
-    public String commandName() {
-        return "removewatches";
-    }
+//     @Override
+//     public String commandName() {
+//         return "removewatches";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "path [-c|-d|-a] [-l]";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "path [-c|-d|-a] [-l]";
+//     }
 
-    @Override
-    public String commandDesc() {
-        return I18nResourceBundle.i18nString("base.remove", "base.watch");
-    }
+//     @Override
+//     public String commandDesc() {
+//         return I18nResourceBundle.i18nString("base.remove", "base.watch");
+//     }
 
-    @Override
-    public String commandHelp(ZKTerminalPane terminal) {
-        return super.commandHelp(terminal) +
-                terminal.lineEndingText() + "-c child watcher type" +
-                terminal.lineEndingText() + "-d data watcher type" +
-                terminal.lineEndingText() + "-a any watcher type" +
-                terminal.lineEndingText() + "-l remove locally when there is no server connection";
-    }
-}
+//     @Override
+//     public String commandHelp(ZKTerminalPane terminal) {
+//         return super.commandHelp(terminal) +
+//                 terminal.lineEndingText() + "-c child watcher type" +
+//                 terminal.lineEndingText() + "-d data watcher type" +
+//                 terminal.lineEndingText() + "-a any watcher type" +
+//                 terminal.lineEndingText() + "-l remove locally when there is no server connection";
+//     }
+// }

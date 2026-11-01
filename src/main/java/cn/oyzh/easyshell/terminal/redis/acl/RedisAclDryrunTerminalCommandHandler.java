@@ -1,18 +1,18 @@
 package cn.oyzh.easyshell.terminal.redis.acl;
 
-import redis.clients.jedis.Protocol;
+// import redis.clients.jedis.Protocol;
 
-/**
- * Redis ACL DRYRUN 子命令处理器
- *
- * @author oyzh
- * @since 2025-09-01
- */
+// /**
+//  * Redis ACL DRYRUN 子命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-01
+//  */
 
-public class RedisAclDryrunTerminalCommandHandler extends RedisAclTerminalCommandHandler {
+// public class RedisAclDryrunTerminalCommandHandler extends RedisAclTerminalCommandHandler {
 
-    @Override
-    public String commandSubName() {
-        return Protocol.Keyword.DRYRUN.name();
-    }
-}
+//     @Override
+//     public String commandSubName() {
+//         return Protocol.Keyword.DRYRUN.name();
+//     }
+// }

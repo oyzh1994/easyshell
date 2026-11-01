@@ -1,51 +1,51 @@
 package cn.oyzh.easyshell.terminal.zk.cli;
 
-import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
-import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
-import cn.oyzh.i18n.I18nResourceBundle;
-import cn.oyzh.fx.terminal.command.TerminalCommand;
-import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.DeleteAllCommand;
+// import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+// import cn.oyzh.easyshell.terminal.zk.ZKTerminalPane;
+// import cn.oyzh.i18n.I18nResourceBundle;
+// import cn.oyzh.fx.terminal.command.TerminalCommand;
+// import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
+// import org.apache.zookeeper.cli.CliCommand;
+// import org.apache.zookeeper.cli.DeleteAllCommand;
 
-/**
- * zk deleteall 命令处理器
- *
- * @author oyzh
- * @since 2025-09-04
- */
-public class ZKDeleteallTerminalCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
+// /**
+//  * zk deleteall 命令处理器
+//  *
+//  * @author oyzh
+//  * @since 2025-09-04
+//  */
+// public class ZKDeleteallTerminalCommandHandler extends ZKPathTerminalCommandHandler<TerminalCommand> {
 
-    /**
-     * cli命令
-     */
-    private final CliCommand cliCommand = new DeleteAllCommand();
+//     /**
+//      * cli命令
+//      */
+//     private final CliCommand cliCommand = new DeleteAllCommand();
 
-    @Override
-    public CliCommand cliCommand() {
-        return this.cliCommand;
-    }
+//     @Override
+//     public CliCommand cliCommand() {
+//         return this.cliCommand;
+//     }
 
-    @Override
-    public String commandName() {
-        return "deleteall";
-    }
+//     @Override
+//     public String commandName() {
+//         return "deleteall";
+//     }
 
-    @Override
-    public String commandArg() {
-        return "path";
-    }
+//     @Override
+//     public String commandArg() {
+//         return "path";
+//     }
 
-    @Override
-    public String commandDesc() {
-        return I18nResourceBundle.i18nString("base.delete", "base.node", "base.all");
-    }
+//     @Override
+//     public String commandDesc() {
+//         return I18nResourceBundle.i18nString("base.delete", "base.node", "base.all");
+//     }
 
-    @Override
-    public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
-        if (terminal.getClient().isReadonly()) {
-            return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
-        }
-        return super.execute(command, terminal);
-    }
-}
+//     @Override
+//     public TerminalExecuteResult execute(TerminalCommand command, ZKTerminalPane terminal) {
+//         if (terminal.getClient().isReadonly()) {
+//             return TerminalExecuteResult.fail(new ShellReadonlyOperationException());
+//         }
+//         return super.execute(command, terminal);
+//     }
+// }
