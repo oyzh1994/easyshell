@@ -388,7 +388,7 @@ public class ShellZKDataExportController extends StageController {
         String fileType = this.format.selectedUserData();
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
         String fileName = "Zookeeper-" + this.connect.getName() + "-" + I18nHelper.exportData() + "." + fileType;
-        this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
+        this.exportFile = FileChooserHelper.save(fileName, fileName, filter, this.getWindow());
         if (this.exportFile != null) {
             // 删除文件
             if (this.exportFile.exists()) {

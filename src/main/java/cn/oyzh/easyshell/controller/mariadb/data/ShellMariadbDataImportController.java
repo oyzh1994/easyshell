@@ -495,7 +495,7 @@ public class ShellMariadbDataImportController extends StageController {
     private void addFile() {
         String fileType = this.fileType.selectedUserData();
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter, this.getWindow());
         if (file != null) {
             ShellMariadbDataImportFile importFile = new ShellMariadbDataImportFile();
             importFile.setFile(file);

@@ -349,7 +349,7 @@ public class ShellRedisDataImportController extends StageController {
     private void selectFile() {
         String fileType = this.format.selectedUserData();
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
-        this.importFile = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
+        this.importFile = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter, this.getWindow());
         if (this.importFile != null) {
             this.fileName.setText(this.importFile.getPath());
         } else {

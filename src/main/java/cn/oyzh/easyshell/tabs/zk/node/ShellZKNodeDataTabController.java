@@ -135,7 +135,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
     @FXML
     private void saveBinaryFile() {
         try {
-            File file = FileChooserHelper.save(I18nHelper.saveFile(), "", FXChooser.allExtensionFilter());
+            File file = FileChooserHelper.save(I18nHelper.saveFile(), "", FXChooser.allExtensionFilter(), this.getWindow());
             if (file != null) {
                 FileUtil.writeBytes(this.activeItem().getNodeData(), file);
                 MessageBox.info(I18nHelper.operationSuccess(), this.getWindow());

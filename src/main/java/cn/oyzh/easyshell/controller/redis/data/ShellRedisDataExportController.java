@@ -499,7 +499,7 @@ public class ShellRedisDataExportController extends StageController {
             fileName += "-db" + (this.db.getSelectedIndex() - 1);
         }
         fileName += "-" + I18nHelper.exportData() + "." + fileType;
-        this.exportFile = FileChooserHelper.save(fileName, fileName, filter);
+        this.exportFile = FileChooserHelper.save(fileName, fileName, filter, this.getWindow());
         if (this.exportFile != null) {
             // 删除文件
             if (this.exportFile.exists()) {

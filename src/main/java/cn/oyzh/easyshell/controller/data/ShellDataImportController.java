@@ -175,7 +175,7 @@ public class ShellDataImportController extends StageController {
     @FXML
     private void selectFile() {
         FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
-        this.importFile = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
+        this.importFile = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter, this.getWindow());
         this.parseFile();
     }
 

@@ -495,7 +495,7 @@ public class ShellMysqlDataImportController extends StageController {
     private void addFile() {
         String fileType = this.fileType.selectedUserData();
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter);
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), filter, this.getWindow());
         if (file != null) {
             ShellMysqlDataImportFile importFile = new ShellMysqlDataImportFile();
             importFile.setFile(file);

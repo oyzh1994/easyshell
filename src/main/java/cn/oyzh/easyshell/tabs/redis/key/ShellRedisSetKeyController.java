@@ -236,7 +236,7 @@ public class ShellRedisSetKeyController extends ShellRedisRowKeyController<Shell
     @FXML
     private void saveBinaryFile() {
         try {
-            File file = FileChooserHelper.save(I18nHelper.saveFile(), this.treeItem.key(), FXChooser.allExtensionFilter());
+            File file = FileChooserHelper.save(I18nHelper.saveFile(), this.treeItem.key(), FXChooser.allExtensionFilter(), this.getWindow());
             if (file != null) {
                 ShellRedisSetValue.RedisSetRow row = this.treeItem.rawValue();
                 byte[] bytes = row.getValue().getBytes();

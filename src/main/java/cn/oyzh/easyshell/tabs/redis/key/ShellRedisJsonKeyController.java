@@ -123,7 +123,7 @@ public class ShellRedisJsonKeyController extends ShellRedisKeyController<ShellRe
     @FXML
     private void saveBinaryFile() {
         try {
-            File file = FileChooserHelper.save(I18nHelper.saveFile(), this.treeItem.key(), FXChooser.allExtensionFilter());
+            File file = FileChooserHelper.save(I18nHelper.saveFile(), this.treeItem.key(), FXChooser.allExtensionFilter(), this.getWindow());
             if (file != null) {
                 Object data = this.treeItem.rawValue();
                 byte[] bytes = new byte[0];

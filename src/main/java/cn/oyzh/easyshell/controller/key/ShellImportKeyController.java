@@ -184,7 +184,7 @@ public class ShellImportKeyController extends StageController {
      */
     @FXML
     private void choosePubKey() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter(), this.getWindow());
         // 未选择文件
         if (file == null) {
             return;
@@ -230,7 +230,7 @@ public class ShellImportKeyController extends StageController {
      */
     @FXML
     private void choosePriKey() {
-        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter());
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), FXChooser.allExtensionFilter(), this.getWindow());
         // 未选择文件
         if (file == null) {
             return;
