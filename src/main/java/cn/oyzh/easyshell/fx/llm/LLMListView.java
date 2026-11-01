@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
@@ -33,7 +34,7 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.setMaxWidth(Double.MAX_VALUE);
         this.setCellFactory(list -> new LLMMessageCell());
 
-        Label placeholder = new Label("开始一段对话吧");
+        Label placeholder = new Label(I18nResourceBundle.i18nString("shell.llm.chatPlaceholder"));
         placeholder.getStyleClass().add("llm-placeholder");
         this.setPlaceholder(placeholder);
 

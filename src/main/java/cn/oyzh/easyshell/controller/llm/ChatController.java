@@ -107,6 +107,7 @@ public class ChatController extends SubStageController {
     @Override
     protected void bindListeners() {
         this.initLLM();
+        this.view.setStopHandler(this::stopCurrentRequest);
         this.view.setSendValidator(this::validateSessionForSend);
         this.view.getModelComboBox().selectedItemChanged((observable, oldValue, newValue) -> this.initLLM());
         this.view.getSessionTabComboBox().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -130,6 +131,19 @@ public class ChatController extends SubStageController {
     }
 
     private LLMAssistant assistant;
+
+    private volatile LLMRequest activeRequest;
+
+    private static final class LLMRequest {
+
+        private final AtomicBoolean cancelled = new AtomicBoolean();
+
+        private final AtomicBoolean finished = new AtomicBoolean();
+
+        private volatile Thread thread;
+
+        private volatile LLMMessage placeholder;
+    }
 
     private LLMAssistant initAssistant(LLMMessage currentMessage) {
         // 提供商
@@ -212,52 +226,137 @@ public class ChatController extends SubStageController {
                 return;
             }
             boolean streaming = this.view.isStreamingEnabled();
+            LLMRequest request = new LLMRequest();
+            this.activeRequest = request;
+            this.view.setBusy(true);
             // 异步执行
-            ThreadUtil.startVirtual(() -> {
-                List<Content> contents;
-                try {
-                    contents = LLMFileContentUtil.toUserContents(message.getMessage(), message.getFile());
-                } catch (Exception ex) {
-                    JulLog.error("llm file content error", ex);
-                    this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
-                    return;
-                }
-                if (contents.isEmpty()) {
-                    this.view.addErrorMessage(I18nHelper.invalidFile(), message.getSessionTabId());
-                    return;
-                }
-                LLMMessage placeholder = this.view.addAssistantMessage(I18nHelper.thinking() + "...", message.getSessionTabId());
-                if (streaming) {
-                    AtomicBoolean first = new AtomicBoolean(true);
-                    assistant.chatStream(contents)
-                            .onPartialResponse(token -> {
-                                if (first.get()) {
-                                    first.set(false);
-                                    this.view.replaceMessage(placeholder, token);
-                                } else {
-                                    this.view.appendMessage(placeholder, token);
-                                }
-                            })
-                            .onError(ex -> {
-                                JulLog.error("llm error", ex);
-                                this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
-                                this.saveCurrentSession();
-                            })
-                            .onCompleteResponse(response -> this.saveCurrentSession())
-                            .start();
-                } else {
-                    try {
-                        String response = assistant.chat(contents);
-                        this.view.replaceMessage(placeholder, response);
-                        this.saveCurrentSession();
-                    } catch (Exception ex) {
-                        JulLog.error("llm error", ex);
-                        this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
-                        this.saveCurrentSession();
-                    }
-                }
-            });
+            Thread thread = ThreadUtil.startVirtual(() -> this.executeRequest(request, assistant, message, streaming));
+            request.thread = thread;
         });
+    }
+
+    private void executeRequest(LLMRequest request, LLMAssistant assistant, LLMMessage message, boolean streaming) {
+        request.thread = Thread.currentThread();
+        try {
+            if (!this.isRequestActive(request)) {
+                return;
+            }
+            List<Content> contents;
+            try {
+                contents = LLMFileContentUtil.toUserContents(message.getMessage(), message.getFile());
+            } catch (Exception ex) {
+                if (!this.isRequestActive(request)) {
+                    return;
+                }
+                JulLog.error("llm file content error", ex);
+                this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                this.finishRequest(request, true);
+                return;
+            }
+            if (!this.isRequestActive(request)) {
+                return;
+            }
+            if (contents.isEmpty()) {
+                this.view.addErrorMessage(I18nHelper.invalidFile(), message.getSessionTabId());
+                this.finishRequest(request, true);
+                return;
+            }
+            LLMMessage placeholder = this.view.addAssistantMessage(I18nHelper.thinking() + "...", message.getSessionTabId());
+            request.placeholder = placeholder;
+            if (!this.isRequestActive(request)) {
+                this.markStoppedPlaceholder(placeholder);
+                return;
+            }
+            if (streaming) {
+                AtomicBoolean first = new AtomicBoolean(true);
+                assistant.chatStream(contents)
+                        .onPartialResponse(token -> {
+                            if (!this.isRequestActive(request)) {
+                                return;
+                            }
+                            if (first.get()) {
+                                first.set(false);
+                                this.view.replaceMessage(placeholder, token);
+                            } else {
+                                this.view.appendMessage(placeholder, token);
+                            }
+                        })
+                        .onError(ex -> {
+                            if (!this.isRequestActive(request)) {
+                                return;
+                            }
+                            JulLog.error("llm error", ex);
+                            this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                            this.finishRequest(request, true);
+                        })
+                        .onCompleteResponse(response -> this.finishRequest(request, true))
+                        .start();
+            } else {
+                try {
+                    String response = assistant.chat(contents);
+                    if (!this.isRequestActive(request)) {
+                        return;
+                    }
+                    this.view.replaceMessage(placeholder, response);
+                    this.finishRequest(request, true);
+                } catch (Exception ex) {
+                    if (!this.isRequestActive(request)) {
+                        return;
+                    }
+                    JulLog.error("llm error", ex);
+                    this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                    this.finishRequest(request, true);
+                }
+            }
+        } catch (Exception ex) {
+            if (!this.isRequestActive(request)) {
+                return;
+            }
+            JulLog.error("llm request error", ex);
+            this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+            this.finishRequest(request, true);
+        }
+    }
+
+    private boolean isRequestActive(LLMRequest request) {
+        return request != null
+                && request == this.activeRequest
+                && !request.cancelled.get()
+                && !request.finished.get();
+    }
+
+    private void stopCurrentRequest() {
+        LLMRequest request = this.activeRequest;
+        if (request == null || !request.cancelled.compareAndSet(false, true)) {
+            this.view.setBusy(false);
+            return;
+        }
+        ThreadUtil.interrupt(request.thread);
+        this.markStoppedPlaceholder(request.placeholder);
+        this.finishRequest(request, true);
+    }
+
+    private void markStoppedPlaceholder(LLMMessage message) {
+        if (message == null) {
+            return;
+        }
+        String text = message.getMessage();
+        if (text == null || text.isBlank() || Objects.equals(text, I18nHelper.thinking() + "...")) {
+            this.view.replaceMessage(message, I18nHelper.stopped());
+        }
+    }
+
+    private void finishRequest(LLMRequest request, boolean save) {
+        if (request == null || !request.finished.compareAndSet(false, true)) {
+            return;
+        }
+        if (this.activeRequest == request) {
+            this.activeRequest = null;
+        }
+        this.view.setBusy(false);
+        if (save) {
+            this.saveCurrentSession();
+        }
     }
 
     @Override

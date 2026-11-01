@@ -1,36 +1,18 @@
 .llm-view {
-    -llm-bg: #f5f6f8;
-    -llm-surface: #ffffff;
-    -llm-surface-soft: #f0f2f5;
-    -llm-text: #20242b;
-    -llm-muted: #8a919c;
-    -llm-border: #e2e6eb;
-    -llm-hover: #eef1f5;
-    -llm-accent: #2f6fed;
-    -llm-accent-hover: #235bd0;
-    -llm-input-bg: #ffffff;
-    -llm-scroll: #cbd2dc;
-    -llm-error-bg: #fff1f0;
-    -llm-error-border: #f2b8b5;
-    -llm-error-text: #b42318;
+    -llm-bg: -color-bg-default;
+    -llm-surface: -color-bg-default;
+    -llm-surface-soft: -color-bg-subtle;
+    -llm-text: -color-fg-default;
+    -llm-muted: -color-fg-muted;
+    -llm-border: -color-border-default;
+    -llm-hover: -color-neutral-subtle;
+    -llm-accent: -color-accent-emphasis;
+    -llm-accent-hover: -color-accent-fg;
+    -llm-input-bg: -color-bg-default;
+    -llm-error-bg: -color-danger-subtle;
+    -llm-error-border: -color-danger-muted;
+    -llm-error-text: -color-danger-fg;
     -fx-background-color: -llm-bg;
-}
-
-.llm-view.llm-dark {
-    -llm-bg: #15181d;
-    -llm-surface: #1b1f25;
-    -llm-surface-soft: #262b33;
-    -llm-text: #e6e9ee;
-    -llm-muted: #8d95a3;
-    -llm-border: #30363f;
-    -llm-hover: #2c323b;
-    -llm-accent: #4c8dff;
-    -llm-accent-hover: #6aa1ff;
-    -llm-input-bg: #1f242b;
-    -llm-scroll: #3a414b;
-    -llm-error-bg: #3a1d20;
-    -llm-error-border: #7c3b42;
-    -llm-error-text: #ffb4ab;
 }
 
 .llm-message-list,
@@ -94,7 +76,7 @@
 }
 
 .llm-bubble-text-user {
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: -color-fg-emphasis;
 }
 
 .llm-bubble-text-assistant {
@@ -118,13 +100,13 @@
 }
 
 .llm-bubble-attachment-user {
-    -fx-text-fill: rgba(255, 255, 255, 0.92);
-    -fx-background-color: rgba(255, 255, 255, 0.16);
+    -fx-text-fill: -color-fg-emphasis;
+    -fx-background-color: -color-neutral-muted;
 }
 
 .llm-bubble-attachment-assistant {
     -fx-text-fill: -llm-text;
-    -fx-background-color: rgba(0, 0, 0, 0.05);
+    -fx-background-color: -color-neutral-subtle;
 }
 
 .llm-placeholder,
@@ -255,6 +237,21 @@
     -fx-opacity: 0.42;
 }
 
+.llm-stop-button {
+    -fx-background-color: -color-danger-emphasis;
+    -fx-background-radius: 8;
+    -fx-padding: 5 7 5 7;
+    -fx-cursor: hand;
+}
+
+.llm-stop-button:hover {
+    -fx-background-color: -color-danger-fg;
+}
+
+.llm-stop-button:disabled {
+    -fx-opacity: 0.42;
+}
+
 .llm-context {
     -fx-min-width: 100;
 }
@@ -280,11 +277,11 @@
 }
 
 .llm-context-progress.llm-warning > .bar {
-    -fx-background-color: #e8a33c;
+    -fx-background-color: -color-warning-emphasis;
 }
 
 .llm-context-progress.llm-danger > .bar {
-    -fx-background-color: #df5b5b;
+    -fx-background-color: -color-danger-emphasis;
 }
 
 .llm-attachment-bar {

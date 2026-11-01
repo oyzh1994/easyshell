@@ -68,7 +68,7 @@ public class ShellLLMProviderListController extends StageController {
         if (provider == null) {
             return;
         }
-        String message = "\u5220\u9664\u5927\u6A21\u578B\u4F9B\u5E94\u5546 " + provider.getName() + " ?";
+        String message = String.format(I18nResourceBundle.i18nString("shell.llm.deleteProviderConfirm"), provider.getName());
         if (MessageBox.confirm(message, this.getWindow())) {
             if (this.providerStore.delete(provider)) {
                 this.providerTableView.removeItem(provider);

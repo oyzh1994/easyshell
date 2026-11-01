@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.StopSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -23,8 +24,6 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXBorderPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
-import cn.oyzh.fx.plus.theme.ThemeManager;
-import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
@@ -76,13 +75,19 @@ public class LLMView extends FXBorderPane {
 
     private final FXButton sendButton = new FXButton();
 
+    private final SendSVGGlyph sendGlyph = new SendSVGGlyph();
+
+    private final StopSVGGlyph stopGlyph = new StopSVGGlyph();
+
+    private final Tooltip sendButtonTooltip = new Tooltip();
+
     private final FXButton attachButton = new FXButton();
 
     private final FXButton settingsButton = new FXButton();
 
     private final FXProgressBar contextProgress = new FXProgressBar();
 
-    private final FXLabel contextLabel = new FXLabel("上下文 0%");
+    private final FXLabel contextLabel = new FXLabel(String.format(I18nResourceBundle.i18nString("shell.llm.contextUsage"), 0));
 
     private final FXLabel attachmentLabel = new FXLabel();
 
@@ -96,11 +101,13 @@ public class LLMView extends FXBorderPane {
 
     private LLMSendHandler sendHandler;
 
+    private Runnable stopHandler;
+
     private BooleanSupplier sendValidator;
 
     private File selectedFile;
 
-    private boolean busy;
+    private volatile boolean busy;
 
     public LLMView() {
         this.getStyleClass().add("llm-view");
@@ -150,7 +157,7 @@ public class LLMView extends FXBorderPane {
         composer.getChildren().add(this.attachmentBar);
 
         this.inputArea.getStyleClass().add("llm-input");
-        this.inputArea.setPromptText("输入消息，Enter 发送，Shift+Enter 换行");
+        this.inputArea.setPromptText(I18nResourceBundle.i18nString("shell.llm.inputPlaceholder"));
         this.inputArea.setPrefRowCount(3);
         this.inputArea.setMaxHeight(120);
         this.inputArea.textProperty().addListener((observable, oldValue, newValue) -> this.updateSendState());
@@ -216,13 +223,24 @@ public class LLMView extends FXBorderPane {
     }
 
     private FXButton buildSendButton() {
-        SendSVGGlyph glyph = new SendSVGGlyph();
-        glyph.setColor(Color.WHITE);
-        this.sendButton.setGraphic(glyph);
-        this.sendButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        this.sendButton.setTooltip(new Tooltip(I18nHelper.send()));
+        this.sendGlyph.setColor(Color.WHITE);
+        this.stopGlyph.setColor(Color.WHITE);
+        this.sendButton.setGraphic(this.sendGlyph);
+        this.sendButtonTooltip.setText(I18nHelper.send());
+        this.sendButton.setTooltip(this.sendButtonTooltip);
         this.sendButton.getStyleClass().add("llm-send-button");
-        this.sendButton.setOnAction(event -> this.sendMessage());
+        this.sendButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        this.sendButton.setOnAction(event -> {
+            if (this.busy) {
+                if (this.stopHandler != null) {
+                    this.stopHandler.run();
+                } else {
+                    this.setBusy(false);
+                }
+            } else {
+                this.sendMessage();
+            }
+        });
         return this.sendButton;
     }
 
@@ -424,15 +442,6 @@ public class LLMView extends FXBorderPane {
         }
     }
 
-    @Override
-    public void changeTheme(ThemeStyle style) {
-        this.getStyleClass().remove("llm-dark");
-        if (ThemeManager.isDarkMode()) {
-            this.getStyleClass().add("llm-dark");
-        }
-        super.changeTheme(style);
-    }
-
     public void sendMessage() {
         if (this.busy) {
             return;
@@ -455,8 +464,8 @@ public class LLMView extends FXBorderPane {
 
     private void updateSendState() {
         String text = this.inputArea.getText();
-        boolean hasText = text != null && !text.isBlank();
-        this.sendButton.setDisable(this.busy || (!hasText && this.selectedFile == null));
+        boolean hasText = StringUtil.isNotBlank(text);
+        this.sendButton.setDisable(!this.busy && !hasText && this.selectedFile == null);
     }
 
     /**
@@ -546,7 +555,7 @@ public class LLMView extends FXBorderPane {
         double value = Math.max(0, Math.min(1, ratio));
         FXUtil.runLater(() -> {
             this.contextProgress.setProgress(value);
-            this.contextLabel.setText("上下文 " + Math.round(value * 100) + "%");
+            this.contextLabel.setText(String.format(I18nResourceBundle.i18nString("shell.llm.contextUsage"), Math.round(value * 100)));
             this.contextProgress.getStyleClass().removeAll("llm-warning", "llm-danger");
             if (value >= 0.9) {
                 this.contextProgress.getStyleClass().add("llm-danger");
@@ -563,6 +572,15 @@ public class LLMView extends FXBorderPane {
 
     public void setBusy(boolean busy) {
         this.busy = busy;
+        FXUtil.runLater(this::applyBusyState);
+    }
+
+    private void applyBusyState() {
+        boolean currentBusy = this.busy;
+        this.sendButton.setGraphic(currentBusy ? this.stopGlyph : this.sendGlyph);
+        this.sendButtonTooltip.setText(currentBusy ? I18nHelper.stop() : I18nHelper.send());
+        this.sendButton.getStyleClass().removeAll("llm-send-button", "llm-stop-button");
+        this.sendButton.getStyleClass().add(currentBusy ? "llm-stop-button" : "llm-send-button");
         this.updateSendState();
     }
 
@@ -572,6 +590,15 @@ public class LLMView extends FXBorderPane {
 
     public void setSendHandler(LLMSendHandler sendHandler) {
         this.sendHandler = sendHandler;
+    }
+
+    /**
+     * 设置停止当前回复处理器
+     *
+     * @param stopHandler 停止处理器
+     */
+    public void setStopHandler(Runnable stopHandler) {
+        this.stopHandler = stopHandler;
     }
 
     /**
@@ -750,7 +777,7 @@ public class LLMView extends FXBorderPane {
         this.attachmentRemoveButton.setVisible(hasFile);
         this.attachmentRemoveButton.setManaged(hasFile);
         if (hasFile) {
-            this.attachmentLabel.setText("附件: " + file.getName());
+            this.attachmentLabel.setText(String.format(I18nResourceBundle.i18nString("shell.llm.attachment"), file.getName()));
             this.attachmentLabel.setTooltip(new Tooltip(file.getAbsolutePath()));
         } else {
             this.attachmentLabel.setText("");

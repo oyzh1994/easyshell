@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -105,7 +107,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.attachment.setManaged(hasFile);
         this.attachment.getStyleClass().removeAll("llm-bubble-attachment-user", "llm-bubble-attachment-assistant");
         if (hasFile) {
-            this.attachment.setText("附件: " + file.getName());
+            this.attachment.setText(String.format(I18nResourceBundle.i18nString("shell.llm.attachment"), file.getName()));
             this.attachment.getStyleClass().add(user ? "llm-bubble-attachment-user" : "llm-bubble-attachment-assistant");
         }
 
@@ -114,7 +116,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         if (user) {
             prefix = "";
         } else if (error) {
-            prefix = "错误 · ";
+            prefix = I18nHelper.error() + " · ";
         } else {
             prefix = (model == null || model.isBlank() ? "AI" : model) + " · ";
         }

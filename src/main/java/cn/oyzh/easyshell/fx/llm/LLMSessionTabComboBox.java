@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.fx.llm;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 
@@ -18,7 +19,7 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
 
     public LLMSessionTabComboBox() {
         this.setCellFactory(list -> new LLMSessionTabCell(null));
-        this.setButtonCell(new LLMSessionTabCell("未绑定Tab"));
+        this.setButtonCell(new LLMSessionTabCell(I18nResourceBundle.i18nString("shell.llm.unboundTab")));
     }
 
     /**
