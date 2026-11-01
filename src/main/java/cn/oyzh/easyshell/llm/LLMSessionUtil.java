@@ -118,6 +118,7 @@ public final class LLMSessionUtil {
             item.setTime(message.getTime());
             item.setMessage(message.getMessage());
             item.setModel(message.getModel());
+            item.setSessionTabId(message.getSessionTabId());
             File file = message.getFile();
             if (file != null) {
                 item.setFilePath(file.getAbsolutePath());
@@ -153,6 +154,7 @@ public final class LLMSessionUtil {
                 }
                 message.setMessage(item.getMessage());
                 message.setModel(item.getModel());
+                message.setSessionTabId(item.getSessionTabId());
                 if (StringUtil.isNotBlank(item.getFilePath())) {
                     message.setFile(new File(item.getFilePath()));
                 }

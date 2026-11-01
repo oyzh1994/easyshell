@@ -28,6 +28,8 @@ public class LLMMessage {
 
     private final StringProperty model = new SimpleStringProperty("");
 
+    private final StringProperty sessionTabId = new SimpleStringProperty("");
+
     public LLMMessage(LLMMessageType type) {
         this(type, System.currentTimeMillis());
     }
@@ -137,5 +139,17 @@ public class LLMMessage {
 
     public StringProperty modelProperty() {
         return model;
+    }
+
+    public String getSessionTabId() {
+        return sessionTabId.get();
+    }
+
+    public void setSessionTabId(String sessionTabId) {
+        this.sessionTabId.set(sessionTabId == null ? "" : sessionTabId);
+    }
+
+    public StringProperty sessionTabIdProperty() {
+        return sessionTabId;
     }
 }

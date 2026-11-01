@@ -208,7 +208,7 @@ public class ChatController extends SubStageController {
             }
             LLMAssistant assistant = this.initAssistant(message);
             if (assistant == null) {
-                this.view.addErrorMessage(I18nHelper.initLLMFail());
+                this.view.addErrorMessage(I18nHelper.initLLMFail(), message.getSessionTabId());
                 return;
             }
             boolean streaming = this.view.isStreamingEnabled();
@@ -219,14 +219,14 @@ public class ChatController extends SubStageController {
                     contents = LLMFileContentUtil.toUserContents(message.getMessage(), message.getFile());
                 } catch (Exception ex) {
                     JulLog.error("llm file content error", ex);
-                    this.view.addErrorMessage(ex.getMessage());
+                    this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                     return;
                 }
                 if (contents.isEmpty()) {
-                    this.view.addErrorMessage(I18nHelper.invalidFile());
+                    this.view.addErrorMessage(I18nHelper.invalidFile(), message.getSessionTabId());
                     return;
                 }
-                LLMMessage placeholder = this.view.addAssistantMessage(I18nHelper.thinking() + "...");
+                LLMMessage placeholder = this.view.addAssistantMessage(I18nHelper.thinking() + "...", message.getSessionTabId());
                 if (streaming) {
                     AtomicBoolean first = new AtomicBoolean(true);
                     assistant.chatStream(contents)
@@ -240,7 +240,7 @@ public class ChatController extends SubStageController {
                             })
                             .onError(ex -> {
                                 JulLog.error("llm error", ex);
-                                this.view.addErrorMessage(ex.getMessage());
+                                this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                                 this.saveCurrentSession();
                             })
                             .onCompleteResponse(response -> this.saveCurrentSession())
@@ -252,7 +252,7 @@ public class ChatController extends SubStageController {
                         this.saveCurrentSession();
                     } catch (Exception ex) {
                         JulLog.error("llm error", ex);
-                        this.view.addErrorMessage(ex.getMessage());
+                        this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                         this.saveCurrentSession();
                     }
                 }
@@ -262,19 +262,23 @@ public class ChatController extends SubStageController {
 
     @Override
     public void onStageInitialize(StageAdapter stage) {
-        super.onStageInitialize(stage);
         StageManager.getPrimaryStage().onShownProperty().addListener((observable, oldValue, newValue) -> {
             StageAdapter adapter = StageManager.getAdapter(StageManager.getPrimaryStage());
             MainController controller = (MainController) adapter.controller();
             for (StageController subController : controller.getSubControllers()) {
                 if (subController instanceof ShellMainController mainController) {
                     this.tabPane = mainController.getTabPane();
+                    this.init();
+                    break;
                 }
             }
-            this.init();
         });
+        super.onStageInitialize(stage);
     }
 
+    /**
+     * 初始化
+     */
     private void init() {
         this.tabPane.getTabs().addListener((ListChangeListener<Tab>) c -> {
             if (!c.next()) {
@@ -294,7 +298,7 @@ public class ChatController extends SubStageController {
                         if (tab instanceof LLMTabCapability capability) {
                             this.view.getSessionTabComboBox().removeTab(capability.getTabId());
                             if (this.currentSession != null && Objects.equals(this.currentSession.getSessionTabId(), capability.getTabId())) {
-                                this.view.getSessionTabComboBox().getSelectionModel().clearSelection();
+                                this.view.getSessionTabComboBox().clearSelection();
                             }
                         }
                     }
@@ -422,17 +426,18 @@ public class ChatController extends SubStageController {
         if (this.currentSession == null) {
             this.createNewSession(false);
         }
-        String tabId = this.currentSession.getSessionTabId();
-        if (tabId == null || this.tabPane == null) {
-            return true;
-        }
-        for (Tab tab : this.tabPane.getTabs()) {
-            if (tab instanceof LLMTabCapability capability && Objects.equals(tabId, capability.getTabId())) {
-                return true;
-            }
-        }
-        this.view.addErrorMessage(LLMSessionUtil.sessionExpired());
-        return false;
+        //String tabId = this.currentSession.getSessionTabId();
+        //if (tabId == null || this.tabPane == null) {
+        //    return true;
+        //}
+        //for (Tab tab : this.tabPane.getTabs()) {
+        //    if (tab instanceof LLMTabCapability capability && Objects.equals(tabId, capability.getTabId())) {
+        //        return true;
+        //    }
+        //}
+        //this.view.addErrorMessage(LLMSessionUtil.sessionExpired());
+        //return false;
+        return true;
     }
 
     private void saveCurrentSession() {

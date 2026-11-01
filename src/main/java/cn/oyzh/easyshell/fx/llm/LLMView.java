@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
@@ -13,6 +14,7 @@ import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -21,11 +23,11 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXBorderPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
-import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -43,8 +45,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -106,10 +106,15 @@ public class LLMView extends FXBorderPane {
         this.getStyleClass().add("llm-view");
         this.setCenter(this.messageListView);
         this.setBottom(this.buildComposer());
-        this.loadStyle();
         this.initSelectors();
         this.updateSendState();
         FXUtil.runLater(this.inputArea::requestFocus);
+    }
+
+    @Override
+    public void initNode() {
+        this.loadStyle();
+        super.initNode();
     }
 
     private FXVBox buildComposer() {
@@ -406,10 +411,7 @@ public class LLMView extends FXBorderPane {
     }
 
     private void chooseFile() {
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle(I18nHelper.pleaseSelectFile());
-        Window window = this.getScene() == null ? null : this.getScene().getWindow();
-        File file = chooser.showOpenDialog(window);
+        File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), this.getWindow());
         if (file != null) {
             this.setSelectedFile(file);
         }
@@ -438,12 +440,11 @@ public class LLMView extends FXBorderPane {
         if (this.sendValidator != null && !this.sendValidator.getAsBoolean()) {
             return;
         }
-        String text = this.inputArea.getText();
-        boolean hasText = text != null && !text.isBlank();
-        if (!hasText && this.selectedFile == null) {
+        String text = this.inputArea.getTextTrim();
+        if (StringUtil.isBlank(text) && this.selectedFile == null) {
             return;
         }
-        LLMMessage message = this.messageListView.addUserMessage(hasText ? text.trim() : "", this.selectedFile);
+        LLMMessage message = this.addUserMessage(text, this.selectedFile);
         this.inputArea.clear();
         this.setSelectedFile(null);
         this.updateSendState();
@@ -481,22 +482,37 @@ public class LLMView extends FXBorderPane {
     }
 
     public LLMMessage addAssistantMessage(String text) {
+        return this.addAssistantMessage(text, this.getSelectedSessionTabId());
+    }
+
+    public LLMMessage addAssistantMessage(String text, String sessionTabId) {
         LLMMessage message = LLMMessage.llm(text);
         message.setModel(this.getSelectedModel());
+        message.setSessionTabId(sessionTabId);
         this.messageListView.addMessage(message);
         return message;
     }
 
     public LLMMessage addUserMessage(String text) {
-        return this.messageListView.addUserMessage(text);
+        return this.addUserMessage(text, null);
     }
 
     public LLMMessage addUserMessage(String text, File file) {
-        return this.messageListView.addUserMessage(text, file);
+        LLMMessage message = LLMMessage.user(text, file);
+        message.setSessionTabId(this.getSelectedSessionTabId());
+        this.messageListView.addMessage(message);
+        return message;
     }
 
     public LLMMessage addErrorMessage(String text) {
-        return this.messageListView.addErrorMessage(text);
+        return this.addErrorMessage(text, this.getSelectedSessionTabId());
+    }
+
+    public LLMMessage addErrorMessage(String text, String sessionTabId) {
+        LLMMessage message = LLMMessage.error(text);
+        message.setSessionTabId(sessionTabId);
+        this.messageListView.addMessage(message);
+        return message;
     }
 
     public void appendMessage(LLMMessage message, String text) {
@@ -615,6 +631,11 @@ public class LLMView extends FXBorderPane {
 
     public LLMSessionTab getSelectedSession() {
         return sessionTabComboBox.getSelectedItem();
+    }
+
+    private String getSelectedSessionTabId() {
+        LLMSessionTab sessionTab = this.getSelectedSession();
+        return sessionTab == null ? null : sessionTab.getId();
     }
 
     public String getSelectedModel() {

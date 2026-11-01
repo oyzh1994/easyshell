@@ -20,6 +20,8 @@ public class LLMSessionMessage {
 
     private String model;
 
+    private String sessionTabId;
+
     public String getMessageId() {
         return messageId;
     }
@@ -66,5 +68,13 @@ public class LLMSessionMessage {
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getSessionTabId() {
+        return sessionTabId;
+    }
+
+    public void setSessionTabId(String sessionTabId) {
+        this.sessionTabId = sessionTabId;
     }
 }
