@@ -1,0 +1,7 @@
+## EasyShell 运行环境
+项目名称：{projectName}
+项目版本：{projectVersion}
+项目类型：{projectType}
+JDK 版本：{jdkVersion}
+操作系统：{os}
+数据目录：{storePath}

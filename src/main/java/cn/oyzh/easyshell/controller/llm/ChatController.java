@@ -6,6 +6,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.ShellMainController;
 import cn.oyzh.easyshell.fx.llm.LLMView;
+import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
@@ -144,7 +145,7 @@ public class ChatController extends SubStageController {
 
         private volatile LLMMessage placeholder;
 
-        private volatile LLMTools tools;
+        private volatile List<LLMTools> tools;
     }
 
     private LLMAssistant initAssistant(LLMMessage currentMessage, LLMRequest request) {
@@ -160,18 +161,28 @@ public class ChatController extends SubStageController {
         AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
         // 会话
         LLMSessionTab sessionTab = this.view.getSelectedSession();
-        LLMTools tools = null;
+        // 会话工具
+        LLMTools sessionTools = null;
         if (sessionTab != null && sessionTab.getToolsFunc() != null) {
-            tools = sessionTab.getToolsFunc().get();
+            sessionTools = sessionTab.getToolsFunc().get();
+        }
+        //
+        List<LLMTools> tools = new ArrayList<>();
+        // 内置工具
+        ShellLLMTools internalTools = new ShellLLMTools(this.tabPane);
+        tools.add(internalTools);
+        if (sessionTools != null) {
+            tools.add(sessionTools);
         }
         request.tools = tools;
         // 执行模式
         LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
         // 工具
-        if (tools != null) {
-            services.tools(tools);
-            services.systemMessage(tools.systemMessage(executionMode));
-        }
+        services.tools(tools.toArray());
+        String systemMessage = sessionTools == null
+                ? internalTools.systemMessage(executionMode)
+                : internalTools.toolSystemMessage() + "\n\n" + sessionTools.systemMessage(executionMode);
+        services.systemMessage(systemMessage);
         // 使用当前会话历史初始化内存，当前消息由大模型服务负责追加
         services.chatMemory(this.buildChatMemory(currentMessage));
         if (this.view.isStreamingEnabled()) {
@@ -357,7 +368,9 @@ public class ChatController extends SubStageController {
             this.activeRequest = null;
         }
         if (request.tools != null) {
-            request.tools.close();
+            for (LLMTools tools : request.tools) {
+                tools.close();
+            }
             request.tools = null;
         }
         this.view.setBusy(false);

@@ -1,0 +1,15 @@
+terminalProtocols: SSH, Local, Telnet, Serial, RLogin, Mosh
+fileProtocols: SSH/SFTP, FTP, S3/MinIO, WebDAV, SMB
+databaseProtocols: MySQL, MariaDB, Dameng
+nosqlProtocols: Redis, MongoDB, ZooKeeper
+remoteDesktopProtocols: RDP, VNC
+terminalFeatures: command execution, shell history, snippets, jump hosts, proxies, SSL, tunneling
+fileFeatures: browsing, transfer, collection, text inspection, permissions, recursive operations
+databaseFeatures: SQL execution, raw result sets, schema browsing, design, import, export, dump, transfer
+dataFeatures: connection data, groups, keys, snippets, queries, settings, terminal history
+x11Features: built-in X server, X11 forwarding, GLX, local mode, client status
+llmFeatures: providers, sessions, streaming, thinking levels, execution modes, attachments, per-tab tools
+uiFeatures: theme listing, theme switching, font listing, application font configuration
+databaseIntrospection: supported database types, client driver versions, open server versions
+connectionManagement: saved connection listing, open tab listing, group listing, sanitized metadata
+localCommandExecution: direct host commands, working directories, timeouts, exit codes, stdout, stderr
