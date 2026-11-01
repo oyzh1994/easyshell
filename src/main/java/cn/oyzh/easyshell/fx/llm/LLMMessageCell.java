@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 
 import java.io.File;
 
@@ -19,15 +18,15 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
 
     private final HBox row = new HBox();
 
-    private final VBox bubbleStack = new VBox(4);
-
     private final VBox bubble = new VBox(5);
 
-    private final Label text = new Label();
+    private final Label meta = new Label();
 
     private final Label attachment = new Label();
 
-    private final Label meta = new Label();
+    private final VBox bubbleStack = new VBox(4);
+
+    private final LLMMessageTextArea text = new LLMMessageTextArea();
 
     public LLMMessageCell() {
         this.getStyleClass().add("llm-message-cell");
@@ -53,8 +52,9 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.text.setWrapText(true);
         this.text.setMaxWidth(Double.MAX_VALUE);
         this.text.setMinWidth(0);
+        this.text.measurementWidthProperty().bind(this.text.maxWidthProperty());
         this.text.maxWidthProperty().bind(Bindings.max(40, this.bubble.maxWidthProperty().subtract(28)));
-        this.text.setTextAlignment(TextAlignment.LEFT);
+        this.text.maxWidthProperty().addListener((observable, oldValue, newValue) -> this.requestLayout());
 
         this.attachment.getStyleClass().add("llm-bubble-attachment");
         this.attachment.setWrapText(true);

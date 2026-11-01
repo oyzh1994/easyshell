@@ -492,6 +492,10 @@ public class LLMView extends FXBorderPane {
         return this.messageListView.getMessages();
     }
 
+    public void flushMessageUpdates() {
+        this.messageListView.flushMessageUpdates();
+    }
+
     public boolean isMessageEmpty() {
         return CollectionUtil.isEmpty(this.getMessages());
     }

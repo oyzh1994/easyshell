@@ -340,6 +340,7 @@ public class ChatController extends SubStageController {
         if (message == null) {
             return;
         }
+        this.view.flushMessageUpdates();
         String text = message.getMessage();
         if (text == null || text.isBlank() || Objects.equals(text, I18nHelper.thinking() + "...")) {
             this.view.replaceMessage(message, I18nHelper.stopped());

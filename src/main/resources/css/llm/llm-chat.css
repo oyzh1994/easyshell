@@ -41,7 +41,7 @@
     -fx-background-color: transparent;
 }
 
-.llm-message-cell {
+.llm-message-list .list-cell.llm-message-cell {
     -fx-padding: 4 14 4 14;
 }
 
@@ -81,6 +81,59 @@
 
 .llm-bubble-text-error {
     -fx-text-fill: -llm-error-text;
+}
+
+.llm-message-text {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-cursor: text;
+    -fx-highlight-fill: -color-accent-emphasis;
+    -fx-highlight-text-fill: -color-fg-emphasis;
+}
+
+.llm-message-text:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.llm-message-text .content,
+.llm-message-text .scroll-pane,
+.llm-message-text .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.llm-message-text .content {
+    -fx-padding: 0;
+}
+
+.llm-message-text .scroll-bar:horizontal,
+.llm-message-text .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+}
+
+.llm-bubble-text-user .text {
+    -fx-fill: -color-fg-emphasis;
+}
+
+.llm-bubble-text-user {
+    -fx-highlight-fill: -color-fg-emphasis;
+    -fx-highlight-text-fill: -color-accent-emphasis;
+}
+
+.llm-bubble-text-assistant .text {
+    -fx-fill: -llm-text;
+}
+
+.llm-bubble-text-error .text {
+    -fx-fill: -llm-error-text;
 }
 
 .llm-meta {

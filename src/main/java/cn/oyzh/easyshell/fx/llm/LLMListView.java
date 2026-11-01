@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -17,8 +18,8 @@ import javafx.scene.input.ScrollEvent;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LLMListView extends FXListView<LLMMessage> {
 
@@ -49,6 +50,11 @@ public class LLMListView extends FXListView<LLMMessage> {
         //    }
         //});
         this.addEventFilter(ScrollEvent.SCROLL, this::onUserScroll);
+        this.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                this.scheduleMessageLayoutRefresh();
+            }
+        });
         FXUtil.runLater(this::installScrollBarListener);
     }
 
@@ -101,15 +107,15 @@ public class LLMListView extends FXListView<LLMMessage> {
         if (shouldScroll) {
             this.scheduleScrollToBottom();
         }
+        this.scheduleMessageLayoutRefresh();
     }
 
     public void appendMessage(LLMMessage message, String text) {
-        boolean shouldScroll = this.autoScroll && !this.userScrolling;
-        message.appendMessage(text);
-        this.notifyMessageUpdated();
-        if (shouldScroll) {
-            this.scheduleScrollToBottom();
+        if (message == null || StringUtil.isBlank(text)) {
+            return;
         }
+        this.pendingAppends.offer(new MessageAppend(message, text));
+        this.scheduleAppendFlush();
     }
 
     /**
@@ -122,6 +128,7 @@ public class LLMListView extends FXListView<LLMMessage> {
         if (message == null) {
             return;
         }
+        this.flushPendingAppends();
         boolean shouldScroll = this.autoScroll && !this.userScrolling;
         message.replaceMessage(text);
         this.notifyMessageUpdated();
@@ -131,6 +138,7 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     public void clearMessages() {
+        this.discardPendingAppends();
         this.clearItems();
         this.resetScrollState();
     }
@@ -141,15 +149,20 @@ public class LLMListView extends FXListView<LLMMessage> {
      * @param messages 完整消息列表
      */
     public void setMessages(List<LLMMessage> messages) {
+        this.discardPendingAppends();
         this.setItem(CollectionUtil.isEmpty(messages) ? List.of() : List.copyOf(messages));
         this.resetScrollState();
         this.scrollToBottom();
+        this.scheduleMessageLayoutRefresh();
     }
 
     public List<LLMMessage> getMessages() {
-        AtomicReference<List<LLMMessage>> result = new AtomicReference<>(List.of());
-        FXUtil.runWait(() -> result.set(List.copyOf(this.getItems())));
-        return result.get();
+        this.flushPendingAppends();
+        return List.copyOf(this.getItems());
+    }
+
+    public void flushMessageUpdates() {
+        this.flushPendingAppends();
     }
 
     /**
@@ -168,13 +181,18 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     private void resetScrollState() {
-        this.scrollToBottomFlag.incrementAndGet();
         this.userScrollActivity++;
         this.userScrolling = false;
         this.autoScroll = true;
     }
 
-    private final AtomicInteger scrollToBottomFlag = new AtomicInteger();
+    private final ConcurrentLinkedQueue<MessageAppend> pendingAppends = new ConcurrentLinkedQueue<>();
+
+    private final AtomicBoolean appendFlushScheduled = new AtomicBoolean();
+
+    private boolean scrollToBottomScheduled;
+
+    private boolean messageLayoutRefreshScheduled;
 
     private ScrollBar verticalScrollBar;
 
@@ -205,9 +223,13 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     private void scheduleScrollToBottom() {
-        int flag = this.scrollToBottomFlag.incrementAndGet();
+        if (this.scrollToBottomScheduled) {
+            return;
+        }
+        this.scrollToBottomScheduled = true;
         FXUtil.runLater(() -> {
-            if (flag != this.scrollToBottomFlag.get() || !this.autoScroll || this.userScrolling) {
+            this.scrollToBottomScheduled = false;
+            if (!this.autoScroll || this.userScrolling) {
                 return;
             }
             ScrollBar scrollBar = this.verticalScrollBar;
@@ -225,6 +247,67 @@ public class LLMListView extends FXListView<LLMMessage> {
                 }
             }
         });
+    }
+
+    private void scheduleAppendFlush() {
+        if (this.appendFlushScheduled.compareAndSet(false, true)) {
+            this.flushPendingAppends();
+        }
+    }
+
+    private void scheduleMessageLayoutRefresh() {
+        if (this.messageLayoutRefreshScheduled) {
+            return;
+        }
+        this.messageLayoutRefreshScheduled = true;
+        Platform.runLater(() -> {
+            this.messageLayoutRefreshScheduled = false;
+            if (this.getScene() == null) {
+                return;
+            }
+            this.refresh();
+            if (this.autoScroll && !this.userScrolling) {
+                this.scheduleScrollToBottom();
+            }
+        });
+    }
+
+    private void flushPendingAppends() {
+        boolean shouldScroll = this.autoScroll && !this.userScrolling;
+        boolean updated = false;
+        LLMMessage message = null;
+        StringBuilder text = new StringBuilder();
+        MessageAppend append;
+        while ((append = this.pendingAppends.poll()) != null) {
+            if (message != null && message != append.message()) {
+                message.appendMessage(text.toString());
+                text.setLength(0);
+                updated = true;
+            }
+            message = append.message();
+            text.append(append.text());
+        }
+        if (message != null && !text.isEmpty()) {
+            message.appendMessage(text.toString());
+            updated = true;
+        }
+        this.appendFlushScheduled.set(false);
+        if (!this.pendingAppends.isEmpty()) {
+            this.scheduleAppendFlush();
+        }
+        if (updated) {
+            this.notifyMessageUpdated();
+            if (shouldScroll) {
+                this.scheduleScrollToBottom();
+            }
+        }
+    }
+
+    private void discardPendingAppends() {
+        this.pendingAppends.clear();
+    }
+
+    private record MessageAppend(LLMMessage message, String text) {
     }
 
     private void installScrollBarListener() {
