@@ -57,7 +57,7 @@ public class LLMView extends FXBorderPane {
 
     private static final double SELECTOR_LABEL_WIDTH = 44;
 
-    private static final double SELECTOR_WIDTH = 120;
+    private static final double SELECTOR_WIDTH = 180;
 
     private static final String EXECUTION_MODE_TOOLTIP = "llm.executionMode.tooltip";
 
@@ -162,7 +162,13 @@ public class LLMView extends FXBorderPane {
         this.inputArea.setMaxHeight(120);
         this.inputArea.textProperty().addListener((observable, oldValue, newValue) -> this.updateSendState());
         this.inputArea.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER && !event.isShiftDown() && !event.isControlDown() && !event.isAltDown()) {
+            if (event.getCode() != KeyCode.ENTER) {
+                return;
+            }
+            if (event.isShiftDown()) {
+                this.inputArea.replaceSelection("\n");
+                event.consume();
+            } else if (!event.isControlDown() && !event.isAltDown()) {
                 this.sendMessage();
                 event.consume();
             }
@@ -190,7 +196,7 @@ public class LLMView extends FXBorderPane {
     private <T> FXHBox labeledCombo(String labelText, FXComboBox<T> comboBox) {
         FXLabel label = new FXLabel(labelText);
         label.getStyleClass().add("llm-field-label");
-        label.setMinWidth(SELECTOR_LABEL_WIDTH);
+        //label.setMinWidth(SELECTOR_LABEL_WIDTH);
         label.setPrefWidth(SELECTOR_LABEL_WIDTH);
         comboBox.getStyleClass().add("llm-combo");
         comboBox.setPrefWidth(SELECTOR_WIDTH);

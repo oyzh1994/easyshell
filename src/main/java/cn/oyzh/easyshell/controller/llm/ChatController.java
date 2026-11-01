@@ -540,6 +540,10 @@ public class ChatController extends SubStageController {
     }
 
     private void saveCurrentSession() {
+        // 请求进行中仅更新界面，避免持久化未完成的 LLM 消息
+        if (this.activeRequest != null) {
+            return;
+        }
         LLMSession session = this.currentSession;
         if (session == null) {
             return;
