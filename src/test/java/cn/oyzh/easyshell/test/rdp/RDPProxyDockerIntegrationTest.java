@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test.rdp;
 
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.rdp.RDPProxyTunnel;
+import cn.oyzh.easyshell.rdp.ShellRDPProxyTunnel;
 import org.junit.Assume;
 import org.junit.Test;
 
@@ -21,25 +21,25 @@ public class RDPProxyDockerIntegrationTest {
     @Test
     public void dockerHttpOpen() throws Exception {
         Assume.assumeTrue("enable with -Drdp.proxy.it=true", Boolean.getBoolean("rdp.proxy.it"));
-        RDPProxyTunnel.verifyConnectivity(config("HTTP", 31280, false, null, null), HOST, PORT, 5000);
+        ShellRDPProxyTunnel.verifyConnectivity(config("HTTP", 31280, false, null, null), HOST, PORT, 5000);
     }
 
     @Test
     public void dockerHttpAuthentication() throws Exception {
         Assume.assumeTrue("enable with -Drdp.proxy.it=true", Boolean.getBoolean("rdp.proxy.it"));
-        RDPProxyTunnel.verifyConnectivity(config("HTTP", 31281, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
+        ShellRDPProxyTunnel.verifyConnectivity(config("HTTP", 31281, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
     }
 
     @Test
     public void dockerSocksOpen() throws Exception {
         Assume.assumeTrue("enable with -Drdp.proxy.it=true", Boolean.getBoolean("rdp.proxy.it"));
-        RDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31282, false, null, null), HOST, PORT, 5000);
+        ShellRDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31282, false, null, null), HOST, PORT, 5000);
     }
 
     @Test
     public void dockerSocksAuthentication() throws Exception {
         Assume.assumeTrue("enable with -Drdp.proxy.it=true", Boolean.getBoolean("rdp.proxy.it"));
-        RDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31283, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
+        ShellRDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31283, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
     }
 
     @Test
@@ -81,11 +81,11 @@ public class RDPProxyDockerIntegrationTest {
     private static void runScenario(String scenario) {
         try {
             switch (scenario) {
-                case "direct" -> RDPProxyTunnel.verifyConnectivity(null, HOST, PORT, 5000);
-                case "http-open" -> RDPProxyTunnel.verifyConnectivity(config("HTTP", 31280, false, null, null), HOST, PORT, 5000);
-                case "http-auth" -> RDPProxyTunnel.verifyConnectivity(config("HTTP", 31281, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
-                case "socks-open" -> RDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31282, false, null, null), HOST, PORT, 5000);
-                case "socks-auth" -> RDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31283, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
+                case "direct" -> ShellRDPProxyTunnel.verifyConnectivity(null, HOST, PORT, 5000);
+                case "http-open" -> ShellRDPProxyTunnel.verifyConnectivity(config("HTTP", 31280, false, null, null), HOST, PORT, 5000);
+                case "http-auth" -> ShellRDPProxyTunnel.verifyConnectivity(config("HTTP", 31281, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
+                case "socks-open" -> ShellRDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31282, false, null, null), HOST, PORT, 5000);
+                case "socks-auth" -> ShellRDPProxyTunnel.verifyConnectivity(config("SOCKS5", 31283, true, "proxyuser", "proxy-pass"), HOST, PORT, 5000);
                 default -> throw new IllegalArgumentException(scenario);
             }
         } catch (IOException ex) {
@@ -95,7 +95,7 @@ public class RDPProxyDockerIntegrationTest {
 
     private static void assertRejected(ShellProxyConfig config, String host, int port) {
         try {
-            RDPProxyTunnel.verifyConnectivity(config, host, port, 5000);
+            ShellRDPProxyTunnel.verifyConnectivity(config, host, port, 5000);
             fail("authentication should fail");
         } catch (IOException expected) {
         }

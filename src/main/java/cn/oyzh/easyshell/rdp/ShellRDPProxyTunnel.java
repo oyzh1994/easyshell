@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author oyzh
  * @since 2026-10-23
  */
-public final class RDPProxyTunnel implements AutoCloseable {
+public final class ShellRDPProxyTunnel implements AutoCloseable {
 
     private final ShellProxyConfig proxyConfig;
 
@@ -42,7 +42,7 @@ public final class RDPProxyTunnel implements AutoCloseable {
 
     private Thread acceptThread;
 
-    public RDPProxyTunnel(ShellProxyConfig proxyConfig, String targetHost, int targetPort, int connectTimeout) {
+    public ShellRDPProxyTunnel(ShellProxyConfig proxyConfig, String targetHost, int targetPort, int connectTimeout) {
         this.proxyConfig = ShellProxyConfig.clone(proxyConfig);
         this.targetHost = targetHost;
         this.targetPort = targetPort;

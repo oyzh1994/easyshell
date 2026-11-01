@@ -73,7 +73,7 @@ public class ShellRDPClient implements ShellBaseClient {
     /**
      * rdp代理隧道
      */
-    private RDPProxyTunnel proxyTunnel;
+    private ShellRDPProxyTunnel proxyTunnel;
 
     /**
      * 全屏键盘捕获
@@ -104,7 +104,7 @@ public class ShellRDPClient implements ShellBaseClient {
         }
         if (this.proxyTunnel == null || !this.proxyTunnel.isRunning()) {
             this.closeProxyTunnel();
-            this.proxyTunnel = new RDPProxyTunnel(
+            this.proxyTunnel = new ShellRDPProxyTunnel(
                     this.shellConnect.getProxyConfig(),
                     this.shellConnect.hostIp(),
                     this.shellConnect.hostPort(),

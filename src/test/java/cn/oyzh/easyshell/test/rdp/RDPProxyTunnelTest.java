@@ -1,8 +1,7 @@
 package cn.oyzh.easyshell.test.rdp;
 
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.rdp.RDPProxyTunnel;
-import cn.oyzh.easyshell.util.ShellProxyUtil;
+import cn.oyzh.easyshell.rdp.ShellRDPProxyTunnel;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -29,7 +28,7 @@ public class RDPProxyTunnelTest {
     public void httpConnectWithoutAuthentication() throws Exception {
         try (RdpTargetServer target = new RdpTargetServer();
              ProxyServer proxy = new ProxyServer("http", false, target.port())) {
-            RDPProxyTunnel.verifyConnectivity(config("HTTP", false, null, null), "127.0.0.1", target.port(), 3000);
+            ShellRDPProxyTunnel.verifyConnectivity(config("HTTP", false, null, null), "127.0.0.1", target.port(), 3000);
         }
     }
 
@@ -37,7 +36,7 @@ public class RDPProxyTunnelTest {
     public void httpConnectWithAuthentication() throws Exception {
         try (RdpTargetServer target = new RdpTargetServer();
              ProxyServer proxy = new ProxyServer("http", true, target.port())) {
-            RDPProxyTunnel.verifyConnectivity(config("HTTP", true, "proxyuser", "proxy-pass"), "127.0.0.1", target.port(), 3000);
+            ShellRDPProxyTunnel.verifyConnectivity(config("HTTP", true, "proxyuser", "proxy-pass"), "127.0.0.1", target.port(), 3000);
         }
     }
 
@@ -54,7 +53,7 @@ public class RDPProxyTunnelTest {
     public void socks5WithoutAuthentication() throws Exception {
         try (RdpTargetServer target = new RdpTargetServer();
              ProxyServer proxy = new ProxyServer("socks", false, target.port())) {
-            RDPProxyTunnel.verifyConnectivity(config("SOCKS5", false, null, null), "127.0.0.1", target.port(), 3000);
+            ShellRDPProxyTunnel.verifyConnectivity(config("SOCKS5", false, null, null), "127.0.0.1", target.port(), 3000);
         }
     }
 
@@ -62,7 +61,7 @@ public class RDPProxyTunnelTest {
     public void socks5WithAuthentication() throws Exception {
         try (RdpTargetServer target = new RdpTargetServer();
              ProxyServer proxy = new ProxyServer("socks", true, target.port())) {
-            RDPProxyTunnel.verifyConnectivity(config("SOCKS5", true, "proxyuser", "proxy-pass"), "127.0.0.1", target.port(), 3000);
+            ShellRDPProxyTunnel.verifyConnectivity(config("SOCKS5", true, "proxyuser", "proxy-pass"), "127.0.0.1", target.port(), 3000);
         }
     }
 
@@ -79,7 +78,7 @@ public class RDPProxyTunnelTest {
     public void localTunnelForwardsRdpHandshake() throws Exception {
         try (RdpTargetServer target = new RdpTargetServer();
              ProxyServer proxy = new ProxyServer("http", true, target.port());
-             RDPProxyTunnel tunnel = new RDPProxyTunnel(
+             ShellRDPProxyTunnel tunnel = new ShellRDPProxyTunnel(
                      config("HTTP", true, "proxyuser", "proxy-pass"), "127.0.0.1", target.port(), 3000
              )) {
             InetSocketAddress endpoint = tunnel.start();
@@ -87,7 +86,7 @@ public class RDPProxyTunnelTest {
             try (Socket socket = new Socket()) {
                 socket.connect(endpoint, 3000);
                 socket.setSoTimeout(3000);
-                RDPProxyTunnel.verifyRdpEndpoint(socket);
+                ShellRDPProxyTunnel.verifyRdpEndpoint(socket);
             }
             tunnel.close();
             assertFalse(tunnel.isRunning());
@@ -97,13 +96,13 @@ public class RDPProxyTunnelTest {
     @Test
     public void directConnectWorksWithoutProxy() throws Exception {
         try (RdpTargetServer target = new RdpTargetServer()) {
-            RDPProxyTunnel.verifyConnectivity(null, "127.0.0.1", target.port(), 3000);
+            ShellRDPProxyTunnel.verifyConnectivity(null, "127.0.0.1", target.port(), 3000);
         }
     }
 
     private static void assertRejected(ShellProxyConfig config, int targetPort) {
         try {
-            RDPProxyTunnel.verifyConnectivity(config, "127.0.0.1", targetPort, 3000);
+            ShellRDPProxyTunnel.verifyConnectivity(config, "127.0.0.1", targetPort, 3000);
             fail("proxy authentication should have been rejected");
         } catch (IOException expected) {
         }
