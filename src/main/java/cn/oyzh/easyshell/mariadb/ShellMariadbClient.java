@@ -443,6 +443,16 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
         return results;
     }
 
+    /**
+     * 执行SQL语句
+     *
+     * @param sql SQL语句
+     * @return 执行结果
+     */
+    public DBQueryResults<ShellMariadbExecuteResult> executeSql(String sql) {
+        return this.executeSql(null, sql);
+    }
+
     @Override
     public int insertBatch(String dbName, List<String> sqlList) {
         return this.insertBatch(dbName, sqlList, false);
@@ -4065,12 +4075,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
         return listRoutineParam(dbName, procedureName, "PROCEDURE");
     }
 
-    /**
-     * 打印sql
-     *
-     * @param sql sql
-     */
-    private void printSql(String sql) {
+    @Override
+    public void printSql(String sql) {
         DBUtil.printSql(sql);
         String compressedSql = DBSqlParser.compressSql(sql, this.dialect());
         ShellEventUtil.printSql(compressedSql, this.shellConnect);

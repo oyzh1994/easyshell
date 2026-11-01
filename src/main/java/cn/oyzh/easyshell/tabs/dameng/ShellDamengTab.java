@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.dameng;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.dameng.ShellDamengClient;
+import cn.oyzh.easyshell.dameng.ShellDamengLLMTools;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * 达梦数据库连接标签页，负责承载达梦数据库的主界面与客户端
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellDamengTab extends ShellConnectTab {
+public class ShellDamengTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellDamengTab(ShellConnect connect) {
     //    super();
@@ -59,8 +64,29 @@ public class ShellDamengTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellBaseClient client() {
+    public ShellDamengClient client() {
         return this.controller().getClient();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellDamengLLMTools> getToolsFunc() {
+        return () -> {
+            ShellDamengLLMTools llmTools = new ShellDamengLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
     }
 
     //    @Override

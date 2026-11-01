@@ -407,7 +407,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             this.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, this.dialect());
             List<String> list = parser.parseSql();
-            connection = this.getConnManager().connection(dbName);
+            if (StringUtil.isNotBlank(dbName)) {
+                connection = this.getConnManager().connection(dbName);
+            } else {
+                connection = this.getConnManager().connection();
+            }
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String execSql : list) {
@@ -441,6 +445,16 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             results.parseError(ex);
         }
         return results;
+    }
+
+    /**
+     * 执行SQL语句
+     *
+     * @param sql SQL语句
+     * @return 执行结果
+     */
+    public DBQueryResults<ShellMysqlExecuteResult> executeSql(String sql) {
+        return this.executeSql(null, sql);
     }
 
     @Override
@@ -4065,12 +4079,8 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         return listRoutineParam(dbName, procedureName, "PROCEDURE");
     }
 
-    /**
-     * 打印sql
-     *
-     * @param sql sql
-     */
-    private void printSql(String sql) {
+    @Override
+    public void printSql(String sql) {
         DBUtil.printSql(sql);
         String compressedSql = DBSqlParser.compressSql(sql, this.dialect());
         ShellEventUtil.printSql(compressedSql, this.shellConnect);

@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.mariadb;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
+import cn.oyzh.easyshell.mariadb.ShellMariadbLLMTools;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * MariaDB 连接标签页
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2026-10-09
  */
-public class ShellMariadbTab extends ShellConnectTab {
+public class ShellMariadbTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellMariadbTab(ShellConnect connect) {
     //    super();
@@ -59,8 +64,29 @@ public class ShellMariadbTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellBaseClient client() {
+    public ShellMariadbClient client() {
         return this.controller().getClient();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellMariadbLLMTools> getToolsFunc() {
+        return () -> {
+            ShellMariadbLLMTools llmTools = new ShellMariadbLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
     }
 
     //    @Override

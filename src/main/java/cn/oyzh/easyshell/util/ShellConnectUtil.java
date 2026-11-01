@@ -5,7 +5,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
-import cn.oyzh.easyshell.rdp.RDPProxyTunnel;
+import cn.oyzh.easyshell.rdp.ShellRDPProxyTunnel;
 import cn.oyzh.easyshell.rdp.ShellRDPUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -214,7 +214,7 @@ public class ShellConnectUtil {
                 //}
                 if (shellConnect.isRDPType() && !ShellRDPUtil.isBuiltIn(shellConnect)) {
                     ShellProxyConfig proxyConfig = shellConnect.isEnableProxy() ? shellConnect.getProxyConfig() : null;
-                    RDPProxyTunnel.verifyConnectivity(
+                    ShellRDPProxyTunnel.verifyConnectivity(
                             proxyConfig,
                             shellConnect.hostIp(),
                             shellConnect.hostPort(),

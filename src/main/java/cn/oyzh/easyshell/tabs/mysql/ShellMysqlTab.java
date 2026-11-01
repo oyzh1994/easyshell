@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.mysql;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.mysql.ShellMysqlLLMTools;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * MySQL 连接标签页
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellMysqlTab extends ShellConnectTab {
+public class ShellMysqlTab extends ShellConnectTab implements LLMTabCapability {
 
     //public ShellMysqlTab(ShellConnect connect) {
     //    super();
@@ -59,8 +64,29 @@ public class ShellMysqlTab extends ShellConnectTab {
     }
 
     @Override
-    public ShellBaseClient client() {
+    public ShellMysqlClient client() {
         return this.controller().getClient();
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellMysqlLLMTools> getToolsFunc() {
+        return () -> {
+            ShellMysqlLLMTools llmTools = new ShellMysqlLLMTools();
+            llmTools.setClient(this.client());
+            return llmTools;
+        };
     }
 
     //    @Override

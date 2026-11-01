@@ -415,6 +415,16 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return results;
     }
 
+    /**
+     * 执行SQL语句
+     *
+     * @param sql SQL语句
+     * @return 执行结果
+     */
+    public DBQueryResults<DamengExecuteResult> executeSql(String sql) {
+        return this.executeSql(null, sql);
+    }
+
     @Override
     public int insertBatch(String schema, List<String> sqlList) {
         return this.insertBatch(schema, sqlList, false);
@@ -4282,12 +4292,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         }
     }
 
-    /**
-     * 打印sql
-     *
-     * @param sql sql
-     */
-    private void printSql(String sql) {
+    @Override
+    public void printSql(String sql) {
         DBUtil.printSql(sql);
         String compressedSql = DBSqlParser.compressSql(sql, this.dialect());
         ShellEventUtil.printSql(compressedSql, this.shellConnect);

@@ -143,9 +143,11 @@ public class ChatController extends SubStageController {
         private volatile Thread thread;
 
         private volatile LLMMessage placeholder;
+
+        private volatile LLMTools tools;
     }
 
-    private LLMAssistant initAssistant(LLMMessage currentMessage) {
+    private LLMAssistant initAssistant(LLMMessage currentMessage, LLMRequest request) {
         // 提供商
         LLMProvider provider = this.view.getSelectedProvider();
         if (provider == null) {
@@ -162,6 +164,7 @@ public class ChatController extends SubStageController {
         if (sessionTab != null && sessionTab.getToolsFunc() != null) {
             tools = sessionTab.getToolsFunc().get();
         }
+        request.tools = tools;
         // 执行模式
         LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
         // 工具
@@ -220,13 +223,13 @@ public class ChatController extends SubStageController {
             if (!this.validateSessionForSend()) {
                 return;
             }
-            LLMAssistant assistant = this.initAssistant(message);
+            LLMRequest request = new LLMRequest();
+            LLMAssistant assistant = this.initAssistant(message, request);
             if (assistant == null) {
                 this.view.addErrorMessage(I18nHelper.initLLMFail(), message.getSessionTabId());
                 return;
             }
             boolean streaming = this.view.isStreamingEnabled();
-            LLMRequest request = new LLMRequest();
             this.activeRequest = request;
             this.view.setBusy(true);
             // 异步执行
@@ -353,6 +356,10 @@ public class ChatController extends SubStageController {
         }
         if (this.activeRequest == request) {
             this.activeRequest = null;
+        }
+        if (request.tools != null) {
+            request.tools.close();
+            request.tools = null;
         }
         this.view.setBusy(false);
         if (save) {
