@@ -1,0 +1,6 @@
+## 本机环境
+操作系统：{os}
+系统架构：{arch}
+当前用户：{user}
+默认工作目录：{workingDirectory}
+默认命令解释器：{shell}

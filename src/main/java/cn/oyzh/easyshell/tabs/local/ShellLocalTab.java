@@ -1,11 +1,16 @@
 package cn.oyzh.easyshell.tabs.local;
 
+import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.local.ShellLocalLLMTools;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.Cursor;
+
+import java.util.function.Supplier;
 
 /**
  * 本地终端tab
@@ -13,7 +18,7 @@ import javafx.scene.Cursor;
  * @author oyzh
  * @since 2025-03-04
  */
-public class ShellLocalTab extends ShellTermTab {
+public class ShellLocalTab extends ShellTermTab implements LLMTabCapability {
 
     //public ShellLocalTab(ShellConnect connect) {
     //    this.init(connect);
@@ -65,6 +70,27 @@ public class ShellLocalTab extends ShellTermTab {
     @Override
     public void runSnippet(String content) throws Exception {
         this.controller().runSnippet(content);
+    }
+
+    private final String tabId = UUIDUtil.uuidSimple();
+
+    @Override
+    public String getTabId() {
+        return this.tabId;
+    }
+
+    @Override
+    public String getTabName() {
+        return this.getTabTitle();
+    }
+
+    @Override
+    public Supplier<ShellLocalLLMTools> getToolsFunc() {
+        return () -> {
+            ShellLocalLLMTools llmTools = new ShellLocalLLMTools();
+            llmTools.setClient(this.controller().getClient());
+            return llmTools;
+        };
     }
 
 //    @Override
