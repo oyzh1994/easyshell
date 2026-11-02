@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.text.Font;
 
 import java.io.File;
 import java.util.List;
@@ -34,6 +35,7 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.setMinWidth(0);
         this.setMaxWidth(Double.MAX_VALUE);
         this.setCellFactory(list -> new LLMMessageCell());
+        this.setSkin(new LLMListViewSkin(this));
 
         Label placeholder = new Label(I18nResourceBundle.i18nString("shell.llm.chatPlaceholder"));
         placeholder.getStyleClass().add("llm-placeholder");
@@ -65,12 +67,18 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     @Override
+    public void changeFont(Font font) {
+        super.changeFont(font);
+        FXUtil.runLater(this::resetMessageCellSizes);
+    }
+
+    @Override
     protected void layoutChildren() {
         super.layoutChildren();
         if (this.autoScroll && !this.userScrolling) {
             ScrollBar scrollBar = this.verticalScrollBar;
             if (scrollBar == null) {
-                scrollBar = FXUtil.getVScrollBar(this);
+                scrollBar = this.getVerticalScrollBar();
             }
             if (scrollBar != null && scrollBar.getValue() < scrollBar.getMax()) {
                 scrollBar.setValue(scrollBar.getMax());
@@ -234,7 +242,7 @@ public class LLMListView extends FXListView<LLMMessage> {
             }
             ScrollBar scrollBar = this.verticalScrollBar;
             if (scrollBar == null) {
-                scrollBar = FXUtil.getVScrollBar(this);
+                scrollBar = this.getVerticalScrollBar();
             }
             if (scrollBar != null) {
                 if (scrollBar.getValue() < scrollBar.getMax()) {
@@ -270,6 +278,13 @@ public class LLMListView extends FXListView<LLMMessage> {
                 this.scheduleScrollToBottom();
             }
         });
+    }
+
+    private void resetMessageCellSizes() {
+        if (this.getSkin() instanceof LLMListViewSkin skin) {
+            skin.resetCellSizeEstimates();
+        }
+        this.scheduleMessageLayoutRefresh();
     }
 
     private void flushPendingAppends() {
@@ -311,7 +326,7 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     private void installScrollBarListener() {
-        ScrollBar current = FXUtil.getVScrollBar(this);
+        ScrollBar current = this.getVerticalScrollBar();
         if (current == this.verticalScrollBar) {
             return;
         }
@@ -326,6 +341,13 @@ public class LLMListView extends FXListView<LLMMessage> {
             current.addEventFilter(MouseEvent.MOUSE_PRESSED, this.scrollBarPressedHandler);
             current.addEventFilter(MouseEvent.MOUSE_RELEASED, this.scrollBarReleasedHandler);
         }
+    }
+
+    private ScrollBar getVerticalScrollBar() {
+        if (this.getSkin() instanceof LLMListViewSkin skin) {
+            return skin.getVerticalScrollBar();
+        }
+        return FXUtil.getVScrollBar(this);
     }
 
     private void onUserScroll(ScrollEvent event) {

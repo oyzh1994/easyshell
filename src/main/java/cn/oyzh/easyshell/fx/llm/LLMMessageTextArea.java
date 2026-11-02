@@ -14,8 +14,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 
 import java.util.Objects;
 
@@ -96,26 +98,28 @@ public final class LLMMessageTextArea extends FXTextArea {
             return 0;
         }
         this.prepareMeasurement(text, 0);
-        return Math.ceil(this.measuredWidth + this.getInsets().getLeft() + this.getInsets().getRight());
+        return Math.ceil(this.measuredWidth + this.getHorizontalContentInsets());
     }
 
     @Override
     protected double computePrefHeight(double width) {
         String text = this.getText();
-        double insetsHeight = this.getInsets().getTop() + this.getInsets().getBottom();
+        double insetsHeight = this.getVerticalContentInsets();
         if (text == null || text.isEmpty()) {
             return insetsHeight;
         }
         double measurementWidth = this.getMeasurementWidth();
-        if (measurementWidth > 0) {
+        if (width <= 0) {
             width = measurementWidth;
-        } else if (width <= 0) {
-            this.prepareMeasurement(text, 0);
-            width = this.measurement.getLayoutBounds().getWidth()
-                    + this.getInsets().getLeft() + this.getInsets().getRight();
+        } else if (measurementWidth > 0) {
+            width = Math.min(width, measurementWidth);
         }
-        double contentWidth = Math.max(1,
-                width - this.getInsets().getLeft() - this.getInsets().getRight());
+        double horizontalInsets = this.getHorizontalContentInsets();
+        if (width <= 0) {
+            this.prepareMeasurement(text, 0);
+            width = this.measurement.getLayoutBounds().getWidth() + horizontalInsets;
+        }
+        double contentWidth = Math.max(1, width - horizontalInsets);
         this.prepareMeasurement(text, contentWidth);
         return Math.ceil(this.measuredHeight + insetsHeight);
     }
@@ -135,6 +139,7 @@ public final class LLMMessageTextArea extends FXTextArea {
                 && Double.compare(wrappingWidth, this.measuredWrappingWidth) == 0) {
             return;
         }
+        this.measurement.setBoundsType(TextBoundsType.LOGICAL_VERTICAL_CENTER);
         this.measurement.setFont(font);
         this.measurement.setText(text);
         this.measurement.setWrappingWidth(wrappingWidth);
@@ -146,9 +151,9 @@ public final class LLMMessageTextArea extends FXTextArea {
     }
 
     private void requestLayoutIfHeightChanged() {
-        double width = this.getMeasurementWidth();
+        double width = this.getWidth();
         if (width <= 0) {
-            width = this.getWidth();
+            width = this.getMeasurementWidth();
         }
         if (width <= 0) {
             this.lastLayoutHeight = -1;
@@ -220,5 +225,29 @@ public final class LLMMessageTextArea extends FXTextArea {
             this.internalScrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
             this.internalScrollPane.setFitToWidth(true);
         }
+    }
+
+    private double getHorizontalContentInsets() {
+        this.disableInternalScrollBars();
+        double insets = this.getInsets().getLeft() + this.getInsets().getRight();
+        if (this.internalScrollPane != null) {
+            insets += this.internalScrollPane.getInsets().getLeft() + this.internalScrollPane.getInsets().getRight();
+            if (this.internalScrollPane.getContent() instanceof Region content) {
+                insets += content.getInsets().getLeft() + content.getInsets().getRight();
+            }
+        }
+        return insets;
+    }
+
+    private double getVerticalContentInsets() {
+        this.disableInternalScrollBars();
+        double insets = this.getInsets().getTop() + this.getInsets().getBottom();
+        if (this.internalScrollPane != null) {
+            insets += this.internalScrollPane.getInsets().getTop() + this.internalScrollPane.getInsets().getBottom();
+            if (this.internalScrollPane.getContent() instanceof Region content) {
+                insets += content.getInsets().getTop() + content.getInsets().getBottom();
+            }
+        }
+        return insets;
     }
 }

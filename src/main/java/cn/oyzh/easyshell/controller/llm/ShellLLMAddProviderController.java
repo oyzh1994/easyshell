@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.llm;
 
+import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox;
 import cn.oyzh.easyshell.fx.llm.LLMProviderTemplateTextField;
@@ -97,7 +98,7 @@ public class ShellLLMAddProviderController extends StageController {
 
     private void showFetchModelsFailure(Exception ex) {
         String message = I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsFail", "Failed to fetch models");
-        String detail = ex == null ? null : ex.getClass().getSimpleName();
+        String detail = ExceptionUtil.getMessage(ex);
         if (StringUtil.isNotBlank(detail)) {
             message += ": " + detail;
         }

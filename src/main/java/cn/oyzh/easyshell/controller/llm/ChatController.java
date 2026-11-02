@@ -149,7 +149,14 @@ public class ChatController extends SubStageController {
     }
 
     private LLMAssistant initAssistant(LLMMessage currentMessage, LLMRequest request) {
-        // 提供商
+        // 供应商为空
+        boolean providerEmpty = this.view.getProviderComboBox().isItemEmpty();
+        if (providerEmpty) {
+            ShellViewFactory.llmProviders(this.getWindow());
+            this.view.refreshProviders();
+            return null;
+        }
+        // 供应商未选择
         LLMProvider provider = this.view.getSelectedProvider();
         if (provider == null) {
             MessageBox.warn(I18nHelper.pleaseSelectProvider(), this.getWindow());

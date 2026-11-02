@@ -92,6 +92,6 @@ public class ShellLLMProviderListController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("base.llm");
+        return I18nHelper.llmProvider();
     }
 }
