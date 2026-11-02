@@ -26,6 +26,7 @@ public class ShellX11Config implements Serializable, ObjectCopier<ShellX11Config
     /**
      * 数据id
      */
+    @Column
     @PrimaryKey
     private String id;
 
