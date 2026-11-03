@@ -36,6 +36,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
@@ -131,14 +132,6 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
             this.checkTable.reset();
             if (StringUtil.isBlank(this.originalName)) {
                 this.columnTable.setItem(new ArrayList<>());
-                SQLiteColumnControl column = new SQLiteColumnControl();
-                column.setCreated(true);
-                column.setName("id");
-                column.setType("INTEGER");
-                column.setPrimaryKey(true);
-                column.setAutoIncrement(true);
-                this.columnTable.addItem(column);
-                this.columnTable.selectLast();
                 this.indexTable.setItem(new ArrayList<>());
                 this.triggerTable.setItem(new ArrayList<>());
                 this.foreignKeyTable.setItem(new ArrayList<>());
@@ -165,6 +158,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
                 this.columnTable.selectFirst();
                 this.unsaved = false;
             }
+            this.initIndexTable();
             this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.client);
             this.updatePreview();
             this.flushTab();
@@ -218,7 +212,15 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         this.strict.selectedProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
         this.columnTable.selectedIndexChanged((observable, oldValue, newValue) ->
                 this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.client));
+        this.columnTable.itemList().addListener(
+                (ListChangeListener<SQLiteColumnControl>) change -> this.initIndexTable());
         this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> this.onTabChanged(newValue));
+    }
+
+    private void initIndexTable() {
+        for (SQLiteIndexControl index : this.indexTable.getItems()) {
+            index.setColumnList(this.columnTable.getItems());
+        }
     }
 
     private void onTabChanged(Tab tab) {
@@ -295,20 +297,20 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
     }
 
     private void addIndex() {
-        SQLiteColumn column = this.columnTable.getSelectedItem();
-        if (column == null && !this.columnTable.getItems().isEmpty()) {
-            column = this.columnTable.getItems().getFirst();
-        }
-        SQLiteIndex index = SQLiteIndex.newIndex(
-                this.designTableName(), column == null ? null : column.getName());
-        this.indexTable.addItem(SQLiteIndexControl.of(index));
+        SQLiteIndexControl index = new SQLiteIndexControl();
+        index.setTableName(this.designTableName());
+        index.setCreated(true);
+        this.indexTable.addItem(index);
+        this.initIndexTable();
         this.indexTable.selectLast();
         this.markUnsaved();
     }
 
     private void addTrigger() {
-        SQLiteTrigger trigger = SQLiteTrigger.newTrigger(this.designTableName());
-        this.triggerTable.addItem(SQLiteTriggerControl.of(trigger));
+        SQLiteTriggerControl trigger = new SQLiteTriggerControl();
+        trigger.setTableName(this.designTableName());
+        trigger.setCreated(true);
+        this.triggerTable.addItem(trigger);
         this.triggerTable.selectLast();
         this.markUnsaved();
     }
@@ -558,11 +560,6 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
                 this.client.executeSqlSimple(trigger.normalizedDefinition(previousName, targetName));
             }
         }
-    }
-
-    @FXML
-    private void createPreview() {
-        this.updatePreview();
     }
 
     @FXML

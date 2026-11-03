@@ -73,6 +73,8 @@ public final class ShellSqliteRecordUtil {
         menuItems.add(MenuItemHelper.paste_no_graphic(property::vPaste));
         menuItems.add(MenuItemHelper.setToNull_no_graphic(property::vSetToNull));
         menuItems.add(MenuItemHelper.setToEmptyString_no_graphic(property::vSetToEmptyString));
+        menuItems.add(MenuItemHelper.copyAsInsertStatement_no_graphic(property::vCopyAsInsertSql));
+        menuItems.add(MenuItemHelper.copyAsUpdateStatement_no_graphic(property::vCopyAsUpdateSql));
         return menuItems;
     }
 }

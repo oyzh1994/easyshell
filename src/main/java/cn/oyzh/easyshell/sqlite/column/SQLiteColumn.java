@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.sqlite.column;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 import cn.oyzh.fx.db.DBColumn;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -65,6 +66,7 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
         super.putOriginalData("dbName", dbName);
     }
 
+    @Override
     public String getTableName() {
         return this.tableName;
     }
@@ -235,6 +237,7 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
         super.putOriginalData("generatedStorage", generatedStorage);
     }
 
+    @Override
     public boolean isGenerated() {
         return this.generatedExpression != null && !this.generatedExpression.isBlank();
     }
@@ -286,62 +289,8 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
     }
 
     @Override
-    public boolean supportDefaultValue() {
-        return !this.isGenerated();
-    }
-
-    @Override
-    public boolean supportSize() {
-        return ShellSqliteColumnUtil.isTextType(this.getType());
-    }
-
-    @Override
-    public boolean supportDigits() {
-        return ShellSqliteColumnUtil.isRealType(this.getType());
-    }
-
-    @Override
-    public boolean supportInteger() {
-        return ShellSqliteColumnUtil.isIntegerType(this.getType())
-                && !ShellSqliteColumnUtil.isBooleanType(this.getType());
-    }
-
-    @Override
-    public boolean supportAutoIncrement() {
-        return !this.isGenerated() && "INTEGER".equalsIgnoreCase(
-                String.valueOf(this.getType()).trim());
-    }
-
-    @Override
-    public boolean supportTimestamp() {
-        return ShellSqliteColumnUtil.isDateType(this.getType())
-                || ShellSqliteColumnUtil.isDateTimeType(this.getType())
-                || ShellSqliteColumnUtil.isTimeType(this.getType());
-    }
-
-    @Override
-    public boolean supportText() {
-        return ShellSqliteColumnUtil.isTextType(this.getType());
-    }
-
-    @Override
-    public boolean supportString() {
-        return ShellSqliteColumnUtil.isTextType(this.getType());
-    }
-
-    @Override
-    public boolean supportBinary() {
-        return ShellSqliteColumnUtil.isBlobType(this.getType());
-    }
-
-    @Override
-    public boolean supportBoolean() {
-        return ShellSqliteColumnUtil.isBooleanType(this.getType());
-    }
-
-    @Override
-    public boolean supportJson() {
-        return ShellSqliteColumnUtil.isJsonType(this.getType());
+    public DBDialect getDialect() {
+        return DBDialect.SQLITE;
     }
 
     @Override

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.sqlite.trigger;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
-import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaManager;
+import cn.oyzh.easyshell.sqlite.generator.trigger.SQLiteTriggerCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
 import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTrigger;
@@ -22,14 +22,18 @@ import java.util.regex.Pattern;
 public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<SQLiteTrigger> {
 
     private static final Pattern POLICY = Pattern.compile(
-            "(?is)^\\s*CREATE\\s+(?:TEMP(?:ORARY)?\\s+)?TRIGGER\\s+.*?\\b(BEFORE|AFTER|INSTEAD\\s+OF)\\s+"
-                    + "(INSERT|UPDATE|DELETE)\\b");
+            "(?is)^\\s*CREATE\\s+(?:TEMP(?:ORARY)?\\s+)?TRIGGER\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?"
+                    + "(?:(?:\"[^\"]*\"|`[^`]*`|\\[[^]]*\\]|[^.\\s]+)\\s*\\.\\s*)?"
+                    + "(?:\"[^\"]*\"|`[^`]*`|\\[[^]]*\\]|[^.\\s]+)\\s+"
+                    + "(BEFORE|AFTER|INSTEAD\\s+OF)\\s+(INSERT|UPDATE|DELETE)\\b");
 
     private String name;
 
     private String originalName;
 
     private String policy;
+
+    private String originalPolicy;
 
     private String definition;
 
@@ -74,6 +78,14 @@ public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<S
         super.putOriginalData("policy", policy);
     }
 
+    public String originalPolicy() {
+        return this.originalPolicy;
+    }
+
+    public void setOriginalPolicy(String originalPolicy) {
+        this.originalPolicy = originalPolicy;
+    }
+
     public void setPolicy(String timing, String manipulation) {
         this.setPolicy(timing.toUpperCase() + " " + manipulation.toUpperCase());
     }
@@ -114,7 +126,8 @@ public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<S
 
     public boolean isChangedDefinition() {
         return !StringUtil.equals(this.originalDefinition, this.definition)
-                || !StringUtil.equals(this.originalName(), this.name);
+                || !StringUtil.equals(this.originalName(), this.name)
+                || !StringUtil.equals(this.originalPolicy, this.policy);
     }
 
     @Override
@@ -123,12 +136,55 @@ public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<S
     }
 
     public String normalizedDefinition(String previousTable, String targetTable) {
-        String sql = SQLiteSchemaManager.replaceCreateObjectName(this.definition.trim(), this.name);
-        String oldTable = StringUtil.blankToDefault(this.tableName, previousTable);
-        if (StringUtil.isNotBlank(oldTable) && StringUtil.isNotBlank(targetTable)) {
-            sql = SQLiteSchemaManager.replaceTableReference(sql, oldTable, targetTable);
+        String table = StringUtil.blankToDefault(targetTable, this.tableName);
+        if (StringUtil.isBlank(table)) {
+            table = previousTable;
         }
-        return sql;
+        return this.toCreateSql(table);
+    }
+
+    /**
+     * 根据触发器属性生成完整创建SQL。
+     *
+     * @param tableName 表名
+     * @return 创建触发器SQL
+     */
+    public String toCreateSql(String tableName) {
+        return SQLiteTriggerCreateSqlGenerator.generateSqlSingle(this, tableName);
+    }
+
+    /**
+     * 获取用户输入的触发器主体SQL。
+     *
+     * @return 触发器主体SQL
+     */
+    public String triggerBody() {
+        String sql = StringUtil.blankToDefault(this.definition, "").trim();
+        if (sql.regionMatches(true, 0, "CREATE", 0, "CREATE".length())) {
+            return triggerBody(sql);
+        }
+        return SQLiteGeneratorUtil.stripSemicolon(sql);
+    }
+
+    private static String triggerBody(String createSql) {
+        int begin = SQLiteGeneratorUtil.keywordIndex(createSql, "BEGIN", 0);
+        if (begin < 0) {
+            return "";
+        }
+        int end = -1;
+        int cursor = begin + "BEGIN".length();
+        while (true) {
+            int index = SQLiteGeneratorUtil.keywordIndex(createSql, "END", cursor);
+            if (index < 0) {
+                break;
+            }
+            end = index;
+            cursor = index + "END".length();
+        }
+        if (end < 0) {
+            return "";
+        }
+        return SQLiteGeneratorUtil.stripSemicolon(createSql.substring(begin + "BEGIN".length(), end));
     }
 
     @Override
@@ -137,6 +193,7 @@ public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<S
             this.setName(trigger.getName());
             this.setOriginalName(trigger.originalName());
             this.setPolicy(trigger.getPolicy());
+            this.setOriginalPolicy(trigger.originalPolicy());
             this.setDefinition(trigger.getDefinition());
             this.setOriginalDefinition(trigger.getOriginalDefinition());
             this.setTableName(trigger.getTableName());
@@ -148,14 +205,16 @@ public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<S
         SQLiteTrigger trigger = new SQLiteTrigger();
         trigger.setName(object.getName());
         trigger.setOriginalName(object.getName());
-        trigger.setDefinition(object.getSql());
-        trigger.setOriginalDefinition(object.getSql());
         trigger.setTableName(object.getTableName());
         trigger.setCreateDefinition(object.getSql());
+        String body = triggerBody(StringUtil.blankToDefault(object.getSql(), ""));
+        trigger.setDefinition(body);
+        trigger.setOriginalDefinition(body);
         Matcher matcher = POLICY.matcher(StringUtil.blankToDefault(object.getSql(), ""));
         if (matcher.find()) {
             trigger.setPolicy(matcher.group(1).toUpperCase(Locale.ROOT).replaceAll("\\s+", " "),
                     matcher.group(2).toUpperCase(Locale.ROOT));
+            trigger.setOriginalPolicy(trigger.getPolicy());
         }
         return trigger;
     }
@@ -163,9 +222,8 @@ public class SQLiteTrigger extends DBObject implements DBTrigger, ObjectCopier<S
     public static SQLiteTrigger newTrigger(String tableName) {
         SQLiteTrigger trigger = new SQLiteTrigger();
         trigger.setName(DBUtil.genTriggerName());
-        trigger.setDefinition("CREATE TRIGGER " + SQLiteGeneratorUtil.quote(trigger.getName())
-                + " AFTER INSERT ON " + SQLiteGeneratorUtil.quote(tableName)
-                + " BEGIN\n    SELECT 1;\nEND;");
+        trigger.setPolicy("AFTER INSERT");
+        trigger.setDefinition("");
         trigger.setTableName(tableName);
         trigger.setCreated(true);
         return trigger;

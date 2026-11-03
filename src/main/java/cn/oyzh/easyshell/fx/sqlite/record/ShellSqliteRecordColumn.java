@@ -68,4 +68,10 @@ public class ShellSqliteRecordColumn extends FXTableColumn<SQLiteRecord, Object>
         });
         return vBox;
     }
+
+    @Override
+    public void initNode() {
+        super.showGraphicOnlyLater();
+        super.initNode();
+    }
 }

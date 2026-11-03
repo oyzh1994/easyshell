@@ -50,7 +50,7 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </WarningSVGGlyph>
-        <FilterSVGGlyph onMousePrimaryClicked="#filter">
+        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>

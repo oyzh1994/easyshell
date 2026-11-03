@@ -19,70 +19,81 @@ public final class ShellSqliteColumnUtil {
     }
 
     public static void init() {
-        DBColumnField integer = field("INTEGER", "INT", true, false, false);
+        DBColumnField integer = new DBColumnField("INTEGER");
+        integer.alias = "INT";
+        integer.supportSize = true;
         integer.supportInteger = true;
-        integer.supportAutoIncrement = true;
         integer.supportDefaultValue = true;
+        integer.supportAutoIncrement = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, integer);
 
-        DBColumnField real = field("REAL", "DOUBLE", false, false, false);
+        DBColumnField real = new DBColumnField("REAL");
+        real.alias = "DOUBLE";
         real.supportDigits = true;
         real.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, real);
 
-        DBColumnField numeric = field("NUMERIC", "DECIMAL", false, false, false);
+        DBColumnField numeric = new DBColumnField("NUMERIC");
+        numeric.alias = "DECIMAL";
         numeric.supportDigits = true;
         numeric.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, numeric);
 
-        DBColumnField text = field("TEXT", "VARCHAR", true, true, false);
-        text.supportString = true;
+        DBColumnField text = new DBColumnField("TEXT");
+        text.alias = "VARCHAR";
+        text.supportSize = true;
         text.supportText = true;
+        text.supportString = true;
         text.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, text);
 
-        DBColumnField blob = field("BLOB", "BINARY", false, false, true);
+        DBColumnField blob = new DBColumnField("BLOB");
+        blob.alias = "BINARY";
         blob.supportBinary = true;
         blob.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, blob);
 
-        DBColumnField bool = field("BOOLEAN", "BOOL", false, false, false);
+        DBColumnField bool = new DBColumnField("BOOLEAN");
+        bool.alias = "BOOL";
         bool.supportBoolean = true;
         bool.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, bool);
 
-        DBColumnField date = field("DATE", null, false, false, false);
+        DBColumnField date = new DBColumnField("DATE");
         date.supportTimestamp = true;
         date.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, date);
 
-        DBColumnField time = field("TIME", null, false, false, false);
+        DBColumnField time = new DBColumnField("TIME");
         time.supportTimestamp = true;
         time.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, time);
 
-        DBColumnField dateTime = field("DATETIME", "TIMESTAMP", false, false, false);
+        DBColumnField dateTime = new DBColumnField("DATETIME");
+        dateTime.alias = "TIMESTAMP";
         dateTime.supportTimestamp = true;
         dateTime.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, dateTime);
 
-        DBColumnField json = field("JSON", "JSONB", false, true, false);
+        DBColumnField json =new DBColumnField("JSON");
+        json.alias = "JSONB";
         json.supportJson = true;
         json.supportText = true;
+        json.supportString = true;
         json.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, json);
     }
 
-    private static DBColumnField field(String name, String alias, boolean supportSize,
-                                       boolean supportString, boolean supportBinary) {
-        DBColumnField field = new DBColumnField(name);
-        field.alias = alias;
-        field.supportSize = supportSize;
-        field.supportString = supportString;
-        field.supportBinary = supportBinary;
-        field.suggestSize = supportSize ? 255 : null;
-        return field;
-    }
+//    private static DBColumnField field(String name, String alias, boolean supportSize,
+//                                       boolean supportString, boolean supportBinary) {
+//        DBColumnField field = new DBColumnField(name);
+//        field.alias = alias;
+//        field.supportSize = supportSize;
+//        field.supportString = supportString;
+//        field.supportBinary = supportBinary;
+//        field.suggestSize = supportSize ? 255 : null;
+//        return field;
+//    }
 
     public static Object defaultValue(String type) {
         if (isBooleanType(type)) {

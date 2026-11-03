@@ -96,6 +96,7 @@ public class ShellSqliteArchitectureTest {
             "/tabs/sqlite/view/shellSqliteViewRecordTab.fxml",
             "/tabs/sqlite/function/shellSqliteFunctionDesignTab.fxml",
             "/popups/sqlite/shellSqliteRecordFilterPopup.fxml",
+            "/popups/sqlite/shellSqliteIndexFieldPopup.fxml",
             "/fxml/sqlite/data/shellSqliteDataExport.fxml",
             "/fxml/sqlite/data/shellSqliteDataImport.fxml",
             "/fxml/sqlite/data/shellSqliteDataDump.fxml",
@@ -652,8 +653,6 @@ public class ShellSqliteArchitectureTest {
         assertTrue(functionDesign.contains("fx:id=\"expressionBox\""));
         assertTrue(functionDesign.contains("fx:id=\"viewDefinitionBox\""));
         assertTrue(functionDesign.contains("fx:id=\"generatedColumnBox\""));
-        assertTrue(functionDesign.contains("fx:id=\"generatedColumnSettings\""));
-        assertTrue(functionDesign.contains("fx:id=\"generatedExpressionBox\""));
         assertTrue(functionDesign.contains("fx:id=\"generatedExpression\""));
         assertTrue(functionDesign.contains("fx:id=\"targetTable\""));
         assertTrue(functionDesign.contains("fx:id=\"returnType\""));

@@ -28,9 +28,6 @@
         <SaveSVGGlyph tipText="%shell.sqlite.save" onMousePrimaryClicked="#save">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </SaveSVGGlyph>
-        <RunSVGGlyph tipText="%shell.sqlite.preview" onMousePrimaryClicked="#createPreview">
-            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
-        </RunSVGGlyph>
         <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </AddSVGGlyph>
@@ -69,17 +66,11 @@
             <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexWidth="100%" flexHeight="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="25%" valueName="nameControl" text="%base.name"/>
-                    <FXTableColumn flexWidth="75% - 30" valueName="definitionControl" text="%base.definition"/>
-                </columns>
-            </DBStatusTableView>
-        </FixedTab>
-        <FixedTab text="%base.triggers" fx:id="triggerTab">
-            <DBStatusTableView fixedCellSize="30" fx:id="triggerTable" flexWidth="100%" flexHeight="100%">
-                <columns>
-                    <DBStatusColumn/>
-                    <FXTableColumn flexWidth="25%" valueName="nameControl" text="%base.name"/>
-                    <FXTableColumn flexWidth="75% - 30" valueName="definitionControl" text="%base.definition"/>
+                    <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="30%" valueName="columnControl" text="%base.column"/>
+                    <FXTableColumn realWidth="125" valueName="typeControl" text="%base.indexType"/>
+                    <FXTableColumn realWidth="125" valueName="methodControl" text="%base.indexMethod"/>
+                    <FXTableColumn flexWidth="50% - 290" valueName="whereControl" text="%base.condition"/>
                 </columns>
             </DBStatusTableView>
         </FixedTab>
@@ -93,6 +84,16 @@
                     <FXTableColumn flexWidth="17%" valueName="referencedColumnControl" text="%base.referencedFields"/>
                     <FXTableColumn realWidth="130" valueName="deletePolicyControl" text="%base.onDelete"/>
                     <FXTableColumn realWidth="130" valueName="updatePolicyControl" text="%base.onUpdate"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.triggers" fx:id="triggerTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="triggerTable" flexWidth="100%" flexHeight="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="45% - 290" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn realWidth="250" valueName="policyControl" text="%base.policy"/>
+                    <FXTableColumn flexWidth="55%" valueName="definitionControl" text="%base.definition"/>
                 </columns>
             </DBStatusTableView>
         </FixedTab>

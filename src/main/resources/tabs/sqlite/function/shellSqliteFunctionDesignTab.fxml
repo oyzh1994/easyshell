@@ -25,11 +25,6 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <RunSVGGlyph tipText="%shell.sqlite.preview" onMousePrimaryClicked="#createPreview">
-            <HBox.margin>
-                <Insets left="10" top="10"/>
-            </HBox.margin>
-        </RunSVGGlyph>
     </FXHBox>
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 36">
         <FixedTab text="%base.definition" fx:id="definitionTab">

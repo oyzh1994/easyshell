@@ -273,13 +273,6 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
     @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
-        FXMenuItem designTable = MenuItemHelper.designTable(() -> ShellSqliteEventUtil.designTable(this.client(), null));
-        FXMenuItem designView = MenuItemHelper.designView(() -> ShellSqliteEventUtil.designView(this.client(), null));
-        FXMenuItem designFunction = MenuItemHelper.designFunction(() -> ShellSqliteEventUtil.designFunction(this.client(), null));
-        items.add(designTable);
-        items.add(designView);
-        items.add(designFunction);
-        items.add(MenuItemHelper.separator());
         FXMenuItem importData = MenuItemHelper.importData(() -> ShellSqliteViewFactory.importData(this.client()));
         FXMenuItem exportData = MenuItemHelper.exportData(() -> ShellSqliteViewFactory.exportData(this.client(), null));
         FXMenuItem dumpData = MenuItemHelper.dumpData(() -> ShellSqliteViewFactory.dumpData(this.client(), null));

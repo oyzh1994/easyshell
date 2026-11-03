@@ -1,9 +1,13 @@
 package cn.oyzh.easyshell.util.sqlite;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
 import cn.oyzh.easyshell.sqlite.generator.record.SQLiteRecordSqlGenerator;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.math.BigDecimal;
@@ -20,6 +24,74 @@ import java.util.Map;
 public final class ShellSqliteDataUtil {
 
     private ShellSqliteDataUtil() {
+    }
+
+    /**
+     * 转换为插入sql
+     *
+     * @param columns       字段列表
+     * @param record        记录
+     * @param includeFields 包含字段
+     * @return 插入sql
+     */
+    public static String toInsertSql(SQLiteColumns columns, SQLiteRecord record, boolean includeFields) {
+        List<String> sqlList = toInsertSql(columns, List.of(record), includeFields);
+        return CollectionUtil.getFirst(sqlList);
+    }
+
+    /**
+     * 转换为插入sql
+     *
+     * @param columns 字段列表
+     * @param records 记录
+     * @return 插入sql
+     */
+    public static List<String> toInsertSql(SQLiteColumns columns, List<SQLiteRecord> records) {
+        return toInsertSql(columns, records, false);
+    }
+
+    /**
+     * 转换为插入sql
+     *
+     * @param columns       字段列表
+     * @param records       记录
+     * @param includeFields 包含字段
+     * @return 插入sql
+     */
+    public static List<String> toInsertSql(SQLiteColumns columns, List<SQLiteRecord> records, boolean includeFields) {
+        List<String> sqlList = new ArrayList<>();
+        for (SQLiteRecord record : records) {
+            Map<String, Object> values = record.getValues();
+            List<String> insertColumns = insertColumns(columns, values);
+            if (insertColumns.isEmpty()) {
+                sqlList.add("INSERT INTO " + SQLiteGeneratorUtil.quote(columns.tableName()) + " DEFAULT VALUES;");
+            } else if (includeFields) {
+                sqlList.add(toInsertSql(columns.tableName(), columns, List.of(values)).getFirst());
+            } else {
+                Map<String, Object> normalized = normalize(columns, values);
+                List<String> data = insertColumns.stream()
+                        .map(column -> SQLiteGeneratorUtil.literal(normalized.get(column)))
+                        .toList();
+                sqlList.add("INSERT INTO " + SQLiteGeneratorUtil.quote(columns.tableName())
+                        + " VALUES (" + String.join(", ", data) + ");");
+            }
+        }
+        return sqlList;
+    }
+
+    /**
+     * 转换为修改sql
+     *
+     * @param columns 字段列表
+     * @param record  记录
+     * @return 修改sql
+     */
+    public static String toUpdateSql(SQLiteColumns columns, SQLiteRecord record) {
+        List<String> keyColumns = columns.primaryKeys().stream()
+                .map(SQLiteColumn::getName)
+                .toList();
+        return toUpdateSql(columns.tableName(), columns, record.getValues(),
+                record.getOriginalValues(), keyColumns);
     }
 
     public static List<String> toInsertSql(String tableName, List<SQLiteColumn> columns,
@@ -139,7 +211,7 @@ public final class ShellSqliteDataUtil {
                 values.put(column.getName(), "");
                 continue;
             }
-            value = DBUtil.unwrapData(value, cn.oyzh.fx.db.DBDialect.SQLITE);
+            value = DBUtil.unwrapData(value, DBDialect.SQLITE);
             if (value == null) {
                 values.put(column.getName(), null);
                 continue;

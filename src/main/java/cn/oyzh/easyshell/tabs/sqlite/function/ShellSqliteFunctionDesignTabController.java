@@ -186,12 +186,6 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
         return result;
     }
 
-    @FXML
-    private void createPreview() {
-        this.initPreview();
-        this.previewTab.selectTab();
-    }
-
     private void initPreview() {
         try {
             String name = StringUtil.blankToDefault(this.functionName, "Unnamed_Function");

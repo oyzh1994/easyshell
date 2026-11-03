@@ -132,7 +132,7 @@ public class SQLiteIndex extends DBObject implements ObjectCopier<SQLiteIndex> {
         index.setName(DBUtil.genIndexName());
         index.setDefinition("CREATE INDEX " + SQLiteGeneratorUtil.quote(index.getName())
                 + " ON " + SQLiteGeneratorUtil.quote(tableName) + " ("
-                + SQLiteGeneratorUtil.quote(StringUtil.blankToDefault(columnName, "column_name")) + ");");
+                + (StringUtil.isBlank(columnName) ? "" : SQLiteGeneratorUtil.quote(columnName)) + ");");
         index.setTableName(tableName);
         index.setCreated(true);
         return index;

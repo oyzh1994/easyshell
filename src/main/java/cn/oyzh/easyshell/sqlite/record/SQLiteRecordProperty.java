@@ -2,12 +2,14 @@ package cn.oyzh.easyshell.sqlite.record;
 
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteNodeUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteRecordUtil;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
 
 /**
  * SQLite记录属性
@@ -92,6 +94,24 @@ public class SQLiteRecordProperty extends DBRecordProperty {
             super.set(ShellSqliteNodeUtil.getNodeVal(this.node));
         }
         this.original = super.get();
+    }
+
+    /**
+     * 复制为insert语句
+     */
+    public void vCopyAsInsertSql() {
+        String sql = ShellSqliteDataUtil.toInsertSql(
+                this.record.getColumns(), this.record, true);
+        ClipboardUtil.copy(sql);
+    }
+
+    /**
+     * 复制为update语句
+     */
+    public void vCopyAsUpdateSql() {
+        String sql = ShellSqliteDataUtil.toUpdateSql(
+                this.record.getColumns(), this.record);
+        ClipboardUtil.copy(sql);
     }
 
     @Override
