@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveDownSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.MoveUpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableDesignTabController"
+        flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="36" flexWidth="100%">
+        <SaveSVGGlyph tipText="%shell.sqlite.save" onMousePrimaryClicked="#save">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </SaveSVGGlyph>
+        <RunSVGGlyph tipText="%shell.sqlite.preview" onMousePrimaryClicked="#createPreview">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </RunSVGGlyph>
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#addItem">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </AddSVGGlyph>
+        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#deleteItem">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </DeleteSVGGlyph>
+        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#moveUp">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </MoveUpSVGGlyph>
+        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#moveDown">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </MoveDownSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh">
+            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+        </RefreshSVGGlyph>
+    </FXHBox>
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 36">
+        <FixedTab text="%base.fields" fx:id="columnTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexWidth="100%" flexHeight="100% - 210">
+                    <columns>
+                        <DBStatusColumn/>
+                        <FXTableColumn flexWidth="18%" valueName="nameControl" text="%base.name"/>
+                        <FXTableColumn flexWidth="15%" valueName="typeControl" text="%base.type"/>
+                        <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
+                        <FXTableColumn realWidth="65" valueName="primaryKeyControl" text="%base.key"/>
+                        <FXTableColumn realWidth="75" valueName="notNullControl" text="%shell.sqlite.notNull"/>
+                        <FXTableColumn realWidth="65" valueName="uniqueControl" text="%shell.sqlite.unique"/>
+                        <FXTableColumn flexWidth="42% - 325" valueName="defaultValueControl" text="%base.defaultValue"/>
+                    </columns>
+                </DBStatusTableView>
+                <fx:include fx:id="tableColumnExtra" source="shellSqliteTableColumnExtra.fxml"/>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.indexes" fx:id="indexTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexWidth="100%" flexHeight="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="25%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="75% - 30" valueName="definitionControl" text="%base.definition"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.triggers" fx:id="triggerTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="triggerTable" flexWidth="100%" flexHeight="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="25%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="75% - 30" valueName="definitionControl" text="%base.definition"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.foreignKeys" fx:id="foreignKeyTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexWidth="100%" flexHeight="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="18%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="15%" valueName="columnControl" text="%base.fields"/>
+                    <FXTableColumn flexWidth="18%" valueName="referencedTableControl" text="%base.referencedTable"/>
+                    <FXTableColumn flexWidth="17%" valueName="referencedColumnControl" text="%base.referencedFields"/>
+                    <FXTableColumn realWidth="130" valueName="deletePolicyControl" text="%base.onDelete"/>
+                    <FXTableColumn realWidth="130" valueName="updatePolicyControl" text="%base.onUpdate"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%base.checks" fx:id="checkTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="checkTable" flexWidth="100%" flexHeight="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn flexWidth="30%" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="70% - 30" valueName="clauseControl" text="%base.clause"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%shell.sqlite.tableConstraints" fx:id="constraintTab">
+            <FXTextArea fx:id="constraints" flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+        <FixedTab text="%base.options" fx:id="optionsTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.options">
+                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="withoutRowid" text="%shell.sqlite.withoutRowid">
+                        <HBox.margin><Insets left="30" top="5"/></HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox fx:id="strict" text="%shell.sqlite.strict">
+                        <HBox.margin><Insets left="20" top="5"/></HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%shell.sqlite.preview" fx:id="previewTab">
+            <ShellDataEditor fx:id="preview" lineNumbersEnabled="false" formatType="SQL" editable="false"
+                             flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+    </FXTabPane>
+</FXVBox>

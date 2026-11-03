@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.sqlite.SQLiteCollationComboBox?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableColumnExtraController"
+        realHeight="200">
+    <FXHBox flexWidth="100%" realHeight="35" fx:id="autoIncrementBox" managed="false" visible="false">
+        <FXCheckBox fx:id="autoIncrement" prefHeight="25" text="%base.autoIncrement">
+            <HBox.margin><Insets left="10" top="5"/></HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="35" fx:id="collateBox">
+        <AccentLabel realHeight="25" realWidth="110" text="%base.collation">
+            <HBox.margin><Insets left="10" top="5"/></HBox.margin>
+        </AccentLabel>
+        <SQLiteCollationComboBox fx:id="collate" realHeight="25" flexWidth="100% - 140">
+            <HBox.margin><Insets left="5" top="5"/></HBox.margin>
+        </SQLiteCollationComboBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="35" fx:id="checkBox">
+        <AccentLabel realHeight="25" realWidth="110" text="%base.check">
+            <HBox.margin><Insets left="10" top="5"/></HBox.margin>
+        </AccentLabel>
+        <ClearableTextField fx:id="check" realHeight="25" flexWidth="100% - 140" styleClass="popover-item">
+            <HBox.margin><Insets left="5" top="5"/></HBox.margin>
+        </ClearableTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="35" fx:id="generatedExpressionBox">
+        <AccentLabel realHeight="25" realWidth="110" text="%shell.sqlite.expression">
+            <HBox.margin><Insets left="10" top="5"/></HBox.margin>
+        </AccentLabel>
+        <ClearableTextField fx:id="generatedExpression" realHeight="25" flexWidth="100% - 140"
+                            styleClass="popover-item">
+            <HBox.margin><Insets left="5" top="5"/></HBox.margin>
+        </ClearableTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="35" fx:id="generatedStorageBox">
+        <AccentLabel realHeight="25" realWidth="110" text="%shell.sqlite.generatedStorage">
+            <HBox.margin><Insets left="10" top="5"/></HBox.margin>
+        </AccentLabel>
+        <FXComboBox fx:id="generatedStorage" realHeight="25" flexWidth="100% - 140">
+            <HBox.margin><Insets left="5" top="5"/></HBox.margin>
+        </FXComboBox>
+    </FXHBox>
+</FXVBox>

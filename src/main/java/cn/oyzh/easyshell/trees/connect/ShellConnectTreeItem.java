@@ -326,6 +326,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否SQLite类型
+     *
+     * @return 结果
+     */
+    public boolean isSqliteType() {
+        return value.isSqliteType();
+    }
+
+    /**
      * 是否MariaDB类型
      *
      * @return 结果
@@ -424,6 +433,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateWebdavConnect(this.value);
         } else if (this.isMysqlType()) {
             ShellViewFactory.updateMysqlConnect(this.value);
+        } else if (this.isSqliteType()) {
+            ShellViewFactory.updateSqliteConnect(this.value);
         } else if (this.isMariadbType()) {
             ShellViewFactory.updateMariadbConnect(this.value);
         } else if (this.isDamengType()) {

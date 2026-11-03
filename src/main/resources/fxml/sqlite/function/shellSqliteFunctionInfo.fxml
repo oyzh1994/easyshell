@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.sqlite.function.ShellSqliteFunctionInfoController" realWidth="750"
+        realHeight="600">
+    <FXHeaderBar/>
+    <FXTabPane flexWidth="100%" flexHeight="100% - 90">
+        <FixedTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="name" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%shell.sqlite.functionKind">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="kind" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <FXVBox managed="false" visible="false" fx:id="argumentCountBox" managedBindVisible="true">
+                    <InfoLabel text="%shell.sqlite.argumentCount">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ReadOnlyTextField fx:id="argumentCount" realHeight="30" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ReadOnlyTextField>
+                </FXVBox>
+                <FXVBox managed="false" visible="false" fx:id="returnTypeBox" managedBindVisible="true">
+                    <InfoLabel text="%base.returnType">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ReadOnlyTextField fx:id="returnType" realHeight="30" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ReadOnlyTextField>
+                </FXVBox>
+                <FXVBox managed="false" visible="false" fx:id="targetTableBox" managedBindVisible="true">
+                    <InfoLabel text="%shell.sqlite.targetTable">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ReadOnlyTextField fx:id="targetTable" realHeight="30" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ReadOnlyTextField>
+                </FXVBox>
+                <FXVBox managed="false" visible="false" fx:id="attributesBox" managedBindVisible="true">
+                    <InfoLabel text="%base.property">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ReadOnlyTextField fx:id="attributes" realHeight="30" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ReadOnlyTextField>
+                </FXVBox>
+                <FXVBox managed="false" visible="false" fx:id="definitionBox" managedBindVisible="true">
+                    <InfoLabel text="%base.definition">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition"
+                                     realHeight="180" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellDataEditor>
+                </FXVBox>
+            </FXVBox>
+        </FixedTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%">
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="30" top="15"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>

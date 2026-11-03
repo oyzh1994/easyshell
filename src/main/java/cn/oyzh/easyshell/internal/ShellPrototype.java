@@ -94,6 +94,11 @@ public class ShellPrototype {
     public static final String MARIADB = "Mariadb";
 
     /**
+     * SQLite 连接类型
+     */
+    public static final String SQLITE = "Sqlite";
+
+    /**
      * 达梦连接类型
      */
     public static final String DAMENG = "Dameng";

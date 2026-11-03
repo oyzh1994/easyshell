@@ -1129,6 +1129,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否SQLite类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isSqliteType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.SQLITE);
+    }
+
+    /**
      * 是否达梦类型
      *
      * @return 结果

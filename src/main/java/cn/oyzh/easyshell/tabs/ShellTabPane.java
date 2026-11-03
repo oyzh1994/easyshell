@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.tabs.message.ShellMessageTab;
 import cn.oyzh.easyshell.tabs.mongo.ShellMongoTab;
 import cn.oyzh.easyshell.tabs.mosh.ShellMoshTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
+import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteTab;
 import cn.oyzh.easyshell.tabs.rdp.ShellRdpTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
@@ -264,6 +265,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = ShellWebdavTab.of(connect);
             } else if (connect.isMysqlType()) {
                 tab = ShellMysqlTab.of(connect);
+            } else if (connect.isSqliteType()) {
+                tab = ShellSqliteTab.of(connect);
             } else if (connect.isMariadbType()) {
                 tab = ShellMariadbTab.of(connect);
             } else if (connect.isMongoType()) {

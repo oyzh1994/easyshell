@@ -22,6 +22,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -34,9 +35,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
-        realHeight="550">
+        realHeight="600">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
@@ -252,6 +254,14 @@
         <FXRadioButton toggleGroup="$type" text="MongoDB" userData="mongodb">
             <graphic>
                 <MongodbSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="SQLite" userData="sqlite">
+            <graphic>
+                <SqliteSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.button.CloseButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.sqlite.table.ShellSqliteTableInfoController" realWidth="750"
+        realHeight="730">
+    <FXHeaderBar/>
+    <FXTabPane flexWidth="100%" flexHeight="100% - 90">
+        <FixedTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="name" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%base.type">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="type" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%shell.sqlite.rowCount">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="rowCount" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%shell.sqlite.withoutRowid">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="withoutRowid" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%shell.sqlite.strict">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextField fx:id="strict" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextField>
+                <InfoLabel text="%base.comment">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextArea fx:id="comment" tipText="%base.comment" realHeight="100"
+                                  flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextArea>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.definition">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
+                                 flexHeight="100% - 20" flexWidth="100% - 60">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDataEditor>
+            </FXVBox>
+        </FixedTab>
+    </FXTabPane>
+    <FXHBox flexWidth="100%">
+        <CloseButton>
+            <HBox.margin>
+                <Insets left="30" top="15"/>
+            </HBox.margin>
+        </CloseButton>
+    </FXHBox>
+</FXVBox>

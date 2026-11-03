@@ -85,6 +85,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addMysqlConnect(group);
             } else if (ShellPrototype.MARIADB.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addMariadbConnect(group);
+            } else if (ShellPrototype.SQLITE.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addSqliteConnect(group);
             } else if (ShellPrototype.DAMENG.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addDamengConnect(group);
             } else if (ShellPrototype.MONGO.equalsIgnoreCase(userData)) {

@@ -4,6 +4,9 @@ import cn.oyzh.easyshell.query.dameng.DamengQueryResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResult;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbQueryResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResult;
+import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBRecord;
 import cn.oyzh.fx.db.query.DBQueryResult;
@@ -77,7 +80,40 @@ public final class LLMDBToolsUtil {
                 && !mongoResult.getRecords().isEmpty()) {
             return formatRows(mongoResult.columnList(), mongoResult.getRecords(), result);
         }
+        if (result instanceof SQLiteExecuteResult sqliteResult
+                && !sqliteResult.getRecords().isEmpty()) {
+            return formatSqliteRows(sqliteResult);
+        }
         return "OK";
+    }
+
+    private static String formatSqliteRows(SQLiteExecuteResult result) {
+        List<SQLiteColumn> columns = result.getColumns();
+        List<DBRecordData> records = result.getRecords();
+        StringBuilder output = new StringBuilder();
+        output.append(columns.stream().map(SQLiteColumn::getName)
+                .reduce((left, right) -> left + " | " + right).orElse(""));
+        output.append('\n');
+        int shownRows = Math.min(records.size(), MAX_ROWS);
+        for (int rowIndex = 0; rowIndex < shownRows; rowIndex++) {
+            DBRecordData record = records.get(rowIndex);
+            for (int columnIndex = 0; columnIndex < columns.size(); columnIndex++) {
+                if (columnIndex > 0) {
+                    output.append(" | ");
+                }
+                output.append(formatValue(record.get(columns.get(columnIndex))));
+            }
+            output.append('\n');
+        }
+        if (records.size() > shownRows) {
+            output.append("... ").append(records.size() - shownRows).append(" more rows omitted");
+        } else {
+            output.append(records.size()).append(" row(s)");
+        }
+        if (result.getUsedMs() > 0) {
+            output.append(" (").append(result.getUsedMs()).append(" ms)");
+        }
+        return output.toString();
     }
 
     private static String formatRows(

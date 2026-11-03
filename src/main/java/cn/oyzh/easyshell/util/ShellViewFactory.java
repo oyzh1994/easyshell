@@ -35,6 +35,8 @@ import cn.oyzh.easyshell.controller.connect.smb.ShellAddSMBConnectController;
 import cn.oyzh.easyshell.controller.connect.smb.ShellUpdateSMBConnectController;
 import cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ssh.ShellUpdateSSHConnectController;
+import cn.oyzh.easyshell.controller.connect.sqlite.ShellAddSqliteConnectController;
+import cn.oyzh.easyshell.controller.connect.sqlite.ShellUpdateSqliteConnectController;
 import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
@@ -394,6 +396,22 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增SQLite连接
+     *
+     * @param group 分组
+     */
+    public static void addSqliteConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddSqliteConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
      * 新增MariaDB连接
      *
      * @param group 分组
@@ -689,6 +707,22 @@ public class ShellViewFactory {
     public static void updateMysqlConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateMysqlConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 修改SQLite连接
+     *
+     * @param connect 连接
+     */
+    public static void updateSqliteConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateSqliteConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

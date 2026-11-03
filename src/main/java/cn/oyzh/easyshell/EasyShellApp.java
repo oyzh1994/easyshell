@@ -12,6 +12,7 @@ import cn.oyzh.common.system.ProcessInstanceLock;
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
+import cn.oyzh.easyshell.sqlite.condition.SQLiteConditionUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.exception.ShellExceptionParser;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -31,6 +32,8 @@ import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalManager;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane;
 import cn.oyzh.easyshell.terminal.redis2.RedisTerminalManager;
 import cn.oyzh.easyshell.terminal.redis2.RedisTerminalPane;
+import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalManager;
+import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalPane;
 import cn.oyzh.easyshell.terminal.zk2.ZKTerminalManager;
 import cn.oyzh.easyshell.terminal.zk2.ZKTerminalPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -38,6 +41,7 @@ import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventFormatter;
@@ -235,14 +239,17 @@ public class EasyShellApp extends FXApplication implements EventListener {
             TerminalManager.setLoadHandler(MariadbTerminalPane.TERMINAL_NAME, MariadbTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MongoTerminalPane.TERMINAL_NAME, MongoTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(DamengTerminalPane.TERMINAL_NAME, DamengTerminalManager::registerHandlers);
+            TerminalManager.setLoadHandler(ShellSqliteTerminalPane.TERMINAL_NAME, ShellSqliteTerminalManager::registerHandlers);
             DBConditionManager.registerInitializer(DBDialect.MYSQL, MysqlConditionUtil::init);
             DBConditionManager.registerInitializer(DBDialect.MARIADB, MariadbConditionUtil::init);
             DBConditionManager.registerInitializer(DBDialect.MONGODB, MongoConditionUtil::init);
             DBConditionManager.registerInitializer(DBDialect.DAMENG, DamengConditionUtil::init);
+            DBConditionManager.registerInitializer(DBDialect.SQLITE, SQLiteConditionUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MYSQL, ShellMysqlColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MARIADB, ShellMariadbColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, ShellDamengColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.SQLITE, ShellSqliteColumnUtil::init);
             // 正式环境
             if (SystemUtil.isProd()) {
                 // 开启定期gc

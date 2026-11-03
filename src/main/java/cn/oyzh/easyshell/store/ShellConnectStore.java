@@ -138,6 +138,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载SQLite类型
+     *
+     * @return SQLite类型连接
+     */
+    public List<ShellConnect> loadSqliteType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isSqliteType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载mongo类型
      *
      * @return mongo类型连接
@@ -387,4 +398,3 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
 }
-
