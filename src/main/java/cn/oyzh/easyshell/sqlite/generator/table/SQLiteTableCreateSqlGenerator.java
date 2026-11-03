@@ -14,14 +14,19 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * SQLite 创建表 SQL 生成器。
+ * SQLite创建表SQL生成器
  *
  * @author oyzh
  * @since 2026-11-02
  */
 public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
 
-    public List<String> generate(SQLiteCreateTableParam param) {
+    /**
+     * 生成SQL片段
+     *
+     * @param param 创建表参数
+     */
+    private void _generate(SQLiteCreateTableParam param) {
         this.sqlList = new ArrayList<>();
         this.sqlBuilder = new StringBuilder(createTable(param.tableName(), param.getColumns(),
                 param.getTable().getConstraints(), param.getTable().isWithoutRowid(),
@@ -40,22 +45,60 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
                 }
             }
         }
-        return super.buildSql();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 创建表参数
+     * @return SQL列表
+     */
+    public List<String> generate(SQLiteCreateTableParam param) {
+        this._generate(param);
+        return this.buildSql();
+    }
+
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建表参数
+     * @return SQL语句
+     */
     public String generateSingle(SQLiteCreateTableParam param) {
-        this.generate(param);
-        return super.buildSqlSingle();
+        this._generate(param);
+        return this.buildSqlSingle();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 创建表参数
+     * @return SQL列表
+     */
     public static List<String> generateSql(SQLiteCreateTableParam param) {
         return new SQLiteTableCreateSqlGenerator().generate(param);
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 创建表参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(SQLiteCreateTableParam param) {
         return new SQLiteTableCreateSqlGenerator().generateSingle(param);
     }
 
+    /**
+     * 创建表SQL
+     *
+     * @param name         表名称
+     * @param columns      字段集合
+     * @param constraints  表约束
+     * @param withoutRowid 是否为WITHOUT ROWID表
+     * @param strict       是否为STRICT表
+     * @return SQL语句
+     */
     public static String createTable(String name, Collection<SQLiteColumn> columns,
                                      String constraints, boolean withoutRowid, boolean strict) {
         SQLiteGeneratorUtil.requireName(name);
@@ -110,10 +153,23 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
         return sql.append(";").toString();
     }
 
+    /**
+     * 获取字段定义
+     *
+     * @param column 字段对象
+     * @return 字段定义
+     */
     public static String columnDefinition(SQLiteColumn column) {
         return columnDefinition(column, true);
     }
 
+    /**
+     * 获取字段定义
+     *
+     * @param column           字段对象
+     * @param includePrimaryKey 是否包含主键定义
+     * @return 字段定义
+     */
     public static String columnDefinition(SQLiteColumn column, boolean includePrimaryKey) {
         StringBuilder sql = new StringBuilder(SQLiteGeneratorUtil.quote(column.getName()));
         if (StringUtil.isNotBlank(column.getType())) {

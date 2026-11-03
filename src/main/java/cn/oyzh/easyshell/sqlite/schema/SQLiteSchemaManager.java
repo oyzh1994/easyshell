@@ -279,6 +279,7 @@ public class SQLiteSchemaManager {
     }
 
     public void saveFunction(String originalName, SQLiteFunction function) {
+        SQLiteFunction.validate(function);
         String kind = StringUtil.blankToDefault(function.getKind(), SQLiteFunction.KIND_SQL_EXPRESSION);
         if (SQLiteFunction.KIND_TABLE_VIEW.equals(kind)) {
             this.saveView(originalName, toView(function));

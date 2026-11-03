@@ -1562,6 +1562,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @param param 参数
      */
     public void createFunction(SQLiteCreateFunctionParam param) {
+        SQLiteFunction.validate(param.getFunction());
         this.executeSqlSimple(SQLiteFunctionCreateSqlGenerator.generateSqlSingle(param));
     }
 
@@ -1571,6 +1572,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @param param 参数
      */
     public void alertFunction(SQLiteAlertFunctionParam param) {
+        SQLiteFunction.validate(param.getFunction());
         this.executeSqlSimple(SQLiteFunctionAlertSqlGenerator.generateSqlSingle(param));
     }
 

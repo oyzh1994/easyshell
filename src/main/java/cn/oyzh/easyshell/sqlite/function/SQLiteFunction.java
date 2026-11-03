@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sqlite.function;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 
 /**
@@ -138,6 +139,47 @@ public class SQLiteFunction {
 
     public void setDefinition(String definition) {
         this.definition = definition;
+    }
+
+    /**
+     * 校验保存数据
+     *
+     * @param function 函数对象
+     */
+    public static void validate(SQLiteFunction function) {
+        if (function == null || StringUtil.isBlank(function.getName())) {
+            throw new IllegalArgumentException("SQLite function name is empty");
+        }
+        String kind = function.getKind();
+        if (SQLiteFunction.KIND_GENERATED_COLUMN.equals(kind)) {
+            if (StringUtil.isBlank(function.getTargetTable())) {
+                throw new IllegalArgumentException("Generated column requires a target table");
+            }
+            if (StringUtil.isBlank(function.getReturnType())) {
+                throw new IllegalArgumentException("Generated column requires a return type");
+            }
+            if (StringUtil.isBlank(function.getExpression())) {
+                throw new IllegalArgumentException("Generated column expression is empty");
+            }
+            String storage = function.getGeneratedStorage();
+            if (!"VIRTUAL".equalsIgnoreCase(storage) && !"STORED".equalsIgnoreCase(storage)) {
+                throw new IllegalArgumentException("Generated column storage must be VIRTUAL or STORED");
+            }
+            return;
+        }
+        if (SQLiteFunction.KIND_TABLE_VIEW.equals(kind)) {
+            if (StringUtil.isBlank(function.getDefinition())) {
+                throw new IllegalArgumentException("SQLite view definition is empty");
+            }
+            return;
+        }
+        if (SQLiteFunction.KIND_SQL_EXPRESSION.equals(kind)) {
+            if (StringUtil.isBlank(function.getExpression())) {
+                throw new IllegalArgumentException("SQL expression is empty");
+            }
+            return;
+        }
+        throw new IllegalArgumentException("Unsupported SQLite function kind: " + kind);
     }
 
     /**

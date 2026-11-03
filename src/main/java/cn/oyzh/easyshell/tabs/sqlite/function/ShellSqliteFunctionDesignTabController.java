@@ -24,7 +24,8 @@ import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+
+import java.util.Objects;
 
 /**
  * SQLite 函数设计器控制器。
@@ -173,14 +174,14 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
         result.setKind(this.kind.getValue());
         result.setName(name);
         if (SQLiteFunction.KIND_GENERATED_COLUMN.equals(this.kind.getValue())) {
-            result.setTargetTable(this.targetTable.getText().trim());
-            result.setReturnType(StringUtil.blankToDefault(this.returnType.getSelectedItem(), "").trim());
+            result.setTargetTable(this.targetTable.getText());
+            result.setExpression(this.generatedExpression.getText());
             result.setGeneratedStorage(this.generatedStorage.getValue());
-            result.setExpression(this.generatedExpression.getText().trim());
+            result.setReturnType(Objects.toString(this.returnType.getSelectedItem(), ""));
         } else if (SQLiteFunction.KIND_TABLE_VIEW.equals(this.kind.getValue())) {
-            result.setDefinition(this.definition.getText().trim());
+            result.setDefinition(this.definition.getText());
         } else {
-            result.setExpression(this.expression.getText().trim());
+            result.setExpression(this.expression.getText());
         }
         return result;
     }
@@ -194,7 +195,7 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
     private void initPreview() {
         try {
             String name = StringUtil.blankToDefault(this.functionName, "Unnamed_Function");
-            this.preview.setText(SQLiteFunctionCreateSqlGenerator.createFunction(this.buildFunction(name)));
+            this.preview.text(SQLiteFunctionCreateSqlGenerator.createFunction(this.buildFunction(name)));
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }

@@ -189,12 +189,12 @@ public class SQLiteDesignAndDataTest {
     }
 
     @Test
-    public void testSqlGeneratorRejectsUnsupportedFunctionKinds() {
+    public void testFunctionSaveRejectsInvalidData() {
         SQLiteFunction function = new SQLiteFunction();
         function.setName("bad");
         function.setKind(SQLiteFunction.KIND_GENERATED_COLUMN);
         try {
-            SQLiteFunctionCreateSqlGenerator.createFunction(function);
+            SQLiteFunction.validate(function);
             fail("Generated column must require a table");
         } catch (IllegalArgumentException expected) {
             assertTrue(expected.getMessage().contains("target table"));

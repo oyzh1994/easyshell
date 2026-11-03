@@ -22,6 +22,11 @@ import java.util.UUID;
  */
 public class SQLiteTableAlertSqlGenerator extends DBSqlGenerator {
 
+    /**
+     * 生成SQL片段
+     *
+     * @param param 修改表参数
+     */
     private void _generate(SQLiteAlertTableParam param) {
         String originalName = StringUtil.blankToDefault(
                 param.getTable().originalName(), param.tableName());
@@ -68,16 +73,44 @@ public class SQLiteTableAlertSqlGenerator extends DBSqlGenerator {
         this.sqlBuilder.append(script);
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改表参数
+     * @return SQL列表
+     */
     public List<String> generate(SQLiteAlertTableParam param) {
         this._generate(param);
         return this.buildSql();
     }
 
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改表参数
+     * @return SQL语句
+     */
     public String generateSingle(SQLiteAlertTableParam param) {
         this._generate(param);
         return this.buildSqlSingle();
     }
 
+    /**
+     * 生成SQL列表
+     *
+     * @param param 修改表参数
+     * @return SQL列表
+     */
+    public static List<String> generateSql(SQLiteAlertTableParam param) {
+        return new SQLiteTableAlertSqlGenerator().generate(param);
+    }
+
+    /**
+     * 生成单条SQL
+     *
+     * @param param 修改表参数
+     * @return SQL语句
+     */
     public static String generateSqlSingle(SQLiteAlertTableParam param) {
         return new SQLiteTableAlertSqlGenerator().generateSingle(param);
     }

@@ -15,10 +15,22 @@ public final class SQLiteGeneratorUtil {
     private SQLiteGeneratorUtil() {
     }
 
+    /**
+     * 转换对象名称
+     *
+     * @param name 对象名称
+     * @return 转换后的对象名称
+     */
     public static String quote(String name) {
         return DBUtil.wrap(name, DBDialect.SQLITE);
     }
 
+    /**
+     * 还原对象名称
+     *
+     * @param name 对象名称
+     * @return 还原后的对象名称
+     */
     public static String unquote(String name) {
         if (name == null || name.length() < 2) {
             return name;
@@ -37,6 +49,12 @@ public final class SQLiteGeneratorUtil {
         return name;
     }
 
+    /**
+     * 转换SQL字面量
+     *
+     * @param value 数据值
+     * @return SQL字面量
+     */
     public static String literal(Object value) {
         if (value == null) {
             return "NULL";
@@ -54,10 +72,24 @@ public final class SQLiteGeneratorUtil {
         return String.valueOf(DBUtil.wrapData(value, DBDialect.SQLITE));
     }
 
+    /**
+     * 移除SQL末尾分号
+     *
+     * @param sql SQL语句
+     * @return SQL语句
+     */
     public static String stripSemicolon(String sql) {
         return sql.trim().replaceAll(";\\s*$", "");
     }
 
+    /**
+     * 查找SQL关键字位置
+     *
+     * @param sql       SQL语句
+     * @param keyword   SQL关键字
+     * @param fromIndex 开始位置
+     * @return 关键字位置，不存在时返回-1
+     */
     public static int keywordIndex(String sql, String keyword, int fromIndex) {
         char quote = 0;
         for (int index = Math.max(0, fromIndex); index <= sql.length() - keyword.length(); index++) {
@@ -88,6 +120,11 @@ public final class SQLiteGeneratorUtil {
         return -1;
     }
 
+    /**
+     * 校验对象名称
+     *
+     * @param name 对象名称
+     */
     public static void requireName(String name) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalArgumentException("SQLite object name is empty");

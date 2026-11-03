@@ -671,7 +671,7 @@ public class ShellSqliteArchitectureTest {
                 < functionDesign.indexOf("fx:id=\"generatedExpression\""));
         String functionController = this.sourceText(
                 "cn/oyzh/easyshell/tabs/sqlite/function/ShellSqliteFunctionDesignTabController.java");
-        assertTrue(functionController.contains("result.setExpression(this.generatedExpression.getText().trim())"));
+        assertTrue(functionController.contains("result.setExpression(this.generatedExpression.getText())"));
 
         String query = this.resourceText("/tabs/sqlite/query/shellSqliteQueryMainTab.fxml");
         assertTrue(query.contains("ShellSqliteQueryInfoTab"));
