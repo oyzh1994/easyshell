@@ -49,7 +49,7 @@ public class ShellSqliteUtilTest {
         SQLiteColumn booleanColumn = this.column("bool_value", "BOOLEAN");
         SQLiteColumn generatedInteger = this.column("generated_integer", "INTEGER");
         generatedInteger.setGeneratedExpression("1");
-        assertFalse(intColumn.supportAutoIncrement());
+        assertTrue(intColumn.supportAutoIncrement());
         assertFalse(textColumn.supportAutoIncrement());
         assertFalse(generatedInteger.supportAutoIncrement());
 

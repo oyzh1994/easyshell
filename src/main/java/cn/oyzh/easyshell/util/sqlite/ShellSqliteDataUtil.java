@@ -5,6 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecordPrimaryKey;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
 import cn.oyzh.easyshell.sqlite.generator.record.SQLiteRecordSqlGenerator;
 import cn.oyzh.fx.db.DBDialect;
@@ -59,24 +60,41 @@ public final class ShellSqliteDataUtil {
      * @return 插入sql
      */
     public static List<String> toInsertSql(SQLiteColumns columns, List<SQLiteRecord> records, boolean includeFields) {
-        List<String> sqlList = new ArrayList<>();
+        List<String> list = new ArrayList<>();
+        String tableName = columns.tableName();
+        List<SQLiteColumn> columnList = columns.sortOfPosition().stream()
+                .filter(column -> !column.isGenerated())
+                .toList();
+        final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.SQLITE);
         for (SQLiteRecord record : records) {
-            Map<String, Object> values = record.getValues();
-            List<String> insertColumns = insertColumns(columns, values);
-            if (insertColumns.isEmpty()) {
-                sqlList.add("INSERT INTO " + SQLiteGeneratorUtil.quote(columns.tableName()) + " DEFAULT VALUES;");
-            } else if (includeFields) {
-                sqlList.add(toInsertSql(columns.tableName(), columns, List.of(values)).getFirst());
-            } else {
-                Map<String, Object> normalized = normalize(columns, values);
-                List<String> data = insertColumns.stream()
-                        .map(column -> SQLiteGeneratorUtil.literal(normalized.get(column)))
-                        .toList();
-                sqlList.add("INSERT INTO " + SQLiteGeneratorUtil.quote(columns.tableName())
-                        + " VALUES (" + String.join(", ", data) + ");");
+            StringBuilder sql = new StringBuilder(sqlBase);
+            if (columnList.isEmpty()) {
+                sql.append(" DEFAULT VALUES;");
+                list.add(sql.toString());
+                continue;
             }
+            if (includeFields) {
+                sql.append(" (");
+                for (SQLiteColumn column : columnList) {
+                    sql.append(DBUtil.wrap(column.getName(), DBDialect.SQLITE)).append(", ");
+                }
+                if (sql.toString().endsWith(", ")) {
+                    sql.delete(sql.length() - 2, sql.length());
+                }
+                sql.append(")");
+            }
+            sql.append(" VALUES (");
+            for (SQLiteColumn column : columnList) {
+                Object value = normalizeValue(column, record.getValue(column.getName()));
+                sql.append(SQLiteGeneratorUtil.literal(value)).append(", ");
+            }
+            if (sql.toString().endsWith(", ")) {
+                sql.delete(sql.length() - 2, sql.length());
+            }
+            sql.append(");");
+            list.add(sql.toString());
         }
-        return sqlList;
+        return list;
     }
 
     /**
@@ -87,11 +105,53 @@ public final class ShellSqliteDataUtil {
      * @return 修改sql
      */
     public static String toUpdateSql(SQLiteColumns columns, SQLiteRecord record) {
-        List<String> keyColumns = columns.primaryKeys().stream()
-                .map(SQLiteColumn::getName)
-                .toList();
-        return toUpdateSql(columns.tableName(), columns, record.getValues(),
-                record.getOriginalValues(), keyColumns);
+        SQLiteRecordPrimaryKey primaryKey = ShellSqliteUtil.initPrimaryKey(columns, record);
+        String tableName = columns.tableName();
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE ")
+                .append(DBUtil.wrap(tableName, DBDialect.SQLITE))
+                .append(" SET ");
+        boolean doSet = false;
+        for (SQLiteColumn column : columns) {
+            if (column.isGenerated()) {
+                continue;
+            }
+            if (primaryKey != null && column == primaryKey.getColumn()) {
+                continue;
+            }
+            Object value = normalizeValue(column, record.getValue(column.getName()));
+            builder.append(DBUtil.wrap(column.getName(), DBDialect.SQLITE));
+            builder.append(" = ");
+            builder.append(SQLiteGeneratorUtil.literal(value));
+            builder.append(", ");
+            doSet = true;
+        }
+        if (doSet) {
+            builder.delete(builder.length() - 2, builder.length());
+        }
+        builder.append(" WHERE ");
+        if (primaryKey == null) {
+            boolean first = true;
+            for (SQLiteColumn column : columns) {
+                if (column.isGenerated()) {
+                    continue;
+                }
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(" AND ");
+                }
+                Object value = normalizeValue(column, record.getValue(column.getName()));
+                builder.append(DBUtil.wrap(column.getName(), DBDialect.SQLITE));
+                builder.append(value == null ? " IS NULL" : " = " + SQLiteGeneratorUtil.literal(value));
+            }
+        } else {
+            Object value = normalizeValue(primaryKey.getColumn(), primaryKey.getData());
+            builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.SQLITE));
+            builder.append(value == null ? " IS NULL" : " = " + SQLiteGeneratorUtil.literal(value));
+        }
+        builder.append(";");
+        return builder.toString();
     }
 
     public static List<String> toInsertSql(String tableName, List<SQLiteColumn> columns,
@@ -200,48 +260,50 @@ public final class ShellSqliteDataUtil {
                 values.remove(column.getName());
                 continue;
             }
-            Object value = values.get(column.getName());
-            if (value == null) {
-                continue;
-            }
-            if (value instanceof byte[]) {
-                continue;
-            }
-            if (value instanceof CharSequence text && text.isEmpty()) {
-                values.put(column.getName(), "");
-                continue;
-            }
-            value = DBUtil.unwrapData(value, DBDialect.SQLITE);
-            if (value == null) {
-                values.put(column.getName(), null);
-                continue;
-            }
-            String text = String.valueOf(value);
-            if (text.isEmpty()) {
-                values.put(column.getName(), "");
-            } else if (ShellSqliteColumnUtil.isIntegerType(column.getType())) {
-                try {
-                    values.put(column.getName(), Long.parseLong(text.trim()));
-                } catch (NumberFormatException ignored) {
-                    values.put(column.getName(), value);
-                }
-            } else if (ShellSqliteColumnUtil.isFloatingType(column.getType())) {
-                try {
-                    values.put(column.getName(), Double.parseDouble(text.trim()));
-                } catch (NumberFormatException ignored) {
-                    values.put(column.getName(), value);
-                }
-            } else if (ShellSqliteColumnUtil.isDecimalType(column.getType())) {
-                try {
-                    values.put(column.getName(), new BigDecimal(text.trim()));
-                } catch (NumberFormatException ignored) {
-                    values.put(column.getName(), value);
-                }
-            } else {
-                values.put(column.getName(), value);
+            if (values.containsKey(column.getName())) {
+                values.put(column.getName(), normalizeValue(column, values.get(column.getName())));
             }
         }
         return values;
+    }
+
+    private static Object normalizeValue(SQLiteColumn column, Object value) {
+        if (value == null || value instanceof byte[]) {
+            return value;
+        }
+        if (value instanceof CharSequence text && text.isEmpty()) {
+            return "";
+        }
+        value = DBUtil.unwrapData(value, DBDialect.SQLITE);
+        if (value == null) {
+            return null;
+        }
+        String text = String.valueOf(value);
+        if (text.isEmpty()) {
+            return "";
+        }
+        if (ShellSqliteColumnUtil.isIntegerType(column.getType())) {
+            try {
+                return Long.parseLong(text.trim());
+            } catch (NumberFormatException ignored) {
+                return value;
+            }
+        }
+        if (ShellSqliteColumnUtil.isFloatingType(column.getType())) {
+            try {
+                return Double.parseDouble(text.trim());
+            } catch (NumberFormatException ignored) {
+                return value;
+            }
+        }
+        if (ShellSqliteColumnUtil.isDecimalType(column.getType())) {
+            try {
+                return new BigDecimal(text.trim());
+            } catch (NumberFormatException ignored) {
+                return value;
+            }
+        }
+        return value;
     }
 
     public static String formatValue(Object value, SQLiteColumn column) {

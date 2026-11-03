@@ -1,7 +1,12 @@
 package cn.oyzh.easyshell.util.sqlite;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecordPrimaryKey;
 import cn.oyzh.easyshell.sqlite.ShellSqliteConnConfig;
 import cn.oyzh.easyshell.sqlite.ShellSqliteHelper;
 import cn.oyzh.fx.db.query.DBQueryResults;
@@ -60,5 +65,25 @@ public final class ShellSqliteUtil {
 
     public static String formatResults(DBQueryResults<SQLiteExecuteResult> results) {
         return ShellSqliteHelper.formatResults(results);
+    }
+
+    /**
+     * 初始化主键
+     *
+     * @param columns 字段列表
+     * @param record  记录
+     * @return 主键
+     */
+    public static SQLiteRecordPrimaryKey initPrimaryKey(SQLiteColumns columns, SQLiteRecord record) {
+        if (columns == null || columns.isEmpty()) {
+            return null;
+        }
+        SQLiteColumn column = CollectionUtil.getFirst(columns.primaryKeys());
+        if (column == null) {
+            return null;
+        }
+        SQLiteRecordPrimaryKey primaryKey = new SQLiteRecordPrimaryKey();
+        primaryKey.init(column, record);
+        return primaryKey;
     }
 }

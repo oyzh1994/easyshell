@@ -406,11 +406,11 @@ public class ShellMysqlDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MysqlColumn> columnList = columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL) + " ";
+        final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {
-                sql.append("(");
+                sql.append(" (");
                 for (MysqlColumn dbColumn : columnList) {
                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
                 }
@@ -466,7 +466,7 @@ public class ShellMysqlDataUtil {
             doSet = true;
         }
         if (doSet) {
-            builder.deleteCharAt(builder.length() - 2);
+            builder.delete(builder.length() - 2, builder.length());
         }
         builder.append(" WHERE ");
         if (primaryKey == null) {

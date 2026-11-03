@@ -50,13 +50,12 @@
                 <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexWidth="100%" flexHeight="100% - 210">
                     <columns>
                         <DBStatusColumn/>
-                        <FXTableColumn flexWidth="18%" valueName="nameControl" text="%base.name"/>
-                        <FXTableColumn flexWidth="15%" valueName="typeControl" text="%base.type"/>
+                        <FXTableColumn flexWidth="25%" valueName="nameControl" text="%base.name"/>
+                        <FXTableColumn flexWidth="30%" valueName="typeControl" text="%base.type"/>
                         <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
-                        <FXTableColumn realWidth="65" valueName="primaryKeyControl" text="%base.key"/>
-                        <FXTableColumn realWidth="75" valueName="notNullControl" text="%shell.sqlite.notNull"/>
-                        <FXTableColumn realWidth="65" valueName="uniqueControl" text="%shell.sqlite.unique"/>
-                        <FXTableColumn flexWidth="42% - 325" valueName="defaultValueControl" text="%base.defaultValue"/>
+                        <FXTableColumn realWidth="60" valueName="primaryKeyControl" text="%base.key"/>
+                        <FXTableColumn realWidth="80" valueName="nullableControl" text="%base.nullable"/>
+                        <FXTableColumn realWidth="75" valueName="uniqueControl" text="%shell.sqlite.unique"/>
                     </columns>
                 </DBStatusTableView>
                 <fx:include fx:id="tableColumnExtra" source="shellSqliteTableColumnExtra.fxml"/>

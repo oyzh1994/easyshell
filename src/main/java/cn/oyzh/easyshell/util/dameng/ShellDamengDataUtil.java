@@ -442,7 +442,7 @@ public class ShellDamengDataUtil {
         for (DamengRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {
-                sql.append("(");
+                sql.append(" (");
                 for (DamengColumn dbColumn : columnList) {
                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.DAMENG)).append(", ");
                 }
@@ -496,7 +496,7 @@ public class ShellDamengDataUtil {
             doSet = true;
         }
         if (doSet) {
-            builder.deleteCharAt(builder.length() - 2);
+            builder.delete(builder.length() - 2, builder.length());
         }
         builder.append(" WHERE ");
         if (primaryKey == null) {

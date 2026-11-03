@@ -86,12 +86,17 @@ public class SQLiteColumnControl extends SQLiteColumn {
         return checkBox;
     }
 
-    public FXCheckBox getNotNullControl() {
+    public FXCheckBox getNullableControl() {
         FXCheckBox checkBox = new FXCheckBox();
-        checkBox.setSelected(this.isNotNull());
+        checkBox.setSelected(this.isNullable());
         checkBox.selectedChanged((observable, oldValue, newValue) -> {
-            this.setNotNull(newValue);
+            this.setNullable(newValue);
             this.setChanged(true);
+        });
+        this.primaryKeyProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                checkBox.setSelected(false);
+            }
         });
         TableViewUtil.rowOnCtrlS(checkBox);
         TableViewUtil.selectRowOnMouseClicked(checkBox);
@@ -108,19 +113,6 @@ public class SQLiteColumnControl extends SQLiteColumn {
         TableViewUtil.rowOnCtrlS(checkBox);
         TableViewUtil.selectRowOnMouseClicked(checkBox);
         return checkBox;
-    }
-
-    public ClearableTextField getDefaultValueControl() {
-        ClearableTextField field = new ClearableTextField();
-        field.setPromptText(I18nHelper.defaultValue());
-        field.setText(this.getDefaultValue());
-        field.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.setDefaultValue(newValue);
-            this.setChanged(true);
-        });
-        TableViewUtil.rowOnCtrlS(field);
-        TableViewUtil.selectRowOnMouseClicked(field);
-        return field;
     }
 
     public static SQLiteColumnControl of(SQLiteColumn column) {
