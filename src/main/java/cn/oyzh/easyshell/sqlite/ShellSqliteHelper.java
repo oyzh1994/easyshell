@@ -155,6 +155,32 @@ public final class ShellSqliteHelper {
     }
 
     /**
+     * 是否为外键开关PRAGMA。
+     *
+     * @param sql SQL
+     * @return 结果
+     */
+    public static boolean isForeignKeysPragma(String sql) {
+        if (StringUtil.isBlank(sql)) {
+            return false;
+        }
+        String content = stripLeadingComments(sql).trim();
+        if (!isCommand(content, "PRAGMA")) {
+            return false;
+        }
+        String argument = content.substring("PRAGMA".length()).trim();
+        String name = "foreign_keys";
+        return argument.length() >= name.length()
+                && argument.regionMatches(true, 0, name, 0, name.length())
+                && (argument.length() == name.length()
+                || !isIdentifierPart(argument.charAt(name.length())));
+    }
+
+    private static boolean isIdentifierPart(char value) {
+        return Character.isLetterOrDigit(value) || value == '_';
+    }
+
+    /**
      * 获取显式事务控制命令。
      *
      * @param sql SQL

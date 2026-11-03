@@ -261,6 +261,10 @@ public class ShellSqliteClientTest {
         assertFalse(ShellSqliteHelper.isTransactionControl("BEGINNING"));
         assertTrue(ShellSqliteHelper.isTransactionControl("SAVEPOINT s1"));
         assertFalse(ShellSqliteHelper.isTransactionControl("SELECT 1"));
+        assertTrue(ShellSqliteHelper.isForeignKeysPragma("PRAGMA foreign_keys=OFF"));
+        assertTrue(ShellSqliteHelper.isForeignKeysPragma("-- comment\nPRAGMA foreign_keys = ON"));
+        assertFalse(ShellSqliteHelper.isForeignKeysPragma("PRAGMA foreign_keys_enable=OFF"));
+        assertFalse(ShellSqliteHelper.isForeignKeysPragma("SELECT 1"));
         try {
             ShellSqliteHelper.parseEnvironment("invalid");
             fail("Invalid environment must fail");

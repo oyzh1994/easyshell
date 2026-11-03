@@ -1782,7 +1782,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
             connection = this.getConnManager().connection();
             oldAutoCommit = connection.getAutoCommit();
             transactional = oldAutoCommit
-                    && sqlList.stream().noneMatch(ShellSqliteHelper::isTransactionControl);
+                    && sqlList.stream().noneMatch(ShellSqliteHelper::isTransactionControl)
+                    && sqlList.stream().noneMatch(ShellSqliteHelper::isForeignKeysPragma);
             if (transactional) {
                 connection.setAutoCommit(false);
             }

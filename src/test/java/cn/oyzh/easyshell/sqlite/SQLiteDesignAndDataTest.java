@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -311,9 +310,9 @@ public class SQLiteDesignAndDataTest {
         assertEquals(1, foreignKeys.size());
         SQLiteForeignKey foreignKey = foreignKeys.getFirst();
         assertEquals("fk_parent", foreignKey.getName());
-        assertEquals(Set.of("parent_id"), foreignKey.getColumns());
+        assertEquals(List.of("parent_id"), foreignKey.getColumns());
         assertEquals("parent", foreignKey.getReferencedTable());
-        assertEquals(Set.of("id"), foreignKey.getReferencedColumns());
+        assertEquals(List.of("id"), foreignKey.getReferencedColumns());
         assertEquals("CASCADE", foreignKey.getDeletePolicy());
         assertEquals("SET NULL", foreignKey.getUpdatePolicy());
         assertTrue(foreignKey.toConstraintSql().contains("FOREIGN KEY (\"parent_id\") REFERENCES \"parent\" (\"id\")"));
@@ -394,6 +393,38 @@ public class SQLiteDesignAndDataTest {
             List<SQLiteColumn> savedColumns = client.selectColumns("aa");
             assertEquals("6", String.valueOf(client.selectRecords("aa", savedColumns, 0, 10)
                     .getFirst().get("aget")));
+        } finally {
+            client.close();
+        }
+    }
+
+    @Test
+    public void testTableRebuildDisablesForeignKeysBeforeCopying() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-fk-rebuild-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("PRAGMA foreign_keys=ON");
+            client.executeSqlSimple("CREATE TABLE t2 (id INTEGER PRIMARY KEY)");
+            client.executeSqlSimple("CREATE TABLE test2 ("
+                    + "t2_id INTEGER, a TEXT, id INTEGER PRIMARY KEY)");
+            client.executeSqlSimple("INSERT INTO test2 (t2_id, a, id) VALUES (1, 'value', 1)");
+
+            SQLiteTable table = client.selectTable("test2");
+            table.setColumns(client.selectColumns("test2"));
+            SQLiteForeignKey foreignKey = new SQLiteForeignKey();
+            foreignKey.setName("fk_test2_t2");
+            foreignKey.setColumns(List.of("t2_id", "a"));
+            foreignKey.setReferencedTable("t2");
+            foreignKey.setReferencedColumns(List.of("id", "a"));
+            table.setConstraints(foreignKey.toConstraintSql());
+
+            new SQLiteSchemaManager(client).updateTable("test2", table);
+
+            List<SQLiteColumn> columns = client.selectColumns("test2");
+            assertEquals("value", String.valueOf(client.selectRecords("test2", columns, 0, 10)
+                    .getFirst().get("a")));
         } finally {
             client.close();
         }
