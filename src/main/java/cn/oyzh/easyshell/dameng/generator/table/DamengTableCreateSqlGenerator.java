@@ -104,6 +104,9 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
         DBObjects<DamengTrigger> triggers = param.getTriggers();
         for (DamengTrigger trigger : triggers) {
             StringBuilder builder = new StringBuilder();
+            if (trigger.getDefinition() == null) {
+                continue;
+            }
             String body = trigger.getDefinition().trim();
             if (!body.endsWith(";")) {
                 body = body + ";";

@@ -86,46 +86,6 @@ public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<Mong
         super.putOriginalData("value", value);
     }
 
-    @Override
-    public boolean supportDigits() {
-        return DBColumnFieldManager.supportDigits(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportInteger() {
-        return DBColumnFieldManager.supportInteger(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportBigInteger() {
-        return DBColumnFieldManager.supportBigInteger(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportString() {
-        return DBColumnFieldManager.supportString(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportBoolean() {
-        return DBColumnFieldManager.supportBoolean(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportJson() {
-        return DBColumnFieldManager.supportJson(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportJsonArray() {
-        return DBColumnFieldManager.supportJsonArray(DBDialect.MONGODB, this.getType());
-    }
-
-    @Override
-    public boolean supportBinary() {
-        return DBColumnFieldManager.supportBinary(DBDialect.MONGODB, this.getType());
-    }
-
     /**
      * 是否支持对象id
      *
@@ -238,6 +198,11 @@ public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<Mong
     @Override
     public boolean supportTimestamp() {
         return StringUtil.equalsIgnoreCase(this.getType(), "date");
+    }
+
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.MONGODB;
     }
 
     public Object defaultValue() {

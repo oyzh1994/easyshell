@@ -344,6 +344,11 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         return DBColumnFieldManager.supportSize(DBDialect.MARIADB, this.getType());
     }
 
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.MARIADB;
+    }
+
     /**
      * 获取推荐长度
      *
@@ -351,81 +356,6 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
      */
     public Integer suggestSize() {
         return DBColumnFieldManager.suggestSize(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportGeometry() {
-        return DBColumnFieldManager.supportGeometry(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportCharset() {
-        return DBColumnFieldManager.supportCharset(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportUnsigned() {
-        return DBColumnFieldManager.supportUnsigned(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportDigits() {
-        return DBColumnFieldManager.supportDigits(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportInteger() {
-        return DBColumnFieldManager.supportInteger(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportAutoIncrement() {
-        return DBColumnFieldManager.supportAutoIncrement(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportDefaultValue() {
-        return DBColumnFieldManager.supportDefaultValue(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportTimestamp() {
-        return DBColumnFieldManager.supportTimestamp(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportValue() {
-        return DBColumnFieldManager.supportValue(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportText() {
-        return DBColumnFieldManager.supportText(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportZeroFill() {
-        return DBColumnFieldManager.supportZeroFill(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportBit() {
-        return DBColumnFieldManager.supportBit(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportJson() {
-        return DBColumnFieldManager.supportJson(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportKeySize() {
-        return DBColumnFieldManager.supportKeySize(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportString() {
-        return DBColumnFieldManager.supportString(DBDialect.MARIADB, this.getType());
     }
 
     @Override
@@ -650,16 +580,6 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
      */
     public boolean isTimeType() {
         return ShellMariadbColumnUtil.isTimeType(this.getType());
-    }
-
-    @Override
-    public boolean supportBinary() {
-        return DBColumnFieldManager.supportBinary(DBDialect.MARIADB, this.getType());
-    }
-
-    @Override
-    public boolean supportEnum() {
-        return DBColumnFieldManager.supportEnum(DBDialect.MARIADB, this.getType());
     }
 
     @Override

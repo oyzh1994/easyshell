@@ -344,6 +344,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         return DBColumnFieldManager.supportSize(DBDialect.MYSQL, this.getType());
     }
 
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.MYSQL;
+    }
+
     /**
      * 获取推荐长度
      *
@@ -351,81 +356,6 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      */
     public Integer suggestSize() {
         return DBColumnFieldManager.suggestSize(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportGeometry() {
-        return DBColumnFieldManager.supportGeometry(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportCharset() {
-        return DBColumnFieldManager.supportCharset(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportUnsigned() {
-        return DBColumnFieldManager.supportUnsigned(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportDigits() {
-        return DBColumnFieldManager.supportDigits(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportInteger() {
-        return DBColumnFieldManager.supportInteger(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportAutoIncrement() {
-        return DBColumnFieldManager.supportAutoIncrement(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportDefaultValue() {
-        return DBColumnFieldManager.supportDefaultValue(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportTimestamp() {
-        return DBColumnFieldManager.supportTimestamp(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportValue() {
-        return DBColumnFieldManager.supportValue(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportText() {
-        return DBColumnFieldManager.supportText(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportZeroFill() {
-        return DBColumnFieldManager.supportZeroFill(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportBit() {
-        return DBColumnFieldManager.supportBit(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportJson() {
-        return DBColumnFieldManager.supportJson(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportKeySize() {
-        return DBColumnFieldManager.supportKeySize(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportString() {
-        return DBColumnFieldManager.supportString(DBDialect.MYSQL, this.getType());
     }
 
     @Override
@@ -650,16 +580,6 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      */
     public boolean isTimeType() {
         return ShellMysqlColumnUtil.isTimeType(this.getType());
-    }
-
-    @Override
-    public boolean supportBinary() {
-        return DBColumnFieldManager.supportBinary(DBDialect.MYSQL, this.getType());
-    }
-
-    @Override
-    public boolean supportEnum() {
-        return DBColumnFieldManager.supportEnum(DBDialect.MYSQL, this.getType());
     }
 
     @Override
