@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.sqlite.table.SQLiteAlertTableParam;
 import cn.oyzh.easyshell.sqlite.trigger.SQLiteTrigger;
 import cn.oyzh.fx.db.DBSqlGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,16 +37,20 @@ public class SQLiteTableAlertSqlGenerator extends DBSqlGenerator {
         script.append(SQLiteTableCreateSqlGenerator.createTable(temporaryName,
                 param.getColumns(), param.getTable().getConstraints(),
                 param.getTable().isWithoutRowid(), param.getTable().isStrict())).append('\n');
-        List<String> copyColumns = param.getColumns().stream()
-                .filter(column -> !column.isCreated() && !column.isDeleted() && !column.isGenerated())
-                .map(column -> StringUtil.blankToDefault(column.originalName(), column.getName()))
-                .map(SQLiteGeneratorUtil::quote)
-                .toList();
-        if (!copyColumns.isEmpty()) {
-            String columns = String.join(", ", copyColumns);
+        List<String> copyTargetColumns = new ArrayList<>();
+        List<String> copySourceColumns = new ArrayList<>();
+        for (SQLiteColumn column : param.getColumns()) {
+            if (column.isCreated() || column.isDeleted() || column.isGenerated()) {
+                continue;
+            }
+            String sourceName = StringUtil.blankToDefault(column.originalName(), column.getName());
+            copyTargetColumns.add(SQLiteGeneratorUtil.quote(column.getName()));
+            copySourceColumns.add(SQLiteGeneratorUtil.quote(sourceName));
+        }
+        if (!copyTargetColumns.isEmpty()) {
             script.append("INSERT INTO ").append(SQLiteGeneratorUtil.quote(temporaryName))
-                    .append(" (").append(columns).append(")\nSELECT ")
-                    .append(columns).append(" FROM ")
+                    .append(" (").append(String.join(", ", copyTargetColumns)).append(")\nSELECT ")
+                    .append(String.join(", ", copySourceColumns)).append(" FROM ")
                     .append(SQLiteGeneratorUtil.quote(originalName)).append(";\n");
         }
         script.append("DROP TABLE ").append(SQLiteGeneratorUtil.quote(originalName)).append(";\n");

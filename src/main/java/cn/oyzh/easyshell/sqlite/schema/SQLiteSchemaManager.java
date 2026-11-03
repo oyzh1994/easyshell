@@ -13,13 +13,13 @@ import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * SQLite 表、视图和函数设计执行器。
@@ -67,18 +67,28 @@ public class SQLiteSchemaManager {
         String createTemporary = SQLiteTableCreateSqlGenerator.createTable(
                 temporaryName, table.getColumns(), table.getConstraints(),
                 table.isWithoutRowid(), table.isStrict());
-        List<String> copyColumns = sourceColumns.stream()
-                .map(SQLiteColumn::getName)
-                .filter(name -> table.getColumns().stream()
-                        .anyMatch(column -> StringUtil.equalsIgnoreCase(column.getName(), name)
-                                && !column.isGenerated()))
-                .map(SQLiteGeneratorUtil::quote)
-                .collect(Collectors.toList());
+        List<String> copyTargetColumns = new ArrayList<>();
+        List<String> copySourceColumns = new ArrayList<>();
+        for (SQLiteColumn column : table.getColumns()) {
+            if (column.isGenerated()) {
+                continue;
+            }
+            String sourceName = StringUtil.blankToDefault(column.originalName(), column.getName());
+            SQLiteColumn sourceColumn = sourceColumns.stream()
+                    .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), sourceName))
+                    .findFirst()
+                    .orElse(null);
+            if (sourceColumn == null || sourceColumn.isGenerated()) {
+                continue;
+            }
+            copyTargetColumns.add(SQLiteGeneratorUtil.quote(column.getName()));
+            copySourceColumns.add(SQLiteGeneratorUtil.quote(sourceName));
+        }
         StringBuilder script = new StringBuilder("BEGIN;\n").append(createTemporary).append('\n');
-        if (!copyColumns.isEmpty()) {
+        if (!copyTargetColumns.isEmpty()) {
             script.append("INSERT INTO ").append(SQLiteGeneratorUtil.quote(temporaryName))
-                    .append(" (").append(String.join(", ", copyColumns)).append(")\nSELECT ")
-                    .append(String.join(", ", copyColumns)).append(" FROM ")
+                    .append(" (").append(String.join(", ", copyTargetColumns)).append(")\nSELECT ")
+                    .append(String.join(", ", copySourceColumns)).append(" FROM ")
                     .append(SQLiteGeneratorUtil.quote(originalName)).append(";\n");
         }
         for (SQLiteSchemaObject dependency : dependencies) {

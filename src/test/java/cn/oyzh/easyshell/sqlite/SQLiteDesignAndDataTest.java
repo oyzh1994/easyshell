@@ -364,6 +364,41 @@ public class SQLiteDesignAndDataTest {
     }
 
     @Test
+    public void testRenameColumnRewritesCheckAndCopiesData() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-rename-check-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("CREATE TABLE \"aa\" ("
+                    + "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + "\"age\" TEXT CHECK (age > 5))");
+            client.executeSqlSimple("INSERT INTO \"aa\" (\"age\") VALUES ('6')");
+
+            SQLiteTable table = client.selectTable("aa");
+            List<SQLiteColumn> columns = client.selectColumns("aa");
+            SQLiteColumn renamed = columns.stream()
+                    .filter(column -> "age".equalsIgnoreCase(column.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            renamed.setName("aget");
+            renamed.setCheck("age > 5");
+            table.setColumns(columns);
+            table.setConstraints("CHECK (age > 5)");
+
+            new SQLiteSchemaManager(client).updateTable("aa", table);
+
+            String ddl = client.showCreate("aa");
+            assertTrue(ddl.contains("\"aget\" TEXT CHECK (\"aget\" > 5)"));
+            List<SQLiteColumn> savedColumns = client.selectColumns("aa");
+            assertEquals("6", String.valueOf(client.selectRecords("aa", savedColumns, 0, 10)
+                    .getFirst().get("aget")));
+        } finally {
+            client.close();
+        }
+    }
+
+    @Test
     public void testSchemaManagerRestoresForeignKeysState() throws Throwable {
         Path file = Files.createTempFile("easyshell-sqlite-pragma-", ".db");
         Files.delete(file);

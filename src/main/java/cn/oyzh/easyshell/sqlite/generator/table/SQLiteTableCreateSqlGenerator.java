@@ -10,7 +10,9 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -106,6 +108,7 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
             throw new IllegalArgumentException("SQLite table requires at least one column");
         }
         List<String> definitions = new ArrayList<>();
+        Map<String, String> renamedColumns = renamedColumns(columns);
         int primaryKeyCount = 0;
         int autoIncrementCount = 0;
         boolean tablePrimaryKey = containsTablePrimaryKey(constraints);
@@ -117,7 +120,7 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
             if (column.isAutoIncrement()) {
                 autoIncrementCount++;
             }
-            definitions.add(columnDefinition(column, !tablePrimaryKey));
+            definitions.add(columnDefinition(column, !tablePrimaryKey, renamedColumns));
         }
         if (tablePrimaryKey && autoIncrementCount > 0) {
             throw new IllegalArgumentException("AUTOINCREMENT cannot be combined with a table-level PRIMARY KEY");
@@ -139,7 +142,8 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
             throw new IllegalArgumentException("SQLite AUTOINCREMENT requires an INTEGER PRIMARY KEY");
         }
         if (StringUtil.isNotBlank(constraints)) {
-            definitions.add(constraints.trim());
+            definitions.add(SQLiteGeneratorUtil.replaceColumnReferences(
+                    constraints.trim(), renamedColumns));
         }
         StringBuilder sql = new StringBuilder("CREATE TABLE ")
                 .append(SQLiteGeneratorUtil.quote(name)).append(" (\n  ");
@@ -171,6 +175,16 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
      * @return 字段定义
      */
     public static String columnDefinition(SQLiteColumn column, boolean includePrimaryKey) {
+        Map<String, String> renamedColumns = new LinkedHashMap<>();
+        String originalName = StringUtil.blankToDefault(column.originalName(), column.getName());
+        if (!StringUtil.equals(originalName, column.getName())) {
+            renamedColumns.put(originalName, column.getName());
+        }
+        return columnDefinition(column, includePrimaryKey, renamedColumns);
+    }
+
+    private static String columnDefinition(SQLiteColumn column, boolean includePrimaryKey,
+                                           Map<String, String> renamedColumns) {
         StringBuilder sql = new StringBuilder(SQLiteGeneratorUtil.quote(column.getName()));
         if (StringUtil.isNotBlank(column.getType())) {
             String type = column.getType().trim();
@@ -198,14 +212,33 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
             sql.append(" COLLATE ").append(column.getCollate().trim());
         }
         if (StringUtil.isNotBlank(column.getCheck())) {
-            sql.append(" CHECK (").append(column.getCheck().trim()).append(')');
+            sql.append(" CHECK (").append(SQLiteGeneratorUtil.replaceColumnReferences(
+                    column.getCheck().trim(), renamedColumns)).append(')');
         }
         if (column.isGenerated()) {
             String storage = StringUtil.blankToDefault(column.getGeneratedStorage(), "VIRTUAL");
-            sql.append(" GENERATED ALWAYS AS (").append(column.getGeneratedExpression().trim())
+            sql.append(" GENERATED ALWAYS AS (").append(SQLiteGeneratorUtil.replaceColumnReferences(
+                            column.getGeneratedExpression().trim(), renamedColumns))
                     .append(") ").append(storage.toUpperCase());
         }
         return sql.toString();
+    }
+
+    private static Map<String, String> renamedColumns(Collection<SQLiteColumn> columns) {
+        Map<String, String> result = new LinkedHashMap<>();
+        if (columns == null) {
+            return result;
+        }
+        for (SQLiteColumn column : columns) {
+            if (column == null) {
+                continue;
+            }
+            String originalName = StringUtil.blankToDefault(column.originalName(), column.getName());
+            if (StringUtil.isNotBlank(originalName) && !StringUtil.equals(originalName, column.getName())) {
+                result.put(originalName, column.getName());
+            }
+        }
+        return result;
     }
 
     private static boolean containsTablePrimaryKey(String constraints) {

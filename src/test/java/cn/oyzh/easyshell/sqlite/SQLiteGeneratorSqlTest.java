@@ -51,6 +51,52 @@ public class SQLiteGeneratorSqlTest {
     }
 
     @Test
+    public void testTableRenameRewritesCheckAndGeneratedReferences() {
+        SQLiteColumn renamed = new SQLiteColumn();
+        renamed.setName("age");
+        renamed.setType("TEXT");
+        renamed.setName("aget");
+        renamed.setCheck("age > 5 AND note <> 'age'");
+
+        SQLiteColumn generated = new SQLiteColumn();
+        generated.setName("double_age");
+        generated.setType("INTEGER");
+        generated.setGeneratedExpression("age * 2");
+        generated.setGeneratedStorage("VIRTUAL");
+
+        String constraints = "CONSTRAINT \"age\" CHECK (age > 5),\nUNIQUE (age)";
+        String sql = SQLiteTableCreateSqlGenerator.createTable(
+                "person", List.of(renamed, generated), constraints, false, false);
+
+        assertTrue(sql.contains("\"aget\" TEXT CHECK (\"aget\" > 5 AND note <> 'age')"));
+        assertTrue(sql.contains("GENERATED ALWAYS AS (\"aget\" * 2) VIRTUAL"));
+        assertTrue(sql.contains("CONSTRAINT \"age\" CHECK (\"aget\" > 5)"));
+        assertTrue(sql.contains("UNIQUE (\"aget\")"));
+    }
+
+    @Test
+    public void testTableAlertCopiesRenamedColumnFromOriginalName() {
+        SQLiteColumn renamed = new SQLiteColumn();
+        renamed.setName("age");
+        renamed.setType("TEXT");
+        renamed.setName("aget");
+        renamed.setCheck("age > 5");
+
+        SQLiteTable table = new SQLiteTable();
+        table.setName("person");
+        table.setConstraints("CHECK (age > 5)");
+
+        SQLiteAlertTableParam alertParam = new SQLiteAlertTableParam();
+        alertParam.setTable(table);
+        alertParam.setColumns(new SQLiteColumns(List.of(renamed)));
+        String sql = SQLiteTableAlertSqlGenerator.generateSqlSingle(alertParam);
+
+        assertTrue(sql.contains("CHECK (\"aget\" > 5)"));
+        assertTrue(sql.contains("INSERT INTO \"__easyshell_new_"));
+        assertTrue(sql.contains("(\"aget\")\nSELECT \"age\" FROM \"person\""));
+    }
+
+    @Test
     public void testViewGenerateApiAndAlertOrder() {
         SQLiteView view = new SQLiteView();
         view.setName("simple_view");
