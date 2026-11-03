@@ -10,6 +10,8 @@ import cn.oyzh.fx.plus.window.PopupAttribute;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,7 +73,7 @@ public class ShellSqliteIndexFieldPopupController extends PopupController {
         super.onWindowShowing(event);
         this.onSubmit = this.getProp("onSubmit");
         List<? extends SQLiteColumn> columnList = this.getProp("columnList");
-        List<String> columns = this.getProp("columns");
+        Collection<String> columns = this.getProp("columns");
         this.listView.init(columnList, columns);
     }
 }

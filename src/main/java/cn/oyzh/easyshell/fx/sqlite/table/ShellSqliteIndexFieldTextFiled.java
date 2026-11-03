@@ -8,7 +8,7 @@ import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +22,7 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
 
     private List<? extends SQLiteColumn> columnList;
 
-    private Set<String> columns;
+    private List<String> columns;
 
     private PopupAdapter popup;
 
@@ -35,9 +35,9 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
      * @param columnList 可选字段列表
      * @param columns    已选字段列表
      */
-    public ShellSqliteIndexFieldTextFiled(List<? extends SQLiteColumn> columnList, Set<String> columns) {
+    public ShellSqliteIndexFieldTextFiled(List<? extends SQLiteColumn> columnList, Collection<String> columns) {
         this.columnList = columnList;
-        this.setColumns(columns);
+        this.setColumns(new ArrayList<>(columns));
     }
 
     /**
@@ -75,8 +75,8 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
      *
      * @param columns 字段列表
      */
-    public void setColumns(Set<String> columns) {
-        this.columns = columns == null ? new HashSet<>() : columns;
+    public void setColumns(List<String> columns) {
+        this.columns = columns == null ? new ArrayList<>() : columns;
         this.initText();
     }
 
@@ -93,7 +93,7 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
         return null;
     }
 
-    public Set<String> getColumns() {
+    public List<String> getColumns() {
         return this.columns;
     }
 

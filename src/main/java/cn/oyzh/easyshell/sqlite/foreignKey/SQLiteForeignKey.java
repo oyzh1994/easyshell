@@ -38,7 +38,7 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     /**
      * 外键字段列表
      */
-    private Set<String> columns = new HashSet<>();
+    private List<String> columns = new ArrayList<>();
 
     /**
      * 引用表名称
@@ -48,7 +48,7 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     /**
      * 引用字段列表
      */
-    private Set<String> referencedColumns = new HashSet<>();
+    private List<String> referencedColumns = new ArrayList<>();
 
     /**
      * 外键删除策略
@@ -133,8 +133,8 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     }
 
     @Override
-    public void setColumns(Set<String> columns) {
-        this.columns = columns == null ? new HashSet<>() : columns;
+    public void setColumns(List<String> columns) {
+        this.columns = columns == null ? new ArrayList<>() : columns;
         super.putOriginalData("columns", this.columns);
     }
 
@@ -160,8 +160,8 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     }
 
     @Override
-    public void setReferencedColumns(Set<String> referencedColumns) {
-        this.referencedColumns = referencedColumns == null ? new HashSet<>() : referencedColumns;
+    public void setReferencedColumns(List<String> referencedColumns) {
+        this.referencedColumns = referencedColumns == null ? new ArrayList<>() : referencedColumns;
         super.putOriginalData("referencedColumns", this.referencedColumns);
     }
 
@@ -173,9 +173,9 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
             this.setName(foreignKey.getName());
             this.setDeletePolicy(foreignKey.getDeletePolicy());
             this.setUpdatePolicy(foreignKey.getUpdatePolicy());
-            this.setColumns(new HashSet<>(foreignKey.getColumns()));
+            this.setColumns(new ArrayList<>(foreignKey.getColumns()));
             this.setReferencedTable(foreignKey.getReferencedTable());
-            this.setReferencedColumns(new HashSet<>(foreignKey.getReferencedColumns()));
+            this.setReferencedColumns(new ArrayList<>(foreignKey.getReferencedColumns()));
         }
     }
 
@@ -192,7 +192,7 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     }
 
     @Override
-    public Set<String> getColumns() {
+    public List<String> getColumns() {
         return this.columns;
     }
 
@@ -215,7 +215,7 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     }
 
     @Override
-    public Set<String> getReferencedColumns() {
+    public List<String> getReferencedColumns() {
         return this.referencedColumns;
     }
 

@@ -87,9 +87,9 @@ public class ShellMariadbColumnListView extends FXListView<FXCheckBox> {
      *
      * @return 已选中的字段名称集合
      */
-    public Set<String> getSelectedColumnNames() {
+    public List<String> getSelectedColumnNames() {
         List<MariadbColumn> columns = this.getSelectedColumns();
-        return columns.parallelStream().map(MariadbColumn::getName).collect(Collectors.toSet());
+        return columns.parallelStream().map(MariadbColumn::getName).collect(Collectors.toList());
     }
 
     /**

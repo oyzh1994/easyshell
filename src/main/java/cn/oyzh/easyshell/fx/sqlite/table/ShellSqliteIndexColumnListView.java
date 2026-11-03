@@ -5,8 +5,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
+import cn.oyzh.fx.plus.util.ListViewUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,10 +22,7 @@ import java.util.stream.Collectors;
  */
 public class ShellSqliteIndexColumnListView extends FXListView<FXComboBox<String>> {
 
-    private List<String> columnNames;
-
-    public ShellSqliteIndexColumnListView() {
-    }
+    private Set<String> columnNames;
 
     /**
      * 初始化索引字段选择列表。
@@ -31,10 +30,10 @@ public class ShellSqliteIndexColumnListView extends FXListView<FXComboBox<String
      * @param columnList 可选字段列表
      * @param columns    已选字段列表
      */
-    public void init(List<? extends SQLiteColumn> columnList, List<String> columns) {
+    public void init(List<? extends SQLiteColumn> columnList, Collection<String> columns) {
         this.clearItems();
-        this.columnNames = columnList == null ? new ArrayList<>()
-                : columnList.parallelStream().map(SQLiteColumn::getName).collect(Collectors.toList());
+        this.columnNames = columnList == null ? new HashSet<>()
+                : columnList.parallelStream().map(SQLiteColumn::getName).collect(Collectors.toSet());
         if (CollectionUtil.isNotEmpty(columns)) {
             for (String column : columns) {
                 this.addColumn(column);
@@ -61,6 +60,7 @@ public class ShellSqliteIndexColumnListView extends FXListView<FXComboBox<String
         } else if (CollectionUtil.isNotEmpty(this.columnNames)) {
             comboBox.selectFirst();
         }
+        ListViewUtil.selectRowOnMouseClicked(comboBox);
         this.addItem(comboBox);
     }
 
@@ -69,8 +69,8 @@ public class ShellSqliteIndexColumnListView extends FXListView<FXComboBox<String
      *
      * @return 字段列表
      */
-    public Set<String> getColumns() {
-        Set<String> list = new HashSet<>();
+    public List<String> getColumns() {
+        List<String> list = new ArrayList<>();
         for (FXComboBox<String> item : this.getItems()) {
             if (StringUtil.isNotBlank(item.getValue())) {
                 list.add(item.getValue());

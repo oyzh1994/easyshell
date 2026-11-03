@@ -35,7 +35,7 @@ public class ShellMysqlFieldTextFiled extends ChooseTextField {
     /**
      * 已选中的字段名称集合
      */
-    private Set<String> selectedColumns;
+    private List<String> selectedColumns;
 
     /**
      * 构造字段选择输入框并初始化字段
@@ -43,7 +43,7 @@ public class ShellMysqlFieldTextFiled extends ChooseTextField {
      * @param columns         字段列表
      * @param selectedColumns 已选中的字段名称集合
      */
-    public ShellMysqlFieldTextFiled(List<MysqlColumn> columns, Set<String> selectedColumns) {
+    public ShellMysqlFieldTextFiled(List<MysqlColumn> columns, List<String> selectedColumns) {
         this.columns = columns;
         this.setSelectedColumns(selectedColumns);
     }
@@ -89,7 +89,7 @@ public class ShellMysqlFieldTextFiled extends ChooseTextField {
      *
      * @param selectedColumns 已选中的字段名称集合
      */
-    public void setSelectedColumns(Set<String> selectedColumns) {
+    public void setSelectedColumns(List<String> selectedColumns) {
         this.selectedColumns = selectedColumns;
         ShellMysqlColumnListView listView = this.listView();
         if (listView != null) {
@@ -103,8 +103,8 @@ public class ShellMysqlFieldTextFiled extends ChooseTextField {
      *
      * @return 已选中的字段名称集合
      */
-    public Set<String> getSelectedColumns() {
-        return Objects.requireNonNullElse(this.selectedColumns, Collections.emptySet());
+    public List<String> getSelectedColumns() {
+        return Objects.requireNonNullElse(this.selectedColumns, Collections.emptyList());
     }
 
     /**

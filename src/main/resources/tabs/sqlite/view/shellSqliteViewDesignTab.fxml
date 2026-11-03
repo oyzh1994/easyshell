@@ -9,28 +9,35 @@
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
-<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.view.ShellSqliteViewDesignTabController"
         flexWidth="100%" flexHeight="100%">
-    <FXHBox realHeight="36" flexWidth="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph tipText="%shell.sqlite.save" onMousePrimaryClicked="#save">
-            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
         </SaveSVGGlyph>
         <RunSVGGlyph tipText="%shell.sqlite.preview" onMousePrimaryClicked="#createPreview">
-            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
         </RunSVGGlyph>
         <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
-            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
         </RefreshSVGGlyph>
     </FXHBox>
-    <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 36">
+    <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.definition" fx:id="definitionTab">
             <ShellSqliteQueryEditor fx:id="definition" flexWidth="100% - 60" flexHeight="100% - 20">
-                <VBox.margin><Insets left="30" top="10" right="30" bottom="10"/></VBox.margin>
+                <VBox.margin>
+                    <Insets left="30" top="10" right="30" bottom="10"/>
+                </VBox.margin>
             </ShellSqliteQueryEditor>
         </FixedTab>
         <FixedTab text="%shell.sqlite.preview" fx:id="previewTab">

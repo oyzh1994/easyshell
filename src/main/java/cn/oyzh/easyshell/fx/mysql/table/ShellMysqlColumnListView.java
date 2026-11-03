@@ -87,9 +87,9 @@ public class ShellMysqlColumnListView extends FXListView<FXCheckBox> {
      *
      * @return 已选中的字段名称集合
      */
-    public Set<String> getSelectedColumnNames() {
+    public List<String> getSelectedColumnNames() {
         List<MysqlColumn> columns = this.getSelectedColumns();
-        return columns.parallelStream().map(MysqlColumn::getName).collect(Collectors.toSet());
+        return columns.parallelStream().map(MysqlColumn::getName).collect(Collectors.toList());
     }
 
     /**

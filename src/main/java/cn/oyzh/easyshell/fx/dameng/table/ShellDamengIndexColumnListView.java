@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.dameng.index.DamengIndex;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
+import cn.oyzh.fx.plus.util.ListViewUtil;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
@@ -65,18 +66,7 @@ public class ShellDamengIndexColumnListView extends FXListView<FXHBox> {
         } else {
             comboBox.selectFirst();
         }
-//        NumberTextField textField = new NumberTextField();
-//        textField.setMinVal(0);
-//        textField.setRealHeight(25);
-//        textField.setRealWidth(145);
-//        textField.addClass("popover-item");
-//        if (column.getSubPart() != null && column.getSubPart() > 0) {
-//            textField.setValue(column.getSubPart());
-//        }
-//        FXHBox hBox = new FXHBox(comboBox);
-//        HBox.setMargin(textField, new Insets(0, 0, 0, 5));
-//        ListViewUtil.selectRowOnMouseClicked(comboBox, hBox);
-//        ListViewUtil.selectRowOnMouseClicked(textField, hBox);
+        ListViewUtil.selectRowOnMouseClicked(comboBox);
         this.addItem(comboBox);
     }
 

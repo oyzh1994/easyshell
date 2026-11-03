@@ -86,7 +86,7 @@ public class SQLiteIndexControl extends SQLiteIndex {
         return super.isInvalid() || StringUtil.isBlank(this.getColumnDefinition());
     }
 
-    private String buildColumnDefinition(Set<String> columns) {
+    private String buildColumnDefinition(List<String> columns) {
         List<String> definitions = new ArrayList<>();
         for (String column : columns) {
             if (StringUtil.isBlank(column)) {

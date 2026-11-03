@@ -24,7 +24,7 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableDesignTabController"
         flexWidth="100%" flexHeight="100%">
-    <FXHBox realHeight="36" flexWidth="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
         <SaveSVGGlyph tipText="%shell.sqlite.save" onMousePrimaryClicked="#save">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </SaveSVGGlyph>
@@ -44,7 +44,7 @@
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </RefreshSVGGlyph>
     </FXHBox>
-    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 36">
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.fields" fx:id="columnTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexWidth="100%" flexHeight="100% - 210">
@@ -77,10 +77,10 @@
             <DBStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexWidth="100%" flexHeight="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="30% - 290" valueName="nameControl" text="%base.name"/>
-                    <FXTableColumn flexWidth="22%" valueName="columnControl" text="%base.fields"/>
-                    <FXTableColumn flexWidth="22%" valueName="referencedTableControl" text="%base.referencedTable"/>
-                    <FXTableColumn flexWidth="26%" valueName="referencedColumnControl" text="%base.referencedFields"/>
+                    <FXTableColumn flexWidth="40% - 290" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="20%" valueName="columnControl" text="%base.fields"/>
+                    <FXTableColumn flexWidth="20%" valueName="referencedTableControl" text="%base.referencedTable"/>
+                    <FXTableColumn flexWidth="20%" valueName="referencedColumnControl" text="%base.referencedFields"/>
                     <FXTableColumn realWidth="130" valueName="deletePolicyControl" text="%base.onDelete"/>
                     <FXTableColumn realWidth="130" valueName="updatePolicyControl" text="%base.onUpdate"/>
                 </columns>

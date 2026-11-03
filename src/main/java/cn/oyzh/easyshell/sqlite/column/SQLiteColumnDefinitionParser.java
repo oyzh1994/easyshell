@@ -240,8 +240,8 @@ public final class SQLiteColumnDefinitionParser {
         return matcher.find() ? SQLiteGeneratorUtil.unquote(matcher.group(1)) : "table";
     }
 
-    private static Set<String> splitIdentifiers(String value) {
-        Set<String> identifiers = new HashSet<>();
+    private static List<String> splitIdentifiers(String value) {
+        List<String> identifiers = new ArrayList<>();
         if (StringUtil.isBlank(value)) {
             return identifiers;
         }

@@ -74,9 +74,9 @@ public class ShellDamengColumnListView extends FXListView<FXCheckBox> {
      *
      * @return 已勾选的字段列表
      */
-    public Set<DamengColumn> getSelectedColumns() {
+    public List<DamengColumn> getSelectedColumns() {
         List<FXCheckBox> checkBoxes = this.getItems().parallelStream().filter(CheckBox::isSelected).toList();
-        Set<DamengColumn> columns = new HashSet<>();
+        List<DamengColumn> columns = new ArrayList<>();
         for (FXCheckBox checkBox : checkBoxes) {
             columns.add(checkBox.getProp("column"));
         }
@@ -88,9 +88,9 @@ public class ShellDamengColumnListView extends FXListView<FXCheckBox> {
      *
      * @return 已勾选的字段名称列表
      */
-    public Set<String> getSelectedColumnNames() {
-        Set<DamengColumn> columns = this.getSelectedColumns();
-        return columns.parallelStream().map(DamengColumn::getName).collect(Collectors.toSet());
+    public List<String> getSelectedColumnNames() {
+        List<DamengColumn> columns = this.getSelectedColumns();
+        return columns.parallelStream().map(DamengColumn::getName).collect(Collectors.toList());
     }
 
     /**

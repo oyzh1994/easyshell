@@ -27,7 +27,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     /**
      * 外键字段列表
      */
-    private Set<String> columns;
+    private List<String> columns;
 
     /**
      * 引用库名称
@@ -42,7 +42,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     /**
      * 引用字段列表
      */
-    private Set<String> referencedColumns;
+    private List<String> referencedColumns;
 
     /**
      * 外键删除策略
@@ -114,7 +114,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     }
 
     @Override
-    public void setColumns(Set<String> columns) {
+    public void setColumns(List<String> columns) {
         this.columns = columns;
         super.putOriginalData("columns", columns);
     }
@@ -149,7 +149,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     }
 
     @Override
-    public void setReferencedColumns(Set<String> referencedColumns) {
+    public void setReferencedColumns(List<String> referencedColumns) {
         this.referencedColumns = referencedColumns;
         super.putOriginalData("referencedColumns", referencedColumns);
     }
@@ -179,7 +179,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     }
 
     @Override
-    public Set<String> getColumns() {
+    public List<String> getColumns() {
         return columns;
     }
 
@@ -202,7 +202,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     }
 
     @Override
-    public Set<String> getReferencedColumns() {
+    public List<String> getReferencedColumns() {
         return referencedColumns;
     }
 

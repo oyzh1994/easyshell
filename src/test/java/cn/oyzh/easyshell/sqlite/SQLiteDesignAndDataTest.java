@@ -344,9 +344,9 @@ public class SQLiteDesignAndDataTest {
                     this.column("amount", "REAL", false, false, false));
             SQLiteForeignKey foreignKey = new SQLiteForeignKey();
             foreignKey.setName("fk_child_parent");
-            foreignKey.setColumns(Set.of("parent_id"));
+            foreignKey.setColumns(List.of("parent_id"));
             foreignKey.setReferencedTable("parent");
-            foreignKey.setReferencedColumns(Set.of("id"));
+            foreignKey.setReferencedColumns(List.of("id"));
             foreignKey.setDeletePolicy("CASCADE");
             SQLiteCheck check = new SQLiteCheck();
             check.setName("chk_amount");
