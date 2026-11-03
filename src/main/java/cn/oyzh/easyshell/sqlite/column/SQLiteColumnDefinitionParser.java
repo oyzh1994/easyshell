@@ -8,8 +8,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -192,8 +194,8 @@ public final class SQLiteColumnDefinitionParser {
             foreignKey.setName(StringUtil.isBlank(name)
                     ? "fk_" + tableName + "_" + index : SQLiteGeneratorUtil.unquote(name));
             foreignKey.setColumns(splitIdentifiers(matcher.group(2)));
-            foreignKey.setReferencedTable(SQLiteGeneratorUtil.unquote(matcher.group(3).trim()));
-            foreignKey.setReferencedColumns(splitIdentifiers(matcher.group(4)));
+            foreignKey.setPrimaryKeyTable(SQLiteGeneratorUtil.unquote(matcher.group(3).trim()));
+            foreignKey.setPrimaryKeyColumns(splitIdentifiers(matcher.group(4)));
             String actions = StringUtil.blankToDefault(matcher.group(5), "");
             Matcher deleteMatcher = Pattern.compile("(?i)ON\\s+DELETE\\s+(NO\\s+ACTION|RESTRICT|CASCADE|SET\\s+NULL|SET\\s+DEFAULT)")
                     .matcher(actions);
@@ -238,8 +240,8 @@ public final class SQLiteColumnDefinitionParser {
         return matcher.find() ? SQLiteGeneratorUtil.unquote(matcher.group(1)) : "table";
     }
 
-    private static List<String> splitIdentifiers(String value) {
-        List<String> identifiers = new ArrayList<>();
+    private static Set<String> splitIdentifiers(String value) {
+        Set<String> identifiers = new HashSet<>();
         if (StringUtil.isBlank(value)) {
             return identifiers;
         }

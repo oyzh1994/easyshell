@@ -153,6 +153,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
                 this.triggerTable.setItem(this.loadTriggers());
                 this.foreignKeyTable.setItem(SQLiteForeignKeyControl.of(
                         SQLiteColumnDefinitionParser.foreignKeys(createSql)));
+                this.initForeignKeyTable();
                 this.checkTable.setItem(SQLiteCheckControl.of(
                         SQLiteColumnDefinitionParser.checks(createSql)));
                 this.columnTable.selectFirst();
@@ -212,14 +213,23 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         this.strict.selectedProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
         this.columnTable.selectedIndexChanged((observable, oldValue, newValue) ->
                 this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.client));
-        this.columnTable.itemList().addListener(
-                (ListChangeListener<SQLiteColumnControl>) change -> this.initIndexTable());
+        this.columnTable.itemList().addListener((ListChangeListener<SQLiteColumnControl>) change -> {
+            this.initIndexTable();
+            this.initForeignKeyTable();
+        });
         this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> this.onTabChanged(newValue));
     }
 
     private void initIndexTable() {
         for (SQLiteIndexControl index : this.indexTable.getItems()) {
             index.setColumnList(this.columnTable.getItems());
+        }
+    }
+
+    private void initForeignKeyTable() {
+        for (SQLiteForeignKeyControl foreignKey : this.foreignKeyTable.getItems()) {
+            foreignKey.setColumnList(this.columnTable.getItems());
+            foreignKey.setDbClient(this.client);
         }
     }
 
@@ -320,6 +330,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         foreignKey.setName(DBUtil.genForeignKeyName());
         foreignKey.setCreated(true);
         this.foreignKeyTable.addItem(foreignKey);
+        this.initForeignKeyTable();
         this.foreignKeyTable.selectLast();
         this.markUnsaved();
     }

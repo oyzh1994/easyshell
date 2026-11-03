@@ -11,6 +11,7 @@ import cn.oyzh.i18n.I18nHelper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 达梦字段选择框
@@ -39,7 +40,7 @@ public class ShellDamengFieldTextFiled extends ChooseTextField {
     /**
      * 已选中的字段名称列表
      */
-    private List<String> selectedColumns;
+    private Set<String> selectedColumns;
 
     /**
      * 构造并初始化达梦字段选择框
@@ -47,7 +48,7 @@ public class ShellDamengFieldTextFiled extends ChooseTextField {
      * @param columns         字段列表
      * @param selectedColumns 已选中的字段名称列表
      */
-    public ShellDamengFieldTextFiled(List<DamengColumn> columns, List<String> selectedColumns) {
+    public ShellDamengFieldTextFiled(List<DamengColumn> columns, Set<String> selectedColumns) {
         this.columns = columns;
         this.setSelectedColumns(selectedColumns);
     }
@@ -93,7 +94,7 @@ public class ShellDamengFieldTextFiled extends ChooseTextField {
      *
      * @param selectedColumns 已选中的字段名称列表
      */
-    public void setSelectedColumns(List<String> selectedColumns) {
+    public void setSelectedColumns(Set<String> selectedColumns) {
         this.selectedColumns = selectedColumns;
         ShellDamengColumnListView listView = this.listView();
         if (listView != null) {
@@ -107,8 +108,8 @@ public class ShellDamengFieldTextFiled extends ChooseTextField {
      *
      * @return 已选中的字段名称列表
      */
-    public List<String> getSelectedColumns() {
-        return Objects.requireNonNullElse(this.selectedColumns, Collections.emptyList());
+    public Set<String> getSelectedColumns() {
+        return Objects.requireNonNullElse(this.selectedColumns, Collections.emptySet());
     }
 
     /**

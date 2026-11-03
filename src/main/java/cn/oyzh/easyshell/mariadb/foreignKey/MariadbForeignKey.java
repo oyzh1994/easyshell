@@ -8,6 +8,7 @@ import cn.oyzh.fx.db.DBObject;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -112,11 +113,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
         super.putOriginalData("name", name);
     }
 
-    /**
-     * 设置外键字段列表
-     *
-     * @param columns 外键字段列表
-     */
+    @Override
     public void setColumns(Set<String> columns) {
         this.columns = columns;
         super.putOriginalData("columns", columns);
@@ -178,18 +175,6 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     }
 
     /**
-     * 添加外键字段
-     *
-     * @param columnName 字段名称
-     */
-    public void addColumn(String columnName) {
-        if (this.columns == null) {
-            this.setColumns(new HashSet<>());
-        }
-        this.columns.add(columnName);
-    }
-
-    /**
      * 添加引用字段
      *
      * @param columnName 字段名称
@@ -225,11 +210,7 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
         return name;
     }
 
-    /**
-     * 获取外键字段列表
-     *
-     * @return 外键字段列表
-     */
+    @Override
     public Set<String> getColumns() {
         return columns;
     }

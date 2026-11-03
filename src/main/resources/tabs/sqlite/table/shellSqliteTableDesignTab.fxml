@@ -77,10 +77,10 @@
             <DBStatusTableView fixedCellSize="30" fx:id="foreignKeyTable" flexWidth="100%" flexHeight="100%">
                 <columns>
                     <DBStatusColumn/>
-                    <FXTableColumn flexWidth="18%" valueName="nameControl" text="%base.name"/>
-                    <FXTableColumn flexWidth="15%" valueName="columnControl" text="%base.fields"/>
-                    <FXTableColumn flexWidth="18%" valueName="referencedTableControl" text="%base.referencedTable"/>
-                    <FXTableColumn flexWidth="17%" valueName="referencedColumnControl" text="%base.referencedFields"/>
+                    <FXTableColumn flexWidth="30% - 290" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="22%" valueName="columnControl" text="%base.fields"/>
+                    <FXTableColumn flexWidth="22%" valueName="referencedTableControl" text="%base.referencedTable"/>
+                    <FXTableColumn flexWidth="26%" valueName="referencedColumnControl" text="%base.referencedFields"/>
                     <FXTableColumn realWidth="130" valueName="deletePolicyControl" text="%base.onDelete"/>
                     <FXTableColumn realWidth="130" valueName="updatePolicyControl" text="%base.onUpdate"/>
                 </columns>

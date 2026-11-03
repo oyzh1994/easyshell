@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -311,8 +312,8 @@ public class SQLiteDesignAndDataTest {
         SQLiteForeignKey foreignKey = foreignKeys.getFirst();
         assertEquals("fk_parent", foreignKey.getName());
         assertEquals(List.of("parent_id"), foreignKey.getColumns());
-        assertEquals("parent", foreignKey.getReferencedTable());
-        assertEquals(List.of("id"), foreignKey.getReferencedColumns());
+        assertEquals("parent", foreignKey.getPrimaryKeyTable());
+        assertEquals(List.of("id"), foreignKey.getPrimaryKeyColumns());
         assertEquals("CASCADE", foreignKey.getDeletePolicy());
         assertEquals("SET NULL", foreignKey.getUpdatePolicy());
         assertTrue(foreignKey.toConstraintSql().contains("FOREIGN KEY (\"parent_id\") REFERENCES \"parent\" (\"id\")"));
@@ -343,9 +344,9 @@ public class SQLiteDesignAndDataTest {
                     this.column("amount", "REAL", false, false, false));
             SQLiteForeignKey foreignKey = new SQLiteForeignKey();
             foreignKey.setName("fk_child_parent");
-            foreignKey.setColumns(List.of("parent_id"));
-            foreignKey.setReferencedTable("parent");
-            foreignKey.setReferencedColumns(List.of("id"));
+            foreignKey.setColumns(Set.of("parent_id"));
+            foreignKey.setPrimaryKeyTable("parent");
+            foreignKey.setPrimaryKeyColumns(Set.of("id"));
             foreignKey.setDeletePolicy("CASCADE");
             SQLiteCheck check = new SQLiteCheck();
             check.setName("chk_amount");

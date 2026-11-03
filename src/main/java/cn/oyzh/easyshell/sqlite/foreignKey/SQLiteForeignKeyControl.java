@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.sqlite.foreignKey;
 
-import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
+import cn.oyzh.easyshell.fx.sqlite.table.ShellSqliteIndexFieldTextFiled;
+import cn.oyzh.easyshell.fx.sqlite.table.ShellSqliteTableComboBox;
+import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -22,6 +25,33 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
     private static final List<String> POLICIES = Arrays.asList(
             "NO ACTION", "RESTRICT", "CASCADE", "SET NULL", "SET DEFAULT");
 
+    private List<? extends SQLiteColumn> columnList;
+
+    private List<? extends SQLiteColumn> primaryKeyColumnList;
+
+    private ShellSqliteClient dbClient;
+
+    private ShellSqliteIndexFieldTextFiled columnControl;
+
+    private ShellSqliteTableComboBox referencedTableControl;
+
+    private ShellSqliteIndexFieldTextFiled referencedColumnControl;
+
+    public void setColumnList(List<? extends SQLiteColumn> columnList) {
+        this.columnList = columnList;
+        if (this.columnControl != null) {
+            this.columnControl.setColumnList(columnList);
+        }
+    }
+
+    public void setDbClient(ShellSqliteClient dbClient) {
+        this.dbClient = dbClient;
+        if (this.referencedTableControl != null) {
+            this.referencedTableControl.init(this.getPrimaryKeyTable(), dbClient);
+        }
+        this.refreshReferencedColumns();
+    }
+
     public ClearableTextField getNameControl() {
         ClearableTextField field = new ClearableTextField();
         field.setText(this.getName());
@@ -35,12 +65,16 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
         return field;
     }
 
-    public ClearableTextField getColumnControl() {
-        ClearableTextField field = new ClearableTextField();
-        field.setText(this.columnsText());
-        field.setPromptText(I18nHelper.pleaseInputContent());
+    public ShellSqliteIndexFieldTextFiled getColumnControl() {
+        if (this.columnList == null) {
+            this.columnList = new ArrayList<>();
+        }
+        ShellSqliteIndexFieldTextFiled field = new ShellSqliteIndexFieldTextFiled(
+                this.columnList, this.getColumns());
+        this.columnControl = field;
+        field.setFlexWidth("100% - 12");
         field.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.setColumns(this.split(newValue));
+            this.setColumns(field.getColumns());
             this.setChanged(true);
         });
         TableViewUtil.rowOnCtrlS(field);
@@ -48,12 +82,29 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
         return field;
     }
 
-    public ClearableTextField getReferencedTableControl() {
-        ClearableTextField field = new ClearableTextField();
-        field.setText(this.getReferencedTable());
-        field.setPromptText(I18nHelper.pleaseInputContent());
+    public ShellSqliteTableComboBox getReferencedTableControl() {
+        ShellSqliteTableComboBox comboBox = new ShellSqliteTableComboBox();
+        this.referencedTableControl = comboBox;
+        comboBox.init(this.getPrimaryKeyTable(), this.dbClient);
+        comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
+            this.setPrimaryKeyTable(newValue);
+            this.setChanged(true);
+        });
+        this.primaryKeyTableProperty().addListener((observable, oldValue, newValue) ->
+                this.refreshReferencedColumns());
+        TableViewUtil.rowOnCtrlS(comboBox);
+        TableViewUtil.selectRowOnMouseClicked(comboBox);
+        return comboBox;
+    }
+
+    public ShellSqliteIndexFieldTextFiled getReferencedColumnControl() {
+        this.primaryKeyColumnList = this.loadPrimaryKeyColumns();
+        ShellSqliteIndexFieldTextFiled field = new ShellSqliteIndexFieldTextFiled(
+                this.primaryKeyColumnList, this.getPrimaryKeyColumns());
+        this.referencedColumnControl = field;
+        field.setFlexWidth("100% - 12");
         field.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.setReferencedTable(newValue);
+            this.setPrimaryKeyColumns(field.getColumns());
             this.setChanged(true);
         });
         TableViewUtil.rowOnCtrlS(field);
@@ -61,17 +112,19 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
         return field;
     }
 
-    public ClearableTextField getReferencedColumnControl() {
-        ClearableTextField field = new ClearableTextField();
-        field.setText(this.referencedColumnsText());
-        field.setPromptText(I18nHelper.pleaseInputContent());
-        field.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.setReferencedColumns(this.split(newValue));
-            this.setChanged(true);
-        });
-        TableViewUtil.rowOnCtrlS(field);
-        TableViewUtil.selectRowOnMouseClicked(field);
-        return field;
+    private List<? extends SQLiteColumn> loadPrimaryKeyColumns() {
+        if (this.dbClient == null || StringUtil.isBlank(this.getPrimaryKeyTable())) {
+            return new ArrayList<>();
+        }
+        return this.dbClient.selectColumns(this.getPrimaryKeyTable());
+    }
+
+    private void refreshReferencedColumns() {
+        this.primaryKeyColumnList = this.loadPrimaryKeyColumns();
+        if (this.referencedColumnControl != null) {
+            this.referencedColumnControl.setColumnList(this.primaryKeyColumnList);
+            this.referencedColumnControl.setColumns(this.getPrimaryKeyColumns());
+        }
     }
 
     public ComboBox<String> getDeletePolicyControl() {
@@ -92,18 +145,6 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
         });
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;
-    }
-
-    private List<String> split(String value) {
-        List<String> list = new ArrayList<>();
-        if (StringUtil.isNotBlank(value)) {
-            for (String item : value.split("\\s*,\\s*")) {
-                if (StringUtil.isNotBlank(item)) {
-                    list.add(SQLiteGeneratorUtil.unquote(item.trim()));
-                }
-            }
-        }
-        return list;
     }
 
     public static SQLiteForeignKeyControl of(SQLiteForeignKey foreignKey) {

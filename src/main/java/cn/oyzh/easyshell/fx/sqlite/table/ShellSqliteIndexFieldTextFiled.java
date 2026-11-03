@@ -8,7 +8,9 @@ import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * SQLite索引字段选择框。
@@ -20,7 +22,7 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
 
     private List<? extends SQLiteColumn> columnList;
 
-    private List<String> columns;
+    private Set<String> columns;
 
     private PopupAdapter popup;
 
@@ -33,9 +35,18 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
      * @param columnList 可选字段列表
      * @param columns    已选字段列表
      */
-    public ShellSqliteIndexFieldTextFiled(List<? extends SQLiteColumn> columnList, List<String> columns) {
+    public ShellSqliteIndexFieldTextFiled(List<? extends SQLiteColumn> columnList, Set<String> columns) {
         this.columnList = columnList;
         this.setColumns(columns);
+    }
+
+    /**
+     * 设置可选字段列表。
+     *
+     * @param columnList 可选字段列表
+     */
+    public void setColumnList(List<? extends SQLiteColumn> columnList) {
+        this.columnList = columnList;
     }
 
     protected void initPopup() {
@@ -64,8 +75,8 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
      *
      * @param columns 字段列表
      */
-    public void setColumns(List<String> columns) {
-        this.columns = columns == null ? new ArrayList<>() : columns;
+    public void setColumns(Set<String> columns) {
+        this.columns = columns == null ? new HashSet<>() : columns;
         this.initText();
     }
 
@@ -82,7 +93,7 @@ public class ShellSqliteIndexFieldTextFiled extends ChooseTextField {
         return null;
     }
 
-    public List<String> getColumns() {
+    public Set<String> getColumns() {
         return this.columns;
     }
 

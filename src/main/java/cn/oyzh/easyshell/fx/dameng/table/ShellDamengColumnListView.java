@@ -10,7 +10,9 @@ import javafx.scene.control.CheckBox;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -72,9 +74,9 @@ public class ShellDamengColumnListView extends FXListView<FXCheckBox> {
      *
      * @return 已勾选的字段列表
      */
-    public List<DamengColumn> getSelectedColumns() {
+    public Set<DamengColumn> getSelectedColumns() {
         List<FXCheckBox> checkBoxes = this.getItems().parallelStream().filter(CheckBox::isSelected).toList();
-        List<DamengColumn> columns = new ArrayList<>();
+        Set<DamengColumn> columns = new HashSet<>();
         for (FXCheckBox checkBox : checkBoxes) {
             columns.add(checkBox.getProp("column"));
         }
@@ -86,9 +88,9 @@ public class ShellDamengColumnListView extends FXListView<FXCheckBox> {
      *
      * @return 已勾选的字段名称列表
      */
-    public List<String> getSelectedColumnNames() {
-        List<DamengColumn> columns = this.getSelectedColumns();
-        return columns.parallelStream().map(DamengColumn::getName).collect(Collectors.toList());
+    public Set<String> getSelectedColumnNames() {
+        Set<DamengColumn> columns = this.getSelectedColumns();
+        return columns.parallelStream().map(DamengColumn::getName).collect(Collectors.toSet());
     }
 
     /**

@@ -14,7 +14,9 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -68,8 +70,8 @@ public class SQLiteIndexControl extends SQLiteIndex {
         return field;
     }
 
-    public List<String> getColumns() {
-        List<String> columns = new ArrayList<>();
+    public Set<String> getColumns() {
+        Set<String> columns = new HashSet<>();
         for (String item : this.splitColumns(this.getColumnDefinition())) {
             String column = this.parseColumnName(item);
             if (StringUtil.isNotBlank(column)) {
@@ -84,7 +86,7 @@ public class SQLiteIndexControl extends SQLiteIndex {
         return super.isInvalid() || StringUtil.isBlank(this.getColumnDefinition());
     }
 
-    private String buildColumnDefinition(List<String> columns) {
+    private String buildColumnDefinition(Set<String> columns) {
         List<String> definitions = new ArrayList<>();
         for (String column : columns) {
             if (StringUtil.isBlank(column)) {

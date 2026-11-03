@@ -1,35 +1,63 @@
 package cn.oyzh.easyshell.sqlite.foreignKey;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
 import cn.oyzh.fx.db.DBForeignKey;
 import cn.oyzh.fx.db.DBObject;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * SQLite 外键约束。
+ * SQLite外键。
  *
  * @since 2026-11-02
  */
 public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCopier<SQLiteForeignKey> {
 
+    /**
+     * 数据库名称
+     */
     private String dbName;
 
+    /**
+     * 数据表名称
+     */
     private String tableName;
 
+    /**
+     * 外键名称
+     */
     private String name;
 
-    private List<String> columns = new ArrayList<>();
+    /**
+     * 外键字段列表
+     */
+    private Set<String> columns = new HashSet<>();
 
-    private String referencedTable;
+    /**
+     * 引用表名称
+     */
+    private SimpleStringProperty primaryKeyTableProperty;
 
-    private List<String> referencedColumns = new ArrayList<>();
+    /**
+     * 引用字段列表
+     */
+    private Set<String> primaryKeyColumns = new HashSet<>();
 
+    /**
+     * 外键删除策略
+     */
     private String deletePolicy = "NO ACTION";
 
+    /**
+     * 外键更新策略
+     */
     private String updatePolicy = "NO ACTION";
 
     public SQLiteForeignKey() {
@@ -37,6 +65,27 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
 
     public SQLiteForeignKey(String name) {
         this.setName(name);
+    }
+
+    /**
+     * 获取原始名称。
+     *
+     * @return 原始名称
+     */
+    public String originalName() {
+        return (String) super.getOriginalData("name");
+    }
+
+    /**
+     * 获取引用表名称属性。
+     *
+     * @return 引用表名称属性
+     */
+    public SimpleStringProperty primaryKeyTableProperty() {
+        if (this.primaryKeyTableProperty == null) {
+            this.primaryKeyTableProperty = new SimpleStringProperty();
+        }
+        return this.primaryKeyTableProperty;
     }
 
     public String getDbName() {
@@ -57,76 +106,77 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
         super.putOriginalData("tableName", tableName);
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        super.putOriginalData("name", name);
-    }
-
-    public String originalName() {
-        return (String) super.getOriginalData("name");
-    }
-
-    public List<String> getColumns() {
-        return this.columns;
-    }
-
-    public void setColumns(List<String> columns) {
-        this.columns = columns == null ? new ArrayList<>() : columns;
-        super.putOriginalData("columns", this.columns);
-    }
-
-    public String getReferencedTable() {
-        return this.referencedTable;
-    }
-
-    public void setReferencedTable(String referencedTable) {
-        this.referencedTable = referencedTable;
-        super.putOriginalData("referencedTable", referencedTable);
-    }
-
-    public List<String> getReferencedColumns() {
-        return this.referencedColumns;
-    }
-
-    public void setReferencedColumns(List<String> referencedColumns) {
-        this.referencedColumns = referencedColumns == null ? new ArrayList<>() : referencedColumns;
-        super.putOriginalData("referencedColumns", this.referencedColumns);
-    }
-
-    public String getDeletePolicy() {
-        return this.deletePolicy;
-    }
-
+    /**
+     * 设置删除策略。
+     *
+     * @param deletePolicy 删除策略
+     */
     public void setDeletePolicy(String deletePolicy) {
         this.deletePolicy = deletePolicy;
         super.putOriginalData("deletePolicy", deletePolicy);
     }
 
-    public String getUpdatePolicy() {
-        return this.updatePolicy;
-    }
-
+    /**
+     * 设置更新策略。
+     *
+     * @param updatePolicy 更新策略
+     */
     public void setUpdatePolicy(String updatePolicy) {
         this.updatePolicy = updatePolicy;
         super.putOriginalData("updatePolicy", updatePolicy);
     }
 
-    public String columnsText() {
-        return String.join(", ", this.columns);
-    }
-
-    public String referencedColumnsText() {
-        return String.join(", ", this.referencedColumns);
+    @Override
+    public void setName(String name) {
+        this.name = name;
+        super.putOriginalData("name", name);
     }
 
     @Override
-    public boolean isInvalid() {
-        return StringUtil.isBlank(this.name) || this.columns.isEmpty()
-                || StringUtil.isBlank(this.referencedTable);
+    public void setColumns(Set<String> columns) {
+        this.columns = columns == null ? new HashSet<>() : columns;
+        super.putOriginalData("columns", this.columns);
+    }
+
+    /**
+     * 设置引用表名称。
+     *
+     * @param primaryKeyTable 引用表名称
+     */
+    public void setPrimaryKeyTable(String primaryKeyTable) {
+        this.primaryKeyTableProperty().set(primaryKeyTable);
+        super.putOriginalData("primaryKeyTable", primaryKeyTable);
+    }
+
+    /**
+     * 获取引用表名称。
+     *
+     * @return 引用表名称
+     */
+    public String getPrimaryKeyTable() {
+        return this.primaryKeyTableProperty == null ? null : this.primaryKeyTableProperty.get();
+    }
+
+    /**
+     * 设置引用字段列表。
+     *
+     * @param primaryKeyColumns 引用字段列表
+     */
+    public void setPrimaryKeyColumns(Set<String> primaryKeyColumns) {
+        this.primaryKeyColumns = primaryKeyColumns == null ? new HashSet<>() : primaryKeyColumns;
+        super.putOriginalData("primaryKeyColumns", this.primaryKeyColumns);
+    }
+
+    /**
+     * 添加引用字段。
+     *
+     * @param columnName 字段名称
+     */
+    public void addPrimaryKeyColumn(String columnName) {
+        if (this.primaryKeyColumns == null) {
+            this.setPrimaryKeyColumns(new HashSet<>());
+        }
+        this.primaryKeyColumns.add(columnName);
     }
 
     @Override
@@ -135,12 +185,56 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
             this.setDbName(foreignKey.getDbName());
             this.setTableName(foreignKey.getTableName());
             this.setName(foreignKey.getName());
-            this.setColumns(new ArrayList<>(foreignKey.getColumns()));
-            this.setReferencedTable(foreignKey.getReferencedTable());
-            this.setReferencedColumns(new ArrayList<>(foreignKey.getReferencedColumns()));
             this.setDeletePolicy(foreignKey.getDeletePolicy());
             this.setUpdatePolicy(foreignKey.getUpdatePolicy());
+            this.setColumns(new HashSet<>(foreignKey.getColumns()));
+            this.setPrimaryKeyTable(foreignKey.getPrimaryKeyTable());
+            this.setPrimaryKeyColumns(new HashSet<>(foreignKey.getPrimaryKeyColumns()));
         }
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return DBForeignKey.super.isInvalid() || CollectionUtil.isEmpty(this.columns)
+                || CollectionUtil.isEmpty(this.primaryKeyColumns)
+                || StringUtil.isBlank(this.getPrimaryKeyTable());
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public Set<String> getColumns() {
+        return this.columns;
+    }
+
+    /**
+     * 获取删除策略。
+     *
+     * @return 删除策略
+     */
+    public String getDeletePolicy() {
+        return this.deletePolicy;
+    }
+
+    /**
+     * 获取更新策略。
+     *
+     * @return 更新策略
+     */
+    public String getUpdatePolicy() {
+        return this.updatePolicy;
+    }
+
+    /**
+     * 获取引用字段列表。
+     *
+     * @return 引用字段列表
+     */
+    public Set<String> getPrimaryKeyColumns() {
+        return this.primaryKeyColumns;
     }
 
     public String toConstraintSql() {
@@ -149,10 +243,10 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
             sql.append("CONSTRAINT ").append(SQLiteGeneratorUtil.quote(this.name)).append(' ');
         }
         sql.append("FOREIGN KEY (").append(this.columns.stream().map(SQLiteGeneratorUtil::quote)
-                .collect(java.util.stream.Collectors.joining(", "))).append(") REFERENCES ")
-                .append(SQLiteGeneratorUtil.quote(this.referencedTable));
-        if (!this.referencedColumns.isEmpty()) {
-            sql.append(" (").append(this.referencedColumns.stream().map(SQLiteGeneratorUtil::quote)
+                        .collect(java.util.stream.Collectors.joining(", "))).append(") REFERENCES ")
+                .append(SQLiteGeneratorUtil.quote(this.getPrimaryKeyTable()));
+        if (!this.primaryKeyColumns.isEmpty()) {
+            sql.append(" (").append(this.primaryKeyColumns.stream().map(SQLiteGeneratorUtil::quote)
                     .collect(java.util.stream.Collectors.joining(", "))).append(')');
         }
         if (StringUtil.isNotBlank(this.deletePolicy)) {
@@ -162,5 +256,19 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
             sql.append(" ON UPDATE ").append(this.updatePolicy);
         }
         return sql.toString();
+    }
+
+    @Override
+    public void destroy() {
+        if (this.primaryKeyTableProperty != null) {
+            this.primaryKeyTableProperty.unbind();
+        }
+        if (this.columns != null) {
+            this.columns.clear();
+        }
+        if (this.primaryKeyColumns != null) {
+            this.primaryKeyColumns.clear();
+        }
+        super.destroy();
     }
 }

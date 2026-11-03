@@ -112,11 +112,7 @@ public class MysqlForeignKey extends DBObject implements DBForeignKey, ObjectCop
         super.putOriginalData("name", name);
     }
 
-    /**
-     * 设置外键字段列表
-     *
-     * @param columns 外键字段列表
-     */
+    @Override
     public void setColumns(Set<String> columns) {
         this.columns = columns;
         super.putOriginalData("columns", columns);
@@ -177,11 +173,7 @@ public class MysqlForeignKey extends DBObject implements DBForeignKey, ObjectCop
         super.putOriginalData("primaryKeyColumns", primaryKeyColumns);
     }
 
-    /**
-     * 添加外键字段
-     *
-     * @param columnName 字段名称
-     */
+    @Override
     public void addColumn(String columnName) {
         if (this.columns == null) {
             this.setColumns(new HashSet<>());
@@ -225,11 +217,7 @@ public class MysqlForeignKey extends DBObject implements DBForeignKey, ObjectCop
         return name;
     }
 
-    /**
-     * 获取外键字段列表
-     *
-     * @return 外键字段列表
-     */
+    @Override
     public Set<String> getColumns() {
         return columns;
     }
@@ -252,11 +240,6 @@ public class MysqlForeignKey extends DBObject implements DBForeignKey, ObjectCop
         return updatePolicy;
     }
 
-    /**
-     * 获取引用字段列表
-     *
-     * @return 引用字段列表
-     */
     public Set<String> getPrimaryKeyColumns() {
         return primaryKeyColumns;
     }

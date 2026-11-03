@@ -7,7 +7,9 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -67,8 +69,8 @@ public class ShellSqliteIndexColumnListView extends FXListView<FXComboBox<String
      *
      * @return 字段列表
      */
-    public List<String> getColumns() {
-        List<String> list = new ArrayList<>();
+    public Set<String> getColumns() {
+        Set<String> list = new HashSet<>();
         for (FXComboBox<String> item : this.getItems()) {
             if (StringUtil.isNotBlank(item.getValue())) {
                 list.add(item.getValue());
