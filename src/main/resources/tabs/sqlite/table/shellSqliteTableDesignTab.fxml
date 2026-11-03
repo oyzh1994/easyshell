@@ -31,16 +31,16 @@
         <RunSVGGlyph tipText="%shell.sqlite.preview" onMousePrimaryClicked="#createPreview">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </RunSVGGlyph>
-        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#addItem">
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#deleteItem">
+        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </DeleteSVGGlyph>
-        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#moveUp">
+        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </MoveUpSVGGlyph>
-        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#moveDown">
+        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </MoveDownSVGGlyph>
         <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh">

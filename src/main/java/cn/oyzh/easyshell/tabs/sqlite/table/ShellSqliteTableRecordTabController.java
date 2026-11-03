@@ -551,10 +551,20 @@ public class ShellSqliteTableRecordTabController extends RichTabController {
         NodeUtil.nodeOnCtrlS(this.root, this::apply);
     }
 
+    /**
+     * 获取过滤条件
+     *
+     * @return 过滤条件
+     */
     public List<SQLiteRecordFilter> getFilters() {
         return filters;
     }
 
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
     public void setFilters(List<SQLiteRecordFilter> filters) {
         this.filters = filters;
     }

@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.sqlite.generator.view.SQLiteViewCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaManager;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -37,12 +38,21 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
 
     private ShellSqliteClient client;
 
+    private ShellSqliteRootTreeItem dbItem;
+
     private String originalName;
 
     private boolean unsaved;
 
-    public void init(ShellSqliteClient client, SQLiteView view) {
-        this.client = client;
+    /**
+     * 初始化
+     *
+     * @param view   视图对象
+     * @param dbItem 数据库树节点
+     */
+    public void init(SQLiteView view, ShellSqliteRootTreeItem dbItem) {
+        this.dbItem = dbItem;
+        this.client = dbItem.client();
         this.originalName = view == null ? null : view.getName();
         this.definition.setText(view == null ? "" : StringUtil.blankToDefault(view.getDefinition(), ""));
         this.unsaved = view == null;
@@ -140,11 +150,30 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         });
     }
 
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.originalName;
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.unsaved;
+    }
+
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
+    public ShellSqliteRootTreeItem getDbItem() {
+        return this.dbItem;
     }
 }

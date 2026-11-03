@@ -1,23 +1,22 @@
 package cn.oyzh.easyshell.tabs.sqlite.view;
 
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecordFilter;
 import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteBaseTab;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.easyshell.trees.sqlite.view.ShellSqliteViewTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
-import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
+import java.util.List;
+
 /**
- * SQLite 视图数据标签页。
+ * SQLite 视图记录标签页
  *
+ * @author oyzh
  * @since 2026-11-02
  */
 public class ShellSqliteViewRecordTab extends ShellSqliteBaseTab {
-
-    private ShellSqliteViewTreeItem item;
 
     @Override
     protected String url() {
@@ -25,36 +24,8 @@ public class ShellSqliteViewRecordTab extends ShellSqliteBaseTab {
     }
 
     @Override
-    public ShellSqliteClient client() {
-        return this.item == null ? null : this.item.client();
-    }
-
-    public void init(ShellSqliteViewTreeItem item) {
-        this.item = item;
-        this.controller().init(item);
-        this.flush();
-    }
-
-    public String viewName() {
-        return this.item == null ? null : this.item.viewName();
-    }
-
-    public ShellSqliteViewTreeItem item() {
-        return this.item;
-    }
-
-    public void reload() {
-        this.controller().reload();
-    }
-
-    @Override
-    protected ShellSqliteViewRecordTabController controller() {
-        return (ShellSqliteViewRecordTabController) super.controller();
-    }
-
-    @Override
     public void flushGraphic() {
-        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        ViewSVGGlyph graphic = (ViewSVGGlyph) this.getGraphic();
         if (graphic == null) {
             graphic = new ViewSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
@@ -64,8 +35,60 @@ public class ShellSqliteViewRecordTab extends ShellSqliteBaseTab {
 
     @Override
     public void flushTitle() {
-        String name = StringUtil.blankToDefault(this.viewName(), I18nHelper.unnamedView());
-        String connectName = this.item == null ? "" : this.item.infoName();
-        this.setText(name + "@main(" + connectName + ")");
+        this.setText(this.item().viewName() + "@" + this.item().dbName() + "(" + this.item().infoName() + ")");
+    }
+
+    /**
+     * 初始化
+     *
+     * @param item 视图树节点
+     * @return 结果
+     */
+    public boolean init(ShellSqliteViewTreeItem item) {
+        this.controller().init(item);
+        this.flush();
+        return true;
+    }
+
+    @Override
+    public ShellSqliteViewRecordTabController controller() {
+        return (ShellSqliteViewRecordTabController) super.controller();
+    }
+
+    @Override
+    public void reload() {
+        this.controller().reload();
+    }
+
+    /**
+     * 获取树节点
+     *
+     * @return 树节点
+     */
+    public ShellSqliteViewTreeItem item() {
+        return this.controller().getItem();
+    }
+
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
+    public String viewName() {
+        return this.item().viewName();
+    }
+
+    @Override
+    public ShellSqliteRootTreeItem dbItem() {
+        return this.item().dbItem();
+    }
+
+    /**
+     * 设置过滤条件
+     *
+     * @param filters 过滤条件
+     */
+    public void setFilters(List<SQLiteRecordFilter> filters) {
+        this.controller().setFilters(filters);
     }
 }

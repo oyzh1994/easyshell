@@ -1,21 +1,19 @@
 package cn.oyzh.easyshell.tabs.sqlite.home;
 
-import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
-import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteBaseTab;
 import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph;
+import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
 /**
- * SQLite 主页标签。
+ * SQLite 主页标签页
  *
+ * @author oyzh
  * @since 2026-11-02
  */
-public class ShellSqliteHomeTab extends ShellSqliteBaseTab {
-
-    private ShellSqliteClient client;
+public class ShellSqliteHomeTab extends RichTab {
 
     @Override
     protected String url() {
@@ -23,16 +21,7 @@ public class ShellSqliteHomeTab extends ShellSqliteBaseTab {
     }
 
     @Override
-    public ShellSqliteClient client() {
-        return this.client;
-    }
-
-    public void init(ShellSqliteClient client) {
-        this.client = client;
-        this.controller().init(client);
-    }
-
-    protected ShellSqliteHomeTabController controller() {
+    public ShellSqliteHomeTabController controller() {
         return (ShellSqliteHomeTabController) super.controller();
     }
 

@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.tabs.sqlite.query;
 
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteBaseTab;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
@@ -12,40 +12,16 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * SQLite 查询标签。
+ * SQLite 查询标签页
  *
+ * @author oyzh
  * @since 2026-11-02
  */
 public class ShellSqliteQueryMainTab extends ShellSqliteBaseTab {
 
-    private ShellSqliteClient client;
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "sqlite/query/shellSqliteQueryMainTab.fxml";
-    }
-
-    @Override
-    public ShellSqliteClient client() {
-        return this.client;
-    }
-
-    public void init(ShellQuery query, ShellSqliteClient client) {
-        this.client = client;
-        this.controller().init(query, client);
-        this.flush();
-    }
-
-    protected ShellSqliteQueryMainTabController controller() {
-        return (ShellSqliteQueryMainTabController) super.controller();
-    }
-
-    public ShellQuery query() {
-        return this.controller().getQuery();
-    }
-
-    public boolean isUnsaved() {
-        return this.controller().isUnsaved();
     }
 
     @Override
@@ -64,7 +40,61 @@ public class ShellSqliteQueryMainTab extends ShellSqliteBaseTab {
         if (name == null) {
             name = I18nHelper.newQuery();
         }
-        this.setText((this.isUnsaved() ? "* " : "") + name + " (SQLite)");
+        if (this.isUnsaved()) {
+            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        } else {
+            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        }
+    }
+
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
+    public ShellQuery query() {
+        return this.controller().getQuery();
+    }
+
+    /**
+     * 获取查询id
+     *
+     * @return 查询id
+     */
+    public String queryId() {
+        return this.query().getUid();
+    }
+
+    @Override
+    public ShellSqliteRootTreeItem dbItem() {
+        return this.controller().getDbItem();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param query  查询对象
+     * @param dbItem 数据库树节点
+     * @return 结果
+     */
+    public boolean init(ShellQuery query, ShellSqliteRootTreeItem dbItem) {
+        this.controller().init(query, dbItem);
+        this.flush();
+        return true;
+    }
+
+    @Override
+    public ShellSqliteQueryMainTabController controller() {
+        return (ShellSqliteQueryMainTabController) super.controller();
+    }
+
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
+    public boolean isUnsaved() {
+        return this.controller().isUnsaved();
     }
 
     @Override
@@ -74,5 +104,18 @@ public class ShellSqliteQueryMainTab extends ShellSqliteBaseTab {
         } else {
             this.closeTab();
         }
+    }
+
+    /**
+     * 创建实例
+     *
+     * @param query  查询对象
+     * @param dbItem 数据库树节点
+     * @return 实例对象
+     */
+    public static ShellSqliteQueryMainTab of(ShellQuery query, ShellSqliteRootTreeItem dbItem) {
+        ShellSqliteQueryMainTab tab = new ShellSqliteQueryMainTab();
+        tab.init(query, dbItem);
+        return tab;
     }
 }

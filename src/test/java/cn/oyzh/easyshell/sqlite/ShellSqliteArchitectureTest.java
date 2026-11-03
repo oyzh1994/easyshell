@@ -85,6 +85,9 @@ public class ShellSqliteArchitectureTest {
             "/tabs/sqlite/shellSqliteTab.fxml",
             "/tabs/sqlite/home/shellSqliteHomeTab.fxml",
             "/tabs/sqlite/query/shellSqliteQueryMainTab.fxml",
+            "/tabs/sqlite/query/shellSqliteQueryInfoTab.fxml",
+            "/tabs/sqlite/query/shellSqliteQuerySelectTab.fxml",
+            "/tabs/sqlite/query/shellSqliteQueryExplainTab.fxml",
             "/tabs/sqlite/terminal/shellSqliteTerminalTab.fxml",
             "/tabs/sqlite/table/shellSqliteTableDesignTab.fxml",
             "/tabs/sqlite/table/shellSqliteTableColumnExtra.fxml",
@@ -572,8 +575,8 @@ public class ShellSqliteArchitectureTest {
         assertTrue(design.contains("fx:id=\"preview\""));
         assertTrue(design.contains("fx:include fx:id=\"tableColumnExtra\""));
         assertFalse(design.contains("fx:id=\"tableName\""));
-        assertTrue(design.contains("#moveUp"));
-        assertTrue(design.contains("#moveDown"));
+        assertTrue(design.contains("#doMoveUp"));
+        assertTrue(design.contains("#doMoveDown"));
         assertTrue(design.contains("#refresh"));
         assertFalse(design.contains("fx:id=\"columns\""));
         assertFalse(design.contains("autoIncrementControl"));
@@ -649,6 +652,9 @@ public class ShellSqliteArchitectureTest {
         assertTrue(functionDesign.contains("fx:id=\"expressionBox\""));
         assertTrue(functionDesign.contains("fx:id=\"viewDefinitionBox\""));
         assertTrue(functionDesign.contains("fx:id=\"generatedColumnBox\""));
+        assertTrue(functionDesign.contains("fx:id=\"generatedColumnSettings\""));
+        assertTrue(functionDesign.contains("fx:id=\"generatedExpressionBox\""));
+        assertTrue(functionDesign.contains("fx:id=\"generatedExpression\""));
         assertTrue(functionDesign.contains("fx:id=\"targetTable\""));
         assertTrue(functionDesign.contains("fx:id=\"returnType\""));
         assertTrue(functionDesign.contains("fx:id=\"generatedStorage\""));
@@ -659,12 +665,31 @@ public class ShellSqliteArchitectureTest {
         assertFalse(functionDesign.contains("#refreshBuiltins"));
         assertTrue(functionDesign.contains("fx:id=\"tabPane\""));
         assertTrue(functionDesign.contains("fx:id=\"previewTab\""));
+        assertTrue(functionDesign.indexOf("fx:id=\"generatedColumnSettings\"")
+                < functionDesign.indexOf("fx:id=\"generatedExpressionBox\""));
+        assertTrue(functionDesign.indexOf("fx:id=\"generatedExpressionBox\"")
+                < functionDesign.indexOf("fx:id=\"generatedExpression\""));
+        String functionController = this.sourceText(
+                "cn/oyzh/easyshell/tabs/sqlite/function/ShellSqliteFunctionDesignTabController.java");
+        assertTrue(functionController.contains("result.setExpression(this.generatedExpression.getText().trim())"));
 
         String query = this.resourceText("/tabs/sqlite/query/shellSqliteQueryMainTab.fxml");
+        assertTrue(query.contains("ShellSqliteQueryInfoTab"));
         assertTrue(query.contains("ExplainSVGGlyph"));
-        assertTrue(query.contains("ExportSVGGlyph"));
         assertTrue(query.contains("fx:id=\"infoTab\""));
-        assertTrue(query.contains("fx:id=\"resultTab\""));
+        assertFalse(query.contains("ExportSVGGlyph"));
+        String queryInfo = this.resourceText("/tabs/sqlite/query/shellSqliteQueryInfoTab.fxml");
+        assertTrue(queryInfo.contains("fx:id=\"infoArea\""));
+        String querySelect = this.resourceText("/tabs/sqlite/query/shellSqliteQuerySelectTab.fxml");
+        assertTrue(querySelect.contains("ExportSVGGlyph"));
+        assertTrue(querySelect.contains("SQLiteResultTableView"));
+        String queryExplain = this.resourceText("/tabs/sqlite/query/shellSqliteQueryExplainTab.fxml");
+        assertTrue(queryExplain.contains("SQLiteResultTableView"));
+        String queryController = this.sourceText(
+                "cn/oyzh/easyshell/tabs/sqlite/query/ShellSqliteQueryMainTabController.java");
+        assertTrue(queryController.contains("private void clearTabs()"));
+        assertTrue(queryController.contains("initSelectTab"));
+        assertTrue(queryController.contains("initExplainTab"));
     }
 
     @Test

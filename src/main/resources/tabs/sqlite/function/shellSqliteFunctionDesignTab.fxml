@@ -21,73 +21,113 @@
         flexWidth="100%" flexHeight="100%">
     <FXHBox realHeight="36" flexWidth="100%">
         <SaveSVGGlyph tipText="%shell.sqlite.save" onMousePrimaryClicked="#save">
-            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
         </SaveSVGGlyph>
         <RunSVGGlyph tipText="%shell.sqlite.preview" onMousePrimaryClicked="#createPreview">
-            <HBox.margin><Insets left="10" top="10"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
         </RunSVGGlyph>
     </FXHBox>
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 36">
         <FixedTab text="%base.definition" fx:id="definitionTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <FXVBox realHeight="60" flexWidth="100%">
-                    <InfoLabel realHeight="25" text="%shell.sqlite.functionKind">
-                        <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                <FXVBox realHeight="75" flexWidth="100%">
+                    <InfoLabel text="%shell.sqlite.functionKind">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
                     </InfoLabel>
                     <SQLiteFunctionKindComboBox fx:id="kind" realHeight="25" flexWidth="100% - 60">
-                        <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
                     </SQLiteFunctionKindComboBox>
                 </FXVBox>
-                <FXVBox fx:id="expressionBox" flexWidth="100%" VBox.vgrow="ALWAYS">
+                <FXVBox fx:id="expressionBox" flexWidth="100%" flexHeight="100% - 75">
                     <InfoLabel realHeight="25" text="%shell.sqlite.expression">
-                        <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
                     </InfoLabel>
-                    <ShellSqliteQueryEditor fx:id="expression" flexWidth="100% - 60" flexHeight="100% - 35"
+                    <ShellSqliteQueryEditor fx:id="expression" flexWidth="100% - 60" flexHeight="100% - 45"
                                             tipText="%shell.sqlite.function.expressionTip" VBox.vgrow="ALWAYS">
-                        <VBox.margin><Insets left="30" top="5" right="30" bottom="5"/></VBox.margin>
+                        <VBox.margin>
+                            <Insets left="30" top="5" right="30" bottom="5"/>
+                        </VBox.margin>
                     </ShellSqliteQueryEditor>
                 </FXVBox>
-                <FXVBox fx:id="viewDefinitionBox" flexWidth="100%" VBox.vgrow="ALWAYS"
+                <FXVBox fx:id="viewDefinitionBox" flexWidth="100%" flexHeight="100% - 75"
                         visible="false" managed="false">
                     <InfoLabel realHeight="25" text="%shell.sqlite.viewDefinition">
-                        <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
                     </InfoLabel>
-                    <ShellSqliteQueryEditor fx:id="definition" flexWidth="100% - 60" flexHeight="100% - 35"
-                                            tipText="%shell.sqlite.function.viewDefinitionTip" VBox.vgrow="ALWAYS">
-                        <VBox.margin><Insets left="30" top="5" right="30" bottom="5"/></VBox.margin>
+                    <ShellSqliteQueryEditor fx:id="definition" flexWidth="100% - 60" flexHeight="100% - 45"
+                                            tipText="%shell.sqlite.function.viewDefinitionTip">
+                        <VBox.margin>
+                            <Insets left="30" top="5" right="30" bottom="5"/>
+                        </VBox.margin>
                     </ShellSqliteQueryEditor>
                 </FXVBox>
-                <FXVBox fx:id="generatedColumnBox" realHeight="180" flexWidth="100%"
-                        visible="false" managed="false">
+                <FXVBox fx:id="generatedColumnBox" flexWidth="100%"
+                        visible="false" managed="false" flexHeight="100% - 75">
                     <FXVBox realHeight="60" flexWidth="100%">
                         <InfoLabel realHeight="25" text="%shell.sqlite.targetTable">
-                            <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
                         </InfoLabel>
                         <SQLiteTableSelectTextField fx:id="targetTable" realHeight="25" flexWidth="100% - 60"
                                                     promptText="%shell.sqlite.function.targetTableTip"
                                                     tipText="%shell.sqlite.function.targetTableTip">
-                            <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
                         </SQLiteTableSelectTextField>
                     </FXVBox>
                     <FXVBox realHeight="60" flexWidth="100%">
                         <InfoLabel realHeight="25" text="%shell.sqlite.returnType">
-                            <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
                         </InfoLabel>
                         <DBFiledTypeComboBox fx:id="returnType" dialect="SQLITE" require="true"
                                              realHeight="25" flexWidth="100% - 60"
                                              tipText="%shell.sqlite.function.returnTypeTip">
-                            <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
                         </DBFiledTypeComboBox>
                     </FXVBox>
                     <FXVBox realHeight="60" flexWidth="100%">
                         <InfoLabel realHeight="25" text="%shell.sqlite.generatedStorage">
-                            <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
                         </InfoLabel>
                         <FXComboBox fx:id="generatedStorage" realHeight="25" flexWidth="100% - 60"
                                     tipText="%shell.sqlite.function.storageTip">
-                            <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
                         </FXComboBox>
                     </FXVBox>
+                    <InfoLabel realHeight="25" text="%shell.sqlite.generatedExpression">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ShellSqliteQueryEditor fx:id="generatedExpression" flexWidth="100% - 60"
+                                            flexHeight="100% - 225"
+                                            tipText="%shell.sqlite.function.generatedExpressionTip">
+                        <VBox.margin>
+                            <Insets left="30" top="5" right="30" bottom="5"/>
+                        </VBox.margin>
+                    </ShellSqliteQueryEditor>
                 </FXVBox>
             </FXVBox>
         </FixedTab>

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.trees.sqlite.root;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.sqlite.ShellSqliteEventUtil;
+import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
@@ -16,6 +17,8 @@ import cn.oyzh.easyshell.trees.sqlite.terminal.ShellSqliteTerminalTreeItem;
 import cn.oyzh.easyshell.trees.sqlite.view.ShellSqliteViewsTreeItem;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -85,6 +88,35 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
      */
     public String dbName() {
         return "main";
+    }
+
+    /**
+     * 获取数据库类型
+     *
+     * @return 数据库类型
+     */
+    public DBDialect dialect() {
+        return this.client().dialect();
+    }
+
+    /**
+     * 执行SQL
+     *
+     * @param sql SQL
+     * @return 执行结果
+     */
+    public DBQueryResults<SQLiteExecuteResult> executeSql(String sql) {
+        return this.client().executeSql(sql);
+    }
+
+    /**
+     * 解释SQL
+     *
+     * @param sql SQL
+     * @return 解释结果
+     */
+    public DBQueryResults<SQLiteExecuteResult> explainSql(String sql) {
+        return this.client().explainSql(sql);
     }
 
     /**

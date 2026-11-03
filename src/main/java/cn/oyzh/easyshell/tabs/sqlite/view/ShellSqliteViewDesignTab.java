@@ -2,10 +2,11 @@ package cn.oyzh.easyshell.tabs.sqlite.view;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
-import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteBaseTab;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
@@ -13,13 +14,12 @@ import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
- * SQLite 视图设计器标签页。
+ * SQLite 视图设计标签页
  *
+ * @author oyzh
  * @since 2026-11-02
  */
 public class ShellSqliteViewDesignTab extends ShellSqliteBaseTab {
-
-    private ShellSqliteClient client;
 
     @Override
     protected String url() {
@@ -27,14 +27,10 @@ public class ShellSqliteViewDesignTab extends ShellSqliteBaseTab {
     }
 
     @Override
-    public ShellSqliteClient client() {
-        return this.client;
-    }
-
-    @Override
     public void flushGraphic() {
-        if (this.getGraphic() == null) {
-            ViewSVGGlyph graphic = new ViewSVGGlyph();
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        if (graphic == null) {
+            graphic = new ViewSVGGlyph();
             graphic.setCursor(Cursor.DEFAULT);
             this.setGraphic(graphic);
         }
@@ -42,26 +38,52 @@ public class ShellSqliteViewDesignTab extends ShellSqliteBaseTab {
 
     @Override
     public void flushTitle() {
-        this.setText((this.isUnsaved() ? "* " : "")
-                + StringUtil.blankToDefault(this.viewName(), I18nHelper.unnamedView()));
+        String name = this.viewName();
+        if (StringUtil.isBlank(name)) {
+            name = I18nHelper.unnamedView();
+        }
+        if (this.isUnsaved()) {
+            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        } else {
+            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        }
     }
 
-    public void init(ShellSqliteClient client, SQLiteView view) {
-        this.client = client;
-        StageManager.showMask(this.getWindow(), () -> {
-            try {
-                this.controller().init(client, view);
-                this.flush();
-            } catch (Exception ex) {
-                MessageBox.exception(ex, this.getWindow());
-            }
-        });
-    }
-
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
     public String viewName() {
         return this.controller().viewName();
     }
 
+    @Override
+    public ShellSqliteRootTreeItem dbItem() {
+        return this.controller().getDbItem();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param view   视图对象
+     * @param dbItem 数据库树节点
+     */
+    public void init(SQLiteView view, ShellSqliteRootTreeItem dbItem) {
+        this.controller().init(view, dbItem);
+        this.flush();
+    }
+
+    @Override
+    public ShellSqliteViewDesignTabController controller() {
+        return (ShellSqliteViewDesignTabController) super.controller();
+    }
+
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.controller().isUnsaved();
     }
@@ -73,10 +95,5 @@ public class ShellSqliteViewDesignTab extends ShellSqliteBaseTab {
         } else {
             this.closeTab();
         }
-    }
-
-    @Override
-    public ShellSqliteViewDesignTabController controller() {
-        return (ShellSqliteViewDesignTabController) super.controller();
     }
 }

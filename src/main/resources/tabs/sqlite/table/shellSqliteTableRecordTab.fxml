@@ -14,9 +14,11 @@
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableRecordTabController" fx:id="root"
-        flexWidth="100%" flexHeight="100%">
+        flexWidth="100%"
+        flexHeight="100%">
     <FXHBox realHeight="30" flexWidth="100%">
         <AddSVGGlyph groupId="action2" onMousePrimaryClicked="#addRecord">
             <HBox.margin>
@@ -28,17 +30,17 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </DeleteSVGGlyph>
-        <Apply1SVGGlyph fx:id="apply" disable="true" onMousePrimaryClicked="#apply">
+        <Apply1SVGGlyph onMousePrimaryClicked="#apply" fx:id="apply" disable="true">
             <HBox.margin>
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </Apply1SVGGlyph>
-        <DiscardSVGGlyph fx:id="discard" disable="true" onMousePrimaryClicked="#discard">
+        <DiscardSVGGlyph onMousePrimaryClicked="#discard" fx:id="discard" disable="true">
             <HBox.margin>
                 <Insets left="5" top="11"/>
             </HBox.margin>
         </DiscardSVGGlyph>
-        <RefreshSVGGlyph onMousePrimaryClicked="#reload">
+        <RefreshSVGGlyph groupId="action2" onMousePrimaryClicked="#reload">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
@@ -48,26 +50,31 @@
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </WarningSVGGlyph>
-        <FilterSVGGlyph groupId="action2" fx:id="filter" onMousePrimaryClicked="#filter">
+        <FilterSVGGlyph onMousePrimaryClicked="#filter">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </FilterSVGGlyph>
-        <ImportSVGGlyph onMousePrimaryClicked="#importData">
+        <ImportSVGGlyph groupId="action2" onMousePrimaryClicked="#importData">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </ImportSVGGlyph>
-        <ExportSVGGlyph onMousePrimaryClicked="#exportData">
+        <ExportSVGGlyph groupId="action2" onMousePrimaryClicked="#exportData">
             <HBox.margin>
                 <Insets left="5" top="10"/>
             </HBox.margin>
         </ExportSVGGlyph>
-        <PageBox fx:id="pageBox" onJumpFired="#pageJump" onSettingClicked="#pageSetting" onNextClicked="#nextPage" onPrevClicked="#prevPage" onLastClicked="#lastPage" onFirstClicked="#firstPage" realWidth="400" realHeight="22" hideIfLessPage="false">
+        <PageBox groupId="action2" fx:id="pageBox" onJumpFired="#pageJump" onSettingClicked="#pageSetting"
+                 onNextClicked="#nextPage" onPrevClicked="#prevPage"
+                 onLastClicked="#lastPage"
+                 onFirstClicked="#firstPage" realWidth="400" realHeight="22" hideIfLessPage="false">
             <HBox.margin>
                 <Insets left="5" top="7"/>
             </HBox.margin>
         </PageBox>
     </FXHBox>
-    <ShellSqliteRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%" tableMenuButtonVisible="true"/>
+    <ShellSqliteRecordTableView fixedCellSize="30" fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%"
+                                tableMenuButtonVisible="true">
+    </ShellSqliteRecordTableView>
 </FXVBox>

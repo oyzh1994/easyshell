@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.trigger.SQLiteTrigger;
 import cn.oyzh.easyshell.sqlite.trigger.SQLiteTriggerControl;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -84,6 +85,8 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
 
     private ShellSqliteClient client;
 
+    private ShellSqliteRootTreeItem dbItem;
+
     private SQLiteTable table;
 
     private String originalName;
@@ -94,8 +97,15 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
 
     private DBStatusListener statusListener;
 
-    public void init(ShellSqliteClient client, SQLiteTable table) {
-        this.client = client;
+    /**
+     * 初始化
+     *
+     * @param table  表对象
+     * @param dbItem 数据库树节点
+     */
+    public void init(SQLiteTable table, ShellSqliteRootTreeItem dbItem) {
+        this.dbItem = dbItem;
+        this.client = dbItem.client();
         this.table = table == null ? new SQLiteTable() : table;
         this.originalName = table == null ? null : table.getName();
         this.withoutRowid.setSelected(this.table.isWithoutRowid());
@@ -231,7 +241,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
     }
 
     @FXML
-    private void addItem() {
+    private void doAdd() {
         String tabId = this.tabPane.getSelectedItem() == null ? null : this.tabPane.getSelectedItem().getId();
         if (StringUtil.equals(tabId, "columnTab")) {
             this.addColumn();
@@ -247,7 +257,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
     }
 
     @FXML
-    private void deleteItem() {
+    private void doDelete() {
         String tabId = this.tabPane.getSelectedItem() == null ? null : this.tabPane.getSelectedItem().getId();
         if (StringUtil.equals(tabId, "columnTab")) {
             this.deleteColumn();
@@ -564,7 +574,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
     }
 
     @FXML
-    private void moveUp() {
+    private void doMoveUp() {
         try {
             String tabId = this.tabPane.getSelectedItem() == null
                     ? null : this.tabPane.getSelectedItem().getId();
@@ -586,7 +596,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
     }
 
     @FXML
-    private void moveDown() {
+    private void doMoveDown() {
         try {
             String tabId = this.tabPane.getSelectedItem() == null
                     ? null : this.tabPane.getSelectedItem().getId();
@@ -629,6 +639,11 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
     public String tableName() {
         return this.originalName;
     }
@@ -637,8 +652,22 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         return StringUtil.blankToDefault(this.originalName, "Unnamed_Table");
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.unsaved;
+    }
+
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
+    public ShellSqliteRootTreeItem getDbItem() {
+        return this.dbItem;
     }
 
     @Override

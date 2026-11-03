@@ -62,6 +62,12 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
     private final ChangeListener<Boolean> primaryKeyListener =
             (observable, oldValue, newValue) -> this.doInit();
 
+    /**
+     * 初始化
+     *
+     * @param column 字段
+     * @param client 客户端
+     */
     public void init(SQLiteColumn column, ShellSqliteClient client) {
         this.ignoreChanged = true;
         try {

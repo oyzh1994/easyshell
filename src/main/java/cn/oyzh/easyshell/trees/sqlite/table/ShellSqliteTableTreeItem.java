@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.sqlite.record.SQLiteUpdateRecordParam;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.trees.sqlite.ShellSqliteTreeItem;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -66,6 +67,15 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
     @Override
     public ShellSqliteTablesTreeItem parent() {
         return (ShellSqliteTablesTreeItem) super.parent();
+    }
+
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
+    public ShellSqliteRootTreeItem dbItem() {
+        return this.parent().parent();
     }
 
     /**

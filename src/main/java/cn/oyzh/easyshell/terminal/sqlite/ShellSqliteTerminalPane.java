@@ -31,12 +31,24 @@ public class ShellSqliteTerminalPane extends TerminalPane {
 
     private ShellSqliteClient client;
 
-    public void init(ShellSqliteClient client) {
+    /**
+     * 数据库名称
+     */
+    private String dbName;
+
+    /**
+     * 初始化
+     *
+     * @param client 客户端
+     * @param dbName 数据库名称
+     */
+    public void init(ShellSqliteClient client, String dbName) {
         this.client = client;
+        this.dbName = dbName;
         FXUtil.runPulse(() -> {
             this.disableInput();
             this.outputLine(ShellI18nHelper.welcome());
-            this.outputLine("SQLite " + client.selectVersion() + " - " + client.getShellConnect().getHost());
+            this.outputLine("Powered By oyzh(2024-2026).");
             this.flushPrompt();
             this.appendByPrompt("");
             this.enableInput();
@@ -48,17 +60,35 @@ public class ShellSqliteTerminalPane extends TerminalPane {
         return this.client;
     }
 
+    /**
+     * 获取数据库名称
+     *
+     * @return 数据库名称
+     */
+    public String getDbName() {
+        return this.dbName;
+    }
+
+    /**
+     * 是否临时连接
+     *
+     * @return 结果
+     */
+    public boolean isTemporary() {
+        return this.client == null || this.client.iid() == null;
+    }
+
     public ShellConnect shellConnect() {
         return this.client.getShellConnect();
     }
 
     @Override
     public void flushPrompt() {
-        String name = this.shellConnect().getName();
+        String prompt = this.dbName + "@" + this.shellConnect().getName();
         if (this.isConnected()) {
-            this.prompt(name + "(" + I18nHelper.connected() + ")> ");
+            this.prompt(prompt + "(" + I18nHelper.connected() + ")> ");
         } else {
-            this.prompt(name + "> ");
+            this.prompt(prompt + "> ");
         }
     }
 

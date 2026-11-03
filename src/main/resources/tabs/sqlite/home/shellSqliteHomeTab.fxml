@@ -7,20 +7,84 @@
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.home.ShellSqliteHomeTabController"
         flexHeight="100%" flexWidth="100%">
-    <InfoLabel text="%base.product"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="product" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%base.version"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="version" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%shell.sqlite.file"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="filePath" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%shell.sqlite.fileSize"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="fileSize" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%shell.sqlite.pageSize"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="pageSize" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%shell.sqlite.encoding"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="encoding" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%shell.sqlite.journalMode"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="journalMode" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
-    <InfoLabel text="%shell.sqlite.readOnly"><VBox.margin><Insets left="30" top="10"/></VBox.margin></InfoLabel>
-    <FXLabel fx:id="readOnly" realHeight="30"><VBox.margin><Insets left="30" top="5"/></VBox.margin></FXLabel>
+    <InfoLabel text="%base.product">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="type" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.version">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="version" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.sqlite.file">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="filePath" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.sqlite.fileSize">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="fileSize" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.sqlite.pageSize">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="pageSize" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.sqlite.encoding">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="encoding" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.sqlite.journalMode">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="journalMode" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.sqlite.readOnly">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="readOnly" realHeight="30">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXLabel>
 </FXVBox>

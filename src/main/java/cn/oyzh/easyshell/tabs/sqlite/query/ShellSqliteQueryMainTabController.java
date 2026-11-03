@@ -1,26 +1,16 @@
 package cn.oyzh.easyshell.tabs.sqlite.query;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.data.sqlite.dto.SQLiteDataExportTable;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.sqlite.ShellSqliteEventUtil;
-import cn.oyzh.easyshell.fx.ShellDataEditor;
-import cn.oyzh.easyshell.fx.sqlite.SQLiteResultTableView;
 import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
 import cn.oyzh.easyshell.query.sqlite.ShellSqliteQueryEditor;
-import cn.oyzh.easyshell.query.sqlite.ShellSqliteQueryUtil;
-import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
-import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
-import cn.oyzh.easyshell.sqlite.ShellSqliteHelper;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.db.query.DBQueryResults;
-import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.box.FXHBox;
-import cn.oyzh.fx.plus.controls.box.FXVBox;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
@@ -28,95 +18,182 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SQLite 查询控制器。
+ * SQLite 查询标签页控制器
  *
+ * @author oyzh
  * @since 2026-11-02
  */
 public class ShellSqliteQueryMainTabController extends RichTabController {
 
+    /**
+     * 查询对象
+     */
     private ShellQuery query;
 
-    private ShellSqliteClient client;
-
+    /**
+     * 未保存标志位
+     */
     private boolean unsaved;
 
+    /**
+     * 数据库树节点
+     */
+    private ShellSqliteRootTreeItem dbItem;
+
+    /**
+     * 查询文本域
+     */
     @FXML
     private ShellSqliteQueryEditor queryArea;
 
-    @FXML
-    private FXSplitPane splitPane;
-
+    /**
+     * 结果标签页组件
+     */
     @FXML
     private FXTabPane resultTabPane;
 
+    /**
+     * 分割面板
+     */
     @FXML
-    private Tab infoTab;
+    private FXSplitPane splitPane;
 
+    /**
+     * 结果信息标签页
+     */
     @FXML
-    private Tab resultTab;
+    private ShellSqliteQueryInfoTab infoTab;
 
-    @FXML
-    private SQLiteResultTableView resultTable;
-
-    private SQLiteExecuteResult currentResult;
-
-    @FXML
-    private ShellDataEditor resultInfo;
-
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
     public ShellQuery getQuery() {
         return this.query;
     }
 
-    public boolean isUnsaved() {
-        return this.unsaved;
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
+    public ShellSqliteRootTreeItem getDbItem() {
+        return this.dbItem;
     }
 
-    public void init(ShellQuery query, ShellSqliteClient client) {
+    /**
+     * 初始化
+     *
+     * @param query  查询对象
+     * @param dbItem 数据库树节点
+     */
+    public void init(ShellQuery query, ShellSqliteRootTreeItem dbItem) {
+        this.resultTabPane.setProp("query", query);
         this.query = query;
-        this.client = client;
+        this.dbItem = dbItem;
+        this.showNode(0);
         this.queryArea.setText(query.getContent());
         this.queryArea.forgetHistory();
+        this.queryArea.setDialect(this.dbItem.dialect());
         this.queryArea.addTextChangeListener((observable, oldValue, newValue) -> {
             this.unsaved = true;
             this.flushTab();
         });
-        this.showNode(0);
     }
 
     @Override
     protected void bindListeners() {
+        this.resultTabPane.setupRefreshListener();
+        this.resultTabPane.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (StringUtil.equals(newValue.getId(), "infoTab")) {
+                    this.showNode(1);
+                } else if (StringUtil.equals(newValue.getId(), "resultTab")) {
+                    this.showNode(2);
+                }
+            }
+        });
         this.queryArea.setRunCallback(this::run);
         super.bindListeners();
     }
 
-    @FXML
-    private void pretty() {
-        this.queryArea.pretty();
+    /**
+     * 清理标签页组件
+     */
+    private void clearTabs() {
+        List<Tab> removes = new ArrayList<>();
+        for (Tab tab : this.resultTabPane.getTabs()) {
+            if (!tab.equals(this.infoTab)) {
+                removes.add(tab);
+            }
+        }
+        this.resultTabPane.removeTab(removes);
     }
 
+    /**
+     * 美化
+     */
+    @FXML
+    private void pretty() {
+        try {
+            this.queryArea.pretty();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 运行
+     */
     @FXML
     private void run() {
-        String sql = this.queryArea.isSelectedText() ? this.queryArea.getSelectedText() : this.queryArea.getTextTrim();
+        String sql;
+        if (this.queryArea.isSelectedText()) {
+            sql = this.queryArea.getSelectedText();
+        } else {
+            sql = this.queryArea.getTextTrim();
+        }
         StageManager.showMask(this.getWindow(), () -> this.doRun(sql));
     }
 
+    /**
+     * 执行运行
+     *
+     * @param sql SQL
+     */
     private void doRun(String sql) {
         try {
             this.resultTabPane.disable();
-            DBQueryResults<SQLiteExecuteResult> results = this.client.executeSql(sql);
-            this.resultInfo.setText(ShellSqliteHelper.formatResults(results));
-            this.showResults(results, I18nHelper.result());
+            DBQueryResults<SQLiteExecuteResult> results = this.dbItem.executeSql(sql);
+            this.clearTabs();
+            int showType = 1;
+            this.initInfoTab(results);
+            if (!results.isEmpty()) {
+                int index = 1;
+                for (SQLiteExecuteResult result : results.getResults()) {
+                    if (result.isSuccess()) {
+                        FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
+                        this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
+                    }
+                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
+            }
+            this.showNode(showType);
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         } finally {
@@ -124,18 +201,36 @@ public class ShellSqliteQueryMainTabController extends RichTabController {
         }
     }
 
+    /**
+     * 解释
+     */
     @FXML
     private void explain() {
-        String sql = this.queryArea.isSelectedText() ? this.queryArea.getSelectedText() : this.queryArea.getTextTrim();
-        StageManager.showMask(this.getWindow(), () -> this.doExplain(sql));
-    }
-
-    private void doExplain(String sql) {
         try {
+            String sql = this.queryArea.getTextTrim();
             this.resultTabPane.disable();
-            DBQueryResults<SQLiteExecuteResult> results = this.client.explainSql(sql);
-            this.resultInfo.setText(ShellSqliteHelper.formatResults(results));
-            this.showResults(results, I18nHelper.explain());
+            DBQueryResults<SQLiteExecuteResult> results = this.dbItem.explainSql(sql);
+            this.clearTabs();
+            int showType = 1;
+            this.initInfoTab(results);
+            if (!results.isEmpty()) {
+                int index = 1;
+                for (SQLiteExecuteResult result : results.getResults()) {
+                    if (result.isSuccess()) {
+                        FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
+                        this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
+                    }
+                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
+            }
+            this.showNode(showType);
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         } finally {
@@ -143,133 +238,89 @@ public class ShellSqliteQueryMainTabController extends RichTabController {
         }
     }
 
-    private void showResults(DBQueryResults<SQLiteExecuteResult> results, String title) {
-        this.clearDynamicResultTabs();
-        List<SQLiteExecuteResult> dataResults = new ArrayList<>();
-        if (results.getResults() != null) {
-            for (SQLiteExecuteResult result : results.getResults()) {
-                if (result.isSuccess() && !result.getColumns().isEmpty()) {
-                    dataResults.add(result);
-                }
-            }
-        }
-        this.resultTable.setResult(dataResults.isEmpty() ? null : dataResults.getFirst());
-        this.currentResult = dataResults.isEmpty() ? null : dataResults.getFirst();
-        this.resultTab.setText(title + " 1");
-        for (int index = 1; index < dataResults.size(); index++) {
-            FXTab tab = new FXTab(title + " " + (index + 1),
-                    this.resultContent(dataResults.get(index)));
-            tab.setClosable(false);
-            this.resultTabPane.addTab(tab);
-        }
-        boolean hasResult = !dataResults.isEmpty();
-        FXUtil.runLater(() -> {
-            this.showNode(hasResult ? 2 : 1);
-            if (hasResult) {
-                this.resultTabPane.select(1);
-            } else {
-                this.resultTabPane.select(0);
-            }
-        });
+    /**
+     * 初始化信息标签页组件
+     *
+     * @param results 结果
+     */
+    private void initInfoTab(DBQueryResults<?> results) {
+        this.infoTab.init(results);
     }
 
-    private void clearDynamicResultTabs() {
-        List<Tab> tabs = new ArrayList<>();
-        for (Tab tab : this.resultTabPane.getTabs()) {
-            if (tab != this.resultTab && tab != this.infoTab) {
-                tabs.add(tab);
-            }
-        }
-        this.resultTabPane.getTabs().removeAll(tabs);
+    /**
+     * 初始化查询标签页组件
+     *
+     * @param result 结果
+     * @param title  标题
+     * @return 标签页组件
+     */
+    private ShellSqliteQuerySelectTab initSelectTab(SQLiteExecuteResult result, String title) {
+        ShellSqliteQuerySelectTab selectTab = new ShellSqliteQuerySelectTab();
+        selectTab.init(title, result, this.dbItem);
+        selectTab.setId("resultTab");
+        selectTab.setProp("result", result);
+        return selectTab;
     }
 
-    @FXML
-    private void exportResult() {
-        this.exportResult(this.currentResult);
+    /**
+     * 初始化解释标签页组件
+     *
+     * @param result 结果
+     * @param title  标题
+     * @return 标签页组件
+     */
+    private ShellSqliteQueryExplainTab initExplainTab(SQLiteExecuteResult result, String title) {
+        ShellSqliteQueryExplainTab explainTab = new ShellSqliteQueryExplainTab();
+        explainTab.init(title, result);
+        explainTab.setId("explainTab");
+        explainTab.setProp("result", result);
+        return explainTab;
     }
 
-    private void exportResult(SQLiteExecuteResult result) {
-        if (result == null || result.getColumns().isEmpty()) {
-            MessageBox.warn(I18nHelper.pleaseSelectTable(), this.getWindow());
-            return;
-        }
-        try {
-            SQLiteDataExportTable exportTable = new SQLiteDataExportTable();
-            String name = this.query == null || StringUtil.isBlank(this.query.getName())
-                    ? "query_result" : this.query.getName();
-            exportTable.setSelected(true);
-            exportTable.setName(name);
-            exportTable.columns(result.getColumns());
-            exportTable.setRecords(result.getRecords().stream().map(record -> {
-                java.util.Map<String, Object> values = new java.util.LinkedHashMap<>();
-                for (SQLiteColumn column : result.getColumns()) {
-                    values.put(column.getName(), record.get(column));
-                }
-                return values;
-            }).toList());
-            ShellSqliteViewFactory.exportData(this.client, null, 1, exportTable);
-        } catch (Exception ex) {
-            MessageBox.exception(ex, this.getWindow());
-        }
-    }
-
-    private FXVBox resultContent(SQLiteExecuteResult result) {
-        SQLiteResultTableView tableView = new SQLiteResultTableView();
-        tableView.setResult(result);
-        ExportSVGGlyph export = new ExportSVGGlyph("16");
-        export.setOnMousePrimaryClicked(event -> this.exportResult(result));
-        FXHBox toolbar = new FXHBox(export);
-        toolbar.setPrefHeight(30);
-        toolbar.setAlignment(Pos.CENTER_LEFT);
-        toolbar.setPadding(new Insets(5, 0, 0, 10));
-        FXVBox content = new FXVBox(toolbar, tableView);
-        VBox.setVgrow(tableView, Priority.ALWAYS);
-        return content;
-    }
-
-    private void showNode(int type) {
-        if (type == 0) {
-            this.resultTabPane.disappear();
-            this.splitPane.setShowDivider(false);
-            this.splitPane.setDividerPositions(1, 0);
-        } else {
-            this.resultTabPane.display();
-            this.splitPane.setShowDivider(true);
-            this.splitPane.setDividerPositions(0.45, 0.55);
-        }
-    }
-
+    /**
+     * 保存查询
+     */
     @FXML
     private void save() {
         try {
-            boolean newQuery = this.query.isNew();
-            if (newQuery && StringUtil.isBlank(this.query.getName())) {
-                String name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
+            String name = this.query.getName();
+            if (name == null) {
+                name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
                 if (name == null) {
                     return;
                 }
                 this.query.setName(name);
             }
-            if (newQuery) {
-                this.query.setIid(this.client.iid());
-                this.query.setDbName("main");
-            }
-            this.query.setContent(this.queryArea.getText());
-            boolean success = newQuery
-                    ? ShellQueryStore.INSTANCE.insert(this.query)
-                    : ShellQueryStore.INSTANCE.update(this.query);
-            if (success) {
-                this.unsaved = false;
-                ShellSqliteEventUtil.queryChanged(this.client, this.query);
-                this.flushTab();
+            this.query.setContent(this.queryArea.getTextTrim());
+            this.query.setDbName(this.dbItem.dbName());
+            this.query.setIid(this.dbItem.info().getId());
+            boolean result;
+            if (this.query.isNew()) {
+                result = ShellQueryStore.INSTANCE.insert(this.query);
+                if (result) {
+                    this.dbItem.upsertQuery(this.query);
+                }
             } else {
+                result = ShellQueryStore.INSTANCE.update(this.query);
+            }
+            if (!result) {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            } else {
+                this.unsaved = false;
+                ShellSqliteEventUtil.queryChanged(this.dbItem.client(), this.query);
             }
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
+        } finally {
+            this.flushTab();
         }
     }
 
+    /**
+     * 查询组件按钮点击事件
+     *
+     * @param event 事件
+     */
     @FXML
     private void queryKeyPressed(KeyEvent event) {
         if (KeyboardUtil.isCtrlS(event)) {
@@ -277,5 +328,35 @@ public class ShellSqliteQueryMainTabController extends RichTabController {
         } else if (KeyboardUtil.isCtrlR(event)) {
             this.run();
         }
+    }
+
+    /**
+     * 显示组件
+     *
+     * @param type 类型
+     */
+    private void showNode(int type) {
+        if (type == 0) {
+            this.resultTabPane.disappear();
+            if (this.splitPane.isShowDivider()) {
+                this.splitPane.setShowDivider(false);
+                this.splitPane.setDividerPositions(1, 0);
+            }
+        } else {
+            this.resultTabPane.display();
+            if (!this.splitPane.isShowDivider()) {
+                this.splitPane.setShowDivider(true);
+                this.splitPane.setDividerPositions(0.3, 0.7);
+            }
+        }
+    }
+
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
+    public boolean isUnsaved() {
+        return this.unsaved;
     }
 }

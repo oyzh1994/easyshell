@@ -67,14 +67,29 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
 
     private Consumer<ShellQuery> queryDeletedHandler;
 
+    /**
+     * 设置客户端
+     *
+     * @param client 客户端
+     */
     public void setClient(ShellSqliteClient client) {
         this.clientProperty.set(client);
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellSqliteClient getClient() {
         return this.clientProperty == null ? null : this.clientProperty.get();
     }
 
+    /**
+     * 获取客户端属性
+     *
+     * @return 客户端属性
+     */
     public SimpleObjectProperty<ShellSqliteClient> clientProperty() {
         if (this.clientProperty == null) {
             return new SimpleObjectProperty<>();
@@ -82,34 +97,74 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         return this.clientProperty;
     }
 
+    /**
+     * 获取数据库树
+     *
+     * @return 数据库树
+     */
     public ShellSqliteTreeView getTreeView() {
         return treeView;
     }
 
+    /**
+     * 设置数据库树
+     *
+     * @param treeView 数据库树
+     */
     public void setTreeView(ShellSqliteTreeView treeView) {
         this.treeView = treeView;
     }
 
+    /**
+     * 设置视图新增处理器
+     *
+     * @param viewAddedHandler 视图新增处理器
+     */
     public void setViewAddedHandler(Consumer<String> viewAddedHandler) {
         this.viewAddedHandler = viewAddedHandler;
     }
 
+    /**
+     * 设置视图数量变更处理器
+     *
+     * @param viewCountChangedHandler 视图数量变更处理器
+     */
     public void setViewCountChangedHandler(Runnable viewCountChangedHandler) {
         this.viewCountChangedHandler = viewCountChangedHandler;
     }
 
+    /**
+     * 设置表新增处理器
+     *
+     * @param tableAddedHandler 表新增处理器
+     */
     public void setTableAddedHandler(Consumer<String> tableAddedHandler) {
         this.tableAddedHandler = tableAddedHandler;
     }
 
+    /**
+     * 设置表数量变更处理器
+     *
+     * @param tableCountChangedHandler 表数量变更处理器
+     */
     public void setTableCountChangedHandler(Runnable tableCountChangedHandler) {
         this.tableCountChangedHandler = tableCountChangedHandler;
     }
 
+    /**
+     * 设置查询变更处理器
+     *
+     * @param queryChangedHandler 查询变更处理器
+     */
     public void setQueryChangedHandler(Consumer<ShellQuery> queryChangedHandler) {
         this.queryChangedHandler = queryChangedHandler;
     }
 
+    /**
+     * 设置查询删除处理器
+     *
+     * @param queryDeletedHandler 查询删除处理器
+     */
     public void setQueryDeletedHandler(Consumer<ShellQuery> queryDeletedHandler) {
         this.queryDeletedHandler = queryDeletedHandler;
     }
@@ -136,18 +191,23 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
     }
 
     public void initHomeTab() {
-        if (this.getHomeTab() == null && this.getClient() != null) {
-            ShellSqliteHomeTab tab = new ShellSqliteHomeTab();
-            this.addTab(tab);
-            tab.init(this.getClient());
-            this.select(tab);
+        if (this.getHomeTab() == null) {
+            this.addTab(new ShellSqliteHomeTab());
         }
     }
 
+    /**
+     * 获取主页标签页
+     *
+     * @return 主页标签页
+     */
     public ShellSqliteHomeTab getHomeTab() {
         return this.getTab(ShellSqliteHomeTab.class);
     }
 
+    /**
+     * 显示主页
+     */
     public void showHome() {
         this.initHomeTab();
         ShellSqliteHomeTab tab = this.getHomeTab();
@@ -156,10 +216,18 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    /**
+     * 打开新增查询标签页
+     */
     public void openQuery() {
         this.openQuery(new ShellQuery());
     }
 
+    /**
+     * 打开查询标签页
+     *
+     * @param query 查询对象
+     */
     public void openQuery(ShellQuery query) {
         if (query != null && StringUtil.isNotBlank(query.getUid())) {
             for (Tab item : this.getTabs()) {
@@ -175,10 +243,16 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         if (query == null) {
             query = new ShellQuery();
         }
-        tab.init(query, this.getClient());
+        tab.init(query, this.treeView.root());
         this.select(tab);
     }
 
+    /**
+     * 打开对象记录标签页
+     *
+     * @param objectName 对象名称
+     * @param view       是否视图
+     */
     public void openObject(String objectName, boolean view) {
         if (!view) {
             this.openTableRecord(objectName);
@@ -187,6 +261,11 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         this.openViewRecord(objectName);
     }
 
+    /**
+     * 打开表记录标签页
+     *
+     * @param tableName 表名称
+     */
     public void openTableRecord(String tableName) {
         ShellSqliteTableRecordTab tab = this.getTableRecordTab(tableName);
         if (tab == null) {
@@ -201,6 +280,11 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         this.select(tab);
     }
 
+    /**
+     * 打开视图记录标签页
+     *
+     * @param viewName 视图名称
+     */
     public void openViewRecord(String viewName) {
         ShellSqliteViewRecordTab tab = this.getViewRecordTab(viewName);
         if (tab == null) {
@@ -215,13 +299,21 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         this.select(tab);
     }
 
+    /**
+     * 打开终端标签页
+     */
     public void openTerminal() {
         ShellSqliteTerminalTab tab = new ShellSqliteTerminalTab();
         this.addTab(tab);
-        tab.init(this.getClient());
+        tab.init(this.treeView.root());
         this.select(tab);
     }
 
+    /**
+     * 打开表设计标签页
+     *
+     * @param tableName 表名称
+     */
     public void openTableDesign(String tableName) {
         for (Tab item : this.getTabs()) {
             if (item instanceof ShellSqliteTableDesignTab tab && tableName != null
@@ -233,10 +325,15 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         SQLiteTable table = tableName == null ? null : this.getClient().selectTable(tableName);
         ShellSqliteTableDesignTab tab = new ShellSqliteTableDesignTab();
         this.addTab(tab);
-        tab.init(this.getClient(), table);
+        tab.init(table, this.treeView.root());
         this.select(tab);
     }
 
+    /**
+     * 打开视图设计标签页
+     *
+     * @param viewName 视图名称
+     */
     public void openViewDesign(String viewName) {
         for (Tab item : this.getTabs()) {
             if (item instanceof ShellSqliteViewDesignTab tab && viewName != null
@@ -248,10 +345,15 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         SQLiteView view = viewName == null ? null : this.getClient().selectView(viewName);
         ShellSqliteViewDesignTab tab = new ShellSqliteViewDesignTab();
         this.addTab(tab);
-        tab.init(this.getClient(), view);
+        tab.init(view, this.treeView.root());
         this.select(tab);
     }
 
+    /**
+     * 打开函数设计标签页
+     *
+     * @param functionName 函数名称
+     */
     public void openFunctionDesign(String functionName) {
         for (Tab item : this.getTabs()) {
             if (item instanceof ShellSqliteFunctionDesignTab tab && functionName != null
@@ -268,7 +370,7 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
         }
         ShellSqliteFunctionDesignTab tab = new ShellSqliteFunctionDesignTab();
         this.addTab(tab);
-        tab.init(this.getClient(), function);
+        tab.init(function, this.treeView.root());
         this.select(tab);
     }
 

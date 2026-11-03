@@ -23,33 +23,65 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
- * SQLite 连接标签页控制器。
+ * SQLite 连接标签页控制器
  *
+ * @author oyzh
  * @since 2026-11-02
  */
 public class ShellSqliteTabController extends ShellBaseTabController {
 
+    /**
+     * 客户端
+     */
     private ShellSqliteClient client;
 
+    /**
+     * 根节点
+     */
     @FXML
     private FXSplitPane root;
 
+    /**
+     * 标签页容器
+     */
     @FXML
     private ShellSqliteTabPane tabPane;
 
+    /**
+     * 数据库树
+     */
     @FXML
     private ShellSqliteTreeView treeView;
 
+    /**
+     * 过滤参数
+     */
     @FXML
     private FilterTextField filterKW;
 
+    /**
+     * 获取shell连接
+     *
+     * @return shell连接
+     */
+    public ShellConnect shellConnect() {
+        return this.client.getShellConnect();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param connect 连接
+     */
     public void init(ShellConnect connect) {
         this.client = ShellClientUtil.newClient(connect);
+        // 监听连接状态
         this.client.addStateListener((observable, oldValue, newValue) -> {
             if (newValue == ShellConnState.INTERRUPTED) {
                 MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
             }
         });
+        // 加载根节点
         StageManager.showMask(this.getWindow(), () -> {
             try {
                 this.client.start();
@@ -71,18 +103,30 @@ public class ShellSqliteTabController extends ShellBaseTabController {
                 this.tabPane.setTreeView(this.treeView);
                 this.treeView.root().loadChild();
                 this.treeView.root().expend();
-                ShellSqliteQueryUtil.updateIndexAsync(this.client);
-                this.tabPane.initHomeTab();
+                // 更新数据索引
+                ShellSqliteQueryUtil.updateIndex(this.client);
                 this.hideLeft();
             } catch (Throwable ex) {
+                ex.printStackTrace();
                 MessageBox.exception(ex, this.getWindow());
                 this.closeTab();
             }
         });
     }
 
+    /**
+     * 获取客户端
+     *
+     * @return 客户端
+     */
     public ShellSqliteClient getClient() {
-        return this.client;
+        return client;
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        super.onTabClosed(event);
+        IOUtil.closeAsync(this.client);
     }
 
     @Override
@@ -117,34 +161,43 @@ public class ShellSqliteTabController extends ShellBaseTabController {
         ThreadUtil.start(() -> this.treeView.filter());
     }
 
+    /**
+     * 导入数据
+     */
     @FXML
     private void importData() {
         ShellSqliteViewFactory.importData(this.client);
     }
 
+    /**
+     * 导出数据
+     */
     @FXML
     private void exportData() {
         ShellSqliteViewFactory.exportData(this.client, null);
     }
 
+    /**
+     * 运行SQL文件
+     */
     @FXML
     private void runSqlFile() {
         ShellSqliteViewFactory.runSqlFile(this.client);
     }
 
+    /**
+     * 传输数据
+     */
     @FXML
     private void transportData() {
         ShellSqliteViewFactory.transportData(this.client.getShellConnect());
     }
 
+    /**
+     * 定位节点
+     */
     @FXML
     private void positionNode() {
         this.treeView.positionItem();
-    }
-
-    @Override
-    public void onTabClosed(Event event) {
-        super.onTabClosed(event);
-        IOUtil.closeAsync(this.client);
     }
 }

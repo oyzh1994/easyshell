@@ -29,9 +29,32 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ShellSqliteQueryEditor extends DBQueryEditor {
 
+    /**
+     * 数据库类型
+     */
+    private DBDialect dialect;
+
     private ShellSqliteQueryPromptPopup promptPopup;
 
     private Runnable runCallback;
+
+    /**
+     * 获取数据库类型
+     *
+     * @return 数据库类型
+     */
+    public DBDialect getDialect() {
+        return this.dialect;
+    }
+
+    /**
+     * 设置数据库类型
+     *
+     * @param dialect 数据库类型
+     */
+    public void setDialect(DBDialect dialect) {
+        this.dialect = dialect;
+    }
 
     @Override
     protected ShellSqliteQueryPromptPopup promptPopup() {
@@ -102,7 +125,7 @@ public class ShellSqliteQueryEditor extends DBQueryEditor {
      * 美化SQL。
      */
     public void pretty() {
-        this.setText(DBSqlParser.prettySql(this.getText(), DBDialect.SQLITE));
+        this.setText(DBSqlParser.prettySql(this.getText(), this.dialect));
     }
 
     @Override
@@ -135,4 +158,3 @@ public class ShellSqliteQueryEditor extends DBQueryEditor {
         return FontManager.toFont(setting.editorFontConfig());
     }
 }
-

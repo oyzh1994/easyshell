@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.sqlite.generator.function.SQLiteFunctionCreateSqlGenera
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaManager;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.ui.DBFiledTypeComboBox;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -59,6 +60,9 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
     private ShellSqliteQueryEditor expression;
 
     @FXML
+    private ShellSqliteQueryEditor generatedExpression;
+
+    @FXML
     private ShellSqliteQueryEditor definition;
 
     @FXML
@@ -72,6 +76,8 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
 
     private ShellSqliteClient client;
 
+    private ShellSqliteRootTreeItem dbItem;
+
     private SQLiteFunction function;
 
     private String originalName;
@@ -80,8 +86,15 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
 
     private boolean unsaved;
 
-    public void init(ShellSqliteClient client, SQLiteFunction function) {
-        this.client = client;
+    /**
+     * 初始化
+     *
+     * @param function 函数对象
+     * @param dbItem   数据库树节点
+     */
+    public void init(SQLiteFunction function, ShellSqliteRootTreeItem dbItem) {
+        this.dbItem = dbItem;
+        this.client = dbItem.client();
         this.function = function == null ? new SQLiteFunction() : function;
         this.originalName = function == null ? null : function.getName();
         this.functionName = this.originalName;
@@ -101,9 +114,15 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
             this.returnType.addItem(returnType);
         }
         this.returnType.select(returnType);
-        this.expression.text(StringUtil.blankToDefault(this.function.getExpression(), ""));
+        String expressionValue = StringUtil.blankToDefault(this.function.getExpression(), "");
+        if (SQLiteFunction.KIND_GENERATED_COLUMN.equals(functionKind)) {
+            this.generatedExpression.text(expressionValue);
+        } else {
+            this.expression.text(expressionValue);
+        }
         this.definition.text(StringUtil.blankToDefault(this.function.getDefinition(), ""));
         this.expression.forgetHistory();
+        this.generatedExpression.forgetHistory();
         this.definition.forgetHistory();
         this.unsaved = function == null;
         this.updateKindLayout();
@@ -115,6 +134,7 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
         this.returnType.selectedItemProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
         this.generatedStorage.valueProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
         this.expression.textProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
+        this.generatedExpression.textProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
         this.definition.textProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
     }
 
@@ -127,17 +147,15 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
         String kind = this.kind.getValue();
         boolean tableView = SQLiteFunction.KIND_TABLE_VIEW.equals(kind);
         boolean generatedColumn = SQLiteFunction.KIND_GENERATED_COLUMN.equals(kind);
+        NodeUtil.disappear(this.expressionBox);
+        NodeUtil.disappear(this.viewDefinitionBox);
+        NodeUtil.disappear(this.generatedColumnBox);
         if (tableView) {
-            NodeUtil.disappear(this.expressionBox);
             NodeUtil.display(this.viewDefinitionBox);
-        } else {
-            NodeUtil.display(this.expressionBox);
-            NodeUtil.disappear(this.viewDefinitionBox);
-        }
-        if (generatedColumn) {
+        } else if (generatedColumn) {
             NodeUtil.display(this.generatedColumnBox);
         } else {
-            NodeUtil.disappear(this.generatedColumnBox);
+            NodeUtil.display(this.expressionBox);
         }
         String hintKey;
         if (tableView) {
@@ -158,7 +176,7 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
             result.setTargetTable(this.targetTable.getText().trim());
             result.setReturnType(StringUtil.blankToDefault(this.returnType.getSelectedItem(), "").trim());
             result.setGeneratedStorage(this.generatedStorage.getValue());
-            result.setExpression(this.expression.getText().trim());
+            result.setExpression(this.generatedExpression.getText().trim());
         } else if (SQLiteFunction.KIND_TABLE_VIEW.equals(this.kind.getValue())) {
             result.setDefinition(this.definition.getText().trim());
         } else {
@@ -213,12 +231,31 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
         }
     }
 
+    /**
+     * 获取函数名称
+     *
+     * @return 函数名称
+     */
     public String functionName() {
         return this.functionName;
     }
 
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
     public boolean isUnsaved() {
         return this.unsaved;
+    }
+
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
+    public ShellSqliteRootTreeItem getDbItem() {
+        return this.dbItem;
     }
 
     @Override
@@ -226,6 +263,7 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
         super.bindListeners();
         NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
         NodeUtil.nodeOnCtrlS(this.expression, this::save);
+        NodeUtil.nodeOnCtrlS(this.generatedExpression, this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
         NodeUtil.nodeOnCtrlS(this.targetTable, this::save);
         NodeUtil.nodeOnCtrlS(this.returnType, this::save);
