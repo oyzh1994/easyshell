@@ -98,9 +98,9 @@
                     <DBStatusColumn/>
                     <FXTableColumn flexWidth="40% - 280" valueName="nameControl" text="%base.name"/>
                     <FXTableColumn flexWidth="18%" valueName="columnControl" text="%base.fields"/>
-                    <FXTableColumn flexWidth="12%" valueName="primaryKeyDatabaseControl" text="%base.referencedSchema"/>
-                    <FXTableColumn flexWidth="12%" valueName="primaryKeyTableControl" text="%base.referencedTable"/>
-                    <FXTableColumn flexWidth="18%" valueName="primaryKeyColumnControl" text="%base.referencedFields"/>
+                    <FXTableColumn flexWidth="12%" valueName="referencedDatabaseControl" text="%base.referencedSchema"/>
+                    <FXTableColumn flexWidth="12%" valueName="referencedTableControl" text="%base.referencedTable"/>
+                    <FXTableColumn flexWidth="18%" valueName="referencedColumnControl" text="%base.referencedFields"/>
                     <FXTableColumn realWidth="120" valueName="deletePolicyControl" text="%base.onDelete"/>
                     <FXTableColumn realWidth="120" valueName="updatePolicyControl" text="%base.onUpdate"/>
                 </columns>

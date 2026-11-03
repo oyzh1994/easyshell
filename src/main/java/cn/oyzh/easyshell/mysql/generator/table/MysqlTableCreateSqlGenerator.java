@@ -305,9 +305,9 @@ public class MysqlTableCreateSqlGenerator extends DBSqlGenerator {
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
                     .append(" REFERENCES ")
-                    .append(DBUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MYSQL))
+                    .append(DBUtil.wrap(foreignKey.getReferencedDatabase(), foreignKey.getReferencedTable(), DBDialect.MYSQL))
                     .append(" (");
-            for (String column : foreignKey.getPrimaryKeyColumns()) {
+            for (String column : foreignKey.getReferencedColumns()) {
                 builder.append(DBUtil.wrap(column, DBDialect.MYSQL)).append(",");
             }
             StringUtil.deleteLast(builder, ",");

@@ -2447,12 +2447,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     foreignKey.setName(fkName);
                     foreignKey.setUpdatePolicy(updateRule == null ? null : updateRule.toUpperCase());
                     foreignKey.setDeletePolicy(deleteRule == null ? null : deleteRule.toUpperCase());
-                    foreignKey.setPrimaryKeyTable(pkTableName);
-                    foreignKey.setPrimaryKeyDatabase(pkTableCat);
+                    foreignKey.setReferencedTable(pkTableName);
+                    foreignKey.setReferencedDatabase(pkTableCat);
                     foreignKeyMap.put(fkName, foreignKey);
                 }
                 foreignKey.addColumn(fkColumnName);
-                foreignKey.addPrimaryKeyColumn(pkColumnName);
+                foreignKey.addReferencedColumn(pkColumnName);
             }
             IOUtil.close(resultSet);
             return new ArrayList<>(foreignKeyMap.values());

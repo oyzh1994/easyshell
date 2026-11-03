@@ -860,9 +860,9 @@
 |---|---|---|
 | name | `String` | 外键名称 |
 | columns | `Set<String>` | 本表外键列 |
-| primaryKeyDatabaseProperty | `SimpleStringProperty` | 引用库属性 |
-| primaryKeyTableProperty | `SimpleStringProperty` | 引用表属性 |
-| primaryKeyColumns | `Set<String>` | 引用列 |
+| referencedDatabaseProperty | `SimpleStringProperty` | 引用库属性 |
+| referencedTableProperty | `SimpleStringProperty` | 引用表属性 |
+| referencedColumns | `Set<String>` | 引用列 |
 | deletePolicy | `String` | 删除策略 |
 | updatePolicy | `String` | 更新策略 |
 
@@ -871,16 +871,16 @@
 | 方法 | 说明 | 关键逻辑/调用 |
 |---|---|---|
 | `String originalName()` / `setName(String)` | 名称变更 | 原始名/记录原始数据 |
-| `SimpleStringProperty primaryKeyDatabaseProperty()/primaryKeyTableProperty()` | 引用库/表属性 | 懒加载属性 |
+| `SimpleStringProperty referencedDatabaseProperty()/referencedTableProperty()` | 引用库/表属性 | 懒加载属性 |
 | `void setDeletePolicy/setUpdatePolicy(String)` | 策略 | 记录原始数据 |
 | `void setColumns(Set<String>)` / `addColumn(String)` | 外键列 | 记录原始数据/追加 |
-| `void setPrimaryKeyDatabase/setPrimaryKeyTable(...)` / `getPrimaryKeyDatabase/getPrimaryKeyTable` | 引用库/表 | 记录原始数据 |
-| `void setPrimaryKeyColumns(Set<String>)` / `addPrimaryKeyColumn(String)` | 引用列 | 记录原始数据/追加 |
+| `void setReferencedDatabase/setReferencedTable(...)` / `getReferencedDatabase/getReferencedTable` | 引用库/表 | 记录原始数据 |
+| `void setReferencedColumns(Set<String>)` / `addReferencedColumn(String)` | 引用列 | 记录原始数据/追加 |
 | `void copy(MysqlForeignKey)` | 复制 | 逐属性复制 |
 | `boolean isInvalid()` | 是否无效 | 无外键列或引用列时无效 |
 | `void destroy()` | 销毁 | 解绑属性 |
 
-- 调用链：`ShellMysqlClient.selectForeignKeys → MysqlForeignKey`；`MysqlTableCreateSqlGenerator.foreignKeyHandle → getColumns/getPrimaryKeyColumns`。
+- 调用链：`ShellMysqlClient.selectForeignKeys → MysqlForeignKey`；`MysqlTableCreateSqlGenerator.foreignKeyHandle → getColumns/getReferencedColumns`。
 
 ---
 
@@ -901,11 +901,11 @@
 |---|---|---|
 | `FXTextField getNameControl()` | 名称控件 | 变更回写 setName |
 | `ShellMysqlFieldTextFiled getColumnControl()` | 外键列控件 | 从 columnList 选列 |
-| `ShellMysqlDatabaseComboBox getPrimaryKeyDatabaseControl()` | 引用库控件 | dbClient.databases() 填充 |
-| `ShellMysqlTableComboBox getPrimaryKeyTableControl()` | 引用表控件 | 按库加载表 |
+| `ShellMysqlDatabaseComboBox getReferencedDatabaseControl()` | 引用库控件 | dbClient.databases() 填充 |
+| `ShellMysqlTableComboBox getReferencedTableControl()` | 引用表控件 | 按库加载表 |
 | `ShellMysqlForeignKeyPolicyComboBox getDeletePolicyControl()/getUpdatePolicyControl()` | 策略控件 | 变更回写策略 |
-| `ShellMysqlFieldTextFiled getPrimaryKeyColumnControl()` | 引用列控件 | 按引用表加载列 |
-| `String getPrimaryKeyDatabase()` | 取引用库 | 重写 |
+| `ShellMysqlFieldTextFiled getReferencedColumnControl()` | 引用列控件 | 按引用表加载列 |
+| `String getReferencedDatabase()` | 取引用库 | 重写 |
 | `static MysqlForeignKeyControl of(MysqlForeignKey)` / `of(List<MysqlForeignKey>)` | 工厂 | copy 后返回控件 |
 
 - 调用链：`表结构界面 → MysqlForeignKeyControl.of → 各 getXxxControl → dbClient.selectTables/selectColumns`。

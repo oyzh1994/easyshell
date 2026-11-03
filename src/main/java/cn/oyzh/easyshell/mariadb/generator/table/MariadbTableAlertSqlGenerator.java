@@ -397,9 +397,9 @@ public class MariadbTableAlertSqlGenerator extends DBSqlGenerator {
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
                     .append(" REFERENCES ")
-                    .append(DBUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.MARIADB))
+                    .append(DBUtil.wrap(foreignKey.getReferencedDatabase(), foreignKey.getReferencedTable(), DBDialect.MARIADB))
                     .append(" (");
-            for (String column : foreignKey.getPrimaryKeyColumns()) {
+            for (String column : foreignKey.getReferencedColumns()) {
                 builder.append(DBUtil.wrap(column, DBDialect.MARIADB)).append(",");
             }
             StringUtil.deleteLast(builder, ",");

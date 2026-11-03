@@ -2504,12 +2504,12 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     foreignKey.setName(fkName);
                     foreignKey.setUpdatePolicy(updateRule == null ? null : updateRule.toUpperCase());
                     foreignKey.setDeletePolicy(deleteRule == null ? null : deleteRule.toUpperCase());
-                    foreignKey.setPrimaryKeyTable(pkTableName);
-                    foreignKey.setPrimaryKeyDatabase(pkTableCat);
+                    foreignKey.setReferencedTable(pkTableName);
+                    foreignKey.setReferencedDatabase(pkTableCat);
                     foreignKeyMap.put(fkName, foreignKey);
                 }
                 foreignKey.addColumn(fkColumnName);
-                foreignKey.addPrimaryKeyColumn(pkColumnName);
+                foreignKey.addReferencedColumn(pkColumnName);
             }
             IOUtil.close(resultSet);
             return new ArrayList<>(foreignKeyMap.values());
@@ -4109,7 +4109,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         List<String> parents = new ArrayList<>();
         List<DamengForeignKey> foreignKeys = this.selectForeignKeys(schema, table);
         for (DamengForeignKey foreignKey : foreignKeys) {
-            String parentTable = foreignKey.getPrimaryKeyTable();
+            String parentTable = foreignKey.getReferencedTable();
             parents.add(parentTable);
         }
         return parents;

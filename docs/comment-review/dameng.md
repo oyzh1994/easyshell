@@ -755,9 +755,9 @@
 |---|---|---|
 | name | `String` | 外键名称 |
 | columns | `List<String>` | 本表外键列 |
-| primaryKeyDatabaseProperty | `SimpleStringProperty` | 引用模式属性 |
-| primaryKeyTableProperty | `SimpleStringProperty` | 引用表属性 |
-| primaryKeyColumns | `List<String>` | 引用列 |
+| referencedDatabaseProperty | `SimpleStringProperty` | 引用模式属性 |
+| referencedTableProperty | `SimpleStringProperty` | 引用表属性 |
+| referencedColumns | `List<String>` | 引用列 |
 | deletePolicy | `String` | 删除策略 |
 | updatePolicy | `String` | 更新策略 |
 
@@ -766,15 +766,15 @@
 | 方法 | 说明 | 关键逻辑/调用 |
 |---|---|---|
 | `String originalName()` / `setName(String)` | 名称变更 | 原始名/记录原始数据 |
-| `SimpleStringProperty primaryKeyDatabaseProperty()/primaryKeyTableProperty()` | 引用模式/表属性 | 懒加载属性 |
+| `SimpleStringProperty referencedDatabaseProperty()/referencedTableProperty()` | 引用模式/表属性 | 懒加载属性 |
 | `void setDeletePolicy/setUpdatePolicy(String)` | 策略 | 记录原始数据 |
 | `void setColumns(List<String>)` / `addColumn(String)` | 外键列 | 记录原始数据/追加 |
-| `void setPrimaryKeyDatabase/setPrimaryKeyTable(...)` / `getPrimaryKeyDatabase/getPrimaryKeyTable` | 引用模式/表 | 记录原始数据 |
-| `void setPrimaryKeyColumns(List<String>)` / `addPrimaryKeyColumn(String)` | 引用列 | 记录原始数据/追加 |
+| `void setReferencedDatabase/setReferencedTable(...)` / `getReferencedDatabase/getReferencedTable` | 引用模式/表 | 记录原始数据 |
+| `void setReferencedColumns(List<String>)` / `addReferencedColumn(String)` | 引用列 | 记录原始数据/追加 |
 | `void copy(DamengForeignKey)` | 复制 | 逐属性复制 |
 | `boolean isInvalid()` | 是否无效 | 无外键列或引用列时无效 |
 
-- 调用链：`ShellDamengClient.selectForeignKeys → DamengForeignKey`；`DamengTableCreateSqlGenerator.foreignKeyHandle → getColumns/getPrimaryKeyColumns`。
+- 调用链：`ShellDamengClient.selectForeignKeys → DamengForeignKey`；`DamengTableCreateSqlGenerator.foreignKeyHandle → getColumns/getReferencedColumns`。
 
 ---
 
@@ -795,11 +795,11 @@
 |---|---|---|
 | `FXTextField getNameControl()` | 名称控件 | 回写 setName |
 | `DamengFieldTextFiled getColumnControl()` | 外键列控件 | 从 columnList 选列 |
-| `ShellDamengSchemaComboBox getPrimaryKeyDatabaseControl()` | 引用模式控件 | dbClient.selectSchemas 填充 |
-| `DamengTableComboBox getPrimaryKeyTableControl()` | 引用表控件 | 按模式加载表 |
+| `ShellDamengSchemaComboBox getReferencedDatabaseControl()` | 引用模式控件 | dbClient.selectSchemas 填充 |
+| `DamengTableComboBox getReferencedTableControl()` | 引用表控件 | 按模式加载表 |
 | `DamengForeignKeyPolicyComboBox getDeletePolicyControl()/getUpdatePolicyControl()` | 策略控件 | 回写策略 |
-| `DamengFieldTextFiled getPrimaryKeyColumnControl()` | 引用列控件 | 按引用表加载列 |
-| `String getPrimaryKeyDatabase()` | 取引用模式 | 重写 |
+| `DamengFieldTextFiled getReferencedColumnControl()` | 引用列控件 | 按引用表加载列 |
+| `String getReferencedDatabase()` | 取引用模式 | 重写 |
 | `static DamengForeignKeyControl of(DamengForeignKey)` / `of(List<DamengForeignKey>)` | 工厂 | copy 后返回控件 |
 
 - 调用链：`表结构界面 → DamengForeignKeyControl.of → dbClient.selectTables/selectColumns`。

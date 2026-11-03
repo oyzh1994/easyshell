@@ -27,7 +27,7 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
 
     private List<? extends SQLiteColumn> columnList;
 
-    private List<? extends SQLiteColumn> primaryKeyColumnList;
+    private List<? extends SQLiteColumn> referencedColumnList;
 
     private ShellSqliteClient dbClient;
 
@@ -47,7 +47,7 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
     public void setDbClient(ShellSqliteClient dbClient) {
         this.dbClient = dbClient;
         if (this.referencedTableControl != null) {
-            this.referencedTableControl.init(this.getPrimaryKeyTable(), dbClient);
+            this.referencedTableControl.init(this.getReferencedTable(), dbClient);
         }
         this.refreshReferencedColumns();
     }
@@ -85,12 +85,12 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
     public ShellSqliteTableComboBox getReferencedTableControl() {
         ShellSqliteTableComboBox comboBox = new ShellSqliteTableComboBox();
         this.referencedTableControl = comboBox;
-        comboBox.init(this.getPrimaryKeyTable(), this.dbClient);
+        comboBox.init(this.getReferencedTable(), this.dbClient);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
-            this.setPrimaryKeyTable(newValue);
+            this.setReferencedTable(newValue);
             this.setChanged(true);
         });
-        this.primaryKeyTableProperty().addListener((observable, oldValue, newValue) ->
+        this.referencedTableProperty().addListener((observable, oldValue, newValue) ->
                 this.refreshReferencedColumns());
         TableViewUtil.rowOnCtrlS(comboBox);
         TableViewUtil.selectRowOnMouseClicked(comboBox);
@@ -98,13 +98,13 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
     }
 
     public ShellSqliteIndexFieldTextFiled getReferencedColumnControl() {
-        this.primaryKeyColumnList = this.loadPrimaryKeyColumns();
+        this.referencedColumnList = this.loadReferencedColumns();
         ShellSqliteIndexFieldTextFiled field = new ShellSqliteIndexFieldTextFiled(
-                this.primaryKeyColumnList, this.getPrimaryKeyColumns());
+                this.referencedColumnList, this.getReferencedColumns());
         this.referencedColumnControl = field;
         field.setFlexWidth("100% - 12");
         field.addTextChangeListener((observable, oldValue, newValue) -> {
-            this.setPrimaryKeyColumns(field.getColumns());
+            this.setReferencedColumns(field.getColumns());
             this.setChanged(true);
         });
         TableViewUtil.rowOnCtrlS(field);
@@ -112,18 +112,18 @@ public class SQLiteForeignKeyControl extends SQLiteForeignKey {
         return field;
     }
 
-    private List<? extends SQLiteColumn> loadPrimaryKeyColumns() {
-        if (this.dbClient == null || StringUtil.isBlank(this.getPrimaryKeyTable())) {
+    private List<? extends SQLiteColumn> loadReferencedColumns() {
+        if (this.dbClient == null || StringUtil.isBlank(this.getReferencedTable())) {
             return new ArrayList<>();
         }
-        return this.dbClient.selectColumns(this.getPrimaryKeyTable());
+        return this.dbClient.selectColumns(this.getReferencedTable());
     }
 
     private void refreshReferencedColumns() {
-        this.primaryKeyColumnList = this.loadPrimaryKeyColumns();
+        this.referencedColumnList = this.loadReferencedColumns();
         if (this.referencedColumnControl != null) {
-            this.referencedColumnControl.setColumnList(this.primaryKeyColumnList);
-            this.referencedColumnControl.setColumns(this.getPrimaryKeyColumns());
+            this.referencedColumnControl.setColumnList(this.referencedColumnList);
+            this.referencedColumnControl.setColumns(this.getReferencedColumns());
         }
     }
 

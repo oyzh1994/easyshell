@@ -254,9 +254,9 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
             StringUtil.deleteLast(builder, ",");
             builder.append(")")
                     .append(" REFERENCES ")
-                    .append(DBUtil.wrap(foreignKey.getPrimaryKeyDatabase(), foreignKey.getPrimaryKeyTable(), DBDialect.DAMENG))
+                    .append(DBUtil.wrap(foreignKey.getReferencedDatabase(), foreignKey.getReferencedTable(), DBDialect.DAMENG))
                     .append(" (");
-            for (String column : foreignKey.getPrimaryKeyColumns()) {
+            for (String column : foreignKey.getReferencedColumns()) {
                 builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(",");
             }
             StringUtil.deleteLast(builder, ",");

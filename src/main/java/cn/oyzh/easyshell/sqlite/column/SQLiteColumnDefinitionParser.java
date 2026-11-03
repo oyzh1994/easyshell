@@ -194,8 +194,8 @@ public final class SQLiteColumnDefinitionParser {
             foreignKey.setName(StringUtil.isBlank(name)
                     ? "fk_" + tableName + "_" + index : SQLiteGeneratorUtil.unquote(name));
             foreignKey.setColumns(splitIdentifiers(matcher.group(2)));
-            foreignKey.setPrimaryKeyTable(SQLiteGeneratorUtil.unquote(matcher.group(3).trim()));
-            foreignKey.setPrimaryKeyColumns(splitIdentifiers(matcher.group(4)));
+            foreignKey.setReferencedTable(SQLiteGeneratorUtil.unquote(matcher.group(3).trim()));
+            foreignKey.setReferencedColumns(splitIdentifiers(matcher.group(4)));
             String actions = StringUtil.blankToDefault(matcher.group(5), "");
             Matcher deleteMatcher = Pattern.compile("(?i)ON\\s+DELETE\\s+(NO\\s+ACTION|RESTRICT|CASCADE|SET\\s+NULL|SET\\s+DEFAULT)")
                     .matcher(actions);

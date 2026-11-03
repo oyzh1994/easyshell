@@ -32,17 +32,17 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
     /**
      * 引用库名称
      */
-    private SimpleStringProperty primaryKeyDatabaseProperty;
+    private SimpleStringProperty referencedDatabaseProperty;
 
     /**
      * 引用表名称
      */
-    private SimpleStringProperty primaryKeyTableProperty;
+    private SimpleStringProperty referencedTableProperty;
 
     /**
      * 引用字段列表
      */
-    private Set<String> primaryKeyColumns;
+    private Set<String> referencedColumns;
 
     /**
      * 外键删除策略
@@ -68,11 +68,11 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
      *
      * @return 引用库名称属性
      */
-    public SimpleStringProperty primaryKeyDatabaseProperty() {
-        if (this.primaryKeyDatabaseProperty == null) {
-            this.primaryKeyDatabaseProperty = new SimpleStringProperty();
+    public SimpleStringProperty referencedDatabaseProperty() {
+        if (this.referencedDatabaseProperty == null) {
+            this.referencedDatabaseProperty = new SimpleStringProperty();
         }
-        return this.primaryKeyDatabaseProperty;
+        return this.referencedDatabaseProperty;
     }
 
     /**
@@ -80,11 +80,11 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
      *
      * @return 引用表名称属性
      */
-    public SimpleStringProperty primaryKeyTableProperty() {
-        if (this.primaryKeyTableProperty == null) {
-            this.primaryKeyTableProperty = new SimpleStringProperty();
+    public SimpleStringProperty referencedTableProperty() {
+        if (this.referencedTableProperty == null) {
+            this.referencedTableProperty = new SimpleStringProperty();
         }
-        return this.primaryKeyTableProperty;
+        return this.referencedTableProperty;
     }
 
     /**
@@ -119,71 +119,39 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
         super.putOriginalData("columns", columns);
     }
 
-    /**
-     * 设置引用库名称
-     *
-     * @param primaryKeyDatabase 引用库名称
-     */
-    public void setPrimaryKeyDatabase(String primaryKeyDatabase) {
-        this.primaryKeyDatabaseProperty().set(primaryKeyDatabase);
-        super.putOriginalData("primaryKeyDatabase", primaryKeyDatabase);
+    @Override
+    public void setReferencedDatabase(String referencedDatabase) {
+        this.referencedDatabaseProperty().set(referencedDatabase);
+        super.putOriginalData("referencedDatabase", referencedDatabase);
     }
 
-    /**
-     * 获取引用库名称
-     *
-     * @return 引用库名称
-     */
-    public String getPrimaryKeyDatabase() {
+    @Override
+    public String getReferencedDatabase() {
         String dbName = null;
-        if (this.primaryKeyDatabaseProperty != null) {
-            dbName = this.primaryKeyDatabaseProperty.get();
+        if (this.referencedDatabaseProperty != null) {
+            dbName = this.referencedDatabaseProperty.get();
         }
         return dbName;
     }
 
-    /**
-     * 设置引用表名称
-     *
-     * @param primaryKeyTable 引用表名称
-     */
-    public void setPrimaryKeyTable(String primaryKeyTable) {
-        this.primaryKeyTableProperty().set(primaryKeyTable);
-        super.putOriginalData("primaryKeyTable", primaryKeyTable);
+    @Override
+    public void setReferencedTable(String referencedTable) {
+        this.referencedTableProperty().set(referencedTable);
+        super.putOriginalData("referencedTable", referencedTable);
     }
 
-    /**
-     * 获取引用表名称
-     *
-     * @return 引用表名称
-     */
-    public String getPrimaryKeyTable() {
-        if (this.primaryKeyTableProperty == null) {
+    @Override
+    public String getReferencedTable() {
+        if (this.referencedTableProperty == null) {
             return null;
         }
-        return this.primaryKeyTableProperty.get();
+        return this.referencedTableProperty.get();
     }
 
-    /**
-     * 设置引用字段列表
-     *
-     * @param primaryKeyColumns 引用字段列表
-     */
-    public void setPrimaryKeyColumns(Set<String> primaryKeyColumns) {
-        this.primaryKeyColumns = primaryKeyColumns;
-        super.putOriginalData("primaryKeyColumns", primaryKeyColumns);
-    }
-
-    /**
-     * 添加引用字段
-     *
-     * @param columnName 字段名称
-     */
-    public void addPrimaryKeyColumn(String columnName) {
-        if (this.primaryKeyColumns == null) {
-            this.setPrimaryKeyColumns(new HashSet<>());
-        }
-        this.primaryKeyColumns.add(columnName);
+    @Override
+    public void setReferencedColumns(Set<String> referencedColumns) {
+        this.referencedColumns = referencedColumns;
+        super.putOriginalData("referencedColumns", referencedColumns);
     }
 
     @Override
@@ -193,16 +161,16 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
             this.columns = t1.columns;
             this.deletePolicy = t1.deletePolicy;
             this.updatePolicy = t1.updatePolicy;
-            this.primaryKeyColumns = t1.primaryKeyColumns;
-            this.setPrimaryKeyTable(t1.getPrimaryKeyTable());
-            this.setPrimaryKeyDatabase(t1.getPrimaryKeyDatabase());
+            this.referencedColumns = t1.referencedColumns;
+            this.setReferencedTable(t1.getReferencedTable());
+            this.setReferencedDatabase(t1.getReferencedDatabase());
         }
     }
 
     @Override
     public boolean isInvalid() {
-        return DBForeignKey.super.isInvalid() || CollectionUtil.isEmpty(this.primaryKeyColumns) || CollectionUtil.isEmpty(this.columns)
-                || StringUtil.isBlank(this.getPrimaryKeyTable()) || StringUtil.isBlank(this.getPrimaryKeyDatabase());
+        return DBForeignKey.super.isInvalid() || CollectionUtil.isEmpty(this.referencedColumns) || CollectionUtil.isEmpty(this.columns)
+                || StringUtil.isBlank(this.getReferencedTable()) || StringUtil.isBlank(this.getReferencedDatabase());
     }
 
     @Override
@@ -233,25 +201,21 @@ public class MariadbForeignKey extends DBObject implements DBForeignKey, ObjectC
         return updatePolicy;
     }
 
-    /**
-     * 获取引用字段列表
-     *
-     * @return 引用字段列表
-     */
-    public Set<String> getPrimaryKeyColumns() {
-        return primaryKeyColumns;
+    @Override
+    public Set<String> getReferencedColumns() {
+        return referencedColumns;
     }
 
     @Override
     public void destroy() {
-        if (this.primaryKeyTableProperty != null) {
-            this.primaryKeyTableProperty.unbind();
+        if (this.referencedTableProperty != null) {
+            this.referencedTableProperty.unbind();
         }
-        if (this.primaryKeyDatabaseProperty != null) {
-            this.primaryKeyDatabaseProperty.unbind();
+        if (this.referencedDatabaseProperty != null) {
+            this.referencedDatabaseProperty.unbind();
         }
-        if (this.primaryKeyColumns != null) {
-            this.primaryKeyColumns.clear();
+        if (this.referencedColumns != null) {
+            this.referencedColumns.clear();
         }
         super.destroy();
     }

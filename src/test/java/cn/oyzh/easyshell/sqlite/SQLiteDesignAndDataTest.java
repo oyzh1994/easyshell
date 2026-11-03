@@ -311,9 +311,9 @@ public class SQLiteDesignAndDataTest {
         assertEquals(1, foreignKeys.size());
         SQLiteForeignKey foreignKey = foreignKeys.getFirst();
         assertEquals("fk_parent", foreignKey.getName());
-        assertEquals(List.of("parent_id"), foreignKey.getColumns());
-        assertEquals("parent", foreignKey.getPrimaryKeyTable());
-        assertEquals(List.of("id"), foreignKey.getPrimaryKeyColumns());
+        assertEquals(Set.of("parent_id"), foreignKey.getColumns());
+        assertEquals("parent", foreignKey.getReferencedTable());
+        assertEquals(Set.of("id"), foreignKey.getReferencedColumns());
         assertEquals("CASCADE", foreignKey.getDeletePolicy());
         assertEquals("SET NULL", foreignKey.getUpdatePolicy());
         assertTrue(foreignKey.toConstraintSql().contains("FOREIGN KEY (\"parent_id\") REFERENCES \"parent\" (\"id\")"));
@@ -345,8 +345,8 @@ public class SQLiteDesignAndDataTest {
             SQLiteForeignKey foreignKey = new SQLiteForeignKey();
             foreignKey.setName("fk_child_parent");
             foreignKey.setColumns(Set.of("parent_id"));
-            foreignKey.setPrimaryKeyTable("parent");
-            foreignKey.setPrimaryKeyColumns(Set.of("id"));
+            foreignKey.setReferencedTable("parent");
+            foreignKey.setReferencedColumns(Set.of("id"));
             foreignKey.setDeletePolicy("CASCADE");
             SQLiteCheck check = new SQLiteCheck();
             check.setName("chk_amount");

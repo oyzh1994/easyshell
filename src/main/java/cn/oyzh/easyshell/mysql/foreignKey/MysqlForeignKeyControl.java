@@ -121,13 +121,13 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
      *
      * @return 引用库组件
      */
-    public ShellMysqlDatabaseComboBox getPrimaryKeyDatabaseControl() {
+    public ShellMysqlDatabaseComboBox getReferencedDatabaseControl() {
         try {
             ShellMysqlDatabaseComboBox comboBox = new ShellMysqlDatabaseComboBox();
             comboBox.init(this.dbClient);
             //comboBox.init(CacheHelper.get("mysql:dbClient"));
-            comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyDatabase(newValue));
-            comboBox.selectFirstIfNull(this.getPrimaryKeyDatabase());
+            comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setReferencedDatabase(newValue));
+            comboBox.selectFirstIfNull(this.getReferencedDatabase());
             TableViewUtil.rowOnCtrlS(comboBox);
             TableViewUtil.selectRowOnMouseClicked(comboBox);
             return comboBox;
@@ -142,15 +142,15 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
      *
      * @return 引用表组件
      */
-    public ShellMysqlTableComboBox getPrimaryKeyTableControl() {
+    public ShellMysqlTableComboBox getReferencedTableControl() {
         try {
             ShellMysqlTableComboBox comboBox = new ShellMysqlTableComboBox();
             //ShellMysqlClient dbClient = CacheHelper.get("mysql:dbClient");
-            comboBox.init(this.getPrimaryKeyDatabase(), this.dbClient);
-            comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setPrimaryKeyTable(newValue));
-            comboBox.selectFirstIfNull(this.getPrimaryKeyTable());
-            this.primaryKeyDatabaseProperty().addListener((observable, oldValue, newValue) -> {
-                comboBox.init(this.getPrimaryKeyDatabase(), dbClient);
+            comboBox.init(this.getReferencedDatabase(), this.dbClient);
+            comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setReferencedTable(newValue));
+            comboBox.selectFirstIfNull(this.getReferencedTable());
+            this.referencedDatabaseProperty().addListener((observable, oldValue, newValue) -> {
+                comboBox.init(this.getReferencedDatabase(), dbClient);
                 comboBox.selectFirst();
             });
             TableViewUtil.rowOnCtrlS(comboBox);
@@ -186,20 +186,20 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
      *
      * @return 引用字段组件
      */
-    public ShellMysqlFieldTextFiled getPrimaryKeyColumnControl() {
+    public ShellMysqlFieldTextFiled getReferencedColumnControl() {
         try {
             ShellMysqlFieldTextFiled textField = new ShellMysqlFieldTextFiled();
-            textField.addTextChangeListener((observable, oldValue, newValue) -> this.setPrimaryKeyColumns(textField.getSelectedColumns()));
+            textField.addTextChangeListener((observable, oldValue, newValue) -> this.setReferencedColumns(textField.getSelectedColumns()));
             textField.setFlexWidth("100% - 12");
             Runnable func = () -> {
                 textField.clear();
-                String dbName = this.getPrimaryKeyDatabase();
-                String tableName = this.getPrimaryKeyTable();
+                String dbName = this.getReferencedDatabase();
+                String tableName = this.getReferencedTable();
                 //ShellMysqlClient client = CacheHelper.get("mysql:dbClient");
                 textField.setColumns(this.dbClient.selectColumns(new MysqlSelectColumnParam(dbName, tableName)));
-                textField.setSelectedColumns(this.getPrimaryKeyColumns());
+                textField.setSelectedColumns(this.getReferencedColumns());
             };
-            this.primaryKeyTableProperty().addListener((observable, oldValue, newValue) -> func.run());
+            this.referencedTableProperty().addListener((observable, oldValue, newValue) -> func.run());
             func.run();
             TableViewUtil.rowOnCtrlS(textField);
             TableViewUtil.selectRowOnMouseClicked(textField);
@@ -230,8 +230,8 @@ public class MysqlForeignKeyControl extends MysqlForeignKey {
     }
 
     @Override
-    public String getPrimaryKeyDatabase() {
-        return super.getPrimaryKeyDatabase() == null ? this.dbName : super.getPrimaryKeyDatabase();
+    public String getReferencedDatabase() {
+        return super.getReferencedDatabase() == null ? this.dbName : super.getReferencedDatabase();
     }
 
     /**

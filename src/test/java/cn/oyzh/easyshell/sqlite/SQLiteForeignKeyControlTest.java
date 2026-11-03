@@ -22,8 +22,8 @@ public class SQLiteForeignKeyControlTest {
                 "src/main/java/cn/oyzh/easyshell/sqlite/foreignKey/SQLiteForeignKeyControl.java"));
         assertTrue(control.contains("new ShellSqliteIndexFieldTextFiled("));
         assertTrue(control.contains("new ShellSqliteTableComboBox("));
-        assertTrue(control.contains("this.dbClient.selectColumns(this.getPrimaryKeyTable())"));
-        assertTrue(control.contains("this.primaryKeyTableProperty().addListener"));
+        assertTrue(control.contains("this.dbClient.selectColumns(this.getReferencedTable())"));
+        assertTrue(control.contains("this.referencedTableProperty().addListener"));
 
         String tableComboBox = Files.readString(Path.of(
                 "src/main/java/cn/oyzh/easyshell/fx/sqlite/table/ShellSqliteTableComboBox.java"));
@@ -39,11 +39,11 @@ public class SQLiteForeignKeyControlTest {
     @Test
     public void testReferencedTableUsesObservableValue() {
         SQLiteForeignKey foreignKey = new SQLiteForeignKey();
-        foreignKey.setPrimaryKeyTable("parent");
-        assertEquals("parent", foreignKey.getPrimaryKeyTable());
-        assertEquals("parent", foreignKey.primaryKeyTableProperty().get());
+        foreignKey.setReferencedTable("parent");
+        assertEquals("parent", foreignKey.getReferencedTable());
+        assertEquals("parent", foreignKey.referencedTableProperty().get());
 
-        foreignKey.primaryKeyTableProperty().set("parent_new");
-        assertEquals("parent_new", foreignKey.getPrimaryKeyTable());
+        foreignKey.referencedTableProperty().set("parent_new");
+        assertEquals("parent_new", foreignKey.getReferencedTable());
     }
 }

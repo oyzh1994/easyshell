@@ -43,12 +43,12 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
     /**
      * 引用表名称
      */
-    private SimpleStringProperty primaryKeyTableProperty;
+    private SimpleStringProperty referencedTableProperty;
 
     /**
      * 引用字段列表
      */
-    private Set<String> primaryKeyColumns = new HashSet<>();
+    private Set<String> referencedColumns = new HashSet<>();
 
     /**
      * 外键删除策略
@@ -81,11 +81,11 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
      *
      * @return 引用表名称属性
      */
-    public SimpleStringProperty primaryKeyTableProperty() {
-        if (this.primaryKeyTableProperty == null) {
-            this.primaryKeyTableProperty = new SimpleStringProperty();
+    public SimpleStringProperty referencedTableProperty() {
+        if (this.referencedTableProperty == null) {
+            this.referencedTableProperty = new SimpleStringProperty();
         }
-        return this.primaryKeyTableProperty;
+        return this.referencedTableProperty;
     }
 
     public String getDbName() {
@@ -138,45 +138,31 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
         super.putOriginalData("columns", this.columns);
     }
 
-    /**
-     * 设置引用表名称。
-     *
-     * @param primaryKeyTable 引用表名称
-     */
-    public void setPrimaryKeyTable(String primaryKeyTable) {
-        this.primaryKeyTableProperty().set(primaryKeyTable);
-        super.putOriginalData("primaryKeyTable", primaryKeyTable);
+    @Override
+    public String getReferencedDatabase() {
+        return null;
     }
 
-    /**
-     * 获取引用表名称。
-     *
-     * @return 引用表名称
-     */
-    public String getPrimaryKeyTable() {
-        return this.primaryKeyTableProperty == null ? null : this.primaryKeyTableProperty.get();
+    @Override
+    public void setReferencedDatabase(String referencedDatabase) {
+
     }
 
-    /**
-     * 设置引用字段列表。
-     *
-     * @param primaryKeyColumns 引用字段列表
-     */
-    public void setPrimaryKeyColumns(Set<String> primaryKeyColumns) {
-        this.primaryKeyColumns = primaryKeyColumns == null ? new HashSet<>() : primaryKeyColumns;
-        super.putOriginalData("primaryKeyColumns", this.primaryKeyColumns);
+    @Override
+    public void setReferencedTable(String referencedTable) {
+        this.referencedTableProperty().set(referencedTable);
+        super.putOriginalData("referencedTable", referencedTable);
     }
 
-    /**
-     * 添加引用字段。
-     *
-     * @param columnName 字段名称
-     */
-    public void addPrimaryKeyColumn(String columnName) {
-        if (this.primaryKeyColumns == null) {
-            this.setPrimaryKeyColumns(new HashSet<>());
-        }
-        this.primaryKeyColumns.add(columnName);
+    @Override
+    public String getReferencedTable() {
+        return this.referencedTableProperty == null ? null : this.referencedTableProperty.get();
+    }
+
+    @Override
+    public void setReferencedColumns(Set<String> referencedColumns) {
+        this.referencedColumns = referencedColumns == null ? new HashSet<>() : referencedColumns;
+        super.putOriginalData("referencedColumns", this.referencedColumns);
     }
 
     @Override
@@ -188,16 +174,16 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
             this.setDeletePolicy(foreignKey.getDeletePolicy());
             this.setUpdatePolicy(foreignKey.getUpdatePolicy());
             this.setColumns(new HashSet<>(foreignKey.getColumns()));
-            this.setPrimaryKeyTable(foreignKey.getPrimaryKeyTable());
-            this.setPrimaryKeyColumns(new HashSet<>(foreignKey.getPrimaryKeyColumns()));
+            this.setReferencedTable(foreignKey.getReferencedTable());
+            this.setReferencedColumns(new HashSet<>(foreignKey.getReferencedColumns()));
         }
     }
 
     @Override
     public boolean isInvalid() {
         return DBForeignKey.super.isInvalid() || CollectionUtil.isEmpty(this.columns)
-                || CollectionUtil.isEmpty(this.primaryKeyColumns)
-                || StringUtil.isBlank(this.getPrimaryKeyTable());
+                || CollectionUtil.isEmpty(this.referencedColumns)
+                || StringUtil.isBlank(this.getReferencedTable());
     }
 
     @Override
@@ -228,13 +214,9 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
         return this.updatePolicy;
     }
 
-    /**
-     * 获取引用字段列表。
-     *
-     * @return 引用字段列表
-     */
-    public Set<String> getPrimaryKeyColumns() {
-        return this.primaryKeyColumns;
+    @Override
+    public Set<String> getReferencedColumns() {
+        return this.referencedColumns;
     }
 
     public String toConstraintSql() {
@@ -244,9 +226,9 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
         }
         sql.append("FOREIGN KEY (").append(this.columns.stream().map(SQLiteGeneratorUtil::quote)
                         .collect(java.util.stream.Collectors.joining(", "))).append(") REFERENCES ")
-                .append(SQLiteGeneratorUtil.quote(this.getPrimaryKeyTable()));
-        if (!this.primaryKeyColumns.isEmpty()) {
-            sql.append(" (").append(this.primaryKeyColumns.stream().map(SQLiteGeneratorUtil::quote)
+                .append(SQLiteGeneratorUtil.quote(this.getReferencedTable()));
+        if (!this.referencedColumns.isEmpty()) {
+            sql.append(" (").append(this.referencedColumns.stream().map(SQLiteGeneratorUtil::quote)
                     .collect(java.util.stream.Collectors.joining(", "))).append(')');
         }
         if (StringUtil.isNotBlank(this.deletePolicy)) {
@@ -260,14 +242,14 @@ public class SQLiteForeignKey extends DBObject implements DBForeignKey, ObjectCo
 
     @Override
     public void destroy() {
-        if (this.primaryKeyTableProperty != null) {
-            this.primaryKeyTableProperty.unbind();
+        if (this.referencedTableProperty != null) {
+            this.referencedTableProperty.unbind();
         }
         if (this.columns != null) {
             this.columns.clear();
         }
-        if (this.primaryKeyColumns != null) {
-            this.primaryKeyColumns.clear();
+        if (this.referencedColumns != null) {
+            this.referencedColumns.clear();
         }
         super.destroy();
     }
