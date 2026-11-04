@@ -2,18 +2,16 @@ package cn.oyzh.easyshell.controller.sqlite.data;
 
 import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.sqlite.handler.SQLiteDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataTransportNameListView;
 import cn.oyzh.fx.db.data.ui.DBDataTransportObjectListView;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
-import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
-import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
@@ -29,12 +27,10 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
-import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
 import java.nio.file.Path;
 
 
@@ -103,13 +99,13 @@ public class ShellSqliteDataTransportController extends StageController {
      * 来源信息
      */
     @FXML
-    private ReadOnlyTextField sourceInfo;
+    private ShellConnectTextField sourceInfo;
 
     /**
      * 目标信息
      */
     @FXML
-    private ChooseFileTextField targetInfo;
+    private ShellConnectTextField targetInfo;
 
     /**
      * 来源主机
@@ -156,11 +152,6 @@ public class ShellSqliteDataTransportController extends StageController {
      * 目标客户端
      */
     private ShellSqliteClient targetClient;
-
-    /**
-     * 是否拥有来源客户端
-     */
-    private boolean ownsSourceClient;
 
     /**
      * 结束传输按钮
@@ -242,18 +233,6 @@ public class ShellSqliteDataTransportController extends StageController {
      */
     @FXML
     private void doTransport() {
-        // 检查目标文件
-        if (this.targetClient == null) {
-            File targetFile = this.selectedTargetFile();
-            if (targetFile == null || !targetFile.isFile()) {
-                this.targetInfo.requestFocus();
-                MessageBox.warn(I18nHelper.pleaseSelectFile(), this.getWindow());
-                return;
-            }
-            if (!this.doConnect(2, targetFile)) {
-                return;
-            }
-        }
         // 重置参数
         this.counter.reset();
         // 清理信息
@@ -333,8 +312,11 @@ public class ShellSqliteDataTransportController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.targetInfo.setOnSelectedFile(file -> {
-            StageManager.showMask(this.getWindow(), () -> this.doConnect(2, file));
+        this.sourceInfo.selectedItemChanged(newValue -> {
+            StageManager.showMask(this.getWindow(), () -> this.doConnect(1, newValue));
+        });
+        this.targetInfo.selectedItemChanged(newValue -> {
+            StageManager.showMask(this.getWindow(), () -> this.doConnect(2, newValue));
         });
         this.tableRoot.selectedItemChanged((observable, oldValue, newValue) -> this.flushPaneTexts());
         this.viewList.setSelectedChanged(() -> this.flushPaneText("view"));
@@ -344,62 +326,77 @@ public class ShellSqliteDataTransportController extends StageController {
     /**
      * 执行连接
      *
-     * @param type 类型 1: 源 2: 目标
-     * @param file 文件
+     * @param type    类型 1: 源 2: 目标
+     * @param connect 连接
      */
-    private boolean doConnect(int type, File file) {
+    private void doConnect(int type, ShellConnect connect) {
         try {
             if (type == 1) {
-                this.initSourceInfo();
-                return true;
-            }
-            if (file != null) {
-                if (this.targetClient != null) {
-                    this.targetClient.close();
+                if (connect != null) {
+                    this.sourceHost.text(connect.getHost());
+                    this.sourceType.text(connect.getType());
+                    this.sourceInfoName.text(connect.getName());
+                    if (this.sourceClient != null) {
+                        this.sourceClient.close();
+                    }
+                    this.sourceClient = ShellClientUtil.newClient(connect);
+                    this.sourceClient.start();
+                    this.sourceVersion.text(this.sourceClient.selectVersion());
+                    this.sourceDatabaseName.text("main");
+                } else {
+                    this.sourceHost.clear();
+                    this.sourceType.clear();
+                    this.sourceVersion.clear();
+                    this.sourceInfoName.clear();
+                    this.sourceDatabaseName.clear();
                 }
-                this.targetClient = this.newClient(file);
-                this.targetClient.start();
-                this.targetInfoName.text(file.getName());
-                this.targetHost.text(file.getAbsolutePath());
-                this.targetType.text("SQLite");
-                this.targetVersion.text(this.targetClient.selectVersion());
-                this.targetDatabaseName.text("main");
             } else {
-                this.targetHost.clear();
-                this.targetType.clear();
-                this.targetVersion.clear();
-                this.targetInfoName.clear();
-                this.targetDatabaseName.clear();
+                if (connect != null) {
+                    this.targetHost.text(connect.getHost());
+                    this.targetType.text(connect.getType());
+                    this.targetInfoName.text(connect.getName());
+                    if (this.targetClient != null) {
+                        this.targetClient.close();
+                    }
+                    this.targetClient = ShellClientUtil.newClient(connect);
+                    this.targetClient.start();
+                    this.targetVersion.text(this.targetClient.selectVersion());
+                    this.targetDatabaseName.text("main");
+                } else {
+                    this.targetHost.clear();
+                    this.targetType.clear();
+                    this.targetVersion.clear();
+                    this.targetInfoName.clear();
+                    this.targetDatabaseName.clear();
+                }
             }
             this.clearList();
-            return true;
         } catch (Throwable ex) {
             MessageBox.warn(I18nHelper.connectInitFail(), this.getWindow());
             ex.printStackTrace();
-            return false;
         }
     }
 
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        this.sourceClient = this.getProp("dbClient");
-        this.ownsSourceClient = this.hasProp("ownsSourceClient")
-                && Boolean.TRUE.equals(this.getProp("ownsSourceClient"));
-        this.initSourceInfo();
         this.stage.hideOnEscape();
+        ShellConnect connect = this.getProp("connect");
+        if (connect != null) {
+            this.sourceInfo.selectItem(connect);
+        }
     }
 
     @Override
     public void onWindowHidden(WindowEvent event) {
+        super.onWindowHidden(event);
         this.stopTransport();
+        if (this.sourceClient != null) {
+            this.sourceClient.close();
+        }
         if (this.targetClient != null) {
             this.targetClient.close();
         }
-        if (this.ownsSourceClient) {
-            IOUtil.closeAsync(this.sourceClient);
-        }
-        super.onWindowHidden(event);
     }
 
     /**
@@ -433,26 +430,26 @@ public class ShellSqliteDataTransportController extends StageController {
      */
     @FXML
     private void showStep2() {
-        File targetFile = this.selectedTargetFile();
-        if (targetFile == null || !targetFile.isFile()) {
-            this.targetInfo.requestFocus();
-            MessageBox.warn(I18nHelper.pleaseSelectFile(), this.getWindow());
+        ShellConnect sourceConnect = this.sourceInfo.getSelectedItem();
+        ShellConnect targetConnect = this.targetInfo.getSelectedItem();
+        if (sourceConnect == null) {
+            this.sourceInfo.requestFocus();
+            MessageBox.warn(I18nHelper.pleaseSelectSourceConnect(), this.getWindow());
             return;
         }
-        Path sourcePath = Path.of(this.sourceClient.getShellConnect().getHost())
+        if (targetConnect == null) {
+            this.targetInfo.requestFocus();
+            MessageBox.warn(I18nHelper.pleaseSelectTargetConnect(), this.getWindow());
+            return;
+        }
+        Path sourcePath = Path.of(sourceConnect.getHost())
                 .toAbsolutePath().normalize();
-        Path targetPath = targetFile.toPath().toAbsolutePath().normalize();
+        Path targetPath = Path.of(targetConnect.getHost())
+                .toAbsolutePath().normalize();
         if (sourcePath.equals(targetPath)) {
             this.targetInfo.requestFocus();
-            MessageBox.warn(I18nResourceBundle.i18nString("shell.sqlite.sourceTargetSame"),
-                    this.getWindow());
+            MessageBox.warn(I18nHelper.pleaseCheckDatabase(), this.getWindow());
             return;
-        }
-        if (this.targetClient == null || !StringUtil.equals(this.targetHost.getText(),
-                targetFile.getAbsolutePath())) {
-            if (!this.doConnect(2, targetFile)) {
-                return;
-            }
         }
         this.step1.disappear();
         this.step3.disappear();
@@ -549,51 +546,4 @@ public class ShellSqliteDataTransportController extends StageController {
         this.flushPaneTexts();
     }
 
-    /**
-     * 初始化来源信息
-     */
-    private void initSourceInfo() {
-        ShellConnect sourceConnect = this.sourceClient.getShellConnect();
-        this.sourceInfo.setText(sourceConnect.getHost());
-        this.sourceInfoName.setText(sourceConnect.getName());
-        this.sourceDatabaseName.setText("main");
-        this.sourceHost.setText(sourceConnect.getHost());
-        this.sourceType.setText("SQLite");
-        try {
-            this.sourceVersion.setText(this.sourceClient.selectVersion());
-        } catch (Exception ex) {
-            this.sourceVersion.setText(I18nHelper.operationFail());
-        }
-    }
-
-    /**
-     * 创建客户端
-     *
-     * @param file 文件
-     * @return 客户端
-     */
-    private ShellSqliteClient newClient(File file) {
-        ShellConnect connect = new ShellConnect();
-        connect.setName(file.getName());
-        connect.setType(ShellPrototype.SQLITE);
-        connect.setOsType(ShellPrototype.SQLITE);
-        connect.setHost(file.getAbsolutePath());
-        connect.setConnectTimeOut(5);
-        connect.setReadonly(false);
-        connect.setEnvironment("createIfMissing=false\nforeign_keys=0\n");
-        return new ShellSqliteClient(connect);
-    }
-
-    /**
-     * 获取目标文件
-     *
-     * @return 目标文件
-     */
-    private File selectedTargetFile() {
-        File file = this.targetInfo.getFile();
-        if (file == null && StringUtil.isNotBlank(this.targetInfo.getTextTrim())) {
-            file = new File(this.targetInfo.getTextTrim());
-        }
-        return file;
-    }
 }

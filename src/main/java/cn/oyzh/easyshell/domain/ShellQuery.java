@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import java.io.Serializable;
 
@@ -120,6 +121,7 @@ public class ShellQuery implements Serializable {
      *
      * @return 结果
      */
+    @JSONField(serialize = false, deserialize = false)
     public boolean isNew() {
         return StringUtil.isBlank(this.getUid());
     }

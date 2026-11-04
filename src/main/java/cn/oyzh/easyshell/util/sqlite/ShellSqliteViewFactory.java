@@ -16,7 +16,6 @@ import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.trees.sqlite.function.ShellSqliteFunctionTreeItem;
 import cn.oyzh.easyshell.trees.sqlite.table.ShellSqliteTableTreeItem;
 import cn.oyzh.easyshell.trees.sqlite.view.ShellSqliteViewTreeItem;
-import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -54,7 +53,17 @@ public final class ShellSqliteViewFactory {
     }
 
     public static void importData(ShellSqliteClient client) {
-        open(ShellSqliteDataImportController.class, client, null);
+        try {
+            if (StageManager.frontStage(ShellSqliteDataImportController.class, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(ShellSqliteDataImportController.class);
+            adapter.setProp("dbClient", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
     }
 
     public static void dumpData(ShellSqliteClient client, String tableName) {
@@ -79,41 +88,54 @@ public final class ShellSqliteViewFactory {
     }
 
     public static void runSqlFile(ShellSqliteClient client) {
-        open(ShellSqliteDataRunSqlFileController.class, client, null);
-    }
-
-    public static void transportData(ShellSqliteClient client) {
-        open(ShellSqliteDataTransportController.class, client, null);
+        try {
+            if (StageManager.frontStage(ShellSqliteDataRunSqlFileController.class, "dbClient", client)) {
+                return;
+            }
+            StageAdapter adapter = StageManager.parseStage(ShellSqliteDataRunSqlFileController.class);
+            adapter.setProp("dbClient", client);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
     }
 
     public static void transportData(ShellConnect connect) {
-        ShellSqliteClient sourceClient = null;
         try {
-            if (StageManager.frontStage(ShellSqliteDataTransportController.class, "connect", connect)) {
+            Class<?> clazz = ShellSqliteDataTransportController.class;
+            if (StageManager.frontStage(clazz, "connect", connect)) {
                 return;
             }
-            sourceClient = (ShellSqliteClient) ShellClientUtil.newClient(connect);
-            sourceClient.start();
-            StageAdapter adapter = StageManager.parseStage(ShellSqliteDataTransportController.class);
-            adapter.setProp("dbClient", sourceClient);
-            adapter.setProp("ownsSourceClient", true);
+            StageAdapter adapter = StageManager.parseStage(clazz);
             adapter.setProp("connect", connect);
             adapter.display();
-        } catch (Throwable ex) {
-            if (sourceClient != null) {
-                sourceClient.close();
-            }
+        } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
         }
     }
 
     public static void tableInfo(ShellSqliteTableTreeItem treeItem) {
-        openInfo(ShellSqliteTableInfoController.class, treeItem);
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellSqliteTableInfoController.class);
+            adapter.setProp("item", treeItem);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
     }
 
     public static void viewInfo(ShellSqliteViewTreeItem treeItem) {
-        openInfo(ShellSqliteViewInfoController.class, treeItem);
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellSqliteViewInfoController.class);
+            adapter.setProp("item", treeItem);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
     }
 
     public static void functionInfo(ShellSqliteFunctionTreeItem treeItem) {
@@ -127,29 +149,4 @@ public final class ShellSqliteViewFactory {
         }
     }
 
-    private static void openInfo(Class<?> controller, Object treeItem) {
-        try {
-            StageAdapter adapter = StageManager.parseStage(controller);
-            adapter.setProp("item", treeItem);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex, StageManager.getFrontWindow());
-        }
-    }
-
-    private static void open(Class<?> controller, ShellSqliteClient client, String tableName) {
-        try {
-            if (StageManager.frontStage(controller, "dbClient", client)) {
-                return;
-            }
-            StageAdapter adapter = StageManager.parseStage(controller);
-            adapter.setProp("dbClient", client);
-            adapter.setProp("tableName", tableName);
-            adapter.display();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex, StageManager.getFrontWindow());
-        }
-    }
 }

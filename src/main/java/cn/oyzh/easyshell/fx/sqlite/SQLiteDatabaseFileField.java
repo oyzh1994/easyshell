@@ -18,6 +18,7 @@ public class SQLiteDatabaseFileField extends ChooseTextField {
     @Override
     public void initNode() {
         super.initNode();
+        this.setEditable(true);
         this.setAction(this::selectDatabaseFile);
     }
 
@@ -25,8 +26,7 @@ public class SQLiteDatabaseFileField extends ChooseTextField {
      * 选择数据库文件。SQLite 文件可以使用任意扩展名或不使用扩展名。
      */
     public void selectDatabaseFile() {
-        File file = FileChooserHelper.choose(I18nResourceBundle.i18nString("shell.sqlite.openFileTitle"),
-                StageManager.getFrontWindow());
+        File file = FileChooserHelper.choose(I18nResourceBundle.i18nString("shell.sqlite.openFileTitle"), this.getWindow());
         if (file != null) {
             this.setText(file.getAbsolutePath());
             this.setTipText(file.getAbsolutePath());

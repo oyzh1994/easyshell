@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.util.mariadb.ShellMariadbViewFactory;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.MoveSVGGlyph;
@@ -139,6 +140,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isDamengType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellDamengViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isSqliteType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellSqliteViewFactory.transportData(this.value);
             });
             items.add(transportData);
         }
