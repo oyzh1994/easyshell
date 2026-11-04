@@ -24,6 +24,7 @@ import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.terminal.ShellTermWidgetUtil;
 import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
@@ -689,11 +690,11 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 double diskRead = NumberUtil.scale(monitor.getDiskReadSpeed(), 2);
                 double diskWrite = NumberUtil.scale(monitor.getDiskWriteSpeed(), 2);
                 sb.append("CPU:").append(cpuUsage).append("% | ");
-                sb.append(I18nHelper.memory()).append(":").append(memoryUsage).append("% | ");
-                sb.append(I18nHelper.networkInput()).append(":").append(networkRecv).append("KB/s | ");
-                sb.append(I18nHelper.networkOutput()).append(":").append(networkSend).append("KB/s | ");
-                sb.append(I18nHelper.diskRead()).append(":").append(diskRead).append("MB/s | ");
-                sb.append(I18nHelper.diskWrite()).append(":").append(diskWrite).append("MB/s");
+                sb.append(ShellI18nHelper.label(I18nHelper.memory(), memoryUsage + "%")).append(" | ");
+                sb.append(ShellI18nHelper.label(I18nHelper.networkInput(), networkRecv + "KB/s")).append(" | ");
+                sb.append(ShellI18nHelper.label(I18nHelper.networkOutput(), networkSend + "KB/s")).append(" | ");
+                sb.append(ShellI18nHelper.label(I18nHelper.diskRead(), diskRead + "MB/s")).append(" | ");
+                sb.append(ShellI18nHelper.label(I18nHelper.diskWrite(), diskWrite + "MB/s"));
                 this.serverMonitorInfo.text(sb.toString());
             }, 3_000, 0);
             if (JulLog.isDebugEnabled()) {

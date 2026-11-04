@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyHandler;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -78,7 +79,7 @@ public class ShellMongoTabController extends ShellBaseTabController {
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.connectSuspended(this.client.connectName()), this.getWindow());
             }
         });
         // 加载根节点

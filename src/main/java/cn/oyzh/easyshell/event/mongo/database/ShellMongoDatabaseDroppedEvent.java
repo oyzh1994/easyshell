@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mongo.database;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb数据库已删除事件
@@ -20,6 +20,6 @@ public class ShellMongoDatabaseDroppedEvent extends Event<ShellMongoDatabaseTree
      */
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] deleted", I18nHelper.database(), this.data().dbName());
+return ShellI18nHelper.eventDatabaseDeleted(this.data().dbName());
     }
 }

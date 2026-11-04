@@ -4,6 +4,7 @@ import cn.oyzh.fx.db.query.DBQueryResult;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -40,7 +41,7 @@ public class ShellMongoQueryInfoTabController extends RichTabController {
                 } else {
                     this.infoArea.appendLine("> " + result.getMsg());
                 }
-                this.infoArea.appendLine("> " + I18nHelper.time() + ": " + result.getUsedMs() + "ms");
+                this.infoArea.appendLine(ShellI18nHelper.queryTimeLine(result.getUsedMs()));
                 this.infoArea.appendLine("");
             }
         } else {

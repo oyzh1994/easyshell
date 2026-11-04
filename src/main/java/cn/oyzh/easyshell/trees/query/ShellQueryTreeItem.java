@@ -8,6 +8,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -74,7 +75,7 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("delete", this.value().getName()), this.getWindow())) {
             if (this.queryStore.delete(this.value)) {
                 this.getTreeView().deleteQuery(this.value);
                 this.remove();

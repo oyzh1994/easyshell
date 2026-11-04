@@ -9,6 +9,7 @@ import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -67,11 +68,11 @@ public class ShellRedisKeyInfoController extends RichTabController {
      */
     @FXML
     private void copy() {
-        String builder = I18nHelper.keyName() + " : " + this.treeItem.key() + System.lineSeparator() +
-                I18nHelper.database() + " : " + this.treeItem.dbIndex() + System.lineSeparator() +
-                I18nHelper.encoding() + " : " + this.redisKey.getObjectedEncoding() + System.lineSeparator() +
-                I18nHelper.idleTime() + " : " + this.redisKey.getObjectIdletime() + System.lineSeparator() +
-                I18nHelper.refcount() + " : " + this.redisKey.getObjectRefcount() + System.lineSeparator();
+        String builder = ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key()) + System.lineSeparator() +
+                ShellI18nHelper.label(I18nHelper.database(), this.treeItem.dbIndex()) + System.lineSeparator() +
+                ShellI18nHelper.label(I18nHelper.encoding(), this.redisKey.getObjectedEncoding()) + System.lineSeparator() +
+                ShellI18nHelper.label(I18nHelper.idleTime(), this.redisKey.getObjectIdletime()) + System.lineSeparator() +
+                ShellI18nHelper.label(I18nHelper.refcount(), this.redisKey.getObjectRefcount()) + System.lineSeparator();
         ClipboardUtil.setStringAndTip(builder);
     }
 
@@ -111,9 +112,9 @@ public class ShellRedisKeyInfoController extends RichTabController {
                 String key = this.treeItem.key();
                 int dbIndex = this.treeItem.dbIndex();
                 ShellRedisKeyUtil.keyObject(this.redisKey, dbIndex, key, this.client);
-                this.objectIdletime.text(I18nHelper.idleTime() + " : " + this.redisKey.objectIdletimeString());
-                this.objectRefcount.text(I18nHelper.refcount() + " : " + this.redisKey.objectRefcountString());
-                this.objectEncoding.text(I18nHelper.encoding() + " : " + this.redisKey.objectedEncodingString());
+                this.objectIdletime.text(ShellI18nHelper.label(I18nHelper.idleTime(), this.redisKey.objectIdletimeString()));
+                this.objectRefcount.text(ShellI18nHelper.label(I18nHelper.refcount(), this.redisKey.objectRefcountString()));
+                this.objectEncoding.text(ShellI18nHelper.label(I18nHelper.encoding(), this.redisKey.objectedEncodingString()));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex, this.getWindow());

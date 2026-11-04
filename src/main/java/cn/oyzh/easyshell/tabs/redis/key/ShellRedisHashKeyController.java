@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -213,9 +214,9 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void copyRow() {
         if (this.treeItem.isSelectRow()) {
-            String builder = I18nHelper.keyName() + " : " + this.treeItem.key() + System.lineSeparator() +
-                    I18nHelper.fieldName() + " : " + this.treeItem.currentRow().getField() + System.lineSeparator() +
-                    I18nHelper.fieldValue() + " : " + this.treeItem.currentRow().getValue();
+            String builder = ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.fieldName(), this.treeItem.currentRow().getField()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.fieldValue(), this.treeItem.currentRow().getValue());
             ClipboardUtil.setStringAndTip(builder);
         }
     }
@@ -224,7 +225,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void saveKeyValue() {
         if (this.treeItem.checkRowExists()) {
-            MessageBox.warn(I18nHelper.fieldName() + "[" + this.treeItem.field() + "] " + I18nHelper.alreadyExists(), this.getWindow());
+            MessageBox.warn(ShellI18nHelper.fieldAlreadyExists(this.treeItem.field()), this.getWindow());
             return;
         }
         if (this.treeItem.isDataTooBig()) {
@@ -364,7 +365,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisHashValue.RedisHashRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteField() + ":" + row.getField(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteField", row.getField()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

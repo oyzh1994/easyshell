@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -47,8 +48,8 @@ public class ShellHomeTabController extends RichTabController {
     public void initialize(URL url, ResourceBundle resource) {
         super.initialize(url, resource);
 //        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
-        this.version.setText(I18nHelper.version() + " : v" + this.project.getVersion());
-        this.update.setText(I18nHelper.updateDate() + " : " + this.project.getUpdateDate());
+        this.version.setText(ShellI18nHelper.versionInfo("v" + this.project.getVersion()));
+        this.update.setText(ShellI18nHelper.updateDateInfo(this.project.getUpdateDate()));
         String jdkInfo = "";
         if (System.getProperty("java.vm.name") != null) {
             jdkInfo += System.getProperty("java.vm.name");
@@ -56,7 +57,7 @@ public class ShellHomeTabController extends RichTabController {
         if (System.getProperty("java.vm.version") != null) {
             jdkInfo += System.getProperty("java.vm.version");
         }
-        this.jdkInfo.setText(I18nHelper.env() + " : " + jdkInfo);
+        this.jdkInfo.setText(ShellI18nHelper.environmentInfo(jdkInfo));
     }
 
     /**

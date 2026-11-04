@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb数据库已新增事件
@@ -21,7 +21,7 @@ public class ShellMongoDatabaseAddedEvent extends Event<MongoDatabase> implement
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] added", I18nHelper.database(), this.data().getName());
+return ShellI18nHelper.eventDatabaseAdded(this.data().getName());
     }
 
     public ShellMongoRootTreeItem getConnectItem() {

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.redis;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * redis键ttl更新事件
@@ -54,9 +54,6 @@ public class ShellRedisKeyTTLUpdatedEvent extends Event<ShellConnect> implements
 
     @Override
     public String eventFormat() {
-        return String.format(
-                "[%s] "+ I18nHelper.ttlUpdated() +"[%s-db%s] ttl:%s",
-                this.data().getName(), this.key, this.dbIndex, this.ttl
-        );
+return ShellI18nHelper.redisTtlUpdated(this.data().getName(), this.key, this.dbIndex, this.ttl);
     }
 }

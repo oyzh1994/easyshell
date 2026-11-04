@@ -12,6 +12,7 @@ import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -68,7 +69,7 @@ public class ShellRedisZSetMemberAddController extends StageController {
             // redis客户端
             ShellRedisClient client = this.treeItem.client();
             if (client.zrank(dbIndex, key, rowValue) != null) {
-                MessageBox.warn(I18nHelper.member() + "[" + rowValue + "] " + I18nHelper.alreadyExists(), this.getStage());
+                MessageBox.warn(ShellI18nHelper.memberAlreadyExists(rowValue), this.getStage());
                 return;
             }
             double score = scoreValue.doubleValue();

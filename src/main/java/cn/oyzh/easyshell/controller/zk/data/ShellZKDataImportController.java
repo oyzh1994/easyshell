@@ -26,6 +26,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -177,7 +178,7 @@ public class ShellZKDataImportController extends StageController {
         this.importMsg.clear();
         this.importStatus.clear();
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.importProcessing() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseImportProcessing());
         // 生成导入处理器
         if (this.importHandler == null) {
             this.importHandler = new ShellZKDataImportHandler();
@@ -350,7 +351,7 @@ public class ShellZKDataImportController extends StageController {
         try {
             // 检查客户端
             if (this.client == null || this.client.isClosed()) {
-                this.getStage().appendTitle("===" + I18nHelper.connectIng() + "===");
+                this.getStage().appendTitle(ShellI18nHelper.phaseConnectIng());
                 this.getStage().disable();
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {

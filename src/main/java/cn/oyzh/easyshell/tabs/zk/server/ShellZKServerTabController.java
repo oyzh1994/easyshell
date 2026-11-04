@@ -10,6 +10,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -128,9 +129,9 @@ public class ShellZKServerTabController extends ParentTabController {
     public void init(ShellZKClient client) {
         this.client = client;
         // 设置信息
-        String command = this.command.getText() + "(" + I18nHelper.received() + "/" + I18nHelper.sent() + "/" + I18nHelper.outstanding() + ")";
+        String command = this.command.getText() + ShellI18nHelper.zkRequestStats();
         this.command.text(command);
-        String latency = this.latency.getText() + "(" + I18nHelper.min() + "/" + I18nHelper.avg() + "/" + I18nHelper.max() + ")" + I18nHelper.millisecond();
+        String latency = this.latency.getText() + ShellI18nHelper.zkLatency();
         this.latency.text(latency);
     }
 

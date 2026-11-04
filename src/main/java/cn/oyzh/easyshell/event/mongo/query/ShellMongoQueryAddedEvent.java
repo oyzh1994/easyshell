@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb查询已新增事件
@@ -29,6 +29,6 @@ public class ShellMongoQueryAddedEvent extends Event<ShellQuery> implements Even
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] added", I18nHelper.query(), this.data().getName());
+return ShellI18nHelper.eventQueryAdded(this.data().getName());
     }
 }

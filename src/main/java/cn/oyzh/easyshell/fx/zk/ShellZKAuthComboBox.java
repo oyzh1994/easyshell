@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.fx.zk;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import cn.oyzh.fx.plus.node.NodeManager;
@@ -42,8 +43,7 @@ public class ShellZKAuthComboBox extends FXComboBox<ShellZKAuth> {
             public String toString(ShellZKAuth auth) {
                 String text = "";
                 if (auth != null) {
-                    text = I18nHelper.userName() + ":" + auth.getUser() +
-                            " " + I18nHelper.password() + ":" + auth.getPassword();
+                    text = ShellI18nHelper.zkAuthCombo(auth.getUser(), auth.getPassword());
                 }
                 return text;
             }

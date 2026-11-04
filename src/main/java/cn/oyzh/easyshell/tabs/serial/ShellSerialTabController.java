@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
@@ -224,7 +225,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
     private void initClientListener(ShellSerialClient client) {
         client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.connectSuspended(client.connectName()), this.getWindow());
             }
         });
     }

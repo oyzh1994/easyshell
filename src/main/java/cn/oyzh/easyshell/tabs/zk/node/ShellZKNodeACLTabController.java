@@ -12,6 +12,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import org.apache.zookeeper.data.Stat;
@@ -86,7 +87,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
     private void copyACL() {
         ShellZKACL acl = this.aclTableView.getSelectedItem();
         if (acl == null) {
-            MessageBox.warn(I18nHelper.acl() + " " + I18nHelper.isEmpty(), this.getWindow());
+            MessageBox.warn(ShellI18nHelper.zkAclEmpty(), this.getWindow());
             return;
         }
         try {
@@ -128,7 +129,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
             MessageBox.warn(this.i18nString("shell.zk.aclTip1"), this.getWindow());
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.deleteACL() + " " + acl.idVal() + " ?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteACL", acl.idVal()), this.getWindow())) {
             return;
         }
         try {

@@ -14,6 +14,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -126,7 +127,7 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(I18nHelper.deleteProcedure() + " " + this.value.getName() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteProcedure", this.value.getName()), this.getWindow())) {
             return;
         }
         try {

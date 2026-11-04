@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -95,7 +96,7 @@ public class ShellMongoRootTreeItem extends ShellMongoTreeItem<ShellMongoRootTre
                 return;
             }
             if (this.existDatabase(databaseName)) {
-                MessageBox.warn(I18nHelper.database() + " " + databaseName + " " + I18nHelper.alreadyExists(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.databaseAlreadyExists(databaseName), this.getWindow());
                 return;
             }
             this.createDatabase(databaseName);

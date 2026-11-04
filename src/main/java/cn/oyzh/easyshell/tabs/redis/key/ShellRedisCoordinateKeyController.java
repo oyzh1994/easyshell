@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -242,10 +243,10 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
     @Override
     protected void copyRow() {
         if (this.treeItem.isSelectRow()) {
-            String builder = I18nHelper.keyName() + " : " + this.treeItem.key() + System.lineSeparator() +
-                    I18nHelper.coordinates() + " : " + this.treeItem.currentRow().getValue() + System.lineSeparator() +
-                    I18nHelper.longitude() + " : " + this.treeItem.currentRow().getLongitude() + System.lineSeparator() +
-                    I18nHelper.latitude() + " : " + this.treeItem.currentRow().getLatitude();
+            String builder = ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.coordinates(), this.treeItem.currentRow().getValue()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.longitude(), this.treeItem.currentRow().getLongitude()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.latitude(), this.treeItem.currentRow().getLatitude());
             ClipboardUtil.setStringAndTip(builder);
         }
     }
@@ -335,7 +336,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteCoordinate() + ":" + row.getValue(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteCoordinate", row.getValue()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

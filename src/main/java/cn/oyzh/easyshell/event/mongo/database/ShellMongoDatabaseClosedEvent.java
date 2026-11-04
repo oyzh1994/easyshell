@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mongo.database;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb数据库已关闭事件
@@ -15,6 +15,6 @@ public class ShellMongoDatabaseClosedEvent extends Event<ShellMongoDatabaseTreeI
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] closed", I18nHelper.database(), this.data().value());
+return ShellI18nHelper.eventDatabaseClosed(String.valueOf(this.data().value()));
     }
 }

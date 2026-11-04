@@ -34,6 +34,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -193,7 +194,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      * 清空表数据并重置自增
      */
     private void truncateTable() {
-        if (MessageBox.confirm(I18nHelper.truncateTable() + "[" + this.tableName() + "]", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("truncateTable", this.tableName()), this.getWindow())) {
             try {
                 this.dbItem().truncateTable(this.tableName());
                 ShellMysqlEventUtil.tableTruncated(this, this.dbItem());
@@ -209,7 +210,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
      */
     private void clearTable() {
         try {
-            if (MessageBox.confirm(I18nHelper.clearTable() + "[" + this.tableName() + "]", this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirm("clearTable", this.tableName()), this.getWindow())) {
                 this.dbItem().clearTable(this.tableName());
                 ShellMysqlEventUtil.tableCleared(this, this.dbItem());
             }
@@ -221,7 +222,7 @@ public class ShellMysqlTableTreeItem extends ShellMysqlTreeItem<ShellMysqlTableT
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteTable() + "[" + this.tableName() + "]", this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteTable", this.tableName()), this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellMysqlEventUtil.tableDropped(this, this.dbItem());
                 this.parent().clearTableSize();

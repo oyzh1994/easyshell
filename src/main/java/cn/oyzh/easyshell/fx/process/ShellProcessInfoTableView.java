@@ -8,6 +8,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
@@ -160,7 +161,7 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
         if (info == null) {
             return;
         }
-        if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.killProcess() + "?", this.getWindow())) {
+        if (MessageBox.confirm("[" + info.getPid() + "] " + ShellI18nHelper.confirm("killProcess"), this.getWindow())) {
             String output = this.exec.kill(info.getPid());
             if (StringUtil.isNotBlank(output)) {
                 MessageBox.warn(output, this.getWindow());
@@ -180,7 +181,7 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
         if (info == null) {
             return;
         }
-        if (MessageBox.confirm("[" + info.getPid() + "] " + I18nHelper.forceKillProcess() + "?", this.getWindow())) {
+        if (MessageBox.confirm("[" + info.getPid() + "] " + ShellI18nHelper.confirm("forceKillProcess"), this.getWindow())) {
             String output = this.exec.forceKill(info.getPid());
             if (StringUtil.isNotBlank(output)) {
                 MessageBox.warn(output, this.getWindow());

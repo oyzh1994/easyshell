@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mysql.query;
 import cn.oyzh.easyshell.trees.mysql.query.ShellMysqlQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mysql查询已删除事件
@@ -24,6 +24,6 @@ public class ShellMysqlQueryDeletedEvent extends Event<ShellMysqlQueryTreeItem> 
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] deleted", I18nHelper.query(), this.data().queryName());
+return ShellI18nHelper.eventQueryDeleted(this.data().queryName());
     }
 }

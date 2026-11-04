@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -196,9 +197,9 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void copyRow() {
         if (this.treeItem.isSelectRow()) {
-            String builder = I18nHelper.keyName() + " : " + this.treeItem.key() + System.lineSeparator() +
-                    I18nHelper.member() + " : " + this.treeItem.currentRow().getValue() + System.lineSeparator() +
-                    I18nHelper.score() + " : " + this.treeItem.currentRow().getScore();
+            String builder = ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.member(), this.treeItem.currentRow().getValue()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.score(), this.treeItem.currentRow().getScore());
             ClipboardUtil.setStringAndTip(builder);
         }
     }
@@ -289,7 +290,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteMember() + ":" + row.getValue(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteMember", row.getValue()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

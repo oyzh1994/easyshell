@@ -17,6 +17,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import org.bson.BsonValue;
@@ -128,7 +129,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
      * 清空集合
      */
     private void clearCollection() {
-        if (MessageBox.confirm(I18nHelper.clearCollection() + "[" + this.collectionName() + "]", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("clearCollection", this.collectionName()), this.getWindow())) {
             this.dbItem().clearCollection(this.collectionName());
             this.parent().reloadChild();
         }
@@ -137,7 +138,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteCollection() + "[" + this.collectionName() + "]", this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteCollection", this.collectionName()), this.getWindow())) {
                 this.dbItem().dropCollection(this.collectionName());
                 ShellMongoEventUtil.collectionDropped(this, this.dbItem());
                 this.parent().clearCollectionSize();

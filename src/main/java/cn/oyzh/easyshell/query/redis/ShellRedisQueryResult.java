@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.redis;
 
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * redis查询结果
@@ -108,7 +108,7 @@ public class ShellRedisQueryResult {
      * @return 耗时秒数字符串
      */
     public String costSeconds() {
-        return String.format("%.2f" + I18nHelper.seconds(), this.cost / 1000.0);
+        return ShellI18nHelper.seconds(this.cost / 1000.0);
     }
 
     /**

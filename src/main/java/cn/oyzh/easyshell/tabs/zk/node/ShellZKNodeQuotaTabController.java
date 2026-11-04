@@ -6,6 +6,7 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import org.apache.zookeeper.StatsTrack;
@@ -62,9 +63,9 @@ public class ShellZKNodeQuotaTabController extends SubTabController {
             StatsTrack quota = this.activeItem().quota();
             String builder;
             if (quota == null) {
-                builder = I18nHelper.count() + " -1" + System.lineSeparator() + I18nHelper.bytes() + " -1";
+                builder = ShellI18nHelper.zkQuota(-1, -1);
             } else {
-                builder = I18nHelper.count() + " " + quota.getCount() + System.lineSeparator() + I18nHelper.bytes() + " " + quota.getBytes();
+                builder = ShellI18nHelper.zkQuota(quota.getCount(), quota.getBytes());
             }
             ClipboardUtil.setStringAndTip(builder);
             MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());

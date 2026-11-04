@@ -22,6 +22,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -218,7 +219,7 @@ public class ShellZKDataTransportController extends StageController {
         // }
         // 开始处理
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.transportInProgress() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseTransportInProgress());
         // 执行传输
         this.execTask = ThreadUtil.start(() -> {
             try {
@@ -386,7 +387,7 @@ public class ShellZKDataTransportController extends StageController {
                 return;
             }
 
-            this.getStage().appendTitle("===" + I18nHelper.connectIng() + "===");
+            this.getStage().appendTitle(ShellI18nHelper.phaseConnectIng());
             this.getStage().disable();
 
             if (this.sourceClient == null || this.sourceClient.isClosed()) {
@@ -403,7 +404,7 @@ public class ShellZKDataTransportController extends StageController {
                     this.sourceClient.close();
                     this.sourceClient = null;
                     this.sourceInfo.requestFocus();
-                    MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
+                    MessageBox.warn(ShellI18nHelper.connectFailed(sourceInfo.getName()), this.getWindow());
                     return;
                 }
             }
@@ -422,7 +423,7 @@ public class ShellZKDataTransportController extends StageController {
                     this.targetClient.close();
                     this.targetClient = null;
                     this.targetInfo.requestFocus();
-                    MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
+                    MessageBox.warn(ShellI18nHelper.connectFailed(targetInfo.getName()), this.getWindow());
                     return;
                 }
             }

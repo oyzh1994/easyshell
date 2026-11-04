@@ -12,6 +12,7 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -76,8 +77,8 @@ public class ShellMysqlQueryExplainTabController extends RichTabController {
             this.initRecords(this.result.getRecords());
             // 初始化sql信息
             this.sql.text(TextUtil.toSingleLine(this.result.getContent()));
-            this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
-            this.count.text(I18nHelper.totalData() + ": " + this.result.getCount());
+            this.used.text(ShellI18nHelper.queryTime(this.result.getUsedMs()));
+            this.count.text(ShellI18nHelper.queryTotal(this.result.getCount()));
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }

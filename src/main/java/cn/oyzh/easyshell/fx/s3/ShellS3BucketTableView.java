@@ -9,6 +9,7 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -100,7 +101,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
      * @param force  强制
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
-        if (bucket != null && MessageBox.confirm(I18nHelper.deleteBucket() + " " + bucket.getName() + "?", this.getWindow())) {
+        if (bucket != null && MessageBox.confirm(ShellI18nHelper.confirm("deleteBucket", bucket.getName()), this.getWindow())) {
             StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.client.deleteBucket(bucket, force);

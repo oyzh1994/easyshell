@@ -56,6 +56,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -168,7 +169,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
     public void delete() {
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> {
-                    if (MessageBox.confirm(I18nHelper.deleteSchema() + "[" + this.schema() + "]", this.getWindow())) {
+                    if (MessageBox.confirm(ShellI18nHelper.confirm("deleteSchema", this.schema()), this.getWindow())) {
                         if (this.parent().dropSchema(this.schema())) {
                             ShellDamengEventUtil.schemaDropped(this);
                             super.remove();

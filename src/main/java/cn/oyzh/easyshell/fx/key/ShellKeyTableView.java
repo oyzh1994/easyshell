@@ -12,6 +12,7 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.tableview.TableViewMouseSelectHelper;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -152,7 +153,7 @@ public class ShellKeyTableView extends FXTableView<ShellKey> {
             FileUtil.writeUtf8String(key.getPrivateKey(), priFile);
             FileUtil.writeUtf8String(key.getPublicKey(), pubFile);
             // 提示信息
-            MessageBox.info(I18nHelper.operationSuccess() + " [" + priFile.getName() + "," + pubFile.getName() + "]", this.getWindow());
+            MessageBox.info(ShellI18nHelper.keyPairGenerated(priFile.getName(), pubFile.getName()), this.getWindow());
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }

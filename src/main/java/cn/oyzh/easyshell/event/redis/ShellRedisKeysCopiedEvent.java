@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.redis;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 import java.util.List;
 
@@ -40,10 +40,7 @@ public class ShellRedisKeysCopiedEvent extends Event<List<String>> implements Ev
 
     @Override
     public String eventFormat() {
-        return String.format(
-                "[%s] " + I18nHelper.copyKey() + "[%s-db%s] " + I18nHelper.targetDatabase() + ":%s",
-                connect.getName(), this.data(), sourceDB, this.targetDB
-        );
+return ShellI18nHelper.redisKeysCopied(connect.getName(), this.data(), sourceDB, this.targetDB);
     }
 
     public int getSourceDB() {

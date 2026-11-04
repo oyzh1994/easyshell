@@ -16,6 +16,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -180,7 +181,7 @@ public class ShellSqliteQueryMainTabController extends RichTabController {
                 int index = 1;
                 for (SQLiteExecuteResult result : results.getResults()) {
                     if (result.isSuccess()) {
-                        FXTab fxTab = this.initSelectTab(result, I18nHelper.result() + index++);
+                        FXTab fxTab = this.initSelectTab(result, ShellI18nHelper.numberedLabel(I18nHelper.result(), index++));
                         this.resultTabPane.addTab(fxTab);
                         if (result.hasResult()) {
                             showType = 2;
@@ -217,7 +218,7 @@ public class ShellSqliteQueryMainTabController extends RichTabController {
                 int index = 1;
                 for (SQLiteExecuteResult result : results.getResults()) {
                     if (result.isSuccess()) {
-                        FXTab fxTab = this.initExplainTab(result, I18nHelper.explain() + index++);
+                        FXTab fxTab = this.initExplainTab(result, ShellI18nHelper.numberedLabel(I18nHelper.explain(), index++));
                         this.resultTabPane.addTab(fxTab);
                         if (result.hasResult()) {
                             showType = 2;

@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.tabs.ShellTermTab;
 import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Cursor;
 
@@ -82,7 +83,7 @@ public class ShellSplitTab extends ShellTermTab {
 
     @Override
     protected String getTabTitle() {
-        return I18nHelper.termSplitView() + INDEX.incrementAndGet();
+        return ShellI18nHelper.numberedLabel(I18nHelper.termSplitView(), INDEX.incrementAndGet());
     }
 
     @Override

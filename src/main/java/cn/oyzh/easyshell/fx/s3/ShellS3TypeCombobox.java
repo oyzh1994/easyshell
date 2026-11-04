@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.s3;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
@@ -49,10 +50,10 @@ public class ShellS3TypeCombobox extends FXComboBox<String> {
     @Override
     public void initNode() {
         this.addItem("Minio");
-        this.addItem(I18nHelper.aliyun() + " oss");
-        this.addItem(I18nHelper.tencent() + " cos");
-        this.addItem(I18nHelper.huawei() + " obs");
-        this.addItem(I18nHelper.standard() + " s3");
+        this.addItem(ShellI18nHelper.s3AliyunOss());
+        this.addItem(ShellI18nHelper.s3TencentCos());
+        this.addItem(ShellI18nHelper.s3HuaweiObs());
+        this.addItem(ShellI18nHelper.s3Standard());
         super.initNode();
     }
 }

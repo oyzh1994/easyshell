@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.theme.ThemeUtil;
 import cn.oyzh.fx.plus.theme.Themes;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuBar;
@@ -90,7 +91,7 @@ public class HeaderController extends StageController {
             JulLog.info("exit directly.");
             StageManager.exit();
         } else { // 总是询问
-            if (MessageBox.confirm(I18nHelper.quit() + " " + this.project.getName(), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirm("quit", this.project.getName()), this.getWindow())) {
                 JulLog.info("exit by confirm.");
                 StageManager.exit();
             } else {

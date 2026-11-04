@@ -30,6 +30,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -250,7 +251,7 @@ public class ShellRedisDataExportController extends StageController {
         this.exportMsg.clear();
         this.exportStatus.clear();
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.exportProcessing() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseExportProcessing());
         // 生成导出处理器
         if (this.exportHandler == null) {
             this.exportHandler = new ShellRedisDataExportHandler();
@@ -404,7 +405,7 @@ public class ShellRedisDataExportController extends StageController {
     @FXML
     private void showStep2() {
         try {
-            this.getStage().appendTitle("===" + I18nHelper.connectIng() + "===");
+            this.getStage().appendTitle(ShellI18nHelper.phaseConnectIng());
             this.getStage().disable();
             // 检查客户端
             if (this.client == null || this.client.isClosed()) {
@@ -498,7 +499,7 @@ public class ShellRedisDataExportController extends StageController {
         } else if (this.db.getSelectedIndex() != 0) {
             fileName += "-db" + (this.db.getSelectedIndex() - 1);
         }
-        fileName += "-" + I18nHelper.exportData() + "." + fileType;
+        fileName += ShellI18nHelper.redisExportSuffix(fileType);
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter, this.getWindow());
         if (this.exportFile != null) {
             // 删除文件

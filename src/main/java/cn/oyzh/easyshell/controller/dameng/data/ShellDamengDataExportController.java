@@ -33,6 +33,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
@@ -271,7 +272,7 @@ public class ShellDamengDataExportController extends StageController {
         // 错误时继续
         this.exportHandler.continueWithError(this.continueWithError.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.exportInProgress() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseExportInProgress());
         // 执行导出
         this.execTask = ThreadUtil.start(() -> {
             try {
@@ -336,7 +337,7 @@ public class ShellDamengDataExportController extends StageController {
     private void flushDatePreview() {
         try {
             String format = this.dateFormat.getTextTrim();
-            this.datePreview.text(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
+            this.datePreview.text(ShellI18nHelper.currentTime(DateUtil.format(new Date(), format)));
         } catch (Exception ex) {
             this.datePreview.text(I18nHelper.invalidFormat());
         }

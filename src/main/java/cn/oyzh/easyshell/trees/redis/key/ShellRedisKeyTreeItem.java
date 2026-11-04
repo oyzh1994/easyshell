@@ -14,6 +14,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -306,7 +307,7 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
     @Override
     public void delete() {
         try {
-            if (!MessageBox.confirm(I18nHelper.deleteKey() + " " + this.key(), this.getWindow())) {
+            if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteKey", this.key()), this.getWindow())) {
                 return;
             }
             // 删除此键
@@ -473,7 +474,7 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
      * 刷新内存占用信息
      */
     public void flushMemoryUsage() {
-        this.memoryUsageInfoProperty.set(I18nHelper.size() + " : " + this.memoryUsageInfo());
+        this.memoryUsageInfoProperty.set(ShellI18nHelper.memoryUsage(this.memoryUsageInfo()));
     }
 
     /**

@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.zk;
 
 import cn.oyzh.easyshell.dto.zk.ShellZKEnvNode;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.ClientInfo;
@@ -43,7 +43,7 @@ public class ShellZKQueryResult {
     private boolean success;
 
     public String costSeconds() {
-        return String.format("%.2f " + I18nHelper.seconds(), this.cost / 1000.0);
+        return ShellI18nHelper.seconds(this.cost / 1000.0);
     }
 
     public byte[] asData() {

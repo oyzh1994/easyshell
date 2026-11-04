@@ -11,6 +11,7 @@ import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -111,7 +112,7 @@ public class ShellToolPortScanTabController extends SubStageController {
                 this.portScanTable.addItem(result);
                 this.portScanTable.doSort();
             }
-            this.portScanMsg.text(I18nHelper.scan() + ":" + totalCount.get() + " " + I18nHelper.available() + ":" + successCount.get());
+            this.portScanMsg.text(ShellI18nHelper.portScanResult(totalCount.get(), successCount.get()));
         }, () -> {
             this.portScanStartBtn.enable();
             this.portScanStopBtn.disable();

@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -137,7 +138,7 @@ public class ShellDockerCommitController extends StageController {
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
-                    MessageBox.info(I18nHelper.imageId() + ":" + output, this.getWindow());
+                    MessageBox.info(ShellI18nHelper.imageIdMessage(output), this.getWindow());
                     ShellEventUtil.containerCommit(this.exec);
                     this.closeWindow();
                 }

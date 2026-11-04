@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -157,7 +158,7 @@ public class ShellRedisKeyDataController extends ParentTabController {
         // 判断这个key是否到期
         if (treeItem.isExpire()) {
             // BackgroundService.submitFXLater(() -> {
-            String tips = I18nHelper.key() + " [" + treeItem.key() + "] " + I18nHelper.expired() + ", " + I18nHelper.deleteKey() + "?";
+            String tips = ShellI18nHelper.redisExpiredKeyDeleteConfirm(treeItem.key());
             if (MessageBox.confirm(tips, this.getWindow())) {
                 this.treeItem.deleteByExpired();
             }

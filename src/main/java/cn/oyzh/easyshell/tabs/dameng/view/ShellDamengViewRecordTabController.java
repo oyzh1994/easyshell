@@ -32,6 +32,7 @@ import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -495,7 +496,7 @@ public class ShellDamengViewRecordTabController extends RichTabController {
     @FXML
     private void deleteRecord() {
         List<DamengRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteRecord"), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));

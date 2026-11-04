@@ -28,6 +28,7 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
@@ -281,7 +282,7 @@ public class ChatController extends SubStageController {
                 this.finishRequest(request, true);
                 return;
             }
-            LLMMessage placeholder = this.view.addAssistantMessage(I18nHelper.thinking() + "...", message.getSessionTabId());
+            LLMMessage placeholder = this.view.addAssistantMessage(ShellI18nHelper.thinkingPlaceholder(), message.getSessionTabId());
             request.placeholder = placeholder;
             if (!this.isRequestActive(request)) {
                 this.markStoppedPlaceholder(placeholder);
@@ -362,7 +363,7 @@ public class ChatController extends SubStageController {
         }
         this.view.flushMessageUpdates();
         String text = message.getMessage();
-        if (text == null || text.isBlank() || Objects.equals(text, I18nHelper.thinking() + "...")) {
+        if (text == null || text.isBlank() || Objects.equals(text, ShellI18nHelper.thinkingPlaceholder())) {
             this.view.replaceMessage(message, I18nHelper.stopped());
         }
     }

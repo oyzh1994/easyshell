@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.popups.zk;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.qrcode.QRCodeUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
@@ -48,10 +49,9 @@ public class ShellZKNodeQRCodePopupController extends PopupController {
             ShellZKNode zkNode = this.getProp("zkNode");
             String nodeData = this.getProp("nodeData");
             StringBuilder builder = new StringBuilder();
-            builder.append(I18nHelper.nodePath()).append(": ")
-                    .append(zkNode.decodeNodePath()).append("\n")
-                    .append(I18nHelper.nodeData()).append(": ")
-                    .append(nodeData);
+            builder.append(ShellI18nHelper.label(I18nHelper.nodePath(), zkNode.decodeNodePath()))
+                    .append("\n")
+                    .append(ShellI18nHelper.label(I18nHelper.nodeData(), nodeData));
             JulLog.info("generate qrcode begin.");
             int codeW = (int) NodeUtil.getWidth(this.qrcode);
             int codeH = (int) NodeUtil.getHeight(this.qrcode);

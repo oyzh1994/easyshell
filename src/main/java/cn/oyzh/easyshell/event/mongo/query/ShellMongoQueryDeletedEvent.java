@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mongo.query;
 import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb查询已删除事件
@@ -24,6 +24,6 @@ public class ShellMongoQueryDeletedEvent extends Event<ShellMongoQueryTreeItem> 
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] deleted", I18nHelper.query(), this.data().queryName());
+return ShellI18nHelper.eventQueryDeleted(this.data().queryName());
     }
 }

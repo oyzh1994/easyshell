@@ -121,7 +121,7 @@ public class RedisTerminalPane extends TerminalPane {
     public void flushPrompt() {
         String prompt;
         if (this.isTemporary()) {
-            prompt = "redis " + I18nHelper.connection();
+            prompt = ShellI18nHelper.terminalConnectPrompt("redis");
         } else {
             prompt = this.client.connectName();
         }
@@ -131,9 +131,9 @@ public class RedisTerminalPane extends TerminalPane {
         }
         String db = this.dbIndex == null ? "" : "@db" + this.dbIndex;
         if (this.isConnecting()) {
-            prompt += "(" + I18nHelper.connectIng() + db + ")> ";
+            prompt += ShellI18nHelper.terminalConnectingDbPrompt(db);
         } else if (this.isConnected()) {
-            prompt += "(" + (this.client.isReadonly() ? I18nHelper.readonlyMode() : I18nHelper.connected()) + db + ")> ";
+            prompt += this.client.isReadonly() ? ShellI18nHelper.terminalReadonlyDbPrompt(db) : ShellI18nHelper.terminalConnectedDbPrompt(db);
         } else {
             prompt += db + "> ";
         }
@@ -217,12 +217,12 @@ public class RedisTerminalPane extends TerminalPane {
     private void initByTemporary() {
         this.outputLine("connect [-timeout timeout] [-h host] [-p port] [-u user] [-a password] [-n db] [-r]");
         this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
-        this.outputLine("-h " + I18nHelper.host());
-        this.outputLine("-p " + I18nHelper.port());
-        this.outputLine("-u " + I18nHelper.userName());
-        this.outputLine("-a " + I18nHelper.password());
-        this.outputLine("-n " + I18nHelper.database());
-        this.outputLine("-r " + I18nHelper.readonlyMode());
+        this.outputLine(ShellI18nHelper.terminalOption("-h", I18nHelper.host()));
+        this.outputLine(ShellI18nHelper.terminalOption("-p", I18nHelper.port()));
+        this.outputLine(ShellI18nHelper.terminalOption("-u", I18nHelper.userName()));
+        this.outputLine(ShellI18nHelper.terminalOption("-a", I18nHelper.password()));
+        this.outputLine(ShellI18nHelper.terminalOption("-n", I18nHelper.database()));
+        this.outputLine(ShellI18nHelper.terminalOption("-r", I18nHelper.readonlyMode()));
         this.appendByPrompt("connect -timeout 3000 -h 127.0.0.1 -p 6379 -n 0");
         this.enableInput();
         this.flushAndMoveCaretEnd();
@@ -284,22 +284,22 @@ public class RedisTerminalPane extends TerminalPane {
             ShellConnect connect = this.shellConnect();
             String host = connect == null ? "" : connect.getHost();
             if (newState == ShellConnState.CONNECTED) {
-                this.outputLine(host + I18nHelper.connectSuccess() + " .");
+                this.outputLine(ShellI18nHelper.terminalConnected(host));
                 this.outputLine(I18nHelper.terminalTip2());
                 this.outputLine(I18nHelper.terminalTip1());
                 this.outputPrompt();
                 this.flushCaret();
                 super.enableInput();
             } else if (newState == ShellConnState.CLOSED) {
-                this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
+                this.outputLine(ShellI18nHelper.terminalClosed(host));
                 this.enableInput();
             } else if (newState == ShellConnState.CONNECTING) {
-                this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .", false);
+                this.outputLine(ShellI18nHelper.terminalConnecting(host), false);
             } else if (newState == ShellConnState.INTERRUPTED) {
-                this.outputLine(host + " " + I18nHelper.connectionBroken() + " .");
+                this.outputLine(ShellI18nHelper.terminalInterrupted(host));
                 this.enableInput();
             } else if (newState == ShellConnState.FAILED) {
-                this.outputLine(host + " " + I18nHelper.connectFail() + " .");
+                this.outputLine(ShellI18nHelper.terminalFailed(host));
                 if (this.connectInfo != null) {
                     this.appendByPrompt(this.connectInfo.getInput());
                 }

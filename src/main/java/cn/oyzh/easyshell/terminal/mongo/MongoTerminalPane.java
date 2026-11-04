@@ -57,7 +57,7 @@ public class MongoTerminalPane extends TerminalPane {
     public void flushPrompt() {
         String str;
         if (this.isTemporary()) {
-            str = "mongo" + I18nHelper.connect();
+            str = ShellI18nHelper.terminalConnectPrompt("mongo");
         } else {
             str = this.client.connectName();
         }
@@ -65,9 +65,9 @@ public class MongoTerminalPane extends TerminalPane {
             str += "@" + this.shellConnect().getHost();
         }
         if (this.isConnecting()) {
-            str += "(" + I18nHelper.connectIng() + ")> ";
+            str += ShellI18nHelper.terminalConnectingPrompt();
         } else if (this.isConnected()) {
-            str += "(" + I18nHelper.connected() + ")> ";
+            str += ShellI18nHelper.terminalConnectedPrompt();
         } else {
             str += "> ";
         }

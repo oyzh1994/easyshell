@@ -14,6 +14,7 @@ import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -147,7 +148,7 @@ public class ShellDataExportController extends StageController {
     @FXML
     private void selectFile() {
         FileExtensionFilter filter = FXChooser.jsonExtensionFilter();
-        String fileName = "EasyShell-" + I18nHelper.connect() + "-" + DateHelper.formatDate() + ".json";
+        String fileName = ShellI18nHelper.dataExportFileName(DateHelper.formatDate());
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter, this.getWindow());
         if (this.exportFile != null) {
             this.fileName.setText(this.exportFile.getPath());

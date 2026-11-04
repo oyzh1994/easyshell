@@ -83,7 +83,7 @@ public class ZKTerminalPane extends TerminalPane {
     public void flushPrompt() {
         String prompt;
         if (this.isTemporary()) {
-            prompt = "zk" + I18nHelper.connect();
+            prompt = ShellI18nHelper.terminalConnectPrompt("zk");
         } else {
             prompt = this.client.connectName();
         }
@@ -91,12 +91,12 @@ public class ZKTerminalPane extends TerminalPane {
             prompt += "@" + this.shellConnect().getHost();
         }
         if (this.isConnecting()) {
-            prompt += "(" + I18nHelper.connectIng() + ")> ";
+            prompt += ShellI18nHelper.terminalConnectingPrompt();
         } else if (this.isConnected()) {
             if (this.client.isReadonly()) {
-                prompt += "(" + I18nHelper.connected() + "/" + I18nHelper.readonlyMode() + ")> ";
+                prompt += ShellI18nHelper.terminalConnectedReadonlyPrompt();
             } else {
-                prompt += "(" + I18nHelper.connected() + ")> ";
+                prompt += ShellI18nHelper.terminalConnectedPrompt();
             }
         } else {
             prompt += "> ";
@@ -192,8 +192,8 @@ public class ZKTerminalPane extends TerminalPane {
     private void initByTemporary() {
         this.outputLine("connect [-timeout timeout] [-server server] [-r]");
         this.outputLine("-timeout " + I18nResourceBundle.i18nString("base.unit", "base.ms"));
-        this.outputLine("-server ip:" + I18nHelper.port());
-        this.outputLine("-r " + I18nHelper.readonlyMode());
+        this.outputLine(ShellI18nHelper.terminalOption("-server ip:", I18nHelper.port()));
+        this.outputLine(ShellI18nHelper.terminalOption("-r", I18nHelper.readonlyMode()));
         this.appendByPrompt("connect -timeout 3000 -server localhost:2181");
         this.enableInput();
         this.flushAndMoveCaretEnd();
@@ -236,27 +236,27 @@ public class ZKTerminalPane extends TerminalPane {
             this.flushPrompt();
             String host = this.shellConnect() == null ? "" : this.shellConnect().getHost();
             if (newState == ShellConnState.CONNECTED) {
-                this.outputLine(host + I18nHelper.connectSuccess() + " .");
+                this.outputLine(ShellI18nHelper.terminalConnected(host));
                 this.outputLine(I18nHelper.terminalTip2());
                 this.outputLine(I18nHelper.terminalTip1());
                 this.outputPrompt();
                 this.flushCaret();
                 super.enableInput();
             } else if (newState == ShellConnState.CLOSED) {
-                this.outputLine(host + " " + I18nHelper.connectionClosed() + " .");
+                this.outputLine(ShellI18nHelper.terminalClosed(host));
                 this.enableInput();
             } else if (newState == ShellConnState.CONNECTING) {
-                this.outputLine(host + " " + I18nHelper.connectionConnecting() + " .", false);
+                this.outputLine(ShellI18nHelper.terminalConnecting(host), false);
             } else if (newState == ShellConnState.INTERRUPTED) {
-                this.outputLine(host + " " + I18nHelper.connectSuspended() + " .");
+                this.outputLine(ShellI18nHelper.connectSuspended(host));
                 this.enableInput();
             } else if (newState == ShellConnState.RECONNECTED) {
-                this.outputLine(host + " " + I18nHelper.connectReconnected() + " .");
+                this.outputLine(ShellI18nHelper.terminalReconnected(host));
                 this.outputPrompt();
                 this.flushCaret();
                 super.enableInput();
             } else if (newState == ShellConnState.FAILED) {
-                this.outputLine(host + I18nHelper.connectFail() + " .");
+                this.outputLine(ShellI18nHelper.terminalFailed(host));
                 if (this.connectInfo != null) {
                     this.appendByPrompt(this.connectInfo.getInput());
                 }

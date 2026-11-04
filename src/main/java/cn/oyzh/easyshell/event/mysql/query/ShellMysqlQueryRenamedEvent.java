@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mysql.query.ShellMysqlQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mysql查询已重命名事件
@@ -46,6 +46,6 @@ public class ShellMysqlQueryRenamedEvent extends Event<ShellMysqlQueryTreeItem> 
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.newQueryName());
+return ShellI18nHelper.eventQueryRenamed(this.getQueryName(), this.newQueryName());
     }
 }

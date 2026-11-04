@@ -58,9 +58,9 @@ public class MysqlTerminalPane extends TerminalPane {
         String str = this.dbName;
         str += "@" + this.shellConnect().getName();
         if (this.isConnecting()) {
-            str += "(" + I18nHelper.connectIng() + ")> ";
+            str += ShellI18nHelper.terminalConnectingPrompt();
         } else if (this.isConnected()) {
-            str += "(" + I18nHelper.connected() + ")> ";
+            str += ShellI18nHelper.terminalConnectedPrompt();
         } else {
             str += "> ";
         }

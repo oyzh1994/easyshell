@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.text.FXText;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -50,7 +51,7 @@ public class ShellRedisKeyExtraController extends SubTabController {
         this.flushTTL();
         this.treeItem.flushMemoryUsage();
 //        this.flushMemoryUsage();
-        this.loadTime.setText(I18nHelper.cost() + " : " + this.treeItem.loadTime() + "ms");
+        this.loadTime.setText(ShellI18nHelper.queryTime(this.treeItem.loadTime()));
     }
 
     /**

@@ -174,8 +174,8 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
     @Override
     protected void copyRow() {
         if (this.treeItem.isSelectRow()) {
-            String builder = I18nHelper.keyName() + " : " + this.treeItem.key() + System.lineSeparator() +
-                    I18nHelper.element() + " : " + this.treeItem.currentRow().getValue();
+            String builder = ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.element(), this.treeItem.currentRow().getValue());
             ClipboardUtil.setStringAndTip(builder);
         }
     }
@@ -272,7 +272,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(I18nHelper.deleteElement() + ":" + row.getValue(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteElement", row.getValue()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

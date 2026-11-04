@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
@@ -158,7 +159,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         if (image == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.deleteImage() + " " + image.getRepository(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteImage", image.getRepository()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {

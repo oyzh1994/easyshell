@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb桶已删除事件
@@ -47,6 +47,6 @@ public class ShellMongoBucketDroppedEvent extends Event<ShellMongoBucketTreeItem
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] dropped", I18nHelper.bucket(), this.bucketName());
+return ShellI18nHelper.eventBucketDropped(this.bucketName());
     }
 }

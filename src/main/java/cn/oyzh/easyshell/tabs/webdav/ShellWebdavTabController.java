@@ -28,6 +28,7 @@ import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
@@ -151,7 +152,7 @@ public class ShellWebdavTabController extends ShellBaseTabController {
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.connectSuspended(this.client.connectName()), this.getWindow());
             }
         });
         StageManager.showMask(this.getWindow(), () -> {

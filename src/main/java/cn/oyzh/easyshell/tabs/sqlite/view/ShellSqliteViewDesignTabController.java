@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.controls.tab.FixedTab;
 import cn.oyzh.fx.plus.node.NodeUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -116,7 +117,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         if (this.originalName == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.refreshData() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
             return;
         }
         try {

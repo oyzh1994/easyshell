@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.connect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * 连接已删除事件
@@ -15,6 +15,6 @@ public class ShellConnectDeletedEvent extends Event<ShellConnect> implements Eve
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s deleted] ", I18nHelper.connect(), this.data().getName());
+return ShellI18nHelper.eventConnectDeleted(this.data().getName());
     }
 }

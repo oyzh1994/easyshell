@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb函数已删除事件
@@ -34,6 +34,6 @@ public class ShellMongoFunctionDroppedEvent extends Event<ShellMongoFunctionTree
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] dropped", I18nHelper.function(), this.functionName());
+return ShellI18nHelper.eventFunctionDropped(this.functionName());
     }
 }

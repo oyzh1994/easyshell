@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.llm;
 
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import dev.langchain4j.data.message.AudioContent;
 import dev.langchain4j.data.message.Content;
@@ -126,20 +127,20 @@ public final class LLMFileContentUtil {
 
         byte[] bytes = readTextBytes(file);
         if (isBinary(bytes)) {
-            throw new IllegalArgumentException(I18nHelper.notSupport() + ": " + file.getName());
+            throw new IllegalArgumentException(ShellI18nHelper.fileNotSupported(file.getName()));
         }
         return List.of(TextContent.from(textDescription(text, file, decode(bytes))));
     }
 
     private static void validateFile(File file) {
         if (!file.exists()) {
-            throw new IllegalArgumentException(I18nHelper.fileNotExists() + ": " + file.getName());
+            throw new IllegalArgumentException(ShellI18nHelper.fileNotExists(file.getName()));
         }
         if (!file.isFile()) {
-            throw new IllegalArgumentException(I18nHelper.notSupportFolder() + ": " + file.getName());
+            throw new IllegalArgumentException(ShellI18nHelper.folderNotSupported(file.getName()));
         }
         if (!file.canRead()) {
-            throw new IllegalArgumentException(I18nHelper.read() + I18nHelper.fail() + ": " + file.getName());
+            throw new IllegalArgumentException(ShellI18nHelper.readFileFailed(file.getName()));
         }
     }
 
@@ -147,7 +148,7 @@ public final class LLMFileContentUtil {
         try {
             long size = Files.size(file.toPath());
             if (size <= 0) {
-                throw new IllegalArgumentException(I18nHelper.invalidFile() + ": " + file.getName());
+                throw new IllegalArgumentException(ShellI18nHelper.fileInvalid(file.getName()));
             }
             checkSize(file, size, MAX_MEDIA_FILE_SIZE);
         } catch (IOException ex) {
@@ -167,13 +168,12 @@ public final class LLMFileContentUtil {
 
     private static void checkSize(File file, long size, long maxSize) {
         if (size > maxSize) {
-            throw new IllegalArgumentException(I18nHelper.dataTooLarge() + ": " + file.getName()
-                    + " (" + formatSize(size) + " > " + formatSize(maxSize) + ")");
+            throw new IllegalArgumentException(ShellI18nHelper.fileTooLarge(file.getName(), formatSize(size), formatSize(maxSize)));
         }
     }
 
     private static IllegalArgumentException readException(File file, Exception ex) {
-        return new IllegalArgumentException(I18nHelper.read() + I18nHelper.fail() + ": " + file.getName(), ex);
+        return new IllegalArgumentException(ShellI18nHelper.readFileFailed(file.getName()), ex);
     }
 
     private static String formatSize(long size) {
@@ -191,7 +191,7 @@ public final class LLMFileContentUtil {
         if (!prompt.isEmpty()) {
             builder.append(prompt).append("\n\n");
         }
-        builder.append(I18nHelper.file()).append(": ").append(file.getName()).append('\n');
+        builder.append(ShellI18nHelper.fileDescription(file.getName())).append('\n');
         builder.append("MIME: ").append(mimeType);
         return builder.toString();
     }
@@ -201,7 +201,7 @@ public final class LLMFileContentUtil {
         if (!prompt.isEmpty()) {
             builder.append(prompt).append("\n\n");
         }
-        builder.append(I18nHelper.file()).append(": ").append(file.getName()).append('\n');
+        builder.append(ShellI18nHelper.label(I18nHelper.file(), file.getName())).append('\n');
         builder.append("```").append(codeFenceLanguage(file)).append('\n');
         builder.append(content);
         if (!content.isEmpty() && !content.endsWith("\n")) {

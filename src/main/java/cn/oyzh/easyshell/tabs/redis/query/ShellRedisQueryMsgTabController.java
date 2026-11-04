@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -30,6 +31,6 @@ public class ShellRedisQueryMsgTabController extends RichTabController {
     public void init(ShellRedisQueryParam param, ShellRedisQueryResult result) {
         this.msg.appendLine(param.getContent());
         this.msg.appendLine("> " + result.getMessage());
-        this.msg.appendLine("> " + I18nHelper.cost() + ": " + result.costSeconds());
+        this.msg.appendLine(ShellI18nHelper.queryCostLine(result.costSeconds()));
     }
 }

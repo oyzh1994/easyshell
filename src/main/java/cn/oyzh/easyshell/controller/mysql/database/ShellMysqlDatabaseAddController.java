@@ -11,6 +11,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -65,7 +66,7 @@ public class ShellMysqlDatabaseAddController extends StageController {
             // 检查字段是否存在
             String dbName = this.name.getText();
             if (this.connectItem.existDatabase(dbName)) {
-                MessageBox.warn(I18nHelper.database() + " " + dbName + " " + I18nHelper.alreadyExists(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.databaseAlreadyExists(dbName), this.getWindow());
                 return;
             }
             MysqlDatabase database = new MysqlDatabase();

@@ -10,6 +10,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -47,12 +48,12 @@ public class ShellFilePkgUploadController extends StageController {
         String name = "upload_pack_" + UUIDUtil.uuidSimple() + ".tar.gz";
         File compressFile = FileUtil.newTmpFile(name);
         for (File file : files) {
-            this.root.appendLine(I18nHelper.compress() + " " + file.getPath());
+            this.root.appendLine(ShellI18nHelper.compressing(file.getPath()));
         }
         TaskManager.startAsync(() -> {
             try {
                 CompressUtil.compress(this.files, compressFile.getPath(), CompressUtil.CompressType.TAR_GZ);
-                this.root.appendLine(I18nHelper.uploadFile() + " " + compressFile.getPath());
+                this.root.appendLine(ShellI18nHelper.uploading(compressFile.getPath()));
                 this.setProp("compressFile", compressFile);
                 this.closeWindow();
             } catch (Exception ex) {

@@ -17,6 +17,7 @@ import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
@@ -216,7 +217,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.deleteContainer() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteContainer", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -312,7 +313,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null || !container.isExited()) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.start1Container() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("start1Container", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -339,7 +340,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.stop1Container() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("stop1Container", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -362,7 +363,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void killContainer() {
         ShellDockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(I18nHelper.killContainer() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("killContainer", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -389,7 +390,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.restartContainer() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("restartContainer", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -416,7 +417,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.pauseContainer() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("pauseContainer", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -439,7 +440,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void unpauseContainer() {
         ShellDockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(I18nHelper.unpauseContainer() + " " + container.getNames(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("unpauseContainer", container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {

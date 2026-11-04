@@ -30,6 +30,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
@@ -246,7 +247,7 @@ public class ShellSqliteDataImportController extends StageController {
             this.importHandler.recordLabel(null);
         }
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.importInProgress() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseImportInProgress());
         // 执行导入
         this.execTask = ThreadUtil.start(() -> {
             try {
@@ -294,7 +295,7 @@ public class ShellSqliteDataImportController extends StageController {
     private void flushDatePreview() {
         try {
             String format = this.dateFormat.getTextTrim();
-            this.datePreview.setText(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
+            this.datePreview.setText(ShellI18nHelper.currentTime(DateUtil.format(new Date(), format)));
         } catch (Exception ex) {
             this.datePreview.setText(I18nHelper.invalidFormat());
         }

@@ -3,7 +3,7 @@
  import cn.oyzh.easyshell.zk.ShellZKClient;
  import cn.oyzh.event.Event;
  import cn.oyzh.event.EventFormatter;
- import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
  /**
   * zk历史恢复事件
@@ -28,7 +28,7 @@
 
      @Override
      public String eventFormat() {
-         return String.format("[%s:%s path:%s restored data] ", I18nHelper.connect(), this.data().connectName(), this.nodePath);
+return ShellI18nHelper.zkHistoryRestored(this.data().connectName(), this.nodePath);
      }
 
  }

@@ -26,6 +26,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.fxml.FXML;
@@ -199,7 +200,7 @@ public class ShellSqliteDataDumpController extends StageController {
                 .setDataType((byte) this.dataType.getSelectedIndex());
         this.dumpHandler.setContinueWithErrors(this.continueWithErrors.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.dumpProcessing() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseDumpProcessing());
         // 执行转储
         this.execTask = ThreadUtil.start(() -> {
             try {

@@ -4,6 +4,7 @@ import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.qrcode.QRCodeUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.PopupController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -49,12 +50,11 @@ public class ShellRedisKeyQRCodePopupController extends PopupController {
             ShellRedisKey key = this.getProp("key");
             String keyData = this.getProp("keyData");
             StringBuilder builder = new StringBuilder();
-            builder.append(I18nHelper.key()).append(": ")
-                    .append(key.getKey()).append("\n")
-                    .append(I18nHelper.database()).append(": ")
-                    .append(key.getDbIndex()).append("\n")
-                    .append(I18nHelper.data()).append(": ")
-                    .append(keyData);
+            builder.append(ShellI18nHelper.label(I18nHelper.key(), key.getKey()))
+                    .append("\n")
+                    .append(ShellI18nHelper.label(I18nHelper.database(), key.getDbIndex()))
+                    .append("\n")
+                    .append(ShellI18nHelper.label(I18nHelper.data(), keyData));
             JulLog.info("generate qrcode begin.");
             int codeW = (int) NodeUtil.getWidth(this.qrcode);
             int codeH = (int) NodeUtil.getHeight(this.qrcode);

@@ -13,6 +13,7 @@ import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -151,8 +152,7 @@ public class ShellZKAuthTabController extends RichTabController {
         if (auth == null) {
             return;
         }
-        String data = I18nHelper.userName() + " " + auth.getUser() + System.lineSeparator()
-                + I18nHelper.password() + " " + auth.getPassword();
+        String data = ShellI18nHelper.zkAuth(auth.getUser(), auth.getPassword());
         ClipboardUtil.setStringAndTip(data);
     }
 

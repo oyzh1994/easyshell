@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.net.URLDecoder;
@@ -71,7 +72,7 @@ public class ShellZKNodeUtil {
      */
     public static ShellZKNode getNode(ShellZKClient client, String path, String properties) throws Exception {
         if (!path.contains("/")) {
-            throw new ShellException("path:[" + path + "]" + I18nHelper.invalid());
+            throw new ShellException(ShellI18nHelper.invalidPath(path));
         }
         long start = System.currentTimeMillis();
         // zk节点

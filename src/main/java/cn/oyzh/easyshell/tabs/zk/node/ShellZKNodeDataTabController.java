@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -347,7 +348,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
         this.dataRedo.disable();
         if (this.activeItem() != null) {
             this.dataSave.setDisable(!this.activeItem().isDataUnsaved());
-            this.loadTime.text(I18nHelper.cost() + " : " + this.activeItem().loadTime() + "ms");
+            this.loadTime.text(ShellI18nHelper.zkLoadTime(this.activeItem().loadTime() + "ms"));
         }
     }
 
@@ -359,7 +360,7 @@ public class ShellZKNodeDataTabController extends SubTabController {
             return;
         }
         // 数据大小处理
-        this.dataSize.text(I18nHelper.size() + " : " + this.activeItem().dataSizeInfo());
+        this.dataSize.text(ShellI18nHelper.zkDataSize(this.activeItem().dataSizeInfo()));
     }
 
     @Override

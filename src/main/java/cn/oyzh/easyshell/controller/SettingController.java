@@ -1221,7 +1221,7 @@ public class SettingController extends StageController {
         if (time == null) {
             this.syncTime.clear();
         } else {
-            this.syncTime.text(ShellI18nHelper.settingTip1() + " : " + DateHelper.formatDateTimeSimple(new Date(time)));
+            this.syncTime.text(ShellI18nHelper.label(ShellI18nHelper.settingTip1(), DateHelper.formatDateTimeSimple(new Date(time))));
         }
         String syncId = this.setting.getSyncId();
         if (StringUtil.isEmpty(syncId)) {
@@ -1316,15 +1316,15 @@ public class SettingController extends StageController {
         int clients = ShellX11Manager.xServerClients();
         if (status == 0) {
             this.x11Btn.text(I18nHelper.start1());
-            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.notStarted());
+            this.x11Status.text(ShellI18nHelper.x11StatusNotStarted());
             this.x11Status.setTextFill(ThemeManager.currentForegroundColor());
         } else if (status == 1) {
             this.x11Btn.text(I18nHelper.stop1());
-            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.running() + ", " + I18nHelper.clientNum() + ": " + clients);
+            this.x11Status.text(ShellI18nHelper.x11StatusRunning(clients));
             this.x11Status.setTextFill(Color.GREEN);
         } else if (status == 2) {
             this.x11Btn.text(I18nHelper.start1());
-            this.x11Status.text(I18nHelper.status() + ": " + I18nHelper.stopped());
+            this.x11Status.text(ShellI18nHelper.x11StatusStopped());
             this.x11Status.setTextFill(Color.RED);
         }
     }

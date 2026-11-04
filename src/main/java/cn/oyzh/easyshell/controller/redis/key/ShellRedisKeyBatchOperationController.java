@@ -175,7 +175,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             this.execTask = ThreadUtil.start(() -> {
                 try {
                     NodeGroupUtil.disable(this.root, "exec");
-                    this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
+                    this.stage.appendTitle(ShellI18nHelper.phaseExecuteIng());
                     // 扫描键
                     List<String> keys = this.findKeys(this.keys1, pattern);
                     int succCount = 0;
@@ -189,15 +189,15 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                         // 查询结束
                         if (result == 1) {
                             succCount++;
-                            this.keys1.appendLine(I18nHelper.deleteKey() + ": [" + key + "] " + I18nHelper.success());
+                            this.keys1.appendLine(ShellI18nHelper.redisDeleteKeySuccess(key));
                         } else {
                             failCount++;
-                            this.keys1.appendLine(I18nHelper.deleteKey() + ": [" + key + "] " + I18nHelper.fail());
+                            this.keys1.appendLine(ShellI18nHelper.redisDeleteKeyFail(key));
                         }
                     }
                     ShellRedisEventUtil.redisKeyFlushed(this.client.getShellConnect(), this.dbIndex);
                     // 提示信息
-                    String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
+                    String msg = ShellI18nHelper.redisBatchSummary(succCount, failCount);
                     MessageBox.info(msg, this.getWindow());
                 } finally {
                     this.stopExec();
@@ -217,7 +217,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             this.execTask = ThreadUtil.start(() -> {
                 try {
                     NodeGroupUtil.disable(this.root, "exec");
-                    this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
+                    this.stage.appendTitle(ShellI18nHelper.phaseExecuteIng());
                     // 扫描键
                     List<String> keys = this.findKeys(this.keys2, pattern);
                     int succCount = 0;
@@ -235,15 +235,15 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                         }
                         if (result == 1) {
                             succCount++;
-                            this.keys2.appendLine(I18nHelper.handleKey() + ": [" + key + "] " + I18nHelper.success());
+                            this.keys2.appendLine(ShellI18nHelper.redisHandleKeySuccess(key));
                         } else {
                             failCount++;
-                            this.keys2.appendLine(I18nHelper.handleKey() + ": [" + key + "] " + I18nHelper.fail());
+                            this.keys2.appendLine(ShellI18nHelper.redisHandleKeyFail(key));
                         }
                     }
                     ShellRedisEventUtil.redisKeyFlushed(this.client.shellConnect(), this.dbIndex);
                     // 提示信息
-                    String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
+                    String msg = ShellI18nHelper.redisBatchSummary(succCount, failCount);
                     MessageBox.info(msg, this.getWindow());
                 } finally {
                     this.stopExec();
@@ -266,7 +266,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
-                        this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
+                        this.stage.appendTitle(ShellI18nHelper.phaseExecuteIng());
                         this.client.flushDB(this.dbIndex);
                         ShellRedisEventUtil.redisKeyFlushed(this.client.getShellConnect(), this.dbIndex);
                         MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
@@ -299,7 +299,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
-                        this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
+                        this.stage.appendTitle(ShellI18nHelper.phaseExecuteIng());
                         // 扫描键
                         List<String> keys = this.findKeys(this.keys4, pattern);
                         int succCount = 0;
@@ -312,15 +312,15 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                             long result = this.client.move(key, this.dbIndex, targetDBIndex);
                             if (result == 1) {
                                 succCount++;
-                                this.keys4.appendLine(I18nHelper.moveKey() + ": [" + key + "] " + I18nHelper.success());
+                                this.keys4.appendLine(ShellI18nHelper.redisMoveKeySuccess(key));
                             } else {
                                 failCount++;
-                                this.keys4.appendLine(I18nHelper.moveKey() + ": [" + key + "] " + I18nHelper.fail());
+                                this.keys4.appendLine(ShellI18nHelper.redisMoveKeyFail(key));
                             }
                         }
                         ShellRedisEventUtil.redisKeysMoved(this.client.shellConnect(), this.dbIndex, targetDBIndex);
                         // 提示信息
-                        String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
+                        String msg = ShellI18nHelper.redisBatchSummary(succCount, failCount);
                         MessageBox.info(msg, this.getWindow());
                     } finally {
                         this.stopExec();
@@ -352,7 +352,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                 this.execTask = ThreadUtil.start(() -> {
                     try {
                         NodeGroupUtil.disable(this.root, "exec");
-                        this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
+                        this.stage.appendTitle(ShellI18nHelper.phaseExecuteIng());
                         // 扫描键
                         List<String> keys = this.findKeys(this.keys5, pattern);
                         int succCount = 0;
@@ -365,15 +365,15 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                             boolean result = this.client.copy(this.dbIndex, key, key, targetDBIndex, this.replaceOnCopy.isSelected());
                             if (result) {
                                 succCount++;
-                                this.keys5.appendLine(I18nHelper.copyKey() + ": [" + key + "] " + I18nHelper.success());
+                                this.keys5.appendLine(ShellI18nHelper.redisCopyKeySuccess(key));
                             } else {
                                 failCount++;
-                                this.keys5.appendLine(I18nHelper.copyKey() + ": [" + key + "] " + I18nHelper.fail());
+                                this.keys5.appendLine(ShellI18nHelper.redisCopyKeyFail(key));
                             }
                         }
                         ShellRedisEventUtil.redisKeysCopied(this.client.shellConnect(), keys, this.dbIndex, targetDBIndex);
                         // 提示信息
-                        String msg = I18nHelper.success() + ":" + succCount + ", " + I18nHelper.fail() + ":" + failCount;
+                        String msg = ShellI18nHelper.redisBatchSummary(succCount, failCount);
                         MessageBox.info(msg, this.getWindow());
                     } finally {
                         this.stopExec();
@@ -394,7 +394,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
         this.execTask = ThreadUtil.start(() -> {
             try {
                 NodeGroupUtil.disable(this.root, "exec");
-                this.stage.appendTitle("====" + I18nHelper.executeIng() + "====");
+                this.stage.appendTitle(ShellI18nHelper.phaseExecuteIng());
                 // 扫描参数
                 String pattern = StringUtil.isBlank(this.pattern6.getText()) ? "*" : this.pattern6.getText();
                 long keySize = 0;
@@ -406,7 +406,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                     ShellRedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
                     keySize += result.keySize();
                     cursor = result.getCursor();
-                    this.keys6.text(I18nHelper.found() + ":" + keySize);
+                    this.keys6.text(ShellI18nHelper.redisFound(keySize));
                     if (result.isFinish()) {
                         break;
                     }
@@ -462,7 +462,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
             ShellRedisScanSimpleResult result = ShellRedisKeyUtil.scanKeysSimple(this.dbIndex, cursor, params, this.client);
             keys.addAll(result.getKeys());
             cursor = result.getCursor();
-            area.text(I18nHelper.found() + ":" + keys.size());
+            area.text(ShellI18nHelper.redisFound(keys.size()));
             if (result.isFinish()) {
                 break;
             }

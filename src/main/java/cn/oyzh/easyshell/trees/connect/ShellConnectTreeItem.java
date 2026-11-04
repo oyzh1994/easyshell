@@ -20,6 +20,7 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -467,42 +468,42 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             return;
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(I18nHelper.protocol()).append(":").append(this.value.getType()).append("\n");
+        builder.append(ShellI18nHelper.label(I18nHelper.protocol(), this.value.getType())).append("\n");
         if (this.isS3Type()) {
-            builder.append(I18nHelper.host()).append(":").append(this.value.getHost()).append("\n");
-            builder.append(I18nHelper.userName()).append(":").append(this.value.getUser()).append("\n");
-            builder.append(I18nHelper.password()).append(":").append(this.value.getPassword()).append("\n");
-            builder.append(I18nHelper.region()).append(":").append(this.value.getRegion()).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.getHost())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.region(), this.value.getRegion())).append("\n");
         } else if (this.isSMBType()) {
-            builder.append(I18nHelper.host()).append(":").append(this.value.hostIp()).append("\n");
-            builder.append(I18nHelper.port()).append(":").append(this.value.hostPort()).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.hostIp())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.port(), this.value.hostPort())).append("\n");
             if (StringUtil.isNotBlank(this.value.getUser())) {
-                builder.append(I18nHelper.userName()).append(":").append(this.value.getUser()).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
             }
             if (StringUtil.isNotBlank(this.value.getPassword())) {
-                builder.append(I18nHelper.password()).append(":").append(this.value.getPassword()).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
             }
             if (StringUtil.isNotBlank(this.value.getSmbShareName())) {
-                builder.append(I18nHelper.shareName()).append(":").append(this.value.getSmbShareName()).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.shareName(), this.value.getSmbShareName())).append("\n");
             }
             if (StringUtil.isNotBlank(this.value.getDomain())) {
-                builder.append(I18nHelper.domain()).append(":").append(this.value.getDomain()).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.domain(), this.value.getDomain())).append("\n");
             }
         } else if (this.isSerialType()) {
-            builder.append(I18nHelper.portName()).append(":").append(this.value.getSerialPortName()).append("\n");
-            builder.append(I18nHelper.baudRate()).append(":").append(this.value.getSerialBaudRate()).append("\n");
-            builder.append(I18nHelper.numDataBits()).append(":").append(this.value.getSerialNumDataBits()).append("\n");
-            builder.append(I18nHelper.parityBits()).append(":").append(this.value.getSerialParityBits()).append("\n");
-            builder.append(I18nHelper.numStopBits()).append(":").append(this.value.getSerialNumStopBits()).append("\n");
-            builder.append(I18nHelper.flowControl()).append(":").append(this.value.getSerialFlowControl()).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.portName(), this.value.getSerialPortName())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.baudRate(), this.value.getSerialBaudRate())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.numDataBits(), this.value.getSerialNumDataBits())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.parityBits(), this.value.getSerialParityBits())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.numStopBits(), this.value.getSerialNumStopBits())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.flowControl(), this.value.getSerialFlowControl())).append("\n");
         } else {
-            builder.append(I18nHelper.host()).append(":").append(this.value.hostIp()).append("\n");
-            builder.append(I18nHelper.port()).append(":").append(this.value.hostPort()).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.hostIp())).append("\n");
+            builder.append(ShellI18nHelper.label(I18nHelper.port(), this.value.hostPort())).append("\n");
             if (StringUtil.isNotBlank(this.value.getUser())) {
-                builder.append(I18nHelper.userName()).append(":").append(this.value.getUser()).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
             }
             if (StringUtil.isNotBlank(this.value.getPassword())) {
-                builder.append(I18nHelper.password()).append(":").append(this.value.getPassword()).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
             }
         }
         String content = builder.substring(0, builder.lastIndexOf("\n"));
@@ -517,7 +518,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     private void cloneConnect() {
         ShellConnect shellConnect = new ShellConnect();
         shellConnect.copy(this.value);
-        shellConnect.setName(this.value.getName() + "-" + I18nHelper.clone1());
+        shellConnect.setName(ShellI18nHelper.cloneName(this.value.getName()));
         if (this.connectStore.replace(shellConnect)) {
             this.connectManager().addConnect(shellConnect);
         } else {
@@ -527,7 +528,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(I18nHelper.delete() + " [" + this.value().getName() + "]", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("delete", this.value().getName()), this.getWindow())) {
             // this.closeConnect(false);
             if (this.connectManager().delConnectItem(this)) {
                 ShellEventUtil.connectDeleted(this.value);

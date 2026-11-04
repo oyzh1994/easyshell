@@ -32,6 +32,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
@@ -262,7 +263,7 @@ public class ShellSqliteDataExportController extends StageController {
         // 错误时继续
         this.exportHandler.setContinueWithErrors(this.continueWithError.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.exportInProgress() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseExportInProgress());
         // 执行导出
         this.execTask = ThreadUtil.start(() -> {
             try {
@@ -322,7 +323,7 @@ public class ShellSqliteDataExportController extends StageController {
     private void flushDatePreview() {
         try {
             String format = this.dateFormat.getTextTrim();
-            this.datePreview.setText(I18nHelper.currentTime() + " " + DateUtil.format(new Date(), format));
+            this.datePreview.setText(ShellI18nHelper.currentTime(DateUtil.format(new Date(), format)));
         } catch (Exception ex) {
             this.datePreview.setText(I18nHelper.invalidFormat());
         }

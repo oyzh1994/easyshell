@@ -220,7 +220,7 @@ public class ShellZKACLUtil {
             } else if (c == 'd') {
                 permsInt += ZooDefs.Perms.DELETE;
             } else {
-                throw new ShellException("[" + c + "]" + I18nHelper.invalid());
+                throw new ShellException(ShellI18nHelper.invalidValue(c));
             }
         }
         return permsInt;

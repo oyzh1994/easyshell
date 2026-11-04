@@ -41,6 +41,7 @@ import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -323,7 +324,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
      */
     @FXML
     private void refresh() {
-        if (!MessageBox.confirm(I18nHelper.refreshData() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
             return;
         }
         try {
@@ -567,7 +568,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 return;
             }
             // 确认操作
-            if (!column.isCreated() && !MessageBox.confirm(I18nHelper.deleteField() + " " + column.getName(), this.getWindow())) {
+            if (!column.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteField", column.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -598,7 +599,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 return;
             }
             // 确认操作
-            if (!index.isCreated() && !MessageBox.confirm(I18nHelper.deleteIndex() + " " + index.getName(), this.getWindow())) {
+            if (!index.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteIndex", index.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -629,7 +630,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 return;
             }
             // 确认操作
-            if (!foreignKey.isCreated() && !MessageBox.confirm(I18nHelper.deleteForeignKey() + " " + foreignKey.getName(), this.getWindow())) {
+            if (!foreignKey.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteForeignKey", foreignKey.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -660,7 +661,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 return;
             }
             // 确认操作
-            if (!trigger.isCreated() && !MessageBox.confirm(I18nHelper.deleteTrigger() + " " + trigger.getName(), this.getWindow())) {
+            if (!trigger.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteTrigger", trigger.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -691,7 +692,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
                 return;
             }
             // 确认操作
-            if (!check.isCreated() && !MessageBox.confirm(I18nHelper.deleteCheck() + " " + check.getName(), this.getWindow())) {
+            if (!check.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteCheck", check.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据

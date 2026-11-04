@@ -274,7 +274,7 @@ public class ShellRedisKeyAddController extends StageController {
                 return;
             }
             if (this.client.exists(dbIndex, key)) {
-                MessageBox.warn("key: [" + key + "] " + I18nHelper.alreadyExists(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.redisKeyAlreadyExists(key), this.getWindow());
                 return;
             }
             boolean result = false;

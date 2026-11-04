@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.event.group;
 
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * 分组已更名事件
@@ -27,6 +27,6 @@ public class ShellGroupRenamedEvent extends Event<String> implements EventFormat
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s renamed from %s] ", I18nHelper.folder(), this.data(), this.oldName);
+return ShellI18nHelper.eventGroupRenamed(this.data(), this.oldName);
     }
 }

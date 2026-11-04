@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.connect;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * 连接已新增事件
@@ -15,6 +15,6 @@ public class ShellConnectAddedEvent extends Event<ShellConnect> implements Event
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] added", I18nHelper.connect(), this.data().getName());
+return ShellI18nHelper.eventConnectAdded(this.data().getName());
     }
 }

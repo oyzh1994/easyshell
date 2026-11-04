@@ -12,6 +12,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
@@ -67,7 +68,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
                 return;
             }
             if (this.client().existBucket(this.dbName(), name)) {
-                MessageBox.warn("[" + name + "] " + I18nHelper.alreadyExists(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.alreadyExists(name), this.getWindow());
                 return;
             }
             MongoBucket bucket = new MongoBucket();

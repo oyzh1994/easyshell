@@ -15,6 +15,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import org.bson.types.ObjectId;
@@ -105,7 +106,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
      * 清空集合
      */
     private void clearBucket() {
-        if (MessageBox.confirm(I18nHelper.clearBucket() + "[" + this.bucketName() + "]", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("clearBucket", this.bucketName()), this.getWindow())) {
             this.dbItem().clearBucket(this.bucketName());
             this.parent().reloadChild();
         }
@@ -114,7 +115,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(I18nHelper.deleteBucket() + "[" + this.bucketName() + "]", this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteBucket", this.bucketName()), this.getWindow())) {
                 this.dbItem().dropBucket(this.bucketName());
                 ShellMongoEventUtil.bucketDropped(this, this.dbItem());
                 this.parent().clearBucketsSize();

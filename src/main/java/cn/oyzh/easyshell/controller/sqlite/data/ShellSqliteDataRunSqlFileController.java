@@ -22,6 +22,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.fxml.FXML;
@@ -151,7 +152,7 @@ public class ShellSqliteDataRunSqlFileController extends StageController {
         this.sqlFileHandler.file(this.file.getFile())
                 .setContinueWithErrors(this.continueWithErrors.isSelected());
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.execProcessing() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseExecProcessing());
         // 执行sql
         this.execTask = ThreadUtil.start(() -> {
             try {

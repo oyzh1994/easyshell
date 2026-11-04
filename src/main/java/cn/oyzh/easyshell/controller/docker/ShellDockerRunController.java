@@ -23,6 +23,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
@@ -258,7 +259,7 @@ public class ShellDockerRunController extends StageController {
                 if (StringUtil.isBlank(output)) {
                     MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 } else {
-                    MessageBox.info(I18nHelper.containerId() + ":" + output, this.getWindow());
+                    MessageBox.info(ShellI18nHelper.containerIdMessage(output), this.getWindow());
                     ShellEventUtil.containerRun(this.exec);
                     this.closeWindow();
                 }

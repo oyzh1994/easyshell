@@ -386,7 +386,7 @@ public class ShellFileTransportController extends StageController {
                             this.sourceClient.close();
                             this.sourceClient = null;
                             this.sourceInfo.requestFocus();
-                            MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
+                            MessageBox.warn(ShellI18nHelper.connectFailed(sourceInfo.getName()), this.getWindow());
                             return;
                         }
                         // 检查目标
@@ -403,7 +403,7 @@ public class ShellFileTransportController extends StageController {
                             this.targetClient.close();
                             this.targetClient = null;
                             this.targetInfo.requestFocus();
-                            MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
+                            MessageBox.warn(ShellI18nHelper.connectFailed(targetInfo.getName()), this.getWindow());
                             return;
                         }
                         // 显示页面

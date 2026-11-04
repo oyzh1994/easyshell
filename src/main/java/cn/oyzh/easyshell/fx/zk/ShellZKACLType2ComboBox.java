@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.fx.zk;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.i18n.I18nSelectAdapter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 
 import java.util.List;
@@ -20,11 +21,11 @@ public class ShellZKACLType2ComboBox extends FXComboBox<String> implements I18nS
         this.clearItems();
         if (locale == Locale.SIMPLIFIED_CHINESE || locale == Locale.PRC) {
             this.addItem("开放认证(WORLD)");
-            this.addItem(I18nHelper.digestAuth() + "(DIGEST)");
+            this.addItem(ShellI18nHelper.zkDigestAuth());
             this.addItem("IP");
         } else if (locale == Locale.TRADITIONAL_CHINESE || locale == Locale.TAIWAN) {
             this.addItem("開放認證(WORLD)");
-            this.addItem(I18nHelper.digestAuth() + "(DIGEST)");
+            this.addItem(ShellI18nHelper.zkDigestAuth());
             this.addItem("IP");
         } else {
             this.addItem("WORLD");

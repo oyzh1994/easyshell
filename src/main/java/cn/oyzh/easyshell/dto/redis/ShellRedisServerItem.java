@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.dto.redis;
 
 import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -98,7 +99,7 @@ public class ShellRedisServerItem {
             hitRate = decimal + "%";
         }
         this.setHitRate(hitRate);
-        this.setUptime(uptime + I18nHelper.days());
+        this.setUptime(ShellI18nHelper.uptimeDays(uptime));
         this.setUsedMemory(useMemory == null ? "N/A" : useMemory);
         this.setConnectedClients(String.valueOf(connectedClients));
         this.setKeyCount(keyCount == null ? "N/A" : String.valueOf(keyCount));

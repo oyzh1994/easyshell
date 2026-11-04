@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.dameng.query;
 import cn.oyzh.easyshell.trees.dameng.query.ShellDamengQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * 达梦查询已重命名事件
@@ -45,6 +45,6 @@ public class ShellDamengQueryRenamedEvent extends Event<ShellDamengQueryTreeItem
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.newQueryName());
+return ShellI18nHelper.eventQueryRenamed(this.getQueryName(), this.newQueryName());
     }
 }

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.vnc1.ShellVNCClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.vnc.VncFramebufferView;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -68,7 +69,7 @@ public class ShellVNCTabController extends ShellBaseTabController {
         // 监听连接状态
         this.client.addStateListener((observableValue, shellConnState, t1) -> {
             if (t1 == ShellConnState.INTERRUPTED) {
-                MessageBox.warn("[" + this.client.connectName() + "] " + I18nHelper.connectSuspended(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.connectSuspended(this.client.connectName()), this.getWindow());
             }
         });
         // 执行连接

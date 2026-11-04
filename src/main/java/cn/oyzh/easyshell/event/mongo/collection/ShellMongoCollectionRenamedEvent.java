@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mongo.collection;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb集合已重命名事件
@@ -59,7 +59,7 @@ public class ShellMongoCollectionRenamedEvent extends Event<String> implements E
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.collection(), this.tableName(), this.getNewCollectionName());
+return ShellI18nHelper.eventCollectionRenamed(this.tableName(), this.getNewCollectionName());
     }
 
 }

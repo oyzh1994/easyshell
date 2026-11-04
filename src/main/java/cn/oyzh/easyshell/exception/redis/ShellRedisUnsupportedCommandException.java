@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.exception.redis;
 
 import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
@@ -19,7 +20,7 @@ public class ShellRedisUnsupportedCommandException extends ShellException {
      * @param command          命令
      */
     public ShellRedisUnsupportedCommandException(String serverVersion, String supportedVersion, String command) {
-        super(I18nHelper.cmd() + " [" + command + "] " + I18nHelper.notSupport());
+        super(ShellI18nHelper.redisUnsupportedCommand(command));
         // super("指令:" + command + " 不支持，服务版本为:" + serverVersion + " 最低支持命令的服务版本为:" + supportedVersion);
     }
 }

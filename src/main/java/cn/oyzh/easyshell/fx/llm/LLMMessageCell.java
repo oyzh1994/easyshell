@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -116,7 +117,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         if (user) {
             prefix = "";
         } else if (error) {
-            prefix = I18nHelper.error() + " · ";
+            prefix = ShellI18nHelper.errorPrefix();
         } else {
             prefix = (model == null || model.isBlank() ? "AI" : model) + " · ";
         }

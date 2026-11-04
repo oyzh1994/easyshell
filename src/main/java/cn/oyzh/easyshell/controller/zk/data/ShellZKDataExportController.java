@@ -28,6 +28,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -190,7 +191,7 @@ public class ShellZKDataExportController extends StageController {
         this.exportMsg.clear();
         this.exportStatus.clear();
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.exportProcessing() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseExportProcessing());
         // 生成导出处理器
         if (this.exportHandler == null) {
             this.exportHandler = new ShellZKDataExportHandler();
@@ -352,7 +353,7 @@ public class ShellZKDataExportController extends StageController {
             }
             // 检查客户端
             if (this.client == null || this.client.isClosed()) {
-                this.getStage().appendTitle("===" + I18nHelper.connectIng() + "===");
+                this.getStage().appendTitle(ShellI18nHelper.phaseConnectIng());
                 this.getStage().disable();
                 DownLatch latch = DownLatch.of();
                 ThreadUtil.start(() -> {
@@ -387,7 +388,7 @@ public class ShellZKDataExportController extends StageController {
     private void selectFile() {
         String fileType = this.format.selectedUserData();
         FileExtensionFilter filter = FXChooser.extensionFilter(fileType);
-        String fileName = "Zookeeper-" + this.connect.getName() + "-" + I18nHelper.exportData() + "." + fileType;
+        String fileName = ShellI18nHelper.zkExportFileName(this.connect.getName(), fileType);
         this.exportFile = FileChooserHelper.save(fileName, fileName, filter, this.getWindow());
         if (this.exportFile != null) {
             // 删除文件

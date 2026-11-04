@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -130,8 +131,7 @@ public class ShellZKAuthTableView extends FXTableView<ShellZKAuth> {
      * @param data 数据
      */
     public void copyData(ShellZKAuth data) {
-        String dataStr = I18nHelper.userName() + " " + data.getUser() + System.lineSeparator()
-                + I18nHelper.password() + " " + data.getPassword();
+        String dataStr = ShellI18nHelper.zkAuthInfo(data.getUser(), data.getPassword());
         ClipboardUtil.setStringAndTip(dataStr);
     }
 

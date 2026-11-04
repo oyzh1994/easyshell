@@ -706,10 +706,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         if (files.size() == 1) {
             E file = files.getFirst();
-            if (file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteDir() + " " + file.getFileName(), this.getWindow())) {
+            if (file.isDirectory() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteDir", file.getFileName()), this.getWindow())) {
                 return;
             }
-            if (!file.isDirectory() && !MessageBox.confirm(I18nHelper.deleteFile() + " " + file.getFileName(), this.getWindow())) {
+            if (!file.isDirectory() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteFile", file.getFileName()), this.getWindow())) {
                 return;
             }
         } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2(), this.getWindow())) {
@@ -1323,7 +1323,7 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
      */
     public String fileInfo() {
         long size = this.totalSize();
-        return this.getItemSize() + I18nHelper.items() + ", " + NumberUtil.formatSize(size, 2);
+        return ShellI18nHelper.fileInfo(this.getItemSize(), NumberUtil.formatSize(size, 2));
     }
 
     /**

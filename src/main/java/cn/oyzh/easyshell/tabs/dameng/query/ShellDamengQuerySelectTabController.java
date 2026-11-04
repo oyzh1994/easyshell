@@ -31,6 +31,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -162,7 +163,7 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
             this.initRecords(this.result.getRecords());
             // 初始化sql信息
             this.sql.text(TextUtil.toSingleLine(this.result.getContent()));
-            this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
+            this.used.text(ShellI18nHelper.queryTime(this.result.getUsedMs()));
             // 初始化计数
             this.initCount(this.result.getCount());
         } catch (Exception ex) {
@@ -176,7 +177,7 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
      * @param count 计数
      */
     private void initCount(int count) {
-        this.count.text(I18nHelper.totalData() + ": " + count);
+        this.count.text(ShellI18nHelper.queryTotal(count));
     }
 
     /**
@@ -417,7 +418,7 @@ public class ShellDamengQuerySelectTabController extends RichTabController {
     @FXML
     private void deleteRecord() {
         List<DamengRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        if (!MessageBox.confirm(I18nHelper.deleteRecord() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteRecord"), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));

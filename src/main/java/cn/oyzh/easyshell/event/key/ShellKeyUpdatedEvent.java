@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.key;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * 密钥已更新事件
@@ -15,6 +15,6 @@ public class ShellKeyUpdatedEvent extends Event<ShellKey> implements EventFormat
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] updated", I18nHelper.key1(), this.data().getName());
+return ShellI18nHelper.eventKeyUpdated(this.data().getName());
     }
 }

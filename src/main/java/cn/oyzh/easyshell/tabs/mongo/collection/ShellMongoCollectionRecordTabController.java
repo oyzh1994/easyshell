@@ -35,6 +35,7 @@ import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.result.UpdateResult;
@@ -619,7 +620,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
      */
     @FXML
     private void deleteRecord() {
-        if (!MessageBox.confirm(I18nHelper.deleteDocument() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteDocument"), this.getWindow())) {
             return;
         }
         List<MongoRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());

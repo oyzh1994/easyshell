@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mongo.function;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * mongodb函数已重命名事件
@@ -59,6 +59,6 @@ public class ShellMongoFunctionRenamedEvent extends Event<String> implements Eve
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.function(), this.functionName(), this.getNewFunctionName());
+return ShellI18nHelper.eventFunctionRenamed(this.functionName(), this.getNewFunctionName());
     }
 }

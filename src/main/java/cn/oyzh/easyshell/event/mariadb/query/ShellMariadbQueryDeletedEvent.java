@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.event.mariadb.query;
 import cn.oyzh.easyshell.trees.mariadb.query.ShellMariadbQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * MariaDB查询已删除事件
@@ -24,6 +24,6 @@ public class ShellMariadbQueryDeletedEvent extends Event<ShellMariadbQueryTreeIt
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] deleted", I18nHelper.query(), this.data().queryName());
+return ShellI18nHelper.eventQueryDeleted(this.data().queryName());
     }
 }

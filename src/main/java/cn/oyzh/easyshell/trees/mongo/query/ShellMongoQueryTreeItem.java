@@ -12,6 +12,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 
@@ -91,7 +92,7 @@ public class ShellMongoQueryTreeItem extends ShellMongoTreeItem<ShellMongoQueryT
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(I18nHelper.delete() + " " + this.queryName() + "?", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("delete", this.queryName()), this.getWindow())) {
             if (ShellQueryStore.INSTANCE.delete(this.value)) {
                 ShellMongoEventUtil.queryDeleted(this);
                 this.parent().clearQuerySize();

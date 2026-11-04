@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -111,7 +112,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
             MessageBox.warn(I18nHelper.operationNotSupport(), this.getWindow());
             return;
         }
-        if (!MessageBox.confirm(I18nHelper.restart() + " docker?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("restart"), this.getWindow())) {
             return;
         }
         ShellDockerExec exec = this.client().dockerExec();

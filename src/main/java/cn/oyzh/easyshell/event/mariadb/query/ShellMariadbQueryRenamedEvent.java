@@ -4,7 +4,7 @@ import cn.oyzh.easyshell.trees.mariadb.database.ShellMariadbDatabaseTreeItem;
 import cn.oyzh.easyshell.trees.mariadb.query.ShellMariadbQueryTreeItem;
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * MariaDB查询已重命名事件
@@ -46,6 +46,6 @@ public class ShellMariadbQueryRenamedEvent extends Event<ShellMariadbQueryTreeIt
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s] renamed, new name:%s", I18nHelper.query(), this.getQueryName(), this.newQueryName());
+return ShellI18nHelper.eventQueryRenamed(this.getQueryName(), this.newQueryName());
     }
 }

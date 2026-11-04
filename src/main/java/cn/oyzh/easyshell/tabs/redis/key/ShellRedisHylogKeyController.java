@@ -8,6 +8,7 @@ import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
@@ -44,7 +45,7 @@ public class ShellRedisHylogKeyController extends ShellRedisKeyController<ShellR
         // 刷新二进制处理
         this.flushBinary();
         // 统计值
-        this.count.setText(I18nHelper.count() + ": " + this.treeItem.count());
+        this.count.setText(ShellI18nHelper.labelValue("base.count", this.treeItem.count()));
     }
 
     /**

@@ -28,6 +28,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -285,7 +286,7 @@ public class ShellMongoDataTransportController extends StageController {
         this.transportHandler.setFunctions(this.functionList.getSelectedObjects());
         // 开始处理
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.transportInProgress() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseTransportInProgress());
         // 执行传输
         this.execTask = ThreadUtil.start(() -> {
             try {

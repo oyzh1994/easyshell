@@ -5,6 +5,7 @@ import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
@@ -64,9 +65,9 @@ public abstract class ShellRedisKeyController<T extends ShellRedisKeyTreeItem> e
      */
     @FXML
     protected void copyKey() {
-        String builder = I18nHelper.database() + ": " + this.treeItem.dbIndex() + System.lineSeparator() +
-                I18nHelper.keyType() + ": " + this.treeItem.value().getType() + System.lineSeparator() +
-                I18nHelper.keyName() + ": " + this.treeItem.key();
+        String builder = ShellI18nHelper.label(I18nHelper.database(), this.treeItem.dbIndex()) + System.lineSeparator() +
+                ShellI18nHelper.label(I18nHelper.keyType(), this.treeItem.value().getType()) + System.lineSeparator() +
+                ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key());
         ClipboardUtil.setStringAndTip(builder);
     }
 

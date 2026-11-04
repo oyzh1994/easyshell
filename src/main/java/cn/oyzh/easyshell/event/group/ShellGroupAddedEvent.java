@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.event.group;
 
 import cn.oyzh.event.Event;
 import cn.oyzh.event.EventFormatter;
-import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 
 /**
  * 分组已新增事件
@@ -14,6 +14,6 @@ public class ShellGroupAddedEvent extends Event<String> implements EventFormatte
 
     @Override
     public String eventFormat() {
-        return String.format("[%s:%s added] ", I18nHelper.folder(), this.data());
+return ShellI18nHelper.eventGroupAdded(this.data());
     }
 }

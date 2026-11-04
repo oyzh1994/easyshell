@@ -27,6 +27,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -169,7 +170,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
             this.correctRecords();
             // 初始化脚本信息
             this.script.text(TextUtil.toSingleLine(this.result.getContent()));
-            this.used.text(I18nHelper.time() + ": " + this.result.getUsedMs() + "ms");
+            this.used.text(ShellI18nHelper.queryTime(this.result.getUsedMs()));
             // 初始化计数
             this.initCount(this.result.getCount());
         } catch (Exception ex) {
@@ -233,7 +234,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
      * @param count 计数
      */
     private void initCount(int count) {
-        this.count.text(I18nHelper.totalData() + ": " + count);
+        this.count.text(ShellI18nHelper.queryTotal(count));
     }
 
     /**
@@ -445,7 +446,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
      */
     @FXML
     private void deleteRecord() {
-        if (!MessageBox.confirm(I18nHelper.deleteDocument() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteDocument"), this.getWindow())) {
             return;
         }
         List<MongoRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());

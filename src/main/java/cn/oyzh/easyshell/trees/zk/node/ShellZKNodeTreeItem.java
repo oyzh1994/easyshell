@@ -27,6 +27,7 @@ import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -422,13 +423,13 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         if (this.isRootNode() || this.isParentNode() || this.isEphemeralNode()) {
             return;
         }
-        String nodeName = this.nodeName() + "-" + I18nHelper.clone1();
+        String nodeName = ShellI18nHelper.cloneName(this.nodeName());
         // 检查是否存在
         String parentPath = ShellZKNodeUtil.getParentPath(this.nodePath());
         String newNodePath = ShellZKNodeUtil.concatPath(parentPath, nodeName);
         try {
             if (this.client().exists(newNodePath)) {
-                MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.zkNodeAlreadyExists(newNodePath), this.getWindow());
                 return;
             }
             // 创建模式
@@ -527,7 +528,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         String newNodePath = ShellZKNodeUtil.concatPath(parentPath, nodeName);
         try {
             if (this.client().exists(newNodePath)) {
-                MessageBox.warn(I18nHelper.node() + " [" + newNodePath + "] " + I18nHelper.alreadyExists(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.zkNodeAlreadyExists(newNodePath), this.getWindow());
                 return;
             }
             // 创建模式
@@ -554,7 +555,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             return;
         }
         // 父节点
-        if (!MessageBox.confirm(I18nHelper.delete() + " [" + this.decodeNodePath() + "] ", I18nHelper.areYouSure(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("delete", this.decodeNodePath()), I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
         // 创建任务

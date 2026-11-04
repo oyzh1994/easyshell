@@ -33,6 +33,7 @@ import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
@@ -481,7 +482,7 @@ public class ShellUpdateDamengConnectController extends StageController {
     @FXML
     private void deleteJump() {
         ShellJumpConfig config = this.jumpTableView.getSelectedItem();
-        if (MessageBox.confirm(I18nHelper.deleteJumpHost() + " " + config.getName() + " ?", this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirm("deleteJumpHost", config.getName()), this.getWindow())) {
             this.jumpTableView.removeSelectedItem();
             this.jumpConfigStore.delete(config);
             this.jumpTableView.updateOrder();

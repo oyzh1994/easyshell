@@ -7,6 +7,7 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.Competitor;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.NumberUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -322,7 +323,7 @@ public class ShellFileUploadTask extends ShellFileTask {
         // 当前速度
         long speed = this.currentSize / costTime * 1000;
         // 速度属性
-        this.speedProperty.set(NumberUtil.formatSize(speed, 2) + "/" + I18nHelper.second());
+        this.speedProperty.set(ShellI18nHelper.fileSpeed(NumberUtil.formatSize(speed, 2)));
     }
 
     /**
@@ -424,7 +425,7 @@ public class ShellFileUploadTask extends ShellFileTask {
         switch (status) {
             case FAILED:
                 if (this.error != null) {
-                    this.statusProperty.set(I18nHelper.uploadFailed() + ": " + this.error.getMessage());
+                    this.statusProperty.set(ShellI18nHelper.uploadFailed(this.error.getMessage()));
                 } else {
                     this.statusProperty.set(I18nHelper.uploadFailed());
                 }

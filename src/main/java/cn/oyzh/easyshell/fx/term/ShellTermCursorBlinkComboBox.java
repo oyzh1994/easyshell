@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.term;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
@@ -13,11 +14,11 @@ public class ShellTermCursorBlinkComboBox extends FXComboBox<String> {
 
     {
         this.addItem(I18nHelper.close());
-        this.addItem(I18nHelper.verySlow() + "(2000ms)");
-        this.addItem(I18nHelper.slow() + "(1000ms)");
-        this.addItem(I18nHelper.normal() + "(500ms)");
-        this.addItem(I18nHelper.fast() + "(250ms)");
-        this.addItem(I18nHelper.veryFast() + "(125ms)");
+        this.addItem(ShellI18nHelper.blinkDuration(I18nHelper.verySlow(), 2000));
+        this.addItem(ShellI18nHelper.blinkDuration(I18nHelper.slow(), 1000));
+        this.addItem(ShellI18nHelper.blinkDuration(I18nHelper.normal(), 500));
+        this.addItem(ShellI18nHelper.blinkDuration(I18nHelper.fast(), 250));
+        this.addItem(ShellI18nHelper.blinkDuration(I18nHelper.veryFast(), 125));
     }
 
     /**

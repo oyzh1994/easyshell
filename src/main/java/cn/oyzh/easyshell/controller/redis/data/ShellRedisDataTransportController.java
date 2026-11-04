@@ -26,6 +26,7 @@ import cn.oyzh.fx.plus.util.Counter;
 import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.stage.WindowEvent;
@@ -316,7 +317,7 @@ public class ShellRedisDataTransportController extends StageController {
         this.transportHandler.setRetainTTL(this.retainTTL.isSelected());
         // 开始处理
         NodeGroupUtil.disable(this.stage, "exec");
-        this.stage.appendTitle("===" + I18nHelper.transportInProgress() + "===");
+        this.stage.appendTitle(ShellI18nHelper.phaseTransportInProgress());
         // 执行传输
         this.execTask = ThreadUtil.start(() -> {
             try {
@@ -444,7 +445,7 @@ public class ShellRedisDataTransportController extends StageController {
             this.sourceClient = null;
             this.sourceDatabase.clearItems();
         }
-        this.appendTitle("===" + I18nHelper.connectIng() + "===");
+        this.appendTitle(ShellI18nHelper.phaseConnectIng());
         this.disable();
         try {
             DownLatch latch = DownLatch.of();
@@ -460,7 +461,7 @@ public class ShellRedisDataTransportController extends StageController {
                 this.sourceClient.close();
                 this.sourceClient = null;
                 this.sourceInfo.requestFocus();
-                MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectInitFail(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.connectInitFailed(sourceInfo.getName()), this.getWindow());
                 return;
             }
 
@@ -488,7 +489,7 @@ public class ShellRedisDataTransportController extends StageController {
             this.targetClient = null;
             this.targetDatabase.clearItems();
         }
-        this.appendTitle("===" + I18nHelper.connectIng() + "===");
+        this.appendTitle(ShellI18nHelper.phaseConnectIng());
         this.disable();
         try {
             DownLatch latch = DownLatch.of();
@@ -504,7 +505,7 @@ public class ShellRedisDataTransportController extends StageController {
                 this.targetClient.close();
                 this.targetClient = null;
                 this.targetInfo.requestFocus();
-                MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectInitFail(), this.getWindow());
+                MessageBox.warn(ShellI18nHelper.connectInitFailed(targetInfo.getName()), this.getWindow());
                 return;
             }
 
@@ -578,12 +579,12 @@ public class ShellRedisDataTransportController extends StageController {
         }
 
         if (this.sourceClient == null || this.sourceClient.isClosed()) {
-            MessageBox.warn(sourceInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
+            MessageBox.warn(ShellI18nHelper.connectFailed(sourceInfo.getName()), this.getWindow());
             return;
         }
 
         if (this.targetClient == null || this.targetClient.isClosed()) {
-            MessageBox.warn(targetInfo.getName() + " " + I18nHelper.connectFail(), this.getWindow());
+            MessageBox.warn(ShellI18nHelper.connectFailed(targetInfo.getName()), this.getWindow());
             return;
         }
 

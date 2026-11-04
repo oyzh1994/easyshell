@@ -21,6 +21,7 @@ import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -199,7 +200,7 @@ public class ShellDamengViewDesignTabController extends RichTabController {
      */
     @FXML
     private void refresh() {
-        if (!MessageBox.confirm(I18nHelper.refreshData() + "?", this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
             return;
         }
         try {

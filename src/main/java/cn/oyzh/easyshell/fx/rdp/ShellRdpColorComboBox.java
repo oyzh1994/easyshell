@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.rdp;
 
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
@@ -56,11 +57,11 @@ public class ShellRdpColorComboBox extends FXComboBox<String> {
 
     @Override
     public void initNode() {
-        this.addItem("8" + I18nHelper.bit());
-        this.addItem("15" + I18nHelper.bit());
-        this.addItem("16" + I18nHelper.bit());
-        this.addItem("24" + I18nHelper.bit());
-        this.addItem("32" + I18nHelper.bit());
+        this.addItem(ShellI18nHelper.colorDepth(8));
+        this.addItem(ShellI18nHelper.colorDepth(15));
+        this.addItem(ShellI18nHelper.colorDepth(16));
+        this.addItem(ShellI18nHelper.colorDepth(24));
+        this.addItem(ShellI18nHelper.colorDepth(32));
         super.initNode();
     }
 
