@@ -38,6 +38,14 @@ public class SQLiteIndexControlTest {
     }
 
     @Test
+    public void testColumnOrderIsPreserved() {
+        SQLiteIndexControl control = new SQLiteIndexControl();
+        control.setDefinition("CREATE INDEX idx_item ON item (z, a, m, b, y);");
+
+        assertEquals(java.util.List.of("z", "a", "m", "b", "y"), control.getColumns());
+    }
+
+    @Test
     public void testParenthesesInQuotedTableNameAreIgnored() {
         SQLiteIndexControl control = new SQLiteIndexControl();
         control.setDefinition("CREATE INDEX idx_item ON \"item(log)\" (id) WHERE id > 0;");

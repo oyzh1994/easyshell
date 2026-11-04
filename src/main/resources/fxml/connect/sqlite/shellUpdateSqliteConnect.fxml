@@ -120,21 +120,21 @@
             </FXVBox>
         </FixedTab>
     </FXTabPane>
-    <FXHBox realHeight="48" flexWidth="100%">
+    <FXHBox realHeight="50" flexWidth="100%">
         <TestButton onAction="#testConnect">
             <HBox.margin>
-                <Insets left="30" top="9"/>
+                <Insets left="30" top="10"/>
             </HBox.margin>
         </TestButton>
-        <CancelButton text="%base.cancel">
-            <HBox.margin>
-                <Insets left="10" top="9"/>
-            </HBox.margin>
-        </CancelButton>
         <SubmitButton text="%base.submit" onAction="#update">
             <HBox.margin>
-                <Insets left="10" top="9"/>
+                <Insets left="15" top="10"/>
             </HBox.margin>
         </SubmitButton>
+        <CancelButton text="%base.cancel">
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </CancelButton>
     </FXHBox>
 </FXVBox>

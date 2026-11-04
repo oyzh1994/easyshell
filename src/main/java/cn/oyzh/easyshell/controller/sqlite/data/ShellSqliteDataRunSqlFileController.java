@@ -4,6 +4,7 @@ import cn.oyzh.common.system.SystemUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.data.sqlite.handler.SQLiteDataRunSqlFileHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.fx.sqlite.ShellSqliteDatabaseComboBox;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
 import cn.oyzh.fx.gui.text.area.MsgTextArea;
@@ -79,7 +80,7 @@ public class ShellSqliteDataRunSqlFileController extends StageController {
      * 数据库
      */
     @FXML
-    private ReadOnlyTextField database;
+    private ShellSqliteDatabaseComboBox database;
 
     /**
      * 遇到错误时继续
@@ -137,7 +138,7 @@ public class ShellSqliteDataRunSqlFileController extends StageController {
         this.execMsg.clear();
         // 生成sql处理器
         if (this.sqlFileHandler == null) {
-            this.sqlFileHandler = new SQLiteDataRunSqlFileHandler(this.dbClient, this.database.getText());
+            this.sqlFileHandler = new SQLiteDataRunSqlFileHandler(this.dbClient, this.database.getSelectedItem());
             this.sqlFileHandler.setMessageHandler(str -> this.execMsg.appendLine(str))
                     .setProcessedHandler(count -> {
                         this.counter.incr(count);
@@ -197,7 +198,7 @@ public class ShellSqliteDataRunSqlFileController extends StageController {
         super.onWindowShown(event);
         this.dbClient = this.getProp("dbClient");
         this.dbInfo = this.dbClient.getShellConnect();
-        this.database.setText("main");
+        this.database.init(this.dbClient, "main");
         this.connect.setText(this.dbInfo.getName());
         this.stage.hideOnEscape();
     }

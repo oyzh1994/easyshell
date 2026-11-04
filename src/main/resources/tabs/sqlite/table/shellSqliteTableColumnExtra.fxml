@@ -13,8 +13,8 @@
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableColumnExtraController"
         realHeight="200">
-    <FXHBox flexWidth="100%" realHeight="35" fx:id="autoIncrementBox" managed="false" visible="false">
-        <AccentLabel realHeight="25" realWidth="110" text="%base.autoIncrement">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="autoIncrementBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.autoIncrement">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
@@ -25,8 +25,8 @@
             </HBox.margin>
         </FXCheckBox>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="35" fx:id="defaultValueBox" managed="false" visible="false">
-        <AccentLabel realHeight="25" realWidth="110" text="%base.defaultValue">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="defaultValueBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.defaultValue">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
@@ -38,8 +38,8 @@
             </HBox.margin>
         </ShellSqliteDefaultValueTextFiled>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="35" fx:id="collateBox">
-        <AccentLabel realHeight="25" realWidth="110" text="%base.collation">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="collateBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.collation">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
@@ -50,8 +50,8 @@
             </HBox.margin>
         </SQLiteCollationComboBox>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="35" fx:id="checkBox">
-        <AccentLabel realHeight="25" realWidth="110" text="%base.check">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="checkBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.check">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
@@ -62,8 +62,8 @@
             </HBox.margin>
         </ClearableTextField>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="35" fx:id="generatedExpressionBox">
-        <AccentLabel realHeight="25" realWidth="110" text="%shell.sqlite.expression">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="generatedExpressionBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.expression">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>
@@ -75,8 +75,8 @@
             </HBox.margin>
         </ClearableTextField>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="35" fx:id="generatedStorageBox">
-        <AccentLabel realHeight="25" realWidth="110" text="%shell.sqlite.generatedStorage">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="generatedStorageBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.generatedStorage">
             <HBox.margin>
                 <Insets left="10" top="5"/>
             </HBox.margin>

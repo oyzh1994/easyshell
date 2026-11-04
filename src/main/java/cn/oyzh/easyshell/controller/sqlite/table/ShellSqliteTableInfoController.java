@@ -43,12 +43,6 @@ public class ShellSqliteTableInfoController extends StageController {
     private ReadOnlyTextField type;
 
     /**
-     * 行数量
-     */
-    @FXML
-    private ReadOnlyTextField rowCount;
-
-    /**
      * 无rowid
      */
     @FXML
@@ -89,7 +83,6 @@ public class ShellSqliteTableInfoController extends StageController {
         }
         this.name.setText(table.getName());
         this.type.setText(table.getType());
-        this.rowCount.setText(String.valueOf(this.treeItem.client().selectRowCount(table.getName())));
         this.withoutRowid.setText(String.valueOf(table.isWithoutRowid()));
         this.strict.setText(String.valueOf(table.isStrict()));
         this.comment.setText(table.getComment());

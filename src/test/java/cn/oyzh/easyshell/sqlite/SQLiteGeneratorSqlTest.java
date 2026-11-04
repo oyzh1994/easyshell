@@ -117,6 +117,16 @@ public class SQLiteGeneratorSqlTest {
     }
 
     @Test
+    public void testViewPreviewUsesDefaultValuesWhenRequiredInfoIsEmpty() {
+        assertEquals("CREATE VIEW \"Unnamed_View\" AS\nSELECT 1;",
+                SQLiteViewCreateSqlGenerator.createViewPreview(null, null));
+        assertEquals("CREATE VIEW \"preview_view\" AS\nSELECT 1;",
+                SQLiteViewCreateSqlGenerator.createViewPreview("preview_view", " ; "));
+        assertEquals("CREATE VIEW \"preview_view\" AS\nSELECT 2;",
+                SQLiteViewCreateSqlGenerator.createViewPreview("preview_view", " SELECT 2; "));
+    }
+
+    @Test
     public void testFunctionGenerateApi() {
         SQLiteFunction function = new SQLiteFunction();
         function.setName("simple_view");

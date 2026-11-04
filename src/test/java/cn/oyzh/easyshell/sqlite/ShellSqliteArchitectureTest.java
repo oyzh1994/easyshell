@@ -579,6 +579,13 @@ public class ShellSqliteArchitectureTest {
         assertTrue(design.contains("fx:id=\"constraintTab\""));
         assertTrue(design.contains("fx:id=\"optionsTab\""));
         assertTrue(design.contains("fx:id=\"preview\""));
+        assertTrue(design.contains("FXCheckBox fx:id=\"withoutRowid\" text=\"%shell.sqlite.withoutRowid\""));
+        assertTrue(design.indexOf("fx:id=\"checkTab\"")
+                < design.indexOf("fx:id=\"optionsTab\""));
+        assertTrue(design.indexOf("fx:id=\"optionsTab\"")
+                < design.indexOf("fx:id=\"constraintTab\""));
+        assertTrue(design.indexOf("fx:id=\"constraintTab\"")
+                < design.indexOf("fx:id=\"previewTab\""));
         assertTrue(design.contains("fx:include fx:id=\"tableColumnExtra\""));
         assertTrue(design.contains("valueName=\"nullableControl\" text=\"%base.nullable\""));
         assertFalse(design.contains("valueName=\"defaultValueControl\""));
@@ -635,7 +642,7 @@ public class ShellSqliteArchitectureTest {
 
         String viewInfo = this.resourceText("/fxml/sqlite/view/shellSqliteViewInfo.fxml");
         assertEquals(2, viewInfo.split("<FixedTab ", -1).length - 1);
-        assertTrue(viewInfo.contains("text=\"%base.definition\""));
+        assertTrue(viewInfo.contains("text=\"%base.ddl\""));
         assertFalse(viewInfo.contains("%shell.sqlite.selectDefinition"));
         assertFalse(viewInfo.contains("%shell.sqlite.columnCount"));
         assertFalse(viewInfo.contains("SQLiteColumnTableView"));
@@ -644,21 +651,33 @@ public class ShellSqliteArchitectureTest {
         assertFalse(tableInfo.contains("%shell.sqlite.columnCount"));
         assertFalse(tableInfo.contains("%shell.sqlite.columns"));
         assertFalse(tableInfo.contains("SQLiteColumnTableView"));
-        assertTrue(tableInfo.contains("text=\"%base.definition\""));
-        assertFalse(tableInfo.contains("text=\"%base.ddl\""));
+        assertTrue(tableInfo.contains("text=\"%base.ddl\""));
+        assertFalse(tableInfo.contains("fx:id=\"rowCount\""));
 
         String functionInfo = this.resourceText("/fxml/sqlite/function/shellSqliteFunctionInfo.fxml");
         assertFalse(functionInfo.contains("%shell.sqlite.functionFlags"));
-        assertEquals(1, functionInfo.split("<FixedTab ", -1).length - 1);
+        assertEquals(3, functionInfo.split("<FixedTab ", -1).length - 1);
         assertTrue(functionInfo.contains("text=\"%base.definition\""));
-        assertFalse(functionInfo.contains("text=\"%base.ddl\""));
-        assertFalse(functionInfo.contains("fx:id=\"createDefinition\""));
+        assertTrue(functionInfo.contains("text=\"%base.ddl\""));
+        assertTrue(functionInfo.contains("fx:id=\"createDefinition\""));
+        assertTrue(functionInfo.contains("fx:id=\"comment\""));
         assertTrue(functionInfo.contains("fx:id=\"definition\""));
 
         String functionDesign = this.resourceText("/tabs/sqlite/function/shellSqliteFunctionDesignTab.fxml");
         assertTrue(functionDesign.contains("SQLiteFunctionKindComboBox"));
+        assertTrue(functionDesign.contains("InfoLabel"));
+        assertFalse(functionDesign.contains("AccentLabel"));
+        assertFalse(functionDesign.contains("<FXHBox realHeight=\"50\""));
         assertTrue(functionDesign.contains("SQLiteFunctionKindComboBox fx:id=\"kind\" realHeight=\"25\""));
         assertTrue(functionDesign.contains("SQLiteTableSelectTextField fx:id=\"targetTable\" realHeight=\"25\""));
+        assertTrue(functionDesign.indexOf("text=\"%shell.sqlite.functionKind\"")
+                < functionDesign.indexOf("fx:id=\"kind\""));
+        assertTrue(functionDesign.indexOf("text=\"%shell.sqlite.targetTable\"")
+                < functionDesign.indexOf("fx:id=\"targetTable\""));
+        assertTrue(functionDesign.indexOf("text=\"%shell.sqlite.returnType\"")
+                < functionDesign.indexOf("fx:id=\"returnType\""));
+        assertTrue(functionDesign.indexOf("text=\"%shell.sqlite.generatedStorage\"")
+                < functionDesign.indexOf("fx:id=\"generatedStorage\""));
         assertTrue(functionDesign.contains("DBFiledTypeComboBox fx:id=\"returnType\""));
         assertTrue(functionDesign.contains("fx:id=\"expressionBox\""));
         assertTrue(functionDesign.contains("fx:id=\"viewDefinitionBox\""));
@@ -674,9 +693,7 @@ public class ShellSqliteArchitectureTest {
         assertFalse(functionDesign.contains("#refreshBuiltins"));
         assertTrue(functionDesign.contains("fx:id=\"tabPane\""));
         assertTrue(functionDesign.contains("fx:id=\"previewTab\""));
-        assertTrue(functionDesign.indexOf("fx:id=\"generatedColumnSettings\"")
-                < functionDesign.indexOf("fx:id=\"generatedExpressionBox\""));
-        assertTrue(functionDesign.indexOf("fx:id=\"generatedExpressionBox\"")
+        assertTrue(functionDesign.indexOf("fx:id=\"generatedColumnBox\"")
                 < functionDesign.indexOf("fx:id=\"generatedExpression\""));
         String functionController = this.sourceText(
                 "cn/oyzh/easyshell/tabs/sqlite/function/ShellSqliteFunctionDesignTabController.java");
@@ -704,6 +721,11 @@ public class ShellSqliteArchitectureTest {
         assertTrue(queryController.contains("private void clearTabs()"));
         assertTrue(queryController.contains("initSelectTab"));
         assertTrue(queryController.contains("initExplainTab"));
+
+        String tabPane = this.sourceText("cn/oyzh/easyshell/tabs/sqlite/ShellSqliteTabPane.java");
+        assertTrue(tabPane.contains("public void openViewRecord(String viewName)"));
+        assertTrue(tabPane.contains("item.columns();"));
+        assertTrue(tabPane.contains("this.openViewDesign(viewName);"));
     }
 
     @Test
@@ -748,6 +770,7 @@ public class ShellSqliteArchitectureTest {
         String runSql = this.resourceText("/fxml/sqlite/data/shellSqliteDataRunSqlFile.fxml");
         assertTrue(runSql.contains("FXHeaderBar"));
         assertTrue(runSql.contains("ChooseFileTextField"));
+        assertTrue(runSql.contains("ShellSqliteDatabaseComboBox fx:id=\"database\""));
 
         String dataImport = this.resourceText("/fxml/sqlite/data/shellSqliteDataImport.fxml");
         assertFalse(dataImport.contains("%base.sqlType"));
@@ -762,8 +785,10 @@ public class ShellSqliteArchitectureTest {
         assertTrue(transport.contains("DBDataTransportNameListView"));
         assertTrue(transport.contains("DBDataDumpTypeComboBox"));
         assertTrue(transport.contains("fx:id=\"step4\""));
-        assertTrue(transport.contains("ReadOnlyTextField fx:id=\"sourceInfo\""));
-        assertTrue(transport.contains("ChooseFileTextField fx:id=\"targetInfo\""));
+        assertTrue(transport.contains("ShellConnectTextField filterMode=\"sqlite\" fx:id=\"sourceInfo\""));
+        assertTrue(transport.contains("ShellConnectTextField filterMode=\"sqlite\" fx:id=\"targetInfo\""));
+        assertTrue(transport.contains("ShellSqliteDatabaseComboBox fx:id=\"sourceDatabase\""));
+        assertTrue(transport.contains("ShellSqliteDatabaseComboBox fx:id=\"targetDatabase\""));
         assertEquals(2, transport.split("<FXTab ", -1).length - 1);
 
         String recordTable = this.sourceText(

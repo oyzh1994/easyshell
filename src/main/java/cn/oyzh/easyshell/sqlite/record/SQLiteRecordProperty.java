@@ -110,8 +110,8 @@ public class SQLiteRecordProperty extends DBRecordProperty {
         try {
             if (this.node != null) {
                 super.set(ShellSqliteNodeUtil.getNodeVal(this.node));
-                this.original = super.get();
             }
+            this.original = super.get();
         } catch (Exception ex) {
             throw new ShellException(ex);
         }

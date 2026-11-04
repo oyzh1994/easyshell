@@ -127,7 +127,7 @@
             </FXVBox>
         </FixedTab>
         <FixedTab text="%shell.sqlite.preview" fx:id="previewTab">
-            <ShellDataEditor fx:id="preview" lineNumbersEnabled="false" formatType="SQL" editable="false"
+            <ShellDataEditor fx:id="preview" formatType="SQL" editable="false"
                              flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>

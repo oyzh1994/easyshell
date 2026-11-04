@@ -26,6 +26,11 @@ public class ShellSqliteHomeTab extends RichTab {
     }
 
     @Override
+    public String getTabTitle() {
+        return I18nHelper.info();
+    }
+
+    @Override
     public void flushGraphic() {
         SVGGlyph graphic = (SVGGlyph) this.getGraphic();
         if (graphic == null) {
@@ -35,8 +40,4 @@ public class ShellSqliteHomeTab extends RichTab {
         }
     }
 
-    @Override
-    public void flushTitle() {
-        this.setText(I18nHelper.database());
-    }
 }

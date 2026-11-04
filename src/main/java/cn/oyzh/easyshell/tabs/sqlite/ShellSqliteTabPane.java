@@ -292,6 +292,12 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
             if (item == null) {
                 return;
             }
+            try {
+                item.columns();
+            } catch (Exception ex) {
+                this.openViewDesign(viewName);
+                return;
+            }
             tab = new ShellSqliteViewRecordTab();
             this.addTab(tab);
             tab.init(item);

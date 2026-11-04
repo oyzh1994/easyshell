@@ -30,7 +30,9 @@ import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaManager;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.trigger.SQLiteTriggerControl;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -52,6 +54,11 @@ import static org.junit.Assert.fail;
  * @since 2026-11-02
  */
 public class SQLiteDesignAndDataTest {
+
+    @BeforeClass
+    public static void initColumnFields() {
+        ShellSqliteColumnUtil.init();
+    }
 
     @Test
     public void testSqliteRecordFilterConditions() {
@@ -443,7 +450,7 @@ public class SQLiteDesignAndDataTest {
         trigger.setTableName("old_table");
         trigger.setDefinition("CREATE TRIGGER old_trigger AFTER INSERT ON old_table BEGIN SELECT 1; END");
         String triggerSql = trigger.normalizedDefinition("old_table", "new_table");
-        assertTrue(triggerSql.contains("CREATE TRIGGER \"new_trigger\" AFTER INSERT ON new_table"));
+        assertTrue(triggerSql.startsWith("CREATE TRIGGER \"new_trigger\" AFTER INSERT ON \"new_table\""));
     }
 
     @Test

@@ -79,6 +79,25 @@ public class SQLiteViewCreateSqlGenerator extends DBSqlGenerator {
         if (StringUtil.isBlank(definition)) {
             throw new IllegalArgumentException("SQLite view definition is empty");
         }
+        return createViewSql(name, definition);
+    }
+
+    /**
+     * 创建视图预览SQL，必要信息为空时使用默认值。
+     *
+     * @param name       视图名称
+     * @param definition 视图定义
+     * @return SQL语句
+     */
+    public static String createViewPreview(String name, String definition) {
+        String viewName = StringUtil.blankToDefault(name, "Unnamed_View");
+        String viewDefinition = StringUtil.blankToDefault(definition, "SELECT 1");
+        viewDefinition = StringUtil.blankToDefault(
+                SQLiteGeneratorUtil.stripSemicolon(viewDefinition), "SELECT 1");
+        return createViewSql(viewName, viewDefinition);
+    }
+
+    private static String createViewSql(String name, String definition) {
         return "CREATE VIEW " + SQLiteGeneratorUtil.quote(name) + " AS\n"
                 + SQLiteGeneratorUtil.stripSemicolon(definition) + ";";
     }

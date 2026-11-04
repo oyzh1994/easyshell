@@ -21,7 +21,8 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </SaveSVGGlyph>
-        <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
+        <RefreshSVGGlyph fx:id="refresh" groupId="action3" tipText="%base.refresh"
+                         onMousePrimaryClicked="#refresh" managedBindVisible="true" visible="false">
             <HBox.margin>
                 <Insets left="10" top="10"/>
             </HBox.margin>
@@ -29,14 +30,10 @@
     </FXHBox>
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.definition" fx:id="definitionTab">
-            <ShellSqliteQueryEditor fx:id="definition" flexWidth="100% - 60" flexHeight="100% - 20">
-                <VBox.margin>
-                    <Insets left="30" top="10" right="30" bottom="10"/>
-                </VBox.margin>
-            </ShellSqliteQueryEditor>
+            <ShellSqliteQueryEditor fx:id="definition" flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
         <FixedTab text="%shell.sqlite.preview" fx:id="previewTab">
-            <ShellDataEditor fx:id="preview" lineNumbersEnabled="false" formatType="SQL" editable="false"
+            <ShellDataEditor fx:id="preview" formatType="SQL" editable="false"
                              flexWidth="100%" flexHeight="100%"/>
         </FixedTab>
     </RichTabPane>

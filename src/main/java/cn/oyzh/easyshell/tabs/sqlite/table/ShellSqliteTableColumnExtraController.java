@@ -44,6 +44,9 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
     private SQLiteCollationComboBox collate;
 
     @FXML
+    private FXHBox checkBox;
+
+    @FXML
     private ClearableTextField check;
 
     @FXML
@@ -103,6 +106,12 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
             this.collate.clearSelection();
             this.generatedExpression.clear();
             this.autoIncrement.setSelected(false);
+            this.setBoxVisible(this.autoIncrementBox, false);
+            this.setBoxVisible(this.defaultValueBox, false);
+            this.setBoxVisible(this.collateBox, false);
+            this.setBoxVisible(this.checkBox, false);
+            this.setBoxVisible(this.generatedExpressionBox, false);
+            this.setBoxVisible(this.generatedStorageBox, false);
             return;
         }
         this.ignoreChanged = true;
@@ -125,6 +134,10 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
                 this.autoIncrement.setSelected(false);
             }
             this.check.setText(StringUtil.blankToDefault(this.column.getCheck(), ""));
+            this.setBoxVisible(this.collateBox, true);
+            this.setBoxVisible(this.checkBox, true);
+            this.setBoxVisible(this.generatedExpressionBox, true);
+            this.setBoxVisible(this.generatedStorageBox, true);
             this.generatedStorage.setItem(List.of("VIRTUAL", "STORED"));
             this.collate.select(StringUtil.blankToDefault(this.column.getCollate(), ""));
             this.generatedStorage.setValue(StringUtil.blankToDefault(this.column.getGeneratedStorage(), "VIRTUAL"));
@@ -132,6 +145,11 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
         } finally {
             this.ignoreChanged = false;
         }
+    }
+
+    private void setBoxVisible(FXHBox box, boolean visible) {
+        box.setVisible(visible);
+        box.setManaged(visible);
     }
 
     @Override

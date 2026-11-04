@@ -53,7 +53,7 @@
                 </ReadOnlyTextArea>
             </FXVBox>
         </FixedTab>
-        <FixedTab text="%base.definition">
+        <FixedTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
                                  flexHeight="100% - 20" flexWidth="100% - 60">

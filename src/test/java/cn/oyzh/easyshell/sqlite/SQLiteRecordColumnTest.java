@@ -62,7 +62,7 @@ public class SQLiteRecordColumnTest {
     }
 
     @Test
-    public void testClearStatusDoesNotPublishChangedState() {
+    public void testClearStatusPublishesSingleStatusRefresh() {
         SQLiteColumn id = this.column("id", "INTEGER");
         id.setDbName("main");
         id.setTableName("item");
@@ -78,6 +78,7 @@ public class SQLiteRecordColumnTest {
         try {
             property.setChanged(true);
             property.set(2L);
+            changedCount.set(0);
             record.clearStatus();
 
             assertEquals(1, changedCount.get());

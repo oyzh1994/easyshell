@@ -40,16 +40,6 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ReadOnlyTextField>
-                <InfoLabel text="%shell.sqlite.rowCount">
-                    <VBox.margin>
-                        <Insets left="30" top="10"/>
-                    </VBox.margin>
-                </InfoLabel>
-                <ReadOnlyTextField fx:id="rowCount" realHeight="30" flexWidth="100% - 180">
-                    <VBox.margin>
-                        <Insets left="30" top="5"/>
-                    </VBox.margin>
-                </ReadOnlyTextField>
                 <InfoLabel text="%shell.sqlite.withoutRowid">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -75,7 +65,7 @@
                         <Insets left="30" top="10"/>
                     </VBox.margin>
                 </InfoLabel>
-                <ReadOnlyTextArea fx:id="comment" tipText="%base.comment" realHeight="100"
+                <ReadOnlyTextArea fx:id="comment" tipText="%base.comment" realHeight="130"
                                   flexWidth="100% - 180">
                     <VBox.margin>
                         <Insets left="30" top="5"/>
@@ -83,7 +73,7 @@
                 </ReadOnlyTextArea>
             </FXVBox>
         </FixedTab>
-        <FixedTab text="%base.definition">
+        <FixedTab text="%base.ddl">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
                                  flexHeight="100% - 20" flexWidth="100% - 60">

@@ -3,6 +3,7 @@
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -16,7 +17,7 @@
         fx:controller="cn.oyzh.easyshell.controller.sqlite.function.ShellSqliteFunctionInfoController" realWidth="750"
         realHeight="600">
     <FXHeaderBar/>
-    <FXTabPane flexWidth="100%" flexHeight="100% - 90">
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
         <FixedTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.name">
@@ -29,6 +30,31 @@
                         <Insets left="30" top="5"/>
                     </VBox.margin>
                 </ReadOnlyTextField>
+                <InfoLabel text="%base.definition">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition"
+                                 realHeight="180" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellDataEditor>
+                <InfoLabel text="%base.comment">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ReadOnlyTextArea fx:id="comment" realHeight="130" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ReadOnlyTextArea>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="SQLite">
+            <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%shell.sqlite.functionKind">
                     <VBox.margin>
                         <Insets left="30" top="10"/>
@@ -87,19 +113,16 @@
                         </VBox.margin>
                     </ReadOnlyTextField>
                 </FXVBox>
-                <FXVBox managed="false" visible="false" fx:id="definitionBox" managedBindVisible="true">
-                    <InfoLabel text="%base.definition">
-                        <VBox.margin>
-                            <Insets left="30" top="10"/>
-                        </VBox.margin>
-                    </InfoLabel>
-                    <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="definition"
-                                     realHeight="180" flexWidth="100% - 180">
-                        <VBox.margin>
-                            <Insets left="30" top="5"/>
-                        </VBox.margin>
-                    </ShellDataEditor>
-                </FXVBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.ddl">
+            <FXVBox flexHeight="100%" flexWidth="100%">
+                <ShellDataEditor lineNumbersEnabled="false" formatType="SQL" editable="false" fx:id="createDefinition"
+                                 flexHeight="100% - 20" flexWidth="100% - 60">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </ShellDataEditor>
             </FXVBox>
         </FixedTab>
     </FXTabPane>

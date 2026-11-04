@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.sqlite.ShellSqliteDatabaseComboBox?>
 <?import cn.oyzh.fx.gui.button.CloseButton?>
 <?import cn.oyzh.fx.gui.button.RunSqlFileButton?>
 <?import cn.oyzh.fx.gui.button.StopButton?>
@@ -33,11 +34,11 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ReadOnlyTextField fx:id="database" realHeight="30" flexWidth="100% - 180">
+    <ShellSqliteDatabaseComboBox fx:id="database" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
-    </ReadOnlyTextField>
+    </ShellSqliteDatabaseComboBox>
     <InfoLabel text="%base.options">
         <VBox.margin>
             <Insets left="30" top="10"/>

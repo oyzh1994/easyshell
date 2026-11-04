@@ -6,6 +6,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.sqlite.handler.SQLiteDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.connect.ShellConnectTextField;
+import cn.oyzh.easyshell.fx.sqlite.ShellSqliteDatabaseComboBox;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.fx.db.data.ui.DBDataDumpTypeComboBox;
@@ -94,6 +95,18 @@ public class ShellSqliteDataTransportController extends StageController {
      */
     @FXML
     private FXLabel targetDatabaseName;
+
+    /**
+     * 来源数据库
+     */
+    @FXML
+    private ShellSqliteDatabaseComboBox sourceDatabase;
+
+    /**
+     * 目标数据库
+     */
+    @FXML
+    private ShellSqliteDatabaseComboBox targetDatabase;
 
     /**
      * 来源信息
@@ -318,6 +331,22 @@ public class ShellSqliteDataTransportController extends StageController {
         this.targetInfo.selectedItemChanged(newValue -> {
             StageManager.showMask(this.getWindow(), () -> this.doConnect(2, newValue));
         });
+        this.sourceDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                this.sourceDatabaseName.clear();
+            } else {
+                this.sourceDatabaseName.text(newValue);
+            }
+            this.clearList();
+        });
+        this.targetDatabase.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                this.targetDatabaseName.clear();
+            } else {
+                this.targetDatabaseName.text(newValue);
+            }
+            this.clearList();
+        });
         this.tableRoot.selectedItemChanged((observable, oldValue, newValue) -> this.flushPaneTexts());
         this.viewList.setSelectedChanged(() -> this.flushPaneText("view"));
         this.tableList.setSelectedChanged(() -> this.flushPaneText("table"));
@@ -342,13 +371,15 @@ public class ShellSqliteDataTransportController extends StageController {
                     this.sourceClient = ShellClientUtil.newClient(connect);
                     this.sourceClient.start();
                     this.sourceVersion.text(this.sourceClient.selectVersion());
-                    this.sourceDatabaseName.text("main");
+                    this.sourceDatabase.enable();
+                    this.sourceDatabase.init(this.sourceClient, "main");
                 } else {
                     this.sourceHost.clear();
                     this.sourceType.clear();
                     this.sourceVersion.clear();
                     this.sourceInfoName.clear();
-                    this.sourceDatabaseName.clear();
+                    this.sourceDatabase.disable();
+                    this.sourceDatabase.clearItems();
                 }
             } else {
                 if (connect != null) {
@@ -361,13 +392,15 @@ public class ShellSqliteDataTransportController extends StageController {
                     this.targetClient = ShellClientUtil.newClient(connect);
                     this.targetClient.start();
                     this.targetVersion.text(this.targetClient.selectVersion());
-                    this.targetDatabaseName.text("main");
+                    this.targetDatabase.enable();
+                    this.targetDatabase.init(this.targetClient, "main");
                 } else {
                     this.targetHost.clear();
                     this.targetType.clear();
                     this.targetVersion.clear();
                     this.targetInfoName.clear();
-                    this.targetDatabaseName.clear();
+                    this.targetDatabase.disable();
+                    this.targetDatabase.clearItems();
                 }
             }
             this.clearList();

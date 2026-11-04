@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.controls.tab.FixedTab;
 import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.i18n.I18nHelper;
@@ -56,6 +57,11 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         this.originalName = view == null ? null : view.getName();
         this.definition.setText(view == null ? "" : StringUtil.blankToDefault(view.getDefinition(), ""));
         this.unsaved = view == null;
+        if (view == null) {
+            NodeGroupUtil.disappear(this.getTab(), "action3");
+        } else {
+            NodeGroupUtil.display(this.getTab(), "action3");
+        }
         this.definition.textProperty().addListener((observable, oldValue, newValue) -> this.unsaved = true);
         this.definition.forgetHistory();
     }
@@ -68,12 +74,8 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
     }
 
     private void initPreview() {
-        try {
-            String name = StringUtil.blankToDefault(this.originalName, I18nHelper.unnamedView());
-            this.preview.setText(SQLiteViewCreateSqlGenerator.createView(name, this.definition.getText().trim()));
-        } catch (Exception ex) {
-            MessageBox.exception(ex, this.getWindow());
-        }
+        String name = StringUtil.blankToDefault(this.originalName, I18nHelper.unnamedView());
+        this.preview.setText(SQLiteViewCreateSqlGenerator.createViewPreview(name, this.definition.getText()));
     }
 
     @FXML
@@ -100,6 +102,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
             new SQLiteSchemaManager(this.client).saveView(previousName, view);
             this.originalName = targetName;
             this.unsaved = false;
+            NodeGroupUtil.display(this.getTab(), "action3");
             ShellSqliteEventUtil.viewChanged(this.client, previousName, targetName);
             this.initPreview();
             this.flushTab();

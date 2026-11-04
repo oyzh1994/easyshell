@@ -2,8 +2,10 @@ package cn.oyzh.easyshell.controller.sqlite.function;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.function.SQLiteFunction;
+import cn.oyzh.easyshell.sqlite.generator.function.SQLiteFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.trees.sqlite.function.ShellSqliteFunctionTreeItem;
 import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.fx.gui.text.field.ReadOnlyTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -36,6 +38,12 @@ public class ShellSqliteFunctionInfoController extends StageController {
 
     @FXML
     private ReadOnlyTextField name;
+
+    /**
+     * 注释
+     */
+    @FXML
+    private ReadOnlyTextArea comment;
 
     @FXML
     private ReadOnlyTextField kind;
@@ -85,14 +93,14 @@ public class ShellSqliteFunctionInfoController extends StageController {
     @FXML
     private ReadOnlyTextField targetTable;
 
-    /**
-     * 定义区域
-     */
-    @FXML
-    private FXVBox definitionBox;
-
     @FXML
     private Editor definition;
+
+    /**
+     * DDL
+     */
+    @FXML
+    private Editor createDefinition;
 
     /**
      * 函数节点
@@ -138,10 +146,10 @@ public class ShellSqliteFunctionInfoController extends StageController {
             this.attributes.setText(String.join(", ", attributeList));
             this.attributesBox.display();
         }
-        String definition = StringUtil.blankToDefault(function.getExpression(), function.getDefinition());
-        if (StringUtil.isNotBlank(definition)) {
-            this.definition.setText(definition);
-            this.definitionBox.display();
+        this.comment.setText("");
+        this.definition.setText(StringUtil.blankToDefault(function.getExpression(), function.getDefinition()));
+        if (!SQLiteFunction.KIND_BUILTIN.equals(function.getKind())) {
+            this.createDefinition.setText(SQLiteFunctionCreateSqlGenerator.createFunction(function));
         }
     }
 
@@ -161,6 +169,7 @@ public class ShellSqliteFunctionInfoController extends StageController {
     @Override
     public void destroy() {
         this.definition.destroy();
+        this.createDefinition.destroy();
         super.destroy();
     }
 }
