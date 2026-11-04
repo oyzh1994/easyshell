@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.data.sqlite.handler;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
@@ -26,28 +27,52 @@ public class SQLiteDataRunSqlFileHandler extends DBDataRunFileHandler<String> {
 
     @Override
     public void runFile() throws Exception {
-        String content = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
-        List<String> sqlList = DBSqlParser.parseSql(content, DBDialect.SQLITE);
         this.message("Run SQL File Starting");
-        for (String sql : sqlList) {
-            this.checkInterrupt();
-            try {
-                this.client.executeSqlSimple(sql);
-                this.processedIncr();
-                this.message("Executed SQL: " + sql);
-            } catch (Exception ex) {
-                if (!this.isContinueWithErrors()) {
-                    throw ex;
+        try {
+            String content = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);
+            List<String> sqlList = DBSqlParser.parseSql(content, DBDialect.SQLITE);
+            for (String sql : sqlList) {
+                this.checkInterrupt();
+                if (StringUtil.isBlank(sql)) {
+                    continue;
                 }
-                this.exception(ex);
+                try {
+                    // 新增记录用批量处理，避免逐条事务提交
+                    if (StringUtil.startWithIgnoreCase(sql.stripLeading(), "INSERT INTO ")) {
+                        this.addInsert(sql);
+                    } else {
+                        // 先执行已缓存的插入，保证 SQL 文件的执行顺序
+                        this.doBatchInsert();
+                        this.client.executeSqlSimple(sql);
+                        this.processedIncr();
+                    }
+                } catch (Exception ex) {
+                    this.processedDecr();
+                    this.exception(ex);
+                    if (!this.isContinueWithErrors()) {
+                        break;
+                    }
+                    this.getInsertList().clear();
+                }
             }
+            // 收尾批量插入
+            this.doBatchInsert();
+        } catch (Exception ex) {
+            this.exception(ex);
+        } finally {
+            this.message("Run SQL File Finished");
         }
-        this.message("Run SQL File Finished");
     }
 
     @Override
-    public void doBatchInsert(List<String> list, boolean parallel) {
-        this.client.insertBatch(this.dbName, list, false);
+    public void doBatchInsert(List<String> list, boolean parallel) throws Exception {
+        try {
+            int result = this.client.insertBatch(this.dbName, list, parallel);
+            this.processedIncr(result);
+        } catch (Exception ex) {
+            this.processedDecr(list.size());
+            throw ex;
+        }
     }
 
     @Override

@@ -26,77 +26,115 @@
         <FixedTab text="%base.base">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.name">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
                 </InfoLabel>
                 <ClearableTextField fx:id="name" tipText="%base.nameTip" maxLen="30" require="true"
                                     realHeight="30" flexWidth="100% - 180">
-                    <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </ClearableTextField>
                 <InfoLabel text="%shell.sqlite.file">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
                 </InfoLabel>
                 <SQLiteDatabaseFileField fx:id="filePath" tipText="%shell.sqlite.fileTip" require="true"
                                          realHeight="30" flexWidth="100% - 180">
-                    <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </SQLiteDatabaseFileField>
-                <InfoLabel text="%base.options">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
-                </InfoLabel>
-                <FXHBox>
-                    <FXCheckBox fx:id="readOnly" text="%shell.sqlite.readOnly">
-                        <HBox.margin><Insets left="30" top="5"/></HBox.margin>
-                    </FXCheckBox>
-                    <FXCheckBox fx:id="createIfMissing" text="%shell.sqlite.createIfMissing">
-                        <HBox.margin><Insets left="20" top="5"/></HBox.margin>
-                    </FXCheckBox>
-                </FXHBox>
                 <InfoLabel text="%shell.sqlite.busyTimeout">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
                 </InfoLabel>
                 <FXHBox>
                     <NumberTextField fx:id="connectTimeOut" realHeight="30" flexWidth="100% - 180"
                                      min="0" max="300" value="5" require="true">
-                        <HBox.margin><Insets left="30" top="5"/></HBox.margin>
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
                     </NumberTextField>
                     <FXLabel text="%base.second">
-                        <HBox.margin><Insets left="10" top="9"/></HBox.margin>
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
                     </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="readOnly" text="%shell.sqlite.readOnly">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox fx:id="createIfMissing" text="%shell.sqlite.createIfMissing">
+                        <HBox.margin>
+                            <Insets left="20" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
                 </FXHBox>
             </FXVBox>
         </FixedTab>
         <FixedTab text="%base.extra">
             <FXVBox flexWidth="100%" flexHeight="100%">
                 <InfoLabel text="%base.osType">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
                 </InfoLabel>
                 <ShellOsTypeComboBox fx:id="osType" prefWidth="220" prefHeight="30">
-                    <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </ShellOsTypeComboBox>
                 <InfoLabel text="%base.env">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
                 </InfoLabel>
                 <FXTextArea fx:id="env" promptText="journal_mode=DELETE" realHeight="130"
                             flexWidth="100% - 180">
-                    <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </FXTextArea>
                 <InfoLabel text="%base.remark">
-                    <VBox.margin><Insets left="30" top="10"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
                 </InfoLabel>
                 <FXTextArea fx:id="remark" realHeight="80" flexWidth="100% - 180">
-                    <VBox.margin><Insets left="30" top="5"/></VBox.margin>
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
                 </FXTextArea>
             </FXVBox>
         </FixedTab>
     </FXTabPane>
     <FXHBox realHeight="48" flexWidth="100%">
         <TestButton onAction="#testConnect">
-            <HBox.margin><Insets left="30" top="9"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="30" top="9"/>
+            </HBox.margin>
         </TestButton>
         <CancelButton text="%base.cancel">
-            <HBox.margin><Insets left="10" top="9"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="9"/>
+            </HBox.margin>
         </CancelButton>
         <SubmitButton text="%base.submit" onAction="#add">
-            <HBox.margin><Insets left="10" top="9"/></HBox.margin>
+            <HBox.margin>
+                <Insets left="10" top="9"/>
+            </HBox.margin>
         </SubmitButton>
     </FXHBox>
 </FXVBox>

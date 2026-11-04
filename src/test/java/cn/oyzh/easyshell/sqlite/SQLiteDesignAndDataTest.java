@@ -556,13 +556,17 @@ public class SQLiteDesignAndDataTest {
             Path script = directory.resolve("run.sql");
             Files.writeString(script, "CREATE TABLE run_sql_table (id INTEGER PRIMARY KEY, name TEXT);"
                     + "INSERT INTO run_sql_table(name) VALUES ('from script');"
+                    + "INSERT INTO run_sql_table(name) VALUES ('from script 2');"
                     + "UPDATE item SET name='updated' WHERE id=1;");
             SQLiteDataRunSqlFileHandler runHandler = new SQLiteDataRunSqlFileHandler(client, "main");
+            List<String> messages = new ArrayList<>();
+            runHandler.setMessageHandler(messages::add);
             runHandler.file(script.toFile());
             runHandler.runFile();
             assertNotNull(client.selectTable("run_sql_table"));
-            assertEquals(1, client.selectRowCount("run_sql_table"));
+            assertEquals(2, client.selectRowCount("run_sql_table"));
             assertTrue(client.selectRowCount("item") >= 2);
+            assertFalse(messages.stream().anyMatch(message -> message != null && message.startsWith("Executed SQL:")));
         } finally {
             client.close();
         }
