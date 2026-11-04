@@ -4,7 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
-import cn.oyzh.fx.db.DBRecordData;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.util.DBUtil;
 
@@ -290,10 +290,10 @@ public final class ShellSqliteHelper {
         }
         List<String> headers = result.getColumns().stream().map(column -> displayValue(column.getName())).toList();
         List<List<String>> rows = new ArrayList<>();
-        for (DBRecordData record : result.getRecords()) {
+        for (SQLiteRecord record : result.getRecords()) {
             List<String> row = new ArrayList<>();
             for (SQLiteColumn column : result.getColumns()) {
-                row.add(displayValue(record.get(column)));
+                row.add(displayValue(record.getValue(column)));
             }
             rows.add(row);
         }

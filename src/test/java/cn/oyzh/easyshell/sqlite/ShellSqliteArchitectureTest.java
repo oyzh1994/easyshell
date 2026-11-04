@@ -691,7 +691,12 @@ public class ShellSqliteArchitectureTest {
         assertTrue(queryInfo.contains("fx:id=\"infoArea\""));
         String querySelect = this.resourceText("/tabs/sqlite/query/shellSqliteQuerySelectTab.fxml");
         assertTrue(querySelect.contains("ExportSVGGlyph"));
-        assertTrue(querySelect.contains("SQLiteResultTableView"));
+        assertTrue(querySelect.contains("ShellSqliteRecordTableView"));
+        assertTrue(querySelect.contains("fx:id=\"add\""));
+        assertTrue(querySelect.contains("fx:id=\"delete\""));
+        assertTrue(querySelect.contains("fx:id=\"apply\""));
+        assertTrue(querySelect.contains("fx:id=\"discard\""));
+        assertTrue(querySelect.contains("#reload"));
         String queryExplain = this.resourceText("/tabs/sqlite/query/shellSqliteQueryExplainTab.fxml");
         assertTrue(queryExplain.contains("SQLiteResultTableView"));
         String queryController = this.sourceText(
@@ -699,6 +704,28 @@ public class ShellSqliteArchitectureTest {
         assertTrue(queryController.contains("private void clearTabs()"));
         assertTrue(queryController.contains("initSelectTab"));
         assertTrue(queryController.contains("initExplainTab"));
+    }
+
+    @Test
+    public void testSqliteQueryResultEditingMatchesMysqlAndDameng() throws Exception {
+        String controller = this.sourceText(
+                "cn/oyzh/easyshell/tabs/sqlite/query/ShellSqliteQuerySelectTabController.java");
+        assertTrue(controller.contains("if (result.isUpdatable())"));
+        assertTrue(controller.contains("if (result.isFullColumn())"));
+        assertTrue(controller.contains("private void insertRecord(SQLiteRecord record)"));
+        assertTrue(controller.contains("private void updateRecord(SQLiteRecord record)"));
+        assertTrue(controller.contains("private void deleteRecord()"));
+        assertTrue(controller.contains("DBStatusListenerManager.removeListener(this.changeListener)"));
+        assertTrue(controller.contains("this.recordTable.setCtrlSAction(this::apply)"));
+        String result = this.sourceText("cn/oyzh/easyshell/query/sqlite/SQLiteQueryResult.java");
+        assertTrue(result.contains("StringUtil.isNotBlank(this.tableName()) && this.getPrimaryKey() != null"));
+        String fxml = this.resourceText("/tabs/sqlite/query/shellSqliteQuerySelectTab.fxml");
+        assertTrue(fxml.contains("ShellSqliteRecordTableView"));
+        assertTrue(fxml.contains("onMousePrimaryClicked=\"#addRecord\""));
+        assertTrue(fxml.contains("onMousePrimaryClicked=\"#deleteRecord\""));
+        assertTrue(fxml.contains("onMousePrimaryClicked=\"#apply\""));
+        assertTrue(fxml.contains("onMousePrimaryClicked=\"#discard\""));
+        assertTrue(fxml.contains("onMousePrimaryClicked=\"#reload\""));
     }
 
     @Test

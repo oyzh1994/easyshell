@@ -110,6 +110,16 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
     }
 
     /**
+     * 执行单条SQL
+     *
+     * @param sql SQL
+     * @return 执行结果
+     */
+    public SQLiteExecuteResult executeSingleSql(String sql) {
+        return this.client().executeSingleSql(sql);
+    }
+
+    /**
      * 解释SQL
      *
      * @param sql SQL

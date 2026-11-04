@@ -338,10 +338,6 @@ public class ShellSqliteDataExportController extends StageController {
         if (this.hasProp("exportTable")) {
             this.exportTable = this.getProp("exportTable");
         }
-        if (this.exportMode == 1 && this.exportTable != null) {
-            this.initTables();
-            this.showStep4();
-        }
         this.stage.hideOnEscape();
         super.onWindowShown(event);
     }

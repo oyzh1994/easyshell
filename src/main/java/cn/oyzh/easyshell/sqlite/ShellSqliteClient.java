@@ -58,6 +58,7 @@ import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRawQueryResults;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
+import cn.oyzh.fx.db.sql.DBBaseSqlParser;
 import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
 import javafx.beans.property.ObjectProperty;
@@ -1371,6 +1372,28 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 执行单条SQL
+     *
+     * @param sql SQL
+     * @return 执行结果
+     */
+    public SQLiteExecuteResult executeSingleSql(String sql) {
+        DBQueryResults<SQLiteExecuteResult> results = this.executeSql(sql);
+        if (!results.isSuccess()) {
+            throw new ShellException(results.getErrMsg());
+        }
+        if (results.getResults() == null || results.getResults().isEmpty()) {
+            return null;
+        }
+        for (SQLiteExecuteResult result : results.getResults()) {
+            if (result.isSuccess()) {
+                return result;
+            }
+        }
+        return results.getResults().getFirst();
+    }
+
+    /**
      * 查询字段。
      *
      * @param objectName 表或视图名称
@@ -1885,6 +1908,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                         if (hasResult) {
                             try (ResultSet resultSet = statement.getResultSet()) {
                                 result.parseResult(resultSet, connection, this.isReadonly());
+                                this.enrichExecuteResult(result, execSql);
                             }
                         } else {
                             result.setUpdateCount(Math.max(0, statement.getUpdateCount()));
@@ -1922,6 +1946,31 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
             }
         }
         return results;
+    }
+
+    /**
+     * 补充查询结果的可编辑信息
+     *
+     * @param result 查询结果
+     * @param sql    SQL
+     */
+    private void enrichExecuteResult(SQLiteExecuteResult result, String sql) {
+        result.setFullColumn(new DBBaseSqlParser(sql, this.dialect()).isFullColumn(sql));
+        String tableName = result.tableName();
+        if (StringUtil.isBlank(tableName)) {
+            return;
+        }
+        try {
+            // 只有真实表才允许按主键编辑，视图字段不参与可编辑判定。
+            if (this.selectTableSimple(result.dbName(), tableName) == null) {
+                return;
+            }
+            List<SQLiteColumn> tableColumns = this.selectColumns(
+                    new SQLiteSelectColumnParam(result.dbName(), tableName));
+            result.enrichColumns(tableColumns);
+        } catch (Exception ex) {
+            JulLog.warn("Failed to enrich SQLite query result columns: {}", ex.getMessage());
+        }
     }
 
     /**

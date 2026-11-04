@@ -115,6 +115,47 @@ public class ShellSqliteClientTest {
     }
 
     @Test
+    public void testQueryResultEditingMetadata() throws Throwable {
+        Path file = this.path("query-editing.db");
+        ShellSqliteClient client = this.client(file, false, true);
+        client.start();
+        this.assertSuccess(client.executeSql(
+                "CREATE TABLE item (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER);"
+                        + "CREATE TABLE typed_item (code TEXT PRIMARY KEY, value TEXT);"
+                        + "CREATE VIEW item_view AS SELECT name FROM item;"
+                        + "INSERT INTO item(name, age) VALUES('first', 18);"));
+
+        SQLiteExecuteResult allColumns = client.executeSingleSql("SELECT * FROM item");
+        assertTrue(allColumns.isUpdatable());
+        assertTrue(allColumns.isFullColumn());
+        assertEquals("main", allColumns.dbName());
+        assertEquals("item", allColumns.tableName());
+        assertNotNull(allColumns.getPrimaryKey());
+        assertEquals("id", allColumns.getPrimaryKey().getName());
+        assertTrue(allColumns.getPrimaryKey().isPrimaryKey());
+        assertEquals("first", allColumns.getRecords().getFirst().getValue("name"));
+
+        SQLiteExecuteResult withoutPrimaryKey = client.executeSingleSql("SELECT name FROM item");
+        assertFalse(withoutPrimaryKey.isUpdatable());
+        assertFalse(withoutPrimaryKey.isFullColumn());
+
+        SQLiteExecuteResult partialColumns = client.executeSingleSql("SELECT id, name FROM item");
+        assertTrue(partialColumns.isUpdatable());
+        assertFalse(partialColumns.isFullColumn());
+
+        SQLiteExecuteResult nonAutoIncrementKey = client.executeSingleSql("SELECT * FROM typed_item");
+        assertTrue(nonAutoIncrementKey.isUpdatable());
+        assertNotNull(nonAutoIncrementKey.getPrimaryKey());
+        assertEquals("code", nonAutoIncrementKey.getPrimaryKey().getName());
+        assertFalse(nonAutoIncrementKey.getPrimaryKey().isAutoIncrement());
+
+        SQLiteExecuteResult viewResult = client.executeSingleSql("SELECT * FROM item_view");
+        assertFalse(viewResult.isUpdatable());
+        assertTrue(viewResult.isFullColumn());
+        client.close();
+    }
+
+    @Test
     public void testTableAndViewInfoMetadata() throws Throwable {
         Path file = this.path("object-info.db");
         ShellSqliteClient client = this.client(file, false, true);
@@ -183,8 +224,8 @@ public class ShellSqliteClientTest {
         assertEquals(3, committed.getResults().size());
         SQLiteExecuteResult result = committed.getResults().get(2);
         assertEquals(2, result.getCount());
-        assertEquals("中文", result.getRecords().getFirst().value("name"));
-        assertArrayEquals(new byte[]{0, (byte) 0xFF}, (byte[]) result.getRecords().getFirst().value("data"));
+        assertEquals("中文", result.getRecords().getFirst().getValue("name"));
+        assertArrayEquals(new byte[]{0, (byte) 0xFF}, (byte[]) result.getRecords().getFirst().getValue("data"));
         assertTrue(LLMDBToolsUtil.format(committed).contains("name"));
         assertTrue(LLMDBToolsUtil.format(committed).contains("中文"));
         ShellSqliteLLMTools llmTools = new ShellSqliteLLMTools();
@@ -192,7 +233,7 @@ public class ShellSqliteClientTest {
         assertTrue(llmTools.executeSql("SELECT name FROM item WHERE id = 1").contains("中文"));
         assertEquals(1, llmTools.executeSqlRaw("SELECT name FROM item WHERE id = 1").size());
         llmTools.close();
-        assertEquals("NULL", ShellSqliteHelper.displayValue(result.getRecords().get(1).value("name")));
+        assertEquals("NULL", ShellSqliteHelper.displayValue(result.getRecords().get(1).getValue("name")));
 
         DBQueryResults<SQLiteExecuteResult> explicit = client.executeSql(
                 "BEGIN; INSERT INTO item(name) VALUES('explicit'); COMMIT;");

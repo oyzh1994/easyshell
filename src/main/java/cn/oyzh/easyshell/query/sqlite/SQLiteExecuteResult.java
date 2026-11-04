@@ -1,14 +1,18 @@
 package cn.oyzh.easyshell.query.sqlite;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
-import cn.oyzh.fx.db.DBRecordData;
-import cn.oyzh.fx.db.query.DBQueryResult;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * SQLite SQL 执行结果。
@@ -16,20 +20,17 @@ import java.util.List;
  * @author oyzh
  * @since 2026-11-02
  */
-public class SQLiteExecuteResult extends DBQueryResult {
+public class SQLiteExecuteResult extends SQLiteQueryResult {
 
-    private List<SQLiteColumn> columns;
-
-    private List<DBRecordData> records;
-
-    @Override
-    public int getCount() {
-        return this.records == null ? 0 : this.records.size();
-    }
+    /**
+     * 是否全字段
+     */
+    private boolean fullColumn;
 
     @Override
     public void parseResult(ResultSet resultSet, Connection connection, boolean readonly) throws Exception {
-        this.columns = new ArrayList<>();
+        this.readonly = readonly;
+        this.columns = new SQLiteColumns();
         this.records = new ArrayList<>();
         ResultSetMetaData metaData = resultSet.getMetaData();
         for (int index = 1; index <= metaData.getColumnCount(); index++) {
@@ -37,31 +38,70 @@ public class SQLiteExecuteResult extends DBQueryResult {
             column.setName(metaData.getColumnLabel(index));
             column.setType(metaData.getColumnTypeName(index));
             column.setSize(metaData.getColumnDisplaySize(index));
+            column.setPosition(index);
+            // SQLite JDBC 的 catalog 元数据返回表名，数据库统一使用 main。
+            column.setDbName("main");
+            column.setTableName(metaData.getTableName(index));
+            column.setNotNull(metaData.isNullable(index) == ResultSetMetaData.columnNoNulls);
             column.setAutoIncrement(metaData.isAutoIncrement(index));
             this.columns.add(column);
         }
         while (resultSet.next()) {
-            DBRecordData record = new DBRecordData();
+            SQLiteRecord record = new SQLiteRecord(this.columns, readonly);
             for (int index = 0; index < this.columns.size(); index++) {
-                record.put(this.columns.get(index), resultSet.getObject(index + 1));
+                record.putValue(this.columns.get(index), resultSet.getObject(index + 1));
             }
             this.records.add(record);
         }
     }
 
-    public List<SQLiteColumn> getColumns() {
-        return this.columns == null ? List.of() : this.columns;
+    /**
+     * 根据表字段补充查询结果字段信息
+     *
+     * @param tableColumns 表字段列表
+     */
+    public void enrichColumns(List<SQLiteColumn> tableColumns) {
+        if (this.columns == null || this.columns.isEmpty() || tableColumns == null || tableColumns.isEmpty()) {
+            return;
+        }
+        Map<String, SQLiteColumn> columnMap = new HashMap<>();
+        for (SQLiteColumn column : tableColumns) {
+            columnMap.put(column.getName().toLowerCase(Locale.ROOT), column);
+        }
+        String dbName = this.dbName();
+        String tableName = this.tableName();
+        for (SQLiteColumn column : this.columns) {
+            SQLiteColumn tableColumn = columnMap.get(column.getName().toLowerCase(Locale.ROOT));
+            if (tableColumn == null) {
+                continue;
+            }
+            String label = column.getName();
+            column.copy(tableColumn);
+            column.setName(label);
+            if (StringUtil.isBlank(column.getDbName())) {
+                column.setDbName(dbName);
+            }
+            if (StringUtil.isBlank(column.getTableName())) {
+                column.setTableName(tableName);
+            }
+        }
     }
 
-    public void setColumns(List<SQLiteColumn> columns) {
-        this.columns = columns;
+    /**
+     * 设置是否全字段
+     *
+     * @param fullColumn 是否全字段
+     */
+    public void setFullColumn(boolean fullColumn) {
+        this.fullColumn = fullColumn;
     }
 
-    public List<DBRecordData> getRecords() {
-        return this.records == null ? List.of() : this.records;
-    }
-
-    public void setRecords(List<DBRecordData> records) {
-        this.records = records;
+    /**
+     * 是否全字段
+     *
+     * @return 结果
+     */
+    public boolean isFullColumn() {
+        return this.fullColumn;
     }
 }
