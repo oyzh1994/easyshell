@@ -111,7 +111,7 @@ public class ShellMainController extends ParentStageController {
         if (!this.root.isShowDivider0()) {
             this.root.setShowDivider0(true);
             double positions_0 = this.root.getPosition0(0.25);
-            double positions_1 = this.chat.isVisible() ? this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION) : 1;
+            double positions_1 = this.chatDividerPosition();
             this.root.setDividerPositions(positions_0, positions_1);
         }
     }
@@ -127,9 +127,21 @@ public class ShellMainController extends ParentStageController {
         if (this.root.isShowDivider0()) {
             this.root.recordPosition0();
             this.root.setShowDivider0(false);
-            double positions_1 = this.chat.isVisible() ? this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION) : 1;
+            double positions_1 = this.chatDividerPosition();
             this.root.setDividerPositions(0, positions_1);
         }
+    }
+
+    /**
+     * 获取聊天分栏位置。
+     *
+     * @return 聊天分栏位置
+     */
+    private double chatDividerPosition() {
+        if (this.chat.isVisible() && this.root.getWidth() > 0 && this.chat.getWidth() > 0) {
+            return 1 - this.chat.getWidth() / this.root.getWidth();
+        }
+        return this.chat.isVisible() ? this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION) : 1;
     }
 
     /**
