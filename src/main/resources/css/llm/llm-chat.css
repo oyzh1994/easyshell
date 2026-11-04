@@ -27,6 +27,22 @@
     -fx-background-insets: 0;
 }
 
+.llm-layout {
+    -fx-background-color: transparent;
+}
+
+.llm-layout > .split-pane-divider {
+    -fx-background-color: -llm-border;
+    -fx-padding: 3 0;
+    -fx-opacity: 0.85;
+}
+
+.llm-layout > .split-pane-divider:hover,
+.llm-layout > .split-pane-divider:pressed {
+    -fx-background-color: -llm-accent;
+    -fx-opacity: 1;
+}
+
 .llm-message-list .list-cell {
     -fx-background-color: transparent;
     -fx-padding: 0;

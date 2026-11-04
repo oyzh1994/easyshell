@@ -22,12 +22,13 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
-import cn.oyzh.fx.plus.controls.pane.FXBorderPane;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -42,7 +43,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -53,7 +53,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
-public class LLMView extends FXBorderPane {
+public class LLMView extends FXSplitPane {
 
     private static final double SELECTOR_LABEL_WIDTH = 44;
 
@@ -111,8 +111,8 @@ public class LLMView extends FXBorderPane {
 
     public LLMView() {
         this.getStyleClass().add("llm-view");
-        this.setCenter(this.messageListView);
-        this.setBottom(this.buildComposer());
+        FXVBox composer = this.buildComposer();
+        this.buildResizableLayout(composer);
         this.initSelectors();
         this.updateSendState();
         FXUtil.runLater(this.inputArea::requestFocus);
@@ -121,14 +121,17 @@ public class LLMView extends FXBorderPane {
     @Override
     public void initNode() {
         this.loadStyle();
+        this.getStyleClass().add("llm-layout");
+        this.setOrientation(Orientation.VERTICAL);
+        this.setShowDivider(true);
         super.initNode();
     }
 
     private FXVBox buildComposer() {
         FXVBox composer = new FXVBox();
         composer.getStyleClass().add("llm-composer");
-        composer.setSpacing(8);
-        composer.setPadding(new Insets(10, 14, 12, 14));
+        composer.setSpacing(4);
+        composer.setPadding(new Insets(4, 14, 6, 14));
 
         this.attachmentBar.getStyleClass().add("llm-attachment-bar");
         this.attachmentBar.setAlignment(Pos.CENTER_LEFT);
@@ -158,8 +161,7 @@ public class LLMView extends FXBorderPane {
 
         this.inputArea.getStyleClass().add("llm-input");
         this.inputArea.setPromptText(I18nResourceBundle.i18nString("shell.llm.inputPlaceholder"));
-        this.inputArea.setPrefRowCount(3);
-        this.inputArea.setMaxHeight(120);
+        FXVBox.setVgrow(this.inputArea, Priority.ALWAYS);
         this.inputArea.textProperty().addListener((observable, oldValue, newValue) -> this.updateSendState());
         this.inputArea.setOnKeyPressed(event -> {
             if (event.getCode() != KeyCode.ENTER) {
@@ -173,7 +175,7 @@ public class LLMView extends FXBorderPane {
                 event.consume();
             }
         });
-        composer.getChildren().add(this.inputArea);
+        composer.addChild(this.inputArea);
 
         FXHBox toolbar = new FXHBox();
         toolbar.getStyleClass().add("llm-toolbar");
@@ -183,39 +185,32 @@ public class LLMView extends FXBorderPane {
         Region spacer = new Region();
         FXHBox.setHgrow(spacer, Priority.ALWAYS);
 
-        toolbar.getChildren().addAll(
+        toolbar.addChild(
                 this.labeledCombo(I18nHelper.model(), this.modelComboBox),
                 this.buildSettingsButton(),
                 spacer,
                 this.buildSendButton()
         );
-        composer.getChildren().add(toolbar);
+        composer.addChild(toolbar);
         return composer;
+    }
+
+    private void buildResizableLayout(FXVBox composer) {
+        this.getItems().addAll(this.messageListView, composer);
+        this.setDividerPositions(0.7, 0.3);
+        composer.setMinHeight(132);
+        this.messageListView.setMinHeight(250);
     }
 
     private <T> FXHBox labeledCombo(String labelText, FXComboBox<T> comboBox) {
         FXLabel label = new FXLabel(labelText);
         label.getStyleClass().add("llm-field-label");
-        //label.setMinWidth(SELECTOR_LABEL_WIDTH);
         label.setPrefWidth(SELECTOR_LABEL_WIDTH);
         comboBox.getStyleClass().add("llm-combo");
         comboBox.setPrefWidth(SELECTOR_WIDTH);
         FXHBox box = new FXHBox(label, comboBox);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(3);
-        return box;
-    }
-
-    private VBox buildContextUsage() {
-        VBox box = new VBox(3);
-        box.getStyleClass().add("llm-context");
-        box.setAlignment(Pos.CENTER_LEFT);
-        this.contextLabel.getStyleClass().add("llm-context-label");
-        this.contextProgress.getStyleClass().add("llm-context-progress");
-        this.contextProgress.setPrefWidth(92);
-        this.contextProgress.setPrefHeight(4);
-        this.contextProgress.setProgress(0);
-        box.getChildren().addAll(this.contextLabel, this.contextProgress);
         return box;
     }
 

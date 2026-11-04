@@ -32,25 +32,11 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.getStyleClass().add("llm-message-list");
         this.setFocusTraversable(false);
         this.setPadding(Insets.EMPTY);
-        this.setMinWidth(0);
-        this.setMaxWidth(Double.MAX_VALUE);
         this.setCellFactory(list -> new LLMMessageCell());
         this.setSkin(new LLMListViewSkin(this));
-
         Label placeholder = new Label(I18nResourceBundle.i18nString("shell.llm.chatPlaceholder"));
         placeholder.getStyleClass().add("llm-placeholder");
         this.setPlaceholder(placeholder);
-
-        //this.sceneProperty().addListener((observable, oldScene, newScene) -> {
-        //    if (newScene != null) {
-        //        FXUtil.runLater(this::installScrollBarListener);
-        //    }
-        //});
-        //this.skinProperty().addListener((observable, oldSkin, newSkin) -> {
-        //    if (newSkin != null) {
-        //        FXUtil.runLater(this::installScrollBarListener);
-        //    }
-        //});
         this.addEventFilter(ScrollEvent.SCROLL, this::onUserScroll);
         this.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
