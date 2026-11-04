@@ -406,7 +406,7 @@ public class ShellSqliteDataImportController extends StageController {
      * 根据文件类型显示格式配置
      */
     private void showFormatStep() {
-        String type = String.valueOf(this.fileType.selectedUserData());
+        String type = this.fileType.selectedUserData();
         if (StringUtil.equalsIgnoreCase(type, "json")) {
             NodeGroupUtil.display(this.getStage(), "recordLabel");
             NodeGroupUtil.disappear(this.getStage(), "attrToColumn");

@@ -27,7 +27,7 @@ public final class ShellSqliteNodeUtil {
     }
 
     public static Node generateNode(SQLiteColumn column, boolean handlerDefaultValue) {
-        Node node = DBNodeUtil.getNode(null, column);
+        Node node = DBNodeUtil.generateNode(column);
         if (handlerDefaultValue && column != null && column.getDefaultValue() != null) {
             DBNodeUtil.setNodeVal(node, column.getDefaultValue());
         }
