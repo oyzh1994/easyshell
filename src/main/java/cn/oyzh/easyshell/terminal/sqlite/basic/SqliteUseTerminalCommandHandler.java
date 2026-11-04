@@ -1,0 +1,58 @@
+package cn.oyzh.easyshell.terminal.sqlite.basic;
+
+import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalPane;
+import cn.oyzh.fx.db.util.DBTerminalUtil;
+import cn.oyzh.fx.terminal.command.TerminalCommand;
+import cn.oyzh.fx.terminal.execute.TerminalExecuteResult;
+
+import java.util.List;
+
+/**
+ * SQLite切换数据库命令处理器
+ *
+ * @author oyzh
+ * @since 2026-11-04
+ */
+public class SqliteUseTerminalCommandHandler extends ShellSqliteTerminalCommandHandler<TerminalCommand> {
+
+    @Override
+    protected TerminalCommand parseCommand(String line, String[] args) {
+        TerminalCommand terminalCommand = new TerminalCommand();
+        terminalCommand.setArgs(args);
+        terminalCommand.setCommand(line);
+        return terminalCommand;
+    }
+
+    @Override
+    protected boolean checkArgs(String[] args) throws RuntimeException {
+        return args != null && args.length == 2;
+    }
+
+    @Override
+    public String commandName() {
+        return "use";
+    }
+
+    @Override
+    public String commandSubName() {
+        return "<db>;";
+    }
+
+    @Override
+    public TerminalExecuteResult execute(TerminalCommand command, ShellSqliteTerminalPane terminal) {
+        terminal.setDbName(DBTerminalUtil.fixArg(command.getArgs()[1]));
+        TerminalExecuteResult result = TerminalExecuteResult.ok();
+        try {
+            List<String> databases = terminal.getClient().databaseNames();
+            if (databases.contains(terminal.getDbName())) {
+                result.setResult("Database changed");
+            } else {
+                result.setResult("Database invalid");
+            }
+        } catch (Exception ex) {
+            result.setException(ex);
+        }
+        return result;
+    }
+}

@@ -76,7 +76,7 @@
 - 查询结果改为 Info 加多 Result 标签，每条返回列的结果语句独立展示和导出；Explain 同样支持多结果。
 - 查询页对齐 MySQL 结构，增加 Explain 操作、Info/Result 双结果分页；`EXPLAIN QUERY PLAN` 结果可表格显示；查询保存改为新查询提示名称、`insert/update` 分流。
 - 函数设计器移除重复且不参与生成的内置函数 Tab，内置/扩展函数继续由函数树和函数信息页展示；保留未保存标题刷新和保存时名称弹窗，按能力类型条件展示字段，SQL 表达式模式仅显示表达式，表函数视图模式仅显示视图定义，生成列模式显示目标表、返回类型、表达式和存储方式；目标表从当前 SQLite 表列表加载为可搜索 `SQLiteTableSelectTextField`，输入时实时过滤候选项，返回类型使用 `DBFiledTypeComboBox` 的 SQLite 类型列表，输入框和下拉框高度统一为字段扩展属性同款 `25`；类型说明改为随模式变化的组件 Tooltip，预览和编辑区支持 `Ctrl/Cmd+S`；视图/表通用混合对象页已移除。
-- SQLite 终端新增 `.databases`、`.functions`、`.version`，保留 `.database`、`.tables`、`.views`、`.indexes`、`.schema`、`.read`。
+- SQLite 终端对齐 MySQL/达梦：提供 `show tables;`、`show dbs;`、`show databases;`、`use`、`help`、`clear`，其余输入直接按 SQL 执行；移除 `.database`、`.read` 等文件型 CLI 命令，`use` 在单库场景下仅接受 `main`。
 - 新增 SQLite 字段表、结果表、查询编辑器、查询提示和终端命令处理器。
 - 新增表、视图、函数信息控制器和 FXML，展示 SQLite 对象属性、字段明细、视图 SELECT 定义、函数能力标志和 DDL；表/视图/函数树节点接入对应信息菜单。
 - 新增 `cn.oyzh.easyshell.event.sqlite` 事件模型和工具；表/视图打开、设计器打开、结构变更、函数设计、查询保存/打开和终端打开统一通过事件总线分发，由 `ShellSqliteTabPane` 按客户端隔离处理。
@@ -88,7 +88,7 @@
 - 导出、导入、dump、SQL 文件和传输窗口统一为 MySQL 风格分步向导；传输支持源/目标路径、版本、数据选项、表和视图勾选及执行消息。
 - 修正 SQL 文件导入被目标表/列预检查拦截的问题；SQL 导入直接执行脚本并可创建新表。
 - 接入连接引导、连接类型选择、连接树编辑、客户端工厂、标签页路由、OS 图标和国际化。
-- 终端元命令：`.tables`、`.views`、`.indexes`、`.schema`、`.database`、`.read`；同时复用 `.help` 和 `.clear`。
+- 终端基础命令：`show tables;`、`show dbs;`、`show databases;`；同时复用 `help` 和 `clear`，SQL 输入直接执行。
 
 ## 4. 最终审查修正
 
