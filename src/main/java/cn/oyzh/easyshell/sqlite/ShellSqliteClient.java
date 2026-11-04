@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.internal.ShellClientChecker;
@@ -16,12 +17,12 @@ import cn.oyzh.easyshell.sqlite.column.SQLiteColumnDefinitionParser;
 import cn.oyzh.easyshell.sqlite.column.SQLiteSelectColumnParam;
 import cn.oyzh.easyshell.sqlite.condition.SQLiteConditionUtil;
 import cn.oyzh.easyshell.sqlite.database.SQLiteDatabase;
+import cn.oyzh.easyshell.sqlite.foreignKey.SQLiteForeignKey;
+import cn.oyzh.easyshell.sqlite.foreignKey.SQLiteForeignKeys;
 import cn.oyzh.easyshell.sqlite.function.SQLiteAlertFunctionParam;
 import cn.oyzh.easyshell.sqlite.function.SQLiteCreateFunctionParam;
 import cn.oyzh.easyshell.sqlite.function.SQLiteFunction;
 import cn.oyzh.easyshell.sqlite.function.SQLiteSelectFunctionParam;
-import cn.oyzh.easyshell.sqlite.foreignKey.SQLiteForeignKey;
-import cn.oyzh.easyshell.sqlite.foreignKey.SQLiteForeignKeys;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
 import cn.oyzh.easyshell.sqlite.generator.function.SQLiteFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlite.generator.function.SQLiteFunctionCreateSqlGenerator;
@@ -37,8 +38,8 @@ import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecordFilter;
 import cn.oyzh.easyshell.sqlite.record.SQLiteSelectRecordParam;
 import cn.oyzh.easyshell.sqlite.record.SQLiteUpdateRecordParam;
-import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaManager;
+import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
 import cn.oyzh.easyshell.sqlite.table.SQLiteAlertTableParam;
 import cn.oyzh.easyshell.sqlite.table.SQLiteCreateTableParam;
 import cn.oyzh.easyshell.sqlite.table.SQLiteSelectTableParam;
@@ -50,16 +51,15 @@ import cn.oyzh.easyshell.sqlite.view.SQLiteAlertViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteCreateViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteSelectViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
-import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
-import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRawQueryResults;
-import cn.oyzh.fx.db.DBRecord;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.sql.DBSqlParser;
+import cn.oyzh.fx.db.util.DBUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -73,13 +73,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * SQLite 数据库客户端。
@@ -198,12 +198,16 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
 
     @Override
     public int tableSize(String dbName) {
-        return this.countObjects("table");
+        String sql = "SELECT COUNT(*) FROM " + this.sqliteMaster(dbName)
+                + " WHERE type = 'table' AND name NOT LIKE 'sqlite_%'";
+        return this.queryInt(sql);
     }
 
     @Override
     public int viewSize(String dbName) {
-        return this.countObjects("view");
+        String sql = "SELECT COUNT(*) FROM " + this.sqliteMaster(dbName)
+                + " WHERE type = 'view' AND name NOT LIKE 'sqlite_%'";
+        return this.queryInt(sql);
     }
 
     @Override
@@ -322,18 +326,52 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @return 表列表
      */
     public List<SQLiteTable> selectTables(SQLiteSelectTableParam param) {
-        List<SQLiteTable> tables = this.selectObjects("table").stream()
-                .map(item -> (SQLiteTable) item)
-                .toList();
-        for (SQLiteTable table : tables) {
-            table.setDbName(param.getDbName());
-            if (param.isFull()) {
-                table.setColumns(this.selectColumns(
-                        new SQLiteSelectColumnParam(param.getDbName(), table.getName())));
-                table.setConstraints(SQLiteColumnDefinitionParser.tableConstraints(table.getDefinition()));
+        String dbName = StringUtil.blankToDefault(param.getDbName(), "main");
+        String sql = """
+                SELECT
+                    name, type, sql
+                FROM
+                    %s
+                WHERE
+                    type = 'table'
+                AND
+                    name NOT LIKE 'sqlite_%%'
+                ORDER BY
+                    name
+                """.formatted(this.sqliteMaster(dbName));
+        List<SQLiteTable> tables = new ArrayList<>();
+        try {
+            Connection connection = this.getConnManager().connection();
+            try (PreparedStatement statement = connection.prepareStatement(sql);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    SQLiteTable table = new SQLiteTable();
+                    table.setDbName(dbName);
+                    table.setName(resultSet.getString("name"));
+                    table.setType(resultSet.getString("type"));
+                    String definition = resultSet.getString("sql");
+                    table.setDefinition(definition);
+                    String options = definition == null ? "" : definition;
+                    int bodyEnd = options.lastIndexOf(')');
+                    if (bodyEnd >= 0) {
+                        options = options.substring(bodyEnd + 1);
+                    }
+                    String upperOptions = options.toUpperCase(Locale.ROOT);
+                    table.setWithoutRowid(upperOptions.contains("WITHOUT ROWID"));
+                    table.setStrict(java.util.regex.Pattern.compile("\\bSTRICT\\b")
+                            .matcher(upperOptions).find());
+                    if (param.isFull()) {
+                        table.setColumns(this.selectColumns(
+                                new SQLiteSelectColumnParam(dbName, table.getName())));
+                        table.setConstraints(SQLiteColumnDefinitionParser.tableConstraints(table.getDefinition()));
+                    }
+                    tables.add(table);
+                }
             }
+            return tables;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
         }
-        return tables;
     }
 
     /**
@@ -378,17 +416,40 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @return 视图列表
      */
     public List<SQLiteView> selectViews(SQLiteSelectViewParam param) {
-        List<SQLiteView> views = this.selectObjects("view").stream()
-                .map(item -> (SQLiteView) item)
-                .toList();
-        for (SQLiteView view : views) {
-            view.setDbName(param.getDbName());
-            if (param.isFull()) {
-                view.setColumns(this.selectColumns(
-                        new SQLiteSelectColumnParam(param.getDbName(), view.getName())));
+        String dbName = StringUtil.blankToDefault(param.getDbName(), "main");
+        String sql = """
+                SELECT
+                    name, sql
+                FROM
+                    %s
+                WHERE
+                    type = 'view'
+                AND
+                    name NOT LIKE 'sqlite_%%'
+                ORDER BY
+                    name
+                """.formatted(this.sqliteMaster(dbName));
+        List<SQLiteView> views = new ArrayList<>();
+        try {
+            Connection connection = this.getConnManager().connection();
+            try (PreparedStatement statement = connection.prepareStatement(sql);
+                 ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    SQLiteView view = new SQLiteView();
+                    view.setDbName(dbName);
+                    view.setName(resultSet.getString("name"));
+                    view.setDefinition(SQLiteViewCreateSqlGenerator.viewDefinition(resultSet.getString("sql")));
+                    if (param.isFull()) {
+                        view.setColumns(this.selectColumns(
+                                new SQLiteSelectColumnParam(dbName, view.getName())));
+                    }
+                    views.add(view);
+                }
             }
+            return views;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
         }
-        return views;
     }
 
     /**
@@ -438,16 +499,53 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @return 表定义
      */
     public SQLiteTable selectTable(SQLiteSelectTableParam param) {
-        SQLiteTable table = this.selectTablesSimple(param.getDbName()).stream()
-                .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), param.getTableName()))
-                .findFirst()
-                .orElse(null);
-        if (table != null && param.isFull()) {
-            SQLiteSelectColumnParam columnParam = new SQLiteSelectColumnParam(param.getDbName(), table.getName());
-            table.setColumns(this.selectColumns(columnParam));
-            table.setConstraints(SQLiteColumnDefinitionParser.tableConstraints(table.getDefinition()));
+        String dbName = StringUtil.blankToDefault(param.getDbName(), "main");
+        String sql = """
+                SELECT
+                    name, type, sql
+                FROM
+                    %s
+                WHERE
+                    type = 'table'
+                AND
+                    name = ? COLLATE NOCASE
+                AND
+                    name NOT LIKE 'sqlite_%%'
+                """.formatted(this.sqliteMaster(dbName));
+        SQLiteTable table = null;
+        try {
+            Connection connection = this.getConnManager().connection();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, param.getTableName());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        table = new SQLiteTable();
+                        table.setDbName(dbName);
+                        table.setName(resultSet.getString("name"));
+                        table.setType(resultSet.getString("type"));
+                        String definition = resultSet.getString("sql");
+                        table.setDefinition(definition);
+                        String options = definition == null ? "" : definition;
+                        int bodyEnd = options.lastIndexOf(')');
+                        if (bodyEnd >= 0) {
+                            options = options.substring(bodyEnd + 1);
+                        }
+                        String upperOptions = options.toUpperCase(Locale.ROOT);
+                        table.setWithoutRowid(upperOptions.contains("WITHOUT ROWID"));
+                        table.setStrict(java.util.regex.Pattern.compile("\\bSTRICT\\b")
+                                .matcher(upperOptions).find());
+                    }
+                }
+            }
+            if (table != null && param.isFull()) {
+                SQLiteSelectColumnParam columnParam = new SQLiteSelectColumnParam(dbName, table.getName());
+                table.setColumns(this.selectColumns(columnParam));
+                table.setConstraints(SQLiteColumnDefinitionParser.tableConstraints(table.getDefinition()));
+            }
+            return table;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
         }
-        return table;
     }
 
     /**
@@ -497,15 +595,41 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @return 视图定义
      */
     public SQLiteView selectView(SQLiteSelectViewParam param) {
-        SQLiteView view = this.selectViewsSimple(param.getDbName()).stream()
-                .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), param.getViewName()))
-                .findFirst()
-                .orElse(null);
-        if (view != null && param.isFull()) {
-            SQLiteSelectColumnParam columnParam = new SQLiteSelectColumnParam(param.getDbName(), view.getName());
-            view.setColumns(this.selectColumns(columnParam));
+        String dbName = StringUtil.blankToDefault(param.getDbName(), "main");
+        String sql = """
+                SELECT
+                    name, sql
+                FROM
+                    %s
+                WHERE
+                    type = 'view'
+                AND
+                    name = ? COLLATE NOCASE
+                AND
+                    name NOT LIKE 'sqlite_%%'
+                """.formatted(this.sqliteMaster(dbName));
+        SQLiteView view = null;
+        try {
+            Connection connection = this.getConnManager().connection();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, param.getViewName());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        view = new SQLiteView();
+                        view.setDbName(dbName);
+                        view.setName(resultSet.getString("name"));
+                        view.setDefinition(SQLiteViewCreateSqlGenerator.viewDefinition(resultSet.getString("sql")));
+                    }
+                }
+            }
+            if (view != null && param.isFull()) {
+                SQLiteSelectColumnParam columnParam = new SQLiteSelectColumnParam(dbName, view.getName());
+                view.setColumns(this.selectColumns(columnParam));
+            }
+            return view;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
         }
-        return view;
     }
 
     /**
@@ -553,7 +677,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         List<SQLiteFunction> functions = new ArrayList<>();
         try {
             Connection connection = this.getConnManager().connection();
-            try (java.sql.PreparedStatement statement = connection.prepareStatement("PRAGMA function_list");
+            try (PreparedStatement statement = connection.prepareStatement("PRAGMA function_list");
                  ResultSet resultSet = statement.executeQuery()) {
                 ResultSetMetaData metadata = resultSet.getMetaData();
                 int nameIndex = findColumn(metadata, "name");
@@ -992,8 +1116,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      * @param filters  过滤条件
      * @return 记录列表
      */
-    public List<SQLiteRecord> viewRecords(String dbName, String viewName, Long start, Long limit,
-                                          List<SQLiteRecordFilter> filters) {
+    public List<SQLiteRecord> viewRecords(String dbName, String viewName, Long start, Long limit, List<SQLiteRecordFilter> filters) {
         SQLiteSelectRecordParam param = new SQLiteSelectRecordParam();
         param.setDbName(dbName);
         param.setTableName(viewName);
@@ -1043,7 +1166,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
             param.setColumns(columns);
         }
         StringBuilder builder = new StringBuilder("SELECT * FROM ")
-                .append(SQLiteGeneratorUtil.quote(param.getTableName())).append(" WHERE ");
+                .append(SQLiteGeneratorUtil.quote(param.getTableName()))
+                .append(" WHERE ");
         try {
             Object value;
             if (param.getPrimaryKey() != null && StringUtil.isNotBlank(param.getPrimaryKey().getColumnName())) {
@@ -1093,7 +1217,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
             return 0;
         }
         StringBuilder builder = new StringBuilder("INSERT INTO ")
-                .append(SQLiteGeneratorUtil.quote(param.getTableName())).append(" (");
+                .append(SQLiteGeneratorUtil.quote(param.getTableName()))
+                .append(" (");
         try {
             List<DBColumnValue> values = this.recordValues(param.getRecord());
             if (values.isEmpty()) {
@@ -1102,9 +1227,9 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                         .append(" DEFAULT VALUES");
             } else {
                 builder.append(values.stream().map(item -> SQLiteGeneratorUtil.quote(item.column()))
-                        .collect(java.util.stream.Collectors.joining(", ")));
+                        .collect(Collectors.joining(", ")));
                 builder.append(") VALUES (");
-                builder.append(String.join(", ", java.util.Collections.nCopies(values.size(), "?")));
+                builder.append(String.join(", ", Collections.nCopies(values.size(), "?")));
                 builder.append(')');
             }
             String sql = builder.toString();
@@ -1157,7 +1282,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         builder.append(" WHERE ");
         builder.append(conditions.stream().map(item -> SQLiteGeneratorUtil.quote(item.column())
                         + (item.value() == null ? " IS NULL" : " = ?"))
-                .collect(java.util.stream.Collectors.joining(" AND ")));
+                .collect(Collectors.joining(" AND ")));
         String sql = builder.toString();
         this.printSql(sql);
         try {
@@ -1246,57 +1371,6 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
     }
 
     /**
-     * 查询对象列表。
-     *
-     * @param type 对象类型
-     * @return 对象列表
-     */
-    public List<Object> selectObjects(String type) {
-        List<Object> objects = new ArrayList<>();
-        String sql = """
-                SELECT name, type, sql
-                FROM sqlite_master
-                WHERE type = ? AND name NOT LIKE 'sqlite_%'
-                ORDER BY name
-                """;
-        try {
-            Connection connection = this.getConnManager().connection();
-            try (java.sql.PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, type);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    String definition = resultSet.getString("sql");
-                    if ("view".equals(type)) {
-                        SQLiteView view = new SQLiteView();
-                        view.setName(resultSet.getString("name"));
-                        view.setDefinition(SQLiteViewCreateSqlGenerator.viewDefinition(definition));
-                        objects.add(view);
-                    } else {
-                        SQLiteTable table = new SQLiteTable();
-                        table.setName(resultSet.getString("name"));
-                        table.setDefinition(definition);
-                        table.setType(resultSet.getString("type"));
-                        String options = definition == null ? "" : definition;
-                        int bodyEnd = options.lastIndexOf(')');
-                        if (bodyEnd >= 0) {
-                            options = options.substring(bodyEnd + 1);
-                        }
-                        String upperOptions = options.toUpperCase(Locale.ROOT);
-                        table.setWithoutRowid(upperOptions.contains("WITHOUT ROWID"));
-                        table.setStrict(java.util.regex.Pattern.compile("\\bSTRICT\\b")
-                                .matcher(upperOptions).find());
-                        objects.add(table);
-                    }
-                }
-            }
-            }
-            return objects;
-        } catch (Exception ex) {
-            throw new ShellException(ex);
-        }
-    }
-
-    /**
      * 查询字段。
      *
      * @param objectName 表或视图名称
@@ -1310,18 +1384,18 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
             try (Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery(sql)) {
                 while (resultSet.next()) {
-                SQLiteColumn column = new SQLiteColumn();
-                column.setName(resultSet.getString("name"));
-                column.setTableName(objectName);
-                column.setType(resultSet.getString("type"));
-                column.setSize(cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil.parseSize(column.getType()));
-                column.setNotNull(resultSet.getInt("notnull") == 1);
-                column.setDefaultValue(resultSet.getString("dflt_value"));
-                column.setPrimaryKey(resultSet.getInt("pk") > 0);
-                int hidden = resultSet.getInt("hidden");
-                column.setHidden(hidden > 0);
-                columns.add(column);
-            }
+                    SQLiteColumn column = new SQLiteColumn();
+                    column.setName(resultSet.getString("name"));
+                    column.setTableName(objectName);
+                    column.setType(resultSet.getString("type"));
+                    column.setSize(cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil.parseSize(column.getType()));
+                    column.setNotNull(resultSet.getInt("notnull") == 1);
+                    column.setDefaultValue(resultSet.getString("dflt_value"));
+                    column.setPrimaryKey(resultSet.getInt("pk") > 0);
+                    int hidden = resultSet.getInt("hidden");
+                    column.setHidden(hidden > 0);
+                    columns.add(column);
+                }
             }
             SQLiteColumnDefinitionParser.enrich(columns, this.showCreate(objectName));
             return columns;
@@ -1669,8 +1743,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
     /**
      * 克隆表。
      *
-     * @param sourceName    源表名
-     * @param targetName    目标表名
+     * @param sourceName     源表名
+     * @param targetName     目标表名
      * @param includeRecords 是否复制数据
      */
     public void cloneTable(String sourceName, String targetName, boolean includeRecords) {
@@ -1880,25 +1954,11 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         return results;
     }
 
-    /**
-     * 执行SQL并保留原始结果集。
-     *
-     * @param sql SQL
-     * @return 原始结果集
-     * @throws Exception 执行异常
-     */
     @Override
     public DBRawQueryResults executeSqlRaw(String name, String sql) throws Exception {
         return this.executeSqlRaw(sql);
     }
 
-    /**
-     * 执行SQL并保留原始结果集。
-     *
-     * @param sql SQL
-     * @return 原始结果集
-     * @throws Exception 执行异常
-     */
     @Override
     public DBRawQueryResults executeSqlRaw(String sql) throws Exception {
         DBRawQueryResults results = new DBRawQueryResults();
@@ -2017,11 +2077,13 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
 
     @Override
     public void printSql(String sql) {
-        cn.oyzh.fx.db.util.DBUtil.printSql(sql);
+        DBUtil.printSql(sql);
+        String compressedSql = DBSqlParser.compressSql(sql, this.dialect());
+        ShellEventUtil.printSql(compressedSql, this.shellConnect);
     }
 
-    private int countObjects(String type) {
-        return (int) this.selectObjects(type).size();
+    private String sqliteMaster(String dbName) {
+        return ShellSqliteHelper.quote(StringUtil.blankToDefault(dbName, "main")) + ".sqlite_master";
     }
 
     private String queryString(String sql) {

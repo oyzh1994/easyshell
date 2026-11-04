@@ -122,9 +122,9 @@ public class SQLiteView extends DBObject implements DBView, ObjectCopier<SQLiteV
             this.setName(view.getName());
             this.setDbName(view.getDbName());
             this.setComment(view.getComment());
+            this.setUpdatable(view.isUpdatable());
             this.setDefinition(view.getDefinition());
             this.setCreateDefinition(view.getCreateDefinition());
-            this.setUpdatable(view.isUpdatable());
             this.setColumns(view.getColumns() == null
                     ? null : new SQLiteColumns(new ArrayList<>(view.getColumns())));
         }

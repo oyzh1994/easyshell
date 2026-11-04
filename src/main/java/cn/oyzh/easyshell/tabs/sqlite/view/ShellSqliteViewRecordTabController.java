@@ -138,13 +138,18 @@ public class ShellSqliteViewRecordTabController extends RichTabController {
             }
         });
         this.reload();
-        if (this.changeListener == null) {
-            this.changeListener = new DBStatusListener(this.getItem().dbName() + ":" + this.getItem().viewName()) {
-                @Override
-                public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                    apply.enable();
-                }
-            };
+        if (item.isUpdatable()) {
+            if (this.changeListener == null) {
+                this.changeListener = new DBStatusListener(this.getItem().dbName() + ":" + this.getItem().viewName()) {
+                    @Override
+                    public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+                        apply.enable();
+                    }
+                };
+            }
+            // 部分按钮显示处理
+            this.apply.display();
+            NodeGroupUtil.display(this.getTab(), "action2");
         }
     }
 
@@ -567,21 +572,5 @@ public class ShellSqliteViewRecordTabController extends RichTabController {
      */
     public void setFilters(List<SQLiteRecordFilter> filters) {
         this.filters = filters;
-    }
-
-    /**
-     * 导入数据
-     */
-    @FXML
-    private void importData() {
-        ShellSqliteViewFactory.importData(this.getItem().client());
-    }
-
-    /**
-     * 导出数据
-     */
-    @FXML
-    private void exportData() {
-        ShellSqliteViewFactory.exportData(this.getItem().client(), this.getItem().viewName());
     }
 }

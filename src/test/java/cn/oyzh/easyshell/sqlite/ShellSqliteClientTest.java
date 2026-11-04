@@ -91,6 +91,10 @@ public class ShellSqliteClientTest {
 
         assertEquals(List.of("order"), client.selectTables().stream().map(SQLiteTable::getName).toList());
         assertEquals(List.of("view order"), client.selectViews().stream().map(SQLiteView::getName).toList());
+        assertEquals(1, client.tableSize("main"));
+        assertEquals(1, client.viewSize("main"));
+        assertNull(client.selectTable("view order"));
+        assertNull(client.selectView("order"));
         List<SQLiteColumn> columns = client.selectColumns("order");
         assertEquals(2, columns.size());
         assertEquals("select", columns.get(0).getName());
