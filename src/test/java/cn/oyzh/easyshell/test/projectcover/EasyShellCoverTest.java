@@ -19,11 +19,18 @@ public class EasyShellCoverTest {
         i18nChecker1.setProjectPath(i18nChecker1.getClass().getResource("").toExternalForm());
         i18nChecker1.i18Check();
 
+
         I18nCoverChecker i18nChecker2 = new I18nCoverChecker();
         i18nChecker2.setMainI18n("zh_CN");
-        i18nChecker2.setPrefx("i18n_");
-        i18nChecker2.setProjectPath(this.getClass().getResource("").toExternalForm());
+        i18nChecker2.setPrefx("base_compound_");
+        i18nChecker2.setProjectPath(i18nChecker1.getClass().getResource("").toExternalForm());
         i18nChecker2.i18Check();
+
+        I18nCoverChecker i18nChecker3 = new I18nCoverChecker();
+        i18nChecker3.setMainI18n("zh_CN");
+        i18nChecker3.setPrefx("i18n_");
+        i18nChecker3.setProjectPath(this.getClass().getResource("").toExternalForm());
+        i18nChecker3.i18Check();
 
         EasyShellCoverStarter.main(null);
     }
