@@ -955,7 +955,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public boolean isSupportFeature(DBFeature feature) {
         try {
             if (feature == DBFeature.EVENT) {
-                return true;
+                return false;
             }
             // 检查约束
             if (feature == DBFeature.CHECK) {

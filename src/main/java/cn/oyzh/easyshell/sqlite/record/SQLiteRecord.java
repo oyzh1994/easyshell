@@ -153,15 +153,6 @@ public class SQLiteRecord extends DBObject implements DBRecord, ObjectCopier<SQL
         }
     }
 
-    public void acceptChanges() {
-        for (SQLiteRecordProperty property : this.properties.values()) {
-            property.setChanged(false);
-            property.setOriginal(property.get());
-        }
-        this.clearStatus();
-        this.clearChangedFlag();
-    }
-
     @Override
     public boolean isChanged() {
         if (super.isChanged()) {
@@ -179,7 +170,7 @@ public class SQLiteRecord extends DBObject implements DBRecord, ObjectCopier<SQL
     public void clearStatus() {
         for (SQLiteRecordProperty property : this.properties.values()) {
             property.setChanged(false);
-            property.setOriginal(property.get());
+            property.updateOriginal();
         }
         super.clearStatus();
     }

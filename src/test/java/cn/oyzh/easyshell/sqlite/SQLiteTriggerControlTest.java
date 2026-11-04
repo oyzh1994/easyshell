@@ -3,9 +3,17 @@ package cn.oyzh.easyshell.sqlite;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
 import cn.oyzh.easyshell.sqlite.generator.trigger.SQLiteTriggerCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlite.trigger.SQLiteTrigger;
+import cn.oyzh.easyshell.sqlite.trigger.SQLiteTriggerControl;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import javafx.application.Platform;
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -64,6 +72,45 @@ public class SQLiteTriggerControlTest {
         String sql = SQLiteTriggerCreateSqlGenerator.generateSqlSingle(trigger, "item");
 
         assertTrue(sql.contains("UPDATE item SET name = NEW.name;"));
+    }
+
+    @Test
+    public void testControlInitializationDoesNotMarkExistingTriggerChanged() throws Exception {
+        CountDownLatch startup = new CountDownLatch(1);
+        try {
+            Platform.startup(startup::countDown);
+        } catch (IllegalStateException ex) {
+            startup.countDown();
+        }
+        assertTrue(startup.await(20, TimeUnit.SECONDS));
+        CountDownLatch loaded = new CountDownLatch(1);
+        AtomicReference<Throwable> error = new AtomicReference<>();
+        Platform.runLater(() -> {
+            try {
+                SQLiteTrigger trigger = new SQLiteTrigger();
+                trigger.setName("trg_item");
+                trigger.setTableName("item");
+                trigger.setPolicy("AFTER INSERT");
+                trigger.setDefinition("UPDATE audit SET value = NEW.name;");
+                SQLiteTriggerControl control = SQLiteTriggerControl.of(trigger);
+
+                ClearableTextField nameControl = control.getNameControl();
+                control.getPolicyControl();
+                control.getDefinitionControl();
+
+                assertFalse(control.isChanged());
+                nameControl.setText("trg_item_updated");
+                assertTrue(control.isChanged());
+            } catch (Throwable ex) {
+                error.set(ex);
+            } finally {
+                loaded.countDown();
+            }
+        });
+        assertTrue(loaded.await(20, TimeUnit.SECONDS));
+        if (error.get() != null) {
+            throw new AssertionError("Trigger control initialization failed", error.get());
+        }
     }
 
     @Test

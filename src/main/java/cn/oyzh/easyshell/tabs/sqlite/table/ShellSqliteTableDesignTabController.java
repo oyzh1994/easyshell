@@ -21,6 +21,7 @@ import cn.oyzh.easyshell.sqlite.trigger.SQLiteTrigger;
 import cn.oyzh.easyshell.sqlite.trigger.SQLiteTriggerControl;
 import cn.oyzh.easyshell.trees.sqlite.root.ShellSqliteRootTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.db.ui.DBStatusTableView;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.tabs.ParentTabController;
@@ -42,7 +43,6 @@ import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * SQLite 表设计器控制器。
@@ -51,52 +51,116 @@ import java.util.Objects;
  */
 public class ShellSqliteTableDesignTabController extends ParentTabController {
 
+    /**
+     * 切换面板
+     */
     @FXML
     private FXTabPane tabPane;
 
+    /**
+     * 表字段组件
+     */
     @FXML
     private DBStatusTableView<SQLiteColumnControl> columnTable;
 
+    /**
+     * 表索引组件
+     */
     @FXML
     private DBStatusTableView<SQLiteIndexControl> indexTable;
 
+    /**
+     * 表触发器组件
+     */
     @FXML
     private DBStatusTableView<SQLiteTriggerControl> triggerTable;
 
+    /**
+     * 表外键组件
+     */
     @FXML
     private DBStatusTableView<SQLiteForeignKeyControl> foreignKeyTable;
 
+    /**
+     * 表检查器组件
+     */
     @FXML
     private DBStatusTableView<SQLiteCheckControl> checkTable;
 
+    /**
+     * 无行ID
+     */
     @FXML
     private FXCheckBox withoutRowid;
 
+    /**
+     * 严格模式
+     */
     @FXML
     private FXCheckBox strict;
 
+    /**
+     * 表约束
+     */
     @FXML
     private FXTextArea constraints;
 
+    /**
+     * sql预览
+     */
     @FXML
     private ShellDataEditor preview;
 
+    /**
+     * 额外信息
+     */
     @FXML
     private ShellSqliteTableColumnExtraController tableColumnExtraController;
 
+    /**
+     * 客户端
+     */
     private ShellSqliteClient client;
 
+    /**
+     * db库节点
+     */
     private ShellSqliteRootTreeItem dbItem;
 
+    /**
+     * db表
+     */
     private SQLiteTable table;
 
+    /**
+     * 表名称
+     */
+    private String tableName;
+
+    /**
+     * 原表名称
+     */
     private String originalName;
 
+    /**
+     * 未保存标志位
+     */
     private boolean unsaved;
 
+    /**
+     * 新数据标志位
+     */
+    private boolean newData;
+
+    /**
+     * 初始化中标志位
+     */
     private boolean initiating;
 
-    private DBStatusListener statusListener;
+    /**
+     * 数据监听器
+     */
+    private DBStatusListener listener;
 
     /**
      * 初始化
@@ -108,66 +172,96 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         this.dbItem = dbItem;
         this.client = dbItem.client();
         this.table = table == null ? new SQLiteTable() : table;
-        this.originalName = table == null ? null : table.getName();
+        // 更新新数据标志位（刷新新建表时，表对象不为空但表名仍为空）
+        this.newData = table == null || StringUtil.isBlank(table.getName());
+        this.originalName = this.newData ? null : table.getName();
+        this.tableName = this.originalName;
         this.withoutRowid.setSelected(this.table.isWithoutRowid());
         this.strict.setSelected(this.table.isStrict());
         this.constraints.setText(StringUtil.blankToDefault(this.table.getConstraints(), ""));
-        this.columnTable.setCtrlSAction(this::save);
-        this.indexTable.setCtrlSAction(this::save);
-        this.triggerTable.setCtrlSAction(this::save);
-        this.foreignKeyTable.setCtrlSAction(this::save);
-        this.checkTable.setCtrlSAction(this::save);
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
-        StageManager.showMask(this.getWindow(), this::loadData);
+        StageManager.showMask(this.getWindow(), this::doInit);
     }
 
-    private void loadData() {
+    /**
+     * 执行初始化
+     */
+    private void doInit() {
+        this.initDBListener();
+        FXUtil.runWait(this::initInfo);
+    }
+
+    /**
+     * 初始化信息
+     */
+    protected void initInfo() {
         this.initiating = true;
         try {
-            this.initStatusListener();
-            this.columnTable.reset();
-            this.indexTable.reset();
-            this.triggerTable.reset();
-            this.foreignKeyTable.reset();
-            this.checkTable.reset();
-            if (StringUtil.isBlank(this.originalName)) {
-                this.columnTable.setItem(new ArrayList<>());
-                this.indexTable.setItem(new ArrayList<>());
-                this.triggerTable.setItem(new ArrayList<>());
-                this.foreignKeyTable.setItem(new ArrayList<>());
-                this.checkTable.setItem(new ArrayList<>());
+            // 新数据
+            if (this.newData) {
                 this.unsaved = true;
-            } else {
-                SQLiteTable loaded = this.client.selectTable(this.originalName);
-                if (loaded == null) {
-                    throw new IllegalArgumentException("SQLite table does not exist: " + this.originalName);
-                }
-                this.table = loaded;
-                this.withoutRowid.setSelected(loaded.isWithoutRowid());
-                this.strict.setSelected(loaded.isStrict());
-                String createSql = this.client.showCreate(loaded.getName());
-                this.constraints.setText(StringUtil.blankToDefault(
-                        SQLiteColumnDefinitionParser.baseTableConstraints(createSql), ""));
-                this.columnTable.setItem(SQLiteColumnControl.of(loaded.getColumns()));
-                this.indexTable.setItem(this.loadIndexes());
-                this.triggerTable.setItem(this.loadTriggers());
-                this.foreignKeyTable.setItem(SQLiteForeignKeyControl.of(
-                        SQLiteColumnDefinitionParser.foreignKeys(createSql)));
-                this.initForeignKeyTable();
-                this.checkTable.setItem(SQLiteCheckControl.of(
-                        SQLiteColumnDefinitionParser.checks(createSql)));
-                this.columnTable.selectFirst();
-                this.unsaved = false;
+                this.initNew();
+            } else {// 已有数据
+                this.table = this.client.selectTable(this.table.getName());
+                this.initNormal();
             }
-            this.initIndexTable();
-            this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.client);
-            this.updatePreview();
-            this.flushTab();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         } finally {
             FXUtil.runPulse(() -> this.initiating = false);
         }
+    }
+
+    /**
+     * 初始化新建表信息
+     */
+    protected void initNew() {
+        NodeGroupUtil.display(this.getTab(), "action2");
+        NodeGroupUtil.disappear(this.getTab(), "action3");
+        // 重载表数据
+        this.columnTable.setItem(new ArrayList<>());
+        this.indexTable.setItem(new ArrayList<>());
+        this.triggerTable.setItem(new ArrayList<>());
+        this.foreignKeyTable.setItem(new ArrayList<>());
+        this.checkTable.setItem(new ArrayList<>());
+    }
+
+    /**
+     * 初始化已有表信息
+     */
+    protected void initNormal() {
+        if (this.table == null) {
+            throw new IllegalArgumentException("SQLite table does not exist: " + this.originalName);
+        }
+        NodeGroupUtil.disappear(this.getTab(), "action2");
+        NodeGroupUtil.display(this.getTab(), "action3");
+
+        // 基本信息
+        this.withoutRowid.setSelected(this.table.isWithoutRowid());
+        this.strict.setSelected(this.table.isStrict());
+        String createSql = this.client.showCreate(this.table.getName());
+        this.constraints.setText(StringUtil.blankToDefault(
+                SQLiteColumnDefinitionParser.baseTableConstraints(createSql), ""));
+
+        // 检查器
+        this.checkTable.setItem(SQLiteCheckControl.of(
+                SQLiteColumnDefinitionParser.checks(createSql)));
+        // 索引
+        this.indexTable.setItem(this.loadIndexes());
+        // 字段
+        this.columnTable.setItem(SQLiteColumnControl.of(this.table.getColumns()));
+        // 触发器
+        this.triggerTable.setItem(this.loadTriggers());
+        // 外键
+        this.foreignKeyTable.setItem(SQLiteForeignKeyControl.of(
+                SQLiteColumnDefinitionParser.foreignKeys(createSql)));
+
+        this.initIndexTable();
+        this.initForeignKeyTable();
+        this.columnTable.selectFirst();
+        this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.client);
+        // 重置保存标志位
+        this.unsaved = false;
+        this.flushTab();
     }
 
     private List<SQLiteIndexControl> loadIndexes() {
@@ -189,43 +283,97 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
                 .toList();
     }
 
-    private void initStatusListener() {
-        if (this.statusListener == null) {
-            this.statusListener = new DBStatusListener() {
+    /**
+     * 初始化数据监听器
+     */
+    private void initDBListener() {
+        if (this.listener == null) {
+            this.listener = new DBStatusListener() {
                 @Override
                 public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                    markUnsaved();
+                    initChangedFlag();
                 }
             };
-            this.columnTable.setStatusListener(this.statusListener);
-            this.indexTable.setStatusListener(this.statusListener);
-            this.triggerTable.setStatusListener(this.statusListener);
-            this.foreignKeyTable.setStatusListener(this.statusListener);
-            this.checkTable.setStatusListener(this.statusListener);
+
+            // 监听列表变化
+            this.checkTable.setStatusListener(this.listener);
+            this.indexTable.setStatusListener(this.listener);
+            this.columnTable.setStatusListener(this.listener);
+            this.triggerTable.setStatusListener(this.listener);
+            this.foreignKeyTable.setStatusListener(this.listener);
+
+            // 监听组件
+            DBStatusListenerManager.bindListener(this.constraints, this.listener);
+            DBStatusListenerManager.bindListener(this.withoutRowid, this.listener);
+            DBStatusListenerManager.bindListener(this.strict, this.listener);
         }
     }
 
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        this.constraints.textProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
-        this.withoutRowid.selectedProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
-        this.strict.selectedProperty().addListener((observable, oldValue, newValue) -> this.markUnsaved());
+        // 表格下标监听
+        this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> this.onTabChanged(newValue));
+
         this.columnTable.selectedIndexChanged((observable, oldValue, newValue) ->
                 this.tableColumnExtraController.init(this.columnTable.getSelectedItem(), this.client));
+
+        // 初始化索引列表
+        this.indexTable.itemList().addListener((ListChangeListener<SQLiteIndexControl>) c -> {
+            while (c.next() && (c.wasAdded() || c.wasReplaced())) {
+                this.initIndexTable();
+            }
+        });
+        this.initIndexTable();
+        // 初始化外键列表
+        this.foreignKeyTable.itemList().addListener((ListChangeListener<SQLiteForeignKeyControl>) c -> {
+            while (c.next() && (c.wasAdded() || c.wasReplaced())) {
+                this.initForeignKeyTable();
+            }
+        });
+        this.initForeignKeyTable();
+
+        this.initTable();
+    }
+
+    /**
+     * 初始化列表控件
+     */
+    /**
+     * 初始化列表控件
+     */
+    private void initTable() {
+        // 表单保存事件
+        this.indexTable.setCtrlSAction(this::save);
+        this.checkTable.setCtrlSAction(this::save);
+        this.columnTable.setCtrlSAction(this::save);
+        this.triggerTable.setCtrlSAction(this::save);
+        this.foreignKeyTable.setCtrlSAction(this::save);
+
+        // 监听事件
+        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.constraints, this::save);
+        NodeUtil.nodeOnCtrlS(this.preview, this::save);
+
+        // 更新字段列表
         this.columnTable.itemList().addListener((ListChangeListener<SQLiteColumnControl>) change -> {
             this.initIndexTable();
             this.initForeignKeyTable();
         });
-        this.tabPane.selectedItemChanged((observable, oldValue, newValue) -> this.onTabChanged(newValue));
     }
 
+    /**
+     * 初始化索引表格
+     */
     private void initIndexTable() {
         for (SQLiteIndexControl index : this.indexTable.getItems()) {
             index.setColumnList(this.columnTable.getItems());
         }
     }
 
+    /**
+     * 初始化外键表格
+     */
     private void initForeignKeyTable() {
         for (SQLiteForeignKeyControl foreignKey : this.foreignKeyTable.getItems()) {
             foreignKey.setColumnList(this.columnTable.getItems());
@@ -233,19 +381,33 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 切换面板处理
+     *
+     * @param tab 面板
+     */
     private void onTabChanged(Tab tab) {
         String tabId = tab == null ? null : tab.getId();
         if (StringUtil.equalsAny(tabId, "columnTab", "indexTab", "triggerTab", "foreignKeyTab", "checkTab")) {
             NodeGroupUtil.display(this.getTab(), "action1");
+            if (this.newData) {
+                NodeGroupUtil.display(this.getTab(), "action2");
+            }
         } else {
             NodeGroupUtil.disappear(this.getTab(), "action1");
+            if (this.newData) {
+                NodeGroupUtil.disappear(this.getTab(), "action2");
+            }
         }
         if (StringUtil.equals(tabId, "previewTab")) {
-            this.updatePreview();
+            this.initPreview();
         }
     }
 
-    private void markUnsaved() {
+    /**
+     * 初始化变更标志
+     */
+    private void initChangedFlag() {
         if (!this.initiating) {
             this.unsaved = true;
             this.flushTab();
@@ -254,32 +416,30 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
 
     @FXML
     private void doAdd() {
-        String tabId = this.tabPane.getSelectedItem() == null ? null : this.tabPane.getSelectedItem().getId();
-        if (StringUtil.equals(tabId, "columnTab")) {
+        if (this.tabPane.isSelectedTab("columnTab")) {
             this.addColumn();
-        } else if (StringUtil.equals(tabId, "indexTab")) {
+        } else if (this.tabPane.isSelectedTab("indexTab")) {
             this.addIndex();
-        } else if (StringUtil.equals(tabId, "triggerTab")) {
-            this.addTrigger();
-        } else if (StringUtil.equals(tabId, "foreignKeyTab")) {
+        } else if (this.tabPane.isSelectedTab("foreignKeyTab")) {
             this.addForeignKey();
-        } else if (StringUtil.equals(tabId, "checkTab")) {
+        } else if (this.tabPane.isSelectedTab("triggerTab")) {
+            this.addTrigger();
+        } else if (this.tabPane.isSelectedTab("checkTab")) {
             this.addCheck();
         }
     }
 
     @FXML
     private void doDelete() {
-        String tabId = this.tabPane.getSelectedItem() == null ? null : this.tabPane.getSelectedItem().getId();
-        if (StringUtil.equals(tabId, "columnTab")) {
+        if (this.tabPane.isSelectedTab("columnTab")) {
             this.deleteColumn();
-        } else if (StringUtil.equals(tabId, "indexTab")) {
+        } else if (this.tabPane.isSelectedTab("indexTab")) {
             this.deleteIndex();
-        } else if (StringUtil.equals(tabId, "triggerTab")) {
-            this.deleteTrigger();
-        } else if (StringUtil.equals(tabId, "foreignKeyTab")) {
+        } else if (this.tabPane.isSelectedTab("foreignKeyTab")) {
             this.deleteForeignKey();
-        } else if (StringUtil.equals(tabId, "checkTab")) {
+        } else if (this.tabPane.isSelectedTab("triggerTab")) {
+            this.deleteTrigger();
+        } else if (this.tabPane.isSelectedTab("checkTab")) {
             this.deleteCheck();
         }
     }
@@ -288,22 +448,27 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         SQLiteColumnControl column = new SQLiteColumnControl();
         column.setCreated(true);
         column.setType("TEXT");
+        column.setNullable(true);
         this.columnTable.addItem(column);
         this.columnTable.selectLast();
-        this.markUnsaved();
     }
 
     private void deleteColumn() {
-        SQLiteColumn column = this.columnTable.getSelectedItem();
-        if (column == null) {
-            return;
+        try {
+            SQLiteColumn column = this.columnTable.getSelectedItem();
+            if (column == null) {
+                return;
+            }
+            // 确认操作
+            if (!column.isCreated() && !MessageBox.confirm(I18nHelper.deleteField() + " " + column.getName(), this.getWindow())) {
+                return;
+            }
+            // 从table移除数据
+            this.columnTable.removeItem((SQLiteColumnControl) column);
+            column.setDeleted(true);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
         }
-        if (!column.isCreated() && !MessageBox.confirm(I18nHelper.deleteField() + " " + column.getName(), this.getWindow())) {
-            return;
-        }
-        this.columnTable.removeItem((SQLiteColumnControl) column);
-        column.setDeleted(true);
-        this.markUnsaved();
     }
 
     private void addIndex() {
@@ -313,7 +478,6 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         this.indexTable.addItem(index);
         this.initIndexTable();
         this.indexTable.selectLast();
-        this.markUnsaved();
     }
 
     private void addTrigger() {
@@ -322,7 +486,6 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         trigger.setCreated(true);
         this.triggerTable.addItem(trigger);
         this.triggerTable.selectLast();
-        this.markUnsaved();
     }
 
     private void addForeignKey() {
@@ -332,7 +495,6 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         this.foreignKeyTable.addItem(foreignKey);
         this.initForeignKeyTable();
         this.foreignKeyTable.selectLast();
-        this.markUnsaved();
     }
 
     private void addCheck() {
@@ -341,68 +503,93 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         check.setCreated(true);
         this.checkTable.addItem(check);
         this.checkTable.selectLast();
-        this.markUnsaved();
     }
 
     private void deleteForeignKey() {
-        SQLiteForeignKeyControl foreignKey = this.foreignKeyTable.getSelectedItem();
-        if (foreignKey == null) {
-            return;
+        try {
+            SQLiteForeignKeyControl foreignKey = this.foreignKeyTable.getSelectedItem();
+            if (foreignKey == null) {
+                return;
+            }
+            // 确认操作
+            if (!foreignKey.isCreated() && !MessageBox.confirm(
+                    I18nHelper.deleteForeignKey() + " " + foreignKey.getName(), this.getWindow())) {
+                return;
+            }
+            // 从table移除数据
+            this.foreignKeyTable.removeItem(foreignKey);
+            foreignKey.setDeleted(true);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
         }
-        if (!foreignKey.isCreated() && !MessageBox.confirm(
-                I18nHelper.deleteForeignKey() + " " + foreignKey.getName(), this.getWindow())) {
-            return;
-        }
-        this.foreignKeyTable.removeItem(foreignKey);
-        foreignKey.setDeleted(true);
-        this.markUnsaved();
     }
 
     private void deleteCheck() {
-        SQLiteCheckControl check = this.checkTable.getSelectedItem();
-        if (check == null) {
-            return;
+        try {
+            SQLiteCheckControl check = this.checkTable.getSelectedItem();
+            if (check == null) {
+                return;
+            }
+            // 确认操作
+            if (!check.isCreated() && !MessageBox.confirm(
+                    I18nHelper.deleteCheck() + " " + check.getName(), this.getWindow())) {
+                return;
+            }
+            // 从table移除数据
+            this.checkTable.removeItem(check);
+            check.setDeleted(true);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
         }
-        if (!check.isCreated() && !MessageBox.confirm(
-                I18nHelper.deleteCheck() + " " + check.getName(), this.getWindow())) {
-            return;
-        }
-        this.checkTable.removeItem(check);
-        check.setDeleted(true);
-        this.markUnsaved();
     }
 
     private void deleteIndex() {
-        SQLiteIndex index = this.indexTable.getSelectedItem();
-        if (index == null) {
-            return;
+        try {
+            SQLiteIndex index = this.indexTable.getSelectedItem();
+            if (index == null) {
+                return;
+            }
+            // 确认操作
+            if (!index.isCreated() && !MessageBox.confirm(I18nHelper.deleteIndex() + " " + index.getName(), this.getWindow())) {
+                return;
+            }
+            // 从table移除数据
+            this.indexTable.removeItem((SQLiteIndexControl) index);
+            index.setDeleted(true);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
         }
-        if (!index.isCreated() && !MessageBox.confirm(I18nHelper.deleteIndex() + " " + index.getName(), this.getWindow())) {
-            return;
-        }
-        this.indexTable.removeItem((SQLiteIndexControl) index);
-        index.setDeleted(true);
-        this.markUnsaved();
     }
 
     private void deleteTrigger() {
-        SQLiteTrigger trigger = this.triggerTable.getSelectedItem();
-        if (trigger == null) {
-            return;
+        try {
+            SQLiteTrigger trigger = this.triggerTable.getSelectedItem();
+            if (trigger == null) {
+                return;
+            }
+            // 确认操作
+            if (!trigger.isCreated() && !MessageBox.confirm(I18nHelper.deleteTrigger() + " " + trigger.getName(), this.getWindow())) {
+                return;
+            }
+            // 从table移除数据
+            this.triggerTable.removeItem((SQLiteTriggerControl) trigger);
+            trigger.setDeleted(true);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
         }
-        if (!trigger.isCreated() && !MessageBox.confirm(I18nHelper.deleteTrigger() + " " + trigger.getName(), this.getWindow())) {
-            return;
-        }
-        this.triggerTable.removeItem((SQLiteTriggerControl) trigger);
-        trigger.setDeleted(true);
-        this.markUnsaved();
     }
 
+    /**
+     * 保存db表
+     */
     @FXML
     private void save() {
         StageManager.showMask(this.getWindow(), this::doSave);
     }
 
+    /**
+     * 执行保存
+     */
     private void doSave() {
         String previousName = this.originalName;
         try {
@@ -441,21 +628,23 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
                     return;
                 }
             }
-            String targetName = this.originalName;
-            if (StringUtil.isBlank(targetName)) {
-                targetName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), this.getWindow());
-                if (targetName == null) {
+            if (this.newData) {
+                this.tableName = MessageBox.prompt(I18nHelper.pleaseInputTableName(), this.tableName, this.getWindow());
+                if (this.tableName == null) {
                     return;
                 }
-                targetName = targetName.trim();
-                if (StringUtil.isBlank(targetName)) {
+                this.tableName = this.tableName.trim();
+                if (StringUtil.isBlank(this.tableName)) {
                     MessageBox.warn(I18nHelper.pleaseInputTableName(), this.getWindow());
                     return;
                 }
+            } else {
+                this.tableName = this.table.getName();
             }
+            String targetName = this.tableName;
             SQLiteTable target = this.buildTable(targetName);
             SQLiteSchemaManager manager = new SQLiteSchemaManager(this.client);
-            if (StringUtil.isBlank(previousName)) {
+            if (this.newData) {
                 manager.createTable(target);
             } else {
                 this.dropChangedIndexes();
@@ -465,15 +654,37 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
             this.createChangedIndexes(previousName, targetName);
             this.createChangedTriggers(previousName, targetName);
             this.originalName = targetName;
-            this.table = target;
+            this.table = this.client.selectTable(targetName);
+            if (this.newData) {
+                this.dbItem.addTable(this.table);
+            }
             this.unsaved = false;
+            this.newData = false;
             ShellSqliteEventUtil.tableChanged(this.client, previousName, targetName);
-            FXUtil.runWait(this::loadData);
+            // 初始化信息
+            FXUtil.runWait(this::initInfo);
+            // 重置表格
+            this.resetTable();
+            // 初始化预览
+            this.initPreview();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         } finally {
             this.flushTab();
         }
+    }
+
+    /**
+     * 重置表单组件
+     *
+     * @throws Exception 异常
+     */
+    protected void resetTable() throws Exception {
+        this.indexTable.reset();
+        this.checkTable.reset();
+        this.columnTable.reset();
+        this.triggerTable.reset();
+        this.foreignKeyTable.reset();
     }
 
     private SQLiteTable buildTable(String name) {
@@ -573,31 +784,39 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
         }
     }
 
+    /**
+     * 刷新
+     */
     @FXML
     private void refresh() {
         if (!MessageBox.confirm(I18nHelper.refreshData() + "?", this.getWindow())) {
             return;
         }
-        this.loadData();
+        try {
+            this.initTable();
+            this.resetTable();
+            this.init(this.table, this.dbItem);
+            this.flushTab();
+            this.initPreview();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
     }
 
     @FXML
     private void doMoveUp() {
         try {
-            String tabId = this.tabPane.getSelectedItem() == null
-                    ? null : this.tabPane.getSelectedItem().getId();
-            if (StringUtil.equals(tabId, "columnTab")) {
+            if (this.tabPane.isSelectedTab("columnTab")) {
                 TableViewUtil.moveUp(this.columnTable);
-            } else if (StringUtil.equals(tabId, "indexTab")) {
+            } else if (this.tabPane.isSelectedTab("indexTab")) {
                 TableViewUtil.moveUp(this.indexTable);
-            } else if (StringUtil.equals(tabId, "triggerTab")) {
-                TableViewUtil.moveUp(this.triggerTable);
-            } else if (StringUtil.equals(tabId, "foreignKeyTab")) {
+            } else if (this.tabPane.isSelectedTab("foreignKeyTab")) {
                 TableViewUtil.moveUp(this.foreignKeyTable);
-            } else if (StringUtil.equals(tabId, "checkTab")) {
+            } else if (this.tabPane.isSelectedTab("triggerTab")) {
+                TableViewUtil.moveUp(this.triggerTable);
+            } else if (this.tabPane.isSelectedTab("checkTab")) {
                 TableViewUtil.moveUp(this.checkTable);
             }
-            this.markUnsaved();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }
@@ -606,26 +825,26 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
     @FXML
     private void doMoveDown() {
         try {
-            String tabId = this.tabPane.getSelectedItem() == null
-                    ? null : this.tabPane.getSelectedItem().getId();
-            if (StringUtil.equals(tabId, "columnTab")) {
+            if (this.tabPane.isSelectedTab("columnTab")) {
                 TableViewUtil.moveDown(this.columnTable);
-            } else if (StringUtil.equals(tabId, "indexTab")) {
+            } else if (this.tabPane.isSelectedTab("indexTab")) {
                 TableViewUtil.moveDown(this.indexTable);
-            } else if (StringUtil.equals(tabId, "triggerTab")) {
-                TableViewUtil.moveDown(this.triggerTable);
-            } else if (StringUtil.equals(tabId, "foreignKeyTab")) {
+            } else if (this.tabPane.isSelectedTab("foreignKeyTab")) {
                 TableViewUtil.moveDown(this.foreignKeyTable);
-            } else if (StringUtil.equals(tabId, "checkTab")) {
+            } else if (this.tabPane.isSelectedTab("triggerTab")) {
+                TableViewUtil.moveDown(this.triggerTable);
+            } else if (this.tabPane.isSelectedTab("checkTab")) {
                 TableViewUtil.moveDown(this.checkTable);
             }
-            this.markUnsaved();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }
     }
 
-    private void updatePreview() {
+    /**
+     * 初始化预览
+     */
+    private void initPreview() {
         try {
             String name = this.designTableName();
             SQLiteTable target = this.buildTable(name);
@@ -641,9 +860,9 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
                     sql.append('\n').append(trigger.normalizedDefinition(this.originalName, name));
                 }
             }
-            this.preview.setText(sql.toString());
+            this.preview.text(sql.toString());
         } catch (Exception ex) {
-            this.preview.setText("-- " + ex.getMessage());
+            this.preview.text("-- " + ex.getMessage());
         }
     }
 
@@ -653,11 +872,11 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
      * @return 表名称
      */
     public String tableName() {
-        return this.originalName;
+        return this.table == null ? null : this.table.getName();
     }
 
     private String designTableName() {
-        return StringUtil.blankToDefault(this.originalName, "Unnamed_Table");
+        return StringUtil.blankToDefault(this.tableName(), "Unnamed_Table");
     }
 
     /**

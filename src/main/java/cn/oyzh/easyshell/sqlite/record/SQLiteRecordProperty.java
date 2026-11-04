@@ -2,12 +2,14 @@ package cn.oyzh.easyshell.sqlite.record;
 
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
+import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteNodeUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteRecordUtil;
+import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
-import cn.oyzh.fx.db.DBRecordProperty;
+import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 
@@ -24,10 +26,19 @@ public class SQLiteRecordProperty extends DBRecordProperty {
      */
     private SQLiteRecord record;
 
+    /**
+     * 构造记录属性
+     *
+     * @param record   记录
+     * @param column   字段
+     * @param value    值
+     * @param readonly 是否只读
+     */
     public SQLiteRecordProperty(SQLiteRecord record, SQLiteColumn column, Object value, boolean readonly) {
         super(value);
-        this.record = record;
         this.column = column;
+        this.record = record;
+        // this.columns = columns;
         if (!readonly) {
             this.original = value;
         }
@@ -71,37 +82,47 @@ public class SQLiteRecordProperty extends DBRecordProperty {
     }
 
     @Override
+    public void discard() {
+        if (this.isChanged() && this.node != null) {
+            ShellSqliteNodeUtil.setNodeVal(this.node, super.get());
+        }
+        super.setChanged(false);
+    }
+
+    @Override
     public void setChanged(boolean changed) {
-        DBStatusListener listener = DBStatusListenerManager.getListener(
-                this.column.getDbName() + ":" + this.column.getTableName());
+        DBStatusListener listener = DBStatusListenerManager.getListener(this.column.getDbName() + ":" + this.column.getTableName());
         if (listener != null) {
             listener.changed(null, null, null);
+        }
+        // 重新格式化值
+        if (!changed && this.node instanceof BinaryTextFiled filed) {
+            filed.setText(BinaryTextFiled.format(filed.getValue(), filed.getScale()));
         }
         this.setToNullFlag = false;
         super.setChanged(changed);
     }
 
-    @Override
-    public void discard() {
-        if (this.isChanged() && this.node != null) {
-            ShellSqliteNodeUtil.setNodeVal(this.node, super.get());
-        }
-        super.discard();
-    }
-
+    /**
+     * 更新原始值
+     */
     public void updateOriginal() {
-        if (this.node != null) {
-            super.set(ShellSqliteNodeUtil.getNodeVal(this.node));
+        try {
+            if (this.node != null) {
+                super.set(ShellSqliteNodeUtil.getNodeVal(this.node));
+                this.original = super.get();
+            }
+        } catch (Exception ex) {
+            throw new ShellException(ex);
         }
-        this.original = super.get();
     }
 
     /**
      * 复制为insert语句
      */
     public void vCopyAsInsertSql() {
-        String sql = ShellSqliteDataUtil.toInsertSql(
-                this.record.getColumns(), this.record, true);
+        SQLiteColumns columns = this.record.getColumns();
+        String sql = ShellSqliteDataUtil.toInsertSql(columns, this.record, true);
         ClipboardUtil.copy(sql);
     }
 
@@ -109,8 +130,8 @@ public class SQLiteRecordProperty extends DBRecordProperty {
      * 复制为update语句
      */
     public void vCopyAsUpdateSql() {
-        String sql = ShellSqliteDataUtil.toUpdateSql(
-                this.record.getColumns(), this.record);
+        SQLiteColumns columns = this.record.getColumns();
+        String sql = ShellSqliteDataUtil.toUpdateSql(columns, this.record);
         ClipboardUtil.copy(sql);
     }
 
@@ -119,12 +140,13 @@ public class SQLiteRecordProperty extends DBRecordProperty {
         return (SQLiteColumn) super.getColumn();
     }
 
+    /**
+     * 设置字段
+     *
+     * @param column 字段
+     */
     public void setColumn(SQLiteColumn column) {
         this.column = column;
-    }
-
-    public SQLiteRecord getRecord() {
-        return this.record;
     }
 
     @Override

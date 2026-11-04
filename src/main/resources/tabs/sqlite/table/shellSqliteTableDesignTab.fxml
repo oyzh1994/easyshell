@@ -28,19 +28,23 @@
         <SaveSVGGlyph tipText="%shell.sqlite.save" onMousePrimaryClicked="#save">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </SaveSVGGlyph>
-        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd">
+        <AddSVGGlyph groupId="action1" onMousePrimaryClicked="#doAdd" managedBindVisible="true">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </AddSVGGlyph>
-        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete">
+        <DeleteSVGGlyph groupId="action1" onMousePrimaryClicked="#doDelete"
+                        managedBindVisible="true">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </DeleteSVGGlyph>
-        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp">
+        <MoveUpSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveUp"
+                        managedBindVisible="true" visible="false">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </MoveUpSVGGlyph>
-        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown">
+        <MoveDownSVGGlyph groupId="action2" onMousePrimaryClicked="#doMoveDown"
+                          managedBindVisible="true" visible="false">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </MoveDownSVGGlyph>
-        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh">
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
+                         managedBindVisible="true" visible="false">
             <HBox.margin><Insets left="10" top="10"/></HBox.margin>
         </RefreshSVGGlyph>
     </FXHBox>

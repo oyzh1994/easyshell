@@ -751,6 +751,21 @@ public class ShellSqliteArchitectureTest {
         assertTrue(viewRecord.contains("setCtrlSAction(this::apply)"));
     }
 
+    @Test
+    public void testSqliteTableDesignControllerMatchesMysqlAndDamengFlow() throws Exception {
+        String controller = this.sourceText(
+                "cn/oyzh/easyshell/tabs/sqlite/table/ShellSqliteTableDesignTabController.java");
+        assertTrue(controller.contains("this.newData = table == null || StringUtil.isBlank(table.getName());"));
+        assertTrue(controller.contains("protected void initInfo()"));
+        assertTrue(controller.contains("protected void initNew()"));
+        assertTrue(controller.contains("protected void initNormal()"));
+        assertTrue(controller.contains("protected void resetTable() throws Exception"));
+        assertTrue(controller.contains("FXUtil.runWait(this::initInfo);"));
+        assertTrue(controller.contains("this.init(this.table, this.dbItem);"));
+        assertTrue(controller.contains("NodeGroupUtil.display(this.getTab(), \"action2\")"));
+        assertTrue(controller.contains("NodeGroupUtil.display(this.getTab(), \"action3\")"));
+    }
+
     private String resourceText(String resource) throws Exception {
         try (InputStream input = ShellSqliteArchitectureTest.class.getResourceAsStream(resource)) {
             assertNotNull("Missing resource: " + resource, input);

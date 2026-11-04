@@ -29,7 +29,6 @@ public class SQLiteTriggerControl extends SQLiteTrigger {
         field.setText(this.getName());
         field.addTextChangeListener((observable, oldValue, newValue) -> {
             this.setName(newValue);
-            this.setChanged(true);
         });
         TableViewUtil.rowOnCtrlS(field);
         TableViewUtil.selectRowOnMouseClicked(field);
@@ -45,7 +44,6 @@ public class SQLiteTriggerControl extends SQLiteTrigger {
         ShellSqliteTriggerPolicyComboBox comboBox = new ShellSqliteTriggerPolicyComboBox();
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.setPolicy(newValue);
-            this.setChanged(true);
         });
         comboBox.selectFirstIfNull(this.getPolicy());
         TableViewUtil.rowOnCtrlS(comboBox);
@@ -60,7 +58,6 @@ public class SQLiteTriggerControl extends SQLiteTrigger {
         field.setText(this.getDefinition());
         field.addTextChangeListener((observable, oldValue, newValue) -> {
             this.setDefinition(newValue);
-            this.setChanged(true);
         });
         TableViewUtil.rowOnCtrlS(field);
         TableViewUtil.selectRowOnMouseClicked(field);
