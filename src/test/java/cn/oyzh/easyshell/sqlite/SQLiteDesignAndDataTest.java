@@ -9,6 +9,10 @@ import cn.oyzh.easyshell.data.sqlite.handler.SQLiteDataRunSqlFileHandler;
 import cn.oyzh.easyshell.data.sqlite.handler.SQLiteDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.query.sqlite.ShellSqliteQueryPromptItem;
+import cn.oyzh.easyshell.query.sqlite.ShellSqliteQueryToken;
+import cn.oyzh.easyshell.query.sqlite.ShellSqliteQueryTokenAnalyzer;
+import cn.oyzh.easyshell.query.sqlite.ShellSqliteQueryUtil;
 import cn.oyzh.easyshell.sqlite.condition.SQLiteCondition;
 import cn.oyzh.easyshell.sqlite.condition.SQLiteConditionUtil;
 import cn.oyzh.easyshell.sqlite.check.SQLiteCheck;
@@ -59,6 +63,150 @@ public class SQLiteDesignAndDataTest {
         assertEquals("<> ''", SQLiteConditionUtil.NOT_EMPTY.wrapCondition("name", null));
         assertEquals("IN ('a', 'b')", SQLiteConditionUtil.IN.wrapCondition("name", "a, b"));
         assertEquals("BETWEEN 1 AND 9", SQLiteConditionUtil.BETWEEN.wrapCondition("age", List.of(1, 9)));
+    }
+
+    @Test
+    public void testQueryIndexSkipsInvalidView() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-invalid-view-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("CREATE TABLE index_item (id INTEGER PRIMARY KEY, name TEXT)");
+            client.executeSqlSimple("CREATE TABLE T_COLLECT (id INTEGER PRIMARY KEY)");
+            client.executeSqlSimple("CREATE VIEW broken_view AS SELECT * FROM T_COLLECT");
+            client.executeSqlSimple("PRAGMA legacy_alter_table=ON");
+            client.executeSqlSimple("ALTER TABLE T_COLLECT RENAME TO renamed_collect");
+
+            ShellSqliteQueryUtil.updateIndex(client);
+
+            assertTrue(ShellSqliteQueryUtil.getTables().contains("index_item"));
+            assertTrue(ShellSqliteQueryUtil.getTables().contains("renamed_collect"));
+            assertTrue(ShellSqliteQueryUtil.getViews().contains("broken_view"));
+            assertTrue(ShellSqliteQueryUtil.getColumns().contains("name"));
+        } finally {
+            client.close();
+        }
+    }
+
+    @Test
+    public void testSqliteQueryPromptAnalysis() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-query-prompt-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("CREATE TABLE prompt_item (id INTEGER PRIMARY KEY, name TEXT)");
+            client.executeSqlSimple("CREATE VIEW prompt_view AS SELECT id, name FROM prompt_item");
+
+            ShellSqliteQueryUtil.updateIndex(client);
+
+            assertTrue(ShellSqliteQueryUtil.getDatabases().contains("main"));
+            SQLiteColumn column = ShellSqliteQueryUtil.getColumnItems().stream()
+                    .filter(item -> "name".equals(item.getName())
+                            && "prompt_item".equals(item.getTableName()))
+                    .findFirst().orElse(null);
+            assertNotNull(column);
+            assertEquals("main", column.getDbName());
+
+            ShellSqliteQueryPromptItem columnPrompt = new ShellSqliteQueryPromptItem();
+            columnPrompt.setType((byte) 3);
+            columnPrompt.setContent("name");
+            assertEquals("\"name\"", columnPrompt.wrapContent());
+
+            String sql = "SELECT * FROM prompt_";
+            ShellSqliteQueryToken token = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .currentToken(sql, sql.length());
+            assertNotNull(token);
+            assertEquals(Character.valueOf(' '), token.getToken());
+            assertEquals("prompt_", token.getContent());
+
+            List<ShellSqliteQueryPromptItem> prompts = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .initPrompts(token, 0.5f);
+            ShellSqliteQueryPromptItem tablePrompt = prompts.stream()
+                    .filter(item -> item.isTableType() && "prompt_item".equals(item.getContent()))
+                    .findFirst().orElse(null);
+            ShellSqliteQueryPromptItem viewPrompt = prompts.stream()
+                    .filter(item -> item.isViewType() && "prompt_view".equals(item.getContent()))
+                    .findFirst().orElse(null);
+            assertNotNull(tablePrompt);
+            assertNotNull(viewPrompt);
+            assertEquals("main", tablePrompt.getExtContent());
+            assertEquals("main", viewPrompt.getExtContent());
+
+            String databaseSql = "SELECT * FROM ma";
+            ShellSqliteQueryToken databaseToken = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .currentToken(databaseSql, databaseSql.length());
+            List<ShellSqliteQueryPromptItem> databasePrompts = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .initPrompts(databaseToken, 0.5f);
+            assertTrue(databasePrompts.stream()
+                    .anyMatch(item -> item.isDatabaseType() && "main".equals(item.getContent())));
+
+            String keywordSql = "SEL";
+            ShellSqliteQueryToken keywordToken = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .currentToken(keywordSql, keywordSql.length());
+            List<ShellSqliteQueryPromptItem> keywordPrompts = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .initPrompts(keywordToken, 0.5f);
+            assertTrue(keywordPrompts.stream()
+                    .anyMatch(item -> item.isKeywordType() && "SELECT".equals(item.getContent())));
+            assertTrue(keywordPrompts.stream().noneMatch(item -> item.isTableType()
+                    || item.isViewType() || item.isColumnType() || item.isDatabaseType()));
+        } finally {
+            client.close();
+        }
+    }
+
+    @Test
+    public void testRenameTableWithBrokenView() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-rename-broken-view-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("CREATE TABLE T_COLLECT (id INTEGER PRIMARY KEY, name TEXT)");
+            client.executeSqlSimple("CREATE VIEW func5 AS SELECT * FROM T_COLLECT");
+            client.executeSqlSimple("CREATE TRIGGER trg_func5 INSTEAD OF INSERT ON func5 BEGIN SELECT 1; END");
+            client.executeSqlSimple("PRAGMA legacy_alter_table=ON");
+            client.executeSqlSimple("ALTER TABLE T_COLLECT RENAME TO T_COLLECT_OLD");
+            client.executeSqlSimple("PRAGMA legacy_alter_table=OFF");
+            client.executeSqlSimple("CREATE TABLE T_FILE_COLLECT (id INTEGER PRIMARY KEY)");
+
+            client.renameTable("T_FILE_COLLECT", "T_FILE_COLLECT1");
+
+            assertNotNull(client.selectTable("T_FILE_COLLECT1"));
+            assertNull(client.selectTable("T_FILE_COLLECT"));
+            assertNotNull(client.showCreate("func5"));
+            assertTrue(client.selectSchemaObjects("trigger").stream()
+                    .anyMatch(item -> "trg_func5".equals(item.getName())));
+        } finally {
+            client.close();
+        }
+    }
+
+    @Test
+    public void testDesignBrokenView() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-design-broken-view-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("CREATE TABLE view_source (id INTEGER PRIMARY KEY, name TEXT)");
+            client.executeSqlSimple("CREATE VIEW broken_view AS SELECT * FROM missing_view_source");
+
+            SQLiteView view = client.selectView("broken_view");
+
+            assertNotNull(view);
+            assertEquals("SELECT * FROM missing_view_source", view.getDefinition());
+            assertNull(view.getColumns());
+
+            view.setDefinition("SELECT id, name FROM view_source");
+            new SQLiteSchemaManager(client).saveView("broken_view", view);
+
+            assertEquals(2, client.selectColumns("broken_view").size());
+            assertTrue(client.showCreate("broken_view").contains("view_source"));
+        } finally {
+            client.close();
+        }
     }
 
     @Test

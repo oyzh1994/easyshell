@@ -441,8 +441,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                     view.setName(resultSet.getString("name"));
                     view.setDefinition(SQLiteViewCreateSqlGenerator.viewDefinition(resultSet.getString("sql")));
                     if (param.isFull()) {
-                        view.setColumns(this.selectColumns(
-                                new SQLiteSelectColumnParam(dbName, view.getName())));
+                        this.loadViewColumns(view, dbName);
                     }
                     views.add(view);
                 }
@@ -624,12 +623,26 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                 }
             }
             if (view != null && param.isFull()) {
-                SQLiteSelectColumnParam columnParam = new SQLiteSelectColumnParam(dbName, view.getName());
-                view.setColumns(this.selectColumns(columnParam));
+                this.loadViewColumns(view, dbName);
             }
             return view;
         } catch (Exception ex) {
             throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 加载视图字段。视图依赖的表不存在时仍保留视图定义，供设计器修正 SQL。
+     *
+     * @param view   视图
+     * @param dbName 库名称
+     */
+    private void loadViewColumns(SQLiteView view, String dbName) {
+        try {
+            view.setColumns(this.selectColumns(
+                    new SQLiteSelectColumnParam(dbName, view.getName())));
+        } catch (Exception ex) {
+            JulLog.warn("Load sqlite columns for view [{}] failed: {}", view.getName(), ex.getMessage());
         }
     }
 
@@ -1682,8 +1695,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
     public void renameTable(String oldName, String newName) {
         this.requireExistingObject(oldName, "table");
         this.requireAvailableName(newName, oldName);
-        this.executeSqlSimple("ALTER TABLE " + SQLiteGeneratorUtil.quote(oldName)
-                + " RENAME TO " + SQLiteGeneratorUtil.quote(newName));
+        new SQLiteSchemaManager(this).renameTable(oldName, newName);
     }
 
     /**

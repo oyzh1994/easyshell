@@ -13,21 +13,66 @@ import cn.oyzh.fx.db.util.DBUtil;
 public class ShellSqliteQueryPromptItem extends DBQueryPromptItem {
 
     /**
-     * 是否表或视图。
+     * 是否数据库类型。
+     *
+     * @return 结果
+     */
+    public boolean isDatabaseType() {
+        return 1 == this.getType();
+    }
+
+    /**
+     * 是否表类型。
      *
      * @return 结果
      */
     public boolean isTableType() {
-        return this.getType() == 2 || this.getType() == 5;
+        return 2 == this.getType();
     }
 
     /**
-     * 是否字段。
+     * 是否字段类型。
      *
      * @return 结果
      */
     public boolean isColumnType() {
-        return this.getType() == 3;
+        return 3 == this.getType();
+    }
+
+    /**
+     * 是否关键字类型。
+     *
+     * @return 结果
+     */
+    public boolean isKeywordType() {
+        return 4 == this.getType();
+    }
+
+    /**
+     * 是否视图类型。
+     *
+     * @return 结果
+     */
+    public boolean isViewType() {
+        return 5 == this.getType();
+    }
+
+    /**
+     * 是否函数类型。
+     *
+     * @return 结果
+     */
+    public boolean isFunctionType() {
+        return 6 == this.getType();
+    }
+
+    /**
+     * 是否过程类型。
+     *
+     * @return 结果
+     */
+    public boolean isProcedureType() {
+        return 7 == this.getType();
     }
 
     /**
@@ -36,7 +81,9 @@ public class ShellSqliteQueryPromptItem extends DBQueryPromptItem {
      * @return 内容
      */
     public String wrapContent() {
-        return this.isColumnType() ? DBUtil.wrap(this.getContent(), DBDialect.SQLITE) : this.getContent();
+        if (this.isColumnType()) {
+            return DBUtil.wrap(this.getContent(), DBDialect.SQLITE);
+        }
+        return this.getContent();
     }
 }
-

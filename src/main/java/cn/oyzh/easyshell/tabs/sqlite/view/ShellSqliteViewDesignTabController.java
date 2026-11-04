@@ -67,12 +67,6 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         return view;
     }
 
-    @FXML
-    private void createPreview() {
-        this.initPreview();
-        this.previewTab.selectTab();
-    }
-
     private void initPreview() {
         try {
             String name = StringUtil.blankToDefault(this.originalName, I18nHelper.unnamedView());

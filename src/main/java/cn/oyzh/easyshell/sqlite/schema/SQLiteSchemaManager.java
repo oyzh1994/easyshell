@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.sqlite.schema;
 
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.function.SQLiteFunction;
@@ -16,6 +17,7 @@ import cn.oyzh.fx.db.util.DBUtil;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -38,6 +40,96 @@ public class SQLiteSchemaManager {
         this.client.executeSqlSimple(SQLiteTableCreateSqlGenerator.createTable(
                 table.getName(), table.getColumns(), table.getConstraints(),
                 table.isWithoutRowid(), table.isStrict()));
+    }
+
+    /**
+     * 重命名表。SQLite 在更新视图引用时会解析所有视图，若库中存在失效视图则会阻断重命名。
+     * 此时临时保存并移除失效视图及其触发器，完成重命名后再按原定义恢复。
+     *
+     * @param originalName 原表名称
+     * @param targetName   新表名称
+     */
+    public void renameTable(String originalName, String targetName) {
+        String renameSql = "ALTER TABLE " + SQLiteGeneratorUtil.quote(originalName)
+                + " RENAME TO " + SQLiteGeneratorUtil.quote(targetName);
+        try {
+            this.client.executeSqlSimple(renameSql);
+        } catch (ShellException ex) {
+            if (!this.isBrokenViewRenameError(ex)) {
+                throw ex;
+            }
+            this.renameTableWithBrokenViews(renameSql, ex);
+        }
+    }
+
+    private void renameTableWithBrokenViews(String renameSql, ShellException cause) {
+        List<SQLiteSchemaObject> brokenViews = this.client.selectSchemaObjects("view").stream()
+                .filter(this::isBrokenView)
+                .toList();
+        if (brokenViews.isEmpty()) {
+            throw cause;
+        }
+        Set<String> brokenViewNames = brokenViews.stream()
+                .map(SQLiteSchemaObject::getName)
+                .collect(java.util.stream.Collectors.toSet());
+        List<SQLiteSchemaObject> triggers = this.client.selectSchemaObjects("trigger").stream()
+                .filter(item -> brokenViewNames.stream()
+                        .anyMatch(name -> StringUtil.equalsIgnoreCase(item.getTableName(), name)))
+                .filter(item -> StringUtil.isNotBlank(item.getSql()))
+                .toList();
+
+        StringBuilder script = new StringBuilder("BEGIN;\n");
+        for (SQLiteSchemaObject trigger : triggers) {
+            script.append("DROP TRIGGER IF EXISTS ")
+                    .append(SQLiteGeneratorUtil.quote(trigger.getName())).append(";\n");
+        }
+        for (SQLiteSchemaObject view : brokenViews) {
+            script.append("DROP VIEW IF EXISTS ")
+                    .append(SQLiteGeneratorUtil.quote(view.getName())).append(";\n");
+        }
+        script.append(renameSql).append(";\n");
+        for (SQLiteSchemaObject view : brokenViews) {
+            script.append(view.getSql()).append(";\n");
+        }
+        for (SQLiteSchemaObject trigger : triggers) {
+            script.append(trigger.getSql()).append(";\n");
+        }
+        script.append("COMMIT;");
+        this.executeScript(script.toString());
+    }
+
+    private boolean isBrokenView(SQLiteSchemaObject view) {
+        try {
+            this.client.selectColumns(view.getName());
+            return false;
+        } catch (Exception ex) {
+            return this.isMissingSchemaReference(ex);
+        }
+    }
+
+    private boolean isBrokenViewRenameError(Throwable throwable) {
+        String message = this.errorMessage(throwable).toLowerCase(Locale.ROOT);
+        return message.contains("error in view ");
+    }
+
+    private boolean isMissingSchemaReference(Throwable throwable) {
+        String message = this.errorMessage(throwable).toLowerCase(Locale.ROOT);
+        return message.contains("no such table")
+                || message.contains("no such column")
+                || message.contains("no such function")
+                || message.contains("malformed database schema");
+    }
+
+    private String errorMessage(Throwable throwable) {
+        StringBuilder message = new StringBuilder();
+        Throwable current = throwable;
+        while (current != null) {
+            if (current.getMessage() != null) {
+                message.append(current.getMessage()).append('\n');
+            }
+            current = current.getCause();
+        }
+        return message.toString();
     }
 
     /**
