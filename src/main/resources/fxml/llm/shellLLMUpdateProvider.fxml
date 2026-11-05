@@ -78,7 +78,7 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <SelectTextFiled fx:id="model" flexWidth="100% - 285" prefHeight="30">
+        <SelectTextFiled fx:id="model" flexWidth="100% - 200" prefHeight="30" tipText="%base.compound.please.input.content">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
