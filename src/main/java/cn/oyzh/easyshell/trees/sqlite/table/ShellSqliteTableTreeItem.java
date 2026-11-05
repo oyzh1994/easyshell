@@ -49,7 +49,7 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
     private final SQLiteTable value;
 
     /**
-     * 字段缓存
+     * 最近一次加载的字段列表
      */
     private SQLiteColumns columns;
 
@@ -139,9 +139,8 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
      * @return 字段列表
      */
     public SQLiteColumns columns() {
-        if (this.columns == null) {
-            this.columns = new SQLiteColumns(this.client().selectColumns(this.tableName()));
-        }
+        // 表结构可能被设计器、终端或 SQL 修改，字段列表必须实时读取，避免记录页继续显示旧字段
+        this.columns = new SQLiteColumns(this.client().selectColumns(this.tableName()));
         return this.columns;
     }
 

@@ -137,7 +137,13 @@ public class ShellSqliteQueriesTreeItem extends ShellSqliteTreeItem<ShellSqliteQ
         for (TreeItem<?> child : this.unfilteredChildren()) {
             if (child instanceof ShellSqliteQueryTreeItem item
                     && StringUtil.equals(item.value().getUid(), query.getUid())) {
-                item.value().setName(query.getName());
+                // 树节点可能和已打开标签页持有不同的查询实例，需要整体同步，避免重新打开时读到旧内容
+                ShellQuery value = item.value();
+                value.setName(query.getName());
+                value.setContent(query.getContent());
+                value.setIid(query.getIid());
+                value.setDbName(query.getDbName());
+                value.setDbIndex(query.getDbIndex());
                 item.refreshValue();
                 this.doSort();
                 this.clearQuerySize();

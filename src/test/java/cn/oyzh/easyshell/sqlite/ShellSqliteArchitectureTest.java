@@ -502,10 +502,14 @@ public class ShellSqliteArchitectureTest {
                         (ShellSqliteQueryTreeItem) queryGroup.unfilteredChildren().getFirst();
                 assertEquals("first", item.queryName());
 
-                query.setName("renamed");
-                root.upsertQuery(query);
+                ShellQuery renamed = new ShellQuery();
+                renamed.setUid("query-1");
+                renamed.setName("renamed");
+                renamed.setContent("SELECT 2");
+                root.upsertQuery(renamed);
                 assertEquals(1, queryGroup.unfilteredChildrenSize());
                 assertEquals("renamed", item.queryName());
+                assertEquals("SELECT 2", item.value().getContent());
 
                 root.removeQuery(query);
                 assertEquals(0, queryGroup.unfilteredChildrenSize());

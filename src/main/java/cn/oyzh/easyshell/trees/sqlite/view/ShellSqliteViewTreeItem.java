@@ -143,10 +143,8 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
      * @return 视图列列表
      */
     public SQLiteColumns columns() {
-        if (this.value.getColumns() == null) {
-            return this.viewColumns();
-        }
-        return this.value.getColumns();
+        // 视图定义可能被设计器、终端或 SQL 修改，字段列表必须实时读取
+        return this.viewColumns();
     }
 
     /**
