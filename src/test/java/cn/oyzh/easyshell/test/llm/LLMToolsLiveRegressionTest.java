@@ -71,7 +71,9 @@ public class LLMToolsLiveRegressionTest {
         String mongoRunCommandSchema = mongoSpecs.stream()
                 .filter(spec -> spec.name().equals("runCommand"))
                 .findFirst().orElseThrow().toJson();
-        String zkSchema = zkSpecs.getFirst().toJson();
+        String zkSchema = zkSpecs.stream()
+                .filter(spec -> spec.name().equals("executeCommand"))
+                .findFirst().orElseThrow().toJson();
         assertTrue(mongoSchema, mongoSchema.contains("\"database\""));
         assertTrue(mongoSchema, mongoSchema.contains("\"script\""));
         assertTrue(mongoRunCommandSchema, mongoRunCommandSchema.contains("\"database\""));
@@ -80,10 +82,14 @@ public class LLMToolsLiveRegressionTest {
         assertFalse(mongoSchema, mongoSchema.contains("\"arg0\""));
         assertFalse(mongoRunCommandSchema, mongoRunCommandSchema.contains("\"arg0\""));
         assertFalse(zkSchema, zkSchema.contains("\"arg0\""));
-        assertEquals(Set.of("executeScript", "runCommand", "mongoExamples"),
-                Set.copyOf(mongoSpecs.stream().map(ToolSpecification::name).toList()));
-        assertEquals(Set.of("executeCommand"),
-                Set.copyOf(zkSpecs.stream().map(ToolSpecification::name).toList()));
+        Set<String> mongoNames = Set.copyOf(mongoSpecs.stream().map(ToolSpecification::name).toList());
+        Set<String> zkNames = Set.copyOf(zkSpecs.stream().map(ToolSpecification::name).toList());
+        assertTrue(mongoNames.containsAll(Set.of(
+                "executeScript", "runCommand", "mongoExamples", "listDatabases", "listCollections",
+                "listBuckets", "listFunctions", "listUsers", "getServerVersion", "pingDatabase", "countCollection")));
+        assertTrue(zkNames.containsAll(Set.of(
+                "executeCommand", "getNodeData", "listChildren", "checkNodeExists",
+                "getNodeStat", "getNodeAcl", "getAllChildrenCount")));
     }
 
     @Test

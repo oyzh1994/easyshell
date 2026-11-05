@@ -1559,6 +1559,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return this.sessionTimeOut == null || this.sessionTimeOut < 1 ? 30 : this.sessionTimeOut;
     }
 
+    /** 设置会话超时 */
+    public void setSessionTimeOut(Integer sessionTimeOut) {
+        this.sessionTimeOut = sessionTimeOut;
+    }
+
     /**
      * 获取会话超时毫秒值
      *

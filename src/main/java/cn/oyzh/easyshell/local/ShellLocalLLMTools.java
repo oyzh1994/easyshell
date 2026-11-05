@@ -26,6 +26,22 @@ public class ShellLocalLLMTools implements LLMTools {
         this.executor = executor;
     }
 
+    @Tool(name = "getLocalEnvironment", value = "Get read-only information about the local shell environment used by EasyShell")
+    public String getLocalEnvironment() {
+        if (this.executor == null) {
+            return "Local command executor is unavailable.";
+        }
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<String, String> entry : this.executor.environment().entrySet()) {
+            result.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
+        }
+        result.append("javaVersion: ").append(Runtime.version()).append('\n');
+        result.append("availableProcessors: ").append(Runtime.getRuntime().availableProcessors()).append('\n');
+        result.append("defaultCharset: ").append(java.nio.charset.Charset.defaultCharset()).append('\n');
+        result.append("maxCommandTimeoutSeconds: ").append(ShellLocalCommandExecutor.MAX_TIMEOUT_SECONDS);
+        return result.toString();
+    }
+
     @Tool(name = "executeLocalCommand", value = "Execute a command on the local machine")
     public String executeCommand(
             @P(name = "command", value = "The command to execute") String command) {

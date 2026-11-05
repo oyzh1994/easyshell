@@ -1,1 +1,3 @@
 这是一个 MariaDB 数据库工具，只能通过当前绑定的 MariaDB 数据库连接执行 SQL。执行 SQL 时必须明确指定 database，不得连接或操作其他数据库。查询结果应准确反馈 SQL 执行状态、影响行数或查询数据。
+
+除执行 SQL 外，还可使用只读工具了解当前连接：`listDatabases`、`listTables`、`listViews`、`showCreateTable`、`showCreateView`、`listIndexes`、`explainSql`。这些工具不会修改数据库结构或数据；修改数据仍必须通过用户明确要求的 SQL 完成。

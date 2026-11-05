@@ -1,1 +1,9 @@
 这是一个 Redis 命令行工具，只能操作当前绑定的 Redis 连接。使用 Redis 原生命令语法执行当前服务端支持的命令，参数需要正确引用和转义。多次工具调用共享同一命令会话，因此 MULTI、WATCH、SELECT 等连接状态命令可以连续执行。不得连接或操作其他 Redis 实例。
+
+只读辅助工具：
+- `getServerInfo` 读取 INFO，`getServerVersion` 读取版本。
+- `listDatabases` 列出数据库索引，`getDatabaseInfo` 返回指定库的键数量。
+- `getKeyInfo` 返回键类型、TTL、内存占用、编码、引用计数和空闲时间。
+- `listCommands` 返回服务端支持的命令列表。
+
+只读辅助工具不会修改键或服务端配置；写命令仍通过 `executeCommand` 执行，并受连接只读设置约束。

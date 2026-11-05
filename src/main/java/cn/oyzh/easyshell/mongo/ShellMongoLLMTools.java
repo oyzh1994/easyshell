@@ -9,6 +9,9 @@ import dev.langchain4j.agent.tool.Tool;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * LLM tools bound to a MongoDB connection.
  */
@@ -80,6 +83,162 @@ public class ShellMongoLLMTools implements LLMTools {
     @Tool(name = "mongoExamples", value = "Return MongoDB runCommand and shell syntax examples")
     public String example() {
         return LLMUtil.readLlmText("mongo_example.txt");
+    }
+
+    @Tool(name = "listDatabases", value = "List MongoDB databases on the bound connection")
+    public String listDatabases(
+            @P(name = "filter", value = "Optional case-insensitive database name filter") String filter,
+            @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        try {
+            return LLMDBToolsUtil.formatList("database", this.client.listDatabaseNames(), filter, maxResults);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "listCollections", value = "List collections in a MongoDB database")
+    public String listCollections(
+            @P(name = "database", value = "MongoDB database name") String database,
+            @P(name = "filter", value = "Optional case-insensitive collection name filter") String filter,
+            @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        if (database == null || database.isBlank()) {
+            return "Database is required.";
+        }
+        try {
+            List<String> names = new ArrayList<>();
+            for (var collection : this.client.listCollections(database)) {
+                names.add(collection.getName());
+            }
+            return LLMDBToolsUtil.formatList("collection", names, filter, maxResults);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "listBuckets", value = "List GridFS buckets in a MongoDB database")
+    public String listBuckets(
+            @P(name = "database", value = "MongoDB database name") String database,
+            @P(name = "filter", value = "Optional case-insensitive bucket name filter") String filter,
+            @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        if (database == null || database.isBlank()) {
+            return "Database is required.";
+        }
+        try {
+            List<String> names = new ArrayList<>();
+            for (var bucket : this.client.listBuckets(database)) {
+                names.add(bucket.getName());
+            }
+            return LLMDBToolsUtil.formatList("bucket", names, filter, maxResults);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "listFunctions", value = "List stored JavaScript functions in a MongoDB database")
+    public String listFunctions(
+            @P(name = "database", value = "MongoDB database name") String database,
+            @P(name = "filter", value = "Optional case-insensitive function name filter") String filter,
+            @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        if (database == null || database.isBlank()) {
+            return "Database is required.";
+        }
+        try {
+            List<String> names = new ArrayList<>();
+            for (var function : this.client.listFunctions(database)) {
+                names.add(function.getName());
+            }
+            return LLMDBToolsUtil.formatList("function", names, filter, maxResults);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "listUsers", value = "List MongoDB users and roles without exposing passwords")
+    public String listUsers(
+            @P(name = "database", value = "MongoDB database name") String database,
+            @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        if (database == null || database.isBlank()) {
+            return "Database is required.";
+        }
+        try {
+            List<String> users = new ArrayList<>();
+            for (var user : this.client.listUsers(database)) {
+                StringBuilder roles = new StringBuilder();
+                if (user.getRoles() != null) {
+                    for (var role : user.getRoles()) {
+                        if (!roles.isEmpty()) {
+                            roles.append(',');
+                        }
+                        roles.append(role.getDb()).append('.').append(role.getRole());
+                    }
+                }
+                users.add(user.getUser() + " | roles: " + roles);
+            }
+            return LLMDBToolsUtil.formatList("user", users, null, maxResults);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "getServerVersion", value = "Get the MongoDB server version")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        try {
+            return "serverVersion: " + this.client.selectVersion();
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "pingDatabase", value = "Check whether a MongoDB database responds to ping")
+    public String pingDatabase(
+            @P(name = "database", value = "MongoDB database name") String database) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        if (database == null || database.isBlank()) {
+            return "Database is required.";
+        }
+        try {
+            return "ping: " + this.client.ping(database);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "countCollection", value = "Count documents in a MongoDB collection using a read-only count command")
+    public String countCollection(
+            @P(name = "database", value = "MongoDB database name") String database,
+            @P(name = "collection", value = "Collection name") String collection) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        if (database == null || database.isBlank() || collection == null || collection.isBlank()) {
+            return "Database and collection are required.";
+        }
+        try {
+            Document result = this.client.runCommand(database, new Document("count", collection));
+            return result == null ? "OK" : result.toJson(JSON_SETTINGS);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
     }
 
     @Override

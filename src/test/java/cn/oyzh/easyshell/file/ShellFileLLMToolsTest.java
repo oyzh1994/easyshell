@@ -25,6 +25,8 @@ public class ShellFileLLMToolsTest {
         ShellFileClient<ShellFile> client = client(file, uploaded);
         try (ShellFileLLMTools<ShellFile> tools = new ShellFileLLMTools<>(client)) {
             assertTrue(tools.readTextFile("/hello.txt", 100).contains("hello"));
+            assertTrue(tools.getRemoteConnectionInfo().contains("name: demo"));
+            assertTrue(tools.resolveRemotePath("/hello.txt").contains("path: /hello.txt"));
 
             String result = tools.writeTextFile("/hello.txt", "updated");
 

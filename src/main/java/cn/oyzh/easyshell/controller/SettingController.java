@@ -500,7 +500,7 @@ public class SettingController extends StageController {
      * x11，认证
      */
     @FXML
-    private ClearableTextField x11Auth;
+    private PasswordTextField x11Auth;
 
     /**
      * x11，glx模式
@@ -1252,7 +1252,7 @@ public class SettingController extends StageController {
         // xserver
         int x11Port = this.x11Port.getIntValue();
         boolean x11Glx = this.x11Glx.isSelected();
-        String x11Auth = this.x11Auth.getTextTrim();
+        String x11Auth = this.x11Auth.getPassword();
         boolean x11Local = this.x11Local.isSelected();
         boolean x11FocusOnClick = this.x11FocusOnClick.isSelected();
         boolean x11SingleWindow = this.x11SingleWindow.isSelected();
@@ -1334,6 +1334,9 @@ public class SettingController extends StageController {
      */
     @FXML
     private void generateX11Auth() {
+        if (StringUtil.isNotBlank(this.x11Auth.getPassword()) && MessageBox.confirm(ShellI18nHelper.x11Tip2(), this.getWindow())) {
+            return;
+        }
         String hex = XAuthorityCookie.generateHex();
         this.x11Auth.setText(hex);
     }

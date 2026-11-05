@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.redis;
 
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
+import cn.oyzh.easyshell.llm.LLMDBToolsUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
@@ -12,6 +13,7 @@ import cn.oyzh.easyshell.terminal.redis2.RedisResponseFormatter;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +80,118 @@ public class ShellRedisLLMTools implements LLMTools {
             this.closeCommandSession();
             return "Execution failed: " + ex.getMessage();
         }
+    }
+
+    @Tool(name = "getServerInfo", value = "Get Redis server information for one INFO section, such as server, clients, memory, stats, or keyspace")
+    public String getServerInfo(
+            @P(name = "section", value = "Optional INFO section; empty returns the default section") String section) {
+        if (this.client == null) {
+            return "Redis client is unavailable.";
+        }
+        try {
+            String info = this.client.info(section == null || section.isBlank() ? null : section.trim());
+            return info == null || info.isBlank() ? "OK" : this.truncate(info);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "getServerVersion", value = "Get the Redis server version")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "Redis client is unavailable.";
+        }
+        try {
+            return "serverVersion: " + this.client.getServerVersion();
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "listDatabases", value = "List configured Redis database indexes without selecting them")
+    public String listDatabases() {
+        if (this.client == null) {
+            return "Redis client is unavailable.";
+        }
+        try {
+            int count = this.client.databases();
+            List<String> indexes = new ArrayList<>(Math.max(count, 0));
+            for (int index = 0; index < count; index++) {
+                indexes.add(String.valueOf(index));
+            }
+            return LLMDBToolsUtil.formatList("dbIndex", indexes, null, 1000);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "getDatabaseInfo", value = "Get read-only statistics for one Redis database")
+    public String getDatabaseInfo(
+            @P(name = "dbIndex", value = "Redis database index") int dbIndex) {
+        if (this.client == null) {
+            return "Redis client is unavailable.";
+        }
+        if (dbIndex < 0) {
+            return "Database index must be non-negative.";
+        }
+        try {
+            return "dbIndex: " + dbIndex + "\nkeyCount: " + this.client.dbSize(dbIndex);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "getKeyInfo", value = "Get read-only metadata for one Redis key: type, TTL, memory usage, encoding, reference count, and idle time")
+    public String getKeyInfo(
+            @P(name = "dbIndex", value = "Redis database index") int dbIndex,
+            @P(name = "key", value = "Redis key") String key) {
+        if (this.client == null) {
+            return "Redis client is unavailable.";
+        }
+        if (dbIndex < 0) {
+            return "Database index must be non-negative.";
+        }
+        if (key == null || key.isBlank()) {
+            return "Key is required.";
+        }
+        try {
+            StringBuilder result = new StringBuilder();
+            result.append("dbIndex: ").append(dbIndex).append('\n');
+            result.append("key: ").append(key).append('\n');
+            result.append("type: ").append(this.client.type(dbIndex, key)).append('\n');
+            result.append("ttlSeconds: ").append(this.client.ttl(dbIndex, key)).append('\n');
+            result.append("pttlMilliseconds: ").append(this.client.pttl(dbIndex, key)).append('\n');
+            result.append("memoryUsageBytes: ").append(this.value(this.client.memoryUsage(dbIndex, key))).append('\n');
+            result.append("encoding: ").append(this.value(this.client.objectEncoding(dbIndex, key))).append('\n');
+            result.append("refCount: ").append(this.value(this.client.objectRefcount(dbIndex, key))).append('\n');
+            result.append("idleSeconds: ").append(this.value(this.client.objectIdletime(dbIndex, key)));
+            return result.toString();
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "listCommands", value = "List Redis commands supported by the connected server")
+    public String listCommands(
+            @P(name = "filter", value = "Optional case-insensitive command name filter") String filter,
+            @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
+        if (this.client == null) {
+            return "Redis client is unavailable.";
+        }
+        try {
+            return LLMDBToolsUtil.formatList("command", this.client.commandList(), filter, maxResults);
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
+    private String value(Object value) {
+        return value == null ? "-" : String.valueOf(value);
+    }
+
+    private String truncate(String value) {
+        int maxChars = 64 * 1024;
+        return value.length() <= maxChars ? value : value.substring(0, maxChars) + "\n... output truncated";
     }
 
     private RedisCommandRegistry registry() {

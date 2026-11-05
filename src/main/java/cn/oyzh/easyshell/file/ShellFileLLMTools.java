@@ -104,6 +104,34 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
+    @Tool(name = "getRemoteConnectionInfo", value = "Get read-only metadata for the bound file connection and its current working directory")
+    public String getRemoteConnectionInfo() {
+        try {
+            ShellConnect connect = this.client.getShellConnect();
+            StringBuilder result = new StringBuilder();
+            result.append("name: ").append(this.value(connect == null ? null : connect.getName())).append('\n');
+            result.append("type: ").append(this.value(connect == null ? null : connect.getType())).append('\n');
+            result.append("host: ").append(this.value(connect == null ? null : connect.getHost())).append('\n');
+            result.append("charset: ").append(this.value(this.client.getCharset().name())).append('\n');
+            result.append("workingDirectorySupported: ").append(this.client.isWorkDirSupport()).append('\n');
+            result.append("workingDirectory: ").append(this.value(this.workingDirectory()));
+            return result.toString();
+        } catch (Exception ex) {
+            return this.failure("Get remote connection info", null, ex);
+        }
+    }
+
+    @Tool(name = "resolveRemotePath", value = "Resolve a relative or absolute remote path against the bound connection")
+    public String resolveRemotePath(
+            @P(name = "path", value = "Remote path to resolve; empty resolves to the remote root") String path) {
+        try {
+            String remotePath = this.normalizePath(path);
+            return "path: " + remotePath;
+        } catch (Exception ex) {
+            return this.failure("Resolve remote path", path, ex);
+        }
+    }
+
     @Tool(name = "createRemoteFile", value = "Create an empty remote file")
     public String createFile(
             @P(name = "path", value = "Absolute remote file path") String path) {

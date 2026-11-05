@@ -205,27 +205,18 @@ public class ShellConnectRootTreeItem extends RichTreeItem<ShellConnectRootTreeI
      * @param shellConnect ssh连接
      */
     public void connectUpdated(ShellConnect shellConnect) {
-        // f1:
-        // for (TreeItem<?> item : this.unfilteredChildren()) {
-        //     if (item instanceof ShellConnectTreeItem connectTreeItem) {
-        //         if (connectTreeItem.value() == shellConnect) {
-        //             connectTreeItem.value(shellConnect);
-        //             break;
-        //         }
-        //     } else if (item instanceof ShellConnectGroupTreeItem groupTreeItem) {
-        //         for (ShellConnectTreeItem connectTreeItem : groupTreeItem.getConnectItems()) {
-        //             if (connectTreeItem.value() == shellConnect) {
-        //                 connectTreeItem.value(shellConnect);
-        //                 break f1;
-        //             }
-        //         }
-        //     }
-        // }
-        for (ShellConnectTreeItem item : this.getAllConnectItems()) {
-            if (item.value() == shellConnect) {
-                item.value(shellConnect);
-                break;
-            }
+        ShellConnectTreeItem item = this.getAllConnectItems().stream()
+                .filter(connectItem -> Objects.equals(connectItem.value().getId(), shellConnect.getId()))
+                .findFirst()
+                .orElse(null);
+        if (item == null) {
+            return;
+        }
+        if (!Objects.equals(item.value().getGroupId(), shellConnect.getGroupId())) {
+            item.remove();
+            this.addConnect(shellConnect);
+        } else {
+            item.value(shellConnect);
         }
     }
 

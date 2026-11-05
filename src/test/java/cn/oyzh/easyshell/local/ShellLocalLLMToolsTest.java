@@ -32,4 +32,19 @@ public class ShellLocalLLMToolsTest {
             assertTrue(result.contains("hello"));
         }
     }
+
+    @Test
+    public void returnsLocalEnvironmentWithoutProcessEnvironmentDump() {
+        try (ShellLocalLLMTools tools = new ShellLocalLLMTools()) {
+            tools.setExecutor(new ShellLocalCommandExecutor());
+
+            String environment = tools.getLocalEnvironment();
+
+            assertTrue(environment.contains("os:"));
+            assertTrue(environment.contains("workingDirectory:"));
+            assertTrue(environment.contains("maxCommandTimeoutSeconds:"));
+            assertFalse(environment.contains("PATH:"));
+            assertFalse(environment.contains("HOME:"));
+        }
+    }
 }

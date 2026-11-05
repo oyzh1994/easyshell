@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMSessionUtil;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.llm.LLMToolAudit;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
@@ -187,6 +188,12 @@ public class ChatController extends SubStageController {
         LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
         // 工具
         services.tools(tools.toArray());
+        // 工具调用审计
+        LLMToolAudit audit = new LLMToolAudit(tools,
+                this.currentSession == null ? null : this.currentSession.getUid(),
+                sessionTab == null ? null : sessionTab.getId(),
+                provider.getName(), this.view.getSelectedModel(), executionMode);
+        services.afterToolExecution(audit::record);
         String systemMessage = sessionTools == null
                 ? internalTools.systemMessage(executionMode)
                 : internalTools.toolSystemMessage() + "\n\n" + sessionTools.systemMessage(executionMode);

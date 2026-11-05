@@ -821,4 +821,8 @@ public class ShellI18nHelper {
     public static String eventBucketDropped(String name) {
         return text("shell.event.bucket.dropped", name);
     }
+
+    public static String x11Tip2() {
+        return text("shell.x11.tip2");
+    }
 }

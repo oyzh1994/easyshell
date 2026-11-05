@@ -10,6 +10,9 @@ import cn.oyzh.fx.db.DBRecord;
 import cn.oyzh.fx.db.query.DBQueryResult;
 import cn.oyzh.fx.db.query.DBQueryResults;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
 import java.util.List;
 
 /**
@@ -20,6 +23,34 @@ public final class LLMDBToolsUtil {
     private static final int MAX_ROWS = 1000;
 
     private LLMDBToolsUtil() {
+    }
+
+    public static String formatList(String label, Collection<String> values, String filter, int maxResults) {
+        String query = filter == null ? "" : filter.trim().toLowerCase(Locale.ROOT);
+        List<String> matched = new ArrayList<>();
+        if (values != null) {
+            for (String value : values) {
+                if (value == null) {
+                    continue;
+                }
+                if (query.isBlank() || value.toLowerCase(Locale.ROOT).contains(query)) {
+                    matched.add(value);
+                }
+            }
+        }
+        matched.sort(String.CASE_INSENSITIVE_ORDER);
+        int limit = maxResults <= 0 ? 200 : Math.min(maxResults, 1000);
+        int shown = Math.min(matched.size(), limit);
+        StringBuilder output = new StringBuilder();
+        output.append("count: ").append(matched.size()).append('\n');
+        output.append("shown: ").append(shown).append('\n');
+        for (int index = 0; index < shown; index++) {
+            if (label != null && !label.isBlank()) {
+                output.append(label).append(": ");
+            }
+            output.append(matched.get(index)).append('\n');
+        }
+        return output.toString();
     }
 
     public static String format(DBQueryResults<? extends DBQueryResult> results) {

@@ -451,12 +451,12 @@
                         </VBox.margin>
                     </InfoLabel>
                     <FXHBox>
-                        <ClearableTextField fx:id="x11Auth" tipText="%base.contentTip1" flexWidth="100% - 140"
+                        <PasswordTextField fx:id="x11Auth" tipText="%base.contentTip1" flexWidth="100% - 140"
                                             prefHeight="30">
                             <HBox.margin>
                                 <Insets left="30" top="5"/>
                             </HBox.margin>
-                        </ClearableTextField>
+                        </PasswordTextField>
                         <FXButton text="%base.generate" onAction="#generateX11Auth">
                             <HBox.margin>
                                 <Insets left="5" top="5"/>

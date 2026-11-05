@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.internal;
 
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.easyshell.ShellConst;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.local.ShellLocalLLMTools;
 import dev.langchain4j.agent.tool.Tool;
@@ -32,6 +33,7 @@ public class ShellLLMToolsTest {
         assertTrue(projectVersion.contains(project.getVersion()));
         assertTrue(jdkVersion.contains(Runtime.version().toString()));
         assertTrue(projectPaths.contains(ShellConst.getStorePath()));
+        assertTrue(projectPaths.contains("llmToolAuditFile"));
     }
 
     @Test
@@ -46,6 +48,25 @@ public class ShellLLMToolsTest {
         assertTrue(systemMessage.contains("EasyShell"));
         assertTrue(systemMessage.contains("startXServer"));
         assertTrue(systemMessage.contains("executeLocalCommandDirect"));
+    }
+
+    @Test
+    public void parsesSafeTypeOptionsWithoutPersistingConnection() throws Exception {
+        ShellLLMTools tools = new ShellLLMTools();
+        Method applyTypeOptions = ShellLLMTools.class.getDeclaredMethod(
+                "applyTypeOptions", ShellConnect.class, String.class, String.class, String.class);
+        applyTypeOptions.setAccessible(true);
+
+        ShellConnect connection = new ShellConnect();
+        applyTypeOptions.invoke(tools, connection, "zookeeper", "",
+                "{\"sessionTimeoutMinutes\":45,\"zkCompatibility\":1,\"saslAuth\":true,"
+                        + "\"backspaceType\":2,\"altSendsEscape\":true}");
+
+        assertEquals(Integer.valueOf(45), connection.getSessionTimeOut());
+        assertEquals(Integer.valueOf(1), connection.getCompatibility());
+        assertEquals(Integer.valueOf(2), connection.getBackspaceType());
+        assertTrue(connection.isSASLAuth());
+        assertTrue(connection.isAltSendsEscape());
     }
 
     @Test
@@ -79,6 +100,14 @@ public class ShellLLMToolsTest {
         String connections = tools.listSavedConnections(null, 10);
         String openConnections = tools.listOpenConnections(null, 10);
         String groups = tools.listGroups(null, 10);
+        String snippets = tools.listSnippets(null, 10);
+        String keys = tools.listSavedKeys(null, 10);
+        String queries = tools.listQueries(null, 10);
+        String fileFavorites = tools.listFileFavorites(null, 10);
+        String redisFavorites = tools.listRedisFavorites(null, 10);
+        String zkFavorites = tools.listZkFavorites(null, 10);
+        String llmProviders = tools.listLlmProviders(null, 10);
+        String llmSessions = tools.listLlmSessions(null, 10);
         String themes = tools.listThemes(null, 10);
         String fonts = tools.listFonts(null, 10);
         String database = tools.getDatabaseSupportInfo();
@@ -89,6 +118,14 @@ public class ShellLLMToolsTest {
         assertTrue(connections.contains("count:"));
         assertTrue(openConnections.contains("count: 0"));
         assertTrue(groups.contains("count:"));
+        assertTrue(snippets.contains("count:"));
+        assertTrue(keys.contains("count:"));
+        assertTrue(queries.contains("count:"));
+        assertTrue(fileFavorites.contains("count:"));
+        assertTrue(redisFavorites.contains("count:"));
+        assertTrue(zkFavorites.contains("count:"));
+        assertTrue(llmProviders.contains("count:"));
+        assertTrue(llmSessions.contains("count:"));
         assertTrue(themes.contains("count:"));
         assertTrue(fonts.contains("count:"));
         assertTrue(database.contains("mysql:"));
@@ -112,8 +149,20 @@ public class ShellLLMToolsTest {
         assertTrue(names.contains("getProjectVersion"));
         assertTrue(names.contains("getJdkVersion"));
         assertTrue(names.contains("getStoredDataSummary"));
+        assertTrue(names.contains("getSnippet"));
+        assertTrue(names.contains("getQuery"));
+        assertTrue(names.contains("listFileFavorites"));
+        assertTrue(names.contains("listRedisFavorites"));
+        assertTrue(names.contains("listZkFavorites"));
+        assertTrue(names.contains("listLlmProviders"));
+        assertTrue(names.contains("listLlmSessions"));
         assertTrue(names.contains("executeLocalCommandDirect"));
         assertTrue(names.contains("executeLocalCommandInDirectoryDirect"));
+        assertFalse(names.contains("deleteConnection"));
+        assertFalse(names.contains("deleteGroup"));
+        assertFalse(names.contains("deleteSnippet"));
+        assertFalse(names.contains("deleteQuery"));
+        assertFalse(names.contains("updateConnectionCredentials"));
     }
 
     @Test

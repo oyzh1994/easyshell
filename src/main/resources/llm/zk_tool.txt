@@ -40,3 +40,13 @@ mntr
 
 检查服务是否可用：
 ruok
+
+只读辅助工具：
+1. `listChildren` 列出直接子节点。
+2. `getNodeData` 读取节点数据。
+3. `checkNodeExists` 检查节点是否存在。
+4. `getNodeStat` 返回版本、时间戳、数据长度和子节点数量。
+5. `getNodeAcl` 返回 ACL，不返回认证密码。
+6. `getAllChildrenCount` 统计后代节点数量。
+
+这些工具只读；创建、修改、删除节点仍必须通过 `executeCommand`，并且只能在用户明确要求时执行。

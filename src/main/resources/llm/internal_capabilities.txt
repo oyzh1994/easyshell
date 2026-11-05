@@ -12,4 +12,10 @@ llmFeatures: providers, sessions, streaming, thinking levels, execution modes, a
 uiFeatures: theme listing, theme switching, font listing, application font configuration
 databaseIntrospection: supported database types, client driver versions, open server versions
 connectionManagement: saved connection listing, open tab listing, group listing, sanitized metadata
+connectionSafeWrites: create connection, rename connection, move connection between groups, update connection remark, create group, rename group
+contentSafeWrites: create terminal snippet, create saved query
+contentSafeReads: terminal snippet content, saved query content by id, file/Redis/ZooKeeper favorite metadata, LLM provider metadata, LLM session metadata
+projectDataInventories: keys, groups, snippets, queries, connections, file/Redis/ZooKeeper favorites, LLM providers, sessions, authorization configs, history
+projectDataRestrictions: no deletion, no destructive import/export, no credential or advanced network configuration mutation through LLM tools
+protocolInspection: SSH host/process/Docker info, SQL schema/table/view/DDL/index/explain, MongoDB database/collection/bucket/function/user info, Redis server/key metadata, ZooKeeper node data/stat/ACL, file connection metadata
 localCommandExecution: direct host commands, working directories, timeouts, exit codes, stdout, stderr
