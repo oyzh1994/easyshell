@@ -6,7 +6,7 @@
 
 ## 功能特性
 
-- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mariadb、达梦、Mosh、本地终端等多种连接方式。
+- **多协议支持**：支持 SSH、FTP、SFTP、Redis、ZooKeeper、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mariadb、达梦、SQLite、Mosh、本地终端等多种连接方式。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、编辑、复制到主机等操作。
 - **片段执行**：支持代码片段的保存和执行。
@@ -23,12 +23,13 @@
 - **RDP 客户端**：支持 RDP 协议的管理和连接，支持内建&原生连接方式。
 - **Redis 客户端**：支持 Redis 协议的增删改查、导出、导入、传输、终端等操作。
 - **ZooKeeper 客户端**：支持 ZooKeeper 协议的增删改查、权限管理、导入、导出、传输、终端等操作。
-- **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件管理、查询、导入、导出、传输等操作。
-- **Dameng 客户端**：支持 Dameng 协议的表、视图、函数、用户管理、查询、导入、导出、传输等操作。
-- **Mongodb 客户端**：支持 Mongodb 协议的集合、存储桶、函数、用户管理、查询、导入、导出、传输等操作。
+- **Mysql 客户端**：支持 Mysql 协议的表、视图、函数、过程、事件管理、查询、导入、导出、传输、转储、终端等操作。
+- **Dameng 客户端**：支持 Dameng 协议的表、视图、函数、用户管理、查询、导入、导出、传输、转储、终端等操作。
+- **SQLite 客户端**：支持 SQLite 协议的表、视图、函数、查询、导入、导出、传输、转储、终端等操作。
+- **Mongodb 客户端**：支持 Mongodb 协议的集合、存储桶、函数、用户管理、查询、导入、导出、传输、转储、终端等操作。
 - **Mosh 仿真终端**：支持 Mosh 协议的连接。
 - **本地终端**：支持 Windows、Linux、macOS 各类本地终端，比如 sh、bash、zsh、cmd、powershell、git-sh、git-bash 等。
-- **Xserver**：内建的Xserver服务，无需第三方依赖。
+- **XServer**：内建的XServer服务，无需第三方依赖。
 - **跨平台**：支持 Windows、macOS、Linux 等多个操作系统。
 
 ## 下载地址
