@@ -372,7 +372,7 @@ public class ShellSqliteViewRecordTabController extends RichTabController {
             }
             this.initColumns(this.getItem().columns());
             this.initDataList(0);
-            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey());
+//            this.missPrimaryKey.setVisible(!this.columns.hasPrimaryKey());
             this.filter.setActive(CollectionUtil.isNotEmpty(this.enabledFilters()));
             this.apply.disable();
         } catch (Exception ex) {
@@ -549,7 +549,7 @@ public class ShellSqliteViewRecordTabController extends RichTabController {
         });
         this.recordTable.selectedItemChanged((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                newValue.setEditable(true);
+                newValue.setEditable(false);
             }
             this.recordTable.refresh();
         });

@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.database.SQLiteDatabase;
 import cn.oyzh.easyshell.sqlite.function.SQLiteFunction;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
@@ -153,6 +154,38 @@ public class ShellSqliteClientTest {
         assertFalse(viewResult.isUpdatable());
         assertTrue(viewResult.isFullColumn());
         client.close();
+    }
+
+    @Test
+    public void testViewRecordsAreReadonly() throws Throwable {
+        Path file = this.path("view-readonly.db");
+        ShellSqliteClient client = this.client(file, false, true);
+        client.start();
+        try {
+            this.assertSuccess(client.executeSql(
+                    "CREATE TABLE item (id INTEGER PRIMARY KEY, name TEXT);"
+                            + "INSERT INTO item(name) VALUES('view row'), (NULL), ('NULL');"
+                            + "CREATE VIEW item_view AS SELECT id, name FROM item;"));
+
+            List<SQLiteRecord> records = client.viewRecords("main", "item_view", 0L, 10L, null);
+            assertEquals(3, records.size());
+            SQLiteRecord record = records.stream()
+                    .filter(item -> "view row".equals(item.getProperty("name").getValue()))
+                    .findFirst()
+                    .orElseThrow();
+            assertTrue(record.getProperty("id").isReadonly());
+            assertTrue(record.getProperty("name").isReadonly());
+            assertEquals("view row", record.getProperty("name").getValue());
+            assertFalse(record.getProperty("name").getValue() instanceof javafx.scene.Node);
+            assertEquals(1, records.stream()
+                    .filter(item -> item.getProperty("name").getValue() == null)
+                    .count());
+            assertEquals(1, records.stream()
+                    .filter(item -> "NULL".equals(item.getProperty("name").getValue()))
+                    .count());
+        } finally {
+            client.close();
+        }
     }
 
     @Test

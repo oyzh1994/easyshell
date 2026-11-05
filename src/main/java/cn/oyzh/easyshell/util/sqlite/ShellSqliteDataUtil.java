@@ -308,7 +308,7 @@ public final class ShellSqliteDataUtil {
 
     public static String formatValue(Object value, SQLiteColumn column) {
         if (value == null) {
-            return "NULL";
+            return null;
         }
         if (ShellSqliteColumnUtil.isBlobType(column == null ? null : column.getType()) && value instanceof byte[] bytes) {
             return SQLiteGeneratorUtil.literal(bytes);

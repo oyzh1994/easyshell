@@ -1138,6 +1138,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         param.setLimit(limit);
         param.setFilters(filters);
         param.setColumns(this.viewColumns(dbName, viewName));
+        param.setReadonly(true);
         return this.selectRecords(param);
     }
 

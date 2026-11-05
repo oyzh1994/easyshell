@@ -48,7 +48,7 @@ import java.util.function.Consumer;
  */
 public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
 
-    private final SimpleObjectProperty<ShellSqliteClient> clientProperty = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<ShellSqliteClient> clientProperty;
 
     /**
      * 树视图
@@ -73,7 +73,7 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
      * @param client 客户端
      */
     public void setClient(ShellSqliteClient client) {
-        this.clientProperty.set(client);
+        this.clientProperty().set(client);
     }
 
     /**
@@ -92,7 +92,7 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
      */
     public SimpleObjectProperty<ShellSqliteClient> clientProperty() {
         if (this.clientProperty == null) {
-            return new SimpleObjectProperty<>();
+            this.clientProperty = new SimpleObjectProperty<>();
         }
         return this.clientProperty;
     }

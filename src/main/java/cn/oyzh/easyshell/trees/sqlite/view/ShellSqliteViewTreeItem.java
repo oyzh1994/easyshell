@@ -181,10 +181,11 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
                                            List<SQLiteColumn> columns) {
         SQLiteSelectRecordParam param = new SQLiteSelectRecordParam();
         param.setLimit(limit);
-        param.setStart(pageNo * limit);
+        param.setReadonly(true);
         param.setFilters(filters);
         param.setColumns(columns);
         param.setDbName(this.dbName());
+        param.setStart(pageNo * limit);
         param.setTableName(this.viewName());
         List<SQLiteRecord> records = this.client().selectRecords(param);
         long count = this.client().selectRecordCount(param);
@@ -259,6 +260,7 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
         param.setTableName(this.viewName());
         param.setColumns(this.columns());
         param.setPrimaryKey(primaryKey);
+        param.setReadonly(true);
         return this.client().selectRecord(param);
     }
 
