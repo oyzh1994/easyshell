@@ -51,6 +51,7 @@ import cn.oyzh.easyshell.sqlite.view.SQLiteAlertViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteCreateViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteSelectViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
@@ -1424,7 +1425,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                     SQLiteColumn column = new SQLiteColumn();
                     column.setName(resultSet.getString("name"));
                     column.setTableName(objectName);
-                    column.setType(resultSet.getString("type"));
+                    String type = resultSet.getString("type");
+                    column.setType(ShellSqliteColumnUtil.normalizeJdbcType(type));
                     column.setSize(cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil.parseSize(column.getType()));
                     column.setNotNull(resultSet.getInt("notnull") == 1);
                     column.setDefaultValue(resultSet.getString("dflt_value"));

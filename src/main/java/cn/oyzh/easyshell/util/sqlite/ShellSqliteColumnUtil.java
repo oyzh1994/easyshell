@@ -54,7 +54,7 @@ public final class ShellSqliteColumnUtil {
         blob.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, blob);
 
-        DBColumnField any =new DBColumnField("ANY");
+        DBColumnField any = new DBColumnField("ANY");
         any.supportJson = true;
         any.supportText = true;
         any.supportString = true;
@@ -83,7 +83,7 @@ public final class ShellSqliteColumnUtil {
         dateTime.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, dateTime);
 
-        DBColumnField json =new DBColumnField("JSON");
+        DBColumnField json = new DBColumnField("JSON");
         json.alias = "JSONB";
         json.supportJson = true;
         json.supportText = true;
@@ -177,11 +177,10 @@ public final class ShellSqliteColumnUtil {
     /**
      * 将 JDBC 返回类型映射为 SQLite 支持的基本类型。
      *
-     * @param jdbcType JDBC 类型
      * @param typeName JDBC 类型名称
      * @return SQLite 类型
      */
-    public static String normalizeJdbcType(int jdbcType, String typeName) {
+    public static String normalizeJdbcType(String typeName) {
         String type = StringUtil.isBlank(typeName) ? "" : normalizeType(typeName);
         if (isJsonType(type)) {
             return "JSON";
@@ -213,6 +212,16 @@ public final class ShellSqliteColumnUtil {
         if (isDecimalType(type)) {
             return "NUMERIC";
         }
+        return type;
+    }
+
+    /**
+     * 将 JDBC 返回类型映射为 SQLite 支持的基本类型。
+     *
+     * @param jdbcType JDBC 类型
+     * @return SQLite 类型
+     */
+    public static String normalizeJdbcType(int jdbcType) {
         return switch (jdbcType) {
             case Types.BIT, Types.BOOLEAN -> "BOOLEAN";
             case Types.TINYINT, Types.SMALLINT, Types.INTEGER, Types.BIGINT -> "INTEGER";

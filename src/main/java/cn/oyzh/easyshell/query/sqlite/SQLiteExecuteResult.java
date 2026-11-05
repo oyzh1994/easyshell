@@ -39,7 +39,7 @@ public class SQLiteExecuteResult extends SQLiteQueryResult {
             String typeName = metaData.getColumnTypeName(index);
             column.setName(metaData.getColumnLabel(index));
             column.setSize(ShellSqliteColumnUtil.normalizeJdbcSize(typeName));
-            column.setType(ShellSqliteColumnUtil.normalizeJdbcType(metaData.getColumnType(index), typeName));
+            column.setType(ShellSqliteColumnUtil.normalizeJdbcType(metaData.getColumnType(index)));
             column.setPosition(index);
             // SQLite JDBC 的 catalog 元数据返回表名，数据库统一使用 main。
             column.setDbName("main");
