@@ -11,7 +11,7 @@ platform: macos
 # 打包文件的存放目录
 dest: '/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/EasyShell_${appVersion}.app'
 # 程序的图标，windows是ico、linux是png、macos是icns，
-appIcon: '${projectPath}/resource/app.icns'
+appIcon: '${projectPath}/resource/ico/app.icns'
 # 程序主程序jar
 mainJar: '${projectPath}/target/easyshell-${appVersion}.jar'
 # jdk路径，可选物理路径或者$SYSTEM

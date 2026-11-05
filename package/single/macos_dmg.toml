@@ -1,7 +1,7 @@
 packMode = "jpackage"
 platform = "macos"
 dest = "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/"
-appIcon = "${projectPath}/resource/app.icns"
+appIcon = "${projectPath}/resource/ico/app.icns"
 mainJar = "${projectPath}/target/easyshell-${appVersion}.jar"
 jdkPath = "$SYSTEM"
 

@@ -1,5 +1,5 @@
 dest = "/Users/oyzh/Desktop/Package/EasyShell/${appVersion}/"
-appIcon = "${projectPath}/resource/app.icns"
+appIcon = "${projectPath}/resource/ico/app.icns"
 platform = "macos"
 
 [jpackage]

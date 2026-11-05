@@ -21,18 +21,21 @@ public class ShellConst {
     /**
      * icon地址
      */
-    public final static String ICON_PATH = "/image/shell_no_bg.png";
+    public final static String ICON_PATH = "/image/app_square_no_bg.png";
+//    public final static String ICON_PATH = "/image/shell_no_bg.png";
 
     /**
      * 托盘图标，windows专用
      */
     @Deprecated
-    public final static String ICON_24_PATH = "/image/shell_24.png";
+    public final static String ICON_24_PATH = "/image/app_square_24.png";
+//    public final static String ICON_24_PATH = "/image/shell_24.png";
 
     /**
      * 任务栏图标，windows专用
      */
-    public final static String ICON_32_PATH = "/image/shell_32.png";
+    public final static String ICON_32_PATH = "/image/app_square_32.png";
+//    public final static String ICON_32_PATH = "/image/shell_32.png";
 
 //    /**
 //     * 初始化jfx缓存目录

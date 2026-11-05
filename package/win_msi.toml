@@ -1,5 +1,5 @@
 dest = "C:/Package/EasyShell/${appVersion}"
-appIcon = "${projectPath}/resource/app.ico"
+appIcon = "${projectPath}/resource/ico/app.ico"
 platform = "windows"
 
 [jpackage]

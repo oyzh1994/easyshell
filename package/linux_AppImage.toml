@@ -1,5 +1,5 @@
 dest = "/home/oyzh/Package/EasyShell/${appVersion}/"
-appIcon = "${projectPath}/resource/app.png"
+appIcon = "${projectPath}/resource/ico/app.png"
 platform = "linux"
 appImageRuntime = "${pkgPath}/AppImage"
 

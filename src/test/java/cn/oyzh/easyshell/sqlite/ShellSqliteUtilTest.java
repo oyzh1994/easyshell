@@ -33,17 +33,17 @@ public class ShellSqliteUtilTest {
 
     @Test
     public void testNormalizeJdbcType() {
-        assertEquals("INTEGER", ShellSqliteColumnUtil.normalizeJdbcType(Types.BIGINT, "BIGINT"));
-        assertEquals("REAL", ShellSqliteColumnUtil.normalizeJdbcType(Types.DOUBLE, "DOUBLE"));
-        assertEquals("NUMERIC", ShellSqliteColumnUtil.normalizeJdbcType(Types.DECIMAL, "DECIMAL(10, 2)"));
-        assertEquals("TEXT", ShellSqliteColumnUtil.normalizeJdbcType(Types.VARCHAR, "VARCHAR"));
-        assertEquals("BLOB", ShellSqliteColumnUtil.normalizeJdbcType(Types.BINARY, "VARBINARY"));
-        assertEquals("BOOLEAN", ShellSqliteColumnUtil.normalizeJdbcType(Types.BOOLEAN, "BOOLEAN"));
-        assertEquals("DATE", ShellSqliteColumnUtil.normalizeJdbcType(Types.DATE, "DATE"));
-        assertEquals("TIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIME, "TIME"));
-        assertEquals("DATETIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIMESTAMP, "TIMESTAMP"));
-        assertEquals("JSON", ShellSqliteColumnUtil.normalizeJdbcType(Types.OTHER, "JSONB"));
-        assertEquals("ANY", ShellSqliteColumnUtil.normalizeJdbcType(Types.NULL, "NULL"));
+        assertEquals("INTEGER", ShellSqliteColumnUtil.normalizeJdbcType(Types.BIGINT));
+        assertEquals("REAL", ShellSqliteColumnUtil.normalizeJdbcType(Types.DOUBLE));
+        assertEquals("NUMERIC", ShellSqliteColumnUtil.normalizeJdbcType(Types.DECIMAL));
+        assertEquals("TEXT", ShellSqliteColumnUtil.normalizeJdbcType(Types.VARCHAR));
+        assertEquals("BLOB", ShellSqliteColumnUtil.normalizeJdbcType(Types.BINARY));
+        assertEquals("BOOLEAN", ShellSqliteColumnUtil.normalizeJdbcType(Types.BOOLEAN));
+        assertEquals("DATE", ShellSqliteColumnUtil.normalizeJdbcType(Types.DATE));
+        assertEquals("TIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIME));
+        assertEquals("DATETIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIMESTAMP));
+        assertEquals("JSON", ShellSqliteColumnUtil.normalizeJdbcType(Types.OTHER));
+        assertEquals("ANY", ShellSqliteColumnUtil.normalizeJdbcType(Types.NULL));
 
         assertEquals(Integer.valueOf(20), ShellSqliteColumnUtil.normalizeJdbcSize("VARCHAR(20)"));
         assertNull(ShellSqliteColumnUtil.normalizeJdbcSize("VARCHAR"));
