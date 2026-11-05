@@ -1,15 +1,18 @@
 package cn.oyzh.easyshell.fx.sqlite;
 
+import cn.oyzh.easyshell.fx.sqlite.record.ShellSqliteRecordColumn;
+import cn.oyzh.easyshell.fx.sqlite.record.ShellSqliteRecordTableRow;
 import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
-import cn.oyzh.easyshell.sqlite.ShellSqliteHelper;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
+import cn.oyzh.fx.db.ui.DBStatusColumn;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.scene.control.SelectionMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,18 +46,26 @@ public class SQLiteResultTableView extends FXTableView<SQLiteRecord> {
      */
     public void setResult(List<SQLiteColumn> columns, List<SQLiteRecord> records) {
         this.columns = columns == null ? List.of() : columns;
-        this.getColumns().clear();
+        List<FXTableColumn<SQLiteRecord, Object>> columnList = new ArrayList<>();
+        columnList.add(new DBStatusColumn<>());
         for (SQLiteColumn column : this.columns) {
-            FXTableColumn<SQLiteRecord, String> tableColumn = new FXTableColumn<>(column.getName());
+            ShellSqliteRecordColumn tableColumn = new ShellSqliteRecordColumn(column, false);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
-            tableColumn.setCellValueFactory(param ->
-                    new SimpleObjectProperty<>(ShellSqliteHelper.displayValue(param.getValue().getValue(column))));
-            this.getColumns().add(tableColumn);
+            columnList.add(tableColumn);
         }
+        this.getColumns().setAll(columnList);
         this.setItems(FXCollections.observableArrayList(records == null ? List.of() : records));
     }
 
     public List<SQLiteColumn> getSqliteColumns() {
         return this.columns;
+    }
+
+    @Override
+    public void initNode() {
+        this.setSelectionMode(SelectionMode.MULTIPLE);
+        this.setRowFactory(param -> new ShellSqliteRecordTableRow());
+        super.destroyItemsOnRemoved();
+        super.initNode();
     }
 }
