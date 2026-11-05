@@ -8,9 +8,7 @@ import cn.oyzh.easyshell.llm.LLMUtil;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,8 +17,6 @@ import java.util.List;
 public class ShellMysqlLLMTools implements LLMTools {
 
     private ShellMysqlClient client;
-
-    private final List<DBRawQueryResults> rawResources = new ArrayList<>();
 
     public void setClient(ShellMysqlClient client) {
         this.client = client;
@@ -62,40 +58,36 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlRaw", value = "Execute SQL and return raw JDBC result sets")
-    public List<ResultSet> executeSqlRaw(
+    @Tool(name = "executeSqlRaw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    public String executeSqlRaw(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
-            return Collections.emptyList();
+            return "Database client is unavailable.";
         }
         if (database == null || database.isBlank() || sql == null || sql.isBlank()) {
-            return Collections.emptyList();
+            return "Database and SQL are required.";
         }
-        try {
-            DBRawQueryResults results = this.client.executeSqlRaw(database, sql);
-            this.rawResources.add(results);
-            return results.getResultSets();
+        try (DBRawQueryResults results = this.client.executeSqlRaw(database, sql)) {
+            return LLMDBToolsUtil.formatRaw(results);
         } catch (Exception ex) {
-            return Collections.emptyList();
+            return "Execution failed: " + ex.getMessage();
         }
     }
 
-    @Tool(name = "executeSqlRawDefaultDatabase", value = "Execute SQL and return raw JDBC result sets")
-    public List<ResultSet> executeSqlRaw(
+    @Tool(name = "executeSqlRawDefaultDatabase", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    public String executeSqlRaw(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
-            return Collections.emptyList();
+            return "Database client is unavailable.";
         }
         if (sql == null || sql.isBlank()) {
-            return Collections.emptyList();
+            return "SQL is required.";
         }
-        try {
-            DBRawQueryResults results = this.client.executeSqlRaw(sql);
-            this.rawResources.add(results);
-            return results.getResultSets();
+        try (DBRawQueryResults results = this.client.executeSqlRaw(sql)) {
+            return LLMDBToolsUtil.formatRaw(results);
         } catch (Exception ex) {
-            return Collections.emptyList();
+            return "Execution failed: " + ex.getMessage();
         }
     }
 
@@ -237,12 +229,6 @@ public class ShellMysqlLLMTools implements LLMTools {
         } catch (Exception ex) {
             return "Execution failed: " + ex.getMessage();
         }
-    }
-
-    @Override
-    public void close() {
-        this.rawResources.forEach(DBRawQueryResults::close);
-        this.rawResources.clear();
     }
 
     @Override

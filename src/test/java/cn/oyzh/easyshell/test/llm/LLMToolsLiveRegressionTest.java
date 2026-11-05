@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mysql.ShellMysqlLLMTools;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.redis.ShellRedisLLMTools;
+import cn.oyzh.easyshell.sqlite.ShellSqliteLLMTools;
 import cn.oyzh.easyshell.ssh.ShellSSHLLMTools;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKLLMTools;
@@ -113,6 +114,22 @@ public class LLMToolsLiveRegressionTest {
                             json.contains("\"arg" + index + "\""));
                 }
             }
+        }
+    }
+
+    @Test
+    public void rawJdbcResultSetsAreSafelyExposedAsTextTools() {
+        List<Object> tools = List.of(
+                new ShellSqliteLLMTools(),
+                new ShellMysqlLLMTools(),
+                new ShellMariadbLLMTools(),
+                new ShellDamengLLMTools()
+        );
+        for (Object tool : tools) {
+            Set<String> names = Set.copyOf(ToolSpecifications.toolSpecificationsFrom(tool).stream()
+                    .map(ToolSpecification::name)
+                    .toList());
+            assertTrue(tool.getClass().getSimpleName(), names.contains("executeSqlRaw"));
         }
     }
 

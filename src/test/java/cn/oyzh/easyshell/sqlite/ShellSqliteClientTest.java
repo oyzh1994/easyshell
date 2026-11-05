@@ -281,7 +281,10 @@ public class ShellSqliteClientTest {
         ShellSqliteLLMTools llmTools = new ShellSqliteLLMTools();
         llmTools.setClient(client);
         assertTrue(llmTools.executeSql("SELECT name FROM item WHERE id = 1").contains("中文"));
-        assertEquals(1, llmTools.executeSqlRaw("SELECT name FROM item WHERE id = 1").size());
+        String raw = llmTools.executeSqlRaw("SELECT name, data FROM item WHERE id = 1");
+        assertTrue(raw.contains("\"resultSets\""));
+        assertTrue(raw.contains("中文"));
+        assertTrue(raw.contains("\"encoding\":\"base64\""));
         llmTools.close();
         assertEquals("NULL", ShellSqliteHelper.displayValue(result.getRecords().get(1).getValue("name")));
 

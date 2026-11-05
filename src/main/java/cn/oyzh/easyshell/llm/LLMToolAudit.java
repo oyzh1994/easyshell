@@ -256,13 +256,41 @@ public final class LLMToolAudit {
     }
 
     private static String resultText(ToolExecution execution) {
+        Object resultObject = execution.resultObject();
+        if (resultObject != null && containsJdbcResource(resultObject)) {
+            return "[raw JDBC result omitted]";
+        }
         try {
             String text = execution.result();
             return text == null ? "" : text;
         } catch (RuntimeException ex) {
-            Object result = execution.resultObject();
-            return result == null ? "" : String.valueOf(result);
+            if (resultObject == null) {
+                return "";
+            }
+            try {
+                return String.valueOf(resultObject);
+            } catch (RuntimeException ignored) {
+                return "[" + resultObject.getClass().getName() + "]";
+            }
         }
+    }
+
+    private static boolean containsJdbcResource(Object result) {
+        if (result instanceof java.sql.ResultSet
+                || result instanceof java.sql.Statement
+                || result instanceof java.sql.Connection) {
+            return true;
+        }
+        if (result instanceof Iterable<?> iterable) {
+            for (Object item : iterable) {
+                if (item instanceof java.sql.ResultSet
+                        || item instanceof java.sql.Statement
+                        || item instanceof java.sql.Connection) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static String truncate(String text) {

@@ -8,9 +8,7 @@ import cn.oyzh.fx.db.DBRawQueryResults;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,8 +19,6 @@ import java.util.List;
 public class ShellSqliteLLMTools implements LLMTools {
 
     private ShellSqliteClient client;
-
-    private final List<DBRawQueryResults> rawResources = new ArrayList<>();
 
     public void setClient(ShellSqliteClient client) {
         this.client = client;
@@ -43,17 +39,18 @@ public class ShellSqliteLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlRaw", value = "Execute SQL on the bound SQLite database and return raw JDBC result sets")
-    public List<ResultSet> executeSqlRaw(@P(name = "sql", value = "SQL statement") String sql) {
-        if (this.client == null || sql == null || sql.isBlank()) {
-            return Collections.emptyList();
+    @Tool(name = "executeSqlRaw", value = "Execute SQL on the bound SQLite database and return a safely serialized JSON representation of JDBC result sets")
+    public String executeSqlRaw(@P(name = "sql", value = "SQL statement") String sql) {
+        if (this.client == null) {
+            return "Database client is unavailable.";
         }
-        try {
-            DBRawQueryResults results = this.client.executeSqlRaw(sql);
-            this.rawResources.add(results);
-            return results.getResultSets();
+        if (sql == null || sql.isBlank()) {
+            return "SQL is required.";
+        }
+        try (DBRawQueryResults results = this.client.executeSqlRaw(sql)) {
+            return LLMDBToolsUtil.formatRaw(results);
         } catch (Exception ex) {
-            return Collections.emptyList();
+            return "Execution failed: " + ex.getMessage();
         }
     }
 
@@ -185,12 +182,6 @@ public class ShellSqliteLLMTools implements LLMTools {
         } catch (Exception ex) {
             return "Execution failed: " + ex.getMessage();
         }
-    }
-
-    @Override
-    public void close() {
-        this.rawResources.forEach(DBRawQueryResults::close);
-        this.rawResources.clear();
     }
 
     @Override
