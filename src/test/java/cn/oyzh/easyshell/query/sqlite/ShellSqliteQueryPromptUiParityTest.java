@@ -309,7 +309,8 @@ public class ShellSqliteQueryPromptUiParityTest {
         report.append("- Java: ").append(System.getProperty("java.runtime.version")).append("\n");
         report.append("- JavaFX: ").append(System.getProperty("javafx.version", "unknown")).append("\n");
         report.append("- 渲染尺寸: ").append(SCENE_WIDTH).append(" x ").append(SCENE_HEIGHT).append("\n");
-        report.append("- 提示项: database/keyword/table/column/view/function/procedure 共 7 类\n\n");
+        report.append("- 提示项样式: database/keyword/table/column/view/function/procedure 共 7 类\n");
+        report.append("- SQLite 查询索引仅生成 database/keyword/table/view，不生成字段提示\n\n");
         report.append("| 对比 | 差异像素 | 总像素 | 最大通道差 | 差异边界 | 结果 |\n");
         report.append("| --- | ---: | ---: | ---: | --- | --- |\n");
         for (Diff diff : diffs) {

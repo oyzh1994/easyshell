@@ -4,10 +4,7 @@ import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.ArrayUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
-import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
-import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,9 +99,6 @@ public class ShellSqliteQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellSql
             tasks.add(() -> this.addItems(items, text, ShellSqliteQueryUtil.getViews(),
                     (byte) 5, "main", minCorr));
         }
-        if (token.isPossibilityColumn()) {
-            tasks.add(() -> this.addColumnItems(items, text, minCorr));
-        }
         ThreadUtil.submit(tasks);
         List<ShellSqliteQueryPromptItem> itemList = items.parallelStream()
                 .sorted(Comparator.comparingDouble(ShellSqliteQueryPromptItem::getCorrelation))
@@ -127,17 +121,4 @@ public class ShellSqliteQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellSql
         });
     }
 
-    private void addColumnItems(List<ShellSqliteQueryPromptItem> items, String input, float minCorr) {
-        for (SQLiteColumn column : ShellSqliteQueryUtil.getColumnItems()) {
-            double correlation = TextUtil.clacCorr(column.getName(), input);
-            if (correlation > minCorr) {
-                ShellSqliteQueryPromptItem item = new ShellSqliteQueryPromptItem();
-                item.setType((byte) 3);
-                item.setContent(column.getName());
-                item.setExtContent(DBUtil.wrap(column.getDbName(), column.getTableName(), DBDialect.SQLITE));
-                item.setCorrelation(correlation);
-                items.add(item);
-            }
-        }
-    }
 }

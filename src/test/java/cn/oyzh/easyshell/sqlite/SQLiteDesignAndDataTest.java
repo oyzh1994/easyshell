@@ -90,7 +90,6 @@ public class SQLiteDesignAndDataTest {
             assertTrue(ShellSqliteQueryUtil.getTables().contains("index_item"));
             assertTrue(ShellSqliteQueryUtil.getTables().contains("renamed_collect"));
             assertTrue(ShellSqliteQueryUtil.getViews().contains("broken_view"));
-            assertTrue(ShellSqliteQueryUtil.getColumns().contains("name"));
         } finally {
             client.close();
         }
@@ -109,17 +108,6 @@ public class SQLiteDesignAndDataTest {
             ShellSqliteQueryUtil.updateIndex(client);
 
             assertTrue(ShellSqliteQueryUtil.getDatabases().contains("main"));
-            SQLiteColumn column = ShellSqliteQueryUtil.getColumnItems().stream()
-                    .filter(item -> "name".equals(item.getName())
-                            && "prompt_item".equals(item.getTableName()))
-                    .findFirst().orElse(null);
-            assertNotNull(column);
-            assertEquals("main", column.getDbName());
-
-            ShellSqliteQueryPromptItem columnPrompt = new ShellSqliteQueryPromptItem();
-            columnPrompt.setType((byte) 3);
-            columnPrompt.setContent("name");
-            assertEquals("\"name\"", columnPrompt.wrapContent());
 
             String sql = "SELECT * FROM prompt_";
             ShellSqliteQueryToken token = ShellSqliteQueryTokenAnalyzer.INSTANCE
@@ -148,6 +136,13 @@ public class SQLiteDesignAndDataTest {
                     .initPrompts(databaseToken, 0.5f);
             assertTrue(databasePrompts.stream()
                     .anyMatch(item -> item.isDatabaseType() && "main".equals(item.getContent())));
+
+            String columnSql = "name";
+            ShellSqliteQueryToken columnToken = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .currentToken(columnSql, columnSql.length());
+            List<ShellSqliteQueryPromptItem> columnPrompts = ShellSqliteQueryTokenAnalyzer.INSTANCE
+                    .initPrompts(columnToken, 0.5f);
+            assertTrue(columnPrompts.stream().noneMatch(ShellSqliteQueryPromptItem::isColumnType));
 
             String keywordSql = "SEL";
             ShellSqliteQueryToken keywordToken = ShellSqliteQueryTokenAnalyzer.INSTANCE
