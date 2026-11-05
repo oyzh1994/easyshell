@@ -18,6 +18,10 @@ import javafx.beans.property.StringProperty;
  */
 public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQLiteColumn> {
 
+    public static final String KIND_NORMAL = "NORMAL";
+
+    public static final String KIND_GENERATED = "GENERATED";
+
     private String dbName;
 
     private String tableName;
@@ -45,6 +49,8 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
     private String collate;
 
     private String check;
+
+    private boolean generated;
 
     private String generatedExpression;
 
@@ -225,6 +231,9 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
 
     public void setGeneratedExpression(String generatedExpression) {
         this.generatedExpression = generatedExpression;
+        if (generatedExpression != null && !generatedExpression.isBlank()) {
+            this.setGenerated(true);
+        }
         super.putOriginalData("generatedExpression", generatedExpression);
     }
 
@@ -237,9 +246,27 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
         super.putOriginalData("generatedStorage", generatedStorage);
     }
 
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
+        super.putOriginalData("generated", generated);
+    }
+
     @Override
     public boolean isGenerated() {
-        return this.generatedExpression != null && !this.generatedExpression.isBlank();
+        return this.generated;
+    }
+
+    /**
+     * 清理当前字段类型不适用的属性。
+     */
+    public void normalizeGeneratedAttributes() {
+        if (this.isGenerated()) {
+            this.setAutoIncrement(false);
+            this.setDefaultValue(null);
+        } else {
+            this.setGeneratedExpression(null);
+            this.setGeneratedStorage(null);
+        }
     }
 
     public boolean isNullable() {
@@ -261,6 +288,7 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
                 || super.checkOriginalData("unique", this.unique)
                 || super.checkOriginalData("collate", this.collate)
                 || super.checkOriginalData("check", this.check)
+                || super.checkOriginalData("generated", this.generated)
                 || super.checkOriginalData("generatedExpression", this.generatedExpression)
                 || super.checkOriginalData("generatedStorage", this.generatedStorage);
     }
@@ -283,6 +311,7 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
             this.setUnique(column.isUnique());
             this.setCollate(column.getCollate());
             this.setCheck(column.getCheck());
+            this.setGenerated(column.isGenerated());
             this.setGeneratedExpression(column.getGeneratedExpression());
             this.setGeneratedStorage(column.getGeneratedStorage());
         }

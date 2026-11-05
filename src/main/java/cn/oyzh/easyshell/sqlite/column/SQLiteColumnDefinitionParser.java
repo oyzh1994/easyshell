@@ -124,6 +124,7 @@ public final class SQLiteColumnDefinitionParser {
         column.setCheck(match(CHECK, definition));
         Matcher generated = GENERATED.matcher(definition.trim());
         if (generated.find()) {
+            column.setGenerated(true);
             column.setGeneratedExpression(generated.group(1).trim());
             column.setGeneratedStorage(StringUtil.blankToDefault(generated.group(2), "VIRTUAL"));
         }

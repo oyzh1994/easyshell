@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.fx.sqlite.SQLiteCollationComboBox?>
+<?import cn.oyzh.easyshell.fx.sqlite.SQLiteColumnKindComboBox?>
 <?import cn.oyzh.easyshell.fx.sqlite.table.ShellSqliteDefaultValueTextFiled?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
@@ -12,7 +13,19 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableColumnExtraController"
-        realHeight="200">
+        realHeight="170">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="columnKindBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.column.kind">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <SQLiteColumnKindComboBox fx:id="columnKind" realHeight="25" flexWidth="100% - 140">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </SQLiteColumnKindComboBox>
+    </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="autoIncrementBox" managed="false" visible="false">
         <AccentLabel realHeight="25" realWidth="80" text="%base.autoIncrement">
             <HBox.margin>

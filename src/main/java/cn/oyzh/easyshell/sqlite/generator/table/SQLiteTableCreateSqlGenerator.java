@@ -113,6 +113,9 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
         int autoIncrementCount = 0;
         boolean tablePrimaryKey = containsTablePrimaryKey(constraints);
         for (SQLiteColumn column : columns) {
+            if (column != null) {
+                column.normalizeGeneratedAttributes();
+            }
             validateColumn(column);
             if (column.isPrimaryKey() && !tablePrimaryKey) {
                 primaryKeyCount++;
@@ -205,7 +208,7 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
         if (column.isUnique()) {
             sql.append(" UNIQUE");
         }
-        if (StringUtil.isNotBlank(column.getDefaultValue())) {
+        if (!column.isGenerated() && StringUtil.isNotBlank(column.getDefaultValue())) {
             sql.append(" DEFAULT ").append(column.getDefaultValue().trim());
         }
         if (StringUtil.isNotBlank(column.getCollate())) {
@@ -218,7 +221,7 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
         if (column.isGenerated()) {
             String storage = StringUtil.blankToDefault(column.getGeneratedStorage(), "VIRTUAL");
             sql.append(" GENERATED ALWAYS AS (").append(SQLiteGeneratorUtil.replaceColumnReferences(
-                            column.getGeneratedExpression().trim(), renamedColumns))
+                            StringUtil.blankToDefault(column.getGeneratedExpression(), "").trim(), renamedColumns))
                     .append(") ").append(storage.toUpperCase());
         }
         return sql.toString();
@@ -258,6 +261,9 @@ public class SQLiteTableCreateSqlGenerator extends DBSqlGenerator {
             throw new IllegalArgumentException("Generated column cannot be a key or unique column");
         }
         if (column.isGenerated()) {
+            if (StringUtil.isBlank(column.getGeneratedExpression())) {
+                throw new IllegalArgumentException("Generated column expression is empty");
+            }
             String storage = StringUtil.blankToDefault(column.getGeneratedStorage(), "VIRTUAL");
             if (!"VIRTUAL".equalsIgnoreCase(storage) && !"STORED".equalsIgnoreCase(storage)) {
                 throw new IllegalArgumentException("Generated column storage must be VIRTUAL or STORED");

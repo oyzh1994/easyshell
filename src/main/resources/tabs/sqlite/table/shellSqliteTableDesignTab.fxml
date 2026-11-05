@@ -61,7 +61,7 @@
     <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
         <FixedTab text="%base.fields" fx:id="columnTab">
             <FXVBox flexWidth="100%" flexHeight="100%">
-                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexWidth="100%" flexHeight="100% - 200">
+                <DBStatusTableView fixedCellSize="30" fx:id="columnTable" flexWidth="100%" flexHeight="100% - 170">
                     <columns>
                         <DBStatusColumn/>
                         <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>

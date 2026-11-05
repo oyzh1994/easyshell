@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.tabs.sqlite.table;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.sqlite.SQLiteCollationComboBox;
+import cn.oyzh.easyshell.fx.sqlite.SQLiteColumnKindComboBox;
 import cn.oyzh.easyshell.fx.sqlite.table.ShellSqliteDefaultValueTextFiled;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
@@ -24,6 +25,12 @@ import java.util.ResourceBundle;
  * @since 2026-11-02
  */
 public class ShellSqliteTableColumnExtraController extends SubTabController {
+
+    @FXML
+    private FXHBox columnKindBox;
+
+    @FXML
+    private SQLiteColumnKindComboBox columnKind;
 
     @FXML
     private FXHBox defaultValueBox;
@@ -104,8 +111,11 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
             this.defaultValue.clear();
             this.check.clear();
             this.collate.clearSelection();
+            this.columnKind.clearSelection();
             this.generatedExpression.clear();
+            this.generatedStorage.clearSelection();
             this.autoIncrement.setSelected(false);
+            this.setBoxVisible(this.columnKindBox, false);
             this.setBoxVisible(this.autoIncrementBox, false);
             this.setBoxVisible(this.defaultValueBox, false);
             this.setBoxVisible(this.collateBox, false);
@@ -116,34 +126,56 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
         }
         this.ignoreChanged = true;
         try {
-            boolean supportDefaultValue = this.column.supportDefaultValue();
-            this.defaultValueBox.setVisible(supportDefaultValue);
-            this.defaultValueBox.setManaged(supportDefaultValue);
-            if (supportDefaultValue) {
-                this.defaultValue.init(this.column, this.column.getDefaultValue());
-            } else {
-                this.column.setDefaultValue(null);
-            }
-            boolean supportAutoIncrement = this.column.supportAutoIncrement();
-            this.autoIncrementBox.setVisible(supportAutoIncrement);
-            this.autoIncrementBox.setManaged(supportAutoIncrement);
-            if (supportAutoIncrement) {
-                this.autoIncrement.setSelected(this.column.isAutoIncrement());
-            } else {
-                this.column.setAutoIncrement(false);
+            boolean generated = this.column.isGenerated();
+            this.columnKind.select(generated ? SQLiteColumn.KIND_GENERATED : SQLiteColumn.KIND_NORMAL);
+            this.column.setGenerated(generated);
+            this.column.normalizeGeneratedAttributes();
+            this.setBoxVisible(this.columnKindBox, true);
+            this.updateKindLayout(generated);
+            this.generatedStorage.setItem(List.of("VIRTUAL", "STORED"));
+            if (generated) {
+                this.defaultValue.clear();
                 this.autoIncrement.setSelected(false);
+                this.generatedStorage.setValue(StringUtil.blankToDefault(
+                        this.column.getGeneratedStorage(), "VIRTUAL"));
+                this.generatedExpression.setText(StringUtil.blankToDefault(
+                        this.column.getGeneratedExpression(), ""));
+            } else {
+                boolean supportDefaultValue = this.column.supportDefaultValue();
+                if (supportDefaultValue) {
+                    this.defaultValue.init(this.column, this.column.getDefaultValue());
+                } else {
+                    this.column.setDefaultValue(null);
+                    this.defaultValue.clear();
+                }
+                boolean supportAutoIncrement = this.column.supportAutoIncrement();
+                if (supportAutoIncrement) {
+                    this.autoIncrement.setSelected(this.column.isAutoIncrement());
+                } else {
+                    this.column.setAutoIncrement(false);
+                    this.autoIncrement.setSelected(false);
+                }
+                this.generatedExpression.clear();
             }
             this.check.setText(StringUtil.blankToDefault(this.column.getCheck(), ""));
             this.setBoxVisible(this.collateBox, true);
             this.setBoxVisible(this.checkBox, true);
-            this.setBoxVisible(this.generatedExpressionBox, true);
-            this.setBoxVisible(this.generatedStorageBox, true);
-            this.generatedStorage.setItem(List.of("VIRTUAL", "STORED"));
             this.collate.select(StringUtil.blankToDefault(this.column.getCollate(), ""));
-            this.generatedStorage.setValue(StringUtil.blankToDefault(this.column.getGeneratedStorage(), "VIRTUAL"));
-            this.generatedExpression.setText(StringUtil.blankToDefault(this.column.getGeneratedExpression(), ""));
         } finally {
             this.ignoreChanged = false;
+        }
+    }
+
+    private boolean generatedKindSelected() {
+        return SQLiteColumn.KIND_GENERATED.equals(this.columnKind.getValue());
+    }
+
+    private void updateKindLayout(boolean generated) {
+        this.setBoxVisible(this.generatedExpressionBox, generated);
+        this.setBoxVisible(this.generatedStorageBox, generated);
+        if (this.column != null) {
+            this.setBoxVisible(this.defaultValueBox, !generated && this.column.supportDefaultValue());
+            this.setBoxVisible(this.autoIncrementBox, !generated && this.column.supportAutoIncrement());
         }
     }
 
@@ -157,10 +189,32 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
         super.bindListeners();
         this.defaultValue.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
         this.autoIncrement.selectedChanged((observable, oldValue, newValue) -> this.apply());
+        this.columnKind.selectedItemChanged((observable, oldValue, newValue) -> this.onColumnKindChanged());
         this.collate.selectedItemChanged((observable, oldValue, newValue) -> this.apply());
         this.check.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
         this.generatedExpression.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
         this.generatedStorage.valueProperty().addListener((observable, oldValue, newValue) -> this.apply());
+    }
+
+    private void onColumnKindChanged() {
+        if (this.ignoreChanged || this.column == null) {
+            return;
+        }
+        boolean generated = this.generatedKindSelected();
+        this.ignoreChanged = true;
+        try {
+            this.generatedStorage.setValue("VIRTUAL");
+            if (generated) {
+                this.defaultValue.clear();
+                this.autoIncrement.setSelected(false);
+            } else {
+                this.generatedExpression.clear();
+            }
+            this.updateKindLayout(generated);
+        } finally {
+            this.ignoreChanged = false;
+        }
+        this.apply();
     }
 
     private void apply() {
@@ -168,16 +222,23 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
             return;
         }
         try {
-            if (this.defaultValueBox.isVisible()) {
-                this.column.setDefaultValue(this.defaultValue.getValue());
-            }
-            if (this.autoIncrementBox.isVisible()) {
-                this.column.setAutoIncrement(this.autoIncrement.isSelected());
+            boolean generated = this.generatedKindSelected();
+            this.column.setGenerated(generated);
+            this.column.normalizeGeneratedAttributes();
+            if (generated) {
+                this.column.setGeneratedExpression(this.generatedExpression.getTextTrim());
+                this.column.setGeneratedStorage(this.generatedStorage.getValue());
+            } else {
+                if (this.defaultValueBox.isVisible()) {
+                    this.column.setDefaultValue(this.defaultValue.getValue());
+                }
+                if (this.autoIncrementBox.isVisible()) {
+                    this.column.setAutoIncrement(this.autoIncrement.isSelected());
+                }
             }
             this.column.setCollate(StringUtil.blankToDefault(this.collate.getSelectedItem(), null));
             this.column.setCheck(this.check.getTextTrim());
-            this.column.setGeneratedExpression(this.generatedExpression.getTextTrim());
-            this.column.setGeneratedStorage(this.generatedStorage.getValue());
+            this.updateKindLayout(generated);
             this.column.setChanged(true);
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
