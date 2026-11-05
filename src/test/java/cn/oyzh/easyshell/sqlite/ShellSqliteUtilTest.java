@@ -15,11 +15,13 @@ import javafx.scene.paint.Color;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -28,6 +30,24 @@ import static org.junit.Assert.assertTrue;
  * @since 2026-11-02
  */
 public class ShellSqliteUtilTest {
+
+    @Test
+    public void testNormalizeJdbcType() {
+        assertEquals("INTEGER", ShellSqliteColumnUtil.normalizeJdbcType(Types.BIGINT, "BIGINT"));
+        assertEquals("REAL", ShellSqliteColumnUtil.normalizeJdbcType(Types.DOUBLE, "DOUBLE"));
+        assertEquals("NUMERIC", ShellSqliteColumnUtil.normalizeJdbcType(Types.DECIMAL, "DECIMAL(10, 2)"));
+        assertEquals("TEXT", ShellSqliteColumnUtil.normalizeJdbcType(Types.VARCHAR, "VARCHAR"));
+        assertEquals("BLOB", ShellSqliteColumnUtil.normalizeJdbcType(Types.BINARY, "VARBINARY"));
+        assertEquals("BOOLEAN", ShellSqliteColumnUtil.normalizeJdbcType(Types.BOOLEAN, "BOOLEAN"));
+        assertEquals("DATE", ShellSqliteColumnUtil.normalizeJdbcType(Types.DATE, "DATE"));
+        assertEquals("TIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIME, "TIME"));
+        assertEquals("DATETIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIMESTAMP, "TIMESTAMP"));
+        assertEquals("JSON", ShellSqliteColumnUtil.normalizeJdbcType(Types.OTHER, "JSONB"));
+        assertEquals("ANY", ShellSqliteColumnUtil.normalizeJdbcType(Types.NULL, "NULL"));
+
+        assertEquals(Integer.valueOf(20), ShellSqliteColumnUtil.normalizeJdbcSize("VARCHAR(20)"));
+        assertNull(ShellSqliteColumnUtil.normalizeJdbcSize("VARCHAR"));
+    }
 
     @Test
     public void testColumnDataAndFacadeUtilities() throws Exception {

@@ -5,6 +5,7 @@ import cn.oyzh.fx.db.DBColumnField;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 
+import java.sql.Types;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -171,6 +172,70 @@ public final class ShellSqliteColumnUtil {
         String value = StringUtil.blankToDefault(type, "TEXT").trim();
         int index = value.indexOf('(');
         return index < 0 ? value : value.substring(0, index).trim();
+    }
+
+    /**
+     * 将 JDBC 返回类型映射为 SQLite 支持的基本类型。
+     *
+     * @param jdbcType JDBC 类型
+     * @param typeName JDBC 类型名称
+     * @return SQLite 类型
+     */
+    public static String normalizeJdbcType(int jdbcType, String typeName) {
+        String type = StringUtil.isBlank(typeName) ? "" : normalizeType(typeName);
+        if (isJsonType(type)) {
+            return "JSON";
+        }
+        if (isDateTimeType(type)) {
+            return "DATETIME";
+        }
+        if (isDateType(type)) {
+            return "DATE";
+        }
+        if (isTimeType(type)) {
+            return "TIME";
+        }
+        if (isBooleanType(type)) {
+            return "BOOLEAN";
+        }
+        if (isTextType(type)) {
+            return "TEXT";
+        }
+        if (isBlobType(type)) {
+            return "BLOB";
+        }
+        if (isIntegerType(type)) {
+            return "INTEGER";
+        }
+        if (isFloatingType(type)) {
+            return "REAL";
+        }
+        if (isDecimalType(type)) {
+            return "NUMERIC";
+        }
+        return switch (jdbcType) {
+            case Types.BIT, Types.BOOLEAN -> "BOOLEAN";
+            case Types.TINYINT, Types.SMALLINT, Types.INTEGER, Types.BIGINT -> "INTEGER";
+            case Types.FLOAT, Types.REAL, Types.DOUBLE -> "REAL";
+            case Types.NUMERIC, Types.DECIMAL -> "NUMERIC";
+            case Types.CHAR, Types.VARCHAR, Types.LONGVARCHAR, Types.NCHAR, Types.NVARCHAR,
+                 Types.LONGNVARCHAR, Types.CLOB, Types.NCLOB, Types.SQLXML -> "TEXT";
+            case Types.BINARY, Types.VARBINARY, Types.LONGVARBINARY, Types.BLOB -> "BLOB";
+            case Types.DATE -> "DATE";
+            case Types.TIME, Types.TIME_WITH_TIMEZONE -> "TIME";
+            case Types.TIMESTAMP, Types.TIMESTAMP_WITH_TIMEZONE -> "DATETIME";
+            default -> "ANY";
+        };
+    }
+
+    /**
+     * 获取 JDBC 类型名称中的有效长度。
+     *
+     * @param typeName JDBC 类型名称
+     * @return 长度，无法确定时返回空
+     */
+    public static Integer normalizeJdbcSize(String typeName) {
+        return parseSize(typeName);
     }
 
     public static Integer parseSize(String type) {

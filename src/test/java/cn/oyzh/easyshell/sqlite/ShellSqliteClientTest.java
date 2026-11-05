@@ -135,6 +135,23 @@ public class ShellSqliteClientTest {
         assertEquals("id", allColumns.getPrimaryKey().getName());
         assertTrue(allColumns.getPrimaryKey().isPrimaryKey());
         assertEquals("first", allColumns.getRecords().getFirst().getValue("name"));
+        this.assertSuccess(client.executeSql(
+                "CREATE TABLE jdbc_types (text_value VARCHAR(20), integer_value BIGINT, "
+                        + "real_value DOUBLE, numeric_value DECIMAL(10,2), blob_value BLOB, "
+                        + "date_value DATE, time_value TIME, datetime_value DATETIME, "
+                        + "boolean_value BOOLEAN, json_value JSON);"));
+        SQLiteExecuteResult typedResult = client.executeSingleSql("SELECT * FROM jdbc_types");
+        assertEquals("TEXT", typedResult.getColumns().column("text_value").getType());
+        assertEquals(Integer.valueOf(20), typedResult.getColumns().column("text_value").getSize());
+        assertEquals("INTEGER", typedResult.getColumns().column("integer_value").getType());
+        assertEquals("REAL", typedResult.getColumns().column("real_value").getType());
+        assertEquals("NUMERIC", typedResult.getColumns().column("numeric_value").getType());
+        assertEquals("BLOB", typedResult.getColumns().column("blob_value").getType());
+        assertEquals("DATE", typedResult.getColumns().column("date_value").getType());
+        assertEquals("TIME", typedResult.getColumns().column("time_value").getType());
+        assertEquals("DATETIME", typedResult.getColumns().column("datetime_value").getType());
+        assertEquals("BOOLEAN", typedResult.getColumns().column("boolean_value").getType());
+        assertEquals("JSON", typedResult.getColumns().column("json_value").getType());
 
         SQLiteExecuteResult withoutPrimaryKey = client.executeSingleSql("SELECT name FROM item");
         assertFalse(withoutPrimaryKey.isUpdatable());

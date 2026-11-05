@@ -4,6 +4,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -35,9 +36,10 @@ public class SQLiteExecuteResult extends SQLiteQueryResult {
         ResultSetMetaData metaData = resultSet.getMetaData();
         for (int index = 1; index <= metaData.getColumnCount(); index++) {
             SQLiteColumn column = new SQLiteColumn();
+            String typeName = metaData.getColumnTypeName(index);
             column.setName(metaData.getColumnLabel(index));
-            column.setType(metaData.getColumnTypeName(index));
-            column.setSize(metaData.getColumnDisplaySize(index));
+            column.setSize(ShellSqliteColumnUtil.normalizeJdbcSize(typeName));
+            column.setType(ShellSqliteColumnUtil.normalizeJdbcType(metaData.getColumnType(index), typeName));
             column.setPosition(index);
             // SQLite JDBC 的 catalog 元数据返回表名，数据库统一使用 main。
             column.setDbName("main");
@@ -76,8 +78,12 @@ public class SQLiteExecuteResult extends SQLiteQueryResult {
                 continue;
             }
             String label = column.getName();
+            String type = column.getType();
+            Integer size = column.getSize();
             column.copy(tableColumn);
             column.setName(label);
+            column.setType(type);
+            column.setSize(size == null ? tableColumn.getSize() : size);
             if (StringUtil.isBlank(column.getDbName())) {
                 column.setDbName(dbName);
             }
