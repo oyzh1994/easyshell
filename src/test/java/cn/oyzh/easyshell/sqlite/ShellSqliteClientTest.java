@@ -9,10 +9,12 @@ import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.database.SQLiteDatabase;
 import cn.oyzh.easyshell.sqlite.function.SQLiteFunction;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
+import cn.oyzh.easyshell.sqlite.record.SQLiteSelectRecordParam;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
 import cn.oyzh.fx.db.DBRawQueryResults;
+import cn.oyzh.fx.db.DBRecordProperty;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import org.junit.After;
 import org.junit.Test;
@@ -200,6 +202,42 @@ public class ShellSqliteClientTest {
             assertEquals(1, records.stream()
                     .filter(item -> "NULL".equals(item.getProperty("name").getValue()))
                     .count());
+        } finally {
+            client.close();
+        }
+    }
+
+    @Test
+    public void testGeneratedColumnsAreReadonlyInTableAndQueryResults() throws Throwable {
+        Path file = this.path("generated-readonly.db");
+        ShellSqliteClient client = this.client(file, false, true);
+        client.start();
+        try {
+            this.assertSuccess(client.executeSql(
+                    "CREATE TABLE item (id INTEGER PRIMARY KEY, price REAL, "
+                            + "total REAL GENERATED ALWAYS AS (price * 2) VIRTUAL);"
+                            + "INSERT INTO item(price) VALUES(12.5);"));
+
+            SQLiteSelectRecordParam param = new SQLiteSelectRecordParam();
+            param.setDbName("main");
+            param.setTableName("item");
+            param.setStart(0L);
+            param.setLimit(10L);
+            SQLiteRecord tableRecord = client.selectRecords(param).getFirst();
+            DBRecordProperty price = tableRecord.getProperty("price");
+            DBRecordProperty total = tableRecord.getProperty("total");
+            assertFalse(price.isReadonly());
+            assertTrue(total.isReadonly());
+            assertFalse(total.getValue() instanceof javafx.scene.Node);
+
+            SQLiteExecuteResult result = client.executeSingleSql("SELECT * FROM item");
+            assertTrue(result.getColumns().column("total").isGenerated());
+            SQLiteRecord queryRecord = result.getRecords().getFirst();
+            DBRecordProperty queryPrice = queryRecord.getProperty("price");
+            DBRecordProperty queryTotal = queryRecord.getProperty("total");
+            assertFalse(queryPrice.isReadonly());
+            assertTrue(queryTotal.isReadonly());
+            assertFalse(queryTotal.getValue() instanceof javafx.scene.Node);
         } finally {
             client.close();
         }

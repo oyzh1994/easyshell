@@ -47,7 +47,7 @@ public class SQLiteRecordProperty extends DBRecordProperty {
 
     @Override
     public Object get() {
-        if (this.readonly || !this.isChanged() || this.node == null) {
+        if (this.isReadonly() || !this.isChanged() || this.node == null) {
             return super.get();
         }
         if (this.setToNullFlag) {
@@ -70,7 +70,7 @@ public class SQLiteRecordProperty extends DBRecordProperty {
 
     @Override
     public Object getValue() {
-        if (this.readonly) {
+        if (this.isReadonly()) {
             return ShellSqliteRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
@@ -79,6 +79,12 @@ public class SQLiteRecordProperty extends DBRecordProperty {
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
         return this.node;
+    }
+
+    @Override
+    public boolean isReadonly() {
+        // 生成列由数据库计算；查询结果字段在解析后可能才补充 generated 标记，因此动态判断
+        return super.isReadonly() || (this.column != null && this.column.isGenerated());
     }
 
     @Override
