@@ -53,6 +53,13 @@ public final class ShellSqliteColumnUtil {
         blob.supportDefaultValue = true;
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, blob);
 
+        DBColumnField any =new DBColumnField("ANY");
+        any.supportJson = true;
+        any.supportText = true;
+        any.supportString = true;
+        any.supportDefaultValue = true;
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, any);
+
         DBColumnField bool = new DBColumnField("BOOLEAN");
         bool.alias = "BOOL";
         bool.supportBoolean = true;
