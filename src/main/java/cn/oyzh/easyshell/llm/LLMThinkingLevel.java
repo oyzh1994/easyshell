@@ -26,5 +26,10 @@ public enum LLMThinkingLevel {
     /**
      * 高
      */
-    HIGH;
+    HIGH,
+
+    /**
+     * 更高
+     */
+    XHIGH;
 }

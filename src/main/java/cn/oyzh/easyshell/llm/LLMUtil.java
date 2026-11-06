@@ -106,7 +106,6 @@ public class LLMUtil {
                 GeminiThinkingConfig thinkingConfig = GeminiThinkingConfig.builder()
                         .includeThoughts(true)
                         .thinkingLevel(thinkingLevel.name().toLowerCase())
-                        //.thinkingBudget(4096)
                         .build();
                 builder = builder.returnThinking(true)
                         .thinkingConfig(thinkingConfig);
