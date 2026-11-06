@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.postgresql.file;
 
 import cn.oyzh.common.date.DateUtil;
+import com.alibaba.fastjson2.JSON;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
@@ -63,10 +64,93 @@ public class ShellPostgresqlDataImportHelper {
                 return DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
             }
         }
+        if (column.supportJson()) {
+            if (value instanceof CharSequence) {
+                return normalizeJson(value.toString());
+            }
+            return JSON.toJSONString(value);
+        }
         if (column.supportString()) {
             return value.toString();
         }
         return value;
+    }
+
+    /**
+     * 规整 JSON 值。兼容旧导出文件多转义一层的情况，例如 {\"level\": 1}。
+     *
+     * @param text JSON 文本
+     * @return 合法 JSON 文本
+     */
+    private static String normalizeJson(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        if (isValidJson(text)) {
+            return text;
+        }
+        String unescaped = unescapeJson(text);
+        if (isValidJson(unescaped)) {
+            return unescaped;
+        }
+        return text;
+    }
+
+    /**
+     * 是否为合法 JSON
+     *
+     * @param text 文本
+     * @return 结果
+     */
+    private static boolean isValidJson(String text) {
+        try {
+            JSON.parse(text);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    /**
+     * 去除一层 JSON 字符串转义
+     *
+     * @param text 文本
+     * @return 反转义后的文本
+     */
+    private static String unescapeJson(String text) {
+        StringBuilder builder = new StringBuilder(text.length());
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c != '\\' || i + 1 >= text.length()) {
+                builder.append(c);
+                continue;
+            }
+            char next = text.charAt(++i);
+            switch (next) {
+                case '"' -> builder.append('"');
+                case '\\' -> builder.append('\\');
+                case '/' -> builder.append('/');
+                case 'b' -> builder.append('\b');
+                case 'f' -> builder.append('\f');
+                case 'n' -> builder.append('\n');
+                case 'r' -> builder.append('\r');
+                case 't' -> builder.append('\t');
+                case 'u' -> {
+                    if (i + 4 < text.length()) {
+                        try {
+                            builder.append((char) Integer.parseInt(text.substring(i + 1, i + 5), 16));
+                            i += 4;
+                        } catch (NumberFormatException ex) {
+                            builder.append('\\').append(next);
+                        }
+                    } else {
+                        builder.append('\\').append(next);
+                    }
+                }
+                default -> builder.append(next);
+            }
+        }
+        return builder.toString();
     }
 
     /**
