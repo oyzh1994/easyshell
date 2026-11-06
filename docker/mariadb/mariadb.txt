@@ -1,6 +1,42 @@
-1. 运行
-docker run -itd -e MYSQL_ROOT_PASSWORD=mariadb@2026 -p 33306:3306 mariadb
+# MariaDB Docker 环境
 
-2. 连接
-user=root
-password=mariadb@2026
+以下命令在 `docker/mariadb` 目录执行。
+
+## 1. 运行（带测试对象）
+
+```bash
+docker run -itd --name easyshell-mariadb \
+  -e MYSQL_ROOT_PASSWORD=mariadb@2026 \
+  -p 33307:3306 \
+  -v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql:ro" \
+  mariadb:latest
+```
+
+说明：
+
+- `init.sql` 创建 `demo` 数据库，包含 `users`、`orders` 表，以及视图、函数、过程、触发器、事件、索引、注释和示例数据。
+- MariaDB 的 `JSON` 类型底层是 `LONGTEXT`；`CHECK` 约束在 10.2+ 生效。
+- `init.sql` 只在容器首次初始化时执行；数据卷已存在时需要重建容器/卷，或手动执行脚本。
+- 脚本内使用 `DROP ... IF EXISTS`，可以在 `demo` 库内重复执行。
+
+## 2. 连接
+
+```text
+主机：127.0.0.1
+端口：33307
+用户：root
+密码：mariadb@2026
+数据库：demo
+```
+
+## 3. 验证
+
+```bash
+docker exec -it easyshell-mariadb mariadb -uroot -pmariadb@2026 -e "USE demo; SHOW TABLES; SELECT * FROM v_users;"
+```
+
+## 4. 清理
+
+```bash
+docker rm -f easyshell-mariadb
+```

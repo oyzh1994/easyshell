@@ -1,17 +1,68 @@
-方案1
-账密 SYSDBA/SYSDBA
-docker run -itd -p 15236:5236 qinchz/dm8-arm64:latest
-docker run -itd -p 15237:5236 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
-docker run -itd -p 15238:5236 -e COMPATIBLE_MODE=4 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
+# 达梦 Docker 环境
 
-方案2
-注意，这个版本的job有问题
-账密 SYSDBA/SYSDBA001
-docker run -itd -p 25236:5236 kikitech/dmdbms
-docker run -itd -p 25237:5236 -e CASE_SENSITIVE=0 kikitech/dmdbms
+以下命令在 `docker/dameng` 目录执行。
 
-方案3
-注意，这个版本的job有问题
-账密 SYSDBA/Dm#@2026
-docker run -itd -p 35236:5236 -e SYSDBA_PWD=Dm#@2026 -e SYSAUDITOR_PWD=Dm#@2026 tensafe/dm8:latest
-docker run -itd -p 35237:5236 -e SYSDBA_PWD=Dm#@2026 -e SYSAUDITOR_PWD=Dm#@2026 -e CASE_SENSITIVE=0 tensafe/dm8:latest
+## 1. 启动
+
+方案1，账密 `SYSDBA/SYSDBA`：
+
+```bash
+docker run -itd --name easyshell-dm -p 15236:5236 qinchz/dm8-arm64:latest
+docker run -itd --name easyshell-dm-ci -p 15237:5236 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
+docker run -itd --name easyshell-dm-mysql -p 15238:5236 -e COMPATIBLE_MODE=4 -e CASE_SENSITIVE=0 qinchz/dm8-arm64:latest
+```
+
+方案2，账密 `SYSDBA/SYSDBA001`：
+
+```bash
+docker run -itd --name easyshell-dm2 -p 25236:5236 kikitech/dmdbms
+docker run -itd --name easyshell-dm2-ci -p 25237:5236 -e CASE_SENSITIVE=0 kikitech/dmdbms
+```
+
+方案3，账密 `SYSDBA/Dm#@2026`：
+
+```bash
+docker run -itd --name easyshell-dm3 -p 35236:5236 \
+  -e SYSDBA_PWD=Dm#@2026 -e SYSAUDITOR_PWD=Dm#@2026 tensafe/dm8:latest
+```
+
+## 2. 初始化测试对象
+
+`init.sql` 使用 `SYSDBA` 执行，创建用户/模式 `DEMO`（密码 `Demo@2026`），并创建表、视图、序列、函数、过程、触发器和示例数据。
+
+以下命令以 `qinchz/dm8-arm64` 为例；其他镜像的 disql 路径可能不同。
+
+```bash
+docker cp init.sql easyshell-dm:/tmp/init.sql
+
+docker exec -it easyshell-dm bash -lc \
+  'cd /home/dmdba/dmdbms/bin && ./disql -S SYSDBA/SYSDBA@127.0.0.1:5236 < /tmp/init.sql'
+```
+
+说明：
+
+- 脚本应在新容器上执行；`DEMO` 用户已存在时需要先手动处理。
+- 达梦 disql 对中文注释的客户端字符集较敏感，脚本中的注释使用英文；表名、数据和对象均为英文。
+- 执行完成后可在 EasyShell 连接 `DEMO/Demo@2026`，树中查看 `DEMO` 模式下的对象。
+
+## 3. 连接
+
+```text
+主机：127.0.0.1
+端口：15236
+用户：DEMO
+密码：Demo@2026
+```
+
+## 4. 验证
+
+```bash
+docker exec -it easyshell-dm bash -lc \
+  'cd /home/dmdba/dmdbms/bin && ./disql -S "DEMO/\"Demo@2026\"@127.0.0.1:5236" -e "SELECT COUNT(*) FROM users;"'
+```
+
+## 5. 清理
+
+```bash
+docker rm -f easyshell-dm easyshell-dm-ci easyshell-dm-mysql easyshell-dm2 easyshell-dm2-ci easyshell-dm3
+```

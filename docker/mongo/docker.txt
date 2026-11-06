@@ -1,6 +1,73 @@
-# 标准
-docker run -itd -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 mongo:latest
-# 3.4，早期版本
-docker run -itd -p 27018:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 mongo:3.4
-# ssl
-docker run -itd -p 27019:27017 -v /root/ssl:/etc/ssl -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 mongo:latest
+# MongoDB Docker 环境
+
+## 1. 标准启动（带测试对象）
+
+在 `docker/mongo` 目录执行：
+
+```bash
+docker run -itd --name easyshell-mongo \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 \
+  -p 27017:27017 \
+  -v "$(pwd)/init.js:/docker-entrypoint-initdb.d/init.js:ro" \
+  mongo:latest
+```
+
+说明：
+
+- `init.js` 使用 mongosh JavaScript 格式，创建 `demo` 数据库。
+- 包含 `users`、`orders`、`logs`、`counters`、`system.js` 集合，以及 `v_users` 视图、唯一索引、JSON Schema 校验器和示例数据。
+- `init.js` 只在容器首次初始化时执行；数据卷已存在时需要重建容器/卷，或手动用 mongosh 执行。
+- `$jsonSchema` 校验器需要 MongoDB 3.6+，建议使用 `mongo:latest`。
+
+## 2. 早期版本
+
+MongoDB 3.4（不带测试对象）：
+
+```bash
+docker run -itd --name easyshell-mongo34 \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 \
+  -p 27018:27017 \
+  mongo:3.4
+```
+
+## 3. 连接
+
+```text
+主机：127.0.0.1
+端口：27017
+用户：admin
+密码：mongo@2026
+认证库：admin
+数据库：demo
+```
+
+## 4. 开启 SSL
+
+```bash
+docker run -itd --name easyshell-mongo-ssl \
+  -p 27019:27017 \
+  -v "$(pwd):/etc/ssl" \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 \
+  mongo:latest
+```
+
+也可以使用 `mongo-ssl-compose.yml`：
+
+```bash
+docker compose -f mongo-ssl-compose.yml up -d
+```
+
+## 5. 验证
+
+```bash
+docker exec -it easyshell-mongo mongosh -u admin -p mongo@2026 --authenticationDatabase admin --eval "db.getSiblingDB('demo').users.countDocuments()"
+```
+
+## 6. 清理
+
+```bash
+docker rm -f easyshell-mongo easyshell-mongo34 easyshell-mongo-ssl
+```

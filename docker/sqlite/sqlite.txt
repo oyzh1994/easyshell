@@ -1,0 +1,42 @@
+# SQLite 测试环境
+
+SQLite 是单文件数据库，不需要 Docker。
+
+## 1. 初始化
+
+在 `docker/sqlite` 目录执行：
+
+```bash
+sqlite3 demo.db < init.sql
+```
+
+也可以使用 EasyShell：
+
+1. 新建 SQLite 连接，数据库文件选择 `demo.db`；
+2. 使用“运行 SQL 文件”执行 `init.sql`；
+3. 刷新表节点。
+
+## 2. 测试对象
+
+- `users`：自增主键、唯一邮箱、CHECK、JSON 文本、BLOB、默认时间
+- `orders`：外键、唯一订单号、索引
+- `v_users`：视图
+- `trg_users_normalize_insert` / `trg_users_normalize_update`：邮箱小写触发器
+- 示例数据：alice、bob 和两条订单
+
+SQLite 不支持模式、序列、存储过程和事件；自增使用 `AUTOINCREMENT`，没有独立函数对象。
+
+## 3. 验证
+
+```bash
+sqlite3 demo.db "SELECT * FROM v_users;"
+sqlite3 demo.db "SELECT name FROM sqlite_master WHERE type='trigger';"
+```
+
+## 4. 清理
+
+直接删除 `demo.db` 即可：
+
+```bash
+rm -f demo.db
+```

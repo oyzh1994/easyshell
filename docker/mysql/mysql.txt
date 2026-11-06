@@ -1,11 +1,63 @@
-1. 运行
-5.6版本
-docker run -itd -e MYSQL_ROOT_PASSWORD=mysql@2026 -p 13306:3306 mysql:5.6
-5.7版本
-docker run -itd -e MYSQL_ROOT_PASSWORD=mysql@2026 -p 23306:3306 mysql:5.7
-最新版本
-docker run -itd -e MYSQL_ROOT_PASSWORD=mysql@2026 -p 33306:3306 mysql:latest
+# MySQL Docker 环境
 
-2. 连接
-user=root
-password=mysql@2026
+以下命令在 `docker/mysql` 目录执行。
+
+## 1. 运行
+
+### 最新版本（带测试对象）
+
+```bash
+docker run -itd --name easyshell-mysql \
+  -e MYSQL_ROOT_PASSWORD=mysql@2026 \
+  -p 33306:3306 \
+  -v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql:ro" \
+  mysql:latest
+```
+
+### MySQL 5.7
+
+```bash
+docker run -itd --name easyshell-mysql57 \
+  -e MYSQL_ROOT_PASSWORD=mysql@2026 \
+  -p 23306:3306 \
+  -v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql:ro" \
+  mysql:5.7
+```
+
+### MySQL 5.6
+
+```bash
+docker run -itd --name easyshell-mysql56 \
+  -e MYSQL_ROOT_PASSWORD=mysql@2026 \
+  -p 13306:3306 \
+  mysql:5.6
+```
+
+说明：
+
+- `init.sql` 需要 MySQL 5.7+（`JSON` 类型）；MySQL 5.6 请使用不带 `init.sql` 的启动命令。
+- `init.sql` 只在容器数据目录首次初始化时执行；容器或数据卷已存在时，需要删除容器/卷后重建，或手动执行脚本。
+- 脚本会创建 `demo` 数据库，包含 `users`、`orders` 表，以及视图、函数、过程、触发器、事件、索引、注释和示例数据。
+- 脚本内使用 `DROP ... IF EXISTS`，可以在 `demo` 库内重复执行。
+
+## 2. 连接
+
+```text
+主机：127.0.0.1
+端口：33306
+用户：root
+密码：mysql@2026
+数据库：demo
+```
+
+## 3. 验证
+
+```bash
+docker exec -it easyshell-mysql mysql -uroot -pmysql@2026 -e "USE demo; SHOW TABLES; SELECT * FROM v_users;"
+```
+
+## 4. 清理
+
+```bash
+docker rm -f easyshell-mysql easyshell-mysql57 easyshell-mysql56
+```
