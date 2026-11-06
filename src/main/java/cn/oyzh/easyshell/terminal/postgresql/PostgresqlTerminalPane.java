@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.terminal.postgresql;
 
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExecuteResult;
@@ -10,7 +12,9 @@ import cn.oyzh.easyshell.query.postgresql.ShellPostgresqlQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryResults;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.terminal.TerminalPane;
@@ -22,6 +26,8 @@ import cn.oyzh.fx.terminal.util.TerminalUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.text.Font;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -196,10 +202,30 @@ public class PostgresqlTerminalPane extends TerminalPane {
      * 常驻连接处理
      */
     private void initByPermanent() {
+        this.applySearchPath();
         this.flushPrompt();
         this.appendByPrompt("");
         this.enableInput();
         this.flushAndMoveCaretEnd();
+    }
+
+    /**
+     * 应用当前模式的 search_path，确保终端中未限定模式的 SQL 使用提示符中的模式
+     */
+    private void applySearchPath() {
+        if (this.schema == null || this.schema.isBlank() || this.client == null || !this.client.isConnected()) {
+            return;
+        }
+        Statement statement = null;
+        try {
+            Connection connection = this.client.getConnManager().connection();
+            statement = connection.createStatement();
+            statement.execute("SET search_path TO " + DBUtil.wrap(this.schema, DBDialect.POSTGRESQL));
+        } catch (Exception ex) {
+            JulLog.warn("set terminal search_path error, schema: {}", this.schema, ex);
+        } finally {
+            IOUtil.close(statement);
+        }
     }
 
     // /**

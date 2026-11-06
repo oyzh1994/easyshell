@@ -61,7 +61,7 @@ public class PostgresqlShowDatabasesTerminalCommandHandler extends PostgresqlTer
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = terminal.getClient().getConnManager().connection(terminal.getSchema());
+            connection = terminal.getClient().getConnManager().connection();
             statement = connection.createStatement();
             // 查询全部数据库，等价于psql的\l
             resultSet = statement.executeQuery("SELECT datname FROM pg_database ORDER BY datname");
