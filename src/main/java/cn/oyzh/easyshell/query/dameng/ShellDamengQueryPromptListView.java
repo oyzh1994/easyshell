@@ -6,6 +6,7 @@ import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.SchemaSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -24,32 +25,25 @@ public class ShellDamengQueryPromptListView extends DBQueryPromptListView<ShellD
     @Override
     protected SVGLabel initPromptLabel(ShellDamengQueryPromptItem item) {
         SVGLabel label = null;
-        if (item.isDatabaseType()) {
-            DatabaseSVGGlyph svgGlyph = new DatabaseSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
+        if (item.isSchemaType()) {
+            SchemaSVGGlyph svgGlyph = new SchemaSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isKeywordType()) {
             KeywordsSVGGlyph svgGlyph = new KeywordsSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isTableType()) {
             SVGGlyph svgGlyph = new TableSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);
         } else if (item.isColumnType()) {
             SVGGlyph svgGlyph = new ColumnSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);
         } else if (item.isViewType()) {
             ViewSVGGlyph svgGlyph = new ViewSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
-//            label.setRealWidth(240);
         } else if (item.isFunctionType()) {
             FunctionSVGGlyph svgGlyph = new FunctionSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
             label.setRealWidth(240);
         } else if (item.isProcedureType()) {

@@ -17,7 +17,7 @@ public class ShellPostgresqlQueryPromptItem extends DBQueryPromptItem {
      *
      * @return 结果
      */
-    public boolean isDatabaseType() {
+    public boolean isSchemaType() {
         return 1 == this.getType();
     }
 

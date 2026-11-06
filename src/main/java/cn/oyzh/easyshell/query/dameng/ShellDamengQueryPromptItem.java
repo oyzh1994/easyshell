@@ -13,11 +13,11 @@ import cn.oyzh.fx.db.util.DBUtil;
 public class ShellDamengQueryPromptItem extends DBQueryPromptItem {
 
     /**
-     * 是否数据库类型
+     * 是否模式类型
      *
      * @return 结果
      */
-    public boolean isDatabaseType() {
+    public boolean isSchemaType() {
         return 1 == this.getType();
     }
 
