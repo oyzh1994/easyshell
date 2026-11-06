@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.postgresql.record.ShellPostgresqlAoutoIncrementTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.postgresql.table.ShellPostgresqlDefaultValueTextFiled?>
+<?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.postgresql.table.ShellPostgresqlTableColumnExtraController" realHeight="200">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="valueBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.value">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <ShellDBEnumTextFiled fx:id="value" realHeight="25" flexWidth="100% - 140" styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </ShellDBEnumTextFiled>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="defaultValueBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.defaultValue">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <ShellPostgresqlDefaultValueTextFiled fx:id="defaultValue" flexWidth="100% - 140" realHeight="25"
+                                          styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </ShellPostgresqlDefaultValueTextFiled>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="currentTimestampBox" managed="false" visible="false">
+        <FXCheckBox fx:id="currentTimestamp" prefHeight="25" text="%base.updateByCurrentTimestamp">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="autoIncrementBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.autoIncrement">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <FXCheckBox fx:id="autoIncrement" prefHeight="25" text="%base.autoIncrement">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+        <ShellPostgresqlAoutoIncrementTypeComboBox fx:id="autoIncrementType" initIndex="0">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </ShellPostgresqlAoutoIncrementTypeComboBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="unsignedBox" managed="false" visible="false">
+        <FXCheckBox fx:id="unsigned" prefHeight="25" text="%base.unsigned">
+            <HBox.margin>
+                <Insets left="95" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="primaryKeySizeBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%base.keySize">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <NumberTextField minVal="0" fx:id="primaryKeySize" flexWidth="100% - 140" realHeight="25"
+                         styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </NumberTextField>
+    </FXHBox>
+</FXVBox>

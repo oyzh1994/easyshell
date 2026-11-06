@@ -235,6 +235,16 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </FXHyperlink>
+                    <InfoLabel text="PostgreSQL">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHyperlink text="https://jdbc.postgresql.org/">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXHyperlink>
                     <InfoLabel text="VNC">
                         <VBox.margin>
                             <Insets left="30" top="10"/>

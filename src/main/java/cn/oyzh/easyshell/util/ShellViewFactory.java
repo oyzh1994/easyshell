@@ -19,6 +19,8 @@ import cn.oyzh.easyshell.controller.connect.mosh.ShellAddMoshConnectController;
 import cn.oyzh.easyshell.controller.connect.mosh.ShellUpdateMoshConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellAddMysqlConnectController;
 import cn.oyzh.easyshell.controller.connect.mysql.ShellUpdateMysqlConnectController;
+import cn.oyzh.easyshell.controller.connect.postgresql.ShellAddPostgresqlConnectController;
+import cn.oyzh.easyshell.controller.connect.postgresql.ShellUpdatePostgresqlConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellUpdateRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellAddRedisConnectController;
@@ -444,6 +446,22 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增PostgreSQL连接
+     *
+     * @param group 分组
+     */
+    public static void addPostgresqlConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddPostgresqlConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
      * 新增mongodb连接
      *
      * @param group 分组
@@ -755,6 +773,22 @@ public class ShellViewFactory {
     public static void updateDamengConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateDamengConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 修改PostgreSQL连接
+     *
+     * @param connect 连接
+     */
+    public static void updatePostgresqlConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdatePostgresqlConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

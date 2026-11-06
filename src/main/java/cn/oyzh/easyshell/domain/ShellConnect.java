@@ -83,6 +83,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String charset;
 
     /**
+     * 数据库名称
+     */
+    @Column
+    private String database;
+
+    /**
      * 终端类型
      */
     @Column
@@ -601,6 +607,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.osType = t1.osType;
         this.groupId = t1.groupId;
         this.charset = t1.charset;
+        this.database = t1.database;
         this.connectTimeOut = t1.connectTimeOut;
         // 终端
         this.backspaceType = t1.backspaceType;
@@ -809,6 +816,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     /** 设置字符集 */
     public void setCharset(String charset) {
         this.charset = charset;
+    }
+
+    /** 获取数据库名称 */
+    public String getDatabase() {
+        return database;
+    }
+
+    /** 设置数据库名称 */
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     @Override
@@ -1146,6 +1163,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     @JSONField(serialize = false, deserialize = false)
     public boolean isDamengType() {
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.DAMENG);
+    }
+
+    /**
+     * 是否PostgreSQL类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isPostgresqlType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.POSTGRESQL);
     }
 
     /** 获取波特率-串口 */

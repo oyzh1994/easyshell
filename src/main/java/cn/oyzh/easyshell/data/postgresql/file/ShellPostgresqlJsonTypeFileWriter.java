@@ -1,0 +1,130 @@
+package cn.oyzh.easyshell.data.postgresql.file;
+
+import cn.oyzh.common.file.LineFileWriter;
+import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
+import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ * Postgresql Json类型文件写入器
+ *
+ * @author oyzh
+ * @since 2025-11-06
+ */
+public class ShellPostgresqlJsonTypeFileWriter extends ShellPostgresqlTypeFileWriter {
+
+    /**
+     * 字段列表
+     */
+    private PostgresqlColumns columns;
+
+    /**
+     * 导出配置
+     */
+    private DBDataExportConfig config;
+
+    /**
+     * 文件读取器
+     */
+    private LineFileWriter writer;
+
+    /**
+     * 是否首次写入
+     */
+    private boolean firstWrite = true;
+
+    /**
+     * 构造 Postgresql Json类型文件写入器
+     *
+     * @param filePath 文件路径
+     * @param config   导出配置
+     * @param columns  字段列表
+     * @throws FileNotFoundException 文件未找到异常
+     */
+    public ShellPostgresqlJsonTypeFileWriter(String filePath, DBDataExportConfig config, PostgresqlColumns columns) throws FileNotFoundException {
+        this.columns = columns;
+        this.config = config;
+        this.writer = LineFileWriter.create(filePath, config.getCharset());
+    }
+
+    @Override
+    public void writeHeader() throws Exception {
+        if (this.config.isEarlyVersion()) {
+            this.writer.writeLine("{");
+            this.writer.writeLine(" \"RECORDS\": [");
+        } else {
+            this.writer.writeLine("[");
+        }
+    }
+
+    @Override
+    public void writeTrial() throws Exception {
+        if (this.config.isEarlyVersion()) {
+            this.writer.write("\n]}");
+        } else {
+            this.writer.write("\n]");
+        }
+    }
+
+    @Override
+    public void writeRecord(Map<String, Object> object) throws Exception {
+        if (!this.firstWrite) {
+            this.writer.write(",\n");
+        }
+        int size = object.size();
+        StringBuilder builder = new StringBuilder("  {\n");
+        for (Map.Entry<String, Object> entry : object.entrySet()) {
+            // 名称
+            builder.append("   \"").append(entry.getKey()).append("\" : ");
+            // 值处理
+            PostgresqlColumn column = this.columns.column(entry.getKey());
+            Object val = this.parameterized(column, entry.getValue(), this.config);
+            if (val != null) {
+                // 数字
+                if (val instanceof Number) {
+                    builder.append(val);
+                } else if (column != null && column.supportBoolean()) {
+                    // PostgreSQL布尔值输出为json布尔类型
+                    builder.append("true".equalsIgnoreCase(val.toString()) ? "true" : "false");
+                } else {// 其他类型
+                    String text = val.toString();
+                    // PostgreSQL bytea的十六进制格式包含反斜杠，json中需要转义
+                    if (column != null && column.supportBinary()) {
+                        text = text.replace("\\", "\\\\");
+                    }
+                    builder.append("\"").append(text).append("\"");
+                }
+            } else {
+                builder.append("null");
+            }
+            if (--size != 0) {
+                builder.append(",\n");
+            } else {
+                builder.append("\n");
+            }
+        }
+        builder.append("  }");
+        this.writer.write(builder.toString());
+        this.firstWrite = false;
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.writer.close();
+        this.writer = null;
+        this.config = null;
+        this.columns = null;
+    }
+
+//    @Override
+//    public Object parameterized(PostgresqlColumn column, Object value, DBDataExportConfig config) {
+//        if (value == null) {
+//            return null;
+//        }
+//        return super.parameterized(column, value, config);
+//    }
+}

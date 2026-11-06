@@ -104,6 +104,11 @@ public class ShellPrototype {
     public static final String DAMENG = "Dameng";
 
     /**
+     * PostgreSQL连接类型
+     */
+    public static final String POSTGRESQL = "PostgreSQL";
+
+    /**
      * MongoDB 连接类型
      */
     public static final String MONGO = "MongoDB";

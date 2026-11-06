@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.local.ShellLocalCommandExecutor;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellFileCollectStore;
@@ -1834,6 +1835,7 @@ public class ShellLLMTools implements LLMTools {
         return client instanceof ShellMysqlClient
                 || client instanceof ShellMariadbClient
                 || client instanceof ShellDamengClient
+                || client instanceof ShellPostgresqlClient
                 || client instanceof ShellMongoClient
                 || client instanceof ShellRedisClient;
     }
@@ -1848,6 +1850,9 @@ public class ShellLLMTools implements LLMTools {
             }
             if (client instanceof ShellDamengClient damengClient) {
                 return damengClient.selectVersion();
+            }
+            if (client instanceof ShellPostgresqlClient postgresqlClient) {
+                return postgresqlClient.selectVersion();
             }
             if (client instanceof ShellMongoClient mongoClient) {
                 return mongoClient.selectVersion();

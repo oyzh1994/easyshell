@@ -171,6 +171,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载PostgreSQL类型
+     *
+     * @return PostgreSQL类型连接
+     */
+    public List<ShellConnect> loadPostgresqlType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isPostgresqlType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载终端类型
      *
      * @return 终端类型连接

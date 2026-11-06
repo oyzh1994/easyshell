@@ -1,0 +1,374 @@
+package cn.oyzh.easyshell.tabs.postgresql.query;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.query.postgresql.PostgresqlExecuteResult;
+import cn.oyzh.easyshell.query.postgresql.PostgresqlExplainResult;
+import cn.oyzh.easyshell.query.postgresql.ShellPostgresqlQueryEditor;
+import cn.oyzh.easyshell.store.ShellQueryStore;
+import cn.oyzh.easyshell.trees.postgresql.schema.ShellPostgresqlSchemaTreeItem;
+import cn.oyzh.fx.db.query.DBQueryResults;
+import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
+import javafx.scene.input.KeyEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * db查询内容组件
+ *
+ * @author oyzh
+ * @since 2025-11-06
+ */
+public class ShellPostgresqlQueryMainTabController extends RichTabController {
+
+    /**
+     * 查询对象
+     */
+    private ShellQuery query;
+
+    /**
+     * 未保存标志位
+     */
+    private boolean unsaved;
+
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
+    public ShellQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * db数据库树节点
+     */
+    private ShellPostgresqlSchemaTreeItem dbItem;
+
+    /**
+     * 获取数据库树节点
+     *
+     * @return 数据库树节点
+     */
+    public ShellPostgresqlSchemaTreeItem getDbItem() {
+        return dbItem;
+    }
+
+    /**
+     * 查询文本域
+     */
+    @FXML
+    private ShellPostgresqlQueryEditor queryArea;
+
+    /**
+     * 结果文本域
+     */
+    @FXML
+    private FXTabPane resultTabPane;
+
+    /**
+     * 根节点
+     */
+    @FXML
+    private FXVBox root;
+
+    /**
+     * 结果信息tab
+     */
+    @FXML
+    private ShellPostgresqlQueryInfoTab infoTab;
+
+    /**
+     * 执行初始化
+     *
+     * @param query  查询对象
+     * @param dbItem db库树节点
+     */
+    public void init(ShellQuery query, ShellPostgresqlSchemaTreeItem dbItem) {
+        // 设置参数
+        this.resultTabPane.setProp("query", query);
+        this.query = query;
+        this.dbItem = dbItem;
+        this.showNode(0);
+        this.queryArea.setText(query.getContent());
+        this.queryArea.forgetHistory();
+        this.queryArea.setDialect(this.dbItem.dialect());
+        this.queryArea.addTextChangeListener((observable, oldValue, newValue) -> {
+            this.unsaved = true;
+            this.flushTab();
+        });
+    }
+
+    @Override
+    protected void bindListeners() {
+        this.resultTabPane.setupRefreshListener();
+        this.resultTabPane.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (StringUtil.equals(newValue.getId(), "infoTab")) {
+                    this.showNode(1);
+                } else if (StringUtil.equals(newValue.getId(), "resultTab")) {
+                    this.showNode(2);
+                }
+            }
+        });
+        this.queryArea.setRunCallback(this::run);
+        super.bindListeners();
+    }
+
+    /**
+     * 清理tab组件
+     */
+    private void clearTabs() {
+        List<Tab> removes = new ArrayList<>();
+        for (Tab tab : this.resultTabPane.getTabs()) {
+            if (!tab.equals(this.infoTab)) {
+                removes.add(tab);
+            }
+        }
+        this.resultTabPane.removeTab(removes);
+    }
+
+    /**
+     * 美化
+     */
+    @FXML
+    private void pretty() {
+        try {
+            this.queryArea.pretty();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 运行
+     */
+    @FXML
+    private void run() {
+        String sql;
+        if (this.queryArea.isSelectedText()) {
+            sql = this.queryArea.getSelectedText();
+        } else {
+            sql = this.queryArea.getTextTrim();
+        }
+        StageManager.showMask(this.getWindow(), () -> this.doRun(sql));
+    }
+
+    /**
+     * 执行运行
+     *
+     * @param sql sql
+     */
+    private void doRun(String sql) {
+        try {
+            this.resultTabPane.disable();
+            DBQueryResults<PostgresqlExecuteResult> results = this.dbItem.executeSql(sql);
+            this.clearTabs();
+            int showType = 1;
+            this.initInfoTab(results);
+            if (!results.isEmpty()) {
+                int index = 1;
+                for (PostgresqlExecuteResult result : results.getResults()) {
+                    if (result.isSuccess()) {
+                        FXTab fxTab = this.initSelectTab(result, ShellI18nHelper.numberedLabel(I18nHelper.result(), index++));
+                        this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
+                    }
+                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
+            }
+            this.showNode(showType);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        } finally {
+            this.resultTabPane.enable();
+        }
+    }
+
+    /**
+     * 解释
+     */
+    @FXML
+    private void explain() {
+        try {
+            String sql = this.queryArea.getTextTrim();
+            this.resultTabPane.disable();
+            DBQueryResults<PostgresqlExplainResult> results = this.dbItem.explainSql(sql);
+            this.clearTabs();
+            int showType = 1;
+            this.initInfoTab(results);
+            if (!results.isEmpty()) {
+                int index = 1;
+                for (PostgresqlExplainResult result : results.getResults()) {
+                    if (result.isSuccess()) {
+                        FXTab fxTab = this.initExplainTab(result, ShellI18nHelper.numberedLabel(I18nHelper.explain(), index++));
+                        this.resultTabPane.addTab(fxTab);
+                        if (result.hasResult()) {
+                            showType = 2;
+                        }
+                    }
+                }
+            }
+            if (showType == 2) {
+                FXUtil.runLater(() -> this.resultTabPane.select(1));
+            } else {
+                FXUtil.runLater(() -> this.resultTabPane.selectFirst());
+            }
+            this.showNode(showType);
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        } finally {
+            this.resultTabPane.enable();
+        }
+    }
+
+    /**
+     * 初始化信息tab组件
+     *
+     * @param results 结果
+     */
+    private void initInfoTab(DBQueryResults<?> results) {
+        this.infoTab.init(results);
+    }
+
+    /**
+     * 初始化查询tab组件
+     *
+     * @param result 结果
+     * @param title  标题
+     * @return tab组件
+     */
+    private ShellPostgresqlQuerySelectTab initSelectTab(PostgresqlExecuteResult result, String title) {
+        ShellPostgresqlQuerySelectTab selectTab = new ShellPostgresqlQuerySelectTab();
+        selectTab.init(title, result, this.dbItem);
+        selectTab.setId("resultTab");
+        selectTab.setProp("result", result);
+        return selectTab;
+    }
+
+    /**
+     * 初始化解释tab组件
+     *
+     * @param result 结果
+     * @param title  标题
+     * @return tab组件
+     */
+    private ShellPostgresqlQueryExplainTab initExplainTab(PostgresqlExplainResult result, String title) {
+        ShellPostgresqlQueryExplainTab selectTab = new ShellPostgresqlQueryExplainTab();
+        selectTab.init(title, result);
+        selectTab.setId("explainTab");
+        selectTab.setProp("result", result);
+        return selectTab;
+    }
+
+    /**
+     * 保存查询
+     */
+    @FXML
+    private void save() {
+        try {
+            String name = this.query.getName();
+            if (name == null) {
+                name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
+                if (name == null) {
+                    return;
+                }
+                this.query.setName(name);
+            }
+            String sql = this.queryArea.getTextTrim();
+            this.query.setContent(sql);
+            this.query.setDbName(this.dbItem.schema());
+            this.query.setIid(this.dbItem.info().getId());
+            boolean result;
+            // 新增查询
+            if (this.query.isNew()) {
+                result = ShellQueryStore.INSTANCE.insert(this.query);
+                if (result) {
+                    this.dbItem.getQueryTypeChild().addQuery(this.query);
+                }
+            } else {// 修改查询
+                result = ShellQueryStore.INSTANCE.update(this.query);
+            }
+            if (!result) {
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            } else {
+                this.unsaved = false;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
+        } finally {
+            this.flushTab();
+        }
+    }
+
+    /**
+     * 查询组件按钮点击事件
+     *
+     * @param e 事件
+     */
+    @FXML
+    private void queryKeyPressed(KeyEvent e) {
+        if (KeyboardUtil.isCtrlS(e)) {
+            this.save();
+        } else if (KeyboardUtil.isCtrlR(e)) {
+            this.run();
+        }
+    }
+
+    /**
+     * 分割面板
+     */
+    @FXML
+    private FXSplitPane splitPane;
+
+    /**
+     * 显示组件
+     *
+     * @param type 类型
+     */
+    private void showNode(int type) {
+        // 信息
+        if (type == 0) {
+            this.resultTabPane.disappear();
+            if (this.splitPane.isShowDivider()) {
+                this.splitPane.setShowDivider(false);
+                this.splitPane.setDividerPositions(1, 0);
+            }
+        } else if (type == 1 || type == 2) {
+            this.resultTabPane.display();
+            if (!this.splitPane.isShowDivider()) {
+                this.splitPane.setShowDivider(true);
+                this.splitPane.setDividerPositions(0.3, 0.7);
+            }
+        }
+    }
+
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
+    public boolean isUnsaved() {
+        return unsaved;
+    }
+}

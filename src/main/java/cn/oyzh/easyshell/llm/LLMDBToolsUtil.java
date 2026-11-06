@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.easyshell.query.dameng.DamengQueryResult;
+import cn.oyzh.easyshell.query.postgresql.PostgresqlQueryResult;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryResult;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbQueryResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryResult;
@@ -339,6 +340,11 @@ public final class LLMDBToolsUtil {
                 && damengResult.getRecords() != null
                 && !damengResult.getRecords().isEmpty()) {
             return formatRows(damengResult.columnList(), damengResult.getRecords(), result);
+        }
+        if (result instanceof PostgresqlQueryResult postgresqlResult
+                && postgresqlResult.getRecords() != null
+                && !postgresqlResult.getRecords().isEmpty()) {
+            return formatRows(postgresqlResult.columnList(), postgresqlResult.getRecords(), result);
         }
         if (result instanceof ShellMongoQueryResult mongoResult
                 && mongoResult.getRecords() != null

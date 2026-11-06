@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.postgresql.record.ShellPostgresqlRecordTableView?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.postgresql.query.ShellPostgresqlQueryExplainTabController" flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <FXText fx:id="sql">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+        <FXText fx:id="used">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+        <FXText fx:id="count">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </FXText>
+    </FXHBox>
+    <ShellPostgresqlRecordTableView fx:id="recordTable" flexHeight="100% - 30" flexWidth="100%">
+    </ShellPostgresqlRecordTableView>
+</FXVBox>

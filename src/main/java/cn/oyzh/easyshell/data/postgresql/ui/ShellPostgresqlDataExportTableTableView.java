@@ -1,0 +1,45 @@
+package cn.oyzh.easyshell.data.postgresql.ui;
+
+import cn.oyzh.easyshell.data.postgresql.dto.ShellPostgresqlDataExportTable;
+import cn.oyzh.fx.plus.controls.table.FXTableView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Postgresql数据导出表表格视图
+ *
+ * @author oyzh
+ * @since 2026-09-02
+ */
+public class ShellPostgresqlDataExportTableTableView extends FXTableView<ShellPostgresqlDataExportTable> {
+
+    /**
+     * 获取选中的表
+     *
+     * @return 选中的表列表
+     */
+    public List<ShellPostgresqlDataExportTable> getSelectedTables() {
+        List<ShellPostgresqlDataExportTable> exportTables = new ArrayList<>();
+        for (ShellPostgresqlDataExportTable item : this.getItems()) {
+            if (item.isSelected()) {
+                exportTables.add(item);
+            }
+        }
+        return exportTables;
+    }
+
+    /**
+     * 是否有选中的表
+     *
+     * @return 结果
+     */
+    public boolean hasSelectedTable() {
+        for (ShellPostgresqlDataExportTable item : this.getItems()) {
+            if (item.isSelected()) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

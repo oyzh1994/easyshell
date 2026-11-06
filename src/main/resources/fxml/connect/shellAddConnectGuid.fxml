@@ -20,6 +20,7 @@
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.PostgreSQLSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph?>
@@ -37,7 +38,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="600"
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="650"
         realHeight="600">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
@@ -238,6 +239,14 @@
         <FXRadioButton toggleGroup="$type" text="Dameng" userData="dameng">
             <graphic>
                 <DamengSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="PostgreSQL" userData="postgresql">
+            <graphic>
+                <PostgreSQLSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.PostgreSQLSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
@@ -86,6 +87,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.MONGO);
         this.addItem(ShellPrototype.MOSH);
         this.addItem(ShellPrototype.DAMENG);
+        this.addItem(ShellPrototype.POSTGRESQL);
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
@@ -157,6 +159,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.MOSH);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.DAMENG)) {
             super.select(ShellPrototype.DAMENG);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.POSTGRESQL)) {
+            super.select(ShellPrototype.POSTGRESQL);
         } else {
             super.select(type);
         }
@@ -208,6 +212,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "mongodb" -> new MongodbSVGGlyph();
             case "mosh" -> new MoshSVGGlyph();
             case "dameng" -> new DamengSVGGlyph();
+            case "postgresql" -> new PostgreSQLSVGGlyph();
             case "ssh" -> new LinuxSVGGlyph();
             default -> new LinuxSVGGlyph();
         };

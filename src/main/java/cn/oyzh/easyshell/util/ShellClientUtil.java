@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mosh.ShellMoshClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
@@ -82,6 +83,8 @@ public class ShellClientUtil {
             client = new ShellMoshClient(connect);
         } else if (connect.isDamengType()) {
             client = new ShellDamengClient(connect);
+        } else if (connect.isPostgresqlType()) {
+            client = new ShellPostgresqlClient(connect);
         }
         return (T) client;
     }

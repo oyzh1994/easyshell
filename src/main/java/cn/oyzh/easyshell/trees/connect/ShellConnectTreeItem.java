@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbViewFactory;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
@@ -141,6 +142,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isDamengType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellDamengViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isPostgresqlType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellPostgresqlViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
         } else if (this.isSqliteType()) {
@@ -360,6 +366,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否PostgreSQL类型
+     *
+     * @return 结果
+     */
+    public boolean isPostgresqlType() {
+        return value.isPostgresqlType();
+    }
+
+    /**
      * 是否Mongo类型
      *
      * @return 结果
@@ -446,6 +461,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateMariadbConnect(this.value);
         } else if (this.isDamengType()) {
             ShellViewFactory.updateDamengConnect(this.value);
+        } else if (this.isPostgresqlType()) {
+            ShellViewFactory.updatePostgresqlConnect(this.value);
         } else if (this.isMongoType()) {
             ShellViewFactory.updateMongoConnect(this.value);
         } else if (this.isMoshType()) {
@@ -477,6 +494,9 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isSMBType()) {
             builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.hostIp())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.port(), this.value.hostPort())).append("\n");
+            if (this.isPostgresqlType() && StringUtil.isNotBlank(this.value.getDatabase())) {
+                builder.append(ShellI18nHelper.label(I18nHelper.database(), this.value.getDatabase())).append("\n");
+            }
             if (StringUtil.isNotBlank(this.value.getUser())) {
                 builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
             }
