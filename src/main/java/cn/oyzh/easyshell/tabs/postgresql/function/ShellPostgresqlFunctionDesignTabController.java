@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.postgresql.function.PostgresqlFunction;
 import cn.oyzh.easyshell.postgresql.generator.function.PostgresqlFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.postgresql.generator.function.PostgresqlFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.postgresql.routine.PostgresqlRoutineParam;
-import cn.oyzh.easyshell.fx.postgresql.ShellPostgresqlSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.postgresql.ShellPostgresqlRoutineSecurityTypeComboBox;
 import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.trees.postgresql.schema.ShellPostgresqlSchemaTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
@@ -80,7 +80,7 @@ public class ShellPostgresqlFunctionDesignTabController extends RichTabControlle
      * 安全性
      */
     @FXML
-    private ShellPostgresqlSecurityTypeComboBox securityType;
+    private ShellPostgresqlRoutineSecurityTypeComboBox securityType;
 
     /**
      * 特征，parallelEnable
@@ -255,6 +255,7 @@ public class ShellPostgresqlFunctionDesignTabController extends RichTabControlle
                     END;
                     """;
             this.definition.setText(defDefinition);
+            this.securityType.select("INVOKER");
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询函数信息
@@ -300,8 +301,18 @@ public class ShellPostgresqlFunctionDesignTabController extends RichTabControlle
             }
         }
 
-        // 标记为结束
-        FXUtil.runPulse(() -> this.initiating = false);
+        // 标记为结束；已有函数初始化完成后清除参数行的残留变更状态
+        FXUtil.runPulse(() -> {
+            if (!this.newData) {
+                try {
+                    this.paramTable.reset();
+                } catch (Exception ignored) {
+                }
+                this.unsaved = false;
+                this.flushTab();
+            }
+            this.initiating = false;
+        });
     }
 
     /**
@@ -384,6 +395,20 @@ public class ShellPostgresqlFunctionDesignTabController extends RichTabControlle
      *
      * @return 临时数据
      */
+    /**
+     * 是否存在 OUT/INOUT 参数
+     *
+     * @return 结果
+     */
+    private boolean hasOutputParam() {
+        for (PostgresqlRoutineParam param : this.paramTable.getItems()) {
+            if (!param.isDeleted() && StringUtil.containsIgnoreCase(param.getMode(), "OUT")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private PostgresqlFunction tempData() {
         // 创建临时对象
         PostgresqlFunction tempFunction = new PostgresqlFunction();
@@ -391,8 +416,15 @@ public class ShellPostgresqlFunctionDesignTabController extends RichTabControlle
 
         // 基本信息处理
         tempFunction.setSchema(this.function.getSchema());
+        tempFunction.setOriginalParams(this.function.getParams());
+        tempFunction.setOriginalReturnParam(this.function.getReturnParam());
         tempFunction.setParams(this.paramTable.getItems());
-        tempFunction.setDefinition(this.definition.getTextTrim());
+        String definition = this.definition.getTextTrim();
+        // 含 OUT/INOUT 参数时，默认模板里的 RETURN 0 不合法，改为 RETURN
+        if (this.hasOutputParam() && definition.contains("-- Routine body goes here...")) {
+            definition = definition.replaceAll("(?i)RETURN\\s+0\\s*;", "RETURN;");
+        }
+        tempFunction.setDefinition(definition);
         tempFunction.setSecurityType(this.securityType.getSelectedItem());
 
         // 特征处理

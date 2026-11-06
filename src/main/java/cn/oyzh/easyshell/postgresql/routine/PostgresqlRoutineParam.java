@@ -84,11 +84,34 @@ public class PostgresqlRoutineParam extends DBObject implements DBRoutineParam {
     }
 
     /**
+     * 获取字段原始值
+     *
+     * @param key 键
+     * @return 原始值
+     */
+    public Object getOriginalValue(String key) {
+        return super.getOriginalData(key);
+    }
+
+    /**
+     * 是否包含字段原始值
+     *
+     * @param key 键
+     * @return 结果
+     */
+    public boolean hasOriginalValue(String key) {
+        return super.hasOriginalData(key);
+    }
+
+    /**
      * 设置类型
      *
      * @param type 类型
      */
     public void setType(String type) {
+        if (type != null) {
+            type = type.toUpperCase();
+        }
         this.typeProperty.set(type);
         this.putOriginalData("type", type);
     }
@@ -430,6 +453,9 @@ public class PostgresqlRoutineParam extends DBObject implements DBRoutineParam {
      * @param mode 模式
      */
     public void setMode(String mode) {
+        if (mode != null) {
+            mode = mode.trim().toUpperCase().replace("IN OUT", "INOUT");
+        }
         this.mode = mode;
         this.putOriginalData("mode", mode);
     }

@@ -10,6 +10,7 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,14 +49,8 @@ public class PostgresqlFunctionCreateSqlGenerator extends DBSqlGenerator {
         }
         StringUtil.deleteLast(this.sqlBuilder, ",");
         this.sqlBuilder.append("\n) ");
-        // 返回值
-        PostgresqlRoutineParam returnParam = function.getReturnParam();
-        String returnType = returnParam == null ? null : this.typeDefinition(returnParam);
-        // PostgreSQL函数必须有返回类型，未指定时使用void
-        if (StringUtil.isBlank(returnType)) {
-            returnType = "void";
-        }
-        this.sqlBuilder.append("\nRETURNS ").append(returnType);
+        // 返回值：存在 OUT/INOUT 参数时由输出参数决定
+        this.sqlBuilder.append("\nRETURNS ").append(this.returnType(function));
         // 语言
         this.sqlBuilder.append("\nLANGUAGE plpgsql");
         // 函数特性
@@ -99,6 +94,45 @@ public class PostgresqlFunctionCreateSqlGenerator extends DBSqlGenerator {
         this.sqlBuilder.append("\nAS $$\n")
                 .append(definition == null ? "" : definition.trim())
                 .append("\n$$;");
+    }
+
+    /**
+     * 解析函数返回类型。存在 OUT/INOUT 参数时，PostgreSQL 要求：
+     * 单个输出参数使用该参数类型，多个输出参数使用 record。
+     *
+     * @param function 函数
+     * @return 返回类型
+     */
+    private String returnType(PostgresqlFunction function) {
+        List<PostgresqlRoutineParam> outputs = new ArrayList<>();
+        List<PostgresqlRoutineParam> params = function.getParams();
+        if (params != null) {
+            for (PostgresqlRoutineParam param : params) {
+                if (!param.isDeleted() && this.isOutputParam(param.getMode())) {
+                    outputs.add(param);
+                }
+            }
+        }
+        if (outputs.size() == 1) {
+            String type = this.typeDefinition(outputs.get(0));
+            return StringUtil.isBlank(type) ? "record" : type;
+        }
+        if (outputs.size() > 1) {
+            return "record";
+        }
+        PostgresqlRoutineParam returnParam = function.getReturnParam();
+        String type = returnParam == null ? null : this.typeDefinition(returnParam);
+        return StringUtil.isBlank(type) ? "void" : type;
+    }
+
+    /**
+     * 是否为输出参数
+     *
+     * @param mode 模式
+     * @return 结果
+     */
+    private boolean isOutputParam(String mode) {
+        return StringUtil.containsIgnoreCase(mode, "OUT");
     }
 
     /**

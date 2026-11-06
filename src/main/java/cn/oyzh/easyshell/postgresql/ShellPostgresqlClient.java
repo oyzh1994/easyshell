@@ -590,16 +590,31 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      * @param param 参数
      */
     public void alertFunction(PostgresqlAlertFunctionParam param) {
+        Connection connection = null;
+        boolean autoCommit = true;
+        Statement statement = null;
         try {
-            Connection connection = this.getConnManager().connection();
-            Statement statement = connection.createStatement();
             String sql = PostgresqlFunctionAlertSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
+            connection = this.getConnManager().connection();
+            autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+            statement = connection.createStatement();
             statement.executeUpdate(sql);
-            IOUtil.close(statement);
+            connection.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
+        } finally {
+            IOUtil.close(statement);
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(autoCommit);
+                } catch (SQLException ex) {
+                    JulLog.warn("restore autocommit error", ex);
+                }
+            }
         }
     }
 
@@ -4220,7 +4235,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 boolean securityDefiner = resultSet.getBoolean("SECURITY_DEFINER");
                 boolean strict = resultSet.getBoolean("STRICT");
                 String volatility = resultSet.getString("VOLATILE");
-                String securityType = securityDefiner ? "DEFINER" : "CURRENT_USER";
+                String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<PostgresqlRoutineParam> params = this.listFunctionParam(schema, name);
@@ -4328,7 +4343,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 boolean securityDefiner = resultSet.getBoolean("SECURITY_DEFINER");
                 boolean strict = resultSet.getBoolean("STRICT");
                 String volatility = resultSet.getString("VOLATILE");
-                String securityType = securityDefiner ? "DEFINER" : "CURRENT_USER";
+                String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<PostgresqlRoutineParam> params = this.listProcedureParam(schema, name);
@@ -4444,7 +4459,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 boolean securityDefiner = resultSet.getBoolean("SECURITY_DEFINER");
                 boolean strict = resultSet.getBoolean("STRICT");
                 String volatility = resultSet.getString("VOLATILE");
-                String securityType = securityDefiner ? "DEFINER" : "CURRENT_USER";
+                String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<PostgresqlRoutineParam> params = this.listProcedureParam(schema, produceName);
@@ -4636,7 +4651,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 boolean securityDefiner = resultSet.getBoolean("SECURITY_DEFINER");
                 boolean strict = resultSet.getBoolean("STRICT");
                 String volatility = resultSet.getString("VOLATILE");
-                String securityType = securityDefiner ? "DEFINER" : "CURRENT_USER";
+                String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
                     List<PostgresqlRoutineParam> params = this.listFunctionParam(schema, functionName);
@@ -5086,7 +5101,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                     FROM
                         PG_CATALOG.PG_PROC P
                     JOIN LATERAL
-                        UNNEST(P.PROARGTYPES::OID[]) WITH ORDINALITY AS K(TYPOID, ORD) ON TRUE
+                        UNNEST(COALESCE(P.PROALLARGTYPES, P.PROARGTYPES)::OID[]) WITH ORDINALITY AS K(TYPOID, ORD) ON TRUE
                     JOIN
                         PG_CATALOG.PG_TYPE T ON T.OID = K.TYPOID
                     WHERE
@@ -5120,7 +5135,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 returnParam.setType(returnType);
                 params.add(returnParam);
             }
-            DBName.sortItems(params);
+            // 参数顺序必须保持系统目录中的顺序，不能按名称排序
             return params;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -5140,7 +5155,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
         }
         return switch (mode.toLowerCase()) {
             case "o" -> "OUT";
-            case "b" -> "IN OUT";
+            case "b" -> "INOUT";
             case "v" -> "VARIADIC";
             case "t" -> "TABLE";
             default -> "IN";

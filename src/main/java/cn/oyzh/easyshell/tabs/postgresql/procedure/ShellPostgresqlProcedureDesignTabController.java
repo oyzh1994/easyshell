@@ -7,7 +7,7 @@ import cn.oyzh.easyshell.postgresql.procedure.PostgresqlAlertProcedureParam;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlCreateProcedureParam;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlProcedure;
 import cn.oyzh.easyshell.postgresql.routine.PostgresqlRoutineParam;
-import cn.oyzh.easyshell.fx.postgresql.ShellPostgresqlSecurityTypeComboBox;
+import cn.oyzh.easyshell.fx.postgresql.ShellPostgresqlRoutineSecurityTypeComboBox;
 import cn.oyzh.easyshell.trees.postgresql.schema.ShellPostgresqlSchemaTreeItem;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
@@ -78,7 +78,7 @@ public class ShellPostgresqlProcedureDesignTabController extends RichTabControll
      * 安全性
      */
     @FXML
-    private ShellPostgresqlSecurityTypeComboBox securityType;
+    private ShellPostgresqlRoutineSecurityTypeComboBox securityType;
 
     /**
      * 特征，parallelEnable
@@ -189,6 +189,7 @@ public class ShellPostgresqlProcedureDesignTabController extends RichTabControll
                     END;
                     """;
             this.definition.setText(defDefinition);
+            this.securityType.select("INVOKER");
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询函数信息

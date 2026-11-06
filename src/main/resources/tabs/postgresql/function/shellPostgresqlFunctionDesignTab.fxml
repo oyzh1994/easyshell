@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.query.postgresql.ShellPostgresqlQueryEditor?>
-<?import cn.oyzh.easyshell.fx.postgresql.ShellPostgresqlSecurityTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.postgresql.ShellPostgresqlRoutineSecurityTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.db.ui.DBFiledTypeComboBox?>
@@ -174,11 +174,11 @@
                             <Insets left="20" top="10"/>
                         </HBox.margin>
                     </AccentLabel>
-                    <ShellPostgresqlSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
+                    <ShellPostgresqlRoutineSecurityTypeComboBox fx:id="securityType" flexWidth="100% - 140" realHeight="30">
                         <HBox.margin>
                             <Insets left="10" top="10"/>
                         </HBox.margin>
-                    </ShellPostgresqlSecurityTypeComboBox>
+                    </ShellPostgresqlRoutineSecurityTypeComboBox>
                 </FXHBox>
             </FXVBox>
         </FixedTab>
