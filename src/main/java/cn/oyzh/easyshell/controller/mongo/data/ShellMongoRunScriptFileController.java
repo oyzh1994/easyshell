@@ -234,7 +234,7 @@ public class ShellMongoRunScriptFileController extends StageController {
 
     @Override
     public String getViewTitle() {
-        return I18nResourceBundle.i18nString("base.runSqlFile");
+        return I18nHelper.runScriptFile();
     }
 
     @Override

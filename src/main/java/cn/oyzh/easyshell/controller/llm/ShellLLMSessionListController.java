@@ -62,7 +62,6 @@ public class ShellLLMSessionListController extends StageController {
         session.setTitle(title);
         if (this.sessionStore.save(session)) {
             this.sessionTableView.refresh();
-            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
         } else {
             MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
@@ -79,7 +78,6 @@ public class ShellLLMSessionListController extends StageController {
         if (MessageBox.confirm(message, this.getWindow())) {
             if (this.sessionStore.delete(session)) {
                 this.sessionTableView.removeItem(session);
-                MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             } else {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
