@@ -4,6 +4,9 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
+import cn.oyzh.easyshell.postgresql.function.PostgresqlFunction;
+import cn.oyzh.easyshell.postgresql.procedure.PostgresqlProcedure;
+import cn.oyzh.easyshell.postgresql.trigger.PostgresqlTrigger;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlSelectColumnParam;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlSelectRecordParam;
@@ -150,7 +153,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             String createDefinition = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
             // TODO: 去除特定架构
 //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-            createDefinition = ShellPostgresqlUtil.removeSchema(createDefinition,this.sourceDatabase);
+            createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
             this.message("Create Table " + tableName);
             this.processedIncr();
@@ -226,7 +229,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             String createDefinition = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
             // TODO: 去除特定架构
 //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-            createDefinition = ShellPostgresqlUtil.removeSchema(createDefinition,this.sourceDatabase);
+            createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
             this.message("Create View " + viewName);
             this.processedIncr();
@@ -250,8 +253,11 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
     private void transportFunction(String functionName) throws Exception {
         try {
             this.checkInterrupt();
-            // 删除函数
-            String dropTable = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(this.targetDatabase, functionName, DBDialect.POSTGRESQL) + ";";
+            // 删除函数：重载函数必须带输入参数签名
+            PostgresqlFunction sourceFunction = this.sourceClient.selectFunction(this.sourceDatabase, functionName);
+            String dropTable = sourceFunction == null || sourceFunction.getName() == null
+                    ? "DROP FUNCTION IF EXISTS " + DBUtil.wrap(this.targetDatabase, functionName, DBDialect.POSTGRESQL) + ";"
+                    : ShellPostgresqlUtil.dropRoutineSql(this.targetDatabase, functionName, sourceFunction.getParams(), false);
             this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
             this.message("Drop Function " + functionName);
             this.processedIncr();
@@ -260,7 +266,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             String createDefinition = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
             // TODO: 去除特定架构
 //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-            createDefinition = ShellPostgresqlUtil.removeSchema(createDefinition,this.sourceDatabase);
+            createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
             this.message("Create Function " + functionName);
             this.processedIncr();
@@ -284,8 +290,11 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
     private void transportProcedure(String procedureName) throws Exception {
         try {
             this.checkInterrupt();
-            // 删除过程
-            String dropTable = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(this.targetDatabase, procedureName, DBDialect.POSTGRESQL) + ";";
+            // 删除过程：重载过程必须带输入参数签名
+            PostgresqlProcedure sourceProcedure = this.sourceClient.selectProcedure(this.sourceDatabase, procedureName);
+            String dropTable = sourceProcedure == null || sourceProcedure.getName() == null
+                    ? "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(this.targetDatabase, procedureName, DBDialect.POSTGRESQL) + ";"
+                    : ShellPostgresqlUtil.dropRoutineSql(this.targetDatabase, procedureName, sourceProcedure.getParams(), true);
             this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
             this.message("Drop Procedure " + procedureName);
             this.processedIncr();
@@ -294,7 +303,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             String createDefinition = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
             // TODO: 去除特定架构
 //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-            createDefinition = ShellPostgresqlUtil.removeSchema(createDefinition,this.sourceDatabase);
+            createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
             this.message("Create Procedure " + procedureName);
             this.processedIncr();
@@ -322,6 +331,17 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             String createDefinition = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
             // PostgreSQL删除触发器必须指定所属表
             String triggerTable = this.parseTriggerTable(createDefinition);
+            // 触发器函数不在普通函数列表中，先创建/替换目标模式中的触发器函数
+            if (StringUtil.isNotBlank(triggerTable)) {
+                for (PostgresqlTrigger sourceTrigger : this.sourceClient.selectTriggers(this.sourceDatabase, triggerTable)) {
+                    if (StringUtil.equals(triggerName, sourceTrigger.getName())
+                            && StringUtil.isNotBlank(sourceTrigger.getFunctionDefinition())) {
+                        String functionDefinition = ShellPostgresqlUtil.replaceSchema(
+                                sourceTrigger.getFunctionDefinition(), this.sourceDatabase, this.targetDatabase);
+                        this.executeDefinition(functionDefinition);
+                    }
+                }
+            }
             String dropTable;
             if (StringUtil.isBlank(triggerTable)) {
                 dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.POSTGRESQL) + ";";
@@ -335,7 +355,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
 
             // TODO: 去除特定架构
 //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-            createDefinition = ShellPostgresqlUtil.removeSchema(createDefinition,this.sourceDatabase);
+            createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
             this.message("Create Trigger " + triggerName);
             this.processedIncr();
@@ -369,7 +389,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             String createDefinition = this.sourceClient.showCreateSequence(this.sourceDatabase, sequenceName);
             // TODO: 去除特定架构
             //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
-            createDefinition = ShellPostgresqlUtil.removeSchema(createDefinition,this.sourceDatabase);
+            createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
             this.message("Create Sequence " + sequenceName);
             this.processedIncr();
