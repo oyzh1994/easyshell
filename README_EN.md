@@ -6,7 +6,7 @@ A powerful, modern, cross-platform, multi-protocol client.
 
 ## Features
 
-- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, Mosh, local terminals, and more.
+- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, SQLite, Mosh, local terminals, and more.
 - **Connection Management**: Add, edit, delete, import, and export connections.
 - **Key Management**: Generate, import, export, edit, and copy keys to hosts.
 - **Snippet Execution**: Save and execute code snippets.
@@ -23,9 +23,10 @@ A powerful, modern, cross-platform, multi-protocol client.
 - **RDP Client**: RDP connection and management, with built-in and native connection modes.
 - **Redis Client**: Redis CRUD operations, export, import, transfer, and terminal access.
 - **ZooKeeper Client**: ZooKeeper CRUD operations, permission management, import, export, transfer, and terminal access.
-- **MySQL Client**: MySQL table, view, function, procedure, and event management, queries, import, export, and transfer.
-- **Dameng Client**: Dameng table, view, function, and user management, queries, import, export, and transfer.
-- **MongoDB Client**: MongoDB collection, bucket, function, and user management, queries, import, export, and transfer.
+- **MySQL Client**: MySQL table, view, function, procedure, and event management, queries, import, export, transfer, dump, and terminal access.
+- **Dameng Client**: Dameng table, view, function, and user management, queries, import, export, transfer, dump, and terminal access.
+- **SQLite Client**: SQLite table, view, function, and query management, import, export, transfer, dump, and terminal access.
+- **MongoDB Client**: MongoDB collection, bucket, function, and user management, queries, import, export, transfer, dump, and terminal access.
 - **Mosh Terminal Emulation**: Mosh protocol connections.
 - **Local Terminal**: Local terminals on Windows, Linux, and macOS, including sh, bash, zsh, cmd, PowerShell, Git-SH, Git-Bash, and more.
 - **Xserver**: A built-in Xserver service that requires no third-party dependencies.
@@ -45,6 +46,19 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ### Home
 ![zhuye1.png](resource/screenshot/zhuye1.png)
 ![zhuye2.png](resource/screenshot/zhuye2.png)
+
+### AI
+![llm1.png](resource/screenshot/llm1.png)
+![llm2.png](resource/screenshot/llm2.png)
+![llm3.png](resource/screenshot/llm3.png)
+![llm4.png](resource/screenshot/llm4.png)
+![llm5.png](resource/screenshot/llm5.png)
+![llm6.png](resource/screenshot/llm6.png)
+![llm7.png](resource/screenshot/llm7.png)
+![llm8.png](resource/screenshot/llm8.png)
+![llm9.png](resource/screenshot/llm9.png)
+![llm10.png](resource/screenshot/llm10.png)
+![llm11.png](resource/screenshot/llm11.png)
 
 ### Settings
 ![shezhi1.png](resource/screenshot/shezhi1.png)
@@ -101,6 +115,7 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![zk15.png](resource/screenshot/zk15.png)
 ![zk16.png](resource/screenshot/zk16.png)
 ![zk17.png](resource/screenshot/zk17.png)
+![zk18.png](resource/screenshot/zk18.png)
 
 ### Redis
 ![redis1.png](resource/screenshot/redis1.png)
@@ -118,6 +133,8 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![redis13.png](resource/screenshot/redis13.png)
 ![redis14.png](resource/screenshot/redis14.png)
 ![redis15.png](resource/screenshot/redis15.png)
+![redis16.png](resource/screenshot/redis16.png)
+![redis17.png](resource/screenshot/redis17.png)
 
 ### SFTP
 ![sftp1.png](resource/screenshot/sftp1.png)
@@ -193,6 +210,7 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![mysql23.png](resource/screenshot/mysql23.png)
 ![mysql24.png](resource/screenshot/mysql24.png)
 ![mysql25.png](resource/screenshot/mysql25.png)
+![mysql26.png](resource/screenshot/mysql26.png)
 
 ### MongoDB
 ![mongo1.png](resource/screenshot/mongo1.png)

@@ -19,7 +19,6 @@ public class EasyShellCoverTest {
         i18nChecker1.setProjectPath(i18nChecker1.getClass().getResource("").toExternalForm());
         i18nChecker1.i18Check();
 
-
         I18nCoverChecker i18nChecker2 = new I18nCoverChecker();
         i18nChecker2.setMainI18n("zh_CN");
         i18nChecker2.setPrefx("base_compound_");

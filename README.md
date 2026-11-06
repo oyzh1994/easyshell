@@ -47,6 +47,19 @@
 ![zhuye1.png](resource/screenshot/zhuye1.png)
 ![zhuye2.png](resource/screenshot/zhuye2.png)
 
+### ai
+![llm1.png](resource/screenshot/llm1.png)
+![llm2.png](resource/screenshot/llm2.png)
+![llm3.png](resource/screenshot/llm3.png)
+![llm4.png](resource/screenshot/llm4.png)
+![llm5.png](resource/screenshot/llm5.png)
+![llm6.png](resource/screenshot/llm6.png)
+![llm7.png](resource/screenshot/llm7.png)
+![llm8.png](resource/screenshot/llm8.png)
+![llm9.png](resource/screenshot/llm9.png)
+![llm10.png](resource/screenshot/llm10.png)
+![llm11.png](resource/screenshot/llm11.png)
+
 ### 设置
 ![shezhi1.png](resource/screenshot/shezhi1.png)
 ![shezhi2.png](resource/screenshot/shezhi2.png)
@@ -102,6 +115,7 @@
 ![zk15.png](resource/screenshot/zk15.png)
 ![zk16.png](resource/screenshot/zk16.png)
 ![zk17.png](resource/screenshot/zk17.png)
+![zk18.png](resource/screenshot/zk18.png)
 
 ### Redis
 ![redis1.png](resource/screenshot/redis1.png)
@@ -119,6 +133,8 @@
 ![redis13.png](resource/screenshot/redis13.png)
 ![redis14.png](resource/screenshot/redis14.png)
 ![redis15.png](resource/screenshot/redis15.png)
+![redis16.png](resource/screenshot/redis16.png)
+![redis17.png](resource/screenshot/redis17.png)
 
 ### SFTP
 ![sftp1.png](resource/screenshot/sftp1.png)
@@ -194,6 +210,7 @@
 ![mysql23.png](resource/screenshot/mysql23.png)
 ![mysql24.png](resource/screenshot/mysql24.png)
 ![mysql25.png](resource/screenshot/mysql25.png)
+![mysql26.png](resource/screenshot/mysql26.png)
 
 ### MongoDB
 ![mongo1.png](resource/screenshot/mongo1.png)
