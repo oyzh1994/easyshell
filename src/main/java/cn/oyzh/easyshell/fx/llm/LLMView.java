@@ -11,6 +11,8 @@ import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
+import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.StopSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
@@ -23,7 +25,7 @@ import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
-import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
+import cn.oyzh.fx.plus.controls.pane.FXStackPane;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
@@ -41,8 +43,10 @@ import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -63,7 +67,15 @@ public class LLMView extends FXSplitPane {
 
     private final LLMListView messageListView = new LLMListView();
 
-    private final FXTextArea inputArea = new FXTextArea();
+    /**
+     * 输入编辑器
+     */
+    private final Editor inputArea = new Editor();
+
+    /**
+     * 输入占位提示，编辑器本身不支持提示文本，这里用浮层实现
+     */
+    private final FXLabel inputPrompt = new FXLabel();
 
     private final LLMProviderComboBox providerComboBox = new LLMProviderComboBox();
 
@@ -159,23 +171,41 @@ public class LLMView extends FXSplitPane {
         this.attachmentBar.setManaged(true);
         composer.getChildren().add(this.attachmentBar);
 
+        // 输入编辑器：使用聊天高亮格式，突出网址、文件路径、IP、命令等运维信息
         this.inputArea.getStyleClass().add("llm-input");
-        this.inputArea.setPromptText(I18nResourceBundle.i18nString("shell.llm.inputPlaceholder"));
-        FXVBox.setVgrow(this.inputArea, Priority.ALWAYS);
+        this.inputArea.setFormatType(EditorFormatType.LLM_CHAT);
+        this.inputArea.hideLineNum();
+        this.inputArea.setWrapText(true);
+        this.inputArea.setHighlightCurrentParagraph(false);
+        // 聊天输入不需要自动补全成对符号，避免输入 < ( " 等符号时被自动补全
+        this.inputArea.setAutoPairEnabled(false);
+        this.inputArea.setContentPadding(new Insets(6, 10, 6, 10));
+        this.inputArea.setMaxWidth(Double.MAX_VALUE);
+        this.inputArea.setMaxHeight(Double.MAX_VALUE);
         this.inputArea.textProperty().addListener((observable, oldValue, newValue) -> this.updateSendState());
-        this.inputArea.setOnKeyPressed(event -> {
-            if (event.getCode() != KeyCode.ENTER) {
+        this.inputArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() != KeyCode.ENTER
+                    || event.isShiftDown() || event.isControlDown()
+                    || event.isAltDown() || event.isMetaDown()) {
                 return;
             }
-            if (event.isShiftDown()) {
-                this.inputArea.replaceSelection("\n");
-                event.consume();
-            } else if (!event.isControlDown() && !event.isAltDown()) {
-                this.sendMessage();
-                event.consume();
-            }
+            this.sendMessage();
+            event.consume();
         });
-        composer.addChild(this.inputArea);
+        // 占位提示，编辑器本身不支持提示文本，这里用浮层实现
+        this.inputPrompt.setText(I18nResourceBundle.i18nString("shell.llm.inputPlaceholder"));
+        this.inputPrompt.getStyleClass().add("llm-input-prompt");
+        this.inputPrompt.setMouseTransparent(true);
+        this.inputPrompt.setWrapText(true);
+        this.inputPrompt.setMaxWidth(Double.MAX_VALUE);
+        this.inputPrompt.setAlignment(Pos.TOP_LEFT);
+        StackPane.setAlignment(this.inputPrompt, Pos.TOP_LEFT);
+        StackPane.setMargin(this.inputPrompt, new Insets(7, 12, 0, 12));
+        FXStackPane inputWrapper = new FXStackPane();
+        inputWrapper.getChildren().addAll(this.inputArea, this.inputPrompt);
+        inputWrapper.setMinHeight(0);
+        FXVBox.setVgrow(inputWrapper, Priority.ALWAYS);
+        composer.addChild(inputWrapper);
 
         FXHBox toolbar = new FXHBox();
         toolbar.getStyleClass().add("llm-toolbar");
@@ -467,6 +497,8 @@ public class LLMView extends FXSplitPane {
         String text = this.inputArea.getText();
         boolean hasText = StringUtil.isNotBlank(text);
         this.sendButton.setDisable(!this.busy && !hasText && this.selectedFile == null);
+        // 内容为空时显示占位提示
+        this.inputPrompt.setVisible(StringUtil.isEmpty(text));
     }
 
     /**
@@ -619,7 +651,7 @@ public class LLMView extends FXSplitPane {
         return messageListView;
     }
 
-    public FXTextArea getInputArea() {
+    public Editor getInputArea() {
         return inputArea;
     }
 

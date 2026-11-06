@@ -99,15 +99,15 @@
     -fx-text-fill: -llm-error-text;
 }
 
-.llm-message-text {
+.llm-message-text,
+.llm-message-text.rich-text-area,
+.llm-message-text.code-area {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-padding: 0;
     -fx-cursor: text;
-    -fx-highlight-fill: -color-accent-emphasis;
-    -fx-highlight-text-fill: -color-fg-emphasis;
 }
 
 .llm-message-text:focused {
@@ -115,7 +115,9 @@
     -fx-background-insets: 0;
 }
 
-.llm-message-text .content,
+.llm-message-text.rich-text-area .content,
+.llm-message-text.code-area .content,
+.llm-message-text .left-side,
 .llm-message-text .scroll-pane,
 .llm-message-text .scroll-pane .viewport {
     -fx-background-color: transparent;
@@ -144,9 +146,6 @@
     -fx-highlight-text-fill: -color-accent-emphasis;
 }
 
-.llm-bubble-text-assistant .text {
-    -fx-fill: -llm-text;
-}
 
 .llm-bubble-text-error .text {
     -fx-fill: -llm-error-text;
@@ -183,14 +182,15 @@
     -fx-border-width: 1 0 0 0;
 }
 
-.llm-input {
+.llm-input,
+.llm-input.rich-text-area,
+.llm-input.code-area {
     -fx-background-color: -llm-input-bg;
     -fx-background-radius: 12;
     -fx-border-color: -llm-border;
     -fx-border-radius: 12;
     -fx-border-width: 1;
     -fx-text-fill: -llm-text;
-    -fx-prompt-text-fill: -llm-muted;
 }
 
 .llm-input:focused {
@@ -198,18 +198,17 @@
     -fx-border-color: -llm-accent;
 }
 
-.llm-input .content,
+/* 文字颜色由编辑器语法主题控制，这里只把内部背景置为透明，保留圆角卡片效果 */
+.llm-input.rich-text-area .content,
+.llm-input.code-area .content,
+.llm-input .left-side,
 .llm-input .scroll-pane,
 .llm-input .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
 
-.llm-input .content {
-    -fx-padding: 7 9 7 9;
-}
-
-.llm-input .text {
-    -fx-fill: -llm-text;
+.llm-input-prompt {
+    -fx-text-fill: -llm-muted;
 }
 
 .llm-toolbar {

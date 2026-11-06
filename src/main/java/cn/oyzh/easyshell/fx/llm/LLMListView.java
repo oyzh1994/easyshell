@@ -4,6 +4,7 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.fx.plus.controls.list.FXListView;
+import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.application.Platform;
@@ -59,6 +60,13 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     @Override
+    public void changeTheme(ThemeStyle style) {
+        super.changeTheme(style);
+        // 主题变化会影响消息文本字体/行高，需要让虚拟列表重新测量单元格高度
+        FXUtil.runLater(this::resetMessageCellSizes);
+    }
+
+    @Override
     protected void layoutChildren() {
         super.layoutChildren();
         if (this.autoScroll && !this.userScrolling) {
@@ -66,7 +74,8 @@ public class LLMListView extends FXListView<LLMMessage> {
             if (scrollBar == null) {
                 scrollBar = this.getVerticalScrollBar();
             }
-            if (scrollBar != null && scrollBar.getValue() < scrollBar.getMax()) {
+            // 内容不足一屏时不滚动，否则首条消息顶部会被裁掉
+            if (this.canScroll(scrollBar) && scrollBar.getValue() < scrollBar.getMax()) {
                 scrollBar.setValue(scrollBar.getMax());
             }
         }
@@ -231,7 +240,7 @@ public class LLMListView extends FXListView<LLMMessage> {
                 scrollBar = this.getVerticalScrollBar();
             }
             if (scrollBar != null) {
-                if (scrollBar.getValue() < scrollBar.getMax()) {
+                if (this.canScroll(scrollBar) && scrollBar.getValue() < scrollBar.getMax()) {
                     scrollBar.setValue(scrollBar.getMax());
                 }
             } else {
@@ -360,6 +369,16 @@ public class LLMListView extends FXListView<LLMMessage> {
                 this.autoScroll = this.isAtBottom(this.verticalScrollBar);
             }
         });
+    }
+
+    /**
+     * 判断内容是否超过一屏（可滚动）
+     *
+     * @param scrollBar 垂直滚动条
+     * @return 结果
+     */
+    private boolean canScroll(ScrollBar scrollBar) {
+        return scrollBar != null && scrollBar.getMax() > scrollBar.getVisibleAmount();
     }
 
     private boolean isAtBottom(ScrollBar scrollBar) {

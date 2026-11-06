@@ -2,9 +2,11 @@ package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
@@ -27,7 +29,22 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
 
     private final VBox bubbleStack = new VBox(4);
 
-    private final LLMMessageTextArea text = new LLMMessageTextArea();
+    private final LLMMessageView text = new LLMMessageView();
+
+    /**
+     * 当前绑定的消息
+     */
+    private LLMMessage boundMessage;
+
+    /**
+     * 消息内容变更监听
+     */
+    private final ChangeListener<String> messageListener = (observable, oldValue, newValue) -> {
+        LLMMessage item = this.getItem();
+        if (item != null) {
+            this.text.setMessage(newValue, this.messageFormat(item));
+        }
+    };
 
     public LLMMessageCell() {
         this.getStyleClass().add("llm-message-cell");
@@ -75,10 +92,12 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
     @Override
     protected void updateItem(LLMMessage item, boolean empty) {
         super.updateItem(item, empty);
-        if (this.text.textProperty().isBound()) {
-            this.text.textProperty().unbind();
+        if (this.boundMessage != null && this.boundMessage != item) {
+            this.boundMessage.messageProperty().removeListener(this.messageListener);
+            this.boundMessage = null;
         }
         if (empty || item == null) {
+            this.text.setMessageNow("", EditorFormatType.RAW);
             this.setGraphic(null);
             return;
         }
@@ -100,7 +119,10 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
                 "llm-bubble-text-error");
         this.text.getStyleClass().add(error ? "llm-bubble-text-error"
                 : user ? "llm-bubble-text-user" : "llm-bubble-text-assistant");
-        this.text.textProperty().bind(item.messageProperty());
+        item.messageProperty().removeListener(this.messageListener);
+        item.messageProperty().addListener(this.messageListener);
+        this.boundMessage = item;
+        this.text.setMessageNow(item.getMessage(), this.messageFormat(item));
 
         File file = item.getFile();
         boolean hasFile = file != null;
@@ -123,5 +145,15 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         }
         this.meta.setText(prefix + item.getTimeText());
         this.meta.setAlignment(user ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+    }
+
+    /**
+     * 获取消息内容格式：用户消息和错误消息按纯文本显示，助手消息支持 Markdown/聊天语法高亮
+     *
+     * @param item 消息
+     * @return 内容格式
+     */
+    private EditorFormatType messageFormat(LLMMessage item) {
+        return item.isUser() || item.isError() ? EditorFormatType.RAW : EditorFormatType.LLM_CHAT;
     }
 }
