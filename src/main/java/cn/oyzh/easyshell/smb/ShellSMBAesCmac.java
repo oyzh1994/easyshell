@@ -7,10 +7,12 @@ import java.util.Arrays;
 
 /**
  * smb aes-cmac实现
+ * TODO: bc库替代
  *
  * @author oyzh
  * @since 2025-10-09
  */
+@Deprecated
 public class ShellSMBAesCmac implements Mac {
 
     /**
