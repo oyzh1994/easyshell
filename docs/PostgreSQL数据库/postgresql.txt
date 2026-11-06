@@ -329,6 +329,8 @@ EasyShell 已适配常用 PostgreSQL 类型：
 
 JSON/JSONB、UUID、数组等类型在新增/修改记录时会自动加类型转换，避免 `column is of type jsonb but expression is of type character varying` 一类错误。
 
+类型回显说明：PostgreSQL 内部会把 `varchar` 规范化成 `character varying`、把 `timestamp` 规范化成 `timestamp without time zone`。EasyShell 的字段类型列表同时包含这些系统原始类型名（`CHARACTER VARYING`、`CHARACTER`、`TIMESTAMP WITHOUT TIME ZONE`、`TIME WITHOUT TIME ZONE` 等），打开表设计器时直接按系统目录返回的原始类型名回显，不需要做名称映射；模型和 DDL 也保留原始类型定义。仅当类型、长度、小数位或可空属性真正变化时，才会生成对应的 `ALTER COLUMN` 语句，修改注释、默认值等属性不会改动字段类型。
+
 ## 7. 注意事项
 
 1. PostgreSQL 标识符默认折叠为小写；如果建对象时使用双引号包含大小写，后续也必须使用相同大小写访问。EasyShell 使用双引号包裹对象名，按目录中的实际名称展示。

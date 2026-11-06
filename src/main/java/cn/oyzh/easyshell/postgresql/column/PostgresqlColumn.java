@@ -180,6 +180,24 @@ public class PostgresqlColumn extends DBObject implements DBColumn, ObjectCopier
     }
 
     /**
+     * 小数位是否变更
+     *
+     * @return 变更结果
+     */
+    public boolean isDigitsChanged() {
+        return super.checkOriginalData("digits", this.digits);
+    }
+
+    /**
+     * 是否可为空是否变更
+     *
+     * @return 变更结果
+     */
+    public boolean isNullableChanged() {
+        return super.checkOriginalData("nullable", this.nullable);
+    }
+
+    /**
      * 获取字段值列表
      *
      * @return 字段值列表

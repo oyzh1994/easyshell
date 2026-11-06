@@ -163,7 +163,7 @@ public class PostgresqlRoutineParam extends DBObject implements DBRoutineParam {
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;
     }
-//
+
 //    private DBCharsetComboBox charsetControl;
 //
 //    /**

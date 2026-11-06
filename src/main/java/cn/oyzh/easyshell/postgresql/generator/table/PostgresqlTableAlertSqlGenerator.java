@@ -212,16 +212,22 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                             .append(" DROP IDENTITY IF EXISTS;");
                     this.sqlList.add(builder.toString());
                 }
-                // 修改字段类型
-                builder = new StringBuilder();
-                builder.append("ALTER TABLE ")
-                        .append(fullName)
-                        .append(" ALTER COLUMN ")
-                        .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL))
-                        .append(" TYPE");
-                this.appendColumnTypeOnly(builder, column);
-                builder.append(";");
-                this.sqlList.add(builder.toString());
+                // 修改字段类型：只有类型、长度或小数位真正变化时才生成 TYPE 语句，
+                // 避免仅修改注释/默认值等属性时改写原始字段类型定义。
+                boolean typeChanged = column.isTypeChanged()
+                        || column.isSizeChanged()
+                        || column.isDigitsChanged();
+                if (typeChanged) {
+                    builder = new StringBuilder();
+                    builder.append("ALTER TABLE ")
+                            .append(fullName)
+                            .append(" ALTER COLUMN ")
+                            .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL))
+                            .append(" TYPE");
+                    this.appendColumnTypeOnly(builder, column);
+                    builder.append(";");
+                    this.sqlList.add(builder.toString());
+                }
                 // 修改默认值，PostgreSQL自增列不能有DEFAULT约束
                 if (column.isDefaultValueChanged()) {
                     builder = new StringBuilder();
@@ -250,18 +256,20 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                         this.sqlList.add(builder.toString());
                     }
                 }
-                // 修改非空约束
-                builder = new StringBuilder();
-                builder.append("ALTER TABLE ")
-                        .append(fullName)
-                        .append(" ALTER COLUMN ")
-                        .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL));
-                if (column.isNullable()) {
-                    builder.append(" DROP NOT NULL;");
-                } else {
-                    builder.append(" SET NOT NULL;");
+                // 修改非空约束：仅在可空属性真正变化时生成语句
+                if (column.isNullableChanged()) {
+                    builder = new StringBuilder();
+                    builder.append("ALTER TABLE ")
+                            .append(fullName)
+                            .append(" ALTER COLUMN ")
+                            .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL));
+                    if (column.isNullable()) {
+                        builder.append(" DROP NOT NULL;");
+                    } else {
+                        builder.append(" SET NOT NULL;");
+                    }
+                    this.sqlList.add(builder.toString());
                 }
-                this.sqlList.add(builder.toString());
                 // 新增IDENTITY
                 if (isIdentity && identityChanged) {
                     builder = new StringBuilder();

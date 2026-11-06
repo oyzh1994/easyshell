@@ -1521,9 +1521,13 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      */
     private void parseColumnType(PostgresqlColumn column, String columnType) {
         if (StringUtil.isBlank(columnType)) {
+            column.setSize(null);
+            column.setDigits(null);
             return;
         }
         String type = columnType.trim();
+        Integer size = null;
+        Integer digits = null;
         // 只匹配由数字组成的类型修饰符，避免误解析geometry(Point,4326)等类型
         Matcher matcher = Pattern.compile("\\((\\d+)(?:\\s*,\\s*(\\d+))?\\)").matcher(type);
         if (matcher.find()) {
@@ -1533,16 +1537,21 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             // timestamp/time 的精度修饰符位于 WITH/WITHOUT TIME ZONE 之前，不能作为长度拼接
             if (StringUtil.containsIgnoreCase(typeName, "TIME ZONE")) {
                 column.setType(type.replaceAll("\\s+", " ").trim());
+                column.setSize(null);
+                column.setDigits(null);
                 return;
             }
             column.setType(typeName);
-            column.setSize(Integer.parseInt(matcher.group(1)));
+            size = Integer.parseInt(matcher.group(1));
             if (matcher.group(2) != null) {
-                column.setDigits(Integer.parseInt(matcher.group(2)));
+                digits = Integer.parseInt(matcher.group(2));
             }
         } else {
             column.setType(type);
         }
+        // 始终初始化长度/小数位的原始值，便于后续变更检测
+        column.setSize(size);
+        column.setDigits(digits);
     }
 
     /**

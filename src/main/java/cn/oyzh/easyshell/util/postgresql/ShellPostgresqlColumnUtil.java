@@ -6,6 +6,7 @@ import cn.oyzh.fx.db.DBColumnField;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 
+
 /**
  * PostgreSQL字段类型工具类
  *
@@ -32,6 +33,21 @@ public class ShellPostgresqlColumnUtil {
         charField.supportSize = true;
         charField.supportString = true;
         charField.supportDefaultValue = true;
+
+        // 同时保留 PostgreSQL 系统目录返回的原始类型名称
+        DBColumnField characterVaryingField = new DBColumnField("CHARACTER VARYING");
+        characterVaryingField.alias = "VARCHAR";
+        characterVaryingField.suggestSize = 255;
+        characterVaryingField.supportSize = true;
+        characterVaryingField.supportString = true;
+        characterVaryingField.supportDefaultValue = true;
+
+        DBColumnField characterField = new DBColumnField("CHARACTER");
+        characterField.alias = "CHAR";
+        characterField.suggestSize = 1;
+        characterField.supportSize = true;
+        characterField.supportString = true;
+        characterField.supportDefaultValue = true;
 
         DBColumnField textField = new DBColumnField("TEXT");
         textField.supportText = true;
@@ -156,6 +172,16 @@ public class ShellPostgresqlColumnUtil {
         DBColumnField timeWithTzField = new DBColumnField("TIME WITH TIME ZONE");
         timeWithTzField.supportDefaultValue = true;
 
+        // 同时保留 PostgreSQL 系统目录返回的原始类型名称
+        DBColumnField timeWithoutTzField = new DBColumnField("TIME WITHOUT TIME ZONE");
+        timeWithoutTzField.alias = "TIME";
+        timeWithoutTzField.supportDefaultValue = true;
+
+        DBColumnField timestampWithoutTzField = new DBColumnField("TIMESTAMP WITHOUT TIME ZONE");
+        timestampWithoutTzField.alias = "TIMESTAMP";
+        timestampWithoutTzField.supportTimestamp = true;
+        timestampWithoutTzField.supportDefaultValue = true;
+
         DBColumnField timestampField = new DBColumnField("TIMESTAMP");
         timestampField.alias = "TIMESTAMP WITHOUT TIME ZONE";
         timestampField.supportTimestamp = true;
@@ -249,7 +275,9 @@ public class ShellPostgresqlColumnUtil {
 
         // 字符串
         putFiled(varcharField);
+        putFiled(characterVaryingField);
         putFiled(charField);
+        putFiled(characterField);
         putFiled(textField);
         putFiled(uuidField);
         putFiled(jsonField);
@@ -271,8 +299,10 @@ public class ShellPostgresqlColumnUtil {
 
         // 时间
         putFiled(timeField);
+        putFiled(timeWithoutTzField);
         putFiled(dateField);
         putFiled(timestampField);
+        putFiled(timestampWithoutTzField);
         putFiled(intervalField);
 
         // 其他
