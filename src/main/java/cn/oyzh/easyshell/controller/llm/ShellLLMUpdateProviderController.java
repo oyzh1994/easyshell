@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox;
+import cn.oyzh.easyshell.fx.llm.LLMModelTextField;
 import cn.oyzh.easyshell.fx.llm.LLMProviderTemplateTextField;
 import cn.oyzh.easyshell.llm.LLMApiType;
 import cn.oyzh.easyshell.llm.LLMProvider;
@@ -11,7 +12,6 @@ import cn.oyzh.easyshell.llm.LLMProviderTemplateManager;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
-import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
@@ -56,7 +56,7 @@ public class ShellLLMUpdateProviderController extends StageController {
     private LLMApiTypeComboBox apiType;
 
     @FXML
-    private SelectTextFiled<String> model;
+    private LLMModelTextField model;
 
     @FXML
     private FXButton fetchModelButton;
@@ -91,9 +91,9 @@ public class ShellLLMUpdateProviderController extends StageController {
             MessageBox.warn(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsEmpty", "No models found"), this.getWindow());
             return;
         }
-        this.model.setItemList(models);
+        this.model.setModels(models);
         if (StringUtil.isBlank(currentModel)) {
-            this.model.text(models.getFirst());
+            this.model.selectItem(models.getFirst());
         }
         FXUtil.runWait( this.model::requestFocus);
         MessageBox.okToast(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsSuccess", "Model list updated"), this.getWindow());
@@ -156,6 +156,7 @@ public class ShellLLMUpdateProviderController extends StageController {
         this.baseUrl.setText(this.provider.getBaseUrl());
         this.sk.setText(this.provider.getSk());
         this.apiType.setApiType(this.provider.getApiType());
+        this.model.setModels(this.provider.getModels());
         this.model.setText(this.provider.getModelsText());
         LLMProviderTemplate template = LLMProviderTemplateManager.INSTANCE.findMatching(
                 this.baseUrl.getTextTrim(), this.apiType.getSelectedType());

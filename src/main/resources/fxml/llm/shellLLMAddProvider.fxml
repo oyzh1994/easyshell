@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.llm.LLMApiTypeComboBox?>
+<?import cn.oyzh.easyshell.fx.llm.LLMModelTextField?>
 <?import cn.oyzh.easyshell.fx.llm.LLMProviderTemplateTextField?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
 <?import cn.oyzh.fx.gui.button.SubmitButton?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
-<?import cn.oyzh.fx.gui.text.field.SelectTextFiled?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
@@ -78,11 +78,11 @@
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
-        <SelectTextFiled fx:id="model" flexWidth="100% - 200" prefHeight="30" tipText="%base.compound.please.input.content">
+        <LLMModelTextField fx:id="model" flexWidth="100% - 200" prefHeight="30" tipText="%base.compound.please.input.content">
             <HBox.margin>
                 <Insets left="30" top="5"/>
             </HBox.margin>
-        </SelectTextFiled>
+        </LLMModelTextField>
         <FXButton fx:id="fetchModelButton" text="%base.fetch" onAction="#fetchModels">
             <HBox.margin>
                 <Insets left="5" top="5"/>

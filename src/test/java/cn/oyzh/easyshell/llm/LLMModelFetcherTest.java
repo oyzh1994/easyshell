@@ -1,8 +1,12 @@
 package cn.oyzh.easyshell.llm;
 
+import com.sun.net.httpserver.HttpServer;
 import org.junit.Test;
 
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -88,5 +92,31 @@ public class LLMModelFetcherTest {
         assertTrue(LLMModelFetcher.parseModels("not-json", LLMApiType.OPENAI).isEmpty());
         assertTrue(LLMModelFetcher.parseModels("{\"data\":[]}", LLMApiType.OPENAI).isEmpty());
         assertTrue(LLMModelFetcher.buildUrls("", LLMApiType.OPENAI).isEmpty());
+    }
+
+    @Test
+    public void fallsBackToRequestWithoutSk() throws Exception {
+        AtomicInteger requestCount = new AtomicInteger();
+        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/v1/models", exchange -> {
+            requestCount.incrementAndGet();
+            if (exchange.getRequestHeaders().getFirst("Authorization") != null) {
+                exchange.sendResponseHeaders(401, -1);
+                exchange.close();
+                return;
+            }
+            byte[] body = "{\"data\":[{\"id\":\"public-model\"}]}".getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(200, body.length);
+            exchange.getResponseBody().write(body);
+            exchange.close();
+        });
+        server.start();
+        try {
+            String baseUrl = "http://127.0.0.1:" + server.getAddress().getPort() + "/v1";
+            assertEquals(List.of("public-model"), LLMModelFetcher.fetch(baseUrl, "invalid-sk", LLMApiType.OPENAI));
+            assertEquals(2, requestCount.get());
+        } finally {
+            server.stop(0);
+        }
     }
 }

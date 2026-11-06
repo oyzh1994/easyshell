@@ -29,6 +29,9 @@ public final class LLMModelFetcher {
     private record ModelEndpoint(String url, LLMApiType authType) {
     }
 
+    private record ModelRequest(ModelEndpoint endpoint, boolean includeApiKey) {
+    }
+
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(8);
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(20);
@@ -56,37 +59,74 @@ public final class LLMModelFetcher {
         }
         Exception lastException = null;
         Exception meaningfulException = null;
-        for (ModelEndpoint endpoint : endpoints) {
-            String url = endpoint.url();
-            LLMApiType authType = endpoint.authType();
-            if (authType == LLMApiType.GEMINI && hasText(sk)) {
-                url = appendQuery(url, "key", sk);
-            }
-            HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(url))
-                    .timeout(REQUEST_TIMEOUT)
-                    .header("Accept", "application/json");
-            if (hasText(sk)) {
-                if (authType == LLMApiType.ANTHROPIC) {
-                    builder.header("x-api-key", sk).header("anthropic-version", "2023-06-01");
-                } else if (authType == LLMApiType.OPENAI) {
-                    builder.header("Authorization", "Bearer " + sk);
+        List<String> emptyModels = null;
+        for (ModelRequest request : buildRequests(endpoints, sk)) {
+            try {
+                HttpResponse<String> response = send(request, sk);
+                int status = response.statusCode();
+                if (status >= 200 && status < 300) {
+                    List<String> models = parseModels(response.body(), apiType);
+                    if (!models.isEmpty()) {
+                        return models;
+                    }
+                    if (emptyModels == null) {
+                        emptyModels = models;
+                    }
+                    continue;
                 }
+                lastException = new IllegalStateException(formatHttpError(status, response.body()));
+                if (status != 404 && status != 405 && meaningfulException == null) {
+                    meaningfulException = lastException;
+                }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                lastException = ex;
+                break;
+            } catch (Exception ex) {
+                lastException = ex;
             }
-            HttpResponse<String> response = HTTP_CLIENT.send(builder.GET().build(),
-                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            int status = response.statusCode();
-            if (status >= 200 && status < 300) {
-                return parseModels(response.body(), apiType);
-            }
-            lastException = new IllegalStateException(formatHttpError(status, response.body()));
-            if (status != 404 && status != 405 && meaningfulException == null) {
-                meaningfulException = lastException;
-            }
+        }
+        if (emptyModels != null) {
+            return emptyModels;
         }
         if (meaningfulException != null) {
             throw meaningfulException;
         }
         throw lastException == null ? new IllegalStateException("No model endpoint available") : lastException;
+    }
+
+    private static List<ModelRequest> buildRequests(List<ModelEndpoint> endpoints, String sk) {
+        List<ModelRequest> requests = new ArrayList<>();
+        for (ModelEndpoint endpoint : endpoints) {
+            if (hasText(sk)) {
+                requests.add(new ModelRequest(endpoint, true));
+            }
+            requests.add(new ModelRequest(endpoint, false));
+        }
+        return requests;
+    }
+
+    private static HttpResponse<String> send(ModelRequest request, String sk)
+            throws Exception {
+        ModelEndpoint endpoint = request.endpoint();
+        String url = endpoint.url();
+        LLMApiType authType = endpoint.authType();
+        if (request.includeApiKey() && authType == LLMApiType.GEMINI) {
+            url = appendQuery(url, "key", sk);
+        }
+        HttpRequest.Builder builder = HttpRequest.newBuilder(URI.create(url))
+                .timeout(REQUEST_TIMEOUT)
+                .header("Accept", "application/json");
+        if (authType == LLMApiType.ANTHROPIC) {
+            builder.header("anthropic-version", "2023-06-01");
+            if (request.includeApiKey()) {
+                builder.header("x-api-key", sk);
+            }
+        } else if (request.includeApiKey() && authType == LLMApiType.OPENAI) {
+            builder.header("Authorization", "Bearer " + sk);
+        }
+        return HTTP_CLIENT.send(builder.GET().build(),
+                HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
     /**
