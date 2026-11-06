@@ -54,6 +54,7 @@ public class LLMThinkingLevelComboBox extends FXComboBox<LLMThinkingLevel> {
             case MEDIUM -> I18nHelper.medium();
             case HIGH -> I18nHelper.high();
             case XHIGH -> I18nHelper.xhigh();
+            case MAX -> I18nHelper.max();
         };
     }
 

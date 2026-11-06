@@ -31,5 +31,10 @@ public enum LLMThinkingLevel {
     /**
      * 更高
      */
-    XHIGH;
+    XHIGH,
+
+    /**
+     * 最大
+     */
+    MAX;
 }
