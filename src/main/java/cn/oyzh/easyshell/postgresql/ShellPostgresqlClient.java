@@ -2325,7 +2325,8 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         PG_CATALOG.PG_GET_VIEWDEF(C.OID, TRUE) AS "DEFINITION",
-                        V.CHECK_OPTION AS "CHECK_OPTION"
+                        V.CHECK_OPTION AS "CHECK_OPTION",
+                        (SELECT OPTION_VALUE FROM PG_CATALOG.PG_OPTIONS_TO_TABLE(C.RELOPTIONS) WHERE OPTION_NAME = 'security_invoker') AS "SECURITY_INVOKER"
                     FROM
                         PG_CATALOG.PG_CLASS C
                     JOIN
@@ -2346,9 +2347,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             ResultSet resultSet = stmt.executeQuery();
             String definition = null;
             String checkOption = null;
+            String securityInvoker = null;
             if (resultSet.next()) {
                 definition = resultSet.getString("DEFINITION");
                 checkOption = resultSet.getString("CHECK_OPTION");
+                securityInvoker = resultSet.getString("SECURITY_INVOKER");
             }
             IOUtil.close(resultSet);
             IOUtil.close(stmt);
@@ -2356,9 +2359,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 return "";
             }
             StringBuilder builder = new StringBuilder("CREATE OR REPLACE VIEW ")
-                    .append(DBUtil.wrap(schema, viewName, DBDialect.POSTGRESQL))
-                    .append(" AS\n")
-                    .append(definition);
+                    .append(DBUtil.wrap(schema, viewName, DBDialect.POSTGRESQL));
+            if (StringUtil.isNotBlank(securityInvoker)) {
+                builder.append(" WITH (security_invoker = ").append(securityInvoker).append(")");
+            }
+            builder.append(" AS\n").append(definition);
             // CHECK OPTION
             if (StringUtil.isNotBlank(checkOption) && !StringUtil.equalsIgnoreCase(checkOption, "NONE")) {
                 builder.append("\n WITH ").append(checkOption.toUpperCase()).append(" CHECK OPTION");
@@ -2828,6 +2833,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         C.RELNAME AS "VIEW_NAME",
                         CASE WHEN V.IS_UPDATABLE = 'YES' THEN 'N' ELSE 'Y' END AS "READ_ONLY",
                         PG_CATALOG.PG_GET_VIEWDEF(C.OID, TRUE) AS "DEFINITION",
+                        (SELECT OPTION_VALUE FROM PG_CATALOG.PG_OPTIONS_TO_TABLE(C.RELOPTIONS) WHERE OPTION_NAME = 'security_invoker') AS "SECURITY_INVOKER",
                         PG_CATALOG.OBJ_DESCRIPTION(C.OID, 'pg_class') AS "TABLE_COMMENT"
                     FROM
                         PG_CATALOG.PG_CLASS C
@@ -2857,6 +2863,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String name = resultSet.getString("VIEW_NAME");
                 String readOnly = resultSet.getString("READ_ONLY");
                 String definition = resultSet.getString("DEFINITION");
+                String securityInvoker = resultSet.getString("SECURITY_INVOKER");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (readOnly == null) {
                     readOnly = ShellPostgresqlHelper.getViewReadOnly(connection, schema, viewName);
@@ -2870,6 +2877,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 view.setComment(tableComment);
                 view.setDefinition(definition);
                 view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                if (StringUtil.isBlank(securityInvoker)) {
+                    view.setSecurityType("");
+                } else {
+                    view.setSecurityType(StringUtil.equalsIgnoreCase(securityInvoker, "true") ? "INVOKER" : "DEFINER");
+                }
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
@@ -2926,6 +2938,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         C.RELNAME AS "VIEW_NAME",
                         CASE WHEN V.IS_UPDATABLE = 'YES' THEN 'N' ELSE 'Y' END AS "READ_ONLY",
                         PG_CATALOG.PG_GET_VIEWDEF(C.OID, TRUE) AS "DEFINITION",
+                        (SELECT OPTION_VALUE FROM PG_CATALOG.PG_OPTIONS_TO_TABLE(C.RELOPTIONS) WHERE OPTION_NAME = 'security_invoker') AS "SECURITY_INVOKER",
                         PG_CATALOG.OBJ_DESCRIPTION(C.OID, 'pg_class') AS "TABLE_COMMENT"
                     FROM
                         PG_CATALOG.PG_CLASS C
@@ -2954,6 +2967,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String name = resultSet.getString("VIEW_NAME");
                 String readOnly = resultSet.getString("READ_ONLY");
                 String definition = resultSet.getString("DEFINITION");
+                String securityInvoker = resultSet.getString("SECURITY_INVOKER");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 if (readOnly == null) {
                     readOnly = ShellPostgresqlHelper.getViewReadOnly(connection, schema, name);
@@ -2967,6 +2981,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 view.setComment(tableComment);
                 view.setDefinition(definition);
                 view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                if (StringUtil.isBlank(securityInvoker)) {
+                    view.setSecurityType("");
+                } else {
+                    view.setSecurityType(StringUtil.equalsIgnoreCase(securityInvoker, "true") ? "INVOKER" : "DEFINER");
+                }
                 list.add(view);
             }
             // 关闭连接和释放资源

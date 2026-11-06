@@ -37,18 +37,6 @@
         <FixedTab text="%base.advanced">
             <FXVBox flexHeight="100%" flexWidth="100%">
                 <FXHBox realHeight="50" flexWidth="100%">
-                    <AccentLabel text="%base.options" realWidth="85" realHeight="25">
-                        <HBox.margin>
-                            <Insets left="20" top="10"/>
-                        </HBox.margin>
-                    </AccentLabel>
-                    <FXCheckBox text="%base.readonly" fx:id="readonly">
-                        <HBox.margin>
-                            <Insets left="10" top="12"/>
-                        </HBox.margin>
-                    </FXCheckBox>
-                </FXHBox>
-                <FXHBox realHeight="50" flexWidth="100%">
                     <AccentLabel realWidth="85" text="%base.securityType" realHeight="25">
                         <HBox.margin>
                             <Insets left="20" top="10"/>

@@ -297,7 +297,6 @@ public class PostgresqlView extends DBObject implements DBView, ObjectCopier<Pos
     public void setSecurityType(String securityType) {
         this.securityType = securityType;
     }
-
     /**
      * 获取视图定义
      *

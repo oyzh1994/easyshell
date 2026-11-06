@@ -13,7 +13,6 @@ import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -43,12 +42,6 @@ public class ShellPostgresqlViewDesignTabController extends RichTabController {
      * db数据库树节点
      */
     private ShellPostgresqlSchemaTreeItem dbItem;
-
-    /**
-     * 只读模式
-     */
-    @FXML
-    private FXCheckBox readonly;
 
     /**
      * 注释
@@ -119,7 +112,6 @@ public class ShellPostgresqlViewDesignTabController extends RichTabController {
             this.comment.text(this.view.getComment());
             this.definition.text(this.view.getDefinition());
             this.definition.forgetHistory();
-            this.readonly.setSelected(!this.view.isUpdatable());
             this.securityType.select(this.view.getSecurityType());
             NodeGroupUtil.display(this.getTab(), "action3");
         }
@@ -154,7 +146,6 @@ public class ShellPostgresqlViewDesignTabController extends RichTabController {
 
         // 监听组件
         DBStatusListenerManager.bindListener(this.comment, this.listener);
-        DBStatusListenerManager.bindListener(this.readonly, this.listener);
         DBStatusListenerManager.bindListener(this.definition, this.listener);
         DBStatusListenerManager.bindListener(this.securityType, this.listener);
     }
@@ -167,7 +158,6 @@ public class ShellPostgresqlViewDesignTabController extends RichTabController {
         if (this.listener != null) {
             this.listener.destroy();
             DBStatusListenerManager.unbindListener(this.comment, this.listener);
-            DBStatusListenerManager.unbindListener(this.readonly, this.listener);
             DBStatusListenerManager.unbindListener(this.definition, this.listener);
             DBStatusListenerManager.unbindListener(this.securityType, this.listener);
         }
@@ -180,7 +170,6 @@ public class ShellPostgresqlViewDesignTabController extends RichTabController {
         };
         // 监听组件
         DBStatusListenerManager.bindListener(this.comment, this.listener);
-        DBStatusListenerManager.bindListener(this.readonly, this.listener);
         DBStatusListenerManager.bindListener(this.definition, this.listener);
         DBStatusListenerManager.bindListener(this.securityType, this.listener);
     }
@@ -283,7 +272,7 @@ public class ShellPostgresqlViewDesignTabController extends RichTabController {
         // 数据库
         tempView.setSchema(this.view.getSchema());
         tempView.setComment(this.comment.getTextTrim());
-        tempView.setUpdatable(!this.readonly.isSelected());
+        tempView.setUpdatable(this.view.isUpdatable());
         tempView.setDefinition(this.definition.getTextTrim());
         tempView.setSecurityType(this.securityType.getSelectedItem());
 

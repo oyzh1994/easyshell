@@ -31,9 +31,12 @@ public class PostgresqlViewAlertSqlGenerator extends DBSqlGenerator {
         // PostgreSQL修改视图使用 CREATE OR REPLACE VIEW
         this.sqlBuilder.append("CREATE OR REPLACE VIEW ");
         this.sqlBuilder.append(viewFullName);
-        // PostgreSQL 15+ 通过 security_invoker 控制视图权限继承，选项位于AS之前
+        // PostgreSQL 15+ 通过 security_invoker 控制视图权限继承，选项位于AS之前；
+        // 空值不写入选项，CREATE OR REPLACE VIEW 会清除原有 security_invoker 设置
         if (StringUtil.containsIgnoreCase(view.getSecurityType(), "INVOKER")) {
             this.sqlBuilder.append("\nWITH (security_invoker = true)");
+        } else if (StringUtil.containsIgnoreCase(view.getSecurityType(), "DEFINER")) {
+            this.sqlBuilder.append("\nWITH (security_invoker = false)");
         }
         this.sqlBuilder.append(" AS \n")
                 .append(this.normalizeDefinition(view.getDefinition()));
