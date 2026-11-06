@@ -1289,13 +1289,17 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                     SELECT
                         C.RELNAME AS "TABLE_NAME",
                         PG_CATALOG.OBJ_DESCRIPTION(C.OID, 'pg_class') AS "TABLE_COMMENT",
-                        TS.SPCNAME AS "TABLE_SPACE"
+                        COALESCE(TS.SPCNAME, DTS.SPCNAME) AS "TABLE_SPACE"
                     FROM
                         PG_CATALOG.PG_CLASS C
                     JOIN
                         PG_CATALOG.PG_NAMESPACE N ON N.OID = C.RELNAMESPACE
                     LEFT JOIN
                         PG_CATALOG.PG_TABLESPACE TS ON TS.OID = C.RELTABLESPACE
+                    LEFT JOIN
+                        PG_CATALOG.PG_DATABASE PD ON PD.DATNAME = CURRENT_DATABASE()
+                    LEFT JOIN
+                        PG_CATALOG.PG_TABLESPACE DTS ON DTS.OID = PD.DATTABLESPACE
                     WHERE
                         N.NSPNAME = ?
                     AND
@@ -2726,13 +2730,17 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         PG_CATALOG.OBJ_DESCRIPTION(C.OID, 'pg_class') AS "TABLE_COMMENT",
-                        TS.SPCNAME AS "TABLE_SPACE"
+                        COALESCE(TS.SPCNAME, DTS.SPCNAME) AS "TABLE_SPACE"
                     FROM
                         PG_CATALOG.PG_CLASS C
                     JOIN
                         PG_CATALOG.PG_NAMESPACE N ON N.OID = C.RELNAMESPACE
                     LEFT JOIN
                         PG_CATALOG.PG_TABLESPACE TS ON TS.OID = C.RELTABLESPACE
+                    LEFT JOIN
+                        PG_CATALOG.PG_DATABASE PD ON PD.DATNAME = CURRENT_DATABASE()
+                    LEFT JOIN
+                        PG_CATALOG.PG_TABLESPACE DTS ON DTS.OID = PD.DATTABLESPACE
                     WHERE
                         N.NSPNAME = ?
                     AND

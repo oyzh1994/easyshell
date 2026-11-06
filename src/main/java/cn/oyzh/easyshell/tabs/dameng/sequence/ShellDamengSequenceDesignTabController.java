@@ -412,7 +412,7 @@ public class ShellDamengSequenceDesignTabController extends RichTabController {
         super.bindListeners();
 
         // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.getTab() == null ? null : this.getTab().getContent(), this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
         NodeUtil.nodeOnCtrlS(this.preview, this::save);
         // 切换面板监听

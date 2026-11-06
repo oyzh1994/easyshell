@@ -243,7 +243,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
     public void initialize(URL location, ResourceBundle resourceBundle) {
         super.initialize(location, resourceBundle);
         // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.getTab() == null ? null : this.getTab().getContent(), this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
 
         // 切换面板监听

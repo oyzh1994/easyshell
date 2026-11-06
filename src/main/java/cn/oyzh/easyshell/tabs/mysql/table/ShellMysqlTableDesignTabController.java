@@ -715,7 +715,7 @@ public class ShellMysqlTableDesignTabController extends ParentTabController {
         this.foreignKeyTable.setCtrlSAction(this::save);
 
         // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.getTab() == null ? null : this.getTab().getContent(), this::save);
         NodeUtil.nodeOnCtrlS(this.tableComment, this::save);
         NodeUtil.nodeOnCtrlS(this.tableAutoIncrement, this::save);
         NodeUtil.nodeOnCtrlS((this.preview), this::save);

@@ -138,7 +138,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.getTab() == null ? null : this.getTab().getContent(), this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);
         NodeUtil.nodeOnCtrlS(this.preview, this::save);
         this.tabPane.selectedItemChanged((observable, oldTab, newTab) -> {

@@ -457,7 +457,7 @@ public class ShellPostgresqlProcedureDesignTabController extends RichTabControll
         this.initParamTable();
 
         // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.getTab() == null ? null : this.getTab().getContent(), this::save);
         NodeUtil.nodeOnCtrlS(this.securityType, this::save);
         NodeUtil.nodeOnCtrlS(this.parallelEnable, this::save);
         NodeUtil.nodeOnCtrlS(this.definition, this::save);

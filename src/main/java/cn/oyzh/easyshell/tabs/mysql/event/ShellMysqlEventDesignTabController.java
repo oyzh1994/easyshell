@@ -669,7 +669,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         });
 
         // 监听事件
-        NodeUtil.nodeOnCtrlS(this.getTab(), this::save);
+        NodeUtil.nodeOnCtrlS(this.getTab() == null ? null : this.getTab().getContent(), this::save);
         NodeUtil.nodeOnCtrlS(this.definer, this::save);
         NodeUtil.nodeOnCtrlS(this.comment, this::save);
         NodeUtil.nodeOnCtrlS(this.status, this::save);
