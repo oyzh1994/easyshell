@@ -806,6 +806,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 trigger.setSchema(schema);
                 trigger.setTableName(tableName);
                 trigger.setCreateDefinition(createDefinition);
+                trigger.setFunctionDefinition(functionDefinition);
                 trigger.setDefinition(ShellPostgresqlHelper.fixTiggerDefinition(ShellPostgresqlHelper.parseFunctionBody(functionDefinition)));
                 trigger.setPolicy(this.triggerTiming(type), this.triggerManipulation(type));
                 list.add(trigger);
@@ -3207,7 +3208,13 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                     AND
                         NOT IX.INDISPRIMARY
                     AND
-                        NOT EXISTS (SELECT 1 FROM PG_CATALOG.PG_CONSTRAINT CON WHERE CON.CONINDID = IX.INDEXRELID)
+                        NOT EXISTS (
+                            SELECT 1
+                            FROM PG_CATALOG.PG_CONSTRAINT CON
+                            WHERE CON.CONINDID = IX.INDEXRELID
+                            AND CON.CONRELID = IX.INDRELID
+                            AND CON.CONTYPE IN ('p', 'u', 'x')
+                        )
                     ORDER BY
                         IC.RELNAME, K.ORD
                     """;
@@ -4198,6 +4205,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             List<PostgresqlFunction> list = new ArrayList<>();
             String sql = """
                     SELECT
+                        P.OID AS "OID",
                         P.PRONAME AS "ROUTINE_NAME",
                         P.PROSECDef AS "SECURITY_DEFINER",
                         P.PROVOLATILE AS "VOLATILE",
@@ -4229,6 +4237,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             // 遍历结果集
             while (resultSet.next()) {
                 PostgresqlFunction function = new PostgresqlFunction();
+                long oid = resultSet.getLong("OID");
                 String name = resultSet.getString("ROUTINE_NAME");
                 String createDefinition = resultSet.getString("DLL");
                 String definition = resultSet.getString("DEFINITION");
@@ -4238,7 +4247,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
-                    List<PostgresqlRoutineParam> params = this.listFunctionParam(schema, name);
+                    List<PostgresqlRoutineParam> params = this.listFunctionParam(oid);
                     function.setParams(params);
                 }
                 if (StringUtil.isBlank(definition)) {
@@ -4310,6 +4319,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             List<PostgresqlProcedure> list = new ArrayList<>();
             String sql = """
                     SELECT
+                        P.OID AS "OID",
                         P.PRONAME AS "ROUTINE_NAME",
                         P.PROSECDef AS "SECURITY_DEFINER",
                         P.PROVOLATILE AS "VOLATILE",
@@ -4337,6 +4347,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             // 遍历结果集
             while (resultSet.next()) {
                 PostgresqlProcedure procedure = new PostgresqlProcedure();
+                long oid = resultSet.getLong("OID");
                 String name = resultSet.getString("ROUTINE_NAME");
                 String createDefinition = resultSet.getString("DLL");
                 String definition = resultSet.getString("DEFINITION");
@@ -4346,7 +4357,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
-                    List<PostgresqlRoutineParam> params = this.listProcedureParam(schema, name);
+                    List<PostgresqlRoutineParam> params = this.listProcedureParam(oid);
                     procedure.setParams(params);
                 }
                 if (StringUtil.isBlank(definition)) {
@@ -4422,6 +4433,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             String produceName = param.getProcedureName();
             String sql = """
                     SELECT
+                        P.OID AS "OID",
                         P.PROSECDef AS "SECURITY_DEFINER",
                         P.PROVOLATILE AS "VOLATILE",
                         P.PROISSTRICT AS "STRICT",
@@ -4454,6 +4466,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             procedure.setName(produceName);
             // 遍历结果集
             while (resultSet.next()) {
+                long oid = resultSet.getLong("OID");
                 String createDefinition = resultSet.getString("DLL");
                 String definition = resultSet.getString("DEFINITION");
                 boolean securityDefiner = resultSet.getBoolean("SECURITY_DEFINER");
@@ -4462,7 +4475,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
-                    List<PostgresqlRoutineParam> params = this.listProcedureParam(schema, produceName);
+                    List<PostgresqlRoutineParam> params = this.listProcedureParam(oid);
                     procedure.setParams(params);
                 }
                 if (StringUtil.isBlank(definition)) {
@@ -4614,6 +4627,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             String functionName = param.getFunctionName();
             String sql = """
                     SELECT
+                        P.OID AS "OID",
                         P.PROSECDef AS "SECURITY_DEFINER",
                         P.PROVOLATILE AS "VOLATILE",
                         P.PROISSTRICT AS "STRICT",
@@ -4646,6 +4660,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             function.setName(functionName);
             // 遍历结果集
             while (resultSet.next()) {
+                long oid = resultSet.getLong("OID");
                 String createDefinition = resultSet.getString("DLL");
                 String definition = resultSet.getString("DEFINITION");
                 boolean securityDefiner = resultSet.getBoolean("SECURITY_DEFINER");
@@ -4654,7 +4669,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String securityType = securityDefiner ? "DEFINER" : "INVOKER";
                 StringBuilder characteristic = new StringBuilder();
                 if (param.isFull()) {
-                    List<PostgresqlRoutineParam> params = this.listFunctionParam(schema, functionName);
+                    List<PostgresqlRoutineParam> params = this.listFunctionParam(oid);
                     function.setParams(params);
                 }
                 if (StringUtil.isBlank(definition)) {
@@ -5144,6 +5159,86 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 按函数/过程OID查询参数，确保重载函数读取到各自正确的参数签名。
+     *
+     * @param oid         函数/过程OID
+     * @param routineType 类型
+     * @return 参数列表
+     * @throws Exception 异常
+     */
+    public List<PostgresqlRoutineParam> listRoutineParamByOid(long oid, String routineType) throws Exception {
+        try {
+            Connection connection = this.getConnManager().connection();
+            String prokind = StringUtil.equalsIgnoreCase(routineType, "PROCEDURE") ? "p" : "f";
+            String returnSql = """
+                    SELECT
+                        PG_CATALOG.FORMAT_TYPE(P.PRORETTYPE, NULL) AS "RETURN_TYPE"
+                    FROM
+                        PG_CATALOG.PG_PROC P
+                    WHERE
+                        P.OID = ?
+                    """;
+            PreparedStatement returnStatement = connection.prepareStatement(returnSql);
+            returnStatement.setLong(1, oid);
+            ResultSet returnResult = returnStatement.executeQuery();
+            String returnType = null;
+            if (returnResult.next()) {
+                returnType = returnResult.getString("RETURN_TYPE");
+            }
+            IOUtil.close(returnResult);
+            IOUtil.close(returnStatement);
+            if (returnType == null) {
+                return Collections.emptyList();
+            }
+            String sql = """
+                    SELECT
+                        K.ORD AS "POSITION",
+                        PG_CATALOG.FORMAT_TYPE(T.OID, NULL) AS "DATA_TYPE",
+                        P.PROARGNAMES[(K.ORD)::INT] AS "PARAMETER_NAME",
+                        COALESCE(P.PROARGMODES[(K.ORD)::INT]::TEXT, 'i') AS "PARAMETER_MODE"
+                    FROM
+                        PG_CATALOG.PG_PROC P
+                    JOIN LATERAL
+                        UNNEST(COALESCE(P.PROALLARGTYPES, P.PROARGTYPES)::OID[]) WITH ORDINALITY AS K(TYPOID, ORD) ON TRUE
+                    JOIN
+                        PG_CATALOG.PG_TYPE T ON T.OID = K.TYPOID
+                    WHERE
+                        P.OID = ?
+                    ORDER BY
+                        K.ORD
+                    """;
+            this.printSql(sql);
+            List<PostgresqlRoutineParam> params = new ArrayList<>();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, oid);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                PostgresqlRoutineParam param = new PostgresqlRoutineParam();
+                param.setPosition(resultSet.getInt("POSITION"));
+                param.setType(resultSet.getString("DATA_TYPE"));
+                param.setName(resultSet.getString("PARAMETER_NAME"));
+                param.setMode(this.routineParamMode(resultSet.getString("PARAMETER_MODE")));
+                param.setCharset(null);
+                params.add(param);
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            if (!StringUtil.equalsIgnoreCase(prokind, "p") && StringUtil.isNotBlank(returnType)) {
+                PostgresqlRoutineParam returnParam = new PostgresqlRoutineParam();
+                returnParam.setName("V_RET");
+                returnParam.setMode("OUT");
+                returnParam.setPosition(0);
+                returnParam.setType(returnType);
+                params.add(returnParam);
+            }
+            return params;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    /**
      * 解析例程参数模式
      *
      * @param mode 模式标识
@@ -5175,6 +5270,17 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 按函数OID查询参数
+     *
+     * @param oid 函数OID
+     * @return 参数列表
+     * @throws Exception 异常
+     */
+    public List<PostgresqlRoutineParam> listFunctionParam(long oid) throws Exception {
+        return this.listRoutineParamByOid(oid, "FUNCTION");
+    }
+
+    /**
      * 查询过程参数列表
      *
      * @param schema        模式名称
@@ -5184,6 +5290,17 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      */
     public List<PostgresqlRoutineParam> listProcedureParam(String schema, String procedureName) throws Exception {
         return listRoutineParam(schema, procedureName, "PROCEDURE");
+    }
+
+    /**
+     * 按过程OID查询参数
+     *
+     * @param oid 过程OID
+     * @return 参数列表
+     * @throws Exception 异常
+     */
+    public List<PostgresqlRoutineParam> listProcedureParam(long oid) throws Exception {
+        return this.listRoutineParamByOid(oid, "PROCEDURE");
     }
 
     //    private Boolean dbaRole;

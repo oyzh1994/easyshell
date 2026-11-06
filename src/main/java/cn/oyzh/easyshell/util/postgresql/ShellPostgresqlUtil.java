@@ -8,9 +8,11 @@ import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
+import cn.oyzh.easyshell.postgresql.routine.PostgresqlRoutineParam;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecordPrimaryKey;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.db.data.handler.DataHandler;
 
 import java.sql.ResultSet;
@@ -107,6 +109,42 @@ public class ShellPostgresqlUtil {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * 生成删除函数/过程的SQL，必须带输入参数签名，避免重载时名称不唯一。
+     *
+     * @param schema    模式
+     * @param name      名称
+     * @param params    参数列表
+     * @param procedure 是否为过程
+     * @return SQL
+     */
+    public static String dropRoutineSql(String schema, String name, List<PostgresqlRoutineParam> params, boolean procedure) {
+        List<String> args = new ArrayList<>();
+        if (params != null) {
+            for (PostgresqlRoutineParam param : params) {
+                String mode = param.getMode();
+                if (StringUtil.containsIgnoreCase(mode, "TABLE")) {
+                    continue;
+                }
+                boolean variadic = StringUtil.containsIgnoreCase(mode, "VARIADIC");
+                boolean input = StringUtil.isBlank(mode)
+                        || StringUtil.containsIgnoreCase(mode, "IN")
+                        || variadic;
+                if (!input) {
+                    continue;
+                }
+                String type = param.getType();
+                if (StringUtil.isBlank(type)) {
+                    continue;
+                }
+                args.add(variadic ? "VARIADIC " + type : type);
+            }
+        }
+        return "DROP " + (procedure ? "PROCEDURE" : "FUNCTION") + " IF EXISTS "
+                + DBUtil.wrap(schema, name, DBDialect.POSTGRESQL)
+                + "(" + String.join(", ", args) + ");";
     }
 
     /**
@@ -277,6 +315,111 @@ public class ShellPostgresqlUtil {
                 callback.accept(table);
             }
         }
+    }
+
+    /**
+     * 将SQL中的源模式限定安全地替换为目标模式。
+     * 只处理字符串、注释、双引号标识符之外的模式限定，避免改坏数据值。
+     *
+     * @param sql     SQL
+     * @param source  源模式
+     * @param target  目标模式
+     * @return 替换后的SQL
+     */
+    public static String replaceSchema(String sql, String source, String target) {
+        if (StringUtil.isBlank(sql) || StringUtil.isBlank(source) || StringUtil.isBlank(target)
+                || StringUtil.equalsIgnoreCase(source, target)) {
+            return sql;
+        }
+        StringBuilder result = new StringBuilder(sql.length());
+        int len = sql.length();
+        int i = 0;
+        while (i < len) {
+            char c = sql.charAt(i);
+            if (c == '\'') {
+                int end = i + 1;
+                while (end < len) {
+                    if (sql.charAt(end) == '\'') {
+                        if (end + 1 < len && sql.charAt(end + 1) == '\'') {
+                            end += 2;
+                            continue;
+                        }
+                        end++;
+                        break;
+                    }
+                    end++;
+                }
+                result.append(sql, i, Math.min(end, len));
+                i = Math.min(end, len);
+            } else if (c == '-' && i + 1 < len && sql.charAt(i + 1) == '-') {
+                int end = sql.indexOf('\n', i);
+                if (end < 0) {
+                    end = len;
+                }
+                result.append(sql, i, end);
+                i = end;
+            } else if (c == '/' && i + 1 < len && sql.charAt(i + 1) == '*') {
+                int end = sql.indexOf("*/", i + 2);
+                end = end < 0 ? len : end + 2;
+                result.append(sql, i, end);
+                i = end;
+            } else if (c == '"') {
+                int end = i + 1;
+                while (end < len) {
+                    if (sql.charAt(end) == '"') {
+                        if (end + 1 < len && sql.charAt(end + 1) == '"') {
+                            end += 2;
+                            continue;
+                        }
+                        end++;
+                        break;
+                    }
+                    end++;
+                }
+                String identifier = sql.substring(i + 1, Math.max(i + 1, Math.min(end - 1, len)));
+                if (StringUtil.equals(identifier, source) && followedByDot(sql, end)) {
+                    result.append('"').append(target).append('"');
+                } else {
+                    result.append(sql, i, Math.min(end, len));
+                }
+                i = Math.min(end, len);
+            } else if (Character.isLetter(c) || c == '_') {
+                int end = i + 1;
+                while (end < len) {
+                    char next = sql.charAt(end);
+                    if (!Character.isLetterOrDigit(next) && next != '_' && next != '$') {
+                        break;
+                    }
+                    end++;
+                }
+                String identifier = sql.substring(i, end);
+                if (StringUtil.equalsIgnoreCase(identifier, source) && followedByDot(sql, end)) {
+                    result.append('"').append(target).append('"');
+                } else {
+                    result.append(identifier);
+                }
+                i = end;
+            } else {
+                result.append(c);
+                i++;
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * 判断指定位置之后是否是模式限定点（允许空白）
+     *
+     * @param sql   SQL
+     * @param index 位置
+     * @return 结果
+     */
+    private static boolean followedByDot(String sql, int index) {
+        int i = index;
+        while (i < sql.length() && Character.isWhitespace(sql.charAt(i))) {
+            i++;
+        }
+        return i < sql.length() && sql.charAt(i) == '.';
     }
 
     /**

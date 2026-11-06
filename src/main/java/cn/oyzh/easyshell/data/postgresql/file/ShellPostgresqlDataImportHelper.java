@@ -113,6 +113,17 @@ public class ShellPostgresqlDataImportHelper {
      * @param value  值
      * @return Sql字面量
      */
+    /**
+     * PostgreSQL 标准字符串字面量：只把单引号翻倍，保留双引号、反斜杠、换行等原始字符。
+     * 不能用 JSON 风格转义，否则 jsonb 值会变成 '{\"level\": 1}' 导致非法 JSON。
+     *
+     * @param value 字符串
+     * @return SQL 字面量
+     */
+    public static String sqlStringLiteral(String value) {
+        return "'" + value.replace("'", "''") + "'";
+    }
+
     public static String toSqlLiteral(PostgresqlColumn column, Object value) {
         if (value == null) {
             return "NULL";
@@ -149,7 +160,7 @@ public class ShellPostgresqlDataImportHelper {
             if (StringUtil.startWithIgnoreCase(str, "0x")) {
                 return "'\\x" + str.substring(2) + "'::bytea";
             }
-            return DBUtil.wrapData(str, DBDialect.POSTGRESQL).toString();
+            return sqlStringLiteral(str) + "::bytea";
         }
         if (column.supportBoolean()) {
             if (value instanceof Boolean b) {
@@ -170,7 +181,7 @@ public class ShellPostgresqlDataImportHelper {
             return value.toString();
         }
         // 字符串、json、uuid等统一使用单引号字面量
-        return DBUtil.wrapData(value.toString(), DBDialect.POSTGRESQL).toString();
+        return sqlStringLiteral(value.toString());
     }
 
     /**

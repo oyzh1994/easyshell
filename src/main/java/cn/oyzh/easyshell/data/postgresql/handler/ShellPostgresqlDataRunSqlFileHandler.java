@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.data.postgresql.handler;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
 import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
 
 import java.io.BufferedReader;
@@ -21,6 +22,11 @@ public class ShellPostgresqlDataRunSqlFileHandler extends DBDataRunFileHandler<S
      * 数据库客户端
      */
     private final ShellPostgresqlClient dbClient;
+
+    /**
+     * 转储文件头中标识的源模式
+     */
+    private String sourceSchema;
 
     /**
      * 构造 Postgresql执行SQL文件处理器
@@ -50,6 +56,17 @@ public class ShellPostgresqlDataRunSqlFileHandler extends DBDataRunFileHandler<S
                         break;
                     }
                     String stripped = line.strip();
+                    // 识别 EasyShell 转储文件头中的源模式，执行时自动转换为当前模式
+                    if (this.sourceSchema == null && stripped.startsWith("Source Schema")) {
+                        int index = stripped.indexOf(':');
+                        if (index >= 0) {
+                            String value = stripped.substring(index + 1).trim();
+                            if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
+                                value = value.substring(1, value.length() - 1);
+                            }
+                            this.sourceSchema = value;
+                        }
+                    }
                     // 语句之间的注释和空行直接忽略
                     if (builder.toString().isBlank()) {
                         if (stripped.isEmpty() || stripped.startsWith("--")) {
@@ -107,6 +124,15 @@ public class ShellPostgresqlDataRunSqlFileHandler extends DBDataRunFileHandler<S
      */
     private boolean executeStatement(String sql) throws Exception {
         try {
+            // 转储文件的源模式与当前模式不一致时，自动重写模式限定
+            if (StringUtil.isNotBlank(this.sourceSchema)
+                    && !StringUtil.equalsIgnoreCase(this.sourceSchema, this.dbName)) {
+                sql = ShellPostgresqlUtil.replaceSchema(sql, this.sourceSchema, this.dbName);
+                // pg_get_serial_sequence 的表名是字符串字面量，需单独替换其中的模式限定
+                if (sql.contains("pg_get_serial_sequence(")) {
+                    sql = sql.replace("\"" + this.sourceSchema + "\".", "\"" + this.dbName + "\".");
+                }
+            }
             // 新增记录用批量处理
             if (StringUtil.startWithIgnoreCase(sql, "INSERT INTO ")) {
                 this.addInsert(sql);

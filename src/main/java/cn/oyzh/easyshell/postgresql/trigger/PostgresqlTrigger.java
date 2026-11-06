@@ -43,6 +43,11 @@ public class PostgresqlTrigger extends DBObject implements DBTrigger, ObjectCopi
     private String createDefinition;
 
     /**
+     * 触发器函数创建定义
+     */
+    private String functionDefinition;
+
+    /**
      * 获取原始名称
      *
      * @return 原始名称
@@ -147,6 +152,7 @@ public class PostgresqlTrigger extends DBObject implements DBTrigger, ObjectCopi
             this.policy = t1.policy;
             this.definition = t1.definition;
             this.createDefinition = t1.createDefinition;
+            this.functionDefinition = t1.functionDefinition;
         }
     }
 
@@ -207,6 +213,24 @@ public class PostgresqlTrigger extends DBObject implements DBTrigger, ObjectCopi
      */
     public String getCreateDefinition() {
         return createDefinition;
+    }
+
+    /**
+     * 获取触发器函数创建定义
+     *
+     * @return 创建定义
+     */
+    public String getFunctionDefinition() {
+        return functionDefinition;
+    }
+
+    /**
+     * 设置触发器函数创建定义
+     *
+     * @param functionDefinition 创建定义
+     */
+    public void setFunctionDefinition(String functionDefinition) {
+        this.functionDefinition = functionDefinition;
     }
 
     /**

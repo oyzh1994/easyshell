@@ -141,7 +141,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
         try {
             this.checkInterrupt();
             // 删除目标模式中的表
-            String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(this.targetDatabase, tableName, DBDialect.POSTGRESQL) + ";";
+            String dropTable = "DROP TABLE IF EXISTS " + DBUtil.wrap(this.targetDatabase, tableName, DBDialect.POSTGRESQL) + " CASCADE;";
             this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
             this.message("Drop Table " + tableName);
             this.processedIncr();
@@ -217,7 +217,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
         try {
             this.checkInterrupt();
             // 删除视图
-            String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(this.targetDatabase, viewName, DBDialect.POSTGRESQL) + ";";
+            String dropTable = "DROP VIEW IF EXISTS " + DBUtil.wrap(this.targetDatabase, viewName, DBDialect.POSTGRESQL) + " CASCADE;";
             this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
             this.message("Drop View " + viewName);
             this.processedIncr();
@@ -326,7 +326,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             if (StringUtil.isBlank(triggerTable)) {
                 dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.POSTGRESQL) + ";";
             } else {
-                dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(this.targetDatabase, triggerName, DBDialect.POSTGRESQL)
+                dropTable = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(triggerName, DBDialect.POSTGRESQL)
                         + " ON " + DBUtil.wrap(this.targetDatabase, triggerTable, DBDialect.POSTGRESQL) + ";";
             }
             this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);

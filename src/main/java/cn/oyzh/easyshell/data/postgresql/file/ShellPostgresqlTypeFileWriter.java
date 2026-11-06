@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.data.postgresql.file;
 
+import cn.oyzh.easyshell.data.postgresql.file.ShellPostgresqlDataImportHelper;
 import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -125,7 +126,7 @@ public abstract class ShellPostgresqlTypeFileWriter extends DBDataTypeFileWriter
             return value.toString();
         }
         // 字符串、json、uuid等统一使用单引号字面量
-        return DBUtil.wrapData(value.toString(), DBDialect.POSTGRESQL).toString();
+        return ShellPostgresqlDataImportHelper.sqlStringLiteral(value.toString());
     }
 
     /**
