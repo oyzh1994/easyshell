@@ -23,6 +23,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -289,9 +290,12 @@ public final class LLMMessageView extends Editor {
 
     @Override
     public List<? extends MenuItem> getMenuItems() {
-        MenuItem copy = MenuItemManager.getMenuItem(I18nHelper.copy(), this::copyMessage);
-        MenuItem selectAll = MenuItemManager.getMenuItem(I18nHelper.selectAll(), this::selectAll);
-        return List.of(copy, selectAll);
+        List<MenuItem> items = new ArrayList<>();
+        // 右键位置存在超链接时，增加打开超链接菜单项
+        this.addHyperlinkMenuItems(items);
+        items.add(MenuItemManager.getMenuItem(I18nHelper.copy(), this::copyMessage));
+        items.add(MenuItemManager.getMenuItem(I18nHelper.selectAll(), this::selectAll));
+        return items;
     }
 
     /**
