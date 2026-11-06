@@ -580,6 +580,12 @@ public class ShellPostgresqlHelper {
     public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
 
     static {
+        // 连接在 pg_stat_activity 中显示的名称
+        DEFAULT_ENVIRONMENT.put("ApplicationName", "EasyShell");
+        // TCP keepalive，减少长时间空闲连接被中间网络设备断开
+        DEFAULT_ENVIRONMENT.put("tcpKeepAlive", "true");
+        // 批量插入重写，提高导入/批量插入性能
+        DEFAULT_ENVIRONMENT.put("reWriteBatchedInserts", "true");
     }
 
     /**

@@ -432,7 +432,10 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                 }
                 StringUtil.deleteLast(builder, ",");
                 builder.append(")");
-                // PostgreSQL不支持 ON UPDATE 子句，忽略更新策略
+                // PostgreSQL 支持 ON UPDATE / ON DELETE 策略
+                if (StringUtil.isNotBlank(foreignKey.getUpdatePolicy())) {
+                    builder.append(" ON UPDATE ").append(foreignKey.getUpdatePolicy());
+                }
                 if (StringUtil.isNotBlank(foreignKey.getDeletePolicy())) {
                     builder.append(" ON DELETE ").append(foreignKey.getDeletePolicy());
                 }
