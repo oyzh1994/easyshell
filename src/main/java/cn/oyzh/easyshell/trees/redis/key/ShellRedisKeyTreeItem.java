@@ -11,8 +11,10 @@ import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
 import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.OpenSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
@@ -43,6 +45,11 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
      * 100mb
      */
     public static final int DATA_MAX = 100 * 1024 * 1024;
+
+    /**
+     * 键列表节点
+     */
+    private final ShellRedisKeysTreeItem keysItem;
 
     /**
      * db节点
@@ -119,20 +126,41 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
     /**
      * 构造redis键节点
      *
-     * @param value  键对象
-     * @param dbItem 数据库节点
+     * @param value    键对象
+     * @param keysItem 键列表节点
      */
-    public ShellRedisKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
-        super(dbItem.getTreeView());
+    public ShellRedisKeyTreeItem(ShellRedisKey value, ShellRedisKeysTreeItem keysItem) {
+        super(keysItem.getTreeView());
         this.value = value;
-        this.dbItem = dbItem;
+        this.keysItem = keysItem;
+        this.dbItem = keysItem.dbItem();
         super.setFilterable(true);
         this.setValue(new ShellRedisKeyTreeItemValue(this));
     }
 
+    /**
+     * 获取键列表节点
+     *
+     * @return 键列表节点
+     */
+    public ShellRedisKeysTreeItem keysItem() {
+        return keysItem;
+    }
+
+    /**
+     * 获取数据库节点
+     *
+     * @return 数据库节点
+     */
+    public ShellRedisDatabaseTreeItem dbItem() {
+        return dbItem;
+    }
+
     @Override
     public List<MenuItem> getMenuItems() {
-        List<MenuItem> items = new ArrayList<>(8);
+        List<MenuItem> items = new ArrayList<>(9);
+        MenuItem open = MenuItemHelper.menuItem(I18nHelper.open(), new OpenSVGGlyph(), this::onPrimaryDoubleClick);
+        items.add(open);
         FXMenuItem rename = MenuItemHelper.renameKey( this::rename);
         items.add(rename);
         FXMenuItem moveKey = MenuItemHelper.moveKey( this::moveKey);
@@ -175,8 +203,12 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
         }
         // 刷新父节点键数量
         this.parent().flushDbSize();
+        // 关闭标签页
+        this.getTreeView().closeKeyTab(this.dbIndex(), this.key());
         // 移除此节点
         this.remove();
+        // 刷新键数量
+        this.keysItem.refresh();
         // 键移动事件
         this.getTreeView().keyMoved(dbIndex);
     }
@@ -316,8 +348,12 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
             this.unCollect();
             // 刷新父节点键数量
             this.parent().flushDbSize();
+            // 关闭标签页
+            this.getTreeView().closeKeyTab(this.dbIndex(), this.key());
             // 移除此键
             this.remove();
+            // 刷新键数量
+            this.keysItem.refresh();
             // 清除选区
             this.clearSelection();
             // // 发送事件
@@ -329,8 +365,13 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
     }
 
     @Override
-    public ShellRedisDatabaseTreeItem parent() {
-        return (ShellRedisDatabaseTreeItem) super.parent();
+    public ShellRedisKeysTreeItem parent() {
+        return (ShellRedisKeysTreeItem) super.parent();
+    }
+
+    @Override
+    public void onPrimaryDoubleClick() {
+        this.getTreeView().openKey(this);
     }
 
     @Override
@@ -349,8 +390,10 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
             // String oldKey = this.key();
             String result = this.client().rename(this.dbIndex(), this.key(), newKey);
             if (StringUtil.equalsIgnoreCase(result, "OK")) {
+                String oldKey = this.value.getKey();
                 this.value.setKey(newKey);
                 this.refresh();
+                this.getTreeView().closeKeyTab(this.dbIndex(), oldKey);
                 // ShellEventUtil.redisKeyRenamed(this, oldKey);
             } else {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
@@ -423,7 +466,13 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
     public void deleteByExpired() {
         try {
             this.unCollect();
+            // 延迟关闭标签页，避免在标签页初始化过程中销毁标签页
+            int dbIndex = this.dbIndex();
+            String key = this.key();
+            FXUtil.runLater(() -> this.getTreeView().closeKeyTab(dbIndex, key));
             this.remove();
+            // 刷新键数量
+            this.keysItem.refresh();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.trees.redis.key;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
 import cn.oyzh.easyshell.redis.key.ShellRedisStringValue;
-import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+
 import cn.oyzh.fx.plus.information.MessageBox;
 
 /**
@@ -18,10 +18,10 @@ public class ShellRedisStringKeyTreeItem extends ShellRedisKeyTreeItem {
      * 构造string类型键节点
      *
      * @param value  键对象
-     * @param dbItem 数据库节点
+     * @param keysItem 键列表节点
      */
-    public ShellRedisStringKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
-        super(value, dbItem);
+    public ShellRedisStringKeyTreeItem(ShellRedisKey value, ShellRedisKeysTreeItem keysItem) {
+        super(value, keysItem);
     }
 
     @Override

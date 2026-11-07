@@ -2,10 +2,9 @@ package cn.oyzh.easyshell.tabs.redis.subscribe;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.tabs.redis.ShellRedisTabController;
-import cn.oyzh.fx.gui.tabs.SubTabController;
-import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
+import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -19,12 +18,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * redis订阅内容组件
+ * redis订阅及发布内容组件
  *
  * @author oyzh
  * @since 2025-11-18
  */
-public class ShellRedisSubscribeTabController extends SubTabController {
+public class ShellRedisSubscribeTabController extends RichTabController {
+
+    /**
+     * redis客户端
+     */
+    private ShellRedisClient client;
 
     /**
      * 订阅组件
@@ -38,16 +42,28 @@ public class ShellRedisSubscribeTabController extends SubTabController {
     private FXToggleSwitch subscribe;
 
     /**
-     * 消息
+     * 订阅消息
      */
     @FXML
-    private ReadOnlyTextArea msg;
+    private ShellDataEditor msg;
 
     /**
-     * 通道
+     * 订阅通道
      */
     @FXML
     private ClearableTextField channel;
+
+    /**
+     * 发布通道
+     */
+    @FXML
+    private ClearableTextField publishChannel;
+
+    /**
+     * 发布消息
+     */
+    @FXML
+    private ShellDataEditor publishMsg;
 
     /**
      * 订阅线程
@@ -55,8 +71,25 @@ public class ShellRedisSubscribeTabController extends SubTabController {
     private Thread pubsubThread;
 
     /**
-     * 订阅
+     * 初始化
      *
+     * @param client redis客户端
+     */
+    public void init(ShellRedisClient client) {
+        this.client = client;
+    }
+
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
+    public ShellRedisClient getClient() {
+        return client;
+    }
+
+    /**
+     * 订阅
      */
     public void subscribe() {
         try {
@@ -75,7 +108,6 @@ public class ShellRedisSubscribeTabController extends SubTabController {
                     JulLog.info("subscribe:{} success", channel);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    // this.unsubscribe();
                 }
             });
         } catch (Exception ex) {
@@ -91,21 +123,56 @@ public class ShellRedisSubscribeTabController extends SubTabController {
         try {
             // 结束订阅
             ThreadUtil.interrupt(this.pubsubThread);
-            if (this.pubSub.isSubscribed()) {
+            if (this.pubSub != null && this.pubSub.isSubscribed()) {
                 this.pubSub.unsubscribe();
             }
-            this.channel.enable();
-            JulLog.info("unsubscribe:{} success", channel);
+            if (this.channel != null) {
+                this.channel.enable();
+            }
+            JulLog.info("unsubscribe:{} success", this.channel == null ? null : this.channel.getText());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 发布消息
+     */
+    @FXML
+    private void send() {
+        try {
+            String channel = this.publishChannel.getText();
+            if (StringUtils.isEmpty(channel)) {
+                MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
+                this.publishChannel.requestFocus();
+                return;
+            }
+            this.getClient().publish(channel, this.publishMsg.getTextTrim());
+            MessageBox.okToast(I18nHelper.messageSent(), this.getWindow());
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, this.getWindow());
         }
     }
 
+    /**
+     * 清除订阅消息
+     */
+    @FXML
+    private void clearMsg() {
+        this.msg.clear();
+    }
+
     @Override
     public void onTabClosed(Event event) {
         this.unsubscribe();
         super.onTabClosed(event);
+    }
+
+    @Override
+    public void destroy() {
+        this.unsubscribe();
+        super.destroy();
     }
 
     @Override
@@ -134,33 +201,5 @@ public class ShellRedisSubscribeTabController extends SubTabController {
                 msg.appendLine("unsubscribe pattern:" + pattern + " subscribed channels:" + subscribedChannels);
             }
         };
-    }
-
-    @Override
-    public ShellRedisTabController parent() {
-        return (ShellRedisTabController) super.parent();
-    }
-
-    /**
-     * 获取redis客户端
-     *
-     * @return redis客户端
-     */
-    public ShellRedisClient getClient() {
-        return this.parent().getClient();
-    }
-
-    /**
-     * 清除消息
-     */
-    @FXML
-    private void clearMsg() {
-        this.msg.clear();
-    }
-
-    @Override
-    public void destroy() {
-        this.unsubscribe();
-        super.destroy();
     }
 }

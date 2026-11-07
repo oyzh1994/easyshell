@@ -1,28 +1,27 @@
 package cn.oyzh.easyshell.tabs.redis;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
-import cn.oyzh.easyshell.tabs.ShellParentTabController;
-import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeysTabController;
-import cn.oyzh.easyshell.tabs.redis.publish.ShellRedisPublishTabController;
-import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTabController;
-import cn.oyzh.easyshell.tabs.redis.server.ShellRedisServerTabController;
-import cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController;
-import cn.oyzh.easyshell.tabs.redis.terminal.ShellRedisTerminalTabController;
+import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
-import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.plus.controls.tab.FXTab;
-import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
+import cn.oyzh.fx.gui.text.field.FilterTextField;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.keyboard.KeyHandler;
+import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-
-import java.util.List;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  * redis标签页内容组件
@@ -30,7 +29,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellRedisTabController extends ShellParentTabController {
+public class ShellRedisTabController extends ShellBaseTabController {
 
     /**
      * 客户端
@@ -41,61 +40,31 @@ public class ShellRedisTabController extends ShellParentTabController {
      * 根节点
      */
     @FXML
-    private FXTabPane root;
+    private FXSplitPane root;
 
     /**
-     * 键组件
+     * 标签页容器
      */
     @FXML
-    private FXTab keys;
+    private ShellRedisTabPane tabPane;
 
     /**
-     * 键
+     * db树
      */
     @FXML
-    private ShellRedisKeysTabController keysController;
+    private ShellRedisTreeView treeView;
 
     /**
-     * 查询
+     * 过滤参数
      */
     @FXML
-    private ShellRedisQueryTabController queryController;
+    private FilterTextField filterKW;
 
     /**
-     * 服务
+     * 过滤类型
      */
     @FXML
-    private ShellRedisServerTabController serverController;
-
-    /**
-     * 终端
-     */
-    @FXML
-    private ShellRedisTerminalTabController terminalController;
-
-    /**
-     * 发布
-     */
-    @FXML
-    private ShellRedisPublishTabController publishController;
-
-    /**
-     * 订阅
-     */
-    @FXML
-    private ShellRedisSubscribeTabController subscribeController;
-
-    @Override
-    public List<? extends RichTabController> getSubControllers() {
-        return List.of(
-                this.keysController,
-                this.queryController,
-                this.serverController,
-                this.terminalController,
-                this.publishController,
-                this.subscribeController
-        );
-    }
+    private ShellRedisKeyFilterTypeComboBox filterType;
 
     /**
      * 获取shell连接
@@ -129,15 +98,12 @@ public class ShellRedisTabController extends ShellParentTabController {
                     this.closeTab();
                     return;
                 }
+                this.tabPane.setClient(this.client);
+                this.treeView.setTabPane(this.tabPane);
+                this.treeView.setClient(this.client);
+                this.treeView.loadItems();
+                this.treeView.root().expend();
                 this.hideLeft();
-                if (this.client.isSentinelMode()) {
-                    this.root.removeTab(this.keys);
-                } else {
-                    this.keysController.init(this.client);
-                }
-                this.queryController.init(this.client);
-                this.serverController.init(this.client);
-                this.terminalController.init(this.client.forkClient());
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex, this.getWindow());
@@ -157,20 +123,82 @@ public class ShellRedisTabController extends ShellParentTabController {
 
     @Override
     public void onTabClosed(Event event) {
+        // 关闭全部子标签页
+        if (this.tabPane != null) {
+            this.tabPane.closeAllTabs();
+        }
         super.onTabClosed(event);
-        this.subscribeController.unsubscribe();
         IOUtil.closeAsync(this.client);
     }
 
-//    @Override
-//    public void destroy() {
-//        this.root.destroy();
-//        this.keysController.destroy();
-//        this.queryController.destroy();
-//        this.serverController.destroy();
-//        this.terminalController.destroy();
-//        this.publishController.destroy();
-//        this.subscribeController.destroy();
-//        super.destroy();
-//    }
+    /**
+     * 执行过滤
+     */
+    private void doFilter() {
+        String kw = this.filterKW.getTextTrim();
+        // 匹配大小写
+        boolean matchCase = this.filterKW.isMatchCase();
+        // 全字模式
+        boolean wholeWord = this.filterKW.isWholeWord();
+        // 过滤类型
+        int type = this.filterType.getSelectedIndex();
+        // 设置高亮是否匹配大小写
+        this.treeView.setHighlightMatchCase(matchCase);
+        this.treeView.setHighlight(kw);
+        this.treeView.getItemFilter().setKw(kw);
+        this.treeView.getItemFilter().setWholeWord(wholeWord);
+        this.treeView.getItemFilter().setMatchCase(matchCase);
+        this.treeView.getItemFilter().setType((byte) type);
+        ThreadUtil.start(this.treeView::filter);
+    }
+
+    /**
+     * 导入数据
+     */
+    @FXML
+    private void importData() {
+        ShellRedisViewFactory.importData(this.client.shellConnect(), null);
+    }
+
+    /**
+     * 导出数据
+     */
+    @FXML
+    private void exportData() {
+        ShellRedisViewFactory.exportData(this.client.shellConnect(), null);
+    }
+
+    /**
+     * 传输数据
+     */
+    @FXML
+    private void transportData() {
+        ShellRedisViewFactory.transportData(this.client.shellConnect(), null);
+    }
+
+    /**
+     * 定位节点
+     */
+    @FXML
+    private void positionNode() {
+        this.treeView.positionItem();
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 过滤处理
+        this.filterType.selectedIndexChanged((observable, oldValue, newValue) -> this.doFilter());
+        // 过滤
+        KeyHandler searchKeyHandler = new KeyHandler();
+        searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
+        searchKeyHandler.setKeyCode(KeyCode.F);
+        searchKeyHandler.setMainModifierDown(true);
+        searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
+        KeyListener.addHandler(this.root, searchKeyHandler);
+        // 内容过滤
+        this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> this.doFilter());
+        this.filterKW.wholeWordPropery().addListener((observable, oldValue, newValue) -> this.doFilter());
+        this.filterKW.matchCasePropery().addListener((observable, oldValue, newValue) -> this.doFilter());
+    }
 }

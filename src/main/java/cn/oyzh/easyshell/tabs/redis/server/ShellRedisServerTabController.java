@@ -26,12 +26,6 @@ import java.util.concurrent.Future;
 public class ShellRedisServerTabController extends ParentTabController {
 
     /**
-     * 根节点
-     */
-    @FXML
-    private FXTab root;
-
-    /**
      * redis客户端
      */
     private ShellRedisClient client;
@@ -126,8 +120,10 @@ public class ShellRedisServerTabController extends ParentTabController {
             this.tabPane.removeTab(this.slowlog);
             this.tabPane.removeTab(this.clientInfo);
         }
-//        this.renderPane();
-//        this.initRefreshTask();
+        // 如果tab已被选中，则直接开始刷新
+        if (this.getTab() != null && this.getTab().isSelected()) {
+            this.initRefreshTask();
+        }
     }
 
     /**
@@ -135,8 +131,10 @@ public class ShellRedisServerTabController extends ParentTabController {
      */
     private void initRefreshTask() {
         try {
-            this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
-            JulLog.debug("RefreshTask started.");
+            if (this.refreshTask == null) {
+                this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
+                JulLog.debug("RefreshTask started.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("initRefreshTask error", ex);
@@ -149,6 +147,7 @@ public class ShellRedisServerTabController extends ParentTabController {
     public void closeRefreshTask() {
         try {
             ExecutorUtil.cancel(this.refreshTask);
+            this.refreshTask = null;
             JulLog.debug("RefreshTask closed.");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -191,7 +190,7 @@ public class ShellRedisServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
+        tab.selectedProperty().subscribe((oldValue, newValue) -> {
             if (newValue) {
                 this.initRefreshTask();
             } else {
@@ -202,8 +201,8 @@ public class ShellRedisServerTabController extends ParentTabController {
 
     @Override
     public void onTabClosed(Event event) {
-        super.onTabClosed(event);
         this.closeRefreshTask();
+        super.onTabClosed(event);
     }
 
     @Override
@@ -218,13 +217,6 @@ public class ShellRedisServerTabController extends ParentTabController {
     @Override
     public void destroy() {
         this.closeRefreshTask();
-//        this.tabPane.destroy();
-//        this.propTable.destroy();
-//        this.aggregationController.destroy();
-//        this.pubsubController.destroy();
-//        this.slowlogController.destroy();
-//        this.serverInfoController.destroy();
-//        this.clientInfoController.destroy();
         super.destroy();
     }
 }

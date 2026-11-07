@@ -1,10 +1,10 @@
 package cn.oyzh.easyshell.trees.redis.root;
 
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.scene.paint.Color;
 
 /**
  * redis根节点值
@@ -43,22 +43,14 @@ public class ShellRedisRootTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String name() {
+        try {
+            ShellConnect connect = this.item().shellConnect();
+            if (connect != null) {
+                return connect.getName();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return I18nHelper.database();
-    }
-
-    @Override
-    public String extra() {
-        int size = this.item().keyChildrenSize();
-        String extra = "(" + size + ")";
-        // String filterPattern = this.item().getTreeView().getFilterPattern();
-        // if (StringUtil.isNotBlank(filterPattern)) {
-        //     extra += "[" + I18nHelper.keyFilter() + ":" + filterPattern + "]";
-        // }
-        return extra;
-    }
-
-    @Override
-    public Color extraColor() {
-        return Color.FORESTGREEN;
     }
 }

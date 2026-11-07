@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.redis.other;
 
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
-import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeysTreeItem;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -26,15 +26,15 @@ public class ShellRedisMoreTreeItem extends ShellRedisTreeItem<ShellRedisMoreTre
     }
 
     @Override
-    public ShellRedisDatabaseTreeItem parent() {
+    public ShellRedisKeysTreeItem parent() {
         TreeItem<?> parent = this.getParent();
-        return (ShellRedisDatabaseTreeItem) parent;
+        return (ShellRedisKeysTreeItem) parent;
     }
 
     @Override
     public void onPrimaryDoubleClick() {
         //        if (!this.isLoading()) {
-        ShellRedisDatabaseTreeItem treeItem = this.parent();
+        ShellRedisKeysTreeItem treeItem = this.parent();
         if (treeItem != null) {
             treeItem.loadChild();
         }

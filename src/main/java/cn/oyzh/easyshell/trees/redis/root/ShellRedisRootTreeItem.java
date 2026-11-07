@@ -7,11 +7,14 @@ import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeItem;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
-import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeysTreeItem;
+import cn.oyzh.easyshell.trees.redis.server.ShellRedisServerTreeItem;
+import cn.oyzh.easyshell.trees.redis.subscribe.ShellRedisSubscribeTreeItem;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.plus.thread.BackgroundService;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -35,6 +38,7 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
     public ShellRedisRootTreeItem(ShellRedisTreeView treeView) {
         super(treeView);
         super.setFilterable(true);
+        super.setSortable(false);
         this.setValue(new ShellRedisRootTreeItemValue(this));
     }
 
@@ -70,17 +74,9 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
     @Override
     public void reloadChild() {
         this.clearChild();
+        this.setLoaded(false);
         this.loadChild();
     }
-
-    //    /**
-    //     * 获取当前键节点
-    //     *
-    //     * @return 当前键节点
-    //     */
-    //    public List<ShellRedisKeyTreeItem> keyChildren() {
-    //        return (List) super.unfilteredChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem);
-    //    }
 
     /**
      * 获取当前键节点数量
@@ -88,7 +84,14 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
      * @return 当前键节点
      */
     public int keyChildrenSize() {
-        return super.getChildren().filtered(i -> i instanceof ShellRedisKeyTreeItem).size();
+        int size = 0;
+        for (ShellRedisDatabaseTreeItem dbItem : this.dbItems()) {
+            ShellRedisKeysTreeItem keysItem = dbItem.getKeysChild();
+            if (keysItem != null) {
+                size += keysItem.keyChildrenSize();
+            }
+        }
+        return size;
     }
 
     @Override
@@ -108,17 +111,28 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
      * 加载数据库
      */
     protected void loadDatabase() {
-        int databases = this.client().databases();
         List<TreeItem<?>> items = new ArrayList<>();
-        for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
-            ShellRedisDatabaseTreeItem dbItem = new ShellRedisDatabaseTreeItem(dbIndex, this.getTreeView());
-            items.add(dbItem);
+        // 集群模式、哨兵模式只有一个数据库节点
+        if (this.client().isClusterMode()) {
+            items.add(new ShellRedisDatabaseTreeItem(null, this.getTreeView()));
+        } else if (this.client().isSentinelMode()) {
+            items.add(new ShellRedisDatabaseTreeItem(0, this.getTreeView()));
+        } else {
+            Integer databases = this.client().databases();
+            if (databases == null) {
+                databases = 16;
+            }
+            for (int dbIndex = 0; dbIndex < databases; dbIndex++) {
+                items.add(new ShellRedisDatabaseTreeItem(dbIndex, this.getTreeView()));
+            }
         }
+        // 订阅、服务器信息
+        items.add(new ShellRedisSubscribeTreeItem(this.getTreeView()));
+        items.add(new ShellRedisServerTreeItem(this.getTreeView()));
         this.setChild(items);
         this.expend();
         // 异步更新键数量
         BackgroundService.submit(() -> {
-            //            List<ShellRedisDatabaseTreeItem> children = this.getChildren();
             for (TreeItem<?> child : items) {
                 if (child instanceof ShellRedisDatabaseTreeItem dbItem) {
                     dbItem.flushDbSize();
@@ -129,11 +143,54 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
     }
 
     /**
+     * 获取数据库节点列表
+     *
+     * @return 数据库节点列表
+     */
+    public List<ShellRedisDatabaseTreeItem> dbItems() {
+        List<ShellRedisDatabaseTreeItem> items = new ArrayList<>();
+        for (RichTreeItem<?> item : this.richChildren()) {
+            if (item instanceof ShellRedisDatabaseTreeItem dbItem) {
+                items.add(dbItem);
+            }
+        }
+        return items;
+    }
+
+    /**
+     * 获取订阅节点
+     *
+     * @return 订阅节点
+     */
+    public ShellRedisSubscribeTreeItem getSubscribeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellRedisSubscribeTreeItem item) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取服务器信息节点
+     *
+     * @return 服务器信息节点
+     */
+    public ShellRedisServerTreeItem getServerChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellRedisServerTreeItem item) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 获取shell连接信息
      *
      * @return shell连接信息
      */
-    private ShellConnect shellConnect() {
+    public ShellConnect shellConnect() {
         return this.getTreeView().shellConnect();
     }
 
@@ -142,7 +199,7 @@ public class ShellRedisRootTreeItem extends ShellRedisTreeItem<ShellRedisRootTre
      *
      * @return redis客户端
      */
-    private ShellRedisClient client() {
+    public ShellRedisClient client() {
         return this.getTreeView().getClient();
     }
 

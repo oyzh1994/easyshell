@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<FXTabPane xmlns:fx="http://javafx.com/fxml" flexWidth="100%" flexHeight="100%"
+           fx:controller="cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyTabController"
+           tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="RIGHT" rotateGraphic="true">
+    <fx:include fx:id="keyData" source="shellRedisKeyDataTab.fxml"/>
+    <fx:include fx:id="keyHex" source="shellRedisKeyHexTab.fxml"/>
+    <fx:include fx:id="keyInfo" source="shellRedisKeyInfoTab.fxml"/>
+</FXTabPane>

@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.trees.redis.key;
 
 import cn.oyzh.easyshell.redis.key.ShellRedisJsonValue;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
-import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+
 import cn.oyzh.fx.plus.information.MessageBox;
 
 /**
@@ -17,10 +17,10 @@ public class ShellRedisJsonKeyTreeItem extends ShellRedisKeyTreeItem {
      * 构造json类型键节点
      *
      * @param value  键对象
-     * @param dbItem 数据库节点
+     * @param keysItem 键列表节点
      */
-    public ShellRedisJsonKeyTreeItem(ShellRedisKey value, ShellRedisDatabaseTreeItem dbItem) {
-        super(value, dbItem);
+    public ShellRedisJsonKeyTreeItem(ShellRedisKey value, ShellRedisKeysTreeItem keysItem) {
+        super(value, keysItem);
     }
 
     @Override

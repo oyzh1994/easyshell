@@ -1,11 +1,10 @@
 package cn.oyzh.easyshell.tabs.redis.query;
 
+import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.fx.gui.tabs.RichTabController;
-import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 
 /**
@@ -20,7 +19,7 @@ public class ShellRedisQueryMsgTabController extends RichTabController {
      * 消息内容文本域
      */
     @FXML
-    private ReadOnlyTextArea msg;
+    private ShellDataEditor msg;
 
     /**
      * 初始化查询消息

@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.trees.redis.key.ShellRedisSetKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStreamKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisStringKeyTreeItem;
 import cn.oyzh.easyshell.trees.redis.key.ShellRedisZSetKeyTreeItem;
+import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueryTreeItem;
 import cn.oyzh.easyshell.trees.redis.root.ShellRedisRootTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
@@ -89,6 +90,12 @@ public class ShellRedisTreeItemFilter extends RichTreeItemFilter {
             }
             String key = treeItem.key();
             TextUtil.MatchText matchText = TextUtil.findText(key, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+        }
+        // 查询节点
+        if (item instanceof ShellRedisQueryTreeItem queryItem) {
+            String name = queryItem.queryName();
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
             return matchText != TextUtil.MatchText.NOT_FOUND;
         }
         return true;

@@ -1,47 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.svg.glyph.SubscribeSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.PublishSVGGlyph?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.area.ReadOnlyTextArea?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<FixedTab xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController"
-          text="%base.subscribe">
-    <graphic>
-        <SubscribeSVGGlyph/>
-    </graphic>
-    <FXVBox flexHeight="100%" flexWidth="100%">
+<FXSplitPane flexHeight="100%" flexWidth="100%"
+             orientation="VERTICAL" dividerPositions="0.5"
+             xmlns="http://javafx.com/javafx"
+             xmlns:fx="http://javafx.com/fxml"
+             fx:controller="cn.oyzh.easyshell.tabs.redis.subscribe.ShellRedisSubscribeTabController">
+    <FXVBox flexWidth="100%">
+        <InfoLabel text="%base.subscribe">
+            <VBox.margin>
+                <Insets left="10" top="5"/>
+            </VBox.margin>
+        </InfoLabel>
         <FXHBox>
-            <ClearableTextField text="*" tipText="%shell.redis.channel.tip1" fx:id="channel">
+            <ClearableTextField text="*" tipText="%shell.redis.channel.tip1" fx:id="channel" flexWidth="300">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </ClearableTextField>
             <FXToggleSwitch text="%base.subscribe" fx:id="subscribe">
                 <FXHBox.margin>
-                    <Insets left="5" top="10"/>
+                    <Insets left="5" top="5"/>
                 </FXHBox.margin>
             </FXToggleSwitch>
-            <ClearSVGGlyph onMousePrimaryClicked="#clearMsg">
+            <ClearSVGGlyph tipText="%base.clear" onMousePrimaryClicked="#clearMsg">
                 <FXHBox.margin>
-                    <Insets left="5" top="12"/>
+                    <Insets left="5" top="10"/>
                 </FXHBox.margin>
             </ClearSVGGlyph>
         </FXHBox>
-        <ReadOnlyTextArea flexHeight="100% - 50" fx:id="msg" editable="false" flexWidth="100% - 10">
+        <ShellDataEditor flexHeight="100% - 70" fx:id="msg" editable="false" flexWidth="100% - 10">
             <FXVBox.margin>
-                <Insets left="5" top="10"/>
+                <Insets left="5" top="5"/>
             </FXVBox.margin>
-        </ReadOnlyTextArea>
+        </ShellDataEditor>
     </FXVBox>
-</FixedTab>
-
-
+    <FXVBox flexWidth="100%">
+        <InfoLabel text="%base.publish">
+            <VBox.margin>
+                <Insets left="10" top="5"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXHBox>
+            <ClearableTextField fx:id="publishChannel" tipText="%shell.redis.channel.tip2" flexWidth="300">
+                <FXHBox.margin>
+                    <Insets left="5" top="5"/>
+                </FXHBox.margin>
+            </ClearableTextField>
+            <PublishSVGGlyph tipText="%base.send" onMousePrimaryClicked="#send">
+                <FXHBox.margin>
+                    <Insets left="5" top="10"/>
+                </FXHBox.margin>
+            </PublishSVGGlyph>
+        </FXHBox>
+        <ShellDataEditor flexHeight="100% - 70" fx:id="publishMsg" flexWidth="100% - 10">
+            <FXVBox.margin>
+                <Insets left="5" top="5" bottom="5"/>
+            </FXVBox.margin>
+        </ShellDataEditor>
+    </FXVBox>
+</FXSplitPane>

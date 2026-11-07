@@ -3,23 +3,20 @@ package cn.oyzh.easyshell.tabs.redis.query;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.fx.redis.ShellRedisDatabaseComboBox;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryEditor;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryParam;
 import cn.oyzh.easyshell.query.redis.ShellRedisQueryResult;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
-import cn.oyzh.easyshell.trees.query.ShellQueryTreeItem;
-import cn.oyzh.easyshell.trees.query.ShellQueryTreeView;
-import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.redis.query.ShellRedisQueriesTreeItem;
+import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -28,7 +25,7 @@ import javafx.scene.input.KeyEvent;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellRedisQueryTabController extends SubTabController {
+public class ShellRedisQueryTabController extends RichTabController {
 
     /**
      * 查询对象
@@ -36,9 +33,19 @@ public class ShellRedisQueryTabController extends SubTabController {
     private ShellQuery query;
 
     /**
+     * 数据库节点
+     */
+    private ShellRedisDatabaseTreeItem dbItem;
+
+    /**
      * redis客户端
      */
     private ShellRedisClient client;
+
+    /**
+     * 未保存标志位
+     */
+    private boolean unsaved;
 
     /**
      * 当前内容
@@ -53,27 +60,51 @@ public class ShellRedisQueryTabController extends SubTabController {
     private FXSplitPane splitPane;
 
     /**
-     * 数据库
-     */
-    @FXML
-    private ShellRedisDatabaseComboBox database;
-
-    /**
      * 结果面板
      */
     @FXML
     private FXTabPane resultTabPane;
 
     /**
-     * 查询列表
-     */
-    @FXML
-    private ShellQueryTreeView queryTreeView;
-
-    /**
      * 查询存储
      */
     private final ShellQueryStore queryStore = ShellQueryStore.INSTANCE;
+
+    /**
+     * 获取查询对象
+     *
+     * @return 查询对象
+     */
+    public ShellQuery getQuery() {
+        return query;
+    }
+
+    /**
+     * 获取数据库节点
+     *
+     * @return 数据库节点
+     */
+    public ShellRedisDatabaseTreeItem dbItem() {
+        return dbItem;
+    }
+
+    /**
+     * 获取数据库索引
+     *
+     * @return 数据库索引
+     */
+    public int dbIndex() {
+        return this.dbItem.dbIndex();
+    }
+
+    /**
+     * 是否未保存
+     *
+     * @return 结果
+     */
+    public boolean isUnsaved() {
+        return unsaved;
+    }
 
     /**
      * 获取shell连接
@@ -87,16 +118,37 @@ public class ShellRedisQueryTabController extends SubTabController {
     /**
      * 初始化
      *
-     * @param client 客户端
+     * @param query  查询对象
+     * @param dbItem 数据库节点
      */
-    public void init(ShellRedisClient client) {
-        this.client = client;
-        this.content.setClient(client);
-        // 初始化数据库
-        this.database.setDbCount(client.databases());
-        this.database.selectFirst();
-        // 初始化查询数据
-        this.queryTreeView.setIid(client.iid());
+    public void init(ShellQuery query, ShellRedisDatabaseTreeItem dbItem) {
+        this.query = query;
+        this.dbItem = dbItem;
+        this.client = dbItem.client();
+        this.content.setClient(this.client);
+        this.content.setDbIndex(this.dbIndex());
+        this.content.setText(query.getContent() == null ? "" : query.getContent());
+        this.content.forgetHistory();
+        // 监听内容变化
+        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
+            if (StringUtil.notEquals(newValue, this.query.getContent())) {
+                this.unsaved = true;
+                this.flushTab();
+            }
+        });
+        this.flushTab();
+    }
+
+    /**
+     * 重命名查询
+     *
+     * @param name 查询名称
+     */
+    public void renameQuery(String name) {
+        if (this.query != null) {
+            this.query.setName(name);
+            this.flushTab();
+        }
     }
 
     /**
@@ -105,41 +157,38 @@ public class ShellRedisQueryTabController extends SubTabController {
     @FXML
     private void save() {
         try {
-            if (this.query == null) {
-                String name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
+            String name = this.query.getName();
+            if (StringUtil.isBlank(name)) {
+                name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
                 if (StringUtil.isBlank(name)) {
                     return;
                 }
-                this.query = new ShellQuery();
                 this.query.setName(name);
-                this.query.setDbIndex(this.database.getDB());
-                this.query.setContent(this.content.getText());
-                this.query.setIid(this.queryTreeView.getIid());
-                this.queryStore.insert(this.query);
-                this.queryTreeView.addQuery(this.query);
-                this.queryTreeView.selectLast();
-            } else {
-                this.query.setContent(this.content.getText());
-                this.query.setDbIndex(this.database.getSelectedIndex());
-                this.queryStore.update(this.query);
             }
-            this.setUnsaved(false);
+            this.query.setContent(this.content.getText());
+            this.query.setDbIndex(this.dbIndex());
+            this.query.setIid(this.client.iid());
+            boolean result;
+            if (this.query.isNew()) {// 新增查询
+                result = this.queryStore.insert(this.query);
+                if (result) {
+                    ShellRedisQueriesTreeItem queriesItem = this.dbItem.getQueryChild();
+                    if (queriesItem != null) {
+                        queriesItem.addQuery(this.query);
+                    }
+                }
+            } else {// 修改查询
+                result = this.queryStore.update(this.query);
+            }
+            if (result) {
+                this.unsaved = false;
+                this.flushTab();
+            } else {
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             MessageBox.exception(ex, this.getWindow());
-        }
-    }
-
-    /**
-     * 设置未保存状态
-     *
-     * @param unsaved 未保存状态
-     */
-    private void setUnsaved(boolean unsaved) {
-        TreeItem<?> item = this.queryTreeView.getSelectedItem();
-        if (item instanceof ShellQueryTreeItem queryTreeItem) {
-            queryTreeItem.setUnsaved(unsaved);
-            queryTreeItem.refresh();
         }
     }
 
@@ -152,13 +201,12 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.disableTab();
             ShellRedisQueryParam param = new ShellRedisQueryParam();
             param.setContent(this.content.getText());
-            param.setDbIndex(this.database.getSelectedIndex());
+            param.setDbIndex(this.dbIndex());
             ShellRedisQueryResult result = this.client.query(param);
             if (!this.splitPane.isShowDivider()) {
                 this.splitPane.setShowDivider(true);
                 this.splitPane.setDividerPositions(0.3, 0.7);
             }
-            //            this.content.flexHeight("30% - 40");
             this.resultTabPane.setVisible(true);
             this.resultTabPane.clearChild();
             this.resultTabPane.addTab(ShellRedisQueryMsgTab.of(param, result));
@@ -188,94 +236,4 @@ public class ShellRedisQueryTabController extends SubTabController {
             this.run();
         }
     }
-
-    @Override
-    protected void bindListeners() {
-        super.bindListeners();
-        // 监听数据库变化
-        this.database.selectedIndexChanged((observable, oldValue, newValue) -> {
-            if (this.content == null) {
-                return;
-            }
-            int dbIndex = newValue.intValue();
-            if (this.query != null && dbIndex != this.query.getDbIndex()) {
-                this.setUnsaved(true);
-            }
-            this.content.setDbIndex(dbIndex);
-        });
-        // 监听内容变化
-        this.content.addTextChangeListener((observable, oldValue, newValue) -> {
-            if (this.query != null && StringUtil.notEquals(newValue, this.query.getContent())) {
-                this.setUnsaved(true);
-            }
-        });
-        // 查询选择事件
-        this.queryTreeView.selectedItemChanged((ChangeListener<TreeItem<?>>) (observableValue, snippet, t1) -> {
-            if (t1 instanceof ShellQueryTreeItem item) {
-                this.doEdit(item.value());
-            } else {
-                this.doEdit(null);
-            }
-        });
-        // 查询新增回调
-        this.queryTreeView.setAddCallback(this::doAdd);
-        // 查询编辑回调
-        this.queryTreeView.setEditCallback(this::doEdit);
-        // 查询删除回调
-        this.queryTreeView.setDeleteCallback(this::doDelete);
-    }
-
-    /**
-     * 新增查询
-     *
-     * @param query 查询
-     */
-    private void doAdd(ShellQuery query) {
-        if (this.content == null) {
-            return;
-        }
-        this.query = query;
-        this.content.setText(query.getContent());
-        this.database.select(query.getDbIndex());
-        this.queryTreeView.selectLast();
-    }
-
-    /**
-     * 编辑查询
-     *
-     * @param query 查询
-     */
-    private void doEdit(ShellQuery query) {
-        if (this.content == null) {
-            return;
-        }
-        this.query = query;
-        if (query == null) {
-            this.content.clear();
-        } else {
-            this.content.setText(query.getContent());
-            this.database.select(query.getDbIndex());
-        }
-    }
-
-    /**
-     * 删除查询
-     *
-     * @param query 查询
-     */
-    private void doDelete(ShellQuery query) {
-        if (query == this.query) {
-            this.query = null;
-            this.content.clear();
-        }
-    }
-
-    //    @Override
-    //    public void destroy() {
-    //        this.content.destroy();
-    ////        this.widthResizer.destroy();
-    //        this.resultTabPane.destroy();
-    //        this.queryTreeView.destroy();
-    //        super.destroy();
-    //    }
 }

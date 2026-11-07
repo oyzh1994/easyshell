@@ -3,7 +3,8 @@ package cn.oyzh.easyshell.tabs.redis.terminal;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.terminal.redis2.RedisTerminalPane;
-import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.easyshell.trees.redis.database.ShellRedisDatabaseTreeItem;
+import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
 
@@ -13,13 +14,7 @@ import javafx.fxml.FXML;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellRedisTerminalTabController extends SubTabController {
-
-    /**
-     * 根节点
-     */
-    @FXML
-    private FXTab root;
+public class ShellRedisTerminalTabController extends RichTabController {
 
     /**
      * redis命令行文本域
@@ -28,27 +23,39 @@ public class ShellRedisTerminalTabController extends SubTabController {
     private RedisTerminalPane terminal;
 
     /**
-     * redis客户端
+     * 数据库节点
      */
-    private ShellRedisClient client;
+    private ShellRedisDatabaseTreeItem dbItem;
 
     /**
      * 初始化
      *
-     * @param client redis客户端
+     * @param dbItem 数据库节点
      */
-    public void init(ShellRedisClient client) {
-        // this.terminal.init(client, dbIndex);
-        this.client = client;
+    public void init(ShellRedisDatabaseTreeItem dbItem) {
+        this.dbItem = dbItem;
+        // 如果tab已被选中，则直接初始化终端
+        if (this.getTab() != null && this.getTab().isSelected()) {
+            this.initTerminal();
+        }
     }
 
     /**
-     * redis信息
-     *
-     * @return 当前redis信息
+     * 初始化终端
      */
-    protected ShellConnect shellConnect() {
-        return this.terminal.shellConnect();
+    private void initTerminal() {
+        if (this.dbItem != null && this.terminal.getClient() == null) {
+            this.terminal.init(this.dbItem.client(), this.dbItem.dbIndex());
+        }
+    }
+
+    /**
+     * 获取数据库节点
+     *
+     * @return 数据库节点
+     */
+    public ShellRedisDatabaseTreeItem dbItem() {
+        return dbItem;
     }
 
     /**
@@ -61,6 +68,15 @@ public class ShellRedisTerminalTabController extends SubTabController {
     }
 
     /**
+     * redis信息
+     *
+     * @return 当前redis信息
+     */
+    protected ShellConnect shellConnect() {
+        return this.terminal.shellConnect();
+    }
+
+    /**
      * 获取redis客户端
      *
      * @return redis客户端
@@ -69,38 +85,19 @@ public class ShellRedisTerminalTabController extends SubTabController {
         return this.terminal.getClient();
     }
 
-    // @Override
-    // public void onTabClosed(Event event) {
-    //     if (this.terminal.isTemporary()) {
-    //         ShellRedisConnectUtil.close(this.client(), true, true);
-    //     }
-    //     super.onTabClosed(event);
-    // }
-
-    // /**
-    //  * 初始化标志位
-    //  */
-    // private boolean initFlag = false;
-
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        // this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
-        //     if (newValue && !this.initFlag) {
-        //         this.initFlag = true;
-        //         this.terminal.init(this.client, null);
-        //     }
-        // });
-        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
-            if (newValue && this.terminal.getClient() == null) {
-                this.terminal.init(this.client, null);
+        tab.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue) {
+                this.initTerminal();
             }
         });
     }
 
-//    @Override
-//    public void destroy() {
-//        this.terminal.destroy();
-//        super.destroy();
-//    }
+    @Override
+    public void destroy() {
+        this.terminal.destroy();
+        super.destroy();
+    }
 }
