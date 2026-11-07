@@ -1,12 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<FXTabPane xmlns:fx="http://javafx.com/fxml/1" flexWidth="100%"
-           fx:controller="cn.oyzh.easyshell.tabs.zk.ShellZKTabController" flexHeight="100%"
-           rotateGraphic="true" disable="true" side="RIGHT">
-    <fx:include fx:id="node" source="node/shellZKNodeTab.fxml"/>
-    <fx:include fx:id="server" source="server/shellZKServerTab.fxml"/>
-    <fx:include fx:id="query" source="query/shellZKQueryTab.fxml"/>
-    <fx:include fx:id="auth" source="auth/shellZKAuthTab.fxml"/>
-    <fx:include fx:id="terminal" source="terminal/shellZKTerminalTab.fxml"/>
-</FXTabPane>
+<?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox?>
+<?import cn.oyzh.easyshell.tabs.zk.ShellZKTabPane?>
+<?import cn.oyzh.easyshell.trees.zk.ShellZKTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXSplitPane flexWidth="100%" xmlns:fx="http://javafx.com/fxml" flexHeight="100%"
+             fx:controller="cn.oyzh.easyshell.tabs.zk.ShellZKTabController" fx:id="root" dividerPositions="0.25">
+    <FXVBox flexHeight="100%">
+        <FXHBox realHeight="30" flexWidth="100%">
+            <ShellZKNodeFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
+                <HBox.margin>
+                    <Insets left="5" top="3"/>
+                </HBox.margin>
+            </ShellZKNodeFilterTypeComboBox>
+            <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW"
+                             realHeight="24" flexWidth="100% - 135" maxLen="30">
+                <HBox.margin>
+                    <Insets left="5" top="3"/>
+                </HBox.margin>
+            </FilterTextField>
+        </FXHBox>
+        <ShellZKTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 66">
+        </ShellZKTreeView>
+        <FXHBox flexWidth="100%" flexHeight="36">
+            <ImportSVGGlyph tipText="%base.importData" onMousePrimaryClicked="#importData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ImportSVGGlyph>
+            <ExportSVGGlyph tipText="%base.exportData" onMousePrimaryClicked="#exportData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </ExportSVGGlyph>
+            <TransportSVGGlyph tipText="%base.transportData" onMousePrimaryClicked="#transportData">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </TransportSVGGlyph>
+            <CopySVGGlyph tipText="%base.copyPath" onMousePrimaryClicked="#copyNodePath">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </CopySVGGlyph>
+            <PositioningSVGGlyph onMousePrimaryClicked="#positionNode">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </PositioningSVGGlyph>
+        </FXHBox>
+    </FXVBox>
+    <ShellZKTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="ALL_TABS" tabMinHeight="30"
+                   tabDragPolicy="REORDER" flexHeight="100%" rotateGraphic="true">
+    </ShellZKTabPane>
+</FXSplitPane>

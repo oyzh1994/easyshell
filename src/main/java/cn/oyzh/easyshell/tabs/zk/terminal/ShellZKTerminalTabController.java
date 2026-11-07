@@ -6,7 +6,7 @@ import cn.oyzh.easyshell.terminal.zk2.ZKTerminalPane;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
-import javafx.event.Event;
+import cn.oyzh.fx.plus.information.MessageBox;
 import javafx.fxml.FXML;
 
 /**
@@ -18,21 +18,20 @@ import javafx.fxml.FXML;
 public class ShellZKTerminalTabController extends RichTabController {
 
     /**
-     * 根节点
-     */
-    @FXML
-    private FXTab root;
-
-    /**
      * 命令行文本域
      */
     @FXML
     private ZKTerminalPane terminal;
 
     /**
-     * 客户端
+     * zk客户端
      */
     private ShellZKClient client;
+
+    /**
+     * 终端客户端
+     */
+    private ShellZKClient terminalClient;
 
     /**
      * 设置客户端
@@ -41,6 +40,25 @@ public class ShellZKTerminalTabController extends RichTabController {
      */
     public void init(ShellZKClient client) {
         this.client = client;
+        // 如果tab已被选中，则直接初始化终端
+        if (this.getTab() != null && this.getTab().isSelected()) {
+            this.initTerminal();
+        }
+    }
+
+    /**
+     * 初始化终端
+     */
+    private void initTerminal() {
+        if (this.terminalClient == null && this.client != null) {
+            try {
+                this.terminalClient = this.client.forkClient();
+                this.terminal.init(this.terminalClient);
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex, this.getWindow());
+            }
+        }
     }
 
     /**
@@ -49,7 +67,7 @@ public class ShellZKTerminalTabController extends RichTabController {
      * @return zk客户端
      */
     public ShellZKClient client() {
-        return this.client;
+        return this.terminal.getClient();
     }
 
     /**
@@ -61,39 +79,20 @@ public class ShellZKTerminalTabController extends RichTabController {
         return this.client.getShellConnect();
     }
 
-    // @Override
-    // public void onTabClosed(Event event) {
-    //     if (this.terminal.isTemporary()) {
-    //         ShellZKConnectUtil.close(this.client(), true, true);
-    //     }
-    //     super.onTabClosed(event);
-    // }
-
-    // /**
-    //  * 初始化标志位
-    //  */
-    // private boolean initFlag = false;
-
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
-            if (newValue && this.terminal.getClient() == null) {
-                this.terminal.init(this.client);
+        tab.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue) {
+                this.initTerminal();
             }
         });
     }
 
-     @Override
-     public void onTabClosed(Event event) {
-         super.onTabClosed(event);
-         IOUtil.closeAsync(this.client);
-     }
-
-//    @Override
-//    public void destroy() {
-//        IOUtil.closeAsync(this.client);
-////        this.terminal.destroy();
-//        super.destroy();
-//    }
+    @Override
+    public void destroy() {
+        this.terminal.destroy();
+        IOUtil.closeAsync(this.terminalClient);
+        super.destroy();
+    }
 }

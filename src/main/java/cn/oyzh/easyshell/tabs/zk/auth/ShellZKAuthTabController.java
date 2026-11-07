@@ -28,12 +28,6 @@ import java.util.List;
 public class ShellZKAuthTabController extends RichTabController {
 
     /**
-     * 根节点
-     */
-    @FXML
-    private FXTab root;
-
-    /**
      * 认证列表
      */
     @FXML
@@ -62,6 +56,7 @@ public class ShellZKAuthTabController extends RichTabController {
      */
     public void init(ShellZKClient client) {
         this.client = client;
+        this.initAuthDataList();
     }
 
     /**
@@ -171,14 +166,8 @@ public class ShellZKAuthTabController extends RichTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        // this.root.selectedProperty().addListener((observable, oldValue, newValue) -> {
-        //     if (newValue && !this.initFlag) {
-        //         this.initFlag = true;
-        //         this.initAuthDataList();
-        //     }
-        // });
-        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
-            if (newValue) {
+        tab.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue && this.client != null) {
                 this.initAuthDataList();
             }
         });

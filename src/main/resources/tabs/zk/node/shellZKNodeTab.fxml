@@ -1,122 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.filter.zk.ShellZKNodeFilterTypeComboBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.zk.NodeSVGGlyph?>
-<?import cn.oyzh.easyshell.trees.zk.ShellZKTreeView?>
-<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.TransportSVGGlyph?>
-<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
-<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
-<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
-<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<FixedTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
-          text="%base.node">
-    <graphic>
-        <NodeSVGGlyph/>
-    </graphic>
-    <FXSplitPane fx:id="root" flexWidth="100%" flexHeight="100%" dividerPositions="0.25">
-        <FXVBox flexHeight="100%" flexWidth="100%" fx:id="leftBox">
-            <FXHBox realHeight="30" flexWidth="100%">
-                <ShellZKNodeFilterTypeComboBox initIndex="0" realHeight="24" realWidth="120" fx:id="filterType">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </ShellZKNodeFilterTypeComboBox>
-                <FilterTextField tipText="CTRL+F/COMMAND+F" promptText="%base.searchKWTip" fx:id="filterKW"
-                                 realHeight="24" flexWidth="100% - 135" maxLen="30">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </FilterTextField>
-            </FXHBox>
-            <FXHBox realHeight="30" flexWidth="100%">
-                <CopySVGGlyph tipText="%base.copyPath" onMousePrimaryClicked="#copyNodePath">
-                    <HBox.margin>
-                        <Insets left="5" top="10"/>
-                    </HBox.margin>
-                </CopySVGGlyph>
-                <FXLabel fx:id="nodePath" realHeight="22">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </FXLabel>
-            </FXHBox>
-            <ShellZKTreeView flexWidth="100%" fx:id="treeView" flexHeight="100% - 96">
-            </ShellZKTreeView>
-            <FXHBox flexWidth="100%" flexHeight="36">
-                <ImportSVGGlyph tipText="%base.importData"
-                                onMousePrimaryClicked="#importData">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </ImportSVGGlyph>
-                <ExportSVGGlyph tipText="%base.exportData"
-                                onMousePrimaryClicked="#exportData">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </ExportSVGGlyph>
-                <TransportSVGGlyph tipText="%base.transportData"
-                                   onMousePrimaryClicked="#transportData">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </TransportSVGGlyph>
-                <!-- <AddSVGGlyph  onMousePrimaryClicked="#addNode"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </AddSVGGlyph> -->
-                <!-- <DeleteSVGGlyph  onMousePrimaryClicked="#deleteNode"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </DeleteSVGGlyph> -->
-                <!-- <HistorySVGGlyph tipText="%shell.zk.node.main.dataHisTip1"  -->
-                <!--                  onMousePrimaryClicked="#showHistory"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </HistorySVGGlyph> -->
-                <!-- <CollectSVGPane fx:id="collectPane"  onMousePrimaryClicked="#collectNode"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </CollectSVGPane> -->
-                <!-- <RefreshSVGGlyph  onMousePrimaryClicked="#refreshNode"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </RefreshSVGGlyph> -->
-                <!-- <SortSVGPane fx:id="sortPane"  onMousePrimaryClicked="#sortTree"> -->
-                <!--     <HBox.margin> -->
-                <!--         <Insets left="5" top="5"/> -->
-                <!--     </HBox.margin> -->
-                <!-- </SortSVGPane> -->
-                <PositioningSVGGlyph onMousePrimaryClicked="#positionNode">
-                    <HBox.margin>
-                        <Insets left="5" top="5"/>
-                    </HBox.margin>
-                </PositioningSVGGlyph>
-            </FXHBox>
-        </FXVBox>
-        <FXTabPane fx:id="tabPane" tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM"
-                   flexHeight="100%" flexWidth="100%"
-                   rotateGraphic="true" disable="true">
-            <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>
-            <fx:include fx:id="hexTab" source="shellZKNodeHexTab.fxml"/>
-            <fx:include fx:id="statTab" source="shellZKNodeStatTab.fxml"/>
-            <fx:include fx:id="aclTab" source="shellZKNodeACLTab.fxml"/>
-            <fx:include fx:id="quotaTab" source="shellZKNodeQuotaTab.fxml"/>
-        </FXTabPane>
-    </FXSplitPane>
-</FixedTab>
-
+<FXTabPane xmlns:fx="http://javafx.com/fxml/1" fx:id="tabPane"
+           fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
+           tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM"
+           flexHeight="100%" flexWidth="100%" rotateGraphic="true">
+    <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>
+    <fx:include fx:id="hexTab" source="shellZKNodeHexTab.fxml"/>
+    <fx:include fx:id="statTab" source="shellZKNodeStatTab.fxml"/>
+    <fx:include fx:id="aclTab" source="shellZKNodeACLTab.fxml"/>
+    <fx:include fx:id="quotaTab" source="shellZKNodeQuotaTab.fxml"/>
+</FXTabPane>

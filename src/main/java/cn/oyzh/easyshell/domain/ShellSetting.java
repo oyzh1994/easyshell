@@ -799,6 +799,7 @@ public class ShellSetting extends AppSetting {
      * 0|null list
      * 1 tree
      */
+    @Deprecated
     @Column
     private Byte zkContentViewport;
 
@@ -924,14 +925,20 @@ public class ShellSetting extends AppSetting {
 
     /**
      * 获取zk内容视图
+     *
+     * @deprecated zk 已移除列表模式
      */
+    @Deprecated
     public Byte getZkContentViewportViewport() {
         return zkContentViewport;
     }
 
     /**
      * 设置zk内容视图
+     *
+     * @deprecated zk 已移除列表模式
      */
+    @Deprecated
     public void setZkContentViewport(Byte zkContentViewport) {
         this.zkContentViewport = zkContentViewport;
     }
@@ -940,7 +947,9 @@ public class ShellSetting extends AppSetting {
      * zookeeper 是否list视图
      *
      * @return 结果
+     * @deprecated zk 已移除列表模式
      */
+    @Deprecated
     @JSONField(serialize = false, deserialize = false)
     public boolean isZkContentListViewport() {
         return zkContentViewport == null || zkContentViewport == 0;
@@ -950,7 +959,9 @@ public class ShellSetting extends AppSetting {
      * zookeeper 是否tree视图
      *
      * @return 结果
+     * @deprecated zk 已移除列表模式
      */
+    @Deprecated
     @JSONField(serialize = false, deserialize = false)
     public boolean isZkContentTreeViewport() {
         return zkContentViewport != null && zkContentViewport == 1;

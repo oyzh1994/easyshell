@@ -28,12 +28,6 @@ import java.util.concurrent.Future;
 public class ShellZKServerTabController extends ParentTabController {
 
     /**
-     * 根节点
-     */
-    @FXML
-    private FXTab root;
-
-    /**
      * 获取zk客户端
      *
      * @return zk客户端
@@ -133,6 +127,10 @@ public class ShellZKServerTabController extends ParentTabController {
         this.command.text(command);
         String latency = this.latency.getText() + ShellI18nHelper.zkLatency();
         this.latency.text(latency);
+        // 如果tab已被选中，则直接开始刷新
+        if (this.getTab() != null && this.getTab().isSelected()) {
+            this.initRefreshTask();
+        }
     }
 
     /**
@@ -140,8 +138,10 @@ public class ShellZKServerTabController extends ParentTabController {
      */
     private void initRefreshTask() {
         try {
-            this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
-            JulLog.debug("RefreshTask started.");
+            if (this.refreshTask == null) {
+                this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
+                JulLog.debug("RefreshTask started.");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             JulLog.error("initRefreshTask error", ex);
@@ -154,6 +154,7 @@ public class ShellZKServerTabController extends ParentTabController {
     public void closeRefreshTask() {
         try {
             ExecutorUtil.cancel(this.refreshTask);
+            this.refreshTask = null;
             JulLog.debug("RefreshTask closed.");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -194,9 +195,7 @@ public class ShellZKServerTabController extends ParentTabController {
     @Override
     public void onTabInit(FXTab tab) {
         super.onTabInit(tab);
-        // // 初始化刷新任务
-        // this.initRefreshTask();
-        this.root.selectedProperty().subscribe((oldValue, newValue) -> {
+        tab.selectedProperty().subscribe((oldValue, newValue) -> {
             if (newValue) {
                 this.initRefreshTask();
             } else {

@@ -385,25 +385,25 @@ public class SettingController extends StageController {
     @FXML
     private RadioButton viewport1;
 
-    /**
-     * 内容视图，zookeeper
-     */
-    @FXML
-    private FXToggleGroup zkContentViewport;
-
-    /**
-     * 内容视图0，zookeeper
-     */
-    @FXML
-    private RadioButton zkContentViewport0;
-
-    /**
-     * 内容视图1，zookeeper
-     */
-    @FXML
-    private RadioButton zkContentViewport1;
-
-    ///**
+//    /**
+//     * 内容视图，zookeeper
+//     */
+//    @FXML
+//    private FXToggleGroup zkContentViewport;
+//
+//    /**
+//     * 内容视图0，zookeeper
+//     */
+//    @FXML
+//    private RadioButton zkContentViewport0;
+//
+//    /**
+//     * 内容视图1，zookeeper
+//     */
+//    @FXML
+//    private RadioButton zkContentViewport1;
+//
+//    ///**
     // * 节点自动认证，zookeeper
     // */
     //@FXML
@@ -639,8 +639,8 @@ public class SettingController extends StageController {
             //                    case 1 -> this.zkContentViewport1.setSelected(true);
             //                }
             //            }
-            this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
-            this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
+//            this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
+//            this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
             //// 节点认证处理
             // if (this.setting.getAuthMode() != null) {
             //    this.authMode.setSelected(this.setting.isAutoAuth());
@@ -753,11 +753,11 @@ public class SettingController extends StageController {
             int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
             byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
             byte viewport = Byte.parseByte(this.viewport.selectedUserData());
-            byte zkContentViewport = Byte.parseByte(this.zkContentViewport.selectedUserData());
+//            byte zkContentViewport = Byte.parseByte(this.zkContentViewport.selectedUserData());
             this.setting.setLoadMode(loadMode);
             this.setting.setViewport(viewport);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
-            this.setting.setZkContentViewport(zkContentViewport);
+//            this.setting.setZkContentViewport(zkContentViewport);
             // xserver
             this.applyX11();
             // 同步

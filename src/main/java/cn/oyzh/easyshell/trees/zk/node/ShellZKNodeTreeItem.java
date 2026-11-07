@@ -15,13 +15,13 @@ import cn.oyzh.easyshell.store.zk.ShellZKCollectStore;
 import cn.oyzh.easyshell.trees.zk.ShellZKTreeItem;
 import cn.oyzh.easyshell.trees.zk.ShellZKTreeView;
 import cn.oyzh.easyshell.trees.zk.other.ShellZKMoreTreeItem;
-import cn.oyzh.easyshell.trees.zk.other.ShellZKReturnTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKDataUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.OpenSVGGlyph;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
@@ -321,6 +321,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             FXMenuItem cancel = MenuItemHelper.cancelOperation(this::cancel);
             items.add(cancel);
         } else {
+            MenuItem open = MenuItemHelper.menuItem(I18nHelper.open(), new OpenSVGGlyph(), this::openNode);
+            items.add(open);
             FXMenuItem add = MenuItemHelper.addNode(this::addNode);
             items.add(add);
             // 持久节点
@@ -371,29 +373,18 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             items.add(MenuItemHelper.separator());
             FXMenuItem unload = MenuItemHelper.unload(this::unloadChild);
             items.add(unload);
-            FXMenuItem loadAll = null;
-            FXMenuItem expandAll = null;
-            FXMenuItem collapseAll = null;
-            if (!this.contentListViewport) {
-                loadAll = MenuItemHelper.loadAll(this::loadChildAll);
-                expandAll = MenuItemHelper.expandAll(this::expandAll);
-                collapseAll = MenuItemHelper.collapseAll(this::collapseAll);
-                items.add(loadAll);
-                items.add(expandAll);
-                items.add(collapseAll);
-            }
+            FXMenuItem loadAll = MenuItemHelper.loadAll(this::loadChildAll);
+            FXMenuItem expandAll = MenuItemHelper.expandAll(this::expandAll);
+            FXMenuItem collapseAll = MenuItemHelper.collapseAll(this::collapseAll);
+            items.add(loadAll);
+            items.add(expandAll);
+            items.add(collapseAll);
             // 子节点
             if (this.isChildrenNode()) {
                 unload.setDisable(true);
-                if (loadAll != null) {
-                    loadAll.setDisable(true);
-                }
-                if (expandAll != null) {
-                    expandAll.setDisable(true);
-                }
-                if (collapseAll != null) {
-                    collapseAll.setDisable(true);
-                }
+                loadAll.setDisable(true);
+                expandAll.setDisable(true);
+                collapseAll.setDisable(true);
             }
         }
         return items;
@@ -595,7 +586,8 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
      * @return 父zk节点
      */
     public ShellZKNodeTreeItem parent() {
-        return (ShellZKNodeTreeItem) this.getParent();
+        TreeItem<?> parent = this.getParent();
+        return parent instanceof ShellZKNodeTreeItem item ? item : null;
     }
 
     /**
@@ -670,63 +662,39 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         return null;
     }
 
-    /**
-     * 加载父节点
-     */
-    public void loadPrent() {
-        try {
-            ShellZKTreeView treeView = this.getTreeView();
-            String nodePath = this.nodePath();
-            String pPath = ShellZKNodeUtil.getParentPath(nodePath);
-            ShellZKNode zkNode = ShellZKNodeUtil.getNode(treeView.client(), pPath);
-            ShellZKNodeTreeItem nodeTreeItem = new ShellZKNodeTreeItem(zkNode, treeView);
-            treeView.root(nodeTreeItem);
-            nodeTreeItem.loadChild();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex, this.getWindow());
-        }
-    }
-
     @Override
     public void remove() {
-        // 删除根节点
-        if (this == this.getTreeView().root()) {
+        // 关闭节点标签页
+        this.getTreeView().closeNodeTab(this.nodePath());
+        // 获取父节点
+        ShellZKNodeTreeItem parent = this.parent();
+        // 删除节点
+        if (parent != null) {
+            // 下一个节点
+            TreeItem<?> nextItem = null;
+            // 如果当前节点被选中
+            if (this.isSelected()) {
+                // 如果下一个节点不为null，则选中下一个节点，否则选中此节点的父节点
+                nextItem = this.nextSibling();
+                nextItem = nextItem == null ? parent : nextItem;
+            }
             // 取消此节点的收藏
             this.unCollect();
-            // 加载父节点
-            this.loadPrent();
-        } else {
-            // 获取父节点
-            ShellZKNodeTreeItem parent = this.parent();
-            // 删除节点
-            if (parent != null) {
-                // 下一个节点
-                TreeItem<?> nextItem = null;
-                // 如果当前节点被选中
-                if (this.isSelected()) {
-                    // 如果下一个节点不为null，则选中下一个节点，否则选中此节点的父节点
-                    nextItem = this.nextSibling();
-                    nextItem = nextItem == null ? parent : nextItem;
-                }
-                // 取消此节点的收藏
-                this.unCollect();
-                // 移除此节点
-                parent.removeChild(this);
-                try {
-                    // 刷新父节点状态
-                    parent.refreshStat();
-                } catch (Exception ex) {
-                    MessageBox.exception(ex, this.getWindow());
-                }
-                // 选中节点
-                if (nextItem != null) {
-                    TreeItem<?> finalNextItem = nextItem;
-                    FXUtil.runPulse(() -> parent.getTreeView().select(finalNextItem));
-                }
-            } else {
-                JulLog.warn("remove fail, this.parent() is null.");
+            // 移除此节点
+            parent.removeChild(this);
+            try {
+                // 刷新父节点状态
+                parent.refreshStat();
+            } catch (Exception ex) {
+                MessageBox.exception(ex, this.getWindow());
             }
+            // 选中节点
+            if (nextItem != null) {
+                TreeItem<?> finalNextItem = nextItem;
+                FXUtil.runPulse(() -> parent.getTreeView().select(finalNextItem));
+            }
+        } else {
+            JulLog.warn("remove fail, this.parent() is null.");
         }
     }
 
@@ -980,10 +948,10 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         }
     }
 
-    /**
-     * 内容视图
-     */
-    private final boolean contentListViewport = ShellSettingStore.SETTING.isZkContentListViewport();
+//    /**
+//     * 内容视图
+//     */
+//    private final boolean contentListViewport = ShellSettingStore.SETTING.isZkContentListViewport();
 
     /**
      * 加载子节点
@@ -1032,16 +1000,22 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                     delList.add(moreItem);
                 }
             }
-            // 列表模式处理
-            if (this.contentListViewport && !this.isRootNode()) {
-                ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
-                if (returnTreeItem == null) {
-                    addList.add(new ShellZKReturnTreeItem(this.getTreeView()));
-                }
-            } else { // 处理树状模式的情况
-                ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
-                if (returnTreeItem != null) {
-                    delList.add(returnTreeItem);
+//            // 列表模式处理
+//            if (this.contentListViewport && !this.isRootNode()) {
+//                ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
+//                if (returnTreeItem == null) {
+//                    addList.add(new ShellZKReturnTreeItem(this.getTreeView()));
+//                }
+//            } else { // 处理树状模式的情况
+//                ShellZKReturnTreeItem returnTreeItem = this.returnChildren();
+//                if (returnTreeItem != null) {
+//                    delList.add(returnTreeItem);
+//                }
+//            }
+            // 关闭已删除节点的标签页
+            for (TreeItem<?> delItem : delList) {
+                if (delItem instanceof ShellZKNodeTreeItem nodeItem) {
+                    this.getTreeView().closeNodeTab(nodeItem.nodePath());
                 }
             }
             // 删除节点
@@ -1054,11 +1028,11 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                     item.doLoadChild(true, limit);
                 }
             }
-            // 列表模式
-            if (this.contentListViewport) {
-                // 更新根节点
-                this.getTreeView().root(this);
-            }
+//            // 列表模式
+//            if (this.contentListViewport) {
+//                // 更新根节点
+//                this.getTreeView().root(this);
+//            }
         }
     }
 
@@ -1091,15 +1065,15 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
         return list.isEmpty() ? null : (ShellZKMoreTreeItem) list.getFirst();
     }
 
-    /**
-     * 子节点-返回上一级
-     *
-     * @return ShellZKMoreTreeItem
-     */
-    protected ShellZKReturnTreeItem returnChildren() {
-        List<?> list = super.unfilteredChildren().filtered(e -> e instanceof ShellZKReturnTreeItem);
-        return list.isEmpty() ? null : (ShellZKReturnTreeItem) list.getFirst();
-    }
+//    /**
+//     * 子节点-返回上一级
+//     *
+//     * @return ShellZKMoreTreeItem
+//     */
+//    protected ShellZKReturnTreeItem returnChildren() {
+//        List<?> list = super.unfilteredChildren().filtered(e -> e instanceof ShellZKReturnTreeItem);
+//        return list.isEmpty() ? null : (ShellZKReturnTreeItem) list.getFirst();
+//    }
 
     /**
      * 子节点-node节点列表
@@ -1144,13 +1118,13 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
                         if (a == b) {
                             return 0;
                         }
-                        // ShellZKReturnTreeItem always first
-                        if (a instanceof ShellZKReturnTreeItem) {
-                            return b instanceof ShellZKReturnTreeItem ? 0 : -1;
-                        }
-                        if (b instanceof ShellZKReturnTreeItem) {
-                            return 1;
-                        }
+//                        // ShellZKReturnTreeItem always first
+//                        if (a instanceof ShellZKReturnTreeItem) {
+//                            return b instanceof ShellZKReturnTreeItem ? 0 : -1;
+//                        }
+//                        if (b instanceof ShellZKReturnTreeItem) {
+//                            return 1;
+//                        }
                         // ShellZKMoreTreeItem always last
                         if (a instanceof ShellZKMoreTreeItem) {
                             return b instanceof ShellZKMoreTreeItem ? 0 : 1;
@@ -1415,12 +1389,24 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
     }
 
     @Override
+    public void onPrimarySingleClick() {
+        this.openNode();
+    }
+
+    @Override
     public void onPrimaryDoubleClick() {
         if (!this.isLoaded()) {
             this.loadChild();
         } else {
             super.onPrimaryDoubleClick();
         }
+    }
+
+    /**
+     * 打开节点标签页
+     */
+    private void openNode() {
+        this.getTreeView().openNode(this);
     }
 
     /**

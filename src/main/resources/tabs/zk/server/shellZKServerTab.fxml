@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.fx.gui.svg.glyph.ServerSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
 <?import cn.oyzh.fx.plus.controls.table.SingleRowTableView?>
-<FixedTab fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController"
-          text="%base.server">
-    <graphic>
-        <ServerSVGGlyph/>
-    </graphic>
-    <FXVBox flexHeight="100%" flexWidth="100%">
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.zk.server.ShellZKServerTabController"
+        flexHeight="100%" flexWidth="100%">
         <SingleRowTableView flexWidth="100% - 10" realHeight="72" fx:id="serverTable" fixedCellSize="30">
             <columns>
                 <FXTableColumn sortable="false" valueName="zxid" text="%base.id" flexWidth="8%"/>
@@ -32,6 +27,5 @@
             <fx:include fx:id="envi" source="shellZKEnviTab.fxml"/>
             <fx:include fx:id="stat" source="shellZKStatTab.fxml"/>
             <fx:include fx:id="cluster" source="shellZKClusterTab.fxml"/>
-        </FXTabPane>
-    </FXVBox>
-</FixedTab>
+    </FXTabPane>
+</FXVBox>

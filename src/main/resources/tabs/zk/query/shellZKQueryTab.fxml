@@ -1,45 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.trees.query.ShellQueryTreeView?>
 <?import cn.oyzh.easyshell.query.zk.ShellZKQueryEditor?>
-<?import cn.oyzh.fx.gui.svg.glyph.QuerySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.RunSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
-<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<FixedTab xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController"
-          text="%base.queries">
-    <graphic>
-        <QuerySVGGlyph/>
-    </graphic>
-    <FXSplitPane flexHeight="100%" flexWidth="100%" dividerPositions="0.25">
-        <ShellQueryTreeView fx:id="queryTreeView" flexHeight="100%">
-        </ShellQueryTreeView>
-        <FXVBox flexHeight="100%">
-            <FXHBox realHeight="30" flexWidth="100%">
-                <SaveSVGGlyph onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
-                    <HBox.margin>
-                        <Insets left="5" top="7"/>
-                    </HBox.margin>
-                </SaveSVGGlyph>
-                <RunSVGGlyph onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
-                    <HBox.margin>
-                        <Insets left="5" top="7"/>
-                    </HBox.margin>
-                </RunSVGGlyph>
-            </FXHBox>
-            <FXSplitPane showDivider="false" fx:id="splitPane" orientation="VERTICAL" flexWidth="100%" flexHeight="100% - 40" dividerPositions="1">
-                <ShellZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content" promptText="%base.contentTip1"
-                                    flexWidth="100% - 20">
-                </ShellZKQueryEditor>
-                <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%"
-                           managedBindVisible="true" visible="false">
-                </FXTabPane>
-            </FXSplitPane>
-        </FXVBox>
+<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.zk.query.ShellZKQueryTabController"
+        flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="30" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save" appendTipText="(CTRL/COMMAND+S)">
+            <HBox.margin>
+                <Insets left="10" top="7"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <RunSVGGlyph onMousePrimaryClicked="#run" appendTipText="(CTRL/COMMAND+R)">
+            <HBox.margin>
+                <Insets left="10" top="7"/>
+            </HBox.margin>
+        </RunSVGGlyph>
+    </FXHBox>
+    <FXSplitPane showDivider="false" fx:id="splitPane" orientation="VERTICAL" flexWidth="100%"
+                 flexHeight="100% - 32" dividerPositions="1">
+        <ShellZKQueryEditor onKeyPressed="#onContentKeyPressed" fx:id="content"
+                            promptText="%base.contentTip1"
+                            flexWidth="100% - 20">
+        </ShellZKQueryEditor>
+        <FXTabPane tabClosingPolicy="UNAVAILABLE" fx:id="resultTabPane" flexWidth="100%"
+                   managedBindVisible="true" visible="false">
+        </FXTabPane>
     </FXSplitPane>
-</FixedTab>
+</FXVBox>

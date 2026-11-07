@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.zk;
 
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.query.ShellZKQueryTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 
@@ -43,6 +44,12 @@ public class ShellZKTreeItemFilter extends RichTreeItemFilter {
             }
             String nodePath = treeItem.decodeNodePath();
             TextUtil.MatchText matchText = TextUtil.findText(nodePath, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+        }
+        // 查询节点
+        if (item instanceof ShellZKQueryTreeItem queryItem) {
+            String name = queryItem.queryName();
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
             return matchText != TextUtil.MatchText.NOT_FOUND;
         }
         return true;

@@ -3,12 +3,15 @@ package cn.oyzh.easyshell.trees.zk;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.zk.ShellZKAuth;
-import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.tabs.zk.ShellZKTabPane;
 import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
+import cn.oyzh.easyshell.trees.zk.node.ShellZKNodesTreeItem;
+import cn.oyzh.easyshell.trees.zk.query.ShellZKQueriesTreeItem;
+import cn.oyzh.easyshell.trees.zk.query.ShellZKQueryTreeItem;
+import cn.oyzh.easyshell.trees.zk.root.ShellZKRootTreeItem;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
-import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.tree.view.RichTreeCell;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.node.NodeLifeCycle;
@@ -35,12 +38,22 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
     private ShellZKClient client;
 
     /**
+     * 标签页面板
+     */
+    private ShellZKTabPane tabPane;
+
+    /**
      * 设置zk客户端
      *
      * @param client zk客户端
      */
     public void client(ShellZKClient client) {
         this.client = client;
+        FXUtil.runWait(() -> {
+            if (!(super.root() instanceof ShellZKRootTreeItem)) {
+                this.setRoot(new ShellZKRootTreeItem(this));
+            }
+        });
     }
 
     /**
@@ -59,6 +72,24 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
      */
     public ShellConnect connect() {
         return this.client.getShellConnect();
+    }
+
+    /**
+     * 获取标签页面板
+     *
+     * @return 标签页面板
+     */
+    public ShellZKTabPane getTabPane() {
+        return tabPane;
+    }
+
+    /**
+     * 设置标签页面板
+     *
+     * @param tabPane 标签页面板
+     */
+    public void setTabPane(ShellZKTabPane tabPane) {
+        this.tabPane = tabPane;
     }
 
     @Override
@@ -81,8 +112,48 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
     }
 
     @Override
-    public ShellZKNodeTreeItem root() {
-        return (ShellZKNodeTreeItem) super.root();
+    public ShellZKRootTreeItem root() {
+        return (ShellZKRootTreeItem) super.root();
+    }
+
+    /**
+     * 获取节点分类节点
+     *
+     * @return 节点分类节点
+     */
+    public ShellZKNodesTreeItem nodesItem() {
+        return this.root() == null ? null : this.root().getNodesChild();
+    }
+
+    /**
+     * 获取查询分类节点
+     *
+     * @return 查询分类节点
+     */
+    public ShellZKQueriesTreeItem queriesItem() {
+        return this.root() == null ? null : this.root().getQueriesChild();
+    }
+
+    /**
+     * 获取当前节点树根
+     *
+     * @return 当前节点树根
+     */
+    public ShellZKNodeTreeItem currentNodeItem() {
+        ShellZKNodesTreeItem nodesItem = this.nodesItem();
+        return nodesItem == null ? null : nodesItem.getNodeItem();
+    }
+
+    /**
+     * 加载节点树
+     */
+    public void loadItems() {
+        this.disable();
+        try {
+            this.root().loadChild();
+        } finally {
+            this.enable();
+        }
     }
 
     /**
@@ -92,7 +163,7 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
      * @return zk节点
      */
     public ShellZKNodeTreeItem findNodeItem(String targetPath) {
-        return this.findNodeItem(this.root(), targetPath);
+        return this.findNodeItem(this.currentNodeItem(), targetPath);
     }
 
     /**
@@ -103,6 +174,9 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
      * @return zk节点
      */
     public ShellZKNodeTreeItem findNodeItem(ShellZKNodeTreeItem root, String targetPath) {
+        if (root == null || targetPath == null) {
+            return null;
+        }
         // 节点对应，返回数据
         if (targetPath.equals(root.nodePath())) {
             return root;
@@ -142,10 +216,10 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
         }
     }
 
-    /**
-     * 内容视图
-     */
-    private final boolean contentListViewport = ShellSettingStore.SETTING.isZkContentListViewport();
+//    /**
+//     * 内容视图
+//     */
+//    private final boolean contentListViewport = ShellSettingStore.SETTING.isZkContentListViewport();
 
     /**
      * 节点添加
@@ -157,12 +231,12 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
             String pPath = ShellZKNodeUtil.getParentPath(nodePath);
             // 寻找节点
             ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
-            if (this.contentListViewport) {
-                if (parent == null || parent != this.root()) {
-                    this.loadRoot(pPath);
-                    parent = this.findNodeItem(pPath);
-                }
-            }
+//            if (this.contentListViewport) {
+//                if (parent == null || parent != this.root()) {
+//                    this.loadRoot(pPath);
+//                    parent = this.findNodeItem(pPath);
+//                }
+//            }
             // 父节点不存在
             if (parent == null) {
                 JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
@@ -200,102 +274,6 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
         }
     }
 
-    ///**
-    // * 节点已添加
-    // *
-    // * @param nodePath 节点路径
-    // */
-    //public void onNodeCreated(String nodePath) {
-    //    if (this.client.isLastCreate(nodePath)) {
-    //        this.client.clearLastCreate();
-    //        return;
-    //    }
-    //    try {
-    //        String pPath = ShellZKNodeUtil.getParentPath(nodePath);
-    //        // 寻找节点
-    //        ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
-    //        // 父节点不存在
-    //        if (parent == null) {
-    //            JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
-    //            return;
-    //        }
-    //        // 获取节点
-    //        ShellZKNodeTreeItem item = parent.getNodeItem(nodePath);
-    //        // 刷新节点
-    //        if (item != null) {
-    //            item.refreshNode();
-    //            JulLog.info("节点已存在, 更新节点.");
-    //        } else if (parent.isLoaded()) {// 更新父节点状态，并标记状态
-    //            parent.refreshStat();
-    //            parent.setBeChildChanged();
-    //            JulLog.info("节点不存在, 父节点已加载, 标记父节点状态.");
-    //        } else {// 更新父节点状态
-    //            parent.refreshStat();
-    //            JulLog.info("节点不存在, 父节点未加载, 更新父节点状态.");
-    //        }
-    //    } catch (Exception ex) {
-    //        JulLog.warn("节点已新增事件处理失败！", ex);
-    //    }
-    //}
-    //
-    ///**
-    // * 节点已删除
-    // *
-    // * @param nodePath 节点路径
-    // */
-    //public void onNodeRemoved(String nodePath) {
-    //    if (this.client.isLastDelete(nodePath)) {
-    //        this.client.clearLastDelete();
-    //        return;
-    //    }
-    //    try {
-    //        String pPath = ShellZKNodeUtil.getParentPath(nodePath);
-    //        // 寻找节点
-    //        ShellZKNodeTreeItem parent = this.findNodeItem(pPath);
-    //        // 父节点不存在
-    //        if (parent == null) {
-    //            JulLog.warn("{}: 未找到节点的父节点，无法处理节点！", nodePath);
-    //            return;
-    //        }
-    //        // 寻找节点
-    //        ShellZKNodeTreeItem item = parent.getNodeItem(nodePath);
-    //        // 更新信息
-    //        if (item != null) {
-    //            item.setBeDeleted();
-    //            JulLog.info("节点存在, 标记节点状态为删除.");
-    //        } else {// 更新父节点状态
-    //            parent.refreshStat();
-    //            JulLog.info("节点不存在, 父节点未加载, 更新父节点状态.");
-    //        }
-    //    } catch (Exception ex) {
-    //        JulLog.warn("节点已删除事件处理失败！", ex);
-    //    }
-    //}
-    //
-    ///**
-    // * 节点已变更
-    // *
-    // * @param nodePath 节点路径
-    // */
-    //public void onNodeChanged(String nodePath) {
-    //    if (this.client.isLastUpdate(nodePath)) {
-    //        this.client.clearLastUpdate();
-    //        return;
-    //    }
-    //    try {
-    //        // 寻找节点
-    //        ShellZKNodeTreeItem item = this.findNodeItem(nodePath);
-    //        // 更新信息
-    //        if (item != null) {
-    //            item.setBeChanged();
-    //        } else {
-    //            JulLog.warn("{}: 未找到被修改节点，无法处理节点！", nodePath);
-    //        }
-    //    } catch (Exception ex) {
-    //        JulLog.warn("节点已修改事件处理失败！", ex);
-    //    }
-    //}
-
     /**
      * 获取全部zk子节点列表
      *
@@ -303,7 +281,7 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
      */
     private List<ShellZKNodeTreeItem> getAllNodeItem() {
         List<ShellZKNodeTreeItem> list = new ArrayList<>(128);
-        this.getAllNodeItem(this.root(), list);
+        this.getAllNodeItem(this.currentNodeItem(), list);
         return list;
     }
 
@@ -340,32 +318,6 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
     }
 
     /**
-     * 加载根节点
-     *
-     * @throws Exception 异常
-     */
-    public void loadRoot() throws Exception {
-        this.loadRoot("/");
-    }
-
-    /**
-     * 加载根节点
-     *
-     * @param rootPath 根节点路径
-     * @throws Exception 异常
-     */
-    public void loadRoot(String rootPath) throws Exception {
-        // 获取根节点
-        ShellZKNode rootNode = ShellZKNodeUtil.getNode(this.client, rootPath);
-        // 生成根节点
-        ShellZKNodeTreeItem rootItem = new ShellZKNodeTreeItem(rootNode, this);
-        // 设置根节点
-        this.root(rootItem);
-        // 加载根节点
-        rootItem.loadRoot();
-    }
-
-    /**
      * 是否有未保存数据的节点
      *
      * @return 结果
@@ -380,90 +332,97 @@ public class ShellZKTreeView extends RichTreeView implements NodeLifeCycle {
         return false;
     }
 
-    //    /**
-    //     * 搜索参数
-    //     */
-    //    private ZKSearchParam searchParam;
-    //
-    //    /**
-    //     * 当前节点
-    //     */
-    //    private ShellZKNodeTreeItem currentNode;
-    //
-    //    /**
-    //     * 搜索触发事件
-    //     *
-    //     * @param param 参数
-    //     * @return 是否找到节点
-    //     */
-    //    public boolean onSearchTrigger(ZKSearchParam param) {
-    //        // 判断当前参数是否变化
-    //        if (this.searchParam == null || !this.searchParam.equals(param)) {
-    //            this.currentNode = null;
-    //        }
-    //        this.searchParam = param;
-    //        // 节点列表
-    //        List<ShellZKNodeTreeItem> list = this.getAllNodeItem();
-    //        // 判断是往前还是往后搜索
-    //        if (!param.isNext()) {
-    //            list = list.reversed();
-    //        }
-    //        // 判断状态
-    //        if (list.isEmpty() || !list.contains(this.currentNode)) {
-    //            this.currentNode = null;
-    //        }
-    //        String kw = param.getKeyword();
-    //        ShellZKNodeTreeItem foundNode = null;
-    //        // 搜索开始标志位
-    //        boolean findStart = this.currentNode == null;
-    //        // 遍历节点
-    //        for (ShellZKNodeTreeItem node : list) {
-    //            // 寻找到节点，则可以开始搜索了
-    //            if (this.currentNode != null && node == this.currentNode) {
-    //                findStart = true;
-    //                continue;
-    //            }
-    //            if (!findStart) {
-    //                continue;
-    //            }
-    //            // 搜索路径
-    //            if (param.isSearchPath()) {
-    //                String nodePath = node.nodePath();
-    //                int index = TextUtil.findIndex(nodePath, kw, null, param.isMatchCase(), param.isMatchFull());
-    //                if (index != -1) {
-    //                    foundNode = node;
-    //                    break;
-    //                }
-    //            }
-    //            // 搜索值
-    //            if (param.isSearchData()) {
-    //                byte[] nodeData = node.getData();
-    //                if (nodeData != null) {
-    //                    int index = TextUtil.findIndex(new String(nodeData), kw, null, param.isMatchCase(), param.isMatchFull());
-    //                    if (index != -1) {
-    //                        foundNode = node;
-    //                        break;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        // 找到节点就更新当前节点，方便下次搜索
-    //        if (foundNode != null) {
-    //            this.currentNode = foundNode;
-    //            this.selectAndScroll(foundNode);
-    //        } else {
-    //            this.currentNode = null;
-    //        }
-    //        // 搜索完成事件
-    //        ShellZKEventUtil.searchComplete(this.connect());
-    //        return foundNode != null;
-    //    }
+    /**
+     * 打开节点标签页
+     *
+     * @param item 节点
+     */
+    public void openNode(ShellZKNodeTreeItem item) {
+        if (this.tabPane != null) {
+            this.tabPane.openNode(item);
+        }
+    }
 
-    //    /**
-    //     * 搜索结束事件
-    //     */
-    //    public void onSearchFinish() {
-    //        this.currentNode = null;
-    //        this.searchParam = null;
-    //    }
+    /**
+     * 关闭节点标签页
+     *
+     * @param nodePath 节点路径
+     */
+    public void closeNodeTab(String nodePath) {
+        if (this.tabPane != null) {
+            this.tabPane.closeNodeTab(nodePath);
+        }
+    }
+
+    /**
+     * 打开查询标签页
+     *
+     * @param item 查询节点
+     */
+    public void openQuery(ShellZKQueryTreeItem item) {
+        if (this.tabPane != null) {
+            this.tabPane.openQuery(item);
+        }
+    }
+
+    /**
+     * 新增查询标签页
+     *
+     * @param queriesItem 查询分类节点
+     */
+    public void openNewQuery(ShellZKQueriesTreeItem queriesItem) {
+        if (this.tabPane != null) {
+            this.tabPane.openNewQuery(queriesItem);
+        }
+    }
+
+    /**
+     * 重命名查询标签页
+     *
+     * @param queryId 查询id
+     * @param name    查询名称
+     */
+    public void renameQueryTab(String queryId, String name) {
+        if (this.tabPane != null) {
+            this.tabPane.renameQueryTab(queryId, name);
+        }
+    }
+
+    /**
+     * 关闭查询标签页
+     *
+     * @param queryId 查询id
+     */
+    public void closeQueryTab(String queryId) {
+        if (this.tabPane != null) {
+            this.tabPane.closeQueryTab(queryId);
+        }
+    }
+
+    /**
+     * 打开认证标签页
+     */
+    public void openAuth() {
+        if (this.tabPane != null) {
+            this.tabPane.openAuth();
+        }
+    }
+
+    /**
+     * 打开服务标签页
+     */
+    public void openServer() {
+        if (this.tabPane != null) {
+            this.tabPane.openServer();
+        }
+    }
+
+    /**
+     * 打开终端标签页
+     */
+    public void openTerminal() {
+        if (this.tabPane != null) {
+            this.tabPane.openTerminal();
+        }
+    }
 }
