@@ -54,6 +54,11 @@ public class ShellPrototype {
    public static final String REDIS = "Redis";
 
     /**
+     * Valkey 连接类型
+     */
+   public static final String VALKEY = "Valkey";
+
+    /**
      * Telnet 连接类型
      */
    public static final String TELNET = "Telnet";

@@ -1,0 +1,101 @@
+package cn.oyzh.easyshell.query.valkey;
+
+import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.fx.db.query.DBQueryEditor;
+import cn.oyzh.fx.plus.font.FontManager;
+import javafx.scene.text.Font;
+
+import java.util.Set;
+
+/**
+ * redis查询编辑器
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyQueryEditor extends DBQueryEditor {
+
+    /**
+     * db索引
+     */
+    private int dbIndex;
+
+    /**
+     * redis客户端
+     */
+    private ShellValkeyClient client;
+
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
+    public ShellValkeyClient getClient() {
+        return client;
+    }
+
+    /**
+     * 设置redis客户端
+     *
+     * @param client redis客户端
+     */
+    public void setClient(ShellValkeyClient client) {
+        this.client = client;
+    }
+
+    /**
+     * 获取db索引
+     *
+     * @return db索引
+     */
+    public int getDbIndex() {
+        return dbIndex;
+    }
+
+    /**
+     * 设置db索引
+     *
+     * @param dbIndex db索引
+     */
+    public void setDbIndex(int dbIndex) {
+        this.dbIndex = dbIndex;
+    }
+
+    /**
+     * 提示组件
+     */
+    private ShellValkeyQueryPromptPopup promptPopup;
+
+    @Override
+    protected ShellValkeyQueryPromptPopup promptPopup() {
+        if (this.promptPopup == null) {
+            this.promptPopup = new ShellValkeyQueryPromptPopup();
+        }
+        return this.promptPopup;
+    }
+
+    @Override
+    public Set<String> getPrompts() {
+        if (super.getPrompts() == null) {
+            // 设置内容提示符
+            Set<String> set = ShellValkeyQueryUtil.getKeywords();
+            set.addAll(ShellValkeyQueryUtil.getParams());
+            this.setPrompts(set);
+        }
+        return super.getPrompts();
+    }
+
+    @Override
+    public void initNode() {
+        this.promptPopup().setOnItemSelected(item -> this.promptPopup().autoComplete(this, item));
+        super.initNode();
+    }
+
+    @Override
+    public Font getEditorFont() {
+        ShellSetting setting = ShellSettingStore.SETTING;
+        return FontManager.toFont(setting.editorFontConfig());
+    }
+}

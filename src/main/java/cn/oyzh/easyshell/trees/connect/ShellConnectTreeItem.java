@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
+import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -98,6 +99,19 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
                 ShellViewFactory.fileTransport(this.value);
             });
             items.add(transportFile);
+        } else if (this.isValkeyType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellValkeyViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+            FXMenuItem importData = MenuItemHelper.importData(() -> {
+                ShellValkeyViewFactory.importData(this.value, null);
+            });
+            items.add(importData);
+            FXMenuItem exportData = MenuItemHelper.exportData(() -> {
+                ShellValkeyViewFactory.exportData(this.value, null);
+            });
+            items.add(exportData);
         } else if (this.isRedisType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellRedisViewFactory.transportData(this.value, null);
@@ -330,6 +344,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否Valkey类型
+     *
+     * @return 结果
+     */
+    public boolean isValkeyType() {
+        return value.isValkeyType();
+    }
+
+    /**
      * 是否Mysql类型
      *
      * @return 结果
@@ -445,6 +468,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateRLoginConnect(this.value);
         } else if (this.isSMBType()) {
             ShellViewFactory.updateSMBConnect(this.value);
+        } else if (this.isValkeyType()) {
+            ShellViewFactory.updateValkeyConnect(this.value);
         } else if (this.isRedisType()) {
             ShellViewFactory.updateRedisConnect(this.value);
         } else if (this.isZKType()) {

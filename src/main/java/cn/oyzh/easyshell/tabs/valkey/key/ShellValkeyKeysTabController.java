@@ -1,0 +1,389 @@
+//package cn.oyzh.easyshell.tabs.valkey.key;
+//
+//import cn.oyzh.common.thread.ThreadUtil;
+//import cn.oyzh.common.util.CostUtil;
+//import cn.oyzh.common.util.StringUtil;
+//import cn.oyzh.easyshell.domain.ShellConnect;
+//import cn.oyzh.easyshell.event.valkey.ShellValkeyKeyTTLUpdatedEvent;
+//import cn.oyzh.easyshell.event.valkey.ShellValkeyZSetReverseViewEvent;
+//import cn.oyzh.easyshell.filter.valkey.ShellValkeyKeyFilterTypeComboBox;
+//import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+//import cn.oyzh.easyshell.trees.valkey.ShellValkeyTreeView;
+//import cn.oyzh.easyshell.trees.valkey.key.ShellValkeyKeyTreeItem;
+//import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
+//import cn.oyzh.event.EventSubscribe;
+//import cn.oyzh.fx.gui.tabs.ParentTabController;
+//import cn.oyzh.fx.gui.tabs.RichTabController;
+//import cn.oyzh.fx.gui.text.field.FilterTextField;
+//import cn.oyzh.fx.plus.controls.box.FXVBox;
+//import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
+//import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+//import cn.oyzh.fx.plus.information.MessageBox;
+//import cn.oyzh.fx.plus.keyboard.KeyHandler;
+//import cn.oyzh.fx.plus.keyboard.KeyListener;
+//import cn.oyzh.fx.plus.window.StageManager;
+//import javafx.fxml.FXML;
+//import javafx.scene.control.TreeItem;
+//import javafx.scene.input.KeyCode;
+//import javafx.scene.input.KeyEvent;
+//
+//import java.util.List;
+//
+///**
+// * redis键树标签页内容组件
+// *
+// * @author oyzh
+// * @since 2025-09-01
+// */
+//public class ShellValkeyKeysTabController extends ParentTabController {
+//
+//    /**
+//     * 根节点
+//     */
+//    @FXML
+//    private FXSplitPane root;
+//
+//    /**
+//     * tab节点
+//     */
+//    @FXML
+//    private FXTabPane tabPane;
+//
+//    /**
+//     * 键数据
+//     */
+//    @FXML
+//    private ShellValkeyKeyDataController keyDataController;
+//
+//    /**
+//     * 键hex
+//     */
+//    @FXML
+//    private ShellValkeyKeyHexController keyHexController;
+//
+//    /**
+//     * 键信息
+//     */
+//    @FXML
+//    private ShellValkeyKeyInfoController keyInfoController;
+//
+//    /**
+//     * 左侧节点
+//     */
+//    @FXML
+//    private FXVBox leftBox;
+//
+//    /**
+//     * redis客户端
+//     */
+//    private ShellValkeyClient client;
+//
+//    /**
+//     * 获取redis客户端
+//     *
+//     * @return redis客户端
+//     */
+//    public ShellValkeyClient getClient() {
+//        return client;
+//    }
+//
+//    /**
+//     * 设置redis客户端
+//     *
+//     * @param client redis客户端
+//     */
+//    public void setClient(ShellValkeyClient client) {
+//        this.client = client;
+//    }
+//
+//    /**
+//     * 当前激活的节点
+//     */
+//    private ShellValkeyKeyTreeItem activeItem;
+//
+//    /**
+//     * 节点数
+//     */
+//    @FXML
+//    private ShellValkeyTreeView treeView;
+//
+//    /**
+//     * 过滤内容
+//     */
+//    @FXML
+//    private FilterTextField filterKW;
+//
+//    /**
+//     * 过滤类型
+//     */
+//    @FXML
+//    private ShellValkeyKeyFilterTypeComboBox filterType;
+//
+//    /**
+//     * 初始化
+//     *
+//     * @param client redis客户端
+//     */
+//    public void init(ShellValkeyClient client) {
+//        this.client = client;
+//        this.treeView.setClient(client);
+//        this.treeView.loadItems();
+//    }
+//
+//    /**
+//     * 执行过滤
+//     */
+//    private void doFilter() {
+//        if (this.treeView == null) {
+//            return;
+//        }
+//        String kw = this.filterKW.getTextTrim();
+//        // 匹配大小写
+//        boolean matchCase = this.filterKW.isMatchCase();
+//        // 全字模式
+//        boolean wholeWord = this.filterKW.isWholeWord();
+//        // 过滤类型
+//        int type = this.filterType.getSelectedIndex();
+//        // 设置高亮是否匹配大小写
+//        this.treeView.setHighlightMatchCase(matchCase);
+//        this.treeView.setHighlight(kw);
+//        this.treeView.getItemFilter().setKw(kw);
+//        this.treeView.getItemFilter().setWholeWord(wholeWord);
+//        this.treeView.getItemFilter().setMatchCase(matchCase);
+//        this.treeView.getItemFilter().setType((byte) type);
+//        ThreadUtil.start(this.treeView::filter);
+//    }
+//
+//    /**
+//     * 定位当前节点
+//     */
+//    @FXML
+//    private void positionNode() {
+//        this.treeView.positionItem();
+//    }
+//
+//    //    private NodeWidthResizer widthResizer;
+//
+//    @Override
+//    protected void bindListeners() {
+//        super.bindListeners();
+//        // 监听选中变化
+//        this.treeView.selectItemChanged(this::initItem);
+//        // 过滤处理
+//        this.filterType.selectedIndexChanged((observable, oldValue, newValue) -> this.doFilter());
+//        // 拉伸辅助
+//        //        this.widthResizer = NodeWidthResizer.of(this.leftBox, this::resizeLeft, 240, 750);
+//        // 过滤
+//        KeyHandler searchKeyHandler = new KeyHandler();
+//        searchKeyHandler.setHandler(e -> this.filterKW.requestFocus());
+//        searchKeyHandler.setKeyCode(KeyCode.F);
+//        searchKeyHandler.setMainModifierDown(true);
+//        searchKeyHandler.setKeyType(KeyEvent.KEY_RELEASED);
+//        KeyListener.addHandler(this.root, searchKeyHandler);
+//        // 内容过滤
+//        this.filterKW.textProperty().addListener((observable, oldValue, newValue) -> {
+//            this.doFilter();
+//        });
+//        this.filterKW.wholeWordPropery().addListener((observable, oldValue, newValue) -> {
+//            this.doFilter();
+//        });
+//        this.filterKW.matchCasePropery().addListener((observable, oldValue, newValue) -> {
+//            this.doFilter();
+//        });
+//    }
+//
+//    //    /**
+//    //     * 左侧组件重新布局
+//    //     *
+//    //     * @param newWidth 新宽度
+//    //     */
+//    //    private void resizeLeft(Float newWidth) {
+//    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+//    //            // 设置组件宽
+//    //            this.leftBox.setRealWidth(newWidth);
+//    //            // this.tabPane.setLayoutX(newWidth);
+//    //            this.tabPane.setFlexWidth("100% - " + newWidth);
+//    //            // this.leftBox.parentAutosize();
+//    //        }
+//    //    }
+//
+//    /**
+//     * 初始化节点
+//     *
+//     * @param treeItem 节点
+//     */
+//    private void initItem(TreeItem<?> treeItem) {
+//        if (this.tabPane == null) {
+//            return;
+//        }
+//        // 设置激活节点
+//        if (treeItem instanceof ShellValkeyKeyTreeItem keyTreeItem) {
+//            this.activeItem = keyTreeItem;
+//            // 启用组件
+//            this.tabPane.enable();
+//        } else {
+//            // 禁用组件
+//            this.tabPane.disable();
+//            return;
+//        }
+//        StageManager.showMask(this.getWindow(), () -> {
+//            CostUtil.record();
+//            try {
+//                // 初始化数据
+//                this.initData();
+//                // 刷新tab
+//                this.flushTab();
+//                // 设置焦点
+//                this.treeView.focusNode();
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//                MessageBox.exception(ex, this.getWindow());
+//            } finally {
+//                CostUtil.printCost();
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 初始化数据
+//     */
+//    public void initData() {
+//        if (this.activeItem != null) {
+//            this.keyDataController.init(this.activeItem);
+//            this.keyInfoController.init(this.activeItem);
+//            this.keyHexController.init(this.activeItem);
+//            // this.collectPane.setCollect(this.activeItem.isCollect());
+//        }
+//    }
+//
+//    /**
+//     * 刷新ttl
+//     */
+//    public void flushTTL() {
+//        this.keyDataController.flushTTL();
+//    }
+//
+//    // @FXML
+//    // private void sortTree() {
+//    //     if (this.sortPane.isAsc()) {
+//    //         this.treeView.sortAsc();
+//    //         this.sortPane.desc();
+//    //     } else {
+//    //         this.treeView.sortDesc();
+//    //         this.sortPane.asc();
+//    //     }
+//    // }
+//
+//    @Override
+//    public List<? extends RichTabController> getSubControllers() {
+//        return List.of(
+//                this.keyDataController,
+//                this.keyHexController,
+//                this.keyInfoController
+//        );
+//    }
+//
+//    /**
+//     * 导入数据
+//     */
+//    @FXML
+//    public void importData() {
+//        ShellValkeyViewFactory.importData(this.shellConnect(), null);
+//    }
+//
+//    /**
+//     * 导出数据
+//     */
+//    @FXML
+//    private void exportData() {
+//        ShellValkeyViewFactory.exportData(this.shellConnect(), null);
+//    }
+//
+//    /**
+//     * 传输数据
+//     */
+//    @FXML
+//    private void transportData() {
+//        ShellValkeyViewFactory.transportData(this.shellConnect(), null);
+//    }
+//
+//    /**
+//     * 获取连接
+//     *
+//     * @return 连接
+//     */
+//    public ShellConnect shellConnect() {
+//        return this.client.shellConnect();
+//    }
+//
+//    // /**
+//    //  * 键过滤
+//    //  */
+//    // @FXML
+//    // private void doKeyFilter(MouseEvent event) {
+//    //     String filterPattern = this.treeView.getFilterPattern();
+//    //     PopupAdapter popup = PopupManager.parsePopup(ShellValkeyKeyFilterPopupController.class);
+//    //     popup.setProp("pattern", filterPattern);
+//    //     SVGGlyph glyph = (SVGGlyph) event.getSource();
+//    //     if (glyph == null) {
+//    //         glyph = (SVGGlyph) event.getTarget();
+//    //     }
+//    //     popup.setSubmitHandler(o -> {
+//    //         if (o instanceof String pattern && !StringUtil.equals(pattern, filterPattern)) {
+//    //             this.treeView.setFilterPattern(pattern);
+//    //             ValkeyEventUtil.keyFiltered(this.dbIndex());
+//    //         }
+//    //     });
+//    //     popup.showPopup(glyph);
+//    // }
+//
+//    // public Integer dbIndex() {
+//    //     return this.treeView.getDbIndex();
+//    // }
+//
+//    /**
+//     * ttl改变事件
+//     *
+//     * @param event 事件
+//     */
+//    @EventSubscribe
+//    private void onTTLUpdate(ShellValkeyKeyTTLUpdatedEvent event) {
+//        if (this.activeItem == null) {
+//            return;
+//        }
+//        if (event.data() != this.shellConnect()) {
+//            return;
+//        }
+//        if (event.getDbIndex() != this.activeItem.dbIndex()) {
+//            return;
+//        }
+//        if (StringUtil.notEquals(this.activeItem.key(), event.getKey())) {
+//            return;
+//        }
+//        this.flushTTL();
+//    }
+//
+//    /**
+//     * 视图改变事件
+//     *
+//     * @param event 事件
+//     */
+//    @EventSubscribe
+//    private void onReverseView(ShellValkeyZSetReverseViewEvent event) {
+//        if (this.activeItem == event.data()) {
+//            this.initItem(this.activeItem);
+//        }
+//    }
+//
+//    //    @Override
+//    //    public void destroy() {
+//    //        this.tabPane.destroy();
+//    //        this.treeView.destroy();
+//    ////        this.widthResizer.destroy();
+//    //        this.keyHexController.destroy();
+//    //        this.keyDataController.destroy();
+//    //        this.keyInfoController.destroy();
+//    //        super.destroy();
+//    //    }
+//}
+//

@@ -1,0 +1,108 @@
+package cn.oyzh.easyshell.trees.valkey.key;
+
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.HashSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.JsonSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.ListSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.SetSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.StreamSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.StringSVGGlyph;
+import cn.oyzh.easyshell.fx.svg.glyph.valkey.ZSetSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph;
+import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import javafx.scene.paint.Color;
+
+
+/**
+ * Valkey 键树节点值
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyKeyTreeItemValue extends RichTreeItemValue {
+
+    /**
+     * 构造redis键节点值
+     *
+     * @param item 键节点
+     */
+    public ShellValkeyKeyTreeItemValue(ShellValkeyKeyTreeItem item) {
+        super(item);
+        this.setRichMode(true);
+    }
+
+    @Override
+    public ShellValkeyKeyTreeItem item() {
+        return (ShellValkeyKeyTreeItem) super.item();
+    }
+
+    @Override
+    public String name() {
+        return this.item().key();
+    }
+
+    @Override
+    public SVGGlyph graphic() {
+        if (super.graphic() == null) {
+            if (this.item().isStringKey()) {
+                super.graphic(new StringSVGGlyph());
+            } else if (this.item().isListKey()) {
+                super.graphic(new ListSVGGlyph());
+            } else if (this.item().isSetKey()) {
+                super.graphic(new SetSVGGlyph());
+            } else if (this.item().isZSetKey()) {
+                super.graphic(new ZSetSVGGlyph());
+            } else if (this.item().isJsonKey()) {
+                super.graphic(new JsonSVGGlyph());
+            } else if (this.item().isHashKey()) {
+                super.graphic(new HashSVGGlyph());
+            } else if (this.item().isStreamKey()) {
+                super.graphic(new StreamSVGGlyph());
+            } else {
+                super.graphic(new KeySVGGlyph());
+
+            }
+            super.graphic().disableTheme();
+        }
+        return super.graphic();
+    }
+
+    @Override
+    public String extra() {
+        return "[" + this.item().type().name() + "]";
+    }
+
+    @Override
+    public Color extraColor() {
+        if (this.item().isStringKey()) {
+            return Color.valueOf("#3498db");
+        }
+        if (this.item().isHashKey()) {
+            return Color.valueOf("#2ecc71");
+        }
+        if (this.item().isListKey()) {
+            return Color.valueOf("#9b59b6");
+        }
+        if (this.item().isSetKey()) {
+            return Color.valueOf("#f39c12");
+        }
+        if (this.item().isZSetKey()) {
+            return Color.valueOf("#e74c3c");
+        }
+        if (this.item().isJsonKey()) {
+            return Color.valueOf("#1abc9c");
+        }
+        if (this.item().isStreamKey()) {
+            return Color.valueOf("#95a5a6");
+        }
+        return Color.FORESTGREEN;
+    }
+
+    @Override
+    public Color graphicColor() {
+        if (this.item().isDataUnsaved()) {
+            return Color.ORANGERED;
+        }
+        return super.graphicColor();
+    }
+}

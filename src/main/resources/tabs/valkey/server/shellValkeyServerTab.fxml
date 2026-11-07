@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import cn.oyzh.fx.plus.controls.table.SingleRowTableView?>
+<FXVBox flexHeight="100%" flexWidth="100%" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.valkey.server.ShellValkeyServerTabController">
+    <SingleRowTableView flexWidth="100% - 10" realHeight="72" fx:id="propTable" fixedCellSize="30">
+        <columns>
+            <FXTableColumn sortable="false" valueName="serverVersion" text="%base.version" flexWidth="13%"/>
+            <FXTableColumn sortable="false" valueName="usedMemory" text="%base.usedMemory" flexWidth="13%"/>
+            <FXTableColumn sortable="false" valueName="connectedClients" text="%base.clientNum" flexWidth="12%"/>
+            <FXTableColumn sortable="false" valueName="totalCommandsProcessed" text="%shell.valkey.server.execCommandNum"
+                           flexWidth="15%"/>
+            <FXTableColumn sortable="false" valueName="uptime" text="%base.uptime" flexWidth="14%"/>
+            <FXTableColumn sortable="false" valueName="keyCount" text="%base.keyNum" flexWidth="11%"/>
+            <FXTableColumn sortable="false" valueName="hitRate" text="%base.hitRate" flexWidth="11%"/>
+            <FXTableColumn sortable="false" valueName="role" text="%base.role" flexWidth="11%"/>
+        </columns>
+    </SingleRowTableView>
+    <FXTabPane flexWidth="100% - 10" flexHeight="100% - 72" fx:id="tabPane">
+        <fx:include fx:id="aggregation" source="shellValkeyAggregationTab.fxml"/>
+        <fx:include fx:id="serverInfo" source="shellValkeyServerInfoTab.fxml"/>
+        <fx:include fx:id="slowlog" source="shellValkeySlowlogTab.fxml"/>
+        <fx:include fx:id="clientInfo" source="shellValkeyClientInfoTab.fxml"/>
+        <fx:include fx:id="pubsub" source="shellValkeyPubsubTab.fxml"/>
+    </FXTabPane>
+</FXVBox>

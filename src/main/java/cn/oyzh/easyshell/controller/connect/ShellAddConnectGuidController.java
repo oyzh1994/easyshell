@@ -75,6 +75,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addSMBConnect(group);
             } else if (ShellPrototype.REDIS.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRedisConnect(group);
+            } else if (ShellPrototype.VALKEY.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addValkeyConnect(group);
             } else if (ShellPrototype.ZOOKEEPER.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addZKConnect(group);
             } else if (ShellPrototype.RDP.equalsIgnoreCase(userData)) {

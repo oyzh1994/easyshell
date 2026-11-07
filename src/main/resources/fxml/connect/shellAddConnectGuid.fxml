@@ -15,6 +15,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.protol.ValkeySVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SSHSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
@@ -289,6 +290,14 @@
             </graphic>
             <HBox.margin>
                 <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="Valkey" userData="valkey">
+            <graphic>
+                <ValkeySVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
             </HBox.margin>
         </FXRadioButton>
         <FXRadioButton toggleGroup="$type" text="Zookeeper" userData="zookeeper">

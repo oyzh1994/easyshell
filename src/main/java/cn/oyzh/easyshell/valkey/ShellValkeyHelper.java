@@ -1,0 +1,134 @@
+package cn.oyzh.easyshell.valkey;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSSLConfig;
+import cn.oyzh.easyshell.exception.ShellException;
+import io.valkey.DefaultJedisClientConfig;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
+
+/**
+ * redis客户端工具类
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyHelper {
+
+    /**
+     * 初始化客户端配置
+     *
+     * @param connect        连接
+     * @param connectTimeout 连接超时
+     */
+    public static DefaultJedisClientConfig newConfig(ShellConnect connect, int connectTimeout) throws Exception {
+        String user = connect.getUser();
+        boolean ssl = connect.isSSLMode();
+        String password = connect.getPassword();
+        int socketTimeout = connect.executeTimeOutMs();
+        // master配置处理
+        DefaultJedisClientConfig.Builder builder = DefaultJedisClientConfig.builder();
+        // socket超时
+        builder.socketTimeoutMillis(socketTimeout);
+        // 连接超时
+        builder.connectionTimeoutMillis(connectTimeout);
+        // 连接用户
+        if (StringUtil.isNotBlank(user)) {
+            builder.user(user);
+        }
+        // 连接密码
+        if (StringUtil.isNotBlank(password)) {
+            builder.password(password);
+        }
+        // ssl
+        if (ssl) {
+            builder.ssl(ssl);
+            ShellSSLConfig sslConfig = connect.getSslConfig();
+            if (sslConfig == null || sslConfig.isInvalid()) {
+                throw new ShellException("ssl config is invalid!");
+            }
+            javax.net.ssl.SSLContext sslContext = buildSSLContext(sslConfig);
+            builder.sslSocketFactory(sslContext.getSocketFactory());
+        }
+        return builder.build();
+    }
+
+    /**
+     * 创建ssl连接工厂
+     *
+     * @return SSLSocketFactory
+     * @throws Exception 异常
+     */
+    public static SSLContext buildSSLContext(ShellSSLConfig sslConfig) throws Exception {
+        String caPemFile = sslConfig.getCaCrt();
+        String clientPemFile = sslConfig.getClientCrt();
+        String clientKeyPath = sslConfig.getClientKey();
+        String privateKeyPassword = sslConfig.getClientPwd();
+
+        // 加载 CA 证书（信任库）- 用于验证服务器证书
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        Certificate caCert;
+        // 替换为你的 CA 证书路径
+        try (InputStream caIs = new FileInputStream(caPemFile)) {
+            caCert = cf.generateCertificate(caIs);
+        }
+
+        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        trustStore.load(null, null);
+        // 将 CA 证书添加到信任库
+        trustStore.setCertificateEntry("ca", caCert);
+
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(trustStore);
+
+        // 加载客户端证书和私钥（密钥库）- 用于向服务器证明自己
+        Certificate clientCert;
+        // 替换为你的客户端证书路径
+        try (InputStream certIs = new FileInputStream(clientPemFile)) {
+            clientCert = cf.generateCertificate(certIs);
+        }
+
+        // 加载客户端私钥（假设是 PEM 格式的 PKCS#8 私钥）
+        String privateKeyPEM = new String(Files.readAllBytes(Paths.get(clientKeyPath))); // 替换为你的客户端私钥路径
+        privateKeyPEM = privateKeyPEM.replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", ""); // 移除 PEM 标记和空白字符
+        byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
+        // 根据你的私钥类型选择 "RSA" 或 "EC"
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        PrivateKey privateKey = kf.generatePrivate(keySpec);
+
+        // 创建密钥库并设置客户端证书条目
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(null, null);
+        // 将客户端证书和私钥放入密钥库
+        keyStore.setKeyEntry("client-key", privateKey, privateKeyPassword.toCharArray(), new Certificate[]{clientCert});
+
+        // 初始化 KeyManagerFactory
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmf.init(keyStore, privateKeyPassword.toCharArray());
+
+        // 创建并初始化 SSLContext
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(kmf.getKeyManagers(), // 提供密钥管理器（包含客户端证书）
+                tmf.getTrustManagers(), // 提供信任管理器（包含受信任的 CA）
+                new SecureRandom());
+        return sslContext;
+    }
+}

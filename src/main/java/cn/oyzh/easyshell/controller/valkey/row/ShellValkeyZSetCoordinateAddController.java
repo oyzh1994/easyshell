@@ -1,0 +1,139 @@
+package cn.oyzh.easyshell.controller.valkey.row;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.trees.valkey.key.ShellValkeyZSetKeyTreeItem;
+import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+
+
+/**
+ * redis添加zset坐标
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+@StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "valkey/row/shellValkeyZSetCoordinateAdd.fxml"
+)
+public class ShellValkeyZSetCoordinateAddController extends StageController {
+
+    /**
+     * 坐标名称
+     */
+    @FXML
+    private Editor rowValue;
+
+    /**
+     * 经度
+     */
+    @FXML
+    private DecimalTextField longitude;
+
+    /**
+     * 纬度
+     */
+    @FXML
+    private DecimalTextField latitude;
+
+    /**
+     * redis键
+     */
+    private ShellValkeyZSetKeyTreeItem treeItem;
+
+    /**
+     * 添加行
+     */
+    @FXML
+    private void addRow() {
+        try {
+            // 行数据
+            String rowValue = this.rowValue.getText();
+            if (StringUtil.isEmpty(rowValue)) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
+                return;
+            }
+            Number longitudeValue = this.longitude.getValue();
+            if (longitudeValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitude);
+                return;
+            }
+            Number latitudeValue = this.latitude.getValue();
+            if (latitudeValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitude);
+                return;
+            }
+            // redis键
+            String key = this.treeItem.key();
+            // 获取键值
+            int dbIndex = this.treeItem.dbIndex();
+            // redis客户端
+            ShellValkeyClient client = this.treeItem.client();
+            if (client.zrank(dbIndex, key, rowValue) != null) {
+                MessageBox.warn(ShellI18nHelper.coordinatesAlreadyExists(rowValue), this.getWindow());
+                return;
+            }
+            double longitude = longitudeValue.doubleValue();
+            double latitude = latitudeValue.doubleValue();
+            // 添加元素
+            client.geoadd(dbIndex, key, longitude, latitude, rowValue);
+            // 结果
+            this.setProp("result", true);
+            // // 发送事件
+            // ShellEventUtil.redisZSetCoordinateAdded(this.treeItem, key, rowValue, longitude, latitude);
+            this.closeWindow();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 粘贴数据
+     */
+    @FXML
+    private void pasteData() {
+        this.rowValue.paste();
+        this.rowValue.requestFocus();
+    }
+
+    /**
+     * 清空数据
+     */
+    @FXML
+    private void clearData() {
+        this.rowValue.clear();
+        this.rowValue.requestFocus();
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        this.treeItem = this.getProp("treeItem");
+        this.stage.switchOnTab();
+        this.stage.hideOnEscape();
+        super.onWindowShown(event);
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nResourceBundle.i18nString("shell.valkey.title.zSetCoordinateAdd");
+    }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
+    }
+}

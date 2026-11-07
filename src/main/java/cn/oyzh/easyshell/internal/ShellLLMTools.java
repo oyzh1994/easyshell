@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellFileCollectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
@@ -722,7 +723,7 @@ public class ShellLLMTools implements LLMTools {
     @Tool(name = "createConnection",
             value = "Create and persist a new EasyShell connection without connecting to it. Existing connections are never modified or deleted.")
     public String createConnection(
-            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, mosh, rdp, vnc, mysql, mariadb, dameng, sqlite, mongodb, redis, or zookeeper") String type,
+            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, mosh, rdp, vnc, mysql, mariadb, dameng, sqlite, mongodb, redis, valkey, or zookeeper") String type,
             @P(name = "name", value = "Display name for the new connection") String name,
             @P(name = "host", value = "Host or address. For SQLite use the database file path. Ignored for Local and Serial.") String host,
             @P(name = "port", value = "Port, ignored when the host already contains a port or for Local, Serial, and SQLite", required = false) Integer port,
@@ -1713,6 +1714,7 @@ public class ShellLLMTools implements LLMTools {
             case "sqlite" -> "sqlite";
             case "mongo", "mongodb" -> "mongodb";
             case "redis" -> "redis";
+            case "valkey" -> "valkey";
             case "zk", "zookeeper" -> "zookeeper";
             default -> throw new IllegalArgumentException("Unsupported connection type: " + type);
         };
@@ -1837,7 +1839,8 @@ public class ShellLLMTools implements LLMTools {
                 || client instanceof ShellDamengClient
                 || client instanceof ShellPostgresqlClient
                 || client instanceof ShellMongoClient
-                || client instanceof ShellRedisClient;
+                || client instanceof ShellRedisClient
+                || client instanceof ShellValkeyClient;
     }
 
     private String databaseVersion(ShellBaseClient client) {
@@ -1862,6 +1865,16 @@ public class ShellLLMTools implements LLMTools {
                 if (info != null) {
                     for (String line : info.split("\\R")) {
                         if (line.startsWith("redis_version:")) {
+                            return line.substring(line.indexOf(':') + 1).trim();
+                        }
+                    }
+                }
+            }
+            if (client instanceof ShellValkeyClient valkeyClient) {
+                String info = valkeyClient.info("server");
+                if (info != null) {
+                    for (String line : info.split("\\R")) {
+                        if (line.startsWith("valkey_version:") || line.startsWith("redis_version:")) {
                             return line.substring(line.indexOf(':') + 1).trim();
                         }
                     }

@@ -15,3 +15,4 @@ docker build -t rlogin-server -f rlogin.dockerfile .
 - PostgreSQL：`postgresql/docker.txt`（测试对象初始化脚本：`postgresql/init.sql`）
 - 达梦：`dameng/docker.txt`
 - MongoDB：`mongo/docker.txt`
+- Valkey：`valkey/README.md`（单节点、ACL、主从/哨兵、集群、TLS）

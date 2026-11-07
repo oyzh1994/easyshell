@@ -1,0 +1,26 @@
+package cn.oyzh.easyshell.event.valkey;
+
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.event.Event;
+
+/**
+ * redis键刷新事件
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyKeyFlushedEvent extends Event<Integer> {
+
+    /**
+     * 连接
+     */
+    private ShellConnect connect;
+
+    public ShellConnect getConnect() {
+        return connect;
+    }
+
+    public void setConnect(ShellConnect connect) {
+        this.connect = connect;
+    }
+}

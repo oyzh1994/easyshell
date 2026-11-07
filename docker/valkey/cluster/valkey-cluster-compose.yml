@@ -1,0 +1,134 @@
+version: "3.7"
+
+services:
+  #该容器只是执行一条命令，可以删除手动进入执行
+  valkey-cluster:
+    image: valkey/valkey:latest
+    command: 'valkey-cli -a 123456 --cluster create 192.168.3.132:6491 192.168.3.132:6492 192.168.3.132:6493 192.168.3.132:6494 192.168.3.132:6495 192.168.3.132:6496 --cluster-yes --cluster-replicas 1'
+    depends_on:
+      - valkey1
+      - valkey2
+      - valkey3
+      - valkey4
+      - valkey5
+      - valkey6
+
+  # 节点1
+  valkey1:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-node1
+    ports:
+      - 6491:6491
+      - 16491:16491
+    volumes:
+      - ./valkey1.conf:/conf/valkey.conf
+    command: valkey-server /conf/valkey.conf
+
+  # 节点2
+  valkey2:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-node2
+    ports:
+      - 6492:6492
+      - 16492:16492
+    volumes:
+      - ./valkey2.conf:/conf/valkey.conf
+    command: valkey-server /conf/valkey.conf
+
+  # 节点3
+  valkey3:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-node3
+    ports:
+      - 6493:6493
+      - 16493:16493
+    volumes:
+      - ./valkey3.conf:/conf/valkey.conf
+    command: valkey-server /conf/valkey.conf
+
+  # 节点4
+  valkey4:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-node4
+    ports:
+      - 6494:6494
+      - 16494:16494
+    volumes:
+      - ./valkey4.conf:/conf/valkey.conf
+    command: valkey-server /conf/valkey.conf
+
+  # 节点5
+  valkey5:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-node5
+    ports:
+      - 6495:6495
+      - 16495:16495
+    volumes:
+      - ./valkey5.conf:/conf/valkey.conf
+    command: valkey-server /conf/valkey.conf
+
+  # 节点6
+  valkey6:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-node6
+    ports:
+      - 6496:6496
+      - 16496:16496
+    volumes:
+      - ./valkey6.conf:/conf/valkey.conf
+    command: valkey-server /conf/valkey.conf
+
+  # 哨兵节点1
+  sentinel1:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-sentinel1
+    restart: no
+    volumes:
+      - ./valkey-sentinel1.conf:/conf/valkey.conf
+    ports:
+      - 6497:6497
+    depends_on:
+      - valkey1
+      - valkey2
+      - valkey3
+      - valkey4
+      - valkey5
+      - valkey6
+    command: valkey-sentinel /conf/valkey.conf
+
+  # 哨兵节点2
+  sentinel2:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-sentinel2
+    restart: no
+    volumes:
+      - ./valkey-sentinel2.conf:/conf/valkey.conf
+    ports:
+      - 6498:6498
+    depends_on:
+      - valkey1
+      - valkey2
+      - valkey3
+      - valkey4
+      - valkey5
+      - valkey6
+    command: valkey-sentinel /conf/valkey.conf
+
+  # 哨兵节点3
+  sentinel3:
+    image: valkey/valkey:latest
+    container_name: valkey-cluster-sentinel3
+    restart: no
+    volumes:
+      - ./valkey-sentinel3.conf:/conf/valkey.conf
+    ports:
+      - 6499:6499
+    depends_on:
+      - valkey1
+      - valkey2
+      - valkey3
+      - valkey4
+      - valkey5
+      - valkey6
+    command: valkey-sentinel /conf/valkey.conf

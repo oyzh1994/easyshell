@@ -1096,6 +1096,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否Valkey类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isValkeyType() {
+        return ShellPrototype.VALKEY.equalsIgnoreCase(this.type);
+    }
+
+    /**
      * 是否Zookeeper类型
      *
      * @return 结果

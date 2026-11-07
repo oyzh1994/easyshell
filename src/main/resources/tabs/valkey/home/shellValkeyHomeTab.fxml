@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox flexHeight="100%" flexWidth="100%" xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.valkey.home.ShellValkeyHomeTabController">
+    <InfoLabel text="%base.version">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="version">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.mode">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="mode">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.role">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="role">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.database">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="databases">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.keyNum">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="keyCount">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.usedMemory">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="usedMemory">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.clientNum">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="clients">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%base.uptime">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="uptime">
+        <VBox.margin>
+            <Insets left="30" top="3"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.valkey.server.execCommandNum">
+        <VBox.margin>
+            <Insets left="30" top="8"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel realHeight="26" fx:id="commands">
+        <VBox.margin>
+            <Insets left="30" top="3" bottom="20"/>
+        </VBox.margin>
+    </FXLabel>
+</FXVBox>

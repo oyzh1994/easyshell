@@ -1,0 +1,204 @@
+package cn.oyzh.easyshell.controller.valkey.key;
+
+import cn.oyzh.common.Const;
+import cn.oyzh.easyshell.event.valkey.ShellValkeyEventUtil;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.trees.valkey.key.ShellValkeyKeyTreeItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+
+import java.sql.Date;
+
+
+/**
+ * redis ttl设置业务
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+@StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "valkey/key/shellValkeyKeyTTL.fxml"
+)
+public class ShellValkeyKeyTTLController extends StageController {
+
+    /**
+     * 当前窗口显示时间
+     */
+    private Long showTime;
+
+    /**
+     * ttl
+     */
+    @FXML
+    private NumberTextField ttl;
+
+    /**
+     * redis客户端
+     */
+    private ShellValkeyClient client;
+
+    /**
+     * 到期预览
+     */
+    @FXML
+    private FXLabel expirePreview;
+
+    /**
+     * 树键
+     */
+    private ShellValkeyKeyTreeItem treeItem;
+
+    /**
+     * 添加redis键
+     */
+    @FXML
+    private void ttlSetting() {
+        // 获取键值
+        Number ttlValue = this.ttl.getValue();
+        try {
+            if (ttlValue.longValue() <= -1) {
+                this.client.persist(this.treeItem.dbIndex(), this.treeItem.key());
+            } else if (ttlValue.longValue() == 0) {
+                if (MessageBox.confirm(ShellI18nHelper.redisTtlTip1(), this.getWindow())) {
+                    this.client.del(this.treeItem.dbIndex(), this.treeItem.key());
+                }
+            } else {
+                this.client.expire(this.treeItem.dbIndex(), this.treeItem.key(), ttlValue.longValue(), null);
+            }
+            // this.setProp("result", true);
+            ShellValkeyEventUtil.redisKeyTTLUpdated(this.treeItem.shellConnect(), ttlValue.longValue(), this.treeItem.key(), this.treeItem.dbIndex());
+            MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
+            this.closeWindow();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 永久保存键（取消过期）
+     */
+    @FXML
+    private void persistKey() {
+        this.ttl.setValue(-1L);
+    }
+
+    /**
+     * 过期时间设为1天
+     */
+    @FXML
+    private void expireAt1D() {
+        this.ttl.setValue(24 * 3600);
+    }
+
+    /**
+     * 过期时间设为1小时
+     */
+    @FXML
+    private void expireAt1H() {
+        this.ttl.setValue(3600);
+    }
+
+    /**
+     * 过期时间设为1分钟
+     */
+    @FXML
+    private void expireAt1M() {
+        this.ttl.setValue(60);
+    }
+
+    /**
+     * 过期时间追加1分钟
+     */
+    @FXML
+    private void appendWith1M() {
+        long ttl = this.ttl.getValue();
+        if (ttl <= -1) {
+            this.expireAt1M();
+        } else {
+            this.ttl.setValue(ttl + 60);
+        }
+    }
+
+    /**
+     * 过期时间追加1小时
+     */
+    @FXML
+    private void appendWith1H() {
+        long ttl = this.ttl.getValue();
+        if (ttl <= -1) {
+            this.expireAt1H();
+        } else {
+            this.ttl.setValue(ttl + 3600);
+        }
+    }
+
+    /**
+     * 过期时间追加1天
+     */
+    @FXML
+    private void appendWith1D() {
+        long ttl = this.ttl.getValue();
+        if (ttl <= -1) {
+            this.expireAt1D();
+        } else {
+            this.ttl.setValue(ttl + 24 * 3600);
+        }
+    }
+
+    /**
+     * 重置过期时间
+     */
+    @FXML
+    private void resetTTL() {
+        this.ttl.setValue(this.treeItem.ttl());
+    }
+
+    @Override
+    protected void bindListeners() {
+        this.ttl.addTextChangeListener((observable, oldValue, newValue) -> {
+            long ttl = this.ttl.getValue();
+            if (ttl <= -1) {
+                this.expirePreview.setText(I18nHelper.neverExpire());
+            } else {
+                this.expirePreview.setText(Const.DATE_FORMAT.format(new Date(this.showTime + ttl * 1000)));
+            }
+        });
+        super.bindListeners();
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        this.showTime = System.currentTimeMillis();
+        this.stage.switchOnTab();
+        this.stage.hideOnEscape();
+        this.treeItem = this.getProp("treeItem");
+        this.client = this.treeItem.client();
+        Long ttl = this.treeItem.ttl();
+        if (ttl == null || ttl <= -1) {
+            this.ttl.setValue(-1);
+            this.expirePreview.setText(I18nHelper.neverExpire());
+        } else {
+            this.ttl.setValue(ttl);
+            this.expirePreview.setText(Const.DATE_FORMAT.format(new Date(System.currentTimeMillis() + ttl * 1000)));
+        }
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nResourceBundle.i18nString("shell.valkey.title.key.ttlUpdate");
+    }
+}

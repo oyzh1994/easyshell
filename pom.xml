@@ -27,6 +27,7 @@
         <smbj.version>0.14.0</smbj.version>
         <!-- 锁定 -->
         <jedis.version>7.1.0</jedis.version>
+        <valkey.version>5.5.0</valkey.version>
         <!-- 锁定 -->
         <mysql.version>8.0.33</mysql.version>
         <mariadb.version>3.5.10</mariadb.version>
@@ -427,6 +428,14 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>${jedis.version}</version>
+        </dependency>
+
+        <!-- valkey客户端 -->
+        <!-- https://mvnrepository.com/artifact/io.valkey/valkey-java -->
+        <dependency>
+            <groupId>io.valkey</groupId>
+            <artifactId>valkey-java</artifactId>
+            <version>${valkey.version}</version>
         </dependency>
 
         <!-- java注解 -->

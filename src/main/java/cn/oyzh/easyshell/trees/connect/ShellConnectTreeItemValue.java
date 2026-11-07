@@ -86,6 +86,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
         if (this.item().isFTPType()) {
             return Color.valueOf("#F97316");
         }
+        if (this.item().isValkeyType()) {
+            return Color.valueOf("#DC2626");
+        }
         if (this.item().isRedisType()) {
             return Color.valueOf("#7C3AED");
         }

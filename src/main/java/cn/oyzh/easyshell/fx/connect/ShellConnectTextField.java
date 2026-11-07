@@ -128,6 +128,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadTermType();
         } else if (ShellPrototype.REDIS.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadRedisType();
+        } else if (ShellPrototype.VALKEY.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadValkeyType();
         } else if (ShellPrototype.ZOOKEEPER.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadZKType();
         } else if (ShellPrototype.MYSQL.equalsIgnoreCase(this.filterMode)) {

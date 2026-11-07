@@ -1,0 +1,59 @@
+package cn.oyzh.easyshell.event.valkey;
+
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.event.Event;
+import cn.oyzh.event.EventFormatter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+
+/**
+ * redis键ttl更新事件
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyKeyTTLUpdatedEvent extends Event<ShellConnect> implements  EventFormatter {
+
+    /**
+     * ttl值
+     */
+    private Long ttl;
+
+    public Long getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(Long ttl) {
+        this.ttl = ttl;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public int getDbIndex() {
+        return dbIndex;
+    }
+
+    public void setDbIndex(int dbIndex) {
+        this.dbIndex = dbIndex;
+    }
+
+    /**
+     * 键名称
+     */
+    private String key;
+
+    /**
+     * 数据库索引
+     */
+    private int dbIndex;
+
+    @Override
+    public String eventFormat() {
+return ShellI18nHelper.redisTtlUpdated(this.data().getName(), this.key, this.dbIndex, this.ttl);
+    }
+}

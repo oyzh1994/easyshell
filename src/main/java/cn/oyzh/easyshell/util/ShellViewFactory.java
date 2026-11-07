@@ -24,7 +24,9 @@ import cn.oyzh.easyshell.controller.connect.postgresql.ShellUpdatePostgresqlConn
 import cn.oyzh.easyshell.controller.connect.rdp.ShellAddRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.rdp.ShellUpdateRDPConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellAddRedisConnectController;
+import cn.oyzh.easyshell.controller.connect.valkey.ShellAddValkeyConnectController;
 import cn.oyzh.easyshell.controller.connect.redis.ShellUpdateRedisConnectController;
+import cn.oyzh.easyshell.controller.connect.valkey.ShellUpdateValkeyConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellUpdateRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController;
@@ -89,6 +91,7 @@ import cn.oyzh.easyshell.controller.tool.ShellToolController;
 import cn.oyzh.easyshell.controller.tunneling.ShellAddTunnelingController;
 import cn.oyzh.easyshell.controller.tunneling.ShellUpdateTunnelingController;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellKey;
@@ -325,6 +328,22 @@ public class ShellViewFactory {
     public static void addRedisConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddRedisConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 新增valkey连接
+     *
+     * @param group 分组
+     */
+    public static void addValkeyConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddValkeyConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -661,6 +680,22 @@ public class ShellViewFactory {
     public static void updateRedisConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateRedisConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 修改valkey连接
+     *
+     * @param connect 连接
+     */
+    public static void updateValkeyConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateValkeyConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

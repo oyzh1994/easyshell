@@ -105,6 +105,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载valkey类型
+     *
+     * @return valkey类型连接
+     */
+    public List<ShellConnect> loadValkeyType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isValkeyType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载zk类型
      *
      * @return zk类型连接
@@ -221,7 +232,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (connect.isSSHType()) {
                 connect.setX11Config(this.x11ConfigStore.getByIid(connect.getId()));
                 connect.setTunnelingConfigs(this.tunnelingConfigStore.loadByIid(connect.getId()));
-            } else if (connect.isRedisType() || connect.isMongoType()) {
+            } else if (connect.isRedisType() || connect.isValkeyType() || connect.isMongoType()) {
                 connect.setSslConfig(this.sslConfigStore.getByIid(connect.getId()));
             } else if (connect.isZKType()) {
                 //                connect.setAuths(this.zkAuthStore.loadByIid(connect.getId()));
@@ -242,7 +253,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             if (model.isSSHType()) {
                 this.x11ConfigStore.deleteByIid(model.getId());
                 this.tunnelingConfigStore.deleteByIid(model.getId());
-            } else if (model.isRedisType() || model.isMongoType()) {
+            } else if (model.isRedisType() || model.isValkeyType() || model.isMongoType()) {
                 this.sslConfigStore.deleteByIid(model.getId());
             } else if (model.isZKType()) {
                 this.zkAuthStore.deleteByIid(model.getId());
@@ -303,7 +314,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                         this.tunnelingConfigStore.replace(tunnelingConfig);
                     }
                 }
-            } else if (model.isRedisType() || model.isMongoType()) {
+            } else if (model.isRedisType() || model.isValkeyType() || model.isMongoType()) {
                 // ssl处理
                 ShellSSLConfig sslConfig = model.getSslConfig();
                 if (sslConfig != null) {
@@ -381,7 +392,7 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
                         this.tunnelingConfigStore.replace(tunnelingConfig);
                     }
                 }
-            } else if (model.isRedisType() || model.isMongoType()) {
+            } else if (model.isRedisType() || model.isValkeyType() || model.isMongoType()) {
                 // ssl处理
                 ShellSSLConfig sslConfig = model.getSslConfig();
                 if (sslConfig != null) {

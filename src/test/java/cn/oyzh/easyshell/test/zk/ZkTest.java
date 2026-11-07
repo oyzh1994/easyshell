@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.test.zk;
 
 import cn.oyzh.easyshell.trees.zk.other.ShellZKMoreTreeItem;
 import cn.oyzh.easyshell.trees.zk.node.ShellZKNodeTreeItem;
-import cn.oyzh.easyshell.trees.zk.other.ShellZKReturnTreeItem;
+//import cn.oyzh.easyshell.trees.zk.other.ShellZKReturnTreeItem;
 import cn.oyzh.easyshell.zk.ShellZKNode;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import org.junit.Test;
@@ -94,7 +94,7 @@ public class ZkTest {
 
         list.add(c1);
         list.add(c3);
-        list.add(a);
+        // list.add(a);
         list.add(b);
         list.add(c2);
         Collections.shuffle(list);
@@ -118,7 +118,7 @@ public class ZkTest {
 
     @Test
     public void test1() {
-        ShellZKReturnTreeItem a = new ShellZKReturnTreeItem(null);
+        // ShellZKReturnTreeItem a = new ShellZKReturnTreeItem(null);
         ShellZKMoreTreeItem b = new ShellZKMoreTreeItem(null);
         ShellZKNode node1 = new ShellZKNode();
         node1.nodePath("/a1");
@@ -134,7 +134,7 @@ public class ZkTest {
 
         list.add(c1);
         list.add(c3);
-        list.add(a);
+        // list.add(a);
         list.add(b);
         list.add(c2);
         Collections.shuffle(list);

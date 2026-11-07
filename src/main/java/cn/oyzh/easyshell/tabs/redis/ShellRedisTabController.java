@@ -7,6 +7,8 @@ import cn.oyzh.easyshell.filter.redis.ShellRedisKeyFilterTypeComboBox;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyTab;
+import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTab;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
@@ -20,6 +22,7 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -119,6 +122,24 @@ public class ShellRedisTabController extends ShellBaseTabController {
      */
     public ShellRedisClient getClient() {
         return client;
+    }
+
+    @Override
+    public void onTabCloseRequest(Event event) {
+        boolean unsaved = false;
+        for (Tab tab : this.tabPane.getTabs()) {
+            if (tab instanceof ShellRedisKeyTab keyTab && keyTab.hasUnsavedData()) {
+                unsaved = true;
+                break;
+            }
+            if (tab instanceof ShellRedisQueryTab queryTab && queryTab.isUnsaved()) {
+                unsaved = true;
+                break;
+            }
+        }
+        if (unsaved && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+            event.consume();
+        }
     }
 
     @Override

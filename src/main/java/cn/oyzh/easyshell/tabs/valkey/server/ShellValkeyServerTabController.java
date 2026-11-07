@@ -1,0 +1,222 @@
+package cn.oyzh.easyshell.tabs.valkey.server;
+
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.thread.ExecutorUtil;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.dto.valkey.ShellValkeyInfoProp;
+import cn.oyzh.easyshell.dto.valkey.ShellValkeyServerItem;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.fx.gui.tabs.ParentTabController;
+import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.plus.controls.tab.FXTab;
+import cn.oyzh.fx.plus.controls.tab.FXTabPane;
+import cn.oyzh.fx.plus.controls.table.FXTableView;
+import javafx.event.Event;
+import javafx.fxml.FXML;
+
+import java.util.List;
+import java.util.concurrent.Future;
+
+/**
+ * redis服务tab内容组件
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyServerTabController extends ParentTabController {
+
+    /**
+     * redis客户端
+     */
+    private ShellValkeyClient client;
+
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
+    public ShellValkeyClient getClient() {
+        return client;
+    }
+
+    /**
+     * 发布及订阅tab
+     */
+    @FXML
+    private FXTab pubsub;
+
+    /**
+     * 慢查日志tab
+     */
+    @FXML
+    private FXTab slowlog;
+
+    /**
+     * 客户端信息tab
+     */
+    @FXML
+    private FXTab clientInfo;
+
+    /**
+     * tab面板
+     */
+    @FXML
+    private FXTabPane tabPane;
+
+    /**
+     * 订阅组件
+     */
+    @FXML
+    private ShellValkeyPubsubTabController pubsubController;
+
+    /**
+     * 慢查日志组件
+     */
+    @FXML
+    private ShellValkeySlowlogTabController slowlogController;
+
+    /**
+     * 服务信息组件
+     */
+    @FXML
+    private ShellValkeyServerInfoTabController serverInfoController;
+
+    /**
+     * 客户端信息组件
+     */
+    @FXML
+    private ShellValkeyClientInfoTabController clientInfoController;
+
+    /**
+     * 汇总组件
+     */
+    @FXML
+    private ShellValkeyAggregationTabController aggregationController;
+
+    /**
+     * 属性表格
+     */
+    @FXML
+    private FXTableView<ShellValkeyServerItem> propTable;
+
+    /**
+     * 刷新任务
+     */
+    private Future<?> refreshTask;
+
+    /**
+     * 设置redis客户端
+     *
+     * @param client redis客户端
+     */
+    public void init(ShellValkeyClient client) {
+        this.client = client;
+        if (!client.isSentinelMode()) {
+            this.pubsubController.init(client);
+            this.slowlogController.init(client);
+            this.clientInfoController.init(client);
+        } else {
+            this.tabPane.removeTab(this.pubsub);
+            this.tabPane.removeTab(this.slowlog);
+            this.tabPane.removeTab(this.clientInfo);
+        }
+        // 如果tab已被选中，则直接开始刷新
+        if (this.getTab() != null && this.getTab().isSelected()) {
+            this.initRefreshTask();
+        }
+    }
+
+    /**
+     * 初始化自动刷新任务
+     */
+    private void initRefreshTask() {
+        try {
+            if (this.refreshTask == null) {
+                this.refreshTask = ExecutorUtil.start(this::renderPane, 0, 3_000);
+                JulLog.debug("RefreshTask started.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.error("initRefreshTask error", ex);
+        }
+    }
+
+    /**
+     * 关闭自动刷新任务
+     */
+    public void closeRefreshTask() {
+        try {
+            ExecutorUtil.cancel(this.refreshTask);
+            this.refreshTask = null;
+            JulLog.debug("RefreshTask closed.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.error("closeRefreshTask error", ex);
+        }
+    }
+
+    /**
+     * 渲染主面板
+     */
+    private synchronized void renderPane() {
+        try {
+            JulLog.info("renderPane started.");
+            if (this.client != null) {
+                ShellValkeyInfoProp infoProp = new ShellValkeyInfoProp();
+                infoProp.parse(this.client.info(null));
+                ShellValkeyServerItem serverItem;
+                if (this.propTable.isItemEmpty()) {
+                    serverItem = new ShellValkeyServerItem();
+                    serverItem.setServerVersion(infoProp.getValkeyVersion());
+                    try {
+                        serverItem.setRole((String) CollectionUtil.getFirst(this.client.role()));
+                    } catch (Exception ignored) {
+                    }
+                    this.propTable.addItem(serverItem);
+                } else {
+                    serverItem = (ShellValkeyServerItem) this.propTable.getItem(0);
+                }
+                serverItem.init(infoProp);
+                this.serverInfoController.init(infoProp);
+                this.aggregationController.init(infoProp);
+            }
+            JulLog.info("renderPane finished.");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JulLog.error("renderPane error", ex);
+        }
+    }
+
+    @Override
+    public void onTabInit(FXTab tab) {
+        super.onTabInit(tab);
+        tab.selectedProperty().subscribe((oldValue, newValue) -> {
+            if (newValue) {
+                this.initRefreshTask();
+            } else {
+                this.closeRefreshTask();
+            }
+        });
+    }
+
+    @Override
+    public void onTabClosed(Event event) {
+        this.closeRefreshTask();
+        super.onTabClosed(event);
+    }
+
+    @Override
+    public List<? extends RichTabController> getSubControllers() {
+        return List.of(this.aggregationController,
+                this.pubsubController,
+                this.slowlogController,
+                this.serverInfoController,
+                this.clientInfoController);
+    }
+
+    @Override
+    public void destroy() {
+        this.closeRefreshTask();
+        super.destroy();
+    }
+}

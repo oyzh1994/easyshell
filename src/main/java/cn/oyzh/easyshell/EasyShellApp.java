@@ -34,6 +34,8 @@ import cn.oyzh.easyshell.terminal.mongo.MongoTerminalPane;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalManager;
 import cn.oyzh.easyshell.terminal.mysql.MysqlTerminalPane;
 import cn.oyzh.easyshell.terminal.redis2.RedisTerminalManager;
+import cn.oyzh.easyshell.terminal.valkey2.ValkeyTerminalManager;
+import cn.oyzh.easyshell.terminal.valkey2.ValkeyTerminalPane;
 import cn.oyzh.easyshell.terminal.redis2.RedisTerminalPane;
 import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalManager;
 import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalPane;
@@ -239,6 +241,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             // 注册处理器
             TerminalManager.setLoadHandler(ZKTerminalPane.TERMINAL_NAME, ZKTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(RedisTerminalPane.TERMINAL_NAME, RedisTerminalManager::registerHandlers);
+            TerminalManager.setLoadHandler(ValkeyTerminalPane.TERMINAL_NAME, ValkeyTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MysqlTerminalPane.TERMINAL_NAME, MysqlTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MariadbTerminalPane.TERMINAL_NAME, MariadbTerminalManager::registerHandlers);
             TerminalManager.setLoadHandler(MongoTerminalPane.TERMINAL_NAME, MongoTerminalManager::registerHandlers);

@@ -1,0 +1,61 @@
+package cn.oyzh.easyshell.event.valkey;
+
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.event.Event;
+import cn.oyzh.event.EventFormatter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+
+import java.util.List;
+
+/**
+ * redis多个键复制事件
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyKeysCopiedEvent extends Event<List<String>> implements EventFormatter {
+
+    /**
+     * 源数据库
+     */
+    private int sourceDB;
+
+    /**
+     * 目标数据库
+     */
+    private int targetDB;
+
+    /**
+     * 连接
+     */
+    private ShellConnect connect;
+
+    public int getTargetDB() {
+        return targetDB;
+    }
+
+    public void setTargetDB(int targetDB) {
+        this.targetDB = targetDB;
+    }
+
+    @Override
+    public String eventFormat() {
+return ShellI18nHelper.redisKeysCopied(connect.getName(), this.data(), sourceDB, this.targetDB);
+    }
+
+    public int getSourceDB() {
+        return sourceDB;
+    }
+
+    public void setSourceDB(int sourceDB) {
+        this.sourceDB = sourceDB;
+    }
+
+    public ShellConnect getConnect() {
+        return connect;
+    }
+
+    public void setConnect(ShellConnect connect) {
+        this.connect = connect;
+    }
+}

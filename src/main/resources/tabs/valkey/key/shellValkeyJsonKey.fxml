@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.svg.glyph.BinarySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.NextSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.QRCodeSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RedoSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RenameSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.UndoSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.HighlightTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox flexWidth="100%" flexHeight="100% - 30" xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.valkey.key.ShellValkeyJsonKeyController">
+    <FXHBox realHeight="30" flexWidth="100%" groupId="dataToBig">
+<!--        <EditorFormatTypeTextField prefHeight="22" fx:id="format">-->
+<!--            <HBox.margin>-->
+<!--                <Insets left="5" top="5"/>-->
+<!--            </HBox.margin>-->
+<!--        </EditorFormatTypeTextField>-->
+        <SaveSVGGlyph fx:id="saveNodeData" disable="true" tipText="%base.saveTip1"
+                      onMousePrimaryClicked="#saveKeyValue">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <UndoSVGGlyph disable="true" fx:id="dataUndo" tipText="%base.undoTip1"
+                      onMousePrimaryClicked="#dataUndo">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </UndoSVGGlyph>
+        <RedoSVGGlyph disable="true" fx:id="dataRedo" tipText="%base.redoTip1"
+                      onMousePrimaryClicked="#dataRedo">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </RedoSVGGlyph>
+        <PasteSVGGlyph fx:id="pasteData" onMousePrimaryClicked="#pasteData"
+                       tipText="%base.pasteTip1">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </PasteSVGGlyph>
+        <ClearSVGGlyph tipText="%base.clear"  fx:id="clearData" onMousePrimaryClicked="#clearData">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </ClearSVGGlyph>
+        <RefreshSVGGlyph tipText="%base.refreshTip1"  onMousePrimaryClicked="#reloadData">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+        <RenameSVGGlyph tipText="%base.rename"  onMousePrimaryClicked="#renameKey">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </RenameSVGGlyph>
+        <CopySVGGlyph tipText="%base.copy"  onMousePrimaryClicked="#copyKey">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </CopySVGGlyph>
+        <QRCodeSVGGlyph tipText="%base.qrCode"  onMousePrimaryClicked="#key2QRCode" groupId="dataToBig">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </QRCodeSVGGlyph>
+        <BinarySVGGlyph tipText="%base.saveBinaryFile"  onMousePrimaryClicked="#saveBinaryFile">
+            <HBox.margin>
+                <Insets left="5" top="7"/>
+            </HBox.margin>
+        </BinarySVGGlyph>
+        <HighlightTextField fx:id="filter" tipText="%base.searchKWTip" prefHeight="22" prefWidth="200">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </HighlightTextField>
+        <NextSVGGlyph tipText="%base.find" onMousePrimaryClicked="#searchNext">
+            <HBox.margin>
+                <Insets left="5" top="8"/>
+            </HBox.margin>
+        </NextSVGGlyph>
+    </FXHBox>
+    <ShellDataEditor formatType="JSON" groupId="dataToBig" fx:id="nodeData" flexHeight="100% - 30"
+                     flexWidth="100% - 4" onKeyPressed="#onKeyDataKeyPressed">
+        <VBox.margin>
+            <Insets left="2"/>
+        </VBox.margin>
+    </ShellDataEditor>
+</FXVBox>

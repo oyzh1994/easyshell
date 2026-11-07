@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: valkey/valkey:latest
+    container_name: valkey-example
+    volumes:
+      - ./valkey-example.conf:/conf/valkey.conf
+      - ./data:/data
+    ports:
+      - 7381:6379
+    command: valkey-server /conf/valkey.conf

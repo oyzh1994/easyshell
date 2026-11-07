@@ -30,6 +30,7 @@ import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.protol.ValkeySVGGlyph;
 import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph;
@@ -76,6 +77,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.SMB);
         this.addItem(ShellPrototype.MINIO);
         this.addItem(ShellPrototype.REDIS);
+        this.addItem(ShellPrototype.VALKEY);
         this.addItem(ShellPrototype.RLOGIN);
         this.addItem(ShellPrototype.WEBDAV);
         this.addItem(ShellPrototype.TELNET);
@@ -141,6 +143,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.MINIO);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.REDIS)) {
             super.select(ShellPrototype.REDIS);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.VALKEY)) {
+            super.select(ShellPrototype.VALKEY);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.ZOOKEEPER)) {
             super.select(ShellPrototype.ZOOKEEPER);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RDP)) {
@@ -203,6 +207,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "tencent cloud" -> new TencentCloudSVGGlyph();
             case "huawei cloud" -> new HuaweiCloudSVGGlyph();
             case "redis" -> new RedisSVGGlyph();
+            case "valkey" -> new ValkeySVGGlyph();
             case "zk", "zookeeper" -> new ZookeeperSVGGlyph();
             case "rdp" -> new RDPSVGGlyph();
             case "webdav" -> new WebdavSVGGlyph();

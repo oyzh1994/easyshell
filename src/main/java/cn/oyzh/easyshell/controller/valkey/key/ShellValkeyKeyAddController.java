@@ -1,0 +1,615 @@
+package cn.oyzh.easyshell.controller.valkey.key;
+
+import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.common.util.ArrayUtil;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.fx.valkey.ShellValkeyKeyTypeComboBox;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.valkey.ShellValkeyKeyType;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
+import cn.oyzh.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeMutexes;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.i18n.I18nHelper;
+import com.alibaba.fastjson2.JSONObject;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+import io.valkey.params.XAddParams;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+
+/**
+ * redis键添加业务
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+@StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "valkey/key/shellValkeyKeyAdd.fxml"
+)
+public class ShellValkeyKeyAddController extends StageController {
+
+    /**
+     * 键
+     */
+    @FXML
+    private ClearableTextField key;
+
+    /**
+     * 位图组件
+     */
+    @FXML
+    private FXVBox bitBox;
+
+    /**
+     * stream组件
+     */
+    @FXML
+    private FXVBox streamBox;
+
+    /**
+     * string组件
+     */
+    @FXML
+    private FXVBox stringBox;
+
+    /**
+     * json组件
+     */
+    @FXML
+    private FXVBox jsonBox;
+
+    /**
+     * list组件
+     */
+    @FXML
+    private FXVBox listBox;
+
+    /**
+     * set组件
+     */
+    @FXML
+    private FXVBox setBox;
+
+    /**
+     * zSet组件
+     */
+    @FXML
+    private FXVBox zSetBox;
+
+    /**
+     * set组件
+     */
+    @FXML
+    private FXVBox hashBox;
+
+    /**
+     * hylog组件
+     */
+    @FXML
+    private FXVBox hylogBox;
+
+    /**
+     * coordinate组件
+     */
+    @FXML
+    private FXVBox coordinateBox;
+
+    /**
+     * 字段名
+     */
+    @FXML
+    private Editor fieldName;
+
+    /**
+     * bit值
+     */
+    @FXML
+    private FXToggleSwitch bitValue;
+
+    /**
+     * bit索引
+     */
+    @FXML
+    private NumberTextField bitIndex;
+
+    /**
+     * ttl值
+     */
+    @FXML
+    private NumberTextField ttlValue;
+
+    /**
+     * 分数值
+     */
+    @FXML
+    private DecimalTextField scoreValue;
+
+    /**
+     * 经度值
+     */
+    @FXML
+    private DecimalTextField longitudeValue;
+
+    /**
+     * 纬度值
+     */
+    @FXML
+    private DecimalTextField latitudeValue;
+
+    /**
+     * 消息id组件
+     */
+    @FXML
+    private FXVBox root;
+
+    /**
+     * 消息id值
+     */
+    @FXML
+    private ClearableTextField streamIDValue;
+
+    /**
+     * 键类型
+     */
+    @FXML
+    private ShellValkeyKeyTypeComboBox type;
+
+    /**
+     * redis客户端
+     */
+    private ShellValkeyClient client;
+
+    /**
+     * 树键
+     */
+    private Integer dbIndex;
+
+    /**
+     * 节点互斥组件
+     */
+    private final NodeMutexes mutexes = new NodeMutexes();
+
+    /**
+     * 获取值文本组件
+     *
+     * @return 值文本组件
+     */
+    private Editor valueEditor() {
+        Editor editor;
+        if (this.stringBox.isVisible()) {
+            editor = (Editor) this.stringBox.lookup("Editor");
+        } else if (this.jsonBox.isVisible()) {
+            editor = (Editor) this.jsonBox.lookup("JsonEditor");
+        } else if (this.listBox.isVisible()) {
+            editor = (Editor) this.listBox.lookup("Editor");
+        } else if (this.hylogBox.isVisible()) {
+            editor = (Editor) this.hylogBox.lookup("Editor");
+        } else if (this.zSetBox.isVisible()) {
+            editor = (Editor) this.zSetBox.lookup("Editor");
+        } else if (this.setBox.isVisible()) {
+            editor = (Editor) this.setBox.lookup("Editor");
+        } else if (this.hashBox.isVisible()) {
+            editor = (Editor) CollectionUtil.get(this.hashBox.lookupAll("Editor"), 1);
+        } else if (this.coordinateBox.isVisible()) {
+            editor = (Editor) this.coordinateBox.lookup("Editor");
+        } else {
+            editor = (Editor) this.streamBox.lookup("JsonEditor");
+        }
+        return editor;
+    }
+
+
+    /**
+     * 获取值文本组件
+     *
+     * @return 值文本组件
+     */
+    private List<Editor> valueEditors() {
+        List<Editor> editors = new ArrayList<>();
+        Editor editor1 = (Editor) this.stringBox.lookup("Editor");
+        Editor editor2 = (Editor) this.jsonBox.lookup("JsonEditor");
+        Editor editor3 = (Editor) this.listBox.lookup("Editor");
+        Editor editor4 = (Editor) this.hylogBox.lookup("Editor");
+        Editor editor5 = (Editor) this.zSetBox.lookup("Editor");
+        Editor editor6 = (Editor) this.setBox.lookup("Editor");
+        Editor editor7 = (Editor) CollectionUtil.get(this.hashBox.lookupAll("Editor"), 1);
+        Editor editor8 = (Editor) this.coordinateBox.lookup("Editor");
+        Editor editor9 = (Editor) this.streamBox.lookup("JsonEditor");
+        editors.add(editor1);
+        editors.add(editor2);
+        editors.add(editor3);
+        editors.add(editor4);
+        editors.add(editor5);
+        editors.add(editor6);
+        editors.add(editor7);
+        editors.add(editor8);
+        editors.add(editor9);
+        return editors;
+    }
+
+    /**
+     * 获取值内容
+     *
+     * @return 值内容
+     */
+    private String valueText() {
+        return this.valueEditor().getText();
+    }
+
+    /**
+     * 添加redis键
+     */
+    @FXML
+    private void addKey() {
+        // 获取键值
+        int type = this.type.getSelectedIndex();
+        String key = this.key.getTextTrim();
+        int dbIndex = this.dbIndex;
+        try {
+            long ttl = this.ttlValue.getValue();
+            if (ttl == 0) {
+                MessageBox.warn(ShellI18nHelper.redisAddTip2(), this.getWindow());
+                return;
+            }
+            if (key.isEmpty()) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.key);
+                return;
+            }
+            if (this.client.exists(dbIndex, key)) {
+                MessageBox.warn(ShellI18nHelper.redisKeyAlreadyExists(key), this.getWindow());
+                return;
+            }
+            boolean result = false;
+            // String keyType = "";
+            if (type == 0) {
+                result = this.addStringNode(dbIndex, key);
+                // keyType = "STRING";
+            } else if (type == 1) {
+                result = this.addSetNode(dbIndex, key);
+                // keyType = "SET";
+            } else if (type == 2) {
+                result = this.addZSetNode(dbIndex, key);
+                // keyType = "ZSET";
+            } else if (type == 3) {
+                result = this.addListNode(dbIndex, key);
+                // keyType = "LIST";
+            } else if (type == 4) {
+                result = this.addHashNode(dbIndex, key);
+                // keyType = "HASH";
+            } else if (type == 5) {
+                result = this.addStreamNode(dbIndex, key);
+                // keyType = "STREAM";
+            } else if (type == 6) {
+                result = this.addJsonNode(dbIndex, key);
+                // keyType = "JSON";
+            } else if (type == 7) {
+                result = this.addHyLogNode(dbIndex, key);
+                // keyType = "HYPERLOGLOG/STRING";
+            } else if (type == 8) {
+                result = this.addGEONode(dbIndex, key);
+                // keyType = "GEO/ZSET";
+            } else if (type == 9) {
+                result = this.addBitNode(dbIndex, key);
+                // keyType = "BITMAP/STRING";
+            }
+            if (!result) {
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+                return;
+            }
+            // 设置ttl
+            if (ttl != -1) {
+                this.client.expire(dbIndex, key, ttl, null);
+            }
+            this.setProp("key", key);
+            // ShellEventUtil.redisKeyAdded(this.client.shellConnect(), keyType, key, this.dbIndex);
+            // MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
+            this.closeWindow();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 添加string键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addStringNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        return this.client.set(dbIndex, key, nodeValue) != null;
+    }
+
+    /**
+     * 添加json键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addJsonNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        return this.client.jsonSet(dbIndex, key, nodeValue) != null;
+    }
+
+    /**
+     * 添加list键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addListNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        return this.client.lpush(dbIndex, key, nodeValue) > 0;
+    }
+
+    /**
+     * 添加set键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addSetNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        return this.client.sadd(dbIndex, key, nodeValue) > 0;
+    }
+
+    /**
+     * 添加zset键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addZSetNode(int dbIndex, String key) {
+        Number score = this.scoreValue.getValue();
+        if (score == null) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.scoreValue);
+            return false;
+        }
+        String nodeValue = this.valueText();
+        return this.client.zadd(dbIndex, key, score.doubleValue(), nodeValue) > 0;
+    }
+
+    /**
+     * 添加hash键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addHashNode(int dbIndex, String key) {
+        String field = this.fieldName.getText();
+        if (field == null) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.fieldName);
+            return false;
+        }
+        String nodeValue = this.valueText();
+        return this.client.hset(dbIndex, key, field, nodeValue) > 0;
+    }
+
+    /**
+     * 添加hyperLogLog键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addHyLogNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        // 行数据
+        List<String> elements = nodeValue.lines().collect(Collectors.toList());
+        CollectionUtil.removeBlank(elements);
+        if (elements.isEmpty()) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
+            return false;
+        }
+        return this.client.pfadd(dbIndex, key, ArrayUtil.toArray(elements, String.class)) > 0;
+    }
+
+    /**
+     * 添加geo键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addGEONode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        // 行数据
+        if (nodeValue.isEmpty()) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
+            return false;
+        }
+        Number latitudeValue = this.latitudeValue.getValue();
+        if (latitudeValue == null) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.latitudeValue);
+            return false;
+        }
+        Number longitudeValue = this.longitudeValue.getValue();
+        if (longitudeValue == null) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.longitudeValue);
+            return false;
+        }
+        return this.client.geoadd(dbIndex, key, longitudeValue.doubleValue(), latitudeValue.doubleValue(), nodeValue) > 0;
+    }
+
+    /**
+     * 添加stream键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addStreamNode(int dbIndex, String key) {
+        String nodeValue = this.valueText();
+        // 行数据
+        if (nodeValue.isEmpty()) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
+            return false;
+        }
+        if (!JSONUtil.isJson(nodeValue)) {
+            MessageBox.warn(ShellI18nHelper.redisAddTip1(), this.getWindow());
+            return false;
+        }
+        String streamID = this.streamIDValue.getText();
+        if (streamID == null) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.streamIDValue);
+            return false;
+        }
+        JSONObject object = JSONUtil.parseObject(nodeValue);
+        if (object.isEmpty()) {
+            MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.valueEditor());
+            return false;
+        }
+        // 流添加参数
+        XAddParams params = new XAddParams();
+        params.id(streamID);
+        // 添加流
+        return this.client.xadd(dbIndex, key, (Map) object, params) != null;
+    }
+
+    /**
+     * 添加bit键
+     *
+     * @param dbIndex 数据库索引
+     * @param key     键名称
+     * @return 结果
+     */
+    private boolean addBitNode(int dbIndex, String key) {
+        Number bitIndex = this.bitIndex.getValue();
+        // 设置bit值
+        this.client.setbit(dbIndex, key, bitIndex.intValue(), this.bitValue.isSelected());
+        return true;
+    }
+
+    /**
+     * 粘贴数据
+     */
+    @FXML
+    private void pasteData() {
+        this.valueEditor().paste();
+        this.valueEditor().requestFocus();
+    }
+
+    /**
+     * 清空数据
+     */
+    @FXML
+    private void clearData() {
+        this.valueEditor().clear();
+        this.valueEditor().requestFocus();
+    }
+
+    /**
+     * 解析为json
+     */
+    @FXML
+    private void parseToJson() {
+        String text = this.valueEditor().getTextTrim();
+        try {
+            if ("json".equals(this.valueEditor().getUserData())) {
+                String jsonStr = JSONUtil.toJson(text);
+                this.valueEditor().setText(jsonStr);
+                this.valueEditor().setUserData("text");
+            } else if (text.contains("{") || text.contains("[") || "text".equals(this.valueEditor().getUserData())) {
+                String jsonStr = JSONUtil.toPretty(text);
+                this.valueEditor().setText(jsonStr);
+                this.valueEditor().setUserData("json");
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
+    @Override
+    protected void bindListeners() {
+        // 权限变化处理
+        this.type.selectedIndexChanged((observable, oldValue, newValue) -> {
+            if (this.root == null) {
+                return;
+            }
+            if (newValue.intValue() == 0) {
+                this.mutexes.visible(this.stringBox);
+            } else if (newValue.intValue() == 1) {
+                this.mutexes.visible(this.setBox);
+            } else if (newValue.intValue() == 2) {
+                this.mutexes.visible(this.zSetBox);
+            } else if (newValue.intValue() == 3) {
+                this.mutexes.visible(this.listBox);
+            } else if (newValue.intValue() == 4) {
+                this.mutexes.visible(this.hashBox);
+            } else if (newValue.intValue() == 5) {
+                this.mutexes.visible(this.streamBox);
+            } else if (newValue.intValue() == 6) {
+                this.mutexes.visible(this.jsonBox);
+            } else if (newValue.intValue() == 7) {
+                this.mutexes.visible(this.hylogBox);
+            } else if (newValue.intValue() == 8) {
+                this.mutexes.visible(this.coordinateBox);
+            } else if (newValue.intValue() == 9) {
+                this.mutexes.visible(this.bitBox);
+            }
+            this.root.parentAutosize();
+        });
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        this.stage.switchOnTab();
+        this.mutexes.manageBindVisible();
+        this.mutexes.addNodes(this.bitBox,
+                this.hashBox,
+                this.listBox,
+                this.coordinateBox,
+                this.setBox,
+                this.zSetBox,
+                this.streamBox,
+                this.stringBox,
+                this.jsonBox,
+                this.hylogBox);
+        this.stage.hideOnEscape();
+        super.onWindowShown(event);
+        this.client = this.getProp("client");
+        this.dbIndex = this.getProp("dbIndex");
+        ShellValkeyKeyType type = this.getProp("type");
+        this.type.select(type);
+        this.key.requestFocus();
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nResourceBundle.i18nString("shell.valkey.title.key.add");
+    }
+
+    @Override
+    public void destroy() {
+        this.mutexes.destroy();
+//        this.fieldName.destroy();
+        for (Editor editor : this.valueEditors()) {
+            editor.destroy();
+        }
+        super.destroy();
+    }
+}

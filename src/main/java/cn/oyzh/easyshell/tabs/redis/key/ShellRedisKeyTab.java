@@ -6,6 +6,9 @@ import cn.oyzh.easyshell.trees.redis.key.ShellRedisKeyTreeItem;
 import cn.oyzh.fx.gui.svg.glyph.key.KeySVGGlyph;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
 import javafx.scene.Cursor;
 
 /**
@@ -83,5 +86,24 @@ public class ShellRedisKeyTab extends ShellRedisBaseTab {
     public ShellRedisDatabaseTreeItem dbItem() {
         ShellRedisKeyTreeItem item = this.item();
         return item == null ? null : item.dbItem();
+    }
+
+    /**
+     * 是否有未保存数据
+     *
+     * @return 结果
+     */
+    public boolean hasUnsavedData() {
+        ShellRedisKeyTreeItem item = this.item();
+        return item != null && item.isDataUnsaved();
+    }
+
+    @Override
+    protected void onTabCloseRequest(Event event) {
+        if (this.hasUnsavedData() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+            event.consume();
+        } else {
+            this.closeTab();
+        }
     }
 }

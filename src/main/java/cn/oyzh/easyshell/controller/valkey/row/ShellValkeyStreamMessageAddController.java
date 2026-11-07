@@ -1,0 +1,161 @@
+package cn.oyzh.easyshell.controller.valkey.row;
+
+import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.trees.valkey.key.ShellValkeyStreamKeyTreeItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.i18n.I18nHelper;
+import com.alibaba.fastjson2.JSONObject;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+import io.valkey.params.XAddParams;
+
+import java.util.Map;
+
+
+/**
+ * redis添加stream消息
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+@StageAttribute(
+        stageStyle = FXStageStyle.EXTENDED,
+        modality = Modality.APPLICATION_MODAL,
+        value = FXConst.FXML_PATH + "valkey/row/shellValkeyStreamMessageAdd.fxml"
+)
+public class ShellValkeyStreamMessageAddController extends StageController {
+
+    /**
+     * 消息内容
+     */
+    @FXML
+    private Editor rowValue;
+
+    /**
+     * 消息id
+     */
+    @FXML
+    private ClearableTextField streamID;
+
+    /**
+     * redis键
+     */
+    private ShellValkeyStreamKeyTreeItem treeItem;
+
+    /**
+     * 添加行
+     */
+    @FXML
+    private void addRow() {
+        try {
+            // 行数据
+            String rowValue = this.rowValue.getText();
+            if (StringUtil.isEmpty(rowValue)) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
+                return;
+            }
+            if (!JSONUtil.isJson(rowValue)) {
+                MessageBox.warn(ShellI18nHelper.redisAddTip4(), this.getWindow());
+                return;
+            }
+            JSONObject fields = JSONUtil.parseObject(rowValue);
+            if (fields.isEmpty()) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
+                return;
+            }
+            String streamIDText = this.streamID.getText();
+            if (streamIDText == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.streamID);
+                return;
+            }
+            // redis键
+            String key = this.treeItem.key();
+            // 获取键值
+            int dbIndex = this.treeItem.dbIndex();
+            // redis客户端
+            ShellValkeyClient client = this.treeItem.client();
+            // 流添加参数
+            XAddParams params = new XAddParams();
+            params.id(streamIDText);
+            // 添加流
+            client.xadd(dbIndex, key, (Map) fields, params);
+            // 结果
+            this.setProp("result", true);
+            // // 发送事件
+            // ShellEventUtil.redisStreamMessageAdded(this.treeItem, key, rowValue);
+            this.closeWindow();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 粘贴数据
+     */
+    @FXML
+    private void pasteData() {
+        this.rowValue.paste();
+        this.rowValue.requestFocus();
+    }
+
+    /**
+     * 清空数据
+     */
+    @FXML
+    private void clearData() {
+        this.rowValue.clear();
+        this.rowValue.requestFocus();
+    }
+
+    /**
+     * 解析为json
+     */
+    @FXML
+    private void parseToJson() {
+        String text = this.rowValue.getTextTrim();
+        try {
+            if ("json".equals(this.rowValue.getUserData())) {
+                String jsonStr = JSONUtil.toJson(this.rowValue);
+                this.rowValue.setText(jsonStr);
+                this.rowValue.setUserData("text");
+            } else if (text.contains("{") || text.contains("[") || "text".equals(this.rowValue.getUserData())) {
+                String jsonStr = JSONUtil.toPretty(this.rowValue);
+                this.rowValue.setText(jsonStr);
+                this.rowValue.setUserData("json");
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        this.treeItem = this.getProp("treeItem");
+        this.stage.switchOnTab();
+        this.stage.hideOnEscape();
+        this.rowValue.requestFocus();
+        super.onWindowShown(event);
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nResourceBundle.i18nString("shell.valkey.title.streamMessageAdd");
+    }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
+    }
+}

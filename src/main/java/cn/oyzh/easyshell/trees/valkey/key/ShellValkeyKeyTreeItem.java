@@ -1,0 +1,679 @@
+package cn.oyzh.easyshell.trees.valkey.key;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.valkey.ShellValkeyKeyType;
+import cn.oyzh.easyshell.valkey.key.ShellValkeyKey;
+import cn.oyzh.easyshell.valkey.key.ShellValkeyKeyValue;
+import cn.oyzh.easyshell.store.valkey.ValkeyCollectStore;
+import cn.oyzh.easyshell.trees.valkey.ShellValkeyTreeItem;
+import cn.oyzh.easyshell.trees.valkey.database.ShellValkeyDatabaseTreeItem;
+import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.OpenSVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.menu.FXMenuItem;
+import cn.oyzh.fx.plus.util.FXUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.control.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * redis键节点
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public abstract class ShellValkeyKeyTreeItem extends ShellValkeyTreeItem<ShellValkeyKeyTreeItemValue> {
+
+    /**
+     * 单行最大值
+     * 1mb
+     */
+    public static final int LINE_MAX = 1024 * 1024;
+
+    /**
+     * 数据最大值
+     * 100mb
+     */
+    public static final int DATA_MAX = 100 * 1024 * 1024;
+
+    /**
+     * 键列表节点
+     */
+    private final ShellValkeyKeysTreeItem keysItem;
+
+    /**
+     * db节点
+     */
+    private final ShellValkeyDatabaseTreeItem dbItem;
+
+    /**
+     * redis键
+     */
+    protected ShellValkeyKey value;
+
+    /**
+     * 获取redis键对象
+     *
+     * @return redis键对象
+     */
+    public ShellValkeyKey value() {
+        return value;
+    }
+
+    /**
+     * 设置键数据
+     *
+     * @param data 未键数据
+     */
+    public void data(Object data) {
+        this.keyValue().setUnSavedValue(data);
+        this.refresh();
+    }
+
+    /**
+     * 获取键数据
+     *
+     * @return 键数据
+     */
+    public Object data() {
+        Object data;
+        if (this.isDataUnsaved()) {
+            data = this.unsavedValue();
+        } else {
+            data = this.rawValue();
+        }
+        return data;
+    }
+
+    /**
+     * 清除键数据
+     */
+    public void clearData() {
+        this.keyValue().clearUnSavedValue();
+        this.refresh();
+    }
+
+    /**
+     * 数据是否未保存
+     *
+     * @return 结果
+     */
+    public Object unsavedValue() {
+        ShellValkeyKeyValue<?> keyValue = this.keyValue();
+        return keyValue == null ? null : keyValue.getUnSavedValue();
+    }
+
+    /**
+     * 数据是否未保存
+     *
+     * @return 结果
+     */
+    public boolean isDataUnsaved() {
+        ShellValkeyKeyValue<?> keyValue = this.keyValue();
+        return keyValue != null && keyValue.hasUnSavedValue();
+    }
+
+    /**
+     * 构造redis键节点
+     *
+     * @param value    键对象
+     * @param keysItem 键列表节点
+     */
+    public ShellValkeyKeyTreeItem(ShellValkeyKey value, ShellValkeyKeysTreeItem keysItem) {
+        super(keysItem.getTreeView());
+        this.value = value;
+        this.keysItem = keysItem;
+        this.dbItem = keysItem.dbItem();
+        super.setFilterable(true);
+        this.setValue(new ShellValkeyKeyTreeItemValue(this));
+    }
+
+    /**
+     * 获取键列表节点
+     *
+     * @return 键列表节点
+     */
+    public ShellValkeyKeysTreeItem keysItem() {
+        return keysItem;
+    }
+
+    /**
+     * 获取数据库节点
+     *
+     * @return 数据库节点
+     */
+    public ShellValkeyDatabaseTreeItem dbItem() {
+        return dbItem;
+    }
+
+    @Override
+    public List<MenuItem> getMenuItems() {
+        List<MenuItem> items = new ArrayList<>(9);
+        MenuItem open = MenuItemHelper.menuItem(I18nHelper.open(), new OpenSVGGlyph(), this::onPrimaryDoubleClick);
+        items.add(open);
+        FXMenuItem rename = MenuItemHelper.renameKey( this::rename);
+        items.add(rename);
+        FXMenuItem moveKey = MenuItemHelper.moveKey( this::moveKey);
+        items.add(moveKey);
+        FXMenuItem copyKey = MenuItemHelper.copyKey( this::copyKey);
+        items.add(copyKey);
+        FXMenuItem delete = MenuItemHelper.deleteKey( this::delete);
+        items.add(delete);
+        items.add(MenuItemHelper.separator());
+        FXMenuItem updateTtl = MenuItemHelper.updateTtl( this::updateTtl);
+        items.add(updateTtl);
+        if (this.isCollect()) {
+            FXMenuItem unCollectKey = MenuItemHelper.unCollectKey( this::unCollect);
+            items.add(unCollectKey);
+        } else {
+            FXMenuItem collectKey = MenuItemHelper.collectKey( this::collect);
+            items.add(collectKey);
+        }
+        return items;
+    }
+
+    /**
+     * 修改ttl
+     */
+    private void updateTtl() {
+        ShellValkeyViewFactory.ttlKey(this);
+    }
+
+    /**
+     * 移动键
+     */
+    private void moveKey() {
+        StageAdapter adapter = ShellValkeyViewFactory.moveKey(this);
+        if (adapter == null) {
+            return;
+        }
+        Integer dbIndex = adapter.getProp("dbIndex");
+        if (dbIndex == null) {
+            return;
+        }
+        // 刷新父节点键数量
+        this.parent().flushDbSize();
+        // 关闭标签页
+        this.getTreeView().closeKeyTab(this.dbIndex(), this.key());
+        // 移除此节点
+        this.remove();
+        // 刷新键数量
+        this.keysItem.refresh();
+        // 键移动事件
+        this.getTreeView().keyMoved(dbIndex);
+    }
+
+    /**
+     * 复制键
+     */
+    private void copyKey() {
+        StageAdapter adapter = ShellValkeyViewFactory.copyKey(this);
+        if (adapter == null) {
+            return;
+        }
+        Integer dbIndex = adapter.getProp("dbIndex");
+        if (dbIndex == null) {
+            return;
+        }
+        // 键移动事件
+        this.getTreeView().keyCopied(dbIndex);
+    }
+
+    /**
+     * redis信息
+     *
+     * @return redis信息
+     */
+    public ShellConnect shellConnect() {
+        return this.getTreeView().shellConnect();
+    }
+
+    /**
+     * 获取redis连接名称
+     *
+     * @return redis连接名称
+     */
+    public String infoName() {
+        return this.getTreeView().shellConnect().getName();
+    }
+
+    /**
+     * 获取db索引
+     *
+     * @return db索引值
+     */
+    public int dbIndex() {
+        return this.dbItem.dbIndex();
+    }
+
+    /**
+     * 获取键名称
+     *
+     * @return 键名称
+     */
+    public String key() {
+        return this.value.getKey();
+    }
+
+    /**
+     * 获取键二进制名称
+     *
+     * @return 键二进制名称
+     */
+    public byte[] keyBinary() {
+        return this.value.keyBinary();
+    }
+
+    /**
+     * 获取redis客户端
+     *
+     * @return redis客户端
+     */
+    public ShellValkeyClient client() {
+        if (this.getTreeView() == null) {
+            return null;
+        }
+        return this.getTreeView().getClient();
+    }
+
+    /**
+     * 保存键值
+     */
+    public void saveKeyValue() {
+    }
+
+    /**
+     * 设置键值
+     *
+     * @param value 值
+     */
+    protected void setKeyValue(Object value) {
+    }
+
+    /**
+     * 刷新键值
+     */
+    public void refreshKeyValue() {
+    }
+
+    /**
+     * 键是否被收藏
+     */
+    public boolean isCollect() {
+        return ValkeyCollectStore.INSTANCE.exist(this.iid(), this.dbIndex(), this.key());
+    }
+
+    /**
+     * 收藏键
+     */
+    public void collect() {
+        ValkeyCollectStore.INSTANCE.replace(this.iid(), this.dbIndex(), this.key());
+    }
+
+    /**
+     * 取消收藏键
+     */
+    public void unCollect() {
+        ValkeyCollectStore.INSTANCE.delete(this.iid(), this.dbIndex(), this.key());
+    }
+
+    /**
+     * 获取连接唯一标识
+     *
+     * @return 连接唯一标识
+     */
+    private String iid() {
+        return this.shellConnect().getId();
+    }
+
+    @Override
+    public void delete() {
+        try {
+            if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteKey", this.key()), this.getWindow())) {
+                return;
+            }
+            // 删除此键
+            this.client().del(this.dbIndex(), this.key());
+            // 取消此键的收藏
+            this.unCollect();
+            // 刷新父节点键数量
+            this.parent().flushDbSize();
+            // 关闭标签页
+            this.getTreeView().closeKeyTab(this.dbIndex(), this.key());
+            // 移除此键
+            this.remove();
+            // 刷新键数量
+            this.keysItem.refresh();
+            // 清除选区
+            this.clearSelection();
+            // // 发送事件
+            // ShellEventUtil.redisKeyDeleted(this.shellConnect(), this.key(), this.dbIndex());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    @Override
+    public ShellValkeyKeysTreeItem parent() {
+        return (ShellValkeyKeysTreeItem) super.parent();
+    }
+
+    @Override
+    public void onPrimarySingleClick() {
+        this.getTreeView().openKey(this);
+    }
+
+    @Override
+    public void onPrimaryDoubleClick() {
+        this.getTreeView().openKey(this);
+    }
+
+    @Override
+    public void rename() {
+        String newKey = MessageBox.prompt(I18nHelper.renameKey(), this.value.getKey(), this.getWindow());
+        // 名称为空或者跟当前名称相同，则忽略
+        if (StringUtil.isBlank(newKey) || Objects.equals(newKey, this.value.getKey())) {
+            return;
+        }
+        // 键已存在
+        if (this.client().exists(this.dbIndex(), newKey)) {
+            MessageBox.warn(I18nHelper.contentAlreadyExists(), this.getWindow());
+            return;
+        }
+        try {
+            // String oldKey = this.key();
+            String result = this.client().rename(this.dbIndex(), this.key(), newKey);
+            if (StringUtil.equalsIgnoreCase(result, "OK")) {
+                String oldKey = this.value.getKey();
+                this.value.setKey(newKey);
+                this.refresh();
+                this.getTreeView().closeKeyTab(this.dbIndex(), oldKey);
+                // ShellEventUtil.redisKeyRenamed(this, oldKey);
+            } else {
+                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 获取当前ttl值
+     *
+     * @return 当前ttl值
+     */
+    public Long ttl() {
+        try {
+            this.value.setTtl(this.client().ttl(this.dbIndex(), this.key()));
+            return this.value.getTtl();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, this.getWindow());
+        }
+        return -1L;
+    }
+
+    /**
+     * 键是否过期
+     *
+     * @return 结果
+     */
+    public boolean isExpire() {
+        if (this.value.getTtl() == null) {
+            this.ttl();
+        }
+        if (this.value.getTtl() == null) {
+            return false;
+        }
+        return this.value.getTtl() == -2;
+    }
+
+    /**
+     * 获取原始数据
+     *
+     * @return 原始数据
+     */
+    public abstract Object rawValue();
+
+    /**
+     * 获取键类型
+     *
+     * @return 键类型
+     */
+    public ShellValkeyKeyType type() {
+        return this.value.getType();
+    }
+
+    /**
+     * 获取加载耗时
+     *
+     * @return 加载耗时
+     */
+    public short loadTime() {
+        return this.value.getLoadTime() == 0 ? 1 : this.value.getLoadTime();
+    }
+
+    /**
+     * 删除键，当键已过期
+     */
+    public void deleteByExpired() {
+        try {
+            this.unCollect();
+            // 延迟关闭标签页，避免在标签页初始化过程中销毁标签页
+            int dbIndex = this.dbIndex();
+            String key = this.key();
+            FXUtil.runLater(() -> this.getTreeView().closeKeyTab(dbIndex, key));
+            this.remove();
+            // 刷新键数量
+            this.keysItem.refresh();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取内存占用
+     *
+     * @return 内存占用
+     */
+    public Long memoryUsage() {
+        try {
+            return this.client().memoryUsage(this.dbIndex(), this.key());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return -1L;
+        }
+    }
+
+    /**
+     * 获取内存占用信息
+     *
+     * @return 内存占用信息
+     */
+    public String memoryUsageInfo() {
+        Long memoryUsage = this.memoryUsage();
+        if (memoryUsage == null || memoryUsage < 0) {
+            return "N/A";
+        }
+        if (memoryUsage < 1024) {
+            return memoryUsage + "bytes";
+        }
+        if (memoryUsage < 1024 * 1024) {
+            return memoryUsage / 1024.0 + "KB";
+        }
+        if (memoryUsage < 1024 * 1024 * 1024) {
+            return memoryUsage / 1024.0 / 1024 + "MB";
+        }
+        return memoryUsage / 1024.0 / 1024 / 1024 + "GB";
+    }
+
+    /**
+     * 内存占用信息属性
+     */
+    private StringProperty memoryUsageInfoProperty;
+
+    /**
+     * 刷新内存占用信息
+     */
+    public void flushMemoryUsage() {
+        this.memoryUsageInfoProperty.set(ShellI18nHelper.memoryUsage(this.memoryUsageInfo()));
+    }
+
+    /**
+     * 获取内存占用信息属性
+     *
+     * @return 内存占用信息属性
+     */
+    public StringProperty memoryUsageInfoProperty() {
+        if (this.memoryUsageInfoProperty == null) {
+            this.memoryUsageInfoProperty = new SimpleStringProperty();
+        }
+        return this.memoryUsageInfoProperty;
+    }
+
+    /**
+     * 是否raw格式
+     *
+     * @return 结果
+     */
+    public boolean isRawEncoding() {
+        return this.isRawEncoding(false);
+    }
+
+    /**
+     * 是否raw格式
+     *
+     * @param flushEncoding 刷新编码
+     * @return 结果
+     */
+    public boolean isRawEncoding(boolean flushEncoding) {
+        if (this.value.getObjectedEncoding() == null || flushEncoding) {
+            this.value.setObjectedEncoding(this.client().objectEncoding(this.dbIndex(), this.key()));
+        }
+        return this.value.isRawEncoding();
+    }
+
+    /**
+     * 获取键值对象
+     *
+     * @return 键值对象
+     */
+    public ShellValkeyKeyValue<?> keyValue() {
+        return this.value.getValue();
+    }
+
+    /**
+     * 获取原始数据
+     *
+     * @return 原始数据
+     */
+    public abstract Object rawData();
+
+    /**
+     * 判断键是否相等
+     *
+     * @param redisKey redis键
+     * @return 是否相等
+     */
+    public boolean keyEquals(ShellValkeyKey redisKey) {
+        if (redisKey != null) {
+            return this.value.compareTo(redisKey) == 0;
+        }
+        return false;
+    }
+
+    /**
+     * 复制键信息
+     *
+     * @param redisKey redis键
+     */
+    public void keyCopy(ShellValkeyKey redisKey) {
+        if (redisKey != null) {
+            this.value.copy(redisKey);
+        }
+    }
+
+    /**
+     * 是否为json类型键
+     *
+     * @return 结果
+     */
+    public boolean isJsonKey() {
+        return this.value.isJsonKey();
+    }
+
+    /**
+     * 是否为string类型键
+     *
+     * @return 结果
+     */
+    public boolean isStringKey() {
+        return this.value.isStringKey();
+    }
+
+    /**
+     * 是否为list类型键
+     *
+     * @return 结果
+     */
+    public boolean isListKey() {
+        return this.value.isListKey();
+    }
+
+    /**
+     * 是否为stream类型键
+     *
+     * @return 结果
+     */
+    public boolean isStreamKey() {
+        return this.value.isStreamKey();
+    }
+
+    /**
+     * 是否为hash类型键
+     *
+     * @return 结果
+     */
+    public boolean isHashKey() {
+        return this.value.isHashKey();
+    }
+
+    /**
+     * 是否为set类型键
+     *
+     * @return 结果
+     */
+    public boolean isSetKey() {
+        return this.value.isSetKey();
+    }
+
+    /**
+     * 是否为zset类型键
+     *
+     * @return 结果
+     */
+    public boolean isZSetKey() {
+        return this.value.isZSetKey();
+    }
+
+    /**
+     * 获取键类型名称
+     *
+     * @return 键类型名称
+     */
+    public String typeName() {
+        return this.value.typeName();
+    }
+}

@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  # 主节点
+  master:
+    image: valkey/valkey:latest
+    container_name: valkey-auth
+    volumes:
+      - ./valkey-auth.conf:/conf/valkey.conf
+    ports:
+      - 8379:6379
+    command: valkey-server /conf/valkey.conf

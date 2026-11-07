@@ -1,0 +1,26 @@
+package cn.oyzh.easyshell.exception.valkey;
+
+import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
+
+/**
+ * Valkey不支持的命令异常
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyUnsupportedCommandException extends ShellException {
+
+    /**
+     * 构造函数
+     *
+     * @param serverVersion    服务版本
+     * @param supportedVersion 支持命令的最低服务版本
+     * @param command          命令
+     */
+    public ShellValkeyUnsupportedCommandException(String serverVersion, String supportedVersion, String command) {
+        super(ShellI18nHelper.redisUnsupportedCommand(command));
+        // super("指令:" + command + " 不支持，服务版本为:" + serverVersion + " 最低支持命令的服务版本为:" + supportedVersion);
+    }
+}

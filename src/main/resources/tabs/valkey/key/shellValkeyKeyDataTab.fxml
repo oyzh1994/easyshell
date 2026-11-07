@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.svg.glyph.file.t.FileTextSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<FixedTab text="%base.data" xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="cn.oyzh.easyshell.tabs.valkey.key.ShellValkeyKeyDataController" fx:id="dataRoot">
+    <graphic>
+        <FileTextSVGGlyph cursorType="DEFAULT"/>
+    </graphic>
+    <FXVBox flexHeight="100%" flexWidth="100%">
+        <fx:include groupId="key-data" visible="false" fx:id="jsonKey" source="shellValkeyJsonKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="stringKey" source="shellValkeyStringKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="hylogKey" source="shellValkeyHyLogKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="listKey" source="shellValkeyListKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="hashKey" source="shellValkeyHashKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="setKey" source="shellValkeySetKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="zsetKey" source="shellValkeyZSetKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="streamKey" source="shellValkeyStreamKey.fxml"/>
+        <fx:include groupId="key-data" visible="false" fx:id="coordinateKey" source="shellValkeyCoordinateKey.fxml"/>
+        <fx:include fx:id="keyExtra" source="shellValkeyKeyExtra.fxml"/>
+    </FXVBox>
+</FixedTab>

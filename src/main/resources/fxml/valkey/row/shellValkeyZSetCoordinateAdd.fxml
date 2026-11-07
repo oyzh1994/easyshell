@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.valkey.ShellValkeyLatitudeField?>
+<?import cn.oyzh.easyshell.fx.valkey.ShellValkeyLongitudeField?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ClearSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PasteSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.valkey.row.ShellValkeyZSetCoordinateAddController" realWidth="750"
+        realHeight="550">
+    <FXHeaderBar/>
+    <InfoLabel text="%base.coordinates">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox flexWidth="100%" flexHeight="100% - 300">
+        <ShellDataEditor fx:id="rowValue" flexHeight="100%" tipText="%base.contentTip1" flexWidth="100% - 180">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </ShellDataEditor>
+        <FXVBox>
+            <PasteSVGGlyph tipText="%base.paste" onMousePrimaryClicked="#pasteData">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </PasteSVGGlyph>
+            <ClearSVGGlyph tipText="%base.clear"  onMousePrimaryClicked="#clearData">
+                <VBox.margin>
+                    <Insets left="5" top="10"/>
+                </VBox.margin>
+            </ClearSVGGlyph>
+        </FXVBox>
+    </FXHBox>
+    <InfoLabel text="%base.longitude">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ShellValkeyLongitudeField realHeight="30" flexWidth="100% - 180" fx:id="longitude" value="0" step="5">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ShellValkeyLongitudeField>
+    <InfoLabel text="%base.latitude">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ShellValkeyLatitudeField realHeight="30" flexWidth="100% - 180" fx:id="latitude" value="0" step="5">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ShellValkeyLatitudeField>
+    <FXHBox flexWidth="100%" realHeight="50">
+        <SubmitButton onAction="#addRow">
+            <HBox.margin>
+                <Insets left="30" top="20"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="20"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

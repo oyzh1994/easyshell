@@ -1,0 +1,456 @@
+package cn.oyzh.easyshell.tabs.valkey.key;
+
+import cn.oyzh.common.util.BooleanUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.easyshell.valkey.key.ShellValkeyHashValue;
+import cn.oyzh.easyshell.trees.valkey.key.ShellValkeyHashKeyTreeItem;
+import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
+import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.editor.incubator.control.EditorFormatTypeTextField;
+import cn.oyzh.fx.gui.svg.label.ExpandListSVGLabel;
+import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.node.NodeGroupUtil;
+import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.window.StageAdapter;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.beans.value.ChangeListener;
+import javafx.fxml.FXML;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * hash键tab内容组件
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+public class ShellValkeyHashKeyController extends ShellValkeyRowKeyController<ShellValkeyHashKeyTreeItem, ShellValkeyHashValue.ValkeyHashRow> {
+
+    /**
+     * 数据撤销
+     */
+    @FXML
+    private SVGGlyph dataUndo;
+
+    /**
+     * 数据重做
+     */
+    @FXML
+    private SVGGlyph dataRedo;
+
+    /**
+     * 字段撤销
+     */
+    @FXML
+    private SVGGlyph fieldUndo;
+
+    /**
+     * 字段重做
+     */
+    @FXML
+    private SVGGlyph fieldRedo;
+
+    /**
+     * redis数据保存按钮
+     */
+    @FXML
+    private SVGGlyph saveNodeData;
+
+    /**
+     * 字段名
+     */
+    @FXML
+    private ShellDataEditor hashField;
+
+    /**
+     * 数据组件
+     */
+    @FXML
+    private ShellDataEditor nodeData;
+
+    /**
+     * 分割面板
+     */
+    @FXML
+    private FXSplitPane splitPane;
+
+    /**
+     * 格式
+     */
+    @FXML
+    private EditorFormatTypeTextField format;
+
+    /**
+     * 字段格式
+     */
+    @FXML
+    private EditorFormatTypeTextField fieldFormat;
+
+    /**
+     * 字段操作
+     */
+    @FXML
+    private FXHBox fieldAction;
+
+    /**
+     * 展开列表面板
+     */
+    @FXML
+    private ExpandListSVGLabel expandPane;
+
+    /**
+     * 忽略数据变化
+     */
+    private boolean ignoreDataChange = false;
+
+    /**
+     * redis数据监听器
+     */
+    private final ChangeListener<String> dataListener = (observable, oldValue, newValue) -> {
+        if (!this.ignoreDataChange && !Objects.equals(this.treeItem.rawData(), newValue)) {
+            this.saveNodeData.enable();
+            if (this.treeItem.unsavedValue() == null) {
+                this.treeItem.data(this.treeItem.currentRow());
+            }
+            if (this.treeItem.unsavedValue() != null) {
+                this.treeItem.unsavedValue().setValue(newValue);
+            }
+        }
+    };
+
+    /**
+     * 字段值监听器
+     */
+    private final ChangeListener<String> fieldValListener = (observable, oldValue, newValue) -> {
+        ShellValkeyHashValue.ValkeyHashRow row = this.treeItem.rawValue();
+        if (!this.ignoreDataChange && row != null && !Objects.equals(row.getField(), newValue)) {
+            this.saveNodeData.enable();
+            if (this.treeItem.unsavedValue() == null) {
+                this.treeItem.data(this.treeItem.currentRow());
+            }
+            if (this.treeItem.unsavedValue() != null) {
+                this.treeItem.unsavedValue().setField(newValue);
+            }
+        }
+    };
+
+    @Override
+    protected void initKey() {
+        // 初始化表单
+        this.initTable();
+        // 显示首页
+        this.firstPage();
+    }
+
+    @Override
+    protected void initRow(ShellValkeyHashValue.ValkeyHashRow row) {
+        if (this.hashField == null) {
+            return;
+        }
+        super.initRow(row);
+        if (row == null) {
+            this.hashField.clear();
+        } else {
+            this.hashField.setText(row.getField());
+            this.hashField.forgetHistory();
+        }
+    }
+
+    @Override
+    protected List<ShellValkeyHashValue.ValkeyHashRow> getRows() {
+        List<ShellValkeyHashValue.ValkeyHashRow> rows = this.treeItem.rows();
+        String filterKW = this.filter.getText();
+        if (StringUtil.isNotEmpty(filterKW)) {
+            rows = rows.parallelStream()
+                    .filter(r -> StringUtil.containsIgnoreCase(r.getField(), filterKW) || StringUtil.containsIgnoreCase(String.valueOf(r.getValue()), filterKW))
+                    .collect(Collectors.toList());
+        }
+        return rows;
+    }
+
+    @FXML
+    @Override
+    protected void addRow() {
+        StageAdapter adapter = ShellValkeyViewFactory.hashFieldAdd(this.treeItem);
+        // 操作成功
+        if (adapter != null && BooleanUtil.isTrue(adapter.getProp("result"))) {
+            this.firstPage();
+            // 刷新内存占用
+            this.treeItem.flushMemoryUsage();
+        }
+    }
+
+    /**
+     * 刷新行
+     */
+    @FXML
+    private void reloadRow() {
+        // 放弃保存
+        if (this.treeItem.isDataUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+            return;
+        }
+        StageManager.showMask(this.getWindow(), () -> {
+            try {
+                // 刷新数据
+                if (this.treeItem.reloadRow()) {
+                    this.initRow(this.treeItem.currentRow());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageBox.exception(ex, this.getWindow());
+            }
+        });
+    }
+
+    @FXML
+    @Override
+    protected void copyRow() {
+        if (this.treeItem.isSelectRow()) {
+            String builder = ShellI18nHelper.label(I18nHelper.keyName(), this.treeItem.key()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.fieldName(), this.treeItem.currentRow().getField()) + System.lineSeparator() +
+                    ShellI18nHelper.label(I18nHelper.fieldValue(), this.treeItem.currentRow().getValue());
+            ClipboardUtil.setStringAndTip(builder);
+        }
+    }
+
+    @FXML
+    @Override
+    protected void saveKeyValue() {
+        if (this.treeItem.checkRowExists()) {
+            MessageBox.warn(ShellI18nHelper.fieldAlreadyExists(this.treeItem.field()), this.getWindow());
+            return;
+        }
+        if (this.treeItem.isDataTooBig()) {
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
+            return;
+        }
+        if (this.treeItem.isDataUnsaved()) {
+            StageManager.showMask(this.getWindow(), () -> {
+                try {
+                    this.treeItem.saveKeyValue();
+                    this.listTable.refresh();
+                    this.saveNodeData.disable();
+                    this.treeItem.flushMemoryUsage();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
+            });
+        }
+    }
+
+    /**
+     * 数据撤销
+     */
+    @FXML
+    private void dataUndo() {
+        this.nodeData.undo();
+        this.nodeData.requestFocus();
+    }
+
+    /**
+     * 数据重做
+     */
+    @FXML
+    private void dataRedo() {
+        this.nodeData.redo();
+        this.nodeData.requestFocus();
+    }
+
+    /**
+     * 粘贴数据
+     */
+    @FXML
+    private void pasteData() {
+        this.nodeData.paste();
+        this.nodeData.requestFocus();
+    }
+
+    /**
+     * 清除数据
+     */
+    @FXML
+    private void clearData() {
+        this.nodeData.clear();
+        this.nodeData.requestFocus();
+    }
+
+    /**
+     * 字段撤销
+     */
+    @FXML
+    private void fieldUndo() {
+        this.hashField.undo();
+        this.hashField.requestFocus();
+    }
+
+    /**
+     * 字段重做
+     */
+    @FXML
+    private void fieldRedo() {
+        this.hashField.redo();
+        this.hashField.requestFocus();
+    }
+
+    /**
+     * 粘贴字段
+     */
+    @FXML
+    private void pasteField() {
+        this.hashField.paste();
+        this.hashField.requestFocus();
+    }
+
+    /**
+     * 清除字段
+     */
+    @FXML
+    private void clearFiled() {
+        this.hashField.clear();
+        this.hashField.requestFocus();
+    }
+
+    @Override
+    protected void firstShowData() {
+        ShellValkeyHashValue.ValkeyHashRow row = this.treeItem.data();
+        if (row == null) {
+            return;
+        }
+        // 数据太大
+        if (this.treeItem.isDataTooBig()) {
+            // 状态处理
+            this.nodeData.clear();
+            this.nodeData.disable();
+            this.ignoreDataChange = true;
+            NodeGroupUtil.disable(this.getTab(), "dataToBig");
+            MessageBox.warn(I18nHelper.dataTooLarge(), this.getWindow());
+            return;
+        }
+        // 状态处理
+        this.nodeData.enable();
+        this.ignoreDataChange = false;
+        NodeGroupUtil.enable(this.getTab(), "dataToBig");
+        // 数据处理
+        EditorFormatType dataType = this.nodeData.showDetectData(row.getValue());
+        this.format.select(dataType);
+        this.nodeData.forgetHistory();
+        this.saveNodeData.disable();
+
+        // 字段格式
+        EditorFormatType fieldType = this.hashField.showDetectData(row.getField());
+        this.fieldFormat.select(fieldType);
+    }
+
+    // @Override
+    // protected void showData(EditorFormatType formatType) {
+    //     ShellValkeyHashValue.ValkeyHashRow row = this.treeItem.data();
+    //     if (row != null) {
+    //         this.nodeData.showData(row.getValue(), formatType);
+    //     }
+    // }
+
+    @FXML
+    @Override
+    protected void deleteRow() {
+        if (!this.treeItem.isSelectRow()) {
+            return;
+        }
+        ShellValkeyHashValue.ValkeyHashRow row = this.treeItem.currentRow();
+        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteField", row.getField()), this.getWindow())) {
+            return;
+        }
+        if (!this.treeItem.deleteRow()) {
+            return;
+        }
+        // 移除
+        if (this.listTable.getItemSize() > 1) {
+            this.listTable.removeItem(row);
+        } else {// 刷新
+            this.firstPage();
+        }
+        // 刷新内存占用
+        this.treeItem.flushMemoryUsage();
+    }
+
+    @Override
+    protected void clearRow() {
+        if (this.nodeData == null) {
+            return;
+        }
+        this.nodeData.clear();
+        this.nodeData.disable();
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        // 格式监听
+        this.format.selectedItemChanged((observableValue, formatType, t1) -> {
+            if (this.nodeData == null) {
+                return;
+            }
+            this.nodeData.setFormatType(t1);
+        });
+        this.fieldFormat.selectedItemChanged((observableValue, formatType, t1) -> {
+            if (this.hashField == null) {
+                return;
+            }
+            this.hashField.setFormatType(t1);
+        });
+        // 值处理
+        this.nodeData.addTextChangeListener(this.dataListener);
+        this.nodeData.undoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataUndo.setDisable(!t1));
+        this.nodeData.redoableProperty().addListener((observableValue, aBoolean, t1) -> this.dataRedo.setDisable(!t1));
+        // 字段处理
+        this.hashField.addTextChangeListener(this.fieldValListener);
+        this.hashField.undoableProperty().addListener((observableValue, aBoolean, t1) -> this.fieldUndo.setDisable(!t1));
+        this.hashField.redoableProperty().addListener((observableValue, aBoolean, t1) -> this.fieldRedo.setDisable(!t1));
+        this.hashField.disableProperty().bind(this.nodeData.disabledProperty());
+        this.fieldAction.disableProperty().bind(this.nodeData.disabledProperty());
+        // 操作绑定
+        this.dataAction.disableProperty().bind(this.nodeData.disableProperty());
+    }
+
+    //    /**
+    //     * hash字段添加事件
+    //     *
+    //     * @param event 事件
+    //     */
+    //    @EventSubscribe
+    //    private void onHashFieldAdded(ShellValkeyHashFieldAddedEvent event) {
+    //        if (this.treeItem == event.data()) {
+    //            this.firstPage();
+    //            // 刷新内存占用
+    //            this.treeItem.flushMemoryUsage();
+    //        }
+    //    }
+
+    /**
+     * 展开或收起字段列表
+     */
+    @FXML
+    private void expendList() {
+        if (this.expandPane.isCollapse()) {
+            NodeGroupUtil.disappear(this.getTab(), "hash_list");
+            //            this.hashField.realHeight(150);
+            //            this.nodeData.setFlexHeight("100% - 272");
+            this.splitPane.setFlexHeight("100% - 25");
+            this.expandPane.expand();
+        } else {
+            NodeGroupUtil.display(this.getTab(), "hash_list");
+            //            this.hashField.realHeight(100);
+            //            this.nodeData.setFlexHeight("100% - 503");
+            this.splitPane.setFlexHeight("100% - 310");
+            this.expandPane.collapse();
+        }
+    }
+}

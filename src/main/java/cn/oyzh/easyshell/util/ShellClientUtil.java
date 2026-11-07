@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
 import cn.oyzh.easyshell.vnc1.ShellVNCClient;
 import cn.oyzh.easyshell.webdav.ShellWebdavClient;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -65,6 +66,8 @@ public class ShellClientUtil {
             client = new ShellSMBClient(connect);
         } else if (connect.isRDPType()) {
             client = new ShellRDPClient(connect);
+        } else if (connect.isValkeyType()) {
+            client = new ShellValkeyClient(connect);
         } else if (connect.isRedisType()) {
             client = new ShellRedisClient(connect);
         } else if (connect.isZKType()) {

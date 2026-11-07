@@ -1,0 +1,144 @@
+package cn.oyzh.easyshell.controller.valkey.row;
+
+import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.valkey.ShellValkeyClient;
+import cn.oyzh.easyshell.trees.valkey.key.ShellValkeyZSetKeyTreeItem;
+import cn.oyzh.fx.editor.incubator.Editor;
+import cn.oyzh.fx.gui.text.field.DecimalTextField;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.i18n.I18nResourceBundle;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.FXStageStyle;
+import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.fxml.FXML;
+import javafx.stage.Modality;
+import javafx.stage.WindowEvent;
+
+
+/**
+ * redis添加zset成员
+ *
+ * @author oyzh
+ * @since 2025-09-01
+ */
+@StageAttribute(stageStyle = FXStageStyle.EXTENDED, modality = Modality.APPLICATION_MODAL, value = FXConst.FXML_PATH + "valkey/row/shellValkeyZSetMemberAdd.fxml")
+public class ShellValkeyZSetMemberAddController extends StageController {
+
+    /**
+     * 行数据
+     */
+    @FXML
+    private Editor rowValue;
+
+    /**
+     * 分数
+     */
+    @FXML
+    private DecimalTextField score;
+
+    /**
+     * redis键
+     */
+    private ShellValkeyZSetKeyTreeItem treeItem;
+
+    /**
+     * 添加行
+     */
+    @FXML
+    private void addRow() {
+        try {
+            // 行数据
+            String rowValue = this.rowValue.getText();
+            if (StringUtil.isEmpty(rowValue)) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.rowValue);
+                return;
+            }
+            Number scoreValue = this.score.getValue();
+            if (scoreValue == null) {
+                MessageBox.tipMsg(I18nHelper.contentCanNotEmpty(), this.score);
+                return;
+            }
+            // redis键
+            String key = this.treeItem.key();
+            // 获取键值
+            int dbIndex = this.treeItem.dbIndex();
+            // redis客户端
+            ShellValkeyClient client = this.treeItem.client();
+            if (client.zrank(dbIndex, key, rowValue) != null) {
+                MessageBox.warn(ShellI18nHelper.memberAlreadyExists(rowValue), this.getStage());
+                return;
+            }
+            double score = scoreValue.doubleValue();
+            // 添加元素
+            client.zadd(dbIndex, key, score, rowValue);
+            // 结果
+            this.setProp("result", true);
+            // // 发送事件
+            // ShellEventUtil.redisZSetMemberAdded(this.treeItem, key, rowValue, score);
+            this.closeWindow();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 粘贴数据
+     */
+    @FXML
+    private void pasteData() {
+        this.rowValue.paste();
+        this.rowValue.requestFocus();
+    }
+
+    /**
+     * 清空数据
+     */
+    @FXML
+    private void clearData() {
+        this.rowValue.clear();
+        this.rowValue.requestFocus();
+    }
+
+    /**
+     * 解析为json
+     */
+    @FXML
+    private void parseToJson() {
+        String text = this.rowValue.getTextTrim();
+        try {
+            if ("json".equals(this.rowValue.getUserData())) {
+                String jsonStr = JSONUtil.toJson(this.rowValue);
+                this.rowValue.setText(jsonStr);
+                this.rowValue.setUserData("text");
+            } else if (text.contains("{") || text.contains("[") || "text".equals(this.rowValue.getUserData())) {
+                String jsonStr = JSONUtil.toPretty(this.rowValue);
+                this.rowValue.setText(jsonStr);
+                this.rowValue.setUserData("json");
+            }
+        } catch (Exception ignore) {
+        }
+    }
+
+    @Override
+    public void onWindowShown(WindowEvent event) {
+        this.treeItem = this.getProp("treeItem");
+        this.stage.switchOnTab();
+        this.stage.hideOnEscape();
+        super.onWindowShown(event);
+    }
+
+    @Override
+    public String getViewTitle() {
+        return I18nResourceBundle.i18nString("shell.valkey.title.zSetMemberAdd");
+    }
+
+    @Override
+    public void destroy() {
+        this.rowValue.destroy();
+        super.destroy();
+    }
+}
