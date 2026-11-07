@@ -370,6 +370,11 @@ public abstract class ShellRedisKeyTreeItem extends ShellRedisTreeItem<ShellRedi
     }
 
     @Override
+    public void onPrimarySingleClick() {
+        this.getTreeView().openKey(this);
+    }
+
+    @Override
     public void onPrimaryDoubleClick() {
         this.getTreeView().openKey(this);
     }
