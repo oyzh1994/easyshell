@@ -376,6 +376,18 @@ public class ShellHttpRequestTabController extends RichTabController {
     private ShellDataEditor preRequestScript;
 
     /**
+     * 测试脚本
+     */
+    @FXML
+    private ShellDataEditor testScript;
+
+    /**
+     * 测试结果
+     */
+    @FXML
+    private ShellDataEditor testResults;
+
+    /**
      * 请求脚本数据
      */
     private ShellHttpRequestScript requestScript;
@@ -525,6 +537,9 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.requestBody.text(binary ? "" : StringUtil.blankToDefault(this.request.getBody(), ""));
         this.preRequestScript.setFormatType(EditorFormatType.JAVASCRIPT);
         this.preRequestScript.text(this.requestScript.getPreRequestScript());
+        this.testScript.setFormatType(EditorFormatType.JAVASCRIPT);
+        this.testScript.text(this.requestScript.getTestScript());
+        this.testResults.text("");
         this.authType.setValue(StringUtil.blankToDefault(this.request.getAuthType(), ShellHttpRequest.AUTH_NONE));
         this.authUser.setText(StringUtil.blankToDefault(this.request.getAuthUser(), ""));
         this.authPassword.setText(StringUtil.blankToDefault(this.request.getAuthPassword(), ""));
@@ -659,6 +674,12 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.preRequestScript.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!this.loading) {
                 this.requestScript.setPreRequestScript(newValue);
+                this.scheduleSave();
+            }
+        });
+        this.testScript.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.requestScript.setTestScript(newValue);
                 this.scheduleSave();
             }
         });
@@ -859,6 +880,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.request.setFormBody(new ArrayList<>(this.formBodyTable.getItems()));
         if (this.requestScript != null) {
             this.requestScript.setPreRequestScript(this.preRequestScript.getText());
+            this.requestScript.setTestScript(this.testScript.getText());
         }
         this.markUnsaved();
     }
@@ -943,6 +965,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.requestScript.setIid(this.request.getIid());
         this.requestScript.setRequestId(this.request.getId());
         this.requestScript.setPreRequestScript(this.preRequestScript.getText());
+        this.requestScript.setTestScript(this.testScript.getText());
         boolean scriptSaved = ShellHttpRequestScriptStore.INSTANCE.replace(this.requestScript);
         this.unsaved = !(requestSaved && scriptSaved);
         this.flushTab();
@@ -1006,6 +1029,7 @@ public class ShellHttpRequestTabController extends RichTabController {
                     testEx.printStackTrace();
                     String message = testEx.getMessage() == null ? testEx.toString() : testEx.getMessage();
                     System.out.println("[HTTP Test Error] " + message);
+                    FXUtil.runLater(() -> this.testResults.text("[ERROR] " + message));
                 }
                 FXUtil.runLater(() -> {
                     this.showResponse(result);
@@ -1034,11 +1058,15 @@ public class ShellHttpRequestTabController extends RichTabController {
      * @param context 脚本上下文
      */
     private void showScriptTestResults(ShellHttpScriptContext context) {
+        StringBuilder output = new StringBuilder();
         for (ShellHttpScriptContext.TestResult result : context.getTestResults()) {
-            System.out.println("[HTTP Test] " + (result.passed() ? "PASS " : "FAIL ")
-                    + result.name() + (result.passed() || StringUtil.isBlank(result.message())
-                    ? "" : " - " + result.message()));
+            output.append(result.passed() ? "[PASS] " : "[FAIL] ").append(result.name());
+            if (!result.passed() && StringUtil.isNotBlank(result.message())) {
+                output.append(" - ").append(result.message());
+            }
+            output.append('\n');
         }
+        this.testResults.text(output.toString());
     }
 
     /**
@@ -1086,6 +1114,9 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         if (this.responseHex != null) {
             this.responseHex.openBytes(new byte[0]);
+        }
+        if (this.testResults != null) {
+            this.testResults.text("");
         }
     }
 

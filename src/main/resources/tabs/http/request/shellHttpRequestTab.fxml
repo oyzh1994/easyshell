@@ -289,6 +289,9 @@
                 <FixedTab text="%shell.http.preRequestScript">
                     <ShellDataEditor fx:id="preRequestScript" flexWidth="100%" flexHeight="100%"/>
                 </FixedTab>
+                <FixedTab text="%shell.http.testScript">
+                    <ShellDataEditor fx:id="testScript" flexWidth="100%" flexHeight="100%"/>
+                </FixedTab>
                 <FixedTab text="%shell.http.requestSettings">
                     <FXVBox flexWidth="100%" flexHeight="100%" spacing="8">
                         <padding>
@@ -411,6 +414,10 @@
                                          flexWidth="100%" flexHeight="100% - 32"
                                          visible="false" managed="false"/>
                     </FXVBox>
+                </FixedTab>
+                <FixedTab text="%shell.http.testResults">
+                    <ShellDataEditor fx:id="testResults" editable="false"
+                                     flexWidth="100%" flexHeight="100%"/>
                 </FixedTab>
             </RichTabPane>
         </FXVBox>
