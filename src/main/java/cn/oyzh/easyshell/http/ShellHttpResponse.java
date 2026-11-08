@@ -35,6 +35,11 @@ public class ShellHttpResponse {
     private Map<String, List<String>> headers;
 
     /**
+     * 响应正文原始字节
+     */
+    private byte[] data;
+
+    /**
      * 响应正文
      */
     private String body;
@@ -99,6 +104,14 @@ public class ShellHttpResponse {
 
     public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     public String getBody() {

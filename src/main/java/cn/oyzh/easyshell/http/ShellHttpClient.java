@@ -159,6 +159,7 @@ public class ShellHttpClient implements ShellBaseClient {
         byte[] bytes = httpResponse.body() == null ? new byte[0] : httpResponse.body();
         bytes = ShellHttpUtil.decompress(bytes,
                 httpResponse.headers().firstValue("content-encoding").orElse(null));
+        response.setData(bytes);
         response.setSize(bytes.length);
         String contentType = httpResponse.headers().firstValue("content-type").orElse(null);
         response.setContentType(contentType);

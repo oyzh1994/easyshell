@@ -29,6 +29,7 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTabController;
+import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
@@ -36,6 +37,8 @@ import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
+import cn.oyzh.fx.plus.controls.hex.HexView;
+import cn.oyzh.fx.plus.controls.tab.FixedTab;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -48,12 +51,16 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
+import javafx.scene.control.Tab;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -305,6 +312,46 @@ public class ShellHttpRequestTabController extends RichTabController {
     private ShellDataEditor responseHeaders;
 
     /**
+     * 响应标签页面板
+     */
+    @FXML
+    private RichTabPane responseTabPane;
+
+    /**
+     * Base64 标签页
+     */
+    @FXML
+    private FixedTab responseBase64Tab;
+
+    /**
+     * HEX 标签页
+     */
+    @FXML
+    private FixedTab responseHexTab;
+
+    /**
+     * Base64 正文
+     */
+    @FXML
+    private ShellDataEditor responseBase64;
+
+    /**
+     * HEX 正文
+     */
+    @FXML
+    private HexView responseHex;
+
+    /**
+     * Base64 是否已加载
+     */
+    private boolean base64Loaded;
+
+    /**
+     * HEX 是否已加载
+     */
+    private boolean hexLoaded;
+
+    /**
      * 预览按钮
      */
     @FXML
@@ -507,6 +554,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.preview.setDisable(true);
         this.saveResponseBody.setDisable(true);
         this.openResponseFile.setDisable(true);
+        this.resetResponseExtraTabs();
         this.updateBodyEditor();
         this.updateAuthEditor();
     }
@@ -615,6 +663,8 @@ public class ShellHttpRequestTabController extends RichTabController {
             }
         });
         this.responseFormat.selectedItemChanged((observable, oldValue, newValue) -> this.renderResponseBody());
+        this.responseTabPane.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldTab, newTab) -> this.loadExtraResponseTab(newTab));
         this.responseHeadersTableMode.selectedProperty().addListener(
                 (observable, oldValue, newValue) -> this.updateResponseHeadersMode());
     }
@@ -937,6 +987,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.preview.setDisable(true);
         this.saveResponseBody.setDisable(true);
         this.openResponseFile.setDisable(true);
+        this.resetResponseExtraTabs();
         this.send.setDisable(true);
         ShellHttpRequest snapshot = this.request.copy();
         String preScript = this.requestScript.getPreRequestScript();
@@ -969,7 +1020,7 @@ public class ShellHttpRequestTabController extends RichTabController {
                     this.responseBodyRaw = "";
                     this.responseHeadersTable.getItems().clear();
                     this.saveResponseBody.setDisable(true);
-        this.openResponseFile.setDisable(true);
+                    this.openResponseFile.setDisable(true);
                     this.responseBody.text(ex.getMessage() == null
                             ? ex.toString() : ex.getMessage());
                 });
@@ -997,6 +1048,7 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private void showResponse(ShellHttpResponse result) {
         this.response = result;
+        this.resetResponseExtraTabs();
         this.send.setDisable(false);
         String status = result.getStatusCode()
                 + (StringUtil.isBlank(result.getStatusText()) ? "" : " " + result.getStatusText());
@@ -1020,6 +1072,83 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.preview.setDisable(!result.isHtml());
         this.saveResponseBody.setDisable(result.isBinary());
         this.openResponseFile.setDisable(StringUtil.isBlank(result.getTempFile()));
+        this.loadExtraResponseTab(this.responseTabPane.getSelectionModel().getSelectedItem());
+    }
+
+    /**
+     * 重置 Base64/HEX 响应页。
+     */
+    private void resetResponseExtraTabs() {
+        this.base64Loaded = false;
+        this.hexLoaded = false;
+        if (this.responseBase64 != null) {
+            this.responseBase64.text("");
+        }
+        if (this.responseHex != null) {
+            this.responseHex.openBytes(new byte[0]);
+        }
+    }
+
+    /**
+     * 按需加载扩展响应页。
+     *
+     * @param tab 当前标签页
+     */
+    private void loadExtraResponseTab(Tab tab) {
+        if (tab == this.responseBase64Tab) {
+            this.loadBase64Response();
+        } else if (tab == this.responseHexTab) {
+            this.loadHexResponse();
+        }
+    }
+
+    /**
+     * 加载 Base64 响应。
+     */
+    private void loadBase64Response() {
+        if (this.base64Loaded || this.response == null) {
+            return;
+        }
+        this.base64Loaded = true;
+        byte[] data = this.responseData();
+        this.responseBase64.text(data.length == 0 ? "" : Base64.getEncoder().encodeToString(data));
+    }
+
+    /**
+     * 加载 HEX 响应。
+     */
+    private void loadHexResponse() {
+        if (this.hexLoaded || this.response == null) {
+            return;
+        }
+        this.hexLoaded = true;
+        this.responseHex.openBytes(this.responseData());
+    }
+
+    /**
+     * 获取响应原始字节。
+     *
+     * @return 字节
+     */
+    private byte[] responseData() {
+        if (this.response == null) {
+            return new byte[0];
+        }
+        if (this.response.getData() != null) {
+            return this.response.getData();
+        }
+        if (StringUtil.isNotBlank(this.response.getTempFile())) {
+            try {
+                return Files.readAllBytes(Path.of(this.response.getTempFile()));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (this.response.getBody() == null) {
+            return new byte[0];
+        }
+        return this.response.getBody().getBytes(this.response.getCharset() == null
+                ? StandardCharsets.UTF_8 : this.response.getCharset());
     }
 
     /**

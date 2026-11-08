@@ -19,6 +19,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
+<?import cn.oyzh.fx.plus.controls.hex.HexView?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
@@ -386,6 +387,13 @@
                         <ShellDataEditor fx:id="responseBody" editable="false"
                                          flexWidth="100%" flexHeight="100% - 36"/>
                     </FXVBox>
+                </FixedTab>
+                <FixedTab fx:id="responseBase64Tab" text="%shell.http.responseBase64">
+                    <ShellDataEditor fx:id="responseBase64" editable="false"
+                                     flexWidth="100%" flexHeight="100%"/>
+                </FixedTab>
+                <FixedTab fx:id="responseHexTab" text="%shell.http.responseHex">
+                    <HexView fx:id="responseHex" flexWidth="100%" flexHeight="100%"/>
                 </FixedTab>
                 <FixedTab text="%shell.http.responseHeaders">
                     <FXVBox flexWidth="100%" flexHeight="100%">
