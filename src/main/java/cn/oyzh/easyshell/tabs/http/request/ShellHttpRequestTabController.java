@@ -427,7 +427,8 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.rawContentType.getItems().setAll(
                 "application/json", "application/xml", "text/plain", "text/html",
                 "application/javascript", "application/x-www-form-urlencoded");
-        this.responseFormat.getItems().setAll("Text", "JSON", "XML", "HTML");
+        this.responseFormat.getItems().setAll(
+                "Text", "JSON", "XML", "HTML", "CSS", "JavaScript", "Markdown");
         this.responseFormat.setValue("Text");
         this.displayCombo(this.bodyType,
                 List.of(ShellHttpRequest.BODY_NONE, ShellHttpRequest.BODY_FORM_DATA,
@@ -1049,6 +1050,18 @@ public class ShellHttpRequestTabController extends RichTabController {
                 contentType = "text/html";
                 formatType = EditorFormatType.HTML;
             }
+            case "CSS" -> {
+                contentType = "text/css";
+                formatType = EditorFormatType.CSS;
+            }
+            case "JavaScript" -> {
+                contentType = "text/javascript";
+                formatType = EditorFormatType.JAVASCRIPT;
+            }
+            case "Markdown" -> {
+                contentType = "text/markdown";
+                formatType = EditorFormatType.MARKDOWN;
+            }
             default -> {
                 contentType = "text/plain";
                 formatType = EditorFormatType.RAW;
@@ -1074,6 +1087,15 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         if (response.isHtml()) {
             return "HTML";
+        }
+        if (response.isCss()) {
+            return "CSS";
+        }
+        if (response.isJavaScript()) {
+            return "JavaScript";
+        }
+        if (response.isMarkdown()) {
+            return "Markdown";
         }
         if (response.getContentType() != null
                 && response.getContentType().toLowerCase().contains("xml")) {
@@ -1178,6 +1200,9 @@ public class ShellHttpRequestTabController extends RichTabController {
             case "JSON" -> "json";
             case "XML" -> "xml";
             case "HTML" -> "html";
+            case "CSS" -> "css";
+            case "JavaScript" -> "js";
+            case "Markdown" -> "md";
             default -> "txt";
         };
     }

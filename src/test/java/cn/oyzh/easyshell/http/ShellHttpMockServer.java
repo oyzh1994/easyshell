@@ -56,6 +56,9 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.server.createContext("/auth/basic", this::basicAuth);
         this.server.createContext("/auth/bearer", this::bearer);
         this.server.createContext("/html", this::html);
+        this.server.createContext("/css", this::css);
+        this.server.createContext("/javascript", this::javascript);
+        this.server.createContext("/markdown", this::markdown);
         this.server.createContext("/gzip", this::gzip);
         this.server.createContext("/redirect", this::redirect);
         this.server.createContext("/error", this::error);
@@ -288,6 +291,21 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.text(exchange, 200, "text/html; charset=UTF-8", html);
     }
 
+    private void css(HttpExchange exchange) throws IOException {
+        this.text(exchange, 200, "text/css; charset=UTF-8",
+                "body { color: #336699; }\n.card { padding: 12px; }");
+    }
+
+    private void javascript(HttpExchange exchange) throws IOException {
+        this.text(exchange, 200, "text/javascript; charset=UTF-8",
+                "function greet(name) {\n  return 'Hello, ' + name;\n}\nconsole.log(greet('EasyShell'));");
+    }
+
+    private void markdown(HttpExchange exchange) throws IOException {
+        this.text(exchange, 200, "text/markdown; charset=UTF-8",
+                "# EasyShell\n\n**Markdown** response\n\n- css\n- javascript\n- markdown");
+    }
+
     private void gzip(HttpExchange exchange) throws IOException {
         String html = "<!doctype html><html><head><meta charset=\"UTF-8\"><title>Gzip</title></head>"
                 + "<body><h1>压缩响应</h1><p>gzip compressed html</p></body></html>";
@@ -342,7 +360,8 @@ public class ShellHttpMockServer implements AutoCloseable {
         System.out.println("Mock HTTP server: " + server.baseUrl());
         System.out.println("Endpoints: /api/hello /api/echo /api/json /api/headers /api/method /api/slow "
                 + "/api/status /api/no-content /api/cookie /api/api-key /api/xml /api/charset/gbk "
-                + "/upload /upload/form /download /auth/basic /auth/bearer /html /gzip /redirect /error");
+                + "/upload /upload/form /download /auth/basic /auth/bearer /html /css /javascript /markdown "
+                + "/gzip /redirect /error");
         Runtime.getRuntime().addShutdownHook(new Thread(server::close));
     }
 }

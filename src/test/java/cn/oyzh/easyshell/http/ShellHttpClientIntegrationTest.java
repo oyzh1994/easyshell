@@ -498,6 +498,31 @@ public class ShellHttpClientIntegrationTest {
         }
     }
 
+
+    @Test
+    public void handlesCssJavaScriptAndMarkdownResponses() throws Exception {
+        ShellHttpRequest css = new ShellHttpRequest();
+        css.setUrl(this.server.baseUrl() + "/css");
+        ShellHttpResponse cssResponse = this.client.execute(css, this.workspace);
+        assertTrue(cssResponse.isCss());
+        assertTrue(cssResponse.getBody().contains("color: #336699"));
+        assertTrue(ShellHttpUtil.isTextContent(cssResponse.getContentType()));
+
+        ShellHttpRequest javascript = new ShellHttpRequest();
+        javascript.setUrl(this.server.baseUrl() + "/javascript");
+        ShellHttpResponse jsResponse = this.client.execute(javascript, this.workspace);
+        assertTrue(jsResponse.isJavaScript());
+        assertTrue(jsResponse.getBody().contains("function greet"));
+        assertTrue(ShellHttpUtil.isTextContent(jsResponse.getContentType()));
+
+        ShellHttpRequest markdown = new ShellHttpRequest();
+        markdown.setUrl(this.server.baseUrl() + "/markdown");
+        ShellHttpResponse mdResponse = this.client.execute(markdown, this.workspace);
+        assertTrue(mdResponse.isMarkdown());
+        assertTrue(mdResponse.getBody().contains("# EasyShell"));
+        assertTrue(ShellHttpUtil.isTextContent(mdResponse.getContentType()));
+    }
+
     @Test
     public void stripsZeroWidthCharactersFromDisplayText() {
         String raw = "下载地址&gt;&gt;\u200D 兰奏云下载地址2&gt;&gt;";

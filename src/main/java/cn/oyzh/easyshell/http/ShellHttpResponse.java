@@ -182,6 +182,39 @@ public class ShellHttpResponse {
     }
 
     /**
+     * 是否 CSS 响应
+     *
+     * @return 结果
+     */
+    public boolean isCss() {
+        return this.contentType != null
+                && this.contentType.toLowerCase(Locale.ROOT).contains("text/css");
+    }
+
+    /**
+     * 是否 JavaScript 响应
+     *
+     * @return 结果
+     */
+    public boolean isJavaScript() {
+        if (this.contentType == null) {
+            return false;
+        }
+        String type = this.contentType.toLowerCase(Locale.ROOT);
+        return type.contains("javascript") || type.contains("ecmascript");
+    }
+
+    /**
+     * 是否 Markdown 响应
+     *
+     * @return 结果
+     */
+    public boolean isMarkdown() {
+        return this.contentType != null
+                && this.contentType.toLowerCase(Locale.ROOT).contains("markdown");
+    }
+
+    /**
      * 是否成功状态码
      *
      * @return 结果
