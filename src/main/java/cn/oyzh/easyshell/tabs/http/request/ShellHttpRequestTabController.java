@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView;
 import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequestScript;
+import cn.oyzh.easyshell.domain.http.ShellHttpSetting;
 import cn.oyzh.easyshell.http.ShellHttpKeyValue;
 import cn.oyzh.easyshell.http.ShellHttpResponse;
 import cn.oyzh.easyshell.http.ShellHttpUtil;
@@ -24,6 +25,7 @@ import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTabController;
@@ -32,6 +34,7 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
@@ -230,6 +233,30 @@ public class ShellHttpRequestTabController extends RichTabController {
     private FXComboBox<String> authKeyPlacement;
 
     /**
+     * 请求 HTTP 版本
+     */
+    @FXML
+    private FXComboBox<String> requestHttpVersion;
+
+    /**
+     * 请求是否跟随重定向
+     */
+    @FXML
+    private FXCheckBox requestFollowRedirects;
+
+    /**
+     * 请求是否发送 no-cache 请求头
+     */
+    @FXML
+    private FXCheckBox requestNoCacheHeader;
+
+    /**
+     * 请求超时秒数
+     */
+    @FXML
+    private NumberTextField requestTimeout;
+
+    /**
      * 响应状态
      */
     @FXML
@@ -414,6 +441,8 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.displayCombo(this.authKeyPlacement,
                 List.of(ShellHttpRequest.PLACEMENT_HEADER, ShellHttpRequest.PLACEMENT_QUERY),
                 this::placementLabel);
+        this.requestHttpVersion.getItems().setAll(
+                ShellHttpSetting.VERSION_HTTP_1_1, ShellHttpSetting.VERSION_HTTP_2);
     }
 
     /**
@@ -456,6 +485,15 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.authKeyValue.setText(StringUtil.blankToDefault(this.request.getAuthKeyValue(), ""));
         this.authKeyPlacement.setValue(StringUtil.blankToDefault(
                 this.request.getAuthKeyPlacement(), ShellHttpRequest.PLACEMENT_HEADER));
+        ShellHttpSetting global = this.workspace.getSettings();
+        this.requestHttpVersion.setValue(StringUtil.blankToDefault(
+                this.request.getHttpVersion(), global.getHttpVersion()));
+        this.requestFollowRedirects.setSelected(this.request.getFollowRedirects() == null
+                ? global.isFollowRedirects() : this.request.getFollowRedirects());
+        this.requestNoCacheHeader.setSelected(this.request.getSendNoCacheHeader() == null
+                ? global.isSendNoCacheHeader() : this.request.getSendNoCacheHeader());
+        this.requestTimeout.setText(String.valueOf(this.request.getTimeoutSeconds() == null
+                ? global.getTimeoutSeconds() : this.request.getTimeoutSeconds()));
         this.responseStatus.text("-");
         this.responseTime.text("-");
         this.responseSize.text("-");
@@ -493,6 +531,14 @@ public class ShellHttpRequestTabController extends RichTabController {
             }
             this.scheduleSave();
         });
+        this.requestHttpVersion.selectedItemChanged(
+                (observable, oldValue, newValue) -> this.onRequestSettingChanged());
+        this.requestFollowRedirects.selectedProperty().addListener(
+                (observable, oldValue, newValue) -> this.onRequestSettingChanged());
+        this.requestNoCacheHeader.selectedProperty().addListener(
+                (observable, oldValue, newValue) -> this.onRequestSettingChanged());
+        this.requestTimeout.textProperty().addListener(
+                (observable, oldValue, newValue) -> this.onRequestSettingChanged());
         this.bodyType.selectedItemChanged((observable, oldValue, newValue) -> {
             if (!this.loading) {
                 this.request.setBodyType(newValue);
@@ -723,6 +769,33 @@ public class ShellHttpRequestTabController extends RichTabController {
     }
 
     /**
+     * 请求级设置变更。
+     */
+    private void onRequestSettingChanged() {
+        if (this.loading || this.request == null) {
+            return;
+        }
+        this.applyRequestSettings();
+        this.scheduleSave();
+    }
+
+    /**
+     * 应用请求级设置。
+     */
+    private void applyRequestSettings() {
+        if (this.request == null) {
+            return;
+        }
+        ShellHttpSetting global = this.workspace.getSettings();
+        this.request.setHttpVersion(StringUtil.blankToDefault(
+                this.requestHttpVersion.getValue(), global.getHttpVersion()));
+        this.request.setFollowRedirects(this.requestFollowRedirects.isSelected());
+        this.request.setSendNoCacheHeader(this.requestNoCacheHeader.isSelected());
+        int value = this.requestTimeout.getIntValue();
+        this.request.setTimeoutSeconds(value > 0 ? value : global.getTimeoutSeconds());
+    }
+
+    /**
      * 延迟保存
      */
     private void scheduleSave() {
@@ -811,6 +884,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.request.setAuthKeyValue(this.authKeyValue.getPassword());
         this.request.setAuthKeyPlacement(StringUtil.blankToDefault(
                 this.authKeyPlacement.getValue(), ShellHttpRequest.PLACEMENT_HEADER));
+        this.applyRequestSettings();
         if (this.item != null) {
             this.item.refreshRequest();
         }

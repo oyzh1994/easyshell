@@ -158,6 +158,24 @@ public class ShellHttpRequest implements Serializable {
     private String authKeyPlacement = PLACEMENT_HEADER;
 
     /**
+     * HTTP 版本，空值使用工作区设置
+     */
+    @Column
+    private String httpVersion;
+
+    /**
+     * 是否跟随重定向，空值使用工作区设置
+     */
+    @Column
+    private Boolean followRedirects;
+
+    /**
+     * 是否发送 no-cache 请求头，空值使用工作区设置
+     */
+    @Column
+    private Boolean sendNoCacheHeader;
+
+    /**
      * 请求超时秒数，空值使用工作区设置
      */
     @Column
@@ -336,6 +354,30 @@ public class ShellHttpRequest implements Serializable {
         this.authKeyPlacement = authKeyPlacement;
     }
 
+    public String getHttpVersion() {
+        return httpVersion;
+    }
+
+    public void setHttpVersion(String httpVersion) {
+        this.httpVersion = httpVersion;
+    }
+
+    public Boolean getFollowRedirects() {
+        return followRedirects;
+    }
+
+    public void setFollowRedirects(Boolean followRedirects) {
+        this.followRedirects = followRedirects;
+    }
+
+    public Boolean getSendNoCacheHeader() {
+        return sendNoCacheHeader;
+    }
+
+    public void setSendNoCacheHeader(Boolean sendNoCacheHeader) {
+        this.sendNoCacheHeader = sendNoCacheHeader;
+    }
+
     public Integer getTimeoutSeconds() {
         return timeoutSeconds;
     }
@@ -427,6 +469,9 @@ public class ShellHttpRequest implements Serializable {
         copy.authKeyName = this.authKeyName;
         copy.authKeyValue = this.authKeyValue;
         copy.authKeyPlacement = this.authKeyPlacement;
+        copy.httpVersion = this.httpVersion;
+        copy.followRedirects = this.followRedirects;
+        copy.sendNoCacheHeader = this.sendNoCacheHeader;
         copy.timeoutSeconds = this.timeoutSeconds;
         copy.syncJson();
         return copy;

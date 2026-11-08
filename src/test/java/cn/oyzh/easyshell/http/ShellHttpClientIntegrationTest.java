@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -428,6 +429,72 @@ public class ShellHttpClientIntegrationTest {
                     "Cache-Control".equalsIgnoreCase(entry.getKey())));
         } finally {
             this.workspace.getSettings().setSendNoCacheHeader(old);
+        }
+    }
+
+
+    @Test
+    public void requestSettingsOverrideGlobalNoCacheAndRedirects() throws Exception {
+        boolean oldNoCache = this.workspace.getSettings().isSendNoCacheHeader();
+        boolean oldRedirect = this.workspace.getSettings().isFollowRedirects();
+        try {
+            this.workspace.getSettings().setSendNoCacheHeader(false);
+            ShellHttpRequest noCache = new ShellHttpRequest();
+            noCache.setUrl(this.server.baseUrl() + "/api/headers");
+            noCache.setSendNoCacheHeader(true);
+            JSONObject headers = JSONObject.parseObject(
+                    this.client.execute(noCache, this.workspace).getBody()).getJSONObject("headers");
+            assertTrue(headers.entrySet().stream().anyMatch(entry ->
+                    "Cache-Control".equalsIgnoreCase(entry.getKey())));
+
+            this.workspace.getSettings().setSendNoCacheHeader(true);
+            ShellHttpRequest noCacheDisabled = new ShellHttpRequest();
+            noCacheDisabled.setUrl(this.server.baseUrl() + "/api/headers");
+            noCacheDisabled.setSendNoCacheHeader(false);
+            JSONObject disabledHeaders = JSONObject.parseObject(
+                    this.client.execute(noCacheDisabled, this.workspace).getBody())
+                    .getJSONObject("headers");
+            assertTrue(disabledHeaders.entrySet().stream().noneMatch(entry ->
+                    "Cache-Control".equalsIgnoreCase(entry.getKey())));
+
+            this.workspace.getSettings().setFollowRedirects(true);
+            ShellHttpRequest noRedirect = new ShellHttpRequest();
+            noRedirect.setUrl(this.server.baseUrl() + "/redirect");
+            noRedirect.setFollowRedirects(false);
+            assertEquals(302, this.client.execute(noRedirect, this.workspace).getStatusCode());
+
+            ShellHttpRequest redirect = new ShellHttpRequest();
+            redirect.setUrl(this.server.baseUrl() + "/redirect");
+            redirect.setFollowRedirects(true);
+            assertEquals(200, this.client.execute(redirect, this.workspace).getStatusCode());
+        } finally {
+            this.workspace.getSettings().setSendNoCacheHeader(oldNoCache);
+            this.workspace.getSettings().setFollowRedirects(oldRedirect);
+        }
+    }
+
+
+    @Test
+    public void requestTimeoutOverridesGlobalSetting() throws Exception {
+        int oldTimeout = this.workspace.getSettings().getTimeoutSeconds();
+        try {
+            this.workspace.getSettings().setTimeoutSeconds(5);
+            ShellHttpRequest timeout = new ShellHttpRequest();
+            timeout.setUrl(this.server.baseUrl() + "/api/slow?ms=1500");
+            timeout.setTimeoutSeconds(1);
+            try {
+                this.client.execute(timeout, this.workspace);
+                fail("Expected request timeout");
+            } catch (Exception expected) {
+                // expected
+            }
+
+            ShellHttpRequest success = new ShellHttpRequest();
+            success.setUrl(this.server.baseUrl() + "/api/slow?ms=1500");
+            success.setTimeoutSeconds(3);
+            assertEquals(200, this.client.execute(success, this.workspace).getStatusCode());
+        } finally {
+            this.workspace.getSettings().setTimeoutSeconds(oldTimeout);
         }
     }
 

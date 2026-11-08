@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.easyshell.fx.http.ShellHttpFormDataTableView?>
-<?import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView?>
 <?import cn.oyzh.easyshell.fx.http.ShellHttpKeyValueTableView?>
+<?import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
-<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
@@ -21,10 +22,9 @@
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
-<?import atlantafx.base.controls.ToggleSwitch?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.http.request.ShellHttpRequestTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -134,7 +134,7 @@
                                 </HBox.margin>
                             </InfoLabel>
                             <ChooseFileTextField fx:id="bodyFile" realHeight="28"
-                                                flexWidth="100% - 130">
+                                                 flexWidth="100% - 130">
                                 <HBox.margin>
                                     <Insets left="8" top="7"/>
                                 </HBox.margin>
@@ -288,9 +288,45 @@
                 <FixedTab text="%shell.http.preRequestScript">
                     <ShellDataEditor fx:id="preRequestScript" flexWidth="100%" flexHeight="100%"/>
                 </FixedTab>
+                <FixedTab text="%shell.http.requestSettings">
+                    <FXVBox flexWidth="100%" flexHeight="100%" spacing="8">
+                        <padding>
+                            <Insets left="20" top="12"/>
+                        </padding>
+                        <FXHBox realHeight="32">
+                            <InfoLabel text="%shell.http.httpVersion" realWidth="110"/>
+                            <FXComboBox fx:id="requestHttpVersion" realHeight="30" realWidth="220"/>
+                        </FXHBox>
+                        <FXHBox realHeight="32">
+                            <InfoLabel text="%shell.http.timeout" realWidth="110"/>
+                            <NumberTextField fx:id="requestTimeout" min="1" max="600"
+                                             realHeight="30" realWidth="140"/>
+                            <FXLabel text="%base.seconds" realHeight="24">
+                                <HBox.margin>
+                                    <Insets left="5" top="4"/>
+                                </HBox.margin>
+                            </FXLabel>
+                        </FXHBox>
+                        <FXHBox>
+                            <InfoLabel text="%shell.http.options" realWidth="110"/>
+                            <FXCheckBox fx:id="requestFollowRedirects"
+                                        text="%shell.http.followRedirects">
+                                <HBox.margin>
+                                    <Insets top="4"/>
+                                </HBox.margin>
+                            </FXCheckBox>
+                            <FXCheckBox fx:id="requestNoCacheHeader"
+                                        text="%shell.http.sendNoCacheHeader">
+                                <HBox.margin>
+                                    <Insets left="14" top="4"/>
+                                </HBox.margin>
+                            </FXCheckBox>
+                        </FXHBox>
+                    </FXVBox>
+                </FixedTab>
             </RichTabPane>
         </FXVBox>
-        <FXVBox flexWidth="100%" >
+        <FXVBox flexWidth="100%">
             <FXHBox flexWidth="100%" realHeight="38">
                 <InfoLabel text="%shell.http.response">
                     <HBox.margin>
@@ -362,7 +398,7 @@
                             </FXToggleSwitch>
                         </FXHBox>
                         <ShellHttpResponseHeadersTableView fx:id="responseHeadersTable"
-                                                          flexWidth="100%" flexHeight="100% - 32"/>
+                                                           flexWidth="100%" flexHeight="100% - 32"/>
                         <ShellDataEditor fx:id="responseHeaders" editable="false"
                                          flexWidth="100%" flexHeight="100% - 32"
                                          visible="false" managed="false"/>

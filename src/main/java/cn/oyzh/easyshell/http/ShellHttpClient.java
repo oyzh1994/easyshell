@@ -133,13 +133,14 @@ public class ShellHttpClient implements ShellBaseClient {
      * @throws Exception 执行异常
      */
     public ShellHttpResponse execute(ShellHttpRequest definition, ShellHttpWorkspace workspace) throws Exception {
-        this.configure(workspace.getSettings());
+        ShellHttpSetting settings = this.effectiveSettings(definition, workspace);
+        this.configure(settings);
         ShellHttpEnvironment environment = workspace.activeEnvironment();
         URI uri = this.prepareUri(definition, environment);
         String method = definition.normalizedMethod();
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
-                .timeout(Duration.ofSeconds(this.timeoutSeconds(definition, workspace)));
-        this.applyHeaders(builder, definition, environment, workspace.getSettings());
+                .timeout(Duration.ofSeconds(settings.getTimeoutSeconds()));
+        this.applyHeaders(builder, definition, environment, settings);
         this.applyAuth(builder, definition, environment);
         HttpRequest.BodyPublisher bodyPublisher = this.bodyPublisher(builder, definition, environment);
         builder.method(method, bodyPublisher);
@@ -183,17 +184,27 @@ public class ShellHttpClient implements ShellBaseClient {
     }
 
     /**
-     * 读取请求超时时间。
+     * 合并全局设置和请求级设置，请求级设置优先。
      *
      * @param request   请求
      * @param workspace 工作区
-     * @return 超时秒数
+     * @return 生效设置
      */
-    private int timeoutSeconds(ShellHttpRequest request, ShellHttpWorkspace workspace) {
-        if (request.getTimeoutSeconds() != null && request.getTimeoutSeconds() > 0) {
-            return request.getTimeoutSeconds();
+    private ShellHttpSetting effectiveSettings(ShellHttpRequest request, ShellHttpWorkspace workspace) {
+        ShellHttpSetting settings = workspace.getSettings().copy();
+        if (StringUtil.isNotBlank(request.getHttpVersion())) {
+            settings.setHttpVersion(request.getHttpVersion());
         }
-        return workspace.getSettings().getTimeoutSeconds();
+        if (request.getFollowRedirects() != null) {
+            settings.setFollowRedirects(request.getFollowRedirects());
+        }
+        if (request.getSendNoCacheHeader() != null) {
+            settings.setSendNoCacheHeader(request.getSendNoCacheHeader());
+        }
+        if (request.getTimeoutSeconds() != null && request.getTimeoutSeconds() > 0) {
+            settings.setTimeoutSeconds(request.getTimeoutSeconds());
+        }
+        return settings;
     }
 
     /**

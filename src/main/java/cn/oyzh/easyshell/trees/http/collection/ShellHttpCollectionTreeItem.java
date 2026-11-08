@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.trees.http.ShellHttpTreeItem;
 import cn.oyzh.easyshell.trees.http.ShellHttpTreeView;
 import cn.oyzh.easyshell.domain.http.ShellHttpCollection;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
+import cn.oyzh.easyshell.domain.http.ShellHttpSetting;
 import cn.oyzh.easyshell.store.http.ShellHttpCollectionStore;
 import cn.oyzh.easyshell.store.http.ShellHttpRequestScriptStore;
 import cn.oyzh.easyshell.store.http.ShellHttpRequestStore;
@@ -96,6 +97,11 @@ public class ShellHttpCollectionTreeItem extends ShellHttpTreeItem<ShellHttpColl
         request.setIid(this.collection.getIid());
         request.setCollectionId(this.collection.getId());
         request.setName(name.trim());
+        ShellHttpSetting settings = this.workspace().getSettings();
+        request.setHttpVersion(settings.getHttpVersion());
+        request.setFollowRedirects(settings.isFollowRedirects());
+        request.setSendNoCacheHeader(settings.isSendNoCacheHeader());
+        request.setTimeoutSeconds(settings.getTimeoutSeconds());
         if (!ShellHttpRequestStore.INSTANCE.insert(request)) {
             MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             return;
