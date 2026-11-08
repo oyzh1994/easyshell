@@ -10,10 +10,14 @@ import cn.oyzh.easyshell.fx.http.ShellHttpKeyValueTableView;
 import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView;
 import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
+import cn.oyzh.easyshell.domain.http.ShellHttpRequestScript;
 import cn.oyzh.easyshell.http.ShellHttpKeyValue;
 import cn.oyzh.easyshell.http.ShellHttpResponse;
 import cn.oyzh.easyshell.http.ShellHttpUtil;
 import cn.oyzh.easyshell.http.ShellHttpWorkspace;
+import cn.oyzh.easyshell.http.script.ShellHttpScriptContext;
+import cn.oyzh.easyshell.http.script.ShellHttpScriptEngine;
+import cn.oyzh.easyshell.store.http.ShellHttpRequestScriptStore;
 import cn.oyzh.easyshell.store.http.ShellHttpRequestStore;
 import cn.oyzh.easyshell.tabs.http.ShellHttpTabPane;
 import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
@@ -28,7 +32,6 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controls.button.FXButton;
-import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
@@ -283,6 +286,17 @@ public class ShellHttpRequestTabController extends RichTabController {
     private FXButton saveResponseBody;
 
     /**
+     * 请求前脚本
+     */
+    @FXML
+    private ShellDataEditor preRequestScript;
+
+    /**
+     * 请求脚本数据
+     */
+    private ShellHttpRequestScript requestScript;
+
+    /**
      * 响应原始正文
      */
     private String responseBodyRaw = "";
@@ -333,6 +347,12 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.request = item.request();
         this.tabPane = tabPane;
         this.workspace = tabPane.getWorkspace();
+        this.requestScript = ShellHttpRequestScriptStore.INSTANCE.getByRequestId(this.request.getId());
+        if (this.requestScript == null) {
+            this.requestScript = new ShellHttpRequestScript();
+            this.requestScript.setIid(this.request.getIid());
+            this.requestScript.setRequestId(this.request.getId());
+        }
         this.loading = true;
         this.initCombos();
         this.initTables();
@@ -399,6 +419,8 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.bodyFile.setText(binary
                 ? StringUtil.blankToDefault(this.request.getBody(), "") : "");
         this.requestBody.text(binary ? "" : StringUtil.blankToDefault(this.request.getBody(), ""));
+        this.preRequestScript.setFormatType(EditorFormatType.JAVASCRIPT);
+        this.preRequestScript.text(this.requestScript.getPreRequestScript());
         this.authType.setValue(StringUtil.blankToDefault(this.request.getAuthType(), ShellHttpRequest.AUTH_NONE));
         this.authUser.setText(StringUtil.blankToDefault(this.request.getAuthUser(), ""));
         this.authPassword.setText(StringUtil.blankToDefault(this.request.getAuthPassword(), ""));
@@ -510,6 +532,12 @@ public class ShellHttpRequestTabController extends RichTabController {
                 this.scheduleSave();
             }
         });
+        this.preRequestScript.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.requestScript.setPreRequestScript(newValue);
+                this.scheduleSave();
+            }
+        });
         this.responseFormat.selectedItemChanged((observable, oldValue, newValue) -> this.renderResponseBody());
         this.responseHeadersTableMode.selectedProperty().addListener(
                 (observable, oldValue, newValue) -> this.updateResponseHeadersMode());
@@ -582,6 +610,9 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.request.setParams(new ArrayList<>(this.paramsTable.getItems()));
         this.request.setHeaders(new ArrayList<>(this.headersTable.getItems()));
         this.request.setFormBody(new ArrayList<>(this.formBodyTable.getItems()));
+        if (this.requestScript != null) {
+            this.requestScript.setPreRequestScript(this.preRequestScript.getText());
+        }
         this.markUnsaved();
     }
 
@@ -656,7 +687,12 @@ public class ShellHttpRequestTabController extends RichTabController {
         if (this.item != null) {
             this.item.refreshRequest();
         }
-        this.unsaved = !ShellHttpRequestStore.INSTANCE.update(this.request);
+        boolean requestSaved = ShellHttpRequestStore.INSTANCE.update(this.request);
+        this.requestScript.setIid(this.request.getIid());
+        this.requestScript.setRequestId(this.request.getId());
+        this.requestScript.setPreRequestScript(this.preRequestScript.getText());
+        boolean scriptSaved = ShellHttpRequestScriptStore.INSTANCE.replace(this.requestScript);
+        this.unsaved = !(requestSaved && scriptSaved);
         this.flushTab();
     }
 
@@ -700,10 +736,27 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.saveResponseBody.setDisable(true);
         this.send.setDisable(true);
         ShellHttpRequest snapshot = this.request.copy();
+        String preScript = this.requestScript.getPreRequestScript();
+        String testsScript = this.requestScript.getTestScript();
+        ShellHttpScriptContext scriptContext = new ShellHttpScriptContext(
+                this.workspace, snapshot, this.workspace.activeEnvironment());
+        ShellHttpScriptEngine scriptEngine = new ShellHttpScriptEngine(scriptContext);
         ThreadUtil.start(() -> {
             try {
+                scriptEngine.evalPreRequest(preScript);
                 ShellHttpResponse result = client.execute(snapshot, this.workspace);
-                FXUtil.runLater(() -> this.showResponse(result));
+                scriptContext.setResponse(result);
+                try {
+                    scriptEngine.evalTests(testsScript);
+                } catch (Throwable testEx) {
+                    testEx.printStackTrace();
+                    String message = testEx.getMessage() == null ? testEx.toString() : testEx.getMessage();
+                    System.out.println("[HTTP Test Error] " + message);
+                }
+                FXUtil.runLater(() -> {
+                    this.showResponse(result);
+                    this.showScriptTestResults(scriptContext);
+                });
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 FXUtil.runLater(() -> {
@@ -715,11 +768,22 @@ public class ShellHttpRequestTabController extends RichTabController {
                     this.saveResponseBody.setDisable(true);
                     this.responseBody.text(ex.getMessage() == null
                             ? ex.toString() : ex.getMessage());
-                    MessageBox.warn(ex.getMessage() == null ? ex.toString() : ex.getMessage(),
-                            this.getWindow());
                 });
             }
         });
+    }
+
+    /**
+     * 显示脚本测试结果
+     *
+     * @param context 脚本上下文
+     */
+    private void showScriptTestResults(ShellHttpScriptContext context) {
+        for (ShellHttpScriptContext.TestResult result : context.getTestResults()) {
+            System.out.println("[HTTP Test] " + (result.passed() ? "PASS " : "FAIL ")
+                    + result.name() + (result.passed() || StringUtil.isBlank(result.message())
+                    ? "" : " - " + result.message()));
+        }
     }
 
     /**

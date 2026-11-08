@@ -285,6 +285,9 @@
                         </FXVBox>
                     </FXVBox>
                 </FixedTab>
+                <FixedTab text="%shell.http.preRequestScript">
+                    <ShellDataEditor fx:id="preRequestScript" flexWidth="100%" flexHeight="100%"/>
+                </FixedTab>
             </RichTabPane>
         </FXVBox>
         <FXVBox flexWidth="100%" >

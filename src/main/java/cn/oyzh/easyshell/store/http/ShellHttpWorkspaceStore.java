@@ -210,6 +210,7 @@ public class ShellHttpWorkspaceStore {
         if (StringUtil.isBlank(iid)) {
             return;
         }
+        ShellHttpRequestScriptStore.INSTANCE.deleteByIid(iid);
         ShellHttpRequestStore.INSTANCE.deleteByIid(iid);
         ShellHttpCollectionStore.INSTANCE.deleteByIid(iid);
         ShellHttpEnvironmentStore.INSTANCE.deleteByIid(iid);

@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.trees.http.request;
 import cn.oyzh.easyshell.trees.http.ShellHttpTreeItem;
 import cn.oyzh.easyshell.trees.http.ShellHttpTreeView;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
+import cn.oyzh.easyshell.domain.http.ShellHttpRequestScript;
+import cn.oyzh.easyshell.store.http.ShellHttpRequestScriptStore;
 import cn.oyzh.easyshell.store.http.ShellHttpRequestStore;
 import cn.oyzh.easyshell.trees.http.collection.ShellHttpCollectionTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -84,6 +86,10 @@ public class ShellHttpRequestTreeItem extends ShellHttpTreeItem<ShellHttpRequest
             MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             return;
         }
+        ShellHttpRequestScript script = ShellHttpRequestScriptStore.INSTANCE.getByRequestId(this.request.getId());
+        if (script != null) {
+            ShellHttpRequestScriptStore.INSTANCE.insert(script.copy(copy.getId()));
+        }
         List<ShellHttpRequest> requests = this.requestList();
         int index = requests.indexOf(this.request);
         if (index >= 0) {
@@ -93,6 +99,10 @@ public class ShellHttpRequestTreeItem extends ShellHttpTreeItem<ShellHttpRequest
         }
         this.reloadTree();
         this.getTreeView().selectData(copy);
+        ShellHttpTreeItem<?> copyItem = this.getTreeView().findItem(copy);
+        if (copyItem instanceof ShellHttpRequestTreeItem requestItem) {
+            this.tabPane().openRequest(requestItem);
+        }
         this.tabPane().refreshHomeTab();
     }
 
@@ -127,6 +137,7 @@ public class ShellHttpRequestTreeItem extends ShellHttpTreeItem<ShellHttpRequest
             return;
         }
         this.tabPane().closeRequestTab(this.request.getId());
+        ShellHttpRequestScriptStore.INSTANCE.deleteByRequestId(this.request.getId());
         ShellHttpRequestStore.INSTANCE.delete(this.request);
         this.requestList().remove(this.request);
         this.reloadTree();

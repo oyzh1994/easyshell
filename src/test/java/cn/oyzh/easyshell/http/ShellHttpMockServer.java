@@ -36,6 +36,9 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.server.setExecutor(Executors.newCachedThreadPool());
         this.server.createContext("/api/hello", this::hello);
         this.server.createContext("/api/echo", this::echo);
+        this.server.createContext("/api/json", this::jsonData);
+        this.server.createContext("/api/headers", this::headers);
+        this.server.createContext("/api/slow", this::slow);
         this.server.createContext("/auth/basic", this::basicAuth);
         this.server.createContext("/auth/bearer", this::bearer);
         this.server.createContext("/html", this::html);
@@ -77,6 +80,33 @@ public class ShellHttpMockServer implements AutoCloseable {
         body.put("contentType", first(exchange.getRequestHeaders(), "Content-Type"));
         body.put("body", requestBody);
         this.json(exchange, 200, body);
+    }
+
+    private void jsonData(HttpExchange exchange) throws IOException {
+        JSONObject data = new JSONObject();
+        data.put("id", 1);
+        data.put("name", "EasyShell");
+        JSONObject body = new JSONObject();
+        body.put("code", 0);
+        body.put("message", "ok");
+        body.put("data", data);
+        this.json(exchange, 200, body);
+    }
+
+    private void headers(HttpExchange exchange) throws IOException {
+        JSONObject headers = new JSONObject();
+        exchange.getRequestHeaders().forEach((key, values) ->
+                headers.put(key, values.size() == 1 ? values.getFirst() : values));
+        this.json(exchange, 200, Map.of("headers", headers));
+    }
+
+    private void slow(HttpExchange exchange) throws IOException {
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        this.json(exchange, 200, Map.of("message", "slow response"));
     }
 
     /**
@@ -147,10 +177,11 @@ public class ShellHttpMockServer implements AutoCloseable {
     }
 
     public static void main(String[] args) throws Exception {
-        ShellHttpMockServer server = new ShellHttpMockServer(18080);
+        ShellHttpMockServer server = new ShellHttpMockServer(18081);
         server.start();
         System.out.println("Mock HTTP server: " + server.baseUrl());
-        System.out.println("Endpoints: /api/hello /api/echo /auth/basic /auth/bearer /html /redirect /error");
+        System.out.println("Endpoints: /api/hello /api/echo /api/json /api/headers /api/slow "
+                + "/auth/basic /auth/bearer /html /gzip /redirect /error");
         Runtime.getRuntime().addShutdownHook(new Thread(server::close));
     }
 }

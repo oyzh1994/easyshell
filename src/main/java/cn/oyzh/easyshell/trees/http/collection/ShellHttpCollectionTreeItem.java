@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.trees.http.ShellHttpTreeView;
 import cn.oyzh.easyshell.domain.http.ShellHttpCollection;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
 import cn.oyzh.easyshell.store.http.ShellHttpCollectionStore;
+import cn.oyzh.easyshell.store.http.ShellHttpRequestScriptStore;
 import cn.oyzh.easyshell.store.http.ShellHttpRequestStore;
 import cn.oyzh.fx.plus.drag.DragNodeItem;
 import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
@@ -136,6 +137,9 @@ public class ShellHttpCollectionTreeItem extends ShellHttpTreeItem<ShellHttpColl
             return;
         }
         this.tabPane().closeCollectionTabs(this.collection);
+        for (ShellHttpRequest request : this.collection.getRequests()) {
+            ShellHttpRequestScriptStore.INSTANCE.deleteByRequestId(request.getId());
+        }
         ShellHttpRequestStore.INSTANCE.deleteByCollectionId(this.collection.getId());
         ShellHttpCollectionStore.INSTANCE.delete(this.collection);
         this.workspace().getCollections().remove(this.collection);
