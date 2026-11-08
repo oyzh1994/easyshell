@@ -6,8 +6,10 @@ import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -54,7 +56,29 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
         enabled.setSortable(false);
         enabled.setResizable(false);
         enabled.setCellValueFactory(cell -> cell.getValue().enabledProperty());
-        enabled.setCellFactory(CheckBoxTableCell.forTableColumn(enabled));
+        enabled.setCellFactory(column -> new TableCell<>() {
+            private final CheckBox checkBox = new CheckBox();
+
+            {
+                this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                this.checkBox.setOnAction(event -> {
+                    if (this.getTableRow() != null && this.getTableRow().getItem() != null) {
+                        this.getTableRow().getItem().setEnabled(this.checkBox.isSelected());
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || this.getTableRow() == null || this.getTableRow().getItem() == null) {
+                    this.setGraphic(null);
+                    return;
+                }
+                this.checkBox.setSelected(this.getTableRow().getItem().isEnabled());
+                this.setGraphic(this.checkBox);
+            }
+        });
 
         // 键列
         FXTableColumn<ShellHttpKeyValue, String> key = new FXTableColumn<>();
@@ -96,6 +120,8 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
             }
             this.fireChange();
         });
+        // 兼容 setItems 早于 initNode 的情况
+        this.getItems().forEach(this::observe);
     }
 
     /**

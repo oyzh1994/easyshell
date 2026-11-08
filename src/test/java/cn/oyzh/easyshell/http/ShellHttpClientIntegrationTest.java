@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.http;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import cn.oyzh.easyshell.domain.http.ShellHttpCollection;
 import cn.oyzh.easyshell.domain.http.ShellHttpEnvironment;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
@@ -11,9 +13,11 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -238,6 +242,168 @@ public class ShellHttpClientIntegrationTest {
             Files.deleteIfExists(file);
         }
     }
+
+
+    @Test
+    public void savesBinaryDownloadToTempFile() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setUrl(this.server.baseUrl() + "/download");
+
+        ShellHttpResponse response = this.client.execute(request, this.workspace);
+
+        assertTrue(response.isBinary());
+        assertNotNull(response.getTempFile());
+        Path file = Path.of(response.getTempFile());
+        assertTrue(Files.exists(file));
+        assertEquals("EasyShell binary download",
+                new String(Files.readAllBytes(file), StandardCharsets.UTF_8));
+        Files.deleteIfExists(file);
+    }
+
+    @Test
+    public void uploadsBinaryFile() throws Exception {
+        Path file = Files.createTempFile("easyshell-http-upload-", ".bin");
+        try {
+            Files.writeString(file, "upload binary body", StandardCharsets.UTF_8);
+            ShellHttpRequest request = new ShellHttpRequest();
+            request.setMethod(ShellHttpRequest.METHOD_POST);
+            request.setUrl(this.server.baseUrl() + "/upload");
+            request.setBodyType(ShellHttpRequest.BODY_BINARY);
+            request.setBody(file.toString());
+
+            ShellHttpResponse response = this.client.execute(request, this.workspace);
+
+            assertTrue(response.getBody().contains("\"size\""));
+            assertTrue(response.getBody().contains(file.toFile().length() + ""));
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
+    @Test
+    public void supportsCommonHttpMethods() throws Exception {
+        for (String method : List.of("PUT", "PATCH", "DELETE")) {
+            ShellHttpRequest request = new ShellHttpRequest();
+            request.setMethod(method);
+            request.setUrl(this.server.baseUrl() + "/api/method");
+            ShellHttpResponse response = this.client.execute(request, this.workspace);
+            assertTrue(response.getBody().contains("\"method\":\"" + method + "\""));
+        }
+    }
+
+
+    @Test
+    public void headResponseHasNoBodyButExposesMethodHeader() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setMethod(ShellHttpRequest.METHOD_HEAD);
+        request.setUrl(this.server.baseUrl() + "/api/method");
+
+        ShellHttpResponse response = this.client.execute(request, this.workspace);
+
+        assertEquals(200, response.getStatusCode());
+        assertTrue(response.getBody() == null || response.getBody().isEmpty());
+        String method = response.getHeaders().entrySet().stream()
+                .filter(entry -> "X-Method".equalsIgnoreCase(entry.getKey()))
+                .findFirst().map(entry -> entry.getValue().getFirst()).orElse(null);
+        assertEquals("HEAD", method);
+    }
+
+
+    @Test
+    public void uploadsMixedFormDataWithTextAndFile() throws Exception {
+        Path file = Files.createTempFile("easyshell-http-mixed-", ".txt");
+        try {
+            Files.writeString(file, "mixed file content", StandardCharsets.UTF_8);
+            ShellHttpRequest request = new ShellHttpRequest();
+            request.setMethod(ShellHttpRequest.METHOD_POST);
+            request.setUrl(this.server.baseUrl() + "/upload/form");
+            request.setBodyType(ShellHttpRequest.BODY_FORM_DATA);
+            request.getFormBody().add(new ShellHttpKeyValue("title", "hello mixed"));
+            ShellHttpKeyValue fileRow = new ShellHttpKeyValue("file", file.toString());
+            fileRow.setFile(true);
+            request.getFormBody().add(fileRow);
+
+            ShellHttpResponse response = this.client.execute(request, this.workspace);
+
+            assertEquals(200, response.getStatusCode());
+            JSONObject body = JSONObject.parseObject(response.getBody());
+            assertEquals("hello mixed", body.getJSONObject("fields").getString("title"));
+            JSONArray files = body.getJSONArray("files");
+            assertEquals(1, files.size());
+            JSONObject uploaded = files.getJSONObject(0);
+            assertEquals("file", uploaded.getString("name"));
+            assertEquals(file.getFileName().toString(), uploaded.getString("filename"));
+            assertEquals("mixed file content".getBytes(StandardCharsets.UTF_8).length,
+                    uploaded.getIntValue("size"));
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
+    @Test
+    public void handlesCommonResponseScenarios() throws Exception {
+        ShellHttpRequest status = new ShellHttpRequest();
+        status.setUrl(this.server.baseUrl() + "/api/status?code=404");
+        assertEquals(404, this.client.execute(status, this.workspace).getStatusCode());
+
+        ShellHttpRequest noContent = new ShellHttpRequest();
+        noContent.setUrl(this.server.baseUrl() + "/api/no-content");
+        assertEquals(204, this.client.execute(noContent, this.workspace).getStatusCode());
+
+        ShellHttpRequest cookie = new ShellHttpRequest();
+        cookie.setUrl(this.server.baseUrl() + "/api/cookie");
+        ShellHttpResponse cookieResponse = this.client.execute(cookie, this.workspace);
+        assertTrue(cookieResponse.getHeaders().entrySet().stream()
+                .anyMatch(entry -> "Set-Cookie".equalsIgnoreCase(entry.getKey())));
+
+        ShellHttpRequest apiKey = new ShellHttpRequest();
+        apiKey.setUrl(this.server.baseUrl() + "/api/api-key");
+        apiKey.getHeaders().add(new ShellHttpKeyValue("X-API-Key", "test-api-key"));
+        assertEquals(200, this.client.execute(apiKey, this.workspace).getStatusCode());
+
+        ShellHttpRequest xml = new ShellHttpRequest();
+        xml.setUrl(this.server.baseUrl() + "/api/xml");
+        ShellHttpResponse xmlResponse = this.client.execute(xml, this.workspace);
+        assertTrue(xmlResponse.getContentType().contains("xml"));
+        assertTrue(xmlResponse.getBody().contains("<message>hello</message>"));
+
+        ShellHttpRequest gbk = new ShellHttpRequest();
+        gbk.setUrl(this.server.baseUrl() + "/api/charset/gbk");
+        assertEquals("中文 GBK 响应", this.client.execute(gbk, this.workspace).getBody());
+    }
+
+
+    @Test
+    public void doesNotDuplicateQueryParametersAlreadyInUrl() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setUrl(this.server.baseUrl() + "/api/hello?x=1&q=hello%20world");
+        request.getParams().add(new ShellHttpKeyValue("x", "1"));
+        request.getParams().add(new ShellHttpKeyValue("q", "hello world"));
+
+        ShellHttpResponse response = this.client.execute(request, this.workspace);
+
+        JSONObject body = JSONObject.parseObject(response.getBody());
+        String query = body.getString("query");
+        assertEquals(2, query.split("&").length);
+        assertTrue(query.contains("x=1"));
+        assertTrue(query.contains("q=hello"));
+    }
+
+    @Test
+    public void syncsQueryParametersWithUrlText() {
+        List<ShellHttpKeyValue> rows = ShellHttpUtil.parseQuery(
+                "https://example.com/api?x=1&q=hello%20world#part");
+        assertEquals(2, rows.size());
+        assertEquals("x", rows.get(0).getKey());
+        assertEquals("hello world", rows.get(1).getValue());
+        assertEquals("https://example.com/api#part",
+                ShellHttpUtil.removeQuery("https://example.com/api?x=1#part"));
+        assertEquals("x=1&q=hello+world",
+                ShellHttpUtil.encodeRowsForDisplay(rows));
+        assertTrue(ShellHttpUtil.queryMatches(
+                "https://example.com/api?x=1&q=hello%20world", "x=1&q=hello+world"));
+    }
+
 
     @Test
     public void stripsZeroWidthCharactersFromDisplayText() {

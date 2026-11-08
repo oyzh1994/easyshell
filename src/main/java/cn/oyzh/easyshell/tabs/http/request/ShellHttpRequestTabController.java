@@ -41,6 +41,7 @@ import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
@@ -51,7 +52,10 @@ import javafx.util.StringConverter;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -286,6 +290,12 @@ public class ShellHttpRequestTabController extends RichTabController {
     private FXButton saveResponseBody;
 
     /**
+     * 打开响应文件
+     */
+    @FXML
+    private FXButton openResponseFile;
+
+    /**
      * 请求前脚本
      */
     @FXML
@@ -335,6 +345,22 @@ public class ShellHttpRequestTabController extends RichTabController {
      * 是否有未保存修改
      */
     private boolean unsaved;
+
+    /**
+     * 正在由参数同步地址
+     */
+    private boolean syncingUrl;
+
+    /**
+     * 正在由地址同步参数
+     */
+    private boolean syncingParams;
+
+    /**
+     * 已监听变更的参数行
+     */
+    private final Set<ShellHttpKeyValue> paramRows =
+            Collections.newSetFromMap(new IdentityHashMap<>());
 
     /**
      * 初始化
@@ -394,7 +420,6 @@ public class ShellHttpRequestTabController extends RichTabController {
      * 初始化表格
      */
     private void initTables() {
-        this.paramsTable.setChangeAction(this::scheduleSave);
         this.headersTable.setChangeAction(this::scheduleSave);
         this.formBodyTable.setChangeAction(this::scheduleSave);
         this.formDataTable.setChangeAction(this::scheduleSave);
@@ -407,6 +432,8 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.method.setValue(StringUtil.blankToDefault(this.request.getMethod(), ShellHttpRequest.METHOD_GET));
         this.requestUrl.setText(this.request.getUrl());
         this.paramsTable.setItems(FXCollections.observableArrayList(this.request.getParams()));
+        this.bindParamsChange();
+        this.syncInitialUrlAndParams();
         this.headersTable.setItems(FXCollections.observableArrayList(this.request.getHeaders()));
         ObservableList<ShellHttpKeyValue> formItems =
                 FXCollections.observableArrayList(this.request.getFormBody());
@@ -440,6 +467,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.updateResponseHeadersMode();
         this.preview.setDisable(true);
         this.saveResponseBody.setDisable(true);
+        this.openResponseFile.setDisable(true);
         this.updateBodyEditor();
         this.updateAuthEditor();
     }
@@ -449,8 +477,9 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private void initListeners() {
         this.requestUrl.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!this.loading) {
+            if (!this.loading && !this.syncingUrl) {
                 this.request.setUrl(newValue);
+                this.syncParamsFromUrl(newValue);
                 this.scheduleSave();
             }
         });
@@ -600,6 +629,100 @@ public class ShellHttpRequestTabController extends RichTabController {
     }
 
     /**
+     * 监听参数表格的增删和内容变化。
+     */
+    private void bindParamsChange() {
+        for (ShellHttpKeyValue row : this.paramsTable.getItems()) {
+            this.observeParamRow(row);
+        }
+        this.paramsTable.getItems().addListener((ListChangeListener<ShellHttpKeyValue>) change -> {
+            while (change.next()) {
+                change.getAddedSubList().forEach(this::observeParamRow);
+                if (change.wasRemoved()) {
+                    change.getRemoved().forEach(this.paramRows::remove);
+                }
+            }
+            if (!this.loading && !this.syncingParams) {
+                this.onParamsChanged();
+            }
+        });
+    }
+
+    /**
+     * 监听单个参数行。
+     *
+     * @param row 参数行
+     */
+    private void observeParamRow(ShellHttpKeyValue row) {
+        if (row == null || !this.paramRows.add(row)) {
+            return;
+        }
+        row.enabledProperty().addListener((observable, oldValue, newValue) -> this.onParamsChanged());
+        row.keyProperty().addListener((observable, oldValue, newValue) -> this.onParamsChanged());
+        row.valueProperty().addListener((observable, oldValue, newValue) -> this.onParamsChanged());
+    }
+
+    /**
+     * 初始化地址和参数的联动。
+     */
+    private void syncInitialUrlAndParams() {
+        if (this.paramsTable.getItems().isEmpty()) {
+            this.syncParamsFromUrl(this.requestUrl.getText());
+        } else {
+            this.syncUrlFromParams();
+        }
+        this.request.setUrl(this.requestUrl.getText());
+        this.request.setParams(new ArrayList<>(this.paramsTable.getItems()));
+    }
+
+    /**
+     * 参数变更，同步到地址。
+     */
+    private void onParamsChanged() {
+        if (this.loading || this.syncingParams) {
+            return;
+        }
+        this.syncUrlFromParams();
+        this.request.setUrl(this.requestUrl.getText());
+        this.scheduleSave();
+    }
+
+    /**
+     * 用参数刷新地址。
+     */
+    private void syncUrlFromParams() {
+        String base = ShellHttpUtil.removeQuery(this.requestUrl.getText());
+        String query = ShellHttpUtil.encodeRowsForDisplay(this.paramsTable.getItems());
+        String url = StringUtil.isBlank(query) ? base : ShellHttpUtil.appendQuery(base, query);
+        this.syncingUrl = true;
+        try {
+            this.requestUrl.setText(url);
+        } finally {
+            this.syncingUrl = false;
+        }
+    }
+
+    /**
+     * 用地址刷新参数。
+     *
+     * @param url 地址
+     */
+    private void syncParamsFromUrl(String url) {
+        List<ShellHttpKeyValue> rows = ShellHttpUtil.parseQuery(url);
+        for (ShellHttpKeyValue row : this.paramsTable.getItems()) {
+            if (row != null && !row.isEnabled()) {
+                rows.add(row);
+            }
+        }
+        this.syncingParams = true;
+        try {
+            this.paramsTable.getItems().setAll(rows);
+        } finally {
+            this.syncingParams = false;
+        }
+    }
+
+    /**
      * 延迟保存
      */
     private void scheduleSave() {
@@ -662,6 +785,10 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         this.request.setMethod(StringUtil.blankToDefault(
                 this.method.getValue(), ShellHttpRequest.METHOD_GET));
+        // 发送前再同步一次，确保 POST 等请求的查询参数也进入实际请求地址
+        if (!this.paramsTable.getItems().isEmpty()) {
+            this.syncUrlFromParams();
+        }
         this.request.setUrl(this.requestUrl.getText());
         this.request.setParams(new ArrayList<>(this.paramsTable.getItems()));
         this.request.setHeaders(new ArrayList<>(this.headersTable.getItems()));
@@ -734,6 +861,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.responseHeadersTable.getItems().clear();
         this.preview.setDisable(true);
         this.saveResponseBody.setDisable(true);
+        this.openResponseFile.setDisable(true);
         this.send.setDisable(true);
         ShellHttpRequest snapshot = this.request.copy();
         String preScript = this.requestScript.getPreRequestScript();
@@ -766,6 +894,7 @@ public class ShellHttpRequestTabController extends RichTabController {
                     this.responseBodyRaw = "";
                     this.responseHeadersTable.getItems().clear();
                     this.saveResponseBody.setDisable(true);
+        this.openResponseFile.setDisable(true);
                     this.responseBody.text(ex.getMessage() == null
                             ? ex.toString() : ex.getMessage());
                 });
@@ -815,6 +944,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.updateResponseHeadersMode();
         this.preview.setDisable(!result.isHtml());
         this.saveResponseBody.setDisable(result.isBinary());
+        this.openResponseFile.setDisable(StringUtil.isBlank(result.getTempFile()));
     }
 
     /**
@@ -944,6 +1074,22 @@ public class ShellHttpRequestTabController extends RichTabController {
         int index = name.lastIndexOf('.');
         String baseName = index > 0 ? name.substring(0, index) : name;
         return new File(file.getParentFile(), baseName + suffix);
+    }
+
+    /**
+     * 打开响应文件
+     */
+    @FXML
+    private void openResponseFile() {
+        if (this.response == null || StringUtil.isBlank(this.response.getTempFile())) {
+            return;
+        }
+        try {
+            Path file = Path.of(this.response.getTempFile());
+            FXUtil.open(file.toUri().toString());
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
     }
 
     /**

@@ -57,24 +57,39 @@ public class ShellHttpTextInputCell extends TableCell<ShellHttpKeyValue, String>
         // 点击输入框时同步选中所在表格行，保证删除等行操作可用
         TableViewUtil.selectRowOnMouseClicked(this.textField);
         this.textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (this.updating || this.getTableRow() == null) {
+            if (this.updating) {
                 return;
             }
-            ShellHttpKeyValue row = this.getTableRow().getItem();
+            ShellHttpKeyValue row = this.row();
             if (row != null) {
                 this.setter.accept(row, newValue);
             }
         });
     }
 
+    /**
+     * 获取当前单元格对应的参数行。
+     *
+     * @return 参数行
+     */
+    private ShellHttpKeyValue row() {
+        if (this.getTableRow() != null && this.getTableRow().getItem() != null) {
+            return this.getTableRow().getItem();
+        }
+        if (this.getIndex() >= 0 && this.getIndex() < this.getTableView().getItems().size()) {
+            return this.getTableView().getItems().get(this.getIndex());
+        }
+        return null;
+    }
+
     @Override
     protected void updateItem(String item, boolean empty) {
         super.updateItem(item, empty);
-        if (empty || this.getTableRow() == null || this.getTableRow().getItem() == null) {
+        ShellHttpKeyValue row = this.row();
+        if (empty || row == null) {
             this.setGraphic(null);
             return;
         }
-        ShellHttpKeyValue row = this.getTableRow().getItem();
         String value = this.getter.apply(row);
         // 输入过程中属性会回写并触发 updateItem，文本相同则不能重设，否则光标会跳到开头
         if (!this.textField.isFocused() && !Objects.equals(this.textField.getText(), value)) {

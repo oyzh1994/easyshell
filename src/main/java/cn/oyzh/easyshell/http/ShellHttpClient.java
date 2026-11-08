@@ -168,6 +168,16 @@ public class ShellHttpClient implements ShellBaseClient {
             response.setBody(body);
         } else {
             response.setBinary(true);
+            if (bytes.length > 0) {
+                try {
+                    String extension = ShellHttpUtil.extensionForContentType(contentType);
+                    Path file = Files.createTempFile("easyshell-http-", "." + extension);
+                    Files.write(file, bytes);
+                    response.setTempFile(file.toString());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         return response;
     }

@@ -324,6 +324,12 @@
                         <Insets left="10" top="6"/>
                     </HBox.margin>
                 </FXButton>
+                <FXButton fx:id="openResponseFile" text="%shell.http.openResponseFile"
+                          onAction="#openResponseFile" realHeight="26" disable="true">
+                    <HBox.margin>
+                        <Insets left="8" top="6"/>
+                    </HBox.margin>
+                </FXButton>
             </FXHBox>
             <RichTabPane fx:id="responseTabPane" flexWidth="100%" flexHeight="100% - 38"
                          tabMinHeight="28" tabClosingPolicy="UNAVAILABLE">

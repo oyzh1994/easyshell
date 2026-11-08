@@ -9,11 +9,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -107,7 +109,7 @@ public final class ShellHttpUtil {
             throw new IllegalArgumentException(ShellI18nHelper.httpUrlEmpty());
         }
         String query = encodeRows(rows, environment);
-        if (StringUtil.isNotBlank(query)) {
+        if (StringUtil.isNotBlank(query) && !queryMatches(resolved, query)) {
             resolved = appendQuery(resolved, query);
         }
         URI uri;
@@ -146,6 +148,129 @@ public final class ShellHttpUtil {
     }
 
     /**
+     * 移除地址中的查询字符串，保留锚点。
+     *
+     * @param url 地址
+     * @return 结果
+     */
+    public static String removeQuery(String url) {
+        if (url == null) {
+            return "";
+        }
+        int queryIndex = url.indexOf('?');
+        int fragmentIndex = url.indexOf('#');
+        if (queryIndex < 0 || (fragmentIndex >= 0 && fragmentIndex < queryIndex)) {
+            return url;
+        }
+        String fragment = fragmentIndex >= 0 ? url.substring(fragmentIndex) : "";
+        return url.substring(0, queryIndex) + fragment;
+    }
+
+    /**
+     * 获取地址中的查询字符串。
+     *
+     * @param url 地址
+     * @return 查询字符串
+     */
+    public static String queryOf(String url) {
+        if (url == null) {
+            return "";
+        }
+        int queryIndex = url.indexOf('?');
+        int fragmentIndex = url.indexOf('#');
+        if (queryIndex < 0 || (fragmentIndex >= 0 && fragmentIndex < queryIndex)) {
+            return "";
+        }
+        int end = fragmentIndex >= 0 ? fragmentIndex : url.length();
+        return url.substring(queryIndex + 1, end);
+    }
+
+    /**
+     * 解析地址中的查询参数。
+     *
+     * @param url 地址
+     * @return 参数列表
+     */
+    public static List<ShellHttpKeyValue> parseQuery(String url) {
+        List<ShellHttpKeyValue> rows = new ArrayList<>();
+        String query = queryOf(url);
+        if (StringUtil.isBlank(query)) {
+            return rows;
+        }
+        for (String part : query.split("&")) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            int index = part.indexOf('=');
+            String key = index >= 0 ? part.substring(0, index) : part;
+            String value = index >= 0 ? part.substring(index + 1) : "";
+            rows.add(new ShellHttpKeyValue(decode(key), decode(value)));
+        }
+        return rows;
+    }
+
+    /**
+     * 将启用的键值行编码为展示用查询字符串，保留变量占位符。
+     *
+     * @param rows 键值行
+     * @return 查询字符串
+     */
+    public static String encodeRowsForDisplay(List<ShellHttpKeyValue> rows) {
+        if (rows == null || rows.isEmpty()) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (ShellHttpKeyValue row : rows) {
+            if (row == null || !row.isEnabled() || StringUtil.isBlank(row.getKey())) {
+                continue;
+            }
+            if (!builder.isEmpty()) {
+                builder.append('&');
+            }
+            builder.append(encodePreservingVariables(row.getKey().trim()));
+            builder.append('=');
+            builder.append(encodePreservingVariables(row.getValue()));
+        }
+        return builder.toString();
+    }
+
+    /**
+     * URL 编码，但保留 {{变量}} 占位符。
+     *
+     * @param value 值
+     * @return 编码结果
+     */
+    private static String encodePreservingVariables(String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+        Matcher matcher = VARIABLE_PATTERN.matcher(value);
+        StringBuilder builder = new StringBuilder();
+        int last = 0;
+        while (matcher.find()) {
+            builder.append(encode(value.substring(last, matcher.start())));
+            builder.append(matcher.group());
+            last = matcher.end();
+        }
+        builder.append(encode(value.substring(last)));
+        return builder.toString();
+    }
+
+    /**
+     * 解码查询参数。
+     *
+     * @param value 值
+     * @return 解码结果
+     */
+    private static String decode(String value) {
+        try {
+            return URLDecoder.decode(value, StandardCharsets.UTF_8);
+        } catch (Exception ex) {
+            return value;
+        }
+    }
+
+    /**
      * 将启用的键值行编码为查询字符串。
      *
      * @param rows        键值行
@@ -169,6 +294,33 @@ public final class ShellHttpUtil {
             builder.append(encode(resolveVariables(row.getValue(), environment)));
         }
         return builder.toString();
+    }
+
+    /**
+     * 判断地址中的查询参数是否与编码后的查询参数一致。
+     *
+     * @param url   地址
+     * @param query 编码后的查询参数
+     * @return 是否一致
+     */
+    public static boolean queryMatches(String url, String query) {
+        if (StringUtil.isBlank(query)) {
+            return true;
+        }
+        List<ShellHttpKeyValue> actual = parseQuery(url);
+        List<ShellHttpKeyValue> expected = parseQuery("?" + query);
+        if (actual.size() != expected.size()) {
+            return false;
+        }
+        for (int i = 0; i < actual.size(); i++) {
+            ShellHttpKeyValue left = actual.get(i);
+            ShellHttpKeyValue right = expected.get(i);
+            if (!StringUtil.equals(left.getKey(), right.getKey())
+                    || !StringUtil.equals(left.getValue(), right.getValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -206,6 +358,59 @@ public final class ShellHttpUtil {
      * @param contentType 内容类型
      * @return 结果
      */
+    /**
+     * 根据响应内容类型获取文件扩展名。
+     *
+     * @param contentType 内容类型
+     * @return 扩展名
+     */
+    public static String extensionForContentType(String contentType) {
+        if (StringUtil.isBlank(contentType)) {
+            return "bin";
+        }
+        String value = contentType.toLowerCase(Locale.ROOT);
+        if (value.contains("png")) {
+            return "png";
+        }
+        if (value.contains("jpeg") || value.contains("jpg")) {
+            return "jpg";
+        }
+        if (value.contains("gif")) {
+            return "gif";
+        }
+        if (value.contains("webp")) {
+            return "webp";
+        }
+        if (value.contains("bmp")) {
+            return "bmp";
+        }
+        if (value.contains("svg")) {
+            return "svg";
+        }
+        if (value.contains("pdf")) {
+            return "pdf";
+        }
+        if (value.contains("zip")) {
+            return "zip";
+        }
+        if (value.contains("gzip")) {
+            return "gz";
+        }
+        if (value.contains("mp4")) {
+            return "mp4";
+        }
+        if (value.contains("mpeg") || value.contains("mp3")) {
+            return "mp3";
+        }
+        if (value.contains("wav")) {
+            return "wav";
+        }
+        if (value.contains("octet-stream")) {
+            return "bin";
+        }
+        return "bin";
+    }
+
     public static boolean isTextContent(String contentType) {
         if (StringUtil.isBlank(contentType)) {
             return true;
