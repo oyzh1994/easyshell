@@ -10,12 +10,12 @@
         flexWidth="100%" flexHeight="100%">
     <InfoLabel text="%shell.http.overview">
         <VBox.margin>
-            <Insets left="30" top="20"/>
+            <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXLabel text="%shell.http.overviewTip" wrapText="true" realWidth="560" realHeight="40">
         <VBox.margin>
-            <Insets left="30" top="4"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </FXLabel>
     <InfoLabel text="%shell.http.timeout">
@@ -25,7 +25,7 @@
     </InfoLabel>
     <FXLabel fx:id="timeout" realHeight="24">
         <VBox.margin>
-            <Insets left="30" top="2"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </FXLabel>
     <InfoLabel text="%shell.http.collections">
@@ -35,7 +35,7 @@
     </InfoLabel>
     <FXLabel fx:id="collections" realHeight="24">
         <VBox.margin>
-            <Insets left="30" top="2"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </FXLabel>
     <InfoLabel text="%shell.http.requests">
@@ -45,7 +45,7 @@
     </InfoLabel>
     <FXLabel fx:id="requests" realHeight="24">
         <VBox.margin>
-            <Insets left="30" top="2"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </FXLabel>
     <InfoLabel text="%shell.http.environments">
@@ -55,7 +55,7 @@
     </InfoLabel>
     <FXLabel fx:id="environments" realHeight="24">
         <VBox.margin>
-            <Insets left="30" top="2"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </FXLabel>
     <InfoLabel text="%shell.http.activeEnvironment">
@@ -65,7 +65,7 @@
     </InfoLabel>
     <FXLabel fx:id="activeEnvironment" realHeight="24">
         <VBox.margin>
-            <Insets left="30" top="2"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </FXLabel>
 </FXVBox>

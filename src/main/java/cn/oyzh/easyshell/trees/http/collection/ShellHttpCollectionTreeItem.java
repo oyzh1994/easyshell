@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.http.ShellHttpCollection;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
 import cn.oyzh.easyshell.store.http.ShellHttpCollectionStore;
 import cn.oyzh.easyshell.store.http.ShellHttpRequestStore;
+import cn.oyzh.fx.plus.drag.DragNodeItem;
 import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph;
@@ -140,6 +141,56 @@ public class ShellHttpCollectionTreeItem extends ShellHttpTreeItem<ShellHttpColl
         this.workspace().getCollections().remove(this.collection);
         this.reloadTree();
         this.getTreeView().clearSelection();
+        this.tabPane().refreshHomeTab();
+    }
+
+    @Override
+    public boolean allowDrop() {
+        return true;
+    }
+
+    @Override
+    public boolean allowDropNode(DragNodeItem item) {
+        if (!(item instanceof ShellHttpRequestTreeItem requestItem)) {
+            return false;
+        }
+        if (!(((TreeItem<?>) requestItem.getParent()) instanceof ShellHttpCollectionTreeItem parent)) {
+            return false;
+        }
+        return parent.collection() != this.collection;
+    }
+
+    @Override
+    public void onDropNode(DragNodeItem item) {
+        if (!(item instanceof ShellHttpRequestTreeItem requestItem)) {
+            return;
+        }
+        if (!(((TreeItem<?>) requestItem.getParent()) instanceof ShellHttpCollectionTreeItem parent)) {
+            return;
+        }
+        if (parent.collection() == this.collection) {
+            return;
+        }
+        ShellHttpRequest request = requestItem.request();
+        String oldCollectionId = request.getCollectionId();
+        request.setCollectionId(this.collection.getId());
+        if (!ShellHttpRequestStore.INSTANCE.update(request)) {
+            request.setCollectionId(oldCollectionId);
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            return;
+        }
+        parent.collection().getRequests().remove(request);
+        this.collection.getRequests().add(request);
+        this.reloadTree();
+        ShellHttpCollectionsTreeItem category = this.getTreeView().collectionsItem();
+        if (category != null) {
+            category.setExpanded(true);
+            ShellHttpCollectionTreeItem collectionItem = category.collectionItem(this.collection.getId());
+            if (collectionItem != null) {
+                collectionItem.setExpanded(true);
+            }
+        }
+        this.getTreeView().selectData(request);
         this.tabPane().refreshHomeTab();
     }
 

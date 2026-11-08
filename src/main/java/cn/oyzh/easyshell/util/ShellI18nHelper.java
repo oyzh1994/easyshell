@@ -863,10 +863,6 @@ public class ShellI18nHelper {
         return text("shell.http.active");
     }
 
-    public static String httpDuplicate() {
-        return text("shell.http.duplicate");
-    }
-
     public static String httpSetActive() {
         return text("shell.http.setActive");
     }

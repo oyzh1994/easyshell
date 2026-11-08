@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.http.request;
 
 import cn.oyzh.common.file.FileUtil;
-import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
@@ -51,7 +50,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 
 /**
@@ -320,9 +318,9 @@ public class ShellHttpRequestTabController extends RichTabController {
     private boolean loading;
 
     /**
-     * 延迟保存任务
+     * 是否有未保存修改
      */
-    private Future<?> saveFuture;
+    private boolean unsaved;
 
     /**
      * 初始化
@@ -584,11 +582,29 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.request.setParams(new ArrayList<>(this.paramsTable.getItems()));
         this.request.setHeaders(new ArrayList<>(this.headersTable.getItems()));
         this.request.setFormBody(new ArrayList<>(this.formBodyTable.getItems()));
-        if (this.saveFuture != null) {
-            this.saveFuture.cancel(false);
+        this.markUnsaved();
+    }
+
+    /**
+     * 标记为未保存
+     */
+    private void markUnsaved() {
+        if (this.loading || this.request == null) {
+            return;
         }
-        this.saveFuture = TaskManager.startDelay(() -> FXUtil.runLater(
-                () -> ShellHttpRequestStore.INSTANCE.update(this.request)), 300);
+        if (!this.unsaved) {
+            this.unsaved = true;
+            this.flushTab();
+        }
+    }
+
+    /**
+     * 是否有未保存修改
+     *
+     * @return 结果
+     */
+    public boolean isUnsaved() {
+        return unsaved;
     }
 
     /**
@@ -612,10 +628,6 @@ public class ShellHttpRequestTabController extends RichTabController {
     public void flush() {
         if (this.request == null) {
             return;
-        }
-        if (this.saveFuture != null) {
-            this.saveFuture.cancel(false);
-            this.saveFuture = null;
         }
         this.request.setMethod(StringUtil.blankToDefault(
                 this.method.getValue(), ShellHttpRequest.METHOD_GET));
@@ -644,10 +656,8 @@ public class ShellHttpRequestTabController extends RichTabController {
         if (this.item != null) {
             this.item.refreshRequest();
         }
-        if (this.tabPane != null) {
-            this.tabPane.renameRequestTab(this.request.getId(), this.request.getName());
-        }
-        ShellHttpRequestStore.INSTANCE.update(this.request);
+        this.unsaved = !ShellHttpRequestStore.INSTANCE.update(this.request);
+        this.flushTab();
     }
 
     /**

@@ -52,6 +52,7 @@ public class ShellHttpTreeView extends RichTreeView {
      * 构造 HTTP 工作区树
      */
     public ShellHttpTreeView() {
+        this.dragContent = "shell_http_tree_drag";
         this.setShowRoot(true);
         this.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         this.setCellFactory((Callback<TreeView<?>, TreeCell<?>>)

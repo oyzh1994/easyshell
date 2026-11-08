@@ -56,7 +56,7 @@ public class ShellHttpEnvironmentTreeItem extends ShellHttpTreeItem<ShellHttpEnv
         List<MenuItem> items = new ArrayList<>();
         items.add(new FXMenuItem(new OpenSVGGlyph(), I18nHelper.open(), this::open));
         items.add(new FXMenuItem(new ApplySVGGlyph(), ShellI18nHelper.httpSetActive(), this::activate));
-        items.add(new FXMenuItem(new CopySVGGlyph(), ShellI18nHelper.httpDuplicate(), this::duplicate));
+        items.add(new FXMenuItem(new CopySVGGlyph(), I18nHelper.clone1(), this::duplicate));
         items.add(new FXMenuItem(new RenameSVGGlyph(), I18nHelper.rename(), this::rename));
         items.add(new FXMenuItem(new DeleteSVGGlyph(), I18nHelper.delete(), this::delete));
         return items;

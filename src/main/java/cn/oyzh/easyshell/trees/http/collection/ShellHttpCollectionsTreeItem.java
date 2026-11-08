@@ -64,6 +64,23 @@ public class ShellHttpCollectionsTreeItem extends ShellHttpTreeItem<ShellHttpCol
     }
 
     /**
+     * 获取集合节点
+     *
+     * @param collectionId 集合id
+     * @return 集合节点
+     */
+    public ShellHttpCollectionTreeItem collectionItem(String collectionId) {
+        for (TreeItem<?> child : this.unfilteredChildren()) {
+            if (child instanceof ShellHttpCollectionTreeItem item
+                    && collectionId != null
+                    && collectionId.equals(item.collection().getId())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 新增集合
      */
     public void addCollection() {

@@ -79,6 +79,12 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.json(exchange, 200, body);
     }
 
+    /**
+     * 用户名 user
+     * 密码 pass
+     * @param exchange
+     * @throws IOException
+     */
     private void basicAuth(HttpExchange exchange) throws IOException {
         boolean accepted = "Basic dXNlcjpwYXNz".equals(first(exchange.getRequestHeaders(), "Authorization"));
         this.json(exchange, accepted ? 200 : 401,

@@ -37,7 +37,11 @@ public class ShellHttpRequestTab extends RichTab {
         if (request == null) {
             return ShellI18nHelper.httpUntitledRequest();
         }
-        return StringUtil.blankToDefault(request.getName(), ShellI18nHelper.httpUntitledRequest());
+        String name = StringUtil.blankToDefault(request.getName(), ShellI18nHelper.httpUntitledRequest());
+        if (this.controller() != null && this.controller().isUnsaved()) {
+            name += "*";
+        }
+        return name;
     }
 
     @Override
@@ -70,8 +74,7 @@ public class ShellHttpRequestTab extends RichTab {
         if (this.controller() != null) {
             this.controller().rename(name);
         }
-        this.setText(name);
-        this.setTipText(name);
+        this.flushTitle();
     }
 
     /**

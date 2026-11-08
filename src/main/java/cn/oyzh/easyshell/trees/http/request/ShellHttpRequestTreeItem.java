@@ -52,10 +52,15 @@ public class ShellHttpRequestTreeItem extends ShellHttpTreeItem<ShellHttpRequest
     }
 
     @Override
+    public boolean allowDrag() {
+        return true;
+    }
+
+    @Override
     public List<MenuItem> getMenuItems() {
         List<MenuItem> items = new ArrayList<>();
         items.add(new FXMenuItem(new OpenSVGGlyph(), I18nHelper.open(), this::open));
-        items.add(new FXMenuItem(new CopySVGGlyph(), ShellI18nHelper.httpDuplicate(), this::duplicate));
+        items.add(new FXMenuItem(new CopySVGGlyph(), I18nHelper.clone1(), this::duplicate));
         items.add(new FXMenuItem(new RenameSVGGlyph(), I18nHelper.rename(), this::rename));
         items.add(new FXMenuItem(new DeleteSVGGlyph(), I18nHelper.delete(), this::delete));
         return items;
