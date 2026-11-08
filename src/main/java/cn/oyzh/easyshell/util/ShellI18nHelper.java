@@ -895,6 +895,14 @@ public class ShellI18nHelper {
         return text("shell.http.header");
     }
 
+    public static String httpKeyPlaceholder() {
+        return text("shell.http.keyPlaceholder");
+    }
+
+    public static String httpValuePlaceholder() {
+        return text("shell.http.valuePlaceholder");
+    }
+
     public static String httpBodyRaw() {
         return text("shell.http.bodyRaw");
     }
@@ -929,10 +937,6 @@ public class ShellI18nHelper {
 
     public static String httpApiKeyAuth() {
         return text("shell.http.apiKeyAuth");
-    }
-
-    public static String httpSeconds() {
-        return text("shell.http.seconds");
     }
 
     public static String httpConfirmDelete(Object name) {

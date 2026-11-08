@@ -1,9 +1,12 @@
 package cn.oyzh.easyshell.fx.http;
 
 import cn.oyzh.easyshell.http.ShellHttpKeyValue;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
@@ -11,14 +14,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.IdentityHashMap;
 import java.util.Set;
 
@@ -72,18 +75,16 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
         key.setEditable(true);
         key.setSortable(false);
         key.setCellValueFactory(cell -> cell.getValue().keyProperty());
-        key.setCellFactory(TextFieldTableCell.forTableColumn());
-        key.setOnEditCommit(event -> {
-            if (event.getRowValue() != null) {
-                event.getRowValue().setKey(event.getNewValue());
-            }
-        });
+        key.setEditable(false);
+        key.setCellFactory(column -> new ShellHttpTextInputCell(
+                ShellHttpKeyValue::getKey, ShellHttpKeyValue::setKey,
+                ShellI18nHelper.httpKeyPlaceholder()));
 
         // 值/文件列
         FXTableColumn<ShellHttpKeyValue, String> value = new FXTableColumn<>();
         value.setText(I18nHelper.value());
         value.setPrefWidth(420);
-        value.setEditable(true);
+        value.setEditable(false);
         value.setSortable(false);
         value.setCellValueFactory(cell -> cell.getValue().valueProperty());
         value.setCellFactory(column -> new ValueCell());
@@ -159,7 +160,7 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
         /**
          * 文本输入
          */
-        private final TextField textField = new TextField();
+        private final ClearableTextField textField = new ClearableTextField();
 
         /**
          * 文件选择
@@ -199,6 +200,13 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
         {
             this.box.setPrefHeight(28);
             this.box.setSpacing(6);
+            this.box.setAlignment(Pos.CENTER_LEFT);
+            this.textField.setRealHeight(26);
+            this.textField.setPromptText(ShellI18nHelper.httpValuePlaceholder());
+            this.box.prefWidthProperty().bind(this.widthProperty().subtract(6));
+            TableViewUtil.selectRowOnMouseClicked(this.textField);
+            TableViewUtil.selectRowOnMouseClicked(this.fileField);
+            TableViewUtil.selectRowOnMouseClicked(this.fileBox);
             HBox.setHgrow(this.editorBox, Priority.ALWAYS);
             this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             this.textField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -237,8 +245,12 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
                 return;
             }
             this.updating = true;
-            this.textField.setText(this.row.getValue());
-            this.fileField.setText(this.row.isFile() ? this.row.getValue() : "");
+            if (!this.textField.isFocused() && !Objects.equals(this.textField.getText(), this.row.getValue())) {
+                this.textField.setText(this.row.getValue());
+            }
+            if (!Objects.equals(this.fileField.getText(), this.row.isFile() ? this.row.getValue() : "")) {
+                this.fileField.setText(this.row.isFile() ? this.row.getValue() : "");
+            }
             this.fileBox.setSelected(this.row.isFile());
             this.updating = false;
             this.render();
@@ -253,15 +265,22 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
             }
             boolean file = this.row.isFile();
             this.updating = true;
-            this.textField.setText(this.row.getValue());
-            this.fileField.setText(file ? this.row.getValue() : "");
+            if (!this.textField.isFocused() && !Objects.equals(this.textField.getText(), this.row.getValue())) {
+                this.textField.setText(this.row.getValue());
+            }
+            String fileValue = file ? this.row.getValue() : "";
+            if (!Objects.equals(this.fileField.getText(), fileValue)) {
+                this.fileField.setText(fileValue);
+            }
             this.fileBox.setSelected(file);
             this.updating = false;
             this.textField.setVisible(!file);
             this.textField.setManaged(!file);
             this.fileField.setVisible(file);
             this.fileField.setManaged(file);
-            this.setGraphic(this.box);
+            if (this.getGraphic() != this.box) {
+                this.setGraphic(this.box);
+            }
         }
     }
 }

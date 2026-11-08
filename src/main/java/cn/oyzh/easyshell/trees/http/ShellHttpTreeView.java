@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.trees.http;
 import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.http.ShellHttpWorkspace;
 import cn.oyzh.easyshell.tabs.http.ShellHttpTabPane;
+import cn.oyzh.easyshell.trees.http.collection.ShellHttpCollectionTreeItem;
 import cn.oyzh.easyshell.trees.http.collection.ShellHttpCollectionsTreeItem;
 import cn.oyzh.easyshell.trees.http.environment.ShellHttpEnvironmentsTreeItem;
 import cn.oyzh.easyshell.trees.http.root.ShellHttpRootTreeItem;
@@ -12,6 +13,11 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javafx.util.Callback;
 
 /**
@@ -21,6 +27,11 @@ import javafx.util.Callback;
  * @since 2026-11-07
  */
 public class ShellHttpTreeView extends RichTreeView {
+
+    /**
+     * 各连接的树展开状态
+     */
+    private static final Map<String, ExpansionState> EXPANSION_STATES = new HashMap<>();
 
     /**
      * 工作区
@@ -69,6 +80,7 @@ public class ShellHttpTreeView extends RichTreeView {
         this.setRoot(new ShellHttpRootTreeItem(this));
         this.root().loadChild();
         this.root().setExpanded(true);
+        this.restoreExpansionState(this.currentExpansionState());
     }
 
     /**
@@ -76,13 +88,99 @@ public class ShellHttpTreeView extends RichTreeView {
      */
     public void reload() {
         Object selected = this.selectedData();
+        ExpansionState state = this.captureExpansionState();
+        this.saveExpansionState(state);
         this.loadItems();
+        this.restoreExpansionState(state);
         if (this.getItemFilter().getKw() != null && !this.getItemFilter().getKw().isBlank()) {
             this.root().doFilter();
         }
         if (selected != null) {
             this.selectData(selected);
         }
+    }
+
+    /**
+     * 保存当前展开状态
+     */
+    public void saveExpansionState() {
+        this.saveExpansionState(this.captureExpansionState());
+    }
+
+    /**
+     * 保存展开状态
+     *
+     * @param state 展开状态
+     */
+    private void saveExpansionState(ExpansionState state) {
+        String iid = this.workspace == null ? null : this.workspace.getIid();
+        if (iid != null) {
+            EXPANSION_STATES.put(iid, state);
+        }
+    }
+
+    /**
+     * 获取当前连接保存的展开状态
+     *
+     * @return 展开状态
+     */
+    private ExpansionState currentExpansionState() {
+        String iid = this.workspace == null ? null : this.workspace.getIid();
+        return iid == null ? null : EXPANSION_STATES.get(iid);
+    }
+
+    /**
+     * 记录当前展开状态
+     *
+     * @return 展开状态
+     */
+    private ExpansionState captureExpansionState() {
+        ShellHttpCollectionsTreeItem collections = this.collectionsItem();
+        ShellHttpEnvironmentsTreeItem environments = this.environmentsItem();
+        Set<String> collectionIds = new HashSet<>();
+        if (collections != null) {
+            for (TreeItem<?> child : collections.unfilteredChildren()) {
+                if (child instanceof ShellHttpCollectionTreeItem item && item.isExpanded()) {
+                    collectionIds.add(item.collection().getId());
+                }
+            }
+        }
+        return new ExpansionState(
+                collections != null && collections.isExpanded(),
+                environments != null && environments.isExpanded(),
+                collectionIds);
+    }
+
+    /**
+     * 恢复展开状态
+     *
+     * @param state 展开状态
+     */
+    private void restoreExpansionState(ExpansionState state) {
+        if (state == null) {
+            return;
+        }
+        ShellHttpCollectionsTreeItem collections = this.collectionsItem();
+        if (collections != null) {
+            collections.setExpanded(state.collectionsExpanded());
+            for (TreeItem<?> child : collections.unfilteredChildren()) {
+                if (child instanceof ShellHttpCollectionTreeItem item
+                        && state.collectionIds().contains(item.collection().getId())) {
+                    item.setExpanded(true);
+                }
+            }
+        }
+        ShellHttpEnvironmentsTreeItem environments = this.environmentsItem();
+        if (environments != null) {
+            environments.setExpanded(state.environmentsExpanded());
+        }
+    }
+
+    /**
+     * 树展开状态
+     */
+    private record ExpansionState(boolean collectionsExpanded, boolean environmentsExpanded,
+                                  Set<String> collectionIds) {
     }
 
     @Override

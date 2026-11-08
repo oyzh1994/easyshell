@@ -1,13 +1,13 @@
 package cn.oyzh.easyshell.fx.http;
 
 import cn.oyzh.easyshell.http.ShellHttpKeyValue;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -63,12 +63,10 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
         key.setEditable(true);
         key.setSortable(false);
         key.setCellValueFactory(cell -> cell.getValue().keyProperty());
-        key.setCellFactory(TextFieldTableCell.forTableColumn());
-        key.setOnEditCommit(event -> {
-            if (event.getRowValue() != null) {
-                event.getRowValue().setKey(event.getNewValue());
-            }
-        });
+        key.setEditable(false);
+        key.setCellFactory(column -> new ShellHttpTextInputCell(
+                ShellHttpKeyValue::getKey, ShellHttpKeyValue::setKey,
+                ShellI18nHelper.httpKeyPlaceholder()));
 
         // 值列
         FXTableColumn<ShellHttpKeyValue, String> value = new FXTableColumn<>();
@@ -77,12 +75,10 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
         value.setEditable(true);
         value.setSortable(false);
         value.setCellValueFactory(cell -> cell.getValue().valueProperty());
-        value.setCellFactory(TextFieldTableCell.forTableColumn());
-        value.setOnEditCommit(event -> {
-            if (event.getRowValue() != null) {
-                event.getRowValue().setValue(event.getNewValue());
-            }
-        });
+        value.setEditable(false);
+        value.setCellFactory(column -> new ShellHttpTextInputCell(
+                ShellHttpKeyValue::getValue, ShellHttpKeyValue::setValue,
+                ShellI18nHelper.httpValuePlaceholder()));
 
         this.getColumns().setAll(java.util.List.of(enabled, key, value));
         this.setEditable(true);

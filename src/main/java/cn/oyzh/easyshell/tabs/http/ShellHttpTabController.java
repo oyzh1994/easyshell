@@ -218,6 +218,9 @@ public class ShellHttpTabController extends ShellBaseTabController {
 
     @Override
     public void onTabClosed(Event event) {
+        if (this.treeView != null) {
+            this.treeView.saveExpansionState();
+        }
         if (this.tabPane != null) {
             this.tabPane.closeAllTabs();
         }

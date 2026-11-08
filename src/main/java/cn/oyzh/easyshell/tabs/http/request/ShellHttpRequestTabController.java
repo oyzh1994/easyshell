@@ -22,17 +22,17 @@ import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
-import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.chooser.FXChooser;
+import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyHandler;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
@@ -50,6 +50,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
@@ -251,7 +252,7 @@ public class ShellHttpRequestTabController extends RichTabController {
      * 响应头表格模式
      */
     @FXML
-    private FXCheckBox responseHeadersTableMode;
+    private FXToggleSwitch responseHeadersTableMode;
 
     /**
      * 响应头表格
@@ -281,7 +282,7 @@ public class ShellHttpRequestTabController extends RichTabController {
      * 保存响应正文
      */
     @FXML
-    private SaveSVGGlyph saveResponseBody;
+    private FXButton saveResponseBody;
 
     /**
      * 响应原始正文
@@ -839,9 +840,12 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         try {
             String extension = this.responseBodyExtension();
+            FileExtensionFilter filter = new FileExtensionFilter(
+                    extension.toUpperCase(Locale.ROOT), "*." + extension);
             File file = FileChooserHelper.save(I18nHelper.saveFile(), "response." + extension,
-                    FXChooser.allExtensionFilter(), this.getWindow());
+                    filter, this.getWindow());
             if (file != null) {
+                file = this.ensureResponseBodyExtension(file, extension);
                 FileUtil.writeUtf8String(this.responseBodyRaw, file);
                 MessageBox.info(I18nHelper.operationSuccess(), this.getWindow());
             }
@@ -851,12 +855,31 @@ public class ShellHttpRequestTabController extends RichTabController {
     }
 
     /**
+     * 确保响应正文文件使用实际格式后缀
+     *
+     * @param file      文件
+     * @param extension 扩展名
+     * @return 文件
+     */
+    private File ensureResponseBodyExtension(File file, String extension) {
+        String suffix = "." + extension.toLowerCase(Locale.ROOT);
+        String name = file.getName();
+        if (name.toLowerCase(Locale.ROOT).endsWith(suffix)) {
+            return file;
+        }
+        int index = name.lastIndexOf('.');
+        String baseName = index > 0 ? name.substring(0, index) : name;
+        return new File(file.getParentFile(), baseName + suffix);
+    }
+
+    /**
      * 响应正文文件扩展名
      *
      * @return 扩展名
      */
     private String responseBodyExtension() {
-        String format = this.responseFormat.getValue();
+        // 文件后缀使用响应内容的实际格式，而不是当前显示格式
+        String format = this.response == null ? null : this.detectResponseFormat(this.response);
         return switch (format == null ? "" : format) {
             case "JSON" -> "json";
             case "XML" -> "xml";

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.tabs.http.home;
 import cn.oyzh.easyshell.domain.http.ShellHttpEnvironment;
 import cn.oyzh.easyshell.http.ShellHttpWorkspace;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
@@ -80,7 +81,7 @@ public class ShellHttpHomeTabController extends RichTabController {
         }
         this.workspace = workspace;
         this.timeout.text(workspace.getSettings().getTimeoutSeconds() + " "
-                + ShellI18nHelper.httpSeconds());
+                + I18nHelper.seconds());
         this.collections.text(String.valueOf(workspace.getCollections().size()));
         this.requests.text(String.valueOf(workspace.requestCount()));
         this.environments.text(String.valueOf(workspace.getEnvironments().size()));

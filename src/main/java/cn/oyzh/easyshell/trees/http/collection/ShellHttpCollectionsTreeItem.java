@@ -33,7 +33,6 @@ public class ShellHttpCollectionsTreeItem extends ShellHttpTreeItem<ShellHttpCol
         super.setFilterable(true);
         super.setSortable(false);
         this.setValue(new ShellHttpCollectionsTreeItemValue(this));
-        this.setExpanded(true);
     }
 
     @Override
@@ -56,7 +55,6 @@ public class ShellHttpCollectionsTreeItem extends ShellHttpTreeItem<ShellHttpCol
         }
         this.setChild(items);
         this.setLoaded(true);
-        this.setExpanded(true);
     }
 
     @Override
@@ -88,10 +86,5 @@ public class ShellHttpCollectionsTreeItem extends ShellHttpTreeItem<ShellHttpCol
         this.reloadTree();
         this.getTreeView().selectData(collection);
         this.tabPane().refreshHomeTab();
-    }
-
-    @Override
-    public void onPrimaryDoubleClick() {
-        this.setExpanded(!this.isExpanded());
     }
 }

@@ -35,7 +35,6 @@ public class ShellHttpEnvironmentsTreeItem extends ShellHttpTreeItem<ShellHttpEn
         super.setFilterable(true);
         super.setSortable(false);
         this.setValue(new ShellHttpEnvironmentsTreeItemValue(this));
-        this.setExpanded(true);
     }
 
     @Override
@@ -58,7 +57,6 @@ public class ShellHttpEnvironmentsTreeItem extends ShellHttpTreeItem<ShellHttpEn
         }
         this.setChild(items);
         this.setLoaded(true);
-        this.setExpanded(true);
     }
 
     @Override
@@ -96,10 +94,5 @@ public class ShellHttpEnvironmentsTreeItem extends ShellHttpTreeItem<ShellHttpEn
         this.getTreeView().selectData(environment);
         this.getTreeView().refreshEnvironmentCombo();
         this.tabPane().refreshHomeTab();
-    }
-
-    @Override
-    public void onPrimaryDoubleClick() {
-        this.setExpanded(!this.isExpanded());
     }
 }

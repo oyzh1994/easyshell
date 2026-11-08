@@ -45,7 +45,6 @@ public class ShellHttpCollectionTreeItem extends ShellHttpTreeItem<ShellHttpColl
         super.setFilterable(true);
         this.collection = collection;
         this.setValue(new ShellHttpCollectionTreeItemValue(this));
-        this.setExpanded(true);
         this.loadChild();
     }
 
@@ -71,7 +70,6 @@ public class ShellHttpCollectionTreeItem extends ShellHttpTreeItem<ShellHttpColl
         }
         this.setChild(items);
         this.setLoaded(true);
-        this.setExpanded(true);
     }
 
     @Override
@@ -152,10 +150,5 @@ public class ShellHttpCollectionTreeItem extends ShellHttpTreeItem<ShellHttpColl
      */
     public ShellHttpCollection collection() {
         return collection;
-    }
-
-    @Override
-    public void onPrimaryDoubleClick() {
-        this.setExpanded(!this.isExpanded());
     }
 }

@@ -14,26 +14,9 @@
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.http.settings.ShellHttpSettingsTabController"
         flexWidth="100%" flexHeight="100%">
-    <InfoLabel text="%shell.http.settings">
-        <VBox.margin>
-            <Insets left="20" top="20"/>
-        </VBox.margin>
-    </InfoLabel>
-
-    <InfoLabel text="%shell.http.activeEnvironment">
-        <VBox.margin>
-            <Insets left="20" top="18"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXComboBox fx:id="environmentCombo" realHeight="30" flexWidth="100% - 140">
-        <VBox.margin>
-            <Insets left="20" top="6"/>
-        </VBox.margin>
-    </FXComboBox>
-
     <InfoLabel text="%shell.http.timeout">
         <VBox.margin>
-            <Insets left="20" top="18"/>
+            <Insets left="20" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXHBox>
@@ -42,27 +25,35 @@
                 <Insets left="20"/>
             </HBox.margin>
         </NumberTextField>
-        <FXLabel text="%shell.http.seconds" realHeight="24">
+        <FXLabel text="%base.seconds" realHeight="24">
             <HBox.margin>
-                <Insets left="8" top="4"/>
+                <Insets left="5" top="4"/>
             </HBox.margin>
         </FXLabel>
     </FXHBox>
-
+    <InfoLabel text="%shell.http.activeEnvironment">
+        <VBox.margin>
+            <Insets left="20" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXComboBox fx:id="environmentCombo" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="20" top="5"/>
+        </VBox.margin>
+    </FXComboBox>
     <InfoLabel text="%shell.http.httpVersion">
         <VBox.margin>
-            <Insets left="20" top="18"/>
+            <Insets left="20" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXComboBox fx:id="httpVersion" realHeight="30" flexWidth="100% - 140">
         <VBox.margin>
-            <Insets left="20" top="6"/>
+            <Insets left="20" top="5"/>
         </VBox.margin>
     </FXComboBox>
-
     <InfoLabel text="%shell.http.options">
         <VBox.margin>
-            <Insets left="20" top="18"/>
+            <Insets left="20" top="10"/>
         </VBox.margin>
     </InfoLabel>
     <FXHBox flexWidth="100%" realHeight="32">
@@ -73,16 +64,15 @@
         </FXCheckBox>
         <FXCheckBox fx:id="verifySsl" text="%shell.http.verifySsl">
             <HBox.margin>
-                <Insets left="18" top="5"/>
+                <Insets left="10" top="5"/>
             </HBox.margin>
         </FXCheckBox>
         <FXCheckBox fx:id="prettyJson" text="%shell.http.prettyJson">
             <HBox.margin>
-                <Insets left="18" top="5"/>
+                <Insets left="10" top="5"/>
             </HBox.margin>
         </FXCheckBox>
     </FXHBox>
-
     <FXVBox VBox.vgrow="ALWAYS"/>
     <FXHBox flexWidth="100%" realHeight="50">
         <SaveButton onAction="#save">

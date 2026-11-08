@@ -23,6 +23,8 @@
 <?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
+<?import atlantafx.base.controls.ToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
         fx:controller="cn.oyzh.easyshell.tabs.http.request.ShellHttpRequestTabController"
         fx:id="root" flexWidth="100%" flexHeight="100%">
@@ -41,18 +43,18 @@
         <SendSVGGlyph fx:id="send" tipText="%shell.http.sendTip"
                       onMousePrimaryClicked="#sendRequest">
             <HBox.margin>
-                <Insets left="10" top="13"/>
+                <Insets left="10" top="15"/>
             </HBox.margin>
         </SendSVGGlyph>
         <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#saveRequest">
             <HBox.margin>
-                <Insets left="8" top="13"/>
+                <Insets left="10" top="15"/>
             </HBox.margin>
         </SaveSVGGlyph>
     </FXHBox>
     <FXSplitPane orientation="VERTICAL" dividerPositions="0.48"
                  flexWidth="100%" flexHeight="100% - 48">
-        <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXVBox flexWidth="100%">
             <RichTabPane fx:id="requestTabPane" flexWidth="100%" flexHeight="100%"
                          tabMinHeight="28" tabClosingPolicy="UNAVAILABLE" side="TOP">
                 <FixedTab text="%shell.http.params">
@@ -285,7 +287,7 @@
                 </FixedTab>
             </RichTabPane>
         </FXVBox>
-        <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXVBox flexWidth="100%" >
             <FXHBox flexWidth="100%" realHeight="38">
                 <InfoLabel text="%shell.http.response">
                     <HBox.margin>
@@ -313,15 +315,15 @@
                         <Insets left="10" top="6"/>
                     </HBox.margin>
                 </FXButton>
-                <SaveSVGGlyph fx:id="saveResponseBody" tipText="%shell.http.saveResponseBody"
-                              disable="true" onMousePrimaryClicked="#saveResponseBody">
+                <FXButton fx:id="saveResponseBody" text="%shell.http.saveResponseBody"
+                          onAction="#saveResponseBody" realHeight="26" disable="true">
                     <HBox.margin>
-                        <Insets left="10" top="9"/>
+                        <Insets left="10" top="6"/>
                     </HBox.margin>
-                </SaveSVGGlyph>
+                </FXButton>
             </FXHBox>
             <RichTabPane fx:id="responseTabPane" flexWidth="100%" flexHeight="100% - 38"
-                         tabMinHeight="28" tabClosingPolicy="UNAVAILABLE" side="TOP">
+                         tabMinHeight="28" tabClosingPolicy="UNAVAILABLE">
                 <FixedTab text="%shell.http.responseBody">
                     <FXVBox flexWidth="100%" flexHeight="100%">
                         <FXHBox flexWidth="100%" realHeight="36" alignment="CENTER_LEFT">
@@ -343,12 +345,12 @@
                 <FixedTab text="%shell.http.responseHeaders">
                     <FXVBox flexWidth="100%" flexHeight="100%">
                         <FXHBox flexWidth="100%" realHeight="32">
-                            <FXCheckBox fx:id="responseHeadersTableMode"
-                                        text="%shell.http.responseHeadersTable" selected="true">
+                            <FXToggleSwitch fx:id="responseHeadersTableMode"
+                                            text="%shell.http.responseHeadersTable" selected="true">
                                 <HBox.margin>
                                     <Insets left="8" top="4"/>
                                 </HBox.margin>
-                            </FXCheckBox>
+                            </FXToggleSwitch>
                         </FXHBox>
                         <ShellHttpResponseHeadersTableView fx:id="responseHeadersTable"
                                                           flexWidth="100%" flexHeight="100% - 32"/>

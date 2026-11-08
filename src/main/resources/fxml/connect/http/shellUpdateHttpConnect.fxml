@@ -39,7 +39,7 @@
                 <Insets left="30" top="5"/>
             </HBox.margin>
         </NumberTextField>
-        <FXLabel text="%shell.http.seconds" realHeight="24">
+        <FXLabel text="%base.seconds" realHeight="24">
             <HBox.margin>
                 <Insets left="8" top="9"/>
             </HBox.margin>
