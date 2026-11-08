@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
-<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.button.SaveButton?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -19,73 +19,76 @@
             <Insets left="20" top="20"/>
         </VBox.margin>
     </InfoLabel>
-    <FXHBox flexWidth="100%" realHeight="44">
-        <InfoLabel text="%shell.http.activeEnvironment">
+
+    <InfoLabel text="%shell.http.activeEnvironment">
+        <VBox.margin>
+            <Insets left="20" top="18"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXComboBox fx:id="environmentCombo" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="20" top="6"/>
+        </VBox.margin>
+    </FXComboBox>
+
+    <InfoLabel text="%shell.http.timeout">
+        <VBox.margin>
+            <Insets left="20" top="18"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <NumberTextField fx:id="timeout" min="1" max="600" realHeight="30" realWidth="140">
             <HBox.margin>
-                <Insets left="20" top="14"/>
-            </HBox.margin>
-        </InfoLabel>
-        <FXComboBox fx:id="environmentCombo" realHeight="28" realWidth="220">
-            <HBox.margin>
-                <Insets left="10" top="8"/>
-            </HBox.margin>
-        </FXComboBox>
-    </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="44">
-        <InfoLabel text="%shell.http.timeout">
-            <HBox.margin>
-                <Insets left="20" top="14"/>
-            </HBox.margin>
-        </InfoLabel>
-        <NumberTextField fx:id="timeout" min="1" max="600" realHeight="28"
-                         realWidth="120">
-            <HBox.margin>
-                <Insets left="10" top="8"/>
+                <Insets left="20"/>
             </HBox.margin>
         </NumberTextField>
         <FXLabel text="%shell.http.seconds" realHeight="24">
             <HBox.margin>
-                <Insets left="8" top="11"/>
+                <Insets left="8" top="4"/>
             </HBox.margin>
         </FXLabel>
     </FXHBox>
-    <FXHBox flexWidth="100%" realHeight="44">
-        <InfoLabel text="%shell.http.httpVersion">
+
+    <InfoLabel text="%shell.http.httpVersion">
+        <VBox.margin>
+            <Insets left="20" top="18"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXComboBox fx:id="httpVersion" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="20" top="6"/>
+        </VBox.margin>
+    </FXComboBox>
+
+    <InfoLabel text="%shell.http.options">
+        <VBox.margin>
+            <Insets left="20" top="18"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox flexWidth="100%" realHeight="32">
+        <FXCheckBox fx:id="followRedirects" text="%shell.http.followRedirects">
             <HBox.margin>
-                <Insets left="20" top="14"/>
+                <Insets left="20" top="5"/>
             </HBox.margin>
-        </InfoLabel>
-        <FXComboBox fx:id="httpVersion" realHeight="28" realWidth="170">
+        </FXCheckBox>
+        <FXCheckBox fx:id="verifySsl" text="%shell.http.verifySsl">
             <HBox.margin>
-                <Insets left="10" top="8"/>
+                <Insets left="18" top="5"/>
             </HBox.margin>
-        </FXComboBox>
+        </FXCheckBox>
+        <FXCheckBox fx:id="prettyJson" text="%shell.http.prettyJson">
+            <HBox.margin>
+                <Insets left="18" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
     </FXHBox>
-    <FXLabel text="%shell.http.httpVersionTip" wrapText="true" realWidth="560" realHeight="20">
-        <VBox.margin>
-            <Insets left="20" top="2"/>
-        </VBox.margin>
-    </FXLabel>
-    <FXCheckBox fx:id="followRedirects" text="%shell.http.followRedirects">
-        <VBox.margin>
-            <Insets left="20" top="8"/>
-        </VBox.margin>
-    </FXCheckBox>
-    <FXCheckBox fx:id="verifySsl" text="%shell.http.verifySsl">
-        <VBox.margin>
-            <Insets left="20" top="12"/>
-        </VBox.margin>
-    </FXCheckBox>
-    <FXCheckBox fx:id="prettyJson" text="%shell.http.prettyJson">
-        <VBox.margin>
-            <Insets left="20" top="12"/>
-        </VBox.margin>
-    </FXCheckBox>
+
+    <FXVBox VBox.vgrow="ALWAYS"/>
     <FXHBox flexWidth="100%" realHeight="50">
-        <SaveSVGGlyph tipText="%base.save" onMousePrimaryClicked="#save">
+        <SaveButton onAction="#save">
             <HBox.margin>
-                <Insets left="20" top="12"/>
+                <Insets left="20" top="10"/>
             </HBox.margin>
-        </SaveSVGGlyph>
+        </SaveButton>
     </FXHBox>
 </FXVBox>

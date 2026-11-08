@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.easyshell.fx.http.ShellHttpFormDataTableView?>
+<?import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView?>
 <?import cn.oyzh.easyshell.fx.http.ShellHttpKeyValueTableView?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ChooseFileTextField?>
 <?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.tabs.RichTabPane?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
@@ -93,26 +97,26 @@
                 </FixedTab>
                 <FixedTab text="%shell.http.body">
                     <FXVBox flexWidth="100%" flexHeight="100%">
-                        <FXHBox flexWidth="100%" realHeight="40">
-                            <InfoLabel text="%shell.http.bodyType">
+                        <FXHBox flexWidth="100%" realHeight="42">
+                            <InfoLabel text="%shell.http.bodyType" realWidth="90">
                                 <HBox.margin>
-                                    <Insets left="8" top="12"/>
+                                    <Insets left="8" top="6"/>
                                 </HBox.margin>
                             </InfoLabel>
-                            <FXComboBox fx:id="bodyType" realHeight="28" realWidth="130">
+                            <FXComboBox fx:id="bodyType" realHeight="28" realWidth="180">
                                 <HBox.margin>
-                                    <Insets left="6" top="6"/>
+                                    <Insets left="8" top="7"/>
                                 </HBox.margin>
                             </FXComboBox>
-                            <FXHBox fx:id="rawContentTypeBox" realHeight="40">
-                                <InfoLabel text="%shell.http.contentType">
+                            <FXHBox fx:id="rawContentTypeBox" realHeight="42">
+                                <InfoLabel text="%shell.http.contentType" realWidth="90">
                                     <HBox.margin>
-                                        <Insets left="12" top="12"/>
+                                        <Insets left="12" top="6"/>
                                     </HBox.margin>
                                 </InfoLabel>
                                 <FXComboBox fx:id="rawContentType" realHeight="28" realWidth="230">
                                     <HBox.margin>
-                                        <Insets left="6" top="6"/>
+                                        <Insets left="8" top="7"/>
                                     </HBox.margin>
                                 </FXComboBox>
                                 <HBox.margin>
@@ -120,7 +124,40 @@
                                 </HBox.margin>
                             </FXHBox>
                         </FXHBox>
-                        <FXVBox fx:id="formBodyBox" flexWidth="100%" flexHeight="100% - 40"
+                        <FXHBox fx:id="binaryBodyBox" flexWidth="100%" realHeight="42"
+                                visible="false" managed="false">
+                            <InfoLabel text="%shell.http.bodyFile" realWidth="90">
+                                <HBox.margin>
+                                    <Insets left="8" top="6"/>
+                                </HBox.margin>
+                            </InfoLabel>
+                            <ChooseFileTextField fx:id="bodyFile" realHeight="28"
+                                                flexWidth="100% - 130">
+                                <HBox.margin>
+                                    <Insets left="8" top="7"/>
+                                </HBox.margin>
+                            </ChooseFileTextField>
+                        </FXHBox>
+                        <FXVBox fx:id="formDataBodyBox" flexWidth="100%" flexHeight="100% - 42"
+                                visible="false" managed="false">
+                            <FXHBox flexWidth="100%" realHeight="32">
+                                <AddSVGGlyph tipText="%shell.http.addFormField"
+                                             onMousePrimaryClicked="#addFormData">
+                                    <HBox.margin>
+                                        <Insets left="6" top="5"/>
+                                    </HBox.margin>
+                                </AddSVGGlyph>
+                                <DeleteSVGGlyph tipText="%shell.http.deleteFormField"
+                                                onMousePrimaryClicked="#deleteFormData">
+                                    <HBox.margin>
+                                        <Insets left="6" top="5"/>
+                                    </HBox.margin>
+                                </DeleteSVGGlyph>
+                            </FXHBox>
+                            <ShellHttpFormDataTableView fx:id="formDataTable"
+                                                        flexWidth="100%" flexHeight="100% - 32"/>
+                        </FXVBox>
+                        <FXVBox fx:id="formBodyBox" flexWidth="100%" flexHeight="100% - 42"
                                 visible="false" managed="false">
                             <FXHBox flexWidth="100%" realHeight="32">
                                 <AddSVGGlyph tipText="%shell.http.addFormField"
@@ -139,7 +176,7 @@
                             <ShellHttpKeyValueTableView fx:id="formBodyTable"
                                                         flexWidth="100%" flexHeight="100% - 32"/>
                         </FXVBox>
-                        <FXHBox fx:id="rawBodyBox" flexWidth="100%" flexHeight="100% - 40"
+                        <FXHBox fx:id="rawBodyBox" flexWidth="100%" flexHeight="100% - 42"
                                 visible="false" managed="false">
                             <ShellDataEditor fx:id="requestBody" flexWidth="100%" flexHeight="100%"/>
                         </FXHBox>
@@ -148,88 +185,96 @@
                 <FixedTab text="%shell.http.auth">
                     <FXVBox flexWidth="100%" flexHeight="100%">
                         <FXHBox flexWidth="100%" realHeight="42">
-                            <InfoLabel text="%shell.http.authType">
+                            <InfoLabel text="%shell.http.authType" realWidth="90">
                                 <HBox.margin>
-                                    <Insets left="10" top="13"/>
+                                    <Insets left="10" top="6"/>
                                 </HBox.margin>
                             </InfoLabel>
-                            <FXComboBox fx:id="authType" realHeight="28" realWidth="170">
+                            <FXComboBox fx:id="authType" realHeight="28" flexWidth="100% - 130">
                                 <HBox.margin>
                                     <Insets left="8" top="7"/>
                                 </HBox.margin>
                             </FXComboBox>
                         </FXHBox>
-                        <FXHBox fx:id="basicAuthBox" flexWidth="100%" realHeight="42"
-                                visible="false" managed="false">
-                            <InfoLabel text="%base.userName">
-                                <HBox.margin>
-                                    <Insets left="10" top="13"/>
-                                </HBox.margin>
-                            </InfoLabel>
-                            <ClearableTextField fx:id="authUser" realHeight="28" realWidth="190">
-                                <HBox.margin>
-                                    <Insets left="8" top="7"/>
-                                </HBox.margin>
-                            </ClearableTextField>
-                            <InfoLabel text="%base.password">
-                                <HBox.margin>
-                                    <Insets left="12" top="13"/>
-                                </HBox.margin>
-                            </InfoLabel>
-                            <PasswordTextField fx:id="authPassword" realHeight="28" realWidth="190">
-                                <HBox.margin>
-                                    <Insets left="8" top="7"/>
-                                </HBox.margin>
-                            </PasswordTextField>
-                        </FXHBox>
-                        <FXHBox fx:id="bearerAuthBox" flexWidth="100%" realHeight="42"
-                                visible="false" managed="false">
-                            <InfoLabel text="%base.token">
-                                <HBox.margin>
-                                    <Insets left="10" top="13"/>
-                                </HBox.margin>
-                            </InfoLabel>
-                            <PasswordTextField fx:id="authToken" realHeight="28"
-                                               flexWidth="100% - 150">
-                                <HBox.margin>
-                                    <Insets left="8" top="7"/>
-                                </HBox.margin>
-                            </PasswordTextField>
-                        </FXHBox>
-                        <FXVBox fx:id="apiKeyBox" flexWidth="100%" flexHeight="100% - 42"
+                        <FXVBox fx:id="basicAuthBox" flexWidth="100%"
                                 visible="false" managed="false">
                             <FXHBox flexWidth="100%" realHeight="42">
-                                <InfoLabel text="%shell.http.keyName">
+                                <InfoLabel text="%base.userName" realWidth="90">
                                     <HBox.margin>
-                                        <Insets left="10" top="13"/>
+                                        <Insets left="10" top="6"/>
                                     </HBox.margin>
                                 </InfoLabel>
-                                <ClearableTextField fx:id="authKeyName" realHeight="28"
-                                                    realWidth="210">
+                                <ClearableTextField fx:id="authUser" realHeight="28"
+                                                    flexWidth="100% - 130">
                                     <HBox.margin>
                                         <Insets left="8" top="7"/>
                                     </HBox.margin>
                                 </ClearableTextField>
-                                <InfoLabel text="%shell.http.keyValue">
+                            </FXHBox>
+                            <FXHBox flexWidth="100%" realHeight="42">
+                                <InfoLabel text="%base.password" realWidth="90">
                                     <HBox.margin>
-                                        <Insets left="12" top="13"/>
+                                        <Insets left="10" top="6"/>
+                                    </HBox.margin>
+                                </InfoLabel>
+                                <PasswordTextField fx:id="authPassword" realHeight="28"
+                                                   flexWidth="100% - 130">
+                                    <HBox.margin>
+                                        <Insets left="8" top="7"/>
+                                    </HBox.margin>
+                                </PasswordTextField>
+                            </FXHBox>
+                        </FXVBox>
+                        <FXHBox fx:id="bearerAuthBox" flexWidth="100%" realHeight="42"
+                                visible="false" managed="false">
+                            <InfoLabel text="%base.token" realWidth="90">
+                                <HBox.margin>
+                                    <Insets left="10" top="6"/>
+                                </HBox.margin>
+                            </InfoLabel>
+                            <PasswordTextField fx:id="authToken" realHeight="28"
+                                               flexWidth="100% - 130">
+                                <HBox.margin>
+                                    <Insets left="8" top="7"/>
+                                </HBox.margin>
+                            </PasswordTextField>
+                        </FXHBox>
+                        <FXVBox fx:id="apiKeyBox" flexWidth="100%"
+                                visible="false" managed="false">
+                            <FXHBox flexWidth="100%" realHeight="42">
+                                <InfoLabel text="%shell.http.keyName" realWidth="90">
+                                    <HBox.margin>
+                                        <Insets left="10" top="6"/>
+                                    </HBox.margin>
+                                </InfoLabel>
+                                <ClearableTextField fx:id="authKeyName" realHeight="28"
+                                                    flexWidth="100% - 130">
+                                    <HBox.margin>
+                                        <Insets left="8" top="7"/>
+                                    </HBox.margin>
+                                </ClearableTextField>
+                            </FXHBox>
+                            <FXHBox flexWidth="100%" realHeight="42">
+                                <InfoLabel text="%shell.http.keyValue" realWidth="90">
+                                    <HBox.margin>
+                                        <Insets left="10" top="6"/>
                                     </HBox.margin>
                                 </InfoLabel>
                                 <PasswordTextField fx:id="authKeyValue" realHeight="28"
-                                                   realWidth="250">
+                                                   flexWidth="100% - 130">
                                     <HBox.margin>
                                         <Insets left="8" top="7"/>
                                     </HBox.margin>
                                 </PasswordTextField>
                             </FXHBox>
                             <FXHBox flexWidth="100%" realHeight="42">
-                                <InfoLabel text="%shell.http.addTo">
+                                <InfoLabel text="%shell.http.addTo" realWidth="90">
                                     <HBox.margin>
-                                        <Insets left="10" top="13"/>
+                                        <Insets left="10" top="6"/>
                                     </HBox.margin>
                                 </InfoLabel>
                                 <FXComboBox fx:id="authKeyPlacement" realHeight="28"
-                                            realWidth="170">
+                                            flexWidth="100% - 130">
                                     <HBox.margin>
                                         <Insets left="8" top="7"/>
                                     </HBox.margin>
@@ -265,19 +310,52 @@
                 <FXButton fx:id="preview" text="%shell.http.openHtml"
                           onAction="#previewHtml" realHeight="26" disable="true">
                     <HBox.margin>
-                        <Insets left="16" top="6"/>
+                        <Insets left="10" top="6"/>
                     </HBox.margin>
                 </FXButton>
+                <SaveSVGGlyph fx:id="saveResponseBody" tipText="%shell.http.saveResponseBody"
+                              disable="true" onMousePrimaryClicked="#saveResponseBody">
+                    <HBox.margin>
+                        <Insets left="10" top="9"/>
+                    </HBox.margin>
+                </SaveSVGGlyph>
             </FXHBox>
             <RichTabPane fx:id="responseTabPane" flexWidth="100%" flexHeight="100% - 38"
                          tabMinHeight="28" tabClosingPolicy="UNAVAILABLE" side="TOP">
                 <FixedTab text="%shell.http.responseBody">
-                    <ShellDataEditor fx:id="responseBody" editable="false"
-                                     flexWidth="100%" flexHeight="100%"/>
+                    <FXVBox flexWidth="100%" flexHeight="100%">
+                        <FXHBox flexWidth="100%" realHeight="36" alignment="CENTER_LEFT">
+                            <InfoLabel text="%shell.http.responseFormat" realWidth="60">
+                                <HBox.margin>
+                                    <Insets left="8"/>
+                                </HBox.margin>
+                            </InfoLabel>
+                            <FXComboBox fx:id="responseFormat" realHeight="26" realWidth="100">
+                                <HBox.margin>
+                                    <Insets left="6"/>
+                                </HBox.margin>
+                            </FXComboBox>
+                        </FXHBox>
+                        <ShellDataEditor fx:id="responseBody" editable="false"
+                                         flexWidth="100%" flexHeight="100% - 36"/>
+                    </FXVBox>
                 </FixedTab>
                 <FixedTab text="%shell.http.responseHeaders">
-                    <ShellDataEditor fx:id="responseHeaders" editable="false"
-                                     flexWidth="100%" flexHeight="100%"/>
+                    <FXVBox flexWidth="100%" flexHeight="100%">
+                        <FXHBox flexWidth="100%" realHeight="32">
+                            <FXCheckBox fx:id="responseHeadersTableMode"
+                                        text="%shell.http.responseHeadersTable" selected="true">
+                                <HBox.margin>
+                                    <Insets left="8" top="4"/>
+                                </HBox.margin>
+                            </FXCheckBox>
+                        </FXHBox>
+                        <ShellHttpResponseHeadersTableView fx:id="responseHeadersTable"
+                                                          flexWidth="100%" flexHeight="100% - 32"/>
+                        <ShellDataEditor fx:id="responseHeaders" editable="false"
+                                         flexWidth="100%" flexHeight="100% - 32"
+                                         visible="false" managed="false"/>
+                    </FXVBox>
                 </FixedTab>
             </RichTabPane>
         </FXVBox>

@@ -33,6 +33,8 @@ public class ShellHttpRequest implements Serializable {
     public static final String BODY_NONE = "none";
     public static final String BODY_RAW = "raw";
     public static final String BODY_FORM = "form";
+    public static final String BODY_FORM_DATA = "formData";
+    public static final String BODY_BINARY = "binary";
     public static final String AUTH_NONE = "none";
     public static final String AUTH_BASIC = "basic";
     public static final String AUTH_BEARER = "bearer";

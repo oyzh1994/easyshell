@@ -18,6 +18,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.ProxySelector;
@@ -26,6 +29,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
@@ -33,6 +38,7 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.Map;
 
 /**
@@ -158,8 +164,8 @@ public class ShellHttpClient implements ShellBaseClient {
         response.setCharset(ShellHttpUtil.charset(contentType));
         if (ShellHttpUtil.isTextContent(contentType)) {
             String body = new String(bytes, response.getCharset());
-            response.setBody(ShellHttpUtil.formatResponseBody(
-                    body, contentType, workspace.getSettings().isPrettyJson()));
+            // 保持原始正文，显示格式由响应体格式选择器决定
+            response.setBody(body);
         } else {
             response.setBinary(true);
         }
@@ -274,6 +280,85 @@ public class ShellHttpClient implements ShellBaseClient {
         if (ShellHttpRequest.BODY_NONE.equalsIgnoreCase(type)) {
             return HttpRequest.BodyPublishers.noBody();
         }
+        if (ShellHttpRequest.BODY_FORM_DATA.equalsIgnoreCase(type)) {
+            String boundary = "----EasyShellBoundary" + UUID.randomUUID().toString().replace("-", "");
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            for (ShellHttpKeyValue row : request.getFormBody()) {
+                if (row == null || !row.isEnabled() || StringUtil.isBlank(row.getKey())) {
+                    continue;
+                }
+                String name = escapeMultipart(ShellHttpUtil.resolveVariables(row.getKey(), environment));
+                output.writeBytes(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
+                if (row.isFile()) {
+                    String filePath = ShellHttpUtil.resolveVariables(row.getValue(), environment);
+                    if (StringUtil.isBlank(filePath)) {
+                        throw new IllegalArgumentException(ShellI18nHelper.httpBodyFileRequired());
+                    }
+                    Path file = Path.of(filePath.trim());
+                    if (!Files.isRegularFile(file)) {
+                        throw new IllegalArgumentException(ShellI18nHelper.httpBodyFileNotFound(filePath.trim()));
+                    }
+                    String filename = escapeMultipart(file.getFileName() == null
+                            ? file.toString() : file.getFileName().toString());
+                    String contentType;
+                    try {
+                        contentType = Files.probeContentType(file);
+                    } catch (Exception ignored) {
+                        contentType = null;
+                    }
+                    if (StringUtil.isBlank(contentType)) {
+                        contentType = "application/octet-stream";
+                    }
+                    output.writeBytes(("Content-Disposition: form-data; name=\"" + name
+                            + "\"; filename=\"" + filename + "\"\r\n").getBytes(StandardCharsets.UTF_8));
+                    output.writeBytes(("Content-Type: " + contentType + "\r\n\r\n")
+                            .getBytes(StandardCharsets.UTF_8));
+                    try {
+                        output.writeBytes(Files.readAllBytes(file));
+                    } catch (IOException ex) {
+                        throw new IllegalArgumentException(
+                                ShellI18nHelper.httpBodyFileNotFound(filePath.trim()), ex);
+                    }
+                } else {
+                    String value = ShellHttpUtil.resolveVariables(row.getValue(), environment);
+                    output.writeBytes(("Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n")
+                            .getBytes(StandardCharsets.UTF_8));
+                    output.writeBytes((value == null ? "" : value).getBytes(StandardCharsets.UTF_8));
+                }
+                output.writeBytes("\r\n".getBytes(StandardCharsets.UTF_8));
+            }
+            output.writeBytes(("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
+            if (!containsHeader(request.getHeaders(), "Content-Type")) {
+                builder.setHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
+            }
+            return HttpRequest.BodyPublishers.ofByteArray(output.toByteArray());
+        }
+        if (ShellHttpRequest.BODY_BINARY.equalsIgnoreCase(type)) {
+            String filePath = ShellHttpUtil.resolveVariables(request.getBody(), environment);
+            if (StringUtil.isBlank(filePath)) {
+                throw new IllegalArgumentException(ShellI18nHelper.httpBodyFileRequired());
+            }
+            Path file = Path.of(filePath.trim());
+            if (!Files.isRegularFile(file)) {
+                throw new IllegalArgumentException(ShellI18nHelper.httpBodyFileNotFound(filePath.trim()));
+            }
+            if (!containsHeader(request.getHeaders(), "Content-Type")) {
+                String contentType = null;
+                try {
+                    contentType = Files.probeContentType(file);
+                } catch (Exception ignored) {
+                }
+                if (StringUtil.isBlank(contentType)) {
+                    contentType = "application/octet-stream";
+                }
+                builder.setHeader("Content-Type", contentType);
+            }
+            try {
+                return HttpRequest.BodyPublishers.ofFile(file);
+            } catch (FileNotFoundException ex) {
+                throw new IllegalArgumentException(ShellI18nHelper.httpBodyFileNotFound(filePath.trim()), ex);
+            }
+        }
         String body;
         String contentType;
         if (ShellHttpRequest.BODY_FORM.equalsIgnoreCase(type)) {
@@ -289,6 +374,19 @@ public class ShellHttpClient implements ShellBaseClient {
         }
         return HttpRequest.BodyPublishers.ofString(body == null ? "" : body,
                 ShellHttpUtil.charset(contentType));
+    }
+
+    /**
+     * 转义 multipart 名称
+     *
+     * @param value 文本
+     * @return 转义结果
+     */
+    private static String escapeMultipart(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\r", "").replace("\n", "");
     }
 
     /**

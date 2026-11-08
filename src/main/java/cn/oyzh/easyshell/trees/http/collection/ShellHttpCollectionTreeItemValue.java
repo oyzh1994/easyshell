@@ -6,7 +6,6 @@ import cn.oyzh.fx.gui.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.i18n.I18nHelper;
-import javafx.scene.paint.Color;
 
 /**
  * HTTP 请求集合节点值
@@ -44,13 +43,5 @@ public class ShellHttpCollectionTreeItemValue extends RichTreeItemValue {
             super.graphic().disableTheme();
         }
         return super.graphic();
-    }
-
-    @Override
-    public Color graphicColor() {
-        if (this.item().collection().requestCount() > 0) {
-            return Color.FORESTGREEN;
-        }
-        return super.graphicColor();
     }
 }

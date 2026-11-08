@@ -1,12 +1,17 @@
 package cn.oyzh.easyshell.tabs.http.request;
 
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
+import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.easyshell.fx.http.ShellHttpFormDataTableView;
 import cn.oyzh.easyshell.fx.http.ShellHttpKeyValueTableView;
+import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView;
 import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
+import cn.oyzh.easyshell.http.ShellHttpKeyValue;
 import cn.oyzh.easyshell.http.ShellHttpResponse;
 import cn.oyzh.easyshell.http.ShellHttpUtil;
 import cn.oyzh.easyshell.http.ShellHttpWorkspace;
@@ -14,13 +19,18 @@ import cn.oyzh.easyshell.store.http.ShellHttpRequestStore;
 import cn.oyzh.easyshell.tabs.http.ShellHttpTabPane;
 import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.PasswordTextField;
+import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
+import cn.oyzh.fx.plus.chooser.FileChooserHelper;
+import cn.oyzh.fx.plus.chooser.FXChooser;
 import cn.oyzh.fx.plus.controls.button.FXButton;
+import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -29,12 +39,14 @@ import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +104,18 @@ public class ShellHttpRequestTabController extends RichTabController {
     private ShellHttpKeyValueTableView formBodyTable;
 
     /**
+     * form-data 请求体容器
+     */
+    @FXML
+    private FXVBox formDataBodyBox;
+
+    /**
+     * form-data 表格
+     */
+    @FXML
+    private ShellHttpFormDataTableView formDataTable;
+
+    /**
      * 请求体类型
      */
     @FXML
@@ -108,6 +132,18 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     @FXML
     private FXComboBox<String> rawContentType;
+
+    /**
+     * 二进制请求体容器
+     */
+    @FXML
+    private FXHBox binaryBodyBox;
+
+    /**
+     * 二进制文件
+     */
+    @FXML
+    private ChooseFileTextField bodyFile;
 
     /**
      * 请求体编辑器
@@ -137,7 +173,7 @@ public class ShellHttpRequestTabController extends RichTabController {
      * Basic 认证容器
      */
     @FXML
-    private FXHBox basicAuthBox;
+    private FXVBox basicAuthBox;
 
     /**
      * Bearer 认证容器
@@ -206,6 +242,24 @@ public class ShellHttpRequestTabController extends RichTabController {
     private FXLabel responseSize;
 
     /**
+     * 响应体显示格式
+     */
+    @FXML
+    private FXComboBox<String> responseFormat;
+
+    /**
+     * 响应头表格模式
+     */
+    @FXML
+    private FXCheckBox responseHeadersTableMode;
+
+    /**
+     * 响应头表格
+     */
+    @FXML
+    private ShellHttpResponseHeadersTableView responseHeadersTable;
+
+    /**
      * 响应正文编辑器
      */
     @FXML
@@ -222,6 +276,17 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     @FXML
     private FXButton preview;
+
+    /**
+     * 保存响应正文
+     */
+    @FXML
+    private SaveSVGGlyph saveResponseBody;
+
+    /**
+     * 响应原始正文
+     */
+    private String responseBodyRaw = "";
 
     /**
      * 请求节点
@@ -290,8 +355,12 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.rawContentType.getItems().setAll(
                 "application/json", "application/xml", "text/plain", "text/html",
                 "application/javascript", "application/x-www-form-urlencoded");
+        this.responseFormat.getItems().setAll("Text", "JSON", "XML", "HTML");
+        this.responseFormat.setValue("Text");
         this.displayCombo(this.bodyType,
-                List.of(ShellHttpRequest.BODY_NONE, ShellHttpRequest.BODY_RAW, ShellHttpRequest.BODY_FORM),
+                List.of(ShellHttpRequest.BODY_NONE, ShellHttpRequest.BODY_FORM_DATA,
+                        ShellHttpRequest.BODY_FORM, ShellHttpRequest.BODY_RAW,
+                        ShellHttpRequest.BODY_BINARY),
                 this::bodyTypeLabel);
         this.displayCombo(this.authType,
                 List.of(ShellHttpRequest.AUTH_NONE, ShellHttpRequest.AUTH_BASIC,
@@ -309,6 +378,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.paramsTable.setChangeAction(this::scheduleSave);
         this.headersTable.setChangeAction(this::scheduleSave);
         this.formBodyTable.setChangeAction(this::scheduleSave);
+        this.formDataTable.setChangeAction(this::scheduleSave);
     }
 
     /**
@@ -319,11 +389,17 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.requestUrl.setText(this.request.getUrl());
         this.paramsTable.setItems(FXCollections.observableArrayList(this.request.getParams()));
         this.headersTable.setItems(FXCollections.observableArrayList(this.request.getHeaders()));
-        this.formBodyTable.setItems(FXCollections.observableArrayList(this.request.getFormBody()));
+        ObservableList<ShellHttpKeyValue> formItems =
+                FXCollections.observableArrayList(this.request.getFormBody());
+        this.formBodyTable.setItems(formItems);
+        this.formDataTable.setItems(formItems);
         this.bodyType.setValue(StringUtil.blankToDefault(this.request.getBodyType(), ShellHttpRequest.BODY_NONE));
         this.rawContentType.setValue(StringUtil.blankToDefault(
                 this.request.getBodyContentType(), "application/json"));
-        this.requestBody.text(StringUtil.blankToDefault(this.request.getBody(), ""));
+        boolean binary = ShellHttpRequest.BODY_BINARY.equalsIgnoreCase(this.request.getBodyType());
+        this.bodyFile.setText(binary
+                ? StringUtil.blankToDefault(this.request.getBody(), "") : "");
+        this.requestBody.text(binary ? "" : StringUtil.blankToDefault(this.request.getBody(), ""));
         this.authType.setValue(StringUtil.blankToDefault(this.request.getAuthType(), ShellHttpRequest.AUTH_NONE));
         this.authUser.setText(StringUtil.blankToDefault(this.request.getAuthUser(), ""));
         this.authPassword.setText(StringUtil.blankToDefault(this.request.getAuthPassword(), ""));
@@ -335,9 +411,14 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.responseStatus.text("-");
         this.responseTime.text("-");
         this.responseSize.text("-");
+        this.responseFormat.setDisable(true);
+        this.responseBodyRaw = "";
         this.responseBody.text("");
         this.responseHeaders.text("");
+        this.responseHeadersTable.getItems().clear();
+        this.updateResponseHeadersMode();
         this.preview.setDisable(true);
+        this.saveResponseBody.setDisable(true);
         this.updateBodyEditor();
         this.updateAuthEditor();
     }
@@ -424,6 +505,15 @@ public class ShellHttpRequestTabController extends RichTabController {
                 this.scheduleSave();
             }
         });
+        this.bodyFile.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.request.setBody(newValue);
+                this.scheduleSave();
+            }
+        });
+        this.responseFormat.selectedItemChanged((observable, oldValue, newValue) -> this.renderResponseBody());
+        this.responseHeadersTableMode.selectedProperty().addListener(
+                (observable, oldValue, newValue) -> this.updateResponseHeadersMode());
     }
 
     /**
@@ -452,12 +542,18 @@ public class ShellHttpRequestTabController extends RichTabController {
         String type = this.bodyType.getValue();
         boolean raw = ShellHttpRequest.BODY_RAW.equalsIgnoreCase(type);
         boolean form = ShellHttpRequest.BODY_FORM.equalsIgnoreCase(type);
+        boolean formData = ShellHttpRequest.BODY_FORM_DATA.equalsIgnoreCase(type);
+        boolean binary = ShellHttpRequest.BODY_BINARY.equalsIgnoreCase(type);
         this.rawBodyBox.setVisible(raw);
         this.rawBodyBox.setManaged(raw);
         this.rawContentTypeBox.setVisible(raw);
         this.rawContentTypeBox.setManaged(raw);
         this.formBodyBox.setVisible(form);
         this.formBodyBox.setManaged(form);
+        this.formDataBodyBox.setVisible(formData);
+        this.formDataBodyBox.setManaged(formData);
+        this.binaryBodyBox.setVisible(binary);
+        this.binaryBodyBox.setManaged(binary);
     }
 
     /**
@@ -529,7 +625,11 @@ public class ShellHttpRequestTabController extends RichTabController {
                 this.bodyType.getValue(), ShellHttpRequest.BODY_NONE));
         this.request.setBodyContentType(StringUtil.blankToDefault(
                 this.rawContentType.getValue(), "application/json"));
-        this.request.setBody(StringUtil.blankToDefault(this.requestBody.getText(), ""));
+        if (ShellHttpRequest.BODY_BINARY.equalsIgnoreCase(this.request.getBodyType())) {
+            this.request.setBody(this.bodyFile.getTextTrim());
+        } else {
+            this.request.setBody(StringUtil.blankToDefault(this.requestBody.getText(), ""));
+        }
         this.request.setFormBody(new ArrayList<>(this.formBodyTable.getItems()));
         this.request.setAuthType(StringUtil.blankToDefault(
                 this.authType.getValue(), ShellHttpRequest.AUTH_NONE));
@@ -580,9 +680,13 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.responseStatus.setTextFill(Color.ORANGE);
         this.responseTime.text("-");
         this.responseSize.text("-");
+        this.responseFormat.setDisable(true);
+        this.responseBodyRaw = "";
         this.responseBody.text("");
         this.responseHeaders.text("");
+        this.responseHeadersTable.getItems().clear();
         this.preview.setDisable(true);
+        this.saveResponseBody.setDisable(true);
         this.send.setDisable(true);
         ShellHttpRequest snapshot = this.request.copy();
         ThreadUtil.start(() -> {
@@ -595,6 +699,9 @@ public class ShellHttpRequestTabController extends RichTabController {
                     this.send.setDisable(false);
                     this.responseStatus.text(ShellI18nHelper.httpRequestFailed());
                     this.responseStatus.setTextFill(Color.RED);
+                    this.responseBodyRaw = "";
+                    this.responseHeadersTable.getItems().clear();
+                    this.saveResponseBody.setDisable(true);
                     this.responseBody.text(ex.getMessage() == null
                             ? ex.toString() : ex.getMessage());
                     MessageBox.warn(ex.getMessage() == null ? ex.toString() : ex.getMessage(),
@@ -624,11 +731,138 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         this.responseTime.text(result.getDurationMs() + " ms");
         this.responseSize.text(ShellHttpUtil.humanSize(result.getSize()));
-        this.responseBody.text(result.isBinary()
-                ? ShellI18nHelper.httpBinaryResponse(result.getSize(), result.getContentType())
-                : StringUtil.blankToDefault(result.getBody(), ""));
+        this.responseBodyRaw = StringUtil.blankToDefault(result.getBody(), "");
+        this.responseFormat.setDisable(result.isBinary());
+        this.responseFormat.setValue(this.detectResponseFormat(result));
+        this.renderResponseBody();
         this.responseHeaders.text(ShellHttpClient.headersText(result));
+        this.responseHeadersTable.getItems().setAll(this.responseHeaderRows(result));
+        this.updateResponseHeadersMode();
         this.preview.setDisable(!result.isHtml());
+        this.saveResponseBody.setDisable(result.isBinary());
+    }
+
+    /**
+     * 渲染响应正文
+     */
+    private void renderResponseBody() {
+        if (this.response == null) {
+            return;
+        }
+        if (this.response.isBinary()) {
+            this.responseBody.text(ShellI18nHelper.httpBinaryResponse(
+                    this.response.getSize(), this.response.getContentType()));
+            return;
+        }
+        String format = this.responseFormat.getValue();
+        String contentType;
+        EditorFormatType formatType;
+        switch (format == null ? "" : format) {
+            case "JSON" -> {
+                contentType = "application/json";
+                formatType = EditorFormatType.JSON;
+            }
+            case "XML" -> {
+                contentType = "application/xml";
+                formatType = EditorFormatType.XML;
+            }
+            case "HTML" -> {
+                contentType = "text/html";
+                formatType = EditorFormatType.HTML;
+            }
+            default -> {
+                contentType = "text/plain";
+                formatType = EditorFormatType.RAW;
+            }
+        }
+        this.responseBody.setFormatType(formatType);
+        boolean pretty = this.workspace != null
+                && this.workspace.getSettings().isPrettyJson()
+                && "JSON".equals(format);
+        this.responseBody.text(ShellHttpUtil.formatResponseBody(
+                this.responseBodyRaw, contentType, pretty));
+    }
+
+    /**
+     * 获取响应体默认显示格式
+     *
+     * @param response 响应
+     * @return 格式
+     */
+    private String detectResponseFormat(ShellHttpResponse response) {
+        if (response.isJson()) {
+            return "JSON";
+        }
+        if (response.isHtml()) {
+            return "HTML";
+        }
+        if (response.getContentType() != null
+                && response.getContentType().toLowerCase().contains("xml")) {
+            return "XML";
+        }
+        return "Text";
+    }
+
+    /**
+     * 响应头表格行
+     *
+     * @param response 响应
+     * @return 行
+     */
+    private List<ShellHttpKeyValue> responseHeaderRows(ShellHttpResponse response) {
+        List<ShellHttpKeyValue> rows = new ArrayList<>();
+        if (response.getHeaders() != null) {
+            response.getHeaders().forEach((name, values) ->
+                    values.forEach(value -> rows.add(new ShellHttpKeyValue(name, value))));
+        }
+        return rows;
+    }
+
+    /**
+     * 更新响应头显示模式
+     */
+    private void updateResponseHeadersMode() {
+        boolean table = this.responseHeadersTableMode.isSelected();
+        this.responseHeadersTable.setVisible(table);
+        this.responseHeadersTable.setManaged(table);
+        this.responseHeaders.setVisible(!table);
+        this.responseHeaders.setManaged(!table);
+    }
+
+    /**
+     * 保存响应正文到文件
+     */
+    @FXML
+    private void saveResponseBody() {
+        if (this.response == null || this.response.isBinary()) {
+            return;
+        }
+        try {
+            String extension = this.responseBodyExtension();
+            File file = FileChooserHelper.save(I18nHelper.saveFile(), "response." + extension,
+                    FXChooser.allExtensionFilter(), this.getWindow());
+            if (file != null) {
+                FileUtil.writeUtf8String(this.responseBodyRaw, file);
+                MessageBox.info(I18nHelper.operationSuccess(), this.getWindow());
+            }
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
+        }
+    }
+
+    /**
+     * 响应正文文件扩展名
+     *
+     * @return 扩展名
+     */
+    private String responseBodyExtension() {
+        String format = this.responseFormat.getValue();
+        return switch (format == null ? "" : format) {
+            case "JSON" -> "json";
+            case "XML" -> "xml";
+            case "HTML" -> "html";
+            default -> "txt";
+        };
     }
 
     /**
@@ -675,6 +909,16 @@ public class ShellHttpRequestTabController extends RichTabController {
     @FXML
     private void deleteHeader() {
         this.headersTable.deleteSelectedRow();
+    }
+
+    @FXML
+    private void addFormData() {
+        this.formDataTable.addRow();
+    }
+
+    @FXML
+    private void deleteFormData() {
+        this.formDataTable.deleteSelectedRow();
     }
 
     @FXML
@@ -727,8 +971,10 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private String bodyTypeLabel(String value) {
         return switch (value) {
+            case ShellHttpRequest.BODY_FORM_DATA -> "form-data";
             case ShellHttpRequest.BODY_RAW -> ShellI18nHelper.httpBodyRaw();
-            case ShellHttpRequest.BODY_FORM -> ShellI18nHelper.httpBodyForm();
+            case ShellHttpRequest.BODY_FORM -> ShellI18nHelper.httpBodyUrlencoded();
+            case ShellHttpRequest.BODY_BINARY -> ShellI18nHelper.httpBodyBinary();
             default -> I18nHelper.none();
         };
     }

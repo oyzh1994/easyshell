@@ -60,9 +60,6 @@ public class ShellHttpEnvironmentTab extends RichTab {
      * @param name 名称
      */
     public void rename(String name) {
-        if (this.controller() != null) {
-            this.controller().rename(name);
-        }
         this.setText(name);
         this.setTipText(name);
     }

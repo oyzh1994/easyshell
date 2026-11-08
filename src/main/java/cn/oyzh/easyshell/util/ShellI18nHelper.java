@@ -899,8 +899,24 @@ public class ShellI18nHelper {
         return text("shell.http.bodyRaw");
     }
 
-    public static String httpBodyForm() {
-        return text("shell.http.bodyForm");
+    public static String httpBodyUrlencoded() {
+        return text("shell.http.bodyUrlencoded");
+    }
+
+    public static String httpBodyBinary() {
+        return text("shell.http.bodyBinary");
+    }
+
+    public static String httpBodyFile() {
+        return text("shell.http.bodyFile");
+    }
+
+    public static String httpBodyFileRequired() {
+        return text("shell.http.bodyFileRequired");
+    }
+
+    public static String httpBodyFileNotFound(Object file) {
+        return text("shell.http.bodyFileNotFound", file);
     }
 
     public static String httpBasicAuth() {

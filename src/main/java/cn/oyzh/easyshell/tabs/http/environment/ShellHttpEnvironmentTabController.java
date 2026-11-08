@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.tabs.http.environment;
 
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.http.ShellHttpKeyValueTableView;
 import cn.oyzh.easyshell.domain.http.ShellHttpEnvironment;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
@@ -11,7 +10,6 @@ import cn.oyzh.easyshell.trees.http.environment.ShellHttpEnvironmentTreeItem;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.keyboard.KeyHandler;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.FXCollections;
@@ -31,21 +29,10 @@ import java.util.concurrent.Future;
 public class ShellHttpEnvironmentTabController extends RichTabController {
 
     /**
-     * 环境名称
-     */
-    @FXML
-    private ClearableTextField environmentName;
-
-    /**
      * 环境变量表格
      */
     @FXML
     private ShellHttpKeyValueTableView valuesTable;
-
-    /**
-     * 环境节点
-     */
-    private ShellHttpEnvironmentTreeItem item;
 
     /**
      * 环境
@@ -74,20 +61,12 @@ public class ShellHttpEnvironmentTabController extends RichTabController {
      * @param tabPane 标签页面板
      */
     public void init(ShellHttpEnvironmentTreeItem item, ShellHttpTabPane tabPane) {
-        this.item = item;
         this.environment = item.environment();
         this.tabPane = tabPane;
         this.loading = true;
-        this.environmentName.setText(this.environment.getName());
         this.valuesTable.setChangeAction(this::onValuesChanged);
         this.valuesTable.setItems(FXCollections.observableArrayList(this.environment.getValues()));
         this.loading = false;
-        this.environmentName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!this.loading) {
-                this.apply();
-                this.scheduleSave();
-            }
-        });
         this.bindSaveKey();
     }
 
@@ -113,35 +92,11 @@ public class ShellHttpEnvironmentTabController extends RichTabController {
     }
 
     /**
-     * 重命名环境
-     *
-     * @param name 名称
-     */
-    public void rename(String name) {
-        if (this.environment == null) {
-            return;
-        }
-        this.environment.setName(name);
-        this.loading = true;
-        this.environmentName.setText(name);
-        this.loading = false;
-    }
-
-    /**
      * 应用数据
      */
     private void apply() {
         if (this.environment == null) {
             return;
-        }
-        String name = this.environmentName.getTextTrim();
-        if (StringUtil.isNotBlank(name) && !name.equals(this.environment.getName())) {
-            this.environment.setName(name);
-            if (this.item != null) {
-                this.item.refreshEnvironment();
-            }
-            this.tabPane.renameEnvironmentTab(this.environment.getId(), name);
-            this.tabPane.refreshEnvironmentCombo();
         }
         this.environment.setValues(ShellHttpRequest.copyRows(this.valuesTable.getItems()));
         this.tabPane.refreshHomeTab();

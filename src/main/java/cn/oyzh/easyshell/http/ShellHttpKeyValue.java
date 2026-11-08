@@ -32,6 +32,11 @@ public class ShellHttpKeyValue implements Serializable {
     private final StringProperty value = new SimpleStringProperty("");
 
     /**
+     * 是否文件
+     */
+    private final BooleanProperty file = new SimpleBooleanProperty(false);
+
+    /**
      * 创建空行
      */
     public ShellHttpKeyValue() {
@@ -84,6 +89,18 @@ public class ShellHttpKeyValue implements Serializable {
         return value;
     }
 
+    public boolean isFile() {
+        return file.get();
+    }
+
+    public void setFile(boolean file) {
+        this.file.set(file);
+    }
+
+    public BooleanProperty fileProperty() {
+        return file;
+    }
+
     /**
      * 是否为空行。
      *
@@ -101,6 +118,7 @@ public class ShellHttpKeyValue implements Serializable {
     public ShellHttpKeyValue copy() {
         ShellHttpKeyValue copy = new ShellHttpKeyValue(this.getKey(), this.getValue());
         copy.setEnabled(this.isEnabled());
+        copy.setFile(this.isFile());
         return copy;
     }
 

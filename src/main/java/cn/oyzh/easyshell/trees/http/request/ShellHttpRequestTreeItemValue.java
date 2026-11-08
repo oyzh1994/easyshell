@@ -56,11 +56,6 @@ public class ShellHttpRequestTreeItemValue extends RichTreeItemValue {
         return super.graphic();
     }
 
-    @Override
-    public Color graphicColor() {
-        return this.methodColor();
-    }
-
     /**
      * 请求方法颜色
      *

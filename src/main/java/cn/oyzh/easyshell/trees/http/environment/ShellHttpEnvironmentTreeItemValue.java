@@ -56,8 +56,4 @@ public class ShellHttpEnvironmentTreeItemValue extends RichTreeItemValue {
         return super.graphic();
     }
 
-    @Override
-    public Color graphicColor() {
-        return this.item().isActive() ? Color.FORESTGREEN : super.graphicColor();
-    }
 }

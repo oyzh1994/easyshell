@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -181,6 +182,62 @@ public class ShellHttpClientIntegrationTest {
         assertTrue(response.getBody().contains("gzip compressed html"));
     }
 
+
+
+    @Test
+    public void sendsUrlEncodedAndBinaryBodies() throws Exception {
+        ShellHttpRequest form = new ShellHttpRequest();
+        form.setMethod(ShellHttpRequest.METHOD_POST);
+        form.setUrl(this.server.baseUrl() + "/api/echo");
+        form.setBodyType(ShellHttpRequest.BODY_FORM);
+        form.getFormBody().add(new ShellHttpKeyValue("name", "easy shell"));
+        ShellHttpResponse formResponse = this.client.execute(form, this.workspace);
+        assertTrue(formResponse.getBody().contains("application/x-www-form-urlencoded"));
+        assertTrue(formResponse.getBody().contains("name=easy+shell"));
+
+        Path file = Files.createTempFile("easyshell-http-binary-", ".txt");
+        try {
+            Files.writeString(file, "binary body", StandardCharsets.UTF_8);
+            ShellHttpRequest binary = new ShellHttpRequest();
+            binary.setMethod(ShellHttpRequest.METHOD_POST);
+            binary.setUrl(this.server.baseUrl() + "/api/echo");
+            binary.setBodyType(ShellHttpRequest.BODY_BINARY);
+            binary.setBody(file.toString());
+            ShellHttpResponse binaryResponse = this.client.execute(binary, this.workspace);
+            assertTrue(binaryResponse.getBody().contains("binary body"));
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
+
+    @Test
+    public void sendsMultipartFormDataWithTextAndFile() throws Exception {
+        Path file = Files.createTempFile("easyshell-http-form-", ".txt");
+        try {
+            Files.writeString(file, "form file body", StandardCharsets.UTF_8);
+            ShellHttpRequest request = new ShellHttpRequest();
+            request.setMethod(ShellHttpRequest.METHOD_POST);
+            request.setUrl(this.server.baseUrl() + "/api/echo");
+            request.setBodyType(ShellHttpRequest.BODY_FORM_DATA);
+            request.getFormBody().add(new ShellHttpKeyValue("text", "hello form"));
+            ShellHttpKeyValue fileRow = new ShellHttpKeyValue("upload", file.toString());
+            fileRow.setFile(true);
+            request.getFormBody().add(fileRow);
+
+            ShellHttpResponse response = this.client.execute(request, this.workspace);
+
+            assertTrue(response.getBody().contains("multipart/form-data"));
+            assertTrue(response.getBody().contains("name="));
+            assertTrue(response.getBody().contains("text"));
+            assertTrue(response.getBody().contains("hello form"));
+            assertTrue(response.getBody().contains("filename="));
+            assertTrue(response.getBody().contains(file.getFileName().toString()));
+            assertTrue(response.getBody().contains("form file body"));
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
 
     @Test
     public void stripsZeroWidthCharactersFromDisplayText() {

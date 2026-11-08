@@ -47,10 +47,12 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
 
         // 启用列
         FXTableColumn<ShellHttpKeyValue, Boolean> enabled = new FXTableColumn<>();
-        enabled.setText(I18nHelper.enable());
-        enabled.setPrefWidth(52);
+        enabled.setPrefWidth(32);
+        enabled.setMinWidth(32);
+        enabled.setMaxWidth(32);
         enabled.setEditable(true);
         enabled.setSortable(false);
+        enabled.setResizable(false);
         enabled.setCellValueFactory(cell -> cell.getValue().enabledProperty());
         enabled.setCellFactory(CheckBoxTableCell.forTableColumn(enabled));
 

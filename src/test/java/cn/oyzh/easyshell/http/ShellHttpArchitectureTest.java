@@ -207,7 +207,9 @@ public class ShellHttpArchitectureTest {
         ShellHttpRequest request = new ShellHttpRequest();
         request.getParams().add(new ShellHttpKeyValue("q", "value"));
         request.getHeaders().add(new ShellHttpKeyValue("X-Test", "1"));
-        request.getFormBody().add(new ShellHttpKeyValue("field", "2"));
+        ShellHttpKeyValue formRow = new ShellHttpKeyValue("field", "2");
+        formRow.setFile(true);
+        request.getFormBody().add(formRow);
         request.syncJson();
 
         ShellHttpRequest loaded = new ShellHttpRequest();
@@ -218,6 +220,7 @@ public class ShellHttpArchitectureTest {
         assertEquals("q", loaded.getParams().getFirst().getKey());
         assertEquals(1, loaded.getHeaders().size());
         assertEquals(1, loaded.getFormBody().size());
+        assertTrue(loaded.getFormBody().getFirst().isFile());
 
         ShellHttpEnvironment environment = new ShellHttpEnvironment();
         environment.getValues().add(new ShellHttpKeyValue("baseUrl", "https://example.com"));
