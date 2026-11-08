@@ -139,7 +139,7 @@ public class ShellHttpClient implements ShellBaseClient {
         String method = definition.normalizedMethod();
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri)
                 .timeout(Duration.ofSeconds(this.timeoutSeconds(definition, workspace)));
-        this.applyHeaders(builder, definition, environment);
+        this.applyHeaders(builder, definition, environment, workspace.getSettings());
         this.applyAuth(builder, definition, environment);
         HttpRequest.BodyPublisher bodyPublisher = this.bodyPublisher(builder, definition, environment);
         builder.method(method, bodyPublisher);
@@ -230,7 +230,8 @@ public class ShellHttpClient implements ShellBaseClient {
      * @param environment 环境
      */
     private void applyHeaders(HttpRequest.Builder builder, ShellHttpRequest request,
-                              ShellHttpEnvironment environment) {
+                              ShellHttpEnvironment environment, ShellHttpSetting settings) {
+        boolean cacheControl = false;
         for (ShellHttpKeyValue row : request.getHeaders()) {
             if (row == null || !row.isEnabled() || StringUtil.isBlank(row.getKey())) {
                 continue;
@@ -239,7 +240,13 @@ public class ShellHttpClient implements ShellBaseClient {
             String value = ShellHttpUtil.resolveVariables(row.getValue(), environment);
             if (isSafeHeader(name)) {
                 builder.header(name, value == null ? "" : value);
+                if ("Cache-Control".equalsIgnoreCase(name)) {
+                    cacheControl = true;
+                }
             }
+        }
+        if (settings != null && settings.isSendNoCacheHeader() && !cacheControl) {
+            builder.header("Cache-Control", "no-cache");
         }
     }
 

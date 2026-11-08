@@ -64,6 +64,12 @@ public class ShellHttpSetting implements Serializable {
     private Boolean prettyJson = true;
 
     /**
+     * 是否发送 no-cache 请求头
+     */
+    @Column
+    private Boolean sendNoCacheHeader = true;
+
+    /**
      * 当前环境id
      */
     @Column
@@ -126,6 +132,14 @@ public class ShellHttpSetting implements Serializable {
         this.verifySsl = verifySsl;
     }
 
+    public boolean isSendNoCacheHeader() {
+        return this.sendNoCacheHeader == null || this.sendNoCacheHeader;
+    }
+
+    public void setSendNoCacheHeader(boolean sendNoCacheHeader) {
+        this.sendNoCacheHeader = sendNoCacheHeader;
+    }
+
     public boolean isPrettyJson() {
         return this.prettyJson == null || this.prettyJson;
     }
@@ -156,6 +170,7 @@ public class ShellHttpSetting implements Serializable {
         copy.followRedirects = this.isFollowRedirects();
         copy.verifySsl = this.isVerifySsl();
         copy.prettyJson = this.isPrettyJson();
+        copy.sendNoCacheHeader = this.isSendNoCacheHeader();
         copy.activeEnvironmentId = this.activeEnvironmentId;
         return copy;
     }

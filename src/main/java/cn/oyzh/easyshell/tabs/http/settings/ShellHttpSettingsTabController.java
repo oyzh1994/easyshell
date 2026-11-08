@@ -69,6 +69,12 @@ public class ShellHttpSettingsTabController extends RichTabController {
     private FXCheckBox prettyJson;
 
     /**
+     * 发送 no-cache 请求头
+     */
+    @FXML
+    private FXCheckBox sendNoCacheHeader;
+
+    /**
      * 工作区
      */
     private ShellHttpWorkspace workspace;
@@ -119,6 +125,7 @@ public class ShellHttpSettingsTabController extends RichTabController {
         this.followRedirects.setSelected(settings.isFollowRedirects());
         this.verifySsl.setSelected(settings.isVerifySsl());
         this.prettyJson.setSelected(settings.isPrettyJson());
+        this.sendNoCacheHeader.setSelected(settings.isSendNoCacheHeader());
         this.loading = false;
 
         this.environmentCombo.selectedItemChanged((observable, oldValue, newValue) -> this.switchEnvironment(newValue));
@@ -127,6 +134,8 @@ public class ShellHttpSettingsTabController extends RichTabController {
         this.followRedirects.selectedProperty().addListener((observable, oldValue, newValue) -> this.apply());
         this.verifySsl.selectedProperty().addListener((observable, oldValue, newValue) -> this.apply());
         this.prettyJson.selectedProperty().addListener((observable, oldValue, newValue) -> this.apply());
+        this.sendNoCacheHeader.selectedProperty().addListener(
+                (observable, oldValue, newValue) -> this.apply());
         this.bindSaveKey();
     }
 
@@ -203,6 +212,7 @@ public class ShellHttpSettingsTabController extends RichTabController {
         settings.setFollowRedirects(this.followRedirects.isSelected());
         settings.setVerifySsl(this.verifySsl.isSelected());
         settings.setPrettyJson(this.prettyJson.isSelected());
+        settings.setSendNoCacheHeader(this.sendNoCacheHeader.isSelected());
         if (!this.flushing) {
             this.schedulePersist();
         }

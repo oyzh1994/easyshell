@@ -405,6 +405,32 @@ public class ShellHttpClientIntegrationTest {
     }
 
 
+
+    @Test
+    public void sendsNoCacheHeaderAccordingToSetting() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setUrl(this.server.baseUrl() + "/api/headers");
+        boolean old = this.workspace.getSettings().isSendNoCacheHeader();
+        try {
+            this.workspace.getSettings().setSendNoCacheHeader(true);
+            ShellHttpResponse enabled = this.client.execute(request, this.workspace);
+            JSONObject enabledHeaders = JSONObject.parseObject(enabled.getBody())
+                    .getJSONObject("headers");
+            assertTrue(enabledHeaders.entrySet().stream().anyMatch(entry ->
+                    "Cache-Control".equalsIgnoreCase(entry.getKey())
+                            && String.valueOf(entry.getValue()).contains("no-cache")));
+
+            this.workspace.getSettings().setSendNoCacheHeader(false);
+            ShellHttpResponse disabled = this.client.execute(request, this.workspace);
+            JSONObject disabledHeaders = JSONObject.parseObject(disabled.getBody())
+                    .getJSONObject("headers");
+            assertTrue(disabledHeaders.entrySet().stream().noneMatch(entry ->
+                    "Cache-Control".equalsIgnoreCase(entry.getKey())));
+        } finally {
+            this.workspace.getSettings().setSendNoCacheHeader(old);
+        }
+    }
+
     @Test
     public void stripsZeroWidthCharactersFromDisplayText() {
         String raw = "下载地址&gt;&gt;\u200D 兰奏云下载地址2&gt;&gt;";
