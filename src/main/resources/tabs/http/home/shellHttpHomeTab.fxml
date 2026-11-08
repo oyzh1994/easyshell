@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.http.home.ShellHttpHomeTabController"
+        flexWidth="100%" flexHeight="100%">
+    <InfoLabel text="%shell.http.overview">
+        <VBox.margin>
+            <Insets left="30" top="20"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel text="%shell.http.overviewTip" wrapText="true" realWidth="560" realHeight="40">
+        <VBox.margin>
+            <Insets left="30" top="4"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.http.timeout">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="timeout" realHeight="24">
+        <VBox.margin>
+            <Insets left="30" top="2"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.http.collections">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="collections" realHeight="24">
+        <VBox.margin>
+            <Insets left="30" top="2"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.http.requests">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="requests" realHeight="24">
+        <VBox.margin>
+            <Insets left="30" top="2"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.http.environments">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="environments" realHeight="24">
+        <VBox.margin>
+            <Insets left="30" top="2"/>
+        </VBox.margin>
+    </FXLabel>
+    <InfoLabel text="%shell.http.activeEnvironment">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXLabel fx:id="activeEnvironment" realHeight="24">
+        <VBox.margin>
+            <Insets left="30" top="2"/>
+        </VBox.margin>
+    </FXLabel>
+</FXVBox>

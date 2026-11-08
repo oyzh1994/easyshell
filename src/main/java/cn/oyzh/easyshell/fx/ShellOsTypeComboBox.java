@@ -40,6 +40,7 @@ import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
@@ -90,6 +91,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.MOSH);
         this.addItem(ShellPrototype.DAMENG);
         this.addItem(ShellPrototype.POSTGRESQL);
+        this.addItem(ShellPrototype.HTTP);
         this.addItem("Alibaba Cloud");
         this.addItem("Tencent Cloud");
         this.addItem("Huawei Cloud");
@@ -165,6 +167,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.DAMENG);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.POSTGRESQL)) {
             super.select(ShellPrototype.POSTGRESQL);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.HTTP)) {
+            super.select(ShellPrototype.HTTP);
         } else {
             super.select(type);
         }
@@ -218,6 +222,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "mosh" -> new MoshSVGGlyph();
             case "dameng" -> new DamengSVGGlyph();
             case "postgresql" -> new PostgreSQLSVGGlyph();
+            case "http" -> new HttpSVGGlyph();
             case "ssh" -> new LinuxSVGGlyph();
             default -> new LinuxSVGGlyph();
         };

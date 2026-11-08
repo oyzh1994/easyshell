@@ -1,0 +1,150 @@
+package cn.oyzh.easyshell.http;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
+import java.util.Map;
+import java.util.concurrent.Executors;
+
+/**
+ * 小型 HTTP 测试服务，可通过 main 方法独立启动。
+ *
+ * @author oyzh
+ * @since 2026-11-07
+ */
+public class ShellHttpMockServer implements AutoCloseable {
+
+    private final HttpServer server;
+
+    private final int port;
+
+    public ShellHttpMockServer() throws IOException {
+        this(0);
+    }
+
+    public ShellHttpMockServer(int port) throws IOException {
+        this.server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
+        this.port = this.server.getAddress().getPort();
+        this.server.setExecutor(Executors.newCachedThreadPool());
+        this.server.createContext("/api/hello", this::hello);
+        this.server.createContext("/api/echo", this::echo);
+        this.server.createContext("/auth/basic", this::basicAuth);
+        this.server.createContext("/auth/bearer", this::bearer);
+        this.server.createContext("/html", this::html);
+        this.server.createContext("/gzip", this::gzip);
+        this.server.createContext("/redirect", this::redirect);
+        this.server.createContext("/error", this::error);
+    }
+
+    public void start() {
+        this.server.start();
+    }
+
+    public String baseUrl() {
+        return "http://127.0.0.1:" + this.port;
+    }
+
+    public int port() {
+        return port;
+    }
+
+    @Override
+    public void close() {
+        this.server.stop(0);
+    }
+
+    private void hello(HttpExchange exchange) throws IOException {
+        JSONObject body = new JSONObject();
+        body.put("message", "hello");
+        body.put("method", exchange.getRequestMethod());
+        body.put("query", exchange.getRequestURI().getRawQuery());
+        body.put("xTest", first(exchange.getRequestHeaders(), "X-Test"));
+        this.json(exchange, 200, body);
+    }
+
+    private void echo(HttpExchange exchange) throws IOException {
+        String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        JSONObject body = new JSONObject();
+        body.put("method", exchange.getRequestMethod());
+        body.put("contentType", first(exchange.getRequestHeaders(), "Content-Type"));
+        body.put("body", requestBody);
+        this.json(exchange, 200, body);
+    }
+
+    private void basicAuth(HttpExchange exchange) throws IOException {
+        boolean accepted = "Basic dXNlcjpwYXNz".equals(first(exchange.getRequestHeaders(), "Authorization"));
+        this.json(exchange, accepted ? 200 : 401,
+                Map.of("authenticated", accepted, "scheme", "basic"));
+    }
+
+    private void bearer(HttpExchange exchange) throws IOException {
+        boolean accepted = "Bearer test-token".equals(first(exchange.getRequestHeaders(), "Authorization"));
+        this.json(exchange, accepted ? 200 : 401,
+                Map.of("authenticated", accepted, "scheme", "bearer"));
+    }
+
+    private void html(HttpExchange exchange) throws IOException {
+        String html = "<!doctype html><html><head><title>Mock</title></head>"
+                + "<body><h1>EasyShell HTTP Preview</h1><a href=\"/api/hello\">Hello</a></body></html>";
+        this.text(exchange, 200, "text/html; charset=UTF-8", html);
+    }
+
+    private void gzip(HttpExchange exchange) throws IOException {
+        String html = "<!doctype html><html><head><meta charset=\"UTF-8\"><title>Gzip</title></head>"
+                + "<body><h1>压缩响应</h1><p>gzip compressed html</p></body></html>";
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
+            gzip.write(html.getBytes(StandardCharsets.UTF_8));
+        }
+        byte[] bytes = output.toByteArray();
+        exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+        exchange.getResponseHeaders().set("Content-Encoding", "gzip");
+        exchange.sendResponseHeaders(200, bytes.length);
+        exchange.getResponseBody().write(bytes);
+        exchange.close();
+    }
+
+    private void redirect(HttpExchange exchange) throws IOException {
+        exchange.getResponseHeaders().add("Location", "/api/hello?redirected=true");
+        exchange.sendResponseHeaders(302, -1);
+        exchange.close();
+    }
+
+    private void error(HttpExchange exchange) throws IOException {
+        this.json(exchange, 500, Map.of("message", "mock error"));
+    }
+
+    private void json(HttpExchange exchange, int status, Object body) throws IOException {
+        this.text(exchange, status, "application/json; charset=UTF-8", JSONObject.toJSONString(body));
+    }
+
+    private void text(HttpExchange exchange, int status, String contentType, String body)
+            throws IOException {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", contentType);
+        exchange.sendResponseHeaders(status, bytes.length);
+        exchange.getResponseBody().write(bytes);
+        exchange.close();
+    }
+
+    private static String first(Headers headers, String name) {
+        List<String> values = headers.get(name);
+        return values == null || values.isEmpty() ? null : values.getFirst();
+    }
+
+    public static void main(String[] args) throws Exception {
+        ShellHttpMockServer server = new ShellHttpMockServer(18080);
+        server.start();
+        System.out.println("Mock HTTP server: " + server.baseUrl());
+        System.out.println("Endpoints: /api/hello /api/echo /auth/basic /auth/bearer /html /redirect /error");
+        Runtime.getRuntime().addShutdownHook(new Thread(server::close));
+    }
+}

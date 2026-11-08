@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.connect.http.ShellAddHttpConnectController"
+        realWidth="650" realHeight="340">
+    <FXHeaderBar/>
+    <InfoLabel text="%base.name">
+        <VBox.margin>
+            <Insets left="30" top="15"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="name" promptText="%shell.http.workspace" require="true"
+                        realHeight="30" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%shell.http.timeout">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <NumberTextField fx:id="connectTimeOut" min="1" max="600" value="30"
+                         realHeight="30" realWidth="130" require="true">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </NumberTextField>
+        <FXLabel text="%shell.http.seconds" realHeight="24">
+            <HBox.margin>
+                <Insets left="8" top="9"/>
+            </HBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <InfoLabel text="%base.remark">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXTextArea fx:id="remark" realHeight="65" flexWidth="100% - 180">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXTextArea>
+    <FXHBox flexWidth="100%" realHeight="55">
+        <SubmitButton text="%base.submit" onAction="#add" realHeight="30">
+            <HBox.margin>
+                <Insets left="30" top="12"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton text="%base.cancel" realHeight="30">
+            <HBox.margin>
+                <Insets left="12" top="12"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

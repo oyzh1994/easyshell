@@ -9,6 +9,8 @@ import cn.oyzh.easyshell.controller.connect.dameng.ShellAddDamengConnectControll
 import cn.oyzh.easyshell.controller.connect.dameng.ShellUpdateDamengConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellAddFTPConnectController;
 import cn.oyzh.easyshell.controller.connect.ftp.ShellUpdateFTPConnectController;
+import cn.oyzh.easyshell.controller.connect.http.ShellAddHttpConnectController;
+import cn.oyzh.easyshell.controller.connect.http.ShellUpdateHttpConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellAddLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.local.ShellUpdateLocalConnectController;
 import cn.oyzh.easyshell.controller.connect.mariadb.ShellAddMariadbConnectController;
@@ -513,6 +515,23 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增 HTTP 工作区
+     *
+     * @param group 分组
+     */
+    public static void addHttpConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(
+                    ShellAddHttpConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
      * 修改ssh连接
      *
      * @param connect 连接
@@ -856,6 +875,23 @@ public class ShellViewFactory {
     public static void updateMoshConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateMoshConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 修改 HTTP 工作区
+     *
+     * @param connect 连接
+     */
+    public static void updateHttpConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(
+                    ShellUpdateHttpConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

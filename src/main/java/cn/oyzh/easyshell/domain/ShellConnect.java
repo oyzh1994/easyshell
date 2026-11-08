@@ -1185,6 +1185,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.POSTGRESQL);
     }
 
+    /**
+     * 是否 HTTP 工作区类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isHttpType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.HTTP);
+    }
+
     /** 获取波特率-串口 */
     public int getSerialBaudRate() {
         return serialBaudRate;

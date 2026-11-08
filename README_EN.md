@@ -6,7 +6,7 @@ A powerful, modern, cross-platform, multi-protocol client.
 
 ## Features
 
-- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, PostgreSQL, SQLite, Mosh, local terminals, and more.
+- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, HTTP, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, PostgreSQL, SQLite, Mosh, local terminals, and more.
 - **Connection Management**: Add, edit, delete, import, and export connections.
 - **Key Management**: Generate, import, export, edit, and copy keys to hosts.
 - **Snippet Execution**: Save and execute code snippets.
@@ -23,6 +23,7 @@ A powerful, modern, cross-platform, multi-protocol client.
 - **RDP Client**: RDP connection and management, with built-in and native connection modes.
 - **Redis Client**: Redis CRUD operations, export, import, transfer, and terminal access.
 - **ZooKeeper Client**: ZooKeeper CRUD operations, permission management, import, export, transfer, and terminal access.
+- **HTTP Client**: HTTP request collections, environments, headers, bodies, authentication, response inspection, and HTML preview.
 - **MySQL Client**: MySQL table, view, function, procedure, and event management, queries, import, export, transfer, dump, and terminal access.
 - **Dameng Client**: Dameng table, view, function, and user management, queries, import, export, transfer, dump, and terminal access.
 - **PostgreSQL Client**: PostgreSQL schema, table, view, function, procedure, and sequence management, queries, import, export, transfer, dump, and terminal access.

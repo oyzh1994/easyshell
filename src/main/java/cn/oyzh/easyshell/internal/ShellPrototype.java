@@ -122,4 +122,9 @@ public class ShellPrototype {
      * Mosh 连接类型
      */
     public static final String MOSH = "Mosh";
+
+    /**
+     * HTTP 工作区连接类型
+     */
+    public static final String HTTP = "HTTP";
 }

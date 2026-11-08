@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.i18n.I18nResourceBundle;
 
 /**
@@ -825,4 +826,107 @@ public class ShellI18nHelper {
     public static String x11Tip2() {
         return text("shell.x11.tip2");
     }
+
+    public static String httpUrlEmpty() {
+        return text("shell.http.urlEmpty");
+    }
+
+    public static String httpUrlInvalid() {
+        return text("shell.http.urlInvalid");
+    }
+
+    public static String httpAddCollection() {
+        return text("shell.http.addCollection");
+    }
+
+    public static String httpAddRequest() {
+        return text("shell.http.addRequest");
+    }
+
+    public static String httpAddEnvironment() {
+        return text("shell.http.addEnvironment");
+    }
+
+    public static String httpEnvironment() {
+        return text("shell.http.environment");
+    }
+
+    public static String httpEnvironments() {
+        return text("shell.http.environments");
+    }
+
+    public static String httpNoEnvironment() {
+        return text("shell.http.noEnvironment");
+    }
+
+    public static String httpActive() {
+        return text("shell.http.active");
+    }
+
+    public static String httpDuplicate() {
+        return text("shell.http.duplicate");
+    }
+
+    public static String httpSetActive() {
+        return text("shell.http.setActive");
+    }
+
+    public static String httpCopySuffix() {
+        return text("shell.http.copySuffix");
+    }
+
+    public static String httpUntitledRequest() {
+        return text("shell.http.untitledRequest");
+    }
+
+    public static String httpSending() {
+        return text("shell.http.sending");
+    }
+
+    public static String httpRequestFailed() {
+        return text("shell.http.requestFailed");
+    }
+
+    public static String httpNotHtml() {
+        return text("shell.http.notHtml");
+    }
+
+    public static String httpHeader() {
+        return text("shell.http.header");
+    }
+
+    public static String httpBodyRaw() {
+        return text("shell.http.bodyRaw");
+    }
+
+    public static String httpBodyForm() {
+        return text("shell.http.bodyForm");
+    }
+
+    public static String httpBasicAuth() {
+        return text("shell.http.basicAuth");
+    }
+
+    public static String httpBearerAuth() {
+        return text("shell.http.bearerAuth");
+    }
+
+    public static String httpApiKeyAuth() {
+        return text("shell.http.apiKeyAuth");
+    }
+
+    public static String httpSeconds() {
+        return text("shell.http.seconds");
+    }
+
+    public static String httpConfirmDelete(Object name) {
+        return text("shell.http.confirmDelete", name);
+    }
+
+    public static String httpBinaryResponse(Object size, Object contentType) {
+        String type = StringUtil.isBlank(contentType == null ? null : contentType.toString())
+                ? "" : ", " + contentType;
+        return text("shell.http.binaryResponse", size, type);
+    }
+
 }

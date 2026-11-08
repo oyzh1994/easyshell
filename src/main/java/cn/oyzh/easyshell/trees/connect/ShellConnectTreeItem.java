@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
@@ -492,7 +493,18 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateMongoConnect(this.value);
         } else if (this.isMoshType()) {
             ShellViewFactory.updateMoshConnect(this.value);
+        } else if (this.isHttpType()) {
+            ShellViewFactory.updateHttpConnect(this.value);
         }
+    }
+
+    /**
+     * 是否 HTTP 类型
+     *
+     * @return 结果
+     */
+    public boolean isHttpType() {
+        return this.value.isHttpType();
     }
 
     // /**
@@ -511,7 +523,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         }
         StringBuilder builder = new StringBuilder();
         builder.append(ShellI18nHelper.label(I18nHelper.protocol(), this.value.getType())).append("\n");
-        if (this.isS3Type()) {
+        if (this.isHttpType()) {
+            if (StringUtil.isNotBlank(this.value.getRemark())) {
+                builder.append(ShellI18nHelper.label(I18nResourceBundle.i18nString("base.remark"), this.value.getRemark())).append("\n");
+            }
+        } else if (this.isS3Type()) {
             builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.getHost())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");

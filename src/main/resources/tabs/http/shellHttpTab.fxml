@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.tabs.http.ShellHttpTabPane?>
+<?import cn.oyzh.easyshell.trees.http.ShellHttpTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.FilterTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXSplitPane xmlns:fx="http://javafx.com/fxml/1"
+             fx:controller="cn.oyzh.easyshell.tabs.http.ShellHttpTabController"
+             fx:id="root" flexWidth="100%" flexHeight="100%" dividerPositions="0.25">
+    <FXVBox flexWidth="100%" flexHeight="100%">
+        <FXHBox flexWidth="100%" realHeight="30">
+            <FilterTextField fx:id="filterKW" promptText="%shell.http.searchRequests"
+                             tipText="%base.searchKWTip" realHeight="24"
+                             flexWidth="100% - 10" maxLen="60">
+                <HBox.margin>
+                    <Insets left="5" top="3"/>
+                </HBox.margin>
+            </FilterTextField>
+        </FXHBox>
+        <ShellHttpTreeView fx:id="treeView" flexWidth="100%" flexHeight="100% - 66"/>
+        <FXHBox flexWidth="100%" realHeight="36">
+            <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#addNode">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </AddSVGGlyph>
+            <PositioningSVGGlyph tipText="%shell.http.positionNode"
+                                 onMousePrimaryClicked="#positionNode">
+                <HBox.margin>
+                    <Insets left="5" top="5"/>
+                </HBox.margin>
+            </PositioningSVGGlyph>
+        </FXHBox>
+    </FXVBox>
+    <ShellHttpTabPane fx:id="tabPane" tabMinHeight="30" tabDragPolicy="REORDER"
+                      side="BOTTOM" tabClosingPolicy="ALL_TABS"
+                      flexHeight="100%" rotateGraphic="true">
+    </ShellHttpTabPane>
+</FXSplitPane>

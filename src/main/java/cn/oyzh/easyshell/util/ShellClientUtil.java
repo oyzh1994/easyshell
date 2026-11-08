@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.util;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.ftp.ShellFTPClient;
+import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
 import cn.oyzh.easyshell.local.ShellLocalClient;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
@@ -88,6 +89,8 @@ public class ShellClientUtil {
             client = new ShellDamengClient(connect);
         } else if (connect.isPostgresqlType()) {
             client = new ShellPostgresqlClient(connect);
+        } else if (connect.isHttpType()) {
+            client = new ShellHttpClient(connect);
         }
         return (T) client;
     }

@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.domain.ShellTunnelingConfig;
 import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.easyshell.domain.zk.ShellZKSASLConfig;
 import cn.oyzh.easyshell.store.zk.ShellZKAuthStore;
+import cn.oyzh.easyshell.store.http.ShellHttpWorkspaceStore;
 import cn.oyzh.easyshell.store.zk.ShellZKSASLConfigStore;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.param.SelectParam;
@@ -258,6 +259,8 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
             } else if (model.isZKType()) {
                 this.zkAuthStore.deleteByIid(model.getId());
                 this.zkSaslConfigStore.deleteByIid(model.getId());
+            } else if (model.isHttpType()) {
+                ShellHttpWorkspaceStore.INSTANCE.deleteByIid(model.getId());
             }
         }
         return result;

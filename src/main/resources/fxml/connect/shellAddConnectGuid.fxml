@@ -38,6 +38,7 @@
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="650"
         realHeight="600">
@@ -303,6 +304,14 @@
         <FXRadioButton toggleGroup="$type" text="Zookeeper" userData="zookeeper">
             <graphic>
                 <ZookeeperSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="HTTP" userData="http">
+            <graphic>
+                <HttpSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>
