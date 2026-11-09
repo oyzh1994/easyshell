@@ -899,6 +899,18 @@ public class ShellI18nHelper {
         return text("shell.http.valuePlaceholder");
     }
 
+    public static String httpDescription() {
+        return text("shell.http.description");
+    }
+
+    public static String httpDescriptionPlaceholder() {
+        return text("shell.http.descriptionPlaceholder");
+    }
+
+    public static String httpCookieExpires() {
+        return text("shell.http.cookieExpires");
+    }
+
     public static String httpBodyRaw() {
         return text("shell.http.bodyRaw");
     }

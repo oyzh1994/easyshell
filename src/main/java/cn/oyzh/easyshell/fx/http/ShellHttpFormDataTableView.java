@@ -59,9 +59,9 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
 
         // 启用列
         FXTableColumn<ShellHttpKeyValue, Boolean> enabled = new FXTableColumn<>();
-        enabled.setPrefWidth(32);
-        enabled.setMinWidth(32);
-        enabled.setMaxWidth(32);
+        enabled.setPrefWidth(ShellHttpKeyValueTableView.ENABLED_WIDTH);
+        enabled.setMinWidth(ShellHttpKeyValueTableView.ENABLED_WIDTH);
+        enabled.setMaxWidth(ShellHttpKeyValueTableView.ENABLED_WIDTH);
         enabled.setEditable(true);
         enabled.setSortable(false);
         enabled.setResizable(false);
@@ -71,7 +71,7 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
         // 键列
         FXTableColumn<ShellHttpKeyValue, String> key = new FXTableColumn<>();
         key.setText(I18nHelper.key());
-        key.setPrefWidth(190);
+        key.setPrefWidth(ShellHttpKeyValueTableView.KEY_WIDTH);
         key.setEditable(true);
         key.setSortable(false);
         key.setCellValueFactory(cell -> cell.getValue().keyProperty());
@@ -83,16 +83,27 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
         // 值/文件列
         FXTableColumn<ShellHttpKeyValue, String> value = new FXTableColumn<>();
         value.setText(I18nHelper.value());
-        value.setPrefWidth(420);
+        value.setPrefWidth(ShellHttpKeyValueTableView.VALUE_WIDTH);
         value.setEditable(false);
         value.setSortable(false);
         value.setCellValueFactory(cell -> cell.getValue().valueProperty());
         value.setCellFactory(column -> new ValueCell());
 
-        this.getColumns().setAll(java.util.List.of(enabled, key, value));
+        // 描述列，仅用于说明，不参与请求
+        FXTableColumn<ShellHttpKeyValue, String> description = new FXTableColumn<>();
+        description.setText(ShellI18nHelper.httpDescription());
+        description.setPrefWidth(ShellHttpKeyValueTableView.DESCRIPTION_WIDTH);
+        description.setEditable(false);
+        description.setSortable(false);
+        description.setCellValueFactory(cell -> cell.getValue().descriptionProperty());
+        description.setCellFactory(column -> new ShellHttpTextInputCell(
+                ShellHttpKeyValue::getDescription, ShellHttpKeyValue::setDescription,
+                ShellI18nHelper.httpDescriptionPlaceholder()));
+
+        this.getColumns().setAll(java.util.List.of(enabled, key, value, description));
         this.setEditable(true);
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        this.setFixedCellSize(30);
+        this.setFixedCellSize(ShellHttpKeyValueTableView.ROW_HEIGHT);
 
         this.getItems().addListener((ListChangeListener<ShellHttpKeyValue>) change -> {
             while (change.next()) {
@@ -118,6 +129,7 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
             row.keyProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
             row.valueProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
             row.fileProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
+            row.descriptionProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
         }
     }
 

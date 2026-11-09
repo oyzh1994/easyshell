@@ -14,6 +14,7 @@ import org.junit.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
@@ -356,6 +357,15 @@ public class ShellHttpClientIntegrationTest {
         ShellHttpResponse cookieResponse = this.client.execute(cookie, this.workspace);
         assertTrue(cookieResponse.getHeaders().entrySet().stream()
                 .anyMatch(entry -> "Set-Cookie".equalsIgnoreCase(entry.getKey())));
+        List<ShellHttpCookie> cookies = ShellHttpCookie.parse(cookieResponse);
+        assertEquals(1, cookies.size());
+        assertEquals("session", cookies.getFirst().getName());
+        assertEquals("mock", cookies.getFirst().getValue());
+        assertEquals("/", cookies.getFirst().getPath());
+        assertTrue(cookies.getFirst().isHttpOnly());
+        assertEquals("Lax", cookies.getFirst().getSameSite());
+        assertTrue(cookies.getFirst().getExpiresText()
+                .matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"));
 
         ShellHttpRequest apiKey = new ShellHttpRequest();
         apiKey.setUrl(this.server.baseUrl() + "/api/api-key");
@@ -521,6 +531,26 @@ public class ShellHttpClientIntegrationTest {
         assertTrue(mdResponse.isMarkdown());
         assertTrue(mdResponse.getBody().contains("# EasyShell"));
         assertTrue(ShellHttpUtil.isTextContent(mdResponse.getContentType()));
+    }
+
+
+    @Test
+    public void formatsCookieExpirationVariants() {
+        ShellHttpResponse expires = new ShellHttpResponse();
+        expires.setUri(java.net.URI.create("https://example.com/path"));
+        expires.setHeaders(Map.of("set-cookie",
+                List.of("a=b; Expires=Wed, 9 Jun 2027 10:18:14 GMT")));
+        List<ShellHttpCookie> expiresCookies = ShellHttpCookie.parse(expires);
+        assertTrue(expiresCookies.getFirst().getExpiresText()
+                .matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"));
+
+        ShellHttpResponse maxAge = new ShellHttpResponse();
+        maxAge.setUri(java.net.URI.create("https://example.com/path"));
+        maxAge.setHeaders(Map.of("set-cookie",
+                List.of("b=c; Max-Age=3600")));
+        List<ShellHttpCookie> maxAgeCookies = ShellHttpCookie.parse(maxAge);
+        assertTrue(maxAgeCookies.getFirst().getExpiresText()
+                .matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"));
     }
 
     @Test

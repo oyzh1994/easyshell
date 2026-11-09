@@ -24,9 +24,44 @@ import java.util.Set;
 public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
 
     /**
+     * 启用列宽度
+     */
+    public static final double ENABLED_WIDTH = 32;
+
+    /**
+     * 键列宽度
+     */
+    public static final double KEY_WIDTH = 220;
+
+    /**
+     * 值列宽度
+     */
+    public static final double VALUE_WIDTH = 420;
+
+    /**
+     * 描述列宽度
+     */
+    public static final double DESCRIPTION_WIDTH = 220;
+
+    /**
+     * 行高
+     */
+    public static final double ROW_HEIGHT = 28;
+
+    /**
      * 变更回调
      */
     private Runnable changeAction;
+
+    /**
+     * 是否显示描述列
+     */
+    private boolean descriptionVisible;
+
+    /**
+     * 描述列
+     */
+    private FXTableColumn<ShellHttpKeyValue, String> descriptionColumn;
 
     /**
      * 已监听的键值行
@@ -43,15 +78,35 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
         this.changeAction = changeAction;
     }
 
+    /**
+     * 设置是否显示描述列。
+     *
+     * @param descriptionVisible 是否显示
+     */
+    public boolean isDescriptionVisible() {
+        return descriptionVisible;
+    }
+
+    public void setDescriptionVisible(boolean descriptionVisible) {
+        this.descriptionVisible = descriptionVisible;
+        if (this.descriptionColumn != null) {
+            if (descriptionVisible && !this.getColumns().contains(this.descriptionColumn)) {
+                this.getColumns().add(this.descriptionColumn);
+            } else if (!descriptionVisible) {
+                this.getColumns().remove(this.descriptionColumn);
+            }
+        }
+    }
+
     @Override
     public void initNode() {
         super.initNode();
 
         // 启用列
         FXTableColumn<ShellHttpKeyValue, Boolean> enabled = new FXTableColumn<>();
-        enabled.setPrefWidth(32);
-        enabled.setMinWidth(32);
-        enabled.setMaxWidth(32);
+        enabled.setPrefWidth(ENABLED_WIDTH);
+        enabled.setMinWidth(ENABLED_WIDTH);
+        enabled.setMaxWidth(ENABLED_WIDTH);
         enabled.setEditable(true);
         enabled.setSortable(false);
         enabled.setResizable(false);
@@ -83,7 +138,7 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
         // 键列
         FXTableColumn<ShellHttpKeyValue, String> key = new FXTableColumn<>();
         key.setText(I18nHelper.key());
-        key.setPrefWidth(220);
+        key.setPrefWidth(KEY_WIDTH);
         key.setEditable(true);
         key.setSortable(false);
         key.setCellValueFactory(cell -> cell.getValue().keyProperty());
@@ -95,7 +150,7 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
         // 值列
         FXTableColumn<ShellHttpKeyValue, String> value = new FXTableColumn<>();
         value.setText(I18nHelper.value());
-        value.setPrefWidth(420);
+        value.setPrefWidth(VALUE_WIDTH);
         value.setEditable(true);
         value.setSortable(false);
         value.setCellValueFactory(cell -> cell.getValue().valueProperty());
@@ -104,10 +159,26 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
                 ShellHttpKeyValue::getValue, ShellHttpKeyValue::setValue,
                 ShellI18nHelper.httpValuePlaceholder()));
 
-        this.getColumns().setAll(java.util.List.of(enabled, key, value));
+        this.descriptionColumn = new FXTableColumn<>();
+        this.descriptionColumn.setText(ShellI18nHelper.httpDescription());
+        this.descriptionColumn.setPrefWidth(DESCRIPTION_WIDTH);
+        this.descriptionColumn.setEditable(true);
+        this.descriptionColumn.setSortable(false);
+        this.descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());
+        this.descriptionColumn.setEditable(false);
+        this.descriptionColumn.setCellFactory(column -> new ShellHttpTextInputCell(
+                ShellHttpKeyValue::getDescription, ShellHttpKeyValue::setDescription,
+                ShellI18nHelper.httpDescriptionPlaceholder()));
+
+        java.util.List<FXTableColumn<ShellHttpKeyValue, ?>> columns = new java.util.ArrayList<>(
+                java.util.List.of(enabled, key, value));
+        if (this.descriptionVisible) {
+            columns.add(this.descriptionColumn);
+        }
+        this.getColumns().setAll(columns);
         this.setEditable(true);
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        this.setFixedCellSize(28);
+        this.setFixedCellSize(ROW_HEIGHT);
 
         this.getItems().addListener((ListChangeListener<ShellHttpKeyValue>) change -> {
             while (change.next()) {
@@ -134,6 +205,7 @@ public class ShellHttpKeyValueTableView extends FXTableView<ShellHttpKeyValue> {
             row.enabledProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
             row.keyProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
             row.valueProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
+            row.descriptionProperty().addListener((observable, oldValue, newValue) -> this.fireChange());
         }
     }
 

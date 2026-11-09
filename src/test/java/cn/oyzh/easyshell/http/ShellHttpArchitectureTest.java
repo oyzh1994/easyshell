@@ -205,9 +205,12 @@ public class ShellHttpArchitectureTest {
     @Test
     public void requestAndEnvironmentJsonColumnsRoundTrip() {
         ShellHttpRequest request = new ShellHttpRequest();
-        request.getParams().add(new ShellHttpKeyValue("q", "value"));
+        ShellHttpKeyValue param = new ShellHttpKeyValue("q", "value");
+        param.setDescription("query description");
+        request.getParams().add(param);
         request.getHeaders().add(new ShellHttpKeyValue("X-Test", "1"));
         ShellHttpKeyValue formRow = new ShellHttpKeyValue("field", "2");
+        formRow.setDescription("form description");
         formRow.setFile(true);
         request.getFormBody().add(formRow);
         request.syncJson();
@@ -218,9 +221,11 @@ public class ShellHttpArchitectureTest {
         loaded.setFormBodyJson(request.getFormBodyJson());
         assertEquals(1, loaded.getParams().size());
         assertEquals("q", loaded.getParams().getFirst().getKey());
+        assertEquals("query description", loaded.getParams().getFirst().getDescription());
         assertEquals(1, loaded.getHeaders().size());
         assertEquals(1, loaded.getFormBody().size());
         assertTrue(loaded.getFormBody().getFirst().isFile());
+        assertEquals("form description", loaded.getFormBody().getFirst().getDescription());
 
         ShellHttpEnvironment environment = new ShellHttpEnvironment();
         environment.getValues().add(new ShellHttpKeyValue("baseUrl", "https://example.com"));

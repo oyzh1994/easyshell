@@ -202,7 +202,9 @@ public class ShellHttpMockServer implements AutoCloseable {
     }
 
     private void cookie(HttpExchange exchange) throws IOException {
-        exchange.getResponseHeaders().add("Set-Cookie", "session=mock; Path=/; HttpOnly");
+        exchange.getResponseHeaders().add("Set-Cookie",
+                "session=mock; Path=/; HttpOnly; SameSite=Lax; "
+                        + "Expires=Wed, 09 Jun 2027 10:18:14 GMT");
         this.json(exchange, 200, Map.of("cookie", "session=mock"));
     }
 

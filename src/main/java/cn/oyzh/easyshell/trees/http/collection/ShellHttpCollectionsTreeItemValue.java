@@ -36,7 +36,7 @@ public class ShellHttpCollectionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return "(" + this.item().workspace().requestCount() + ")";
+        return "(" + this.item().workspace().getCollections().size() + ")";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ShellHttpCollectionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public Color graphicColor() {
-        if (this.item().workspace().requestCount() > 0) {
+        if (!this.item().workspace().getCollections().isEmpty()) {
             return Color.FORESTGREEN;
         }
         return super.graphicColor();

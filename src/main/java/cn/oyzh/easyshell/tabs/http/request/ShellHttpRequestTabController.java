@@ -5,10 +5,12 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.easyshell.fx.http.ShellHttpCookieTableView;
 import cn.oyzh.easyshell.fx.http.ShellHttpFormDataTableView;
 import cn.oyzh.easyshell.fx.http.ShellHttpKeyValueTableView;
 import cn.oyzh.easyshell.fx.http.ShellHttpResponseHeadersTableView;
 import cn.oyzh.easyshell.http.ShellHttpClient;
+import cn.oyzh.easyshell.http.ShellHttpCookie;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequestScript;
 import cn.oyzh.easyshell.domain.http.ShellHttpSetting;
@@ -292,6 +294,12 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     @FXML
     private FXToggleSwitch responseHeadersTableMode;
+
+    /**
+     * 响应 Cookie 表格
+     */
+    @FXML
+    private ShellHttpCookieTableView responseCookies;
 
     /**
      * 响应头表格
@@ -1096,6 +1104,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.renderResponseBody();
         this.responseHeaders.text(ShellHttpClient.headersText(result));
         this.responseHeadersTable.getItems().setAll(this.responseHeaderRows(result));
+        this.responseCookies.getItems().setAll(ShellHttpCookie.parse(result));
         this.updateResponseHeadersMode();
         this.preview.setDisable(!result.isHtml());
         this.saveResponseBody.setDisable(result.isBinary());
@@ -1117,6 +1126,9 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         if (this.testResults != null) {
             this.testResults.text("");
+        }
+        if (this.responseCookies != null) {
+            this.responseCookies.getItems().clear();
         }
     }
 
