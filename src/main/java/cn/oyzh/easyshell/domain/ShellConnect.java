@@ -272,7 +272,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     /**
      * ssh协议，启用ZModem
-     * 默认启用
+     * 默认禁用
      */
     @Column
     private Boolean enableZModem;
@@ -445,8 +445,8 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
 
     /** 是否启用ZModem */
     public boolean isEnableZModem() {
-        // BooleanUtil.isTrue(enableZModem);
-        return enableZModem == null || enableZModem;
+         return BooleanUtil.isTrue(enableZModem);
+//        return enableZModem == null || enableZModem;
     }
 
     /** 设置是否启用代理转发 */

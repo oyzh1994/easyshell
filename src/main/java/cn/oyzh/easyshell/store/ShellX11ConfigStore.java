@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.domain.ShellX11Config;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.param.DeleteParam;
 import cn.oyzh.store.jdbc.param.QueryParam;
+import cn.oyzh.store.jdbc.param.SelectParam;
 
 /**
  * x11配置存储
@@ -27,7 +28,9 @@ public class ShellX11ConfigStore extends JdbcStandardStore<ShellX11Config> {
      */
     public boolean replace(ShellX11Config model) {
         String iid = model.getIid();
-        if (super.exist(iid)) {
+        SelectParam param = new SelectParam();
+        param.addQueryParam(QueryParam.of("iid", iid));
+        if (super.selectOne(param) != null) {
             return super.update(model);
         }
         return this.insert(model);
