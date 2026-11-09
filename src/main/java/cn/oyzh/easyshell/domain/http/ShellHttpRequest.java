@@ -37,6 +37,8 @@ public class ShellHttpRequest implements Serializable {
     public static final String BODY_BINARY = "binary";
     public static final String AUTH_NONE = "none";
     public static final String AUTH_BASIC = "basic";
+    public static final String AUTH_DIGEST = "digest";
+    public static final String AUTH_OAUTH2 = "oauth2";
     public static final String AUTH_BEARER = "bearer";
     public static final String AUTH_API_KEY = "apiKey";
     public static final String PLACEMENT_HEADER = "header";
@@ -156,6 +158,30 @@ public class ShellHttpRequest implements Serializable {
      */
     @Column
     private String authKeyPlacement = PLACEMENT_HEADER;
+
+    /**
+     * OAuth 2.0 Token URL
+     */
+    @Column
+    private String oauth2TokenUrl = "";
+
+    /**
+     * OAuth 2.0 Client ID
+     */
+    @Column
+    private String oauth2ClientId = "";
+
+    /**
+     * OAuth 2.0 Client Secret
+     */
+    @Column
+    private String oauth2ClientSecret = "";
+
+    /**
+     * OAuth 2.0 Scope
+     */
+    @Column
+    private String oauth2Scope = "";
 
     /**
      * HTTP 版本，空值使用工作区设置
@@ -354,6 +380,38 @@ public class ShellHttpRequest implements Serializable {
         this.authKeyPlacement = authKeyPlacement;
     }
 
+    public String getOauth2TokenUrl() {
+        return oauth2TokenUrl;
+    }
+
+    public void setOauth2TokenUrl(String oauth2TokenUrl) {
+        this.oauth2TokenUrl = oauth2TokenUrl;
+    }
+
+    public String getOauth2ClientId() {
+        return oauth2ClientId;
+    }
+
+    public void setOauth2ClientId(String oauth2ClientId) {
+        this.oauth2ClientId = oauth2ClientId;
+    }
+
+    public String getOauth2ClientSecret() {
+        return oauth2ClientSecret;
+    }
+
+    public void setOauth2ClientSecret(String oauth2ClientSecret) {
+        this.oauth2ClientSecret = oauth2ClientSecret;
+    }
+
+    public String getOauth2Scope() {
+        return oauth2Scope;
+    }
+
+    public void setOauth2Scope(String oauth2Scope) {
+        this.oauth2Scope = oauth2Scope;
+    }
+
     public String getHttpVersion() {
         return httpVersion;
     }
@@ -469,6 +527,10 @@ public class ShellHttpRequest implements Serializable {
         copy.authKeyName = this.authKeyName;
         copy.authKeyValue = this.authKeyValue;
         copy.authKeyPlacement = this.authKeyPlacement;
+        copy.oauth2TokenUrl = this.oauth2TokenUrl;
+        copy.oauth2ClientId = this.oauth2ClientId;
+        copy.oauth2ClientSecret = this.oauth2ClientSecret;
+        copy.oauth2Scope = this.oauth2Scope;
         copy.httpVersion = this.httpVersion;
         copy.followRedirects = this.followRedirects;
         copy.sendNoCacheHeader = this.sendNoCacheHeader;

@@ -51,6 +51,12 @@ public class ShellHttpSettingsTabController extends RichTabController {
     private FXComboBox<String> httpVersion;
 
     /**
+     * 最大响应大小，单位 MB
+     */
+    @FXML
+    private NumberTextField maxResponseSize;
+
+    /**
      * 跟随重定向
      */
     @FXML
@@ -122,6 +128,7 @@ public class ShellHttpSettingsTabController extends RichTabController {
         this.httpVersion.getItems().setAll(
                 ShellHttpSetting.VERSION_HTTP_1_1, ShellHttpSetting.VERSION_HTTP_2);
         this.httpVersion.setValue(settings.getHttpVersion());
+        this.maxResponseSize.setValue(settings.getMaxResponseSizeMb());
         this.followRedirects.setSelected(settings.isFollowRedirects());
         this.verifySsl.setSelected(settings.isVerifySsl());
         this.prettyJson.setSelected(settings.isPrettyJson());
@@ -131,6 +138,7 @@ public class ShellHttpSettingsTabController extends RichTabController {
         this.environmentCombo.selectedItemChanged((observable, oldValue, newValue) -> this.switchEnvironment(newValue));
         this.timeout.textProperty().addListener((observable, oldValue, newValue) -> this.apply());
         this.httpVersion.selectedItemChanged((observable, oldValue, newValue) -> this.apply());
+        this.maxResponseSize.textProperty().addListener((observable, oldValue, newValue) -> this.apply());
         this.followRedirects.selectedProperty().addListener((observable, oldValue, newValue) -> this.apply());
         this.verifySsl.selectedProperty().addListener((observable, oldValue, newValue) -> this.apply());
         this.prettyJson.selectedProperty().addListener((observable, oldValue, newValue) -> this.apply());
@@ -209,6 +217,8 @@ public class ShellHttpSettingsTabController extends RichTabController {
         int value = this.timeout.getIntValue();
         settings.setTimeoutSeconds(value <= 0 ? 30 : value);
         settings.setHttpVersion(this.httpVersion.getValue());
+        int maxResponseSize = this.maxResponseSize.getIntValue();
+        settings.setMaxResponseSizeMb(maxResponseSize <= 0 ? 50 : maxResponseSize);
         settings.setFollowRedirects(this.followRedirects.isSelected());
         settings.setVerifySsl(this.verifySsl.isSelected());
         settings.setPrettyJson(this.prettyJson.isSelected());

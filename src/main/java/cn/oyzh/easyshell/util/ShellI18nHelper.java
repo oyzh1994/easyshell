@@ -907,8 +907,24 @@ public class ShellI18nHelper {
         return text("shell.http.descriptionPlaceholder");
     }
 
+    public static String httpCookieHttpOnly() {
+        return text("shell.http.cookieHttpOnly");
+    }
+
+    public static String httpCookieSecure() {
+        return text("shell.http.cookieSecure");
+    }
+
+    public static String httpCookieSameSite() {
+        return text("shell.http.cookieSameSite");
+    }
+
     public static String httpCookieExpires() {
         return text("shell.http.cookieExpires");
+    }
+
+    public static String httpResponseTooLarge(String limit) {
+        return text("shell.http.responseTooLarge", limit);
     }
 
     public static String httpBodyRaw() {
@@ -939,8 +955,32 @@ public class ShellI18nHelper {
         return text("shell.http.basicAuth");
     }
 
+    public static String httpDigestAuth() {
+        return text("shell.http.digestAuth");
+    }
+
     public static String httpBearerAuth() {
         return text("shell.http.bearerAuth");
+    }
+
+    public static String httpOAuth2Auth() {
+        return text("shell.http.oauth2Auth");
+    }
+
+    public static String httpOAuth2TokenUrl() {
+        return text("shell.http.oauth2TokenUrl");
+    }
+
+    public static String httpOAuth2ClientId() {
+        return text("shell.http.oauth2ClientId");
+    }
+
+    public static String httpOAuth2ClientSecret() {
+        return text("shell.http.oauth2ClientSecret");
+    }
+
+    public static String httpOAuth2Scope() {
+        return text("shell.http.oauth2Scope");
     }
 
     public static String httpApiKeyAuth() {

@@ -70,6 +70,12 @@ public class ShellHttpSetting implements Serializable {
     private Boolean sendNoCacheHeader = true;
 
     /**
+     * 最大响应大小，单位 MB
+     */
+    @Column
+    private Integer maxResponseSizeMb = 50;
+
+    /**
      * 当前环境id
      */
     @Column
@@ -148,6 +154,15 @@ public class ShellHttpSetting implements Serializable {
         this.prettyJson = prettyJson;
     }
 
+    public int getMaxResponseSizeMb() {
+        return this.maxResponseSizeMb == null || this.maxResponseSizeMb <= 0
+                ? 50 : this.maxResponseSizeMb;
+    }
+
+    public void setMaxResponseSizeMb(int maxResponseSizeMb) {
+        this.maxResponseSizeMb = maxResponseSizeMb;
+    }
+
     public String getActiveEnvironmentId() {
         return activeEnvironmentId;
     }
@@ -171,6 +186,7 @@ public class ShellHttpSetting implements Serializable {
         copy.verifySsl = this.isVerifySsl();
         copy.prettyJson = this.isPrettyJson();
         copy.sendNoCacheHeader = this.isSendNoCacheHeader();
+        copy.maxResponseSizeMb = this.getMaxResponseSizeMb();
         copy.activeEnvironmentId = this.activeEnvironmentId;
         return copy;
     }

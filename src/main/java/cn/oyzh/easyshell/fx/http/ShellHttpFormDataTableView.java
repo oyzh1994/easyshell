@@ -116,6 +116,8 @@ public class ShellHttpFormDataTableView extends FXTableView<ShellHttpKeyValue> {
             }
             this.fireChange();
         });
+        // 兼容 items 先于 initNode 设置的情况
+        this.getItems().forEach(this::observe);
     }
 
     /**

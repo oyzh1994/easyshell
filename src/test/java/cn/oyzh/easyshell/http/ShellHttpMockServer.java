@@ -44,6 +44,7 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.server.createContext("/api/headers", this::headers);
         this.server.createContext("/api/method", this::method);
         this.server.createContext("/api/slow", this::slow);
+        this.server.createContext("/api/large", this::large);
         this.server.createContext("/upload", this::upload);
         this.server.createContext("/upload/form", this::uploadForm);
         this.server.createContext("/download", this::download);
@@ -55,11 +56,15 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.server.createContext("/api/charset/gbk", this::gbk);
         this.server.createContext("/auth/basic", this::basicAuth);
         this.server.createContext("/auth/bearer", this::bearer);
+        this.server.createContext("/auth/digest", this::digest);
+        this.server.createContext("/oauth/token", this::oauthToken);
+        this.server.createContext("/auth/oauth2", this::oauth2);
         this.server.createContext("/html", this::html);
         this.server.createContext("/css", this::css);
         this.server.createContext("/javascript", this::javascript);
         this.server.createContext("/markdown", this::markdown);
         this.server.createContext("/gzip", this::gzip);
+        this.server.createContext("/brotli", this::brotli);
         this.server.createContext("/redirect", this::redirect);
         this.server.createContext("/error", this::error);
     }
@@ -260,6 +265,28 @@ public class ShellHttpMockServer implements AutoCloseable {
         this.json(exchange, 200, Map.of("headers", headers));
     }
 
+    private void large(HttpExchange exchange) throws IOException {
+        int bytes = 2 * 1024 * 1024;
+        String query = exchange.getRequestURI().getQuery();
+        if (query != null) {
+            for (String part : query.split("&")) {
+                if (part.startsWith("bytes=")) {
+                    try {
+                        bytes = Math.max(0, Integer.parseInt(part.substring(6)));
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+            }
+        }
+        byte[] data = new byte[bytes];
+        java.util.Arrays.fill(data, (byte) 'a');
+        exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
+        exchange.getResponseHeaders().set("X-Method", exchange.getRequestMethod());
+        exchange.sendResponseHeaders(200, data.length);
+        exchange.getResponseBody().write(data);
+        exchange.close();
+    }
+
     private void slow(HttpExchange exchange) throws IOException {
         try {
             Thread.sleep(1500);
@@ -279,6 +306,73 @@ public class ShellHttpMockServer implements AutoCloseable {
         boolean accepted = "Basic dXNlcjpwYXNz".equals(first(exchange.getRequestHeaders(), "Authorization"));
         this.json(exchange, accepted ? 200 : 401,
                 Map.of("authenticated", accepted, "scheme", "basic"));
+    }
+
+    private void oauthToken(HttpExchange exchange) throws IOException {
+        boolean accepted = "Basic Y2xpZW50OnNlY3JldA==".equals(
+                first(exchange.getRequestHeaders(), "Authorization"));
+        if (!accepted) {
+            this.json(exchange, 401, Map.of("error", "invalid_client"));
+            return;
+        }
+        JSONObject body = new JSONObject();
+        body.put("access_token", "oauth-access-token");
+        body.put("token_type", "Bearer");
+        body.put("expires_in", 3600);
+        this.json(exchange, 200, body);
+    }
+
+    private void oauth2(HttpExchange exchange) throws IOException {
+        boolean accepted = "Bearer oauth-access-token".equals(
+                first(exchange.getRequestHeaders(), "Authorization"));
+        this.json(exchange, accepted ? 200 : 401,
+                Map.of("authenticated", accepted, "scheme", "oauth2"));
+    }
+
+    private void digest(HttpExchange exchange) throws IOException {
+        String authorization = first(exchange.getRequestHeaders(), "Authorization");
+        if (authorization == null || !authorization.regionMatches(true, 0, "Digest ", 0, 7)) {
+            exchange.getResponseHeaders().set("WWW-Authenticate",
+                    "Digest realm=\"easyshell\", nonce=\"mock-nonce\", "
+                            + "qop=\"auth\", algorithm=MD5, opaque=\"mock-opaque\"");
+            exchange.sendResponseHeaders(401, -1);
+            exchange.close();
+            return;
+        }
+        java.util.Map<String, String> params = new java.util.HashMap<>();
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(\\w+)=(?:\"([^\"]*)\"|([^, ]+))")
+                .matcher(authorization);
+        while (matcher.find()) {
+            params.put(matcher.group(1).toLowerCase(java.util.Locale.ROOT),
+                    matcher.group(2) != null ? matcher.group(2) : matcher.group(3));
+        }
+        String realm = params.getOrDefault("realm", "easyshell");
+        String nonce = params.getOrDefault("nonce", "mock-nonce");
+        String uri = params.getOrDefault("uri", exchange.getRequestURI().toString());
+        String qop = params.getOrDefault("qop", "auth");
+        String nc = params.getOrDefault("nc", "00000001");
+        String cnonce = params.getOrDefault("cnonce", "");
+        String ha1 = md5("user:" + realm + ":pass");
+        String ha2 = md5(exchange.getRequestMethod() + ":" + uri);
+        String expected = md5(ha1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + ha2);
+        boolean accepted = expected.equalsIgnoreCase(params.get("response"));
+        this.json(exchange, accepted ? 200 : 401,
+                Map.of("authenticated", accepted, "scheme", "digest"));
+    }
+
+    private static String md5(String value) {
+        try {
+            byte[] bytes = java.security.MessageDigest.getInstance("MD5")
+                    .digest(value.getBytes(StandardCharsets.UTF_8));
+            StringBuilder builder = new StringBuilder();
+            for (byte b : bytes) {
+                builder.append(String.format(java.util.Locale.ROOT, "%02x", b & 0xff));
+            }
+            return builder.toString();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private void bearer(HttpExchange exchange) throws IOException {
@@ -306,6 +400,18 @@ public class ShellHttpMockServer implements AutoCloseable {
     private void markdown(HttpExchange exchange) throws IOException {
         this.text(exchange, 200, "text/markdown; charset=UTF-8",
                 "# EasyShell\n\n**Markdown** response\n\n- css\n- javascript\n- markdown");
+    }
+
+    private void brotli(HttpExchange exchange) throws IOException {
+        // "Brotli compressed response" 的 Brotli 压缩结果
+        byte[] bytes = java.util.Base64.getDecoder().decode(
+                "jwyAQnJvdGxpIGNvbXByZXNzZWQgcmVzcG9uc2UD");
+        exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
+        exchange.getResponseHeaders().set("Content-Encoding", "br");
+        exchange.getResponseHeaders().set("X-Method", exchange.getRequestMethod());
+        exchange.sendResponseHeaders(200, bytes.length);
+        exchange.getResponseBody().write(bytes);
+        exchange.close();
     }
 
     private void gzip(HttpExchange exchange) throws IOException {
@@ -361,9 +467,10 @@ public class ShellHttpMockServer implements AutoCloseable {
         server.start();
         System.out.println("Mock HTTP server: " + server.baseUrl());
         System.out.println("Endpoints: /api/hello /api/echo /api/json /api/headers /api/method /api/slow "
-                + "/api/status /api/no-content /api/cookie /api/api-key /api/xml /api/charset/gbk "
-                + "/upload /upload/form /download /auth/basic /auth/bearer /html /css /javascript /markdown "
-                + "/gzip /redirect /error");
+                + "/api/status /api/no-content /api/cookie /api/api-key /api/xml /api/charset/gbk /api/large "
+                + "/upload /upload/form /download /auth/basic /auth/bearer /auth/digest "
+                + "/oauth/token /auth/oauth2 /html /css /javascript /markdown "
+                + "/gzip /brotli /redirect /error");
         Runtime.getRuntime().addShutdownHook(new Thread(server::close));
     }
 }

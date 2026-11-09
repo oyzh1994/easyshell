@@ -31,6 +31,28 @@
             </HBox.margin>
         </FXLabel>
     </FXHBox>
+    <InfoLabel text="%shell.http.maxResponseSize">
+        <VBox.margin>
+            <Insets left="20" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <NumberTextField fx:id="maxResponseSize" min="1" max="10240" realHeight="30" realWidth="140">
+            <HBox.margin>
+                <Insets left="20"/>
+            </HBox.margin>
+        </NumberTextField>
+        <FXLabel text="%shell.http.mb" realHeight="24">
+            <HBox.margin>
+                <Insets left="5" top="4"/>
+            </HBox.margin>
+        </FXLabel>
+    </FXHBox>
+    <InfoLabel text="%shell.http.maxResponseSizeTip">
+        <VBox.margin>
+            <Insets left="20" top="6"/>
+        </VBox.margin>
+    </InfoLabel>
     <InfoLabel text="%shell.http.activeEnvironment">
         <VBox.margin>
             <Insets left="20" top="10"/>

@@ -3,11 +3,14 @@ package cn.oyzh.easyshell.http;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.http.ShellHttpEnvironment;
+import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import org.brotli.dec.BrotliInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -455,7 +458,8 @@ public final class ShellHttpUtil {
      * @throws Exception 写入异常
      */
     public static Path createHtmlPreview(String body, URI baseUri) throws Exception {
-        Path file = Files.createTempFile("easyshell-http-", ".html");
+        Path file = Path.of(ShellFileUtil.getTempFile("html"));
+        Files.createDirectories(file.toAbsolutePath().getParent());
         String html = body == null ? "" : body;
         if (baseUri != null && !html.toLowerCase(Locale.ROOT).contains("<base ")) {
             String baseTag = "<base href=\"" + baseUri + "\">";
@@ -579,11 +583,30 @@ public final class ShellHttpUtil {
      * @throws IOException 解压异常
      */
     public static byte[] decompress(byte[] body, String encoding) throws IOException {
+        return decompress(body, encoding, Long.MAX_VALUE);
+    }
+
+    /**
+     * 解压响应体，并限制解压后的最大字节数。
+     *
+     * @param body     原始响应体
+     * @param encoding Content-Encoding 响应头
+     * @param maxBytes 最大解压字节数
+     * @return 解压后的响应体
+     * @throws IOException 解压异常或超过限制
+     */
+    public static byte[] decompress(byte[] body, String encoding, long maxBytes) throws IOException {
         if (body == null || body.length == 0) {
             return body;
         }
         if (StringUtil.isBlank(encoding)) {
-            return isGzip(body) ? gunzip(body) : body;
+            if (isGzip(body)) {
+                return gunzip(body, maxBytes);
+            }
+            if (maxBytes > 0 && body.length > maxBytes) {
+                throw new ResponseTooLargeException();
+            }
+            return body;
         }
         String[] encodings = encoding.split(",");
         byte[] result = body;
@@ -595,15 +618,29 @@ public final class ShellHttpUtil {
             }
             if ("gzip".equals(value) || "x-gzip".equals(value)) {
                 if (isGzip(result)) {
-                    result = gunzip(result);
+                    result = gunzip(result, maxBytes);
                 }
             } else if ("deflate".equals(value)) {
-                result = inflate(result);
+                result = inflate(result, maxBytes);
+            } else if ("br".equals(value)) {
+                result = brotli(result, maxBytes);
             } else {
                 throw new IOException("Unsupported Content-Encoding: " + value);
             }
         }
+        if (maxBytes > 0 && result.length > maxBytes) {
+            throw new ResponseTooLargeException();
+        }
         return result;
+    }
+
+    /**
+     * 响应体超过限制异常。
+     */
+    public static class ResponseTooLargeException extends IOException {
+        public ResponseTooLargeException() {
+            super("Response body exceeds the maximum size");
+        }
     }
 
     /**
@@ -623,11 +660,9 @@ public final class ShellHttpUtil {
      * @return 解压结果
      * @throws IOException 解压异常
      */
-    private static byte[] gunzip(byte[] body) throws IOException {
-        try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(body));
-             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            input.transferTo(output);
-            return output.toByteArray();
+    private static byte[] gunzip(byte[] body, long maxBytes) throws IOException {
+        try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(body))) {
+            return readLimited(input, maxBytes);
         }
     }
 
@@ -638,20 +673,47 @@ public final class ShellHttpUtil {
      * @return 解压结果
      * @throws IOException 解压异常
      */
-    private static byte[] inflate(byte[] body) throws IOException {
-        try (InflaterInputStream input = new InflaterInputStream(new ByteArrayInputStream(body));
-             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            input.transferTo(output);
-            return output.toByteArray();
+    private static byte[] brotli(byte[] body, long maxBytes) throws IOException {
+        try (BrotliInputStream input = new BrotliInputStream(new ByteArrayInputStream(body))) {
+            return readLimited(input, maxBytes);
+        }
+    }
+
+    private static byte[] inflate(byte[] body, long maxBytes) throws IOException {
+        try (InflaterInputStream input = new InflaterInputStream(new ByteArrayInputStream(body))) {
+            return readLimited(input, maxBytes);
+        } catch (ResponseTooLargeException ex) {
+            throw ex;
         } catch (IOException ex) {
             // 部分服务端返回的是 raw deflate，而不是 zlib 包装格式
             try (InflaterInputStream input = new InflaterInputStream(
-                    new ByteArrayInputStream(body), new Inflater(true));
-                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-                input.transferTo(output);
-                return output.toByteArray();
+                    new ByteArrayInputStream(body), new Inflater(true))) {
+                return readLimited(input, maxBytes);
             }
         }
+    }
+
+    /**
+     * 从流中读取有限字节数。
+     *
+     * @param input    输入流
+     * @param maxBytes 最大字节数
+     * @return 字节
+     * @throws IOException 读取异常或超过限制
+     */
+    private static byte[] readLimited(InputStream input, long maxBytes) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        long total = 0;
+        int length;
+        while ((length = input.read(buffer)) != -1) {
+            total += length;
+            if (maxBytes > 0 && total > maxBytes) {
+                throw new ResponseTooLargeException();
+            }
+            output.write(buffer, 0, length);
+        }
+        return output.toByteArray();
     }
 
 

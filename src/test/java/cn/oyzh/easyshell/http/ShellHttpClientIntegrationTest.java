@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.http;
 
+import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
@@ -255,6 +257,7 @@ public class ShellHttpClientIntegrationTest {
 
         assertTrue(response.isBinary());
         assertNotNull(response.getTempFile());
+        assertTrue(response.getTempFile().startsWith(ShellConst.getCachePath()));
         Path file = Path.of(response.getTempFile());
         assertTrue(Files.exists(file));
         assertEquals("EasyShell binary download",
@@ -551,6 +554,76 @@ public class ShellHttpClientIntegrationTest {
         List<ShellHttpCookie> maxAgeCookies = ShellHttpCookie.parse(maxAge);
         assertTrue(maxAgeCookies.getFirst().getExpiresText()
                 .matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"));
+    }
+
+
+    @Test
+    public void rejectsResponseBodyAboveConfiguredLimit() throws Exception {
+        int old = this.workspace.getSettings().getMaxResponseSizeMb();
+        try {
+            this.workspace.getSettings().setMaxResponseSizeMb(1);
+            ShellHttpRequest request = new ShellHttpRequest();
+            request.setUrl(this.server.baseUrl() + "/api/large?bytes=2097152");
+            ShellHttpResponse response = this.client.execute(request, this.workspace);
+            assertTrue(response.isBodyTooLarge());
+            assertTrue(response.getSize() >= 1024L * 1024L);
+            assertTrue(response.getBody() == null || response.getBody().isEmpty());
+            assertTrue(response.getTempFile() == null);
+        } finally {
+            this.workspace.getSettings().setMaxResponseSizeMb(old);
+        }
+    }
+
+
+    @Test
+    public void decompressesBrotliResponse() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setUrl(this.server.baseUrl() + "/brotli");
+        ShellHttpResponse response = this.client.execute(request, this.workspace);
+        assertEquals("Brotli compressed response", response.getBody());
+    }
+
+
+    @Test
+    public void authenticatesWithDigestChallenge() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setUrl(this.server.baseUrl() + "/auth/digest");
+        request.setAuthType(ShellHttpRequest.AUTH_DIGEST);
+        request.setAuthUser("user");
+        request.setAuthPassword("pass");
+        ShellHttpResponse response = this.client.execute(request, this.workspace);
+        assertEquals(200, response.getStatusCode());
+        assertTrue(response.getBody().contains("\"authenticated\":true"));
+    }
+
+
+    @Test
+    public void authenticatesWithOAuth2ClientCredentials() throws Exception {
+        ShellHttpRequest request = new ShellHttpRequest();
+        request.setUrl(this.server.baseUrl() + "/auth/oauth2");
+        request.setAuthType(ShellHttpRequest.AUTH_OAUTH2);
+        request.setOauth2TokenUrl(this.server.baseUrl() + "/oauth/token");
+        request.setOauth2ClientId("client");
+        request.setOauth2ClientSecret("secret");
+        request.setOauth2Scope("read");
+        ShellHttpResponse response = this.client.execute(request, this.workspace);
+        assertEquals(200, response.getStatusCode());
+        assertTrue(response.getBody().contains("\"authenticated\":true"));
+    }
+
+
+    @Test
+    public void limitsHttpClientCacheSize() throws Exception {
+        for (int i = 1; i <= 16; i++) {
+            ShellHttpRequest request = new ShellHttpRequest();
+            request.setUrl(this.server.baseUrl() + "/api/hello");
+            request.setTimeoutSeconds(i);
+            assertEquals(200, this.client.execute(request, this.workspace).getStatusCode());
+        }
+        Field field = ShellHttpClient.class.getDeclaredField("httpClients");
+        field.setAccessible(true);
+        Map<?, ?> clients = (Map<?, ?>) field.get(this.client);
+        assertTrue(clients.size() <= 8);
     }
 
     @Test

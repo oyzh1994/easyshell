@@ -242,6 +242,36 @@ public class ShellHttpRequestTabController extends RichTabController {
     private FXComboBox<String> authKeyPlacement;
 
     /**
+     * OAuth 2.0 容器
+     */
+    @FXML
+    private FXVBox oauth2AuthBox;
+
+    /**
+     * OAuth 2.0 Token URL
+     */
+    @FXML
+    private ClearableTextField oauth2TokenUrl;
+
+    /**
+     * OAuth 2.0 Client ID
+     */
+    @FXML
+    private ClearableTextField oauth2ClientId;
+
+    /**
+     * OAuth 2.0 Client Secret
+     */
+    @FXML
+    private PasswordTextField oauth2ClientSecret;
+
+    /**
+     * OAuth 2.0 Scope
+     */
+    @FXML
+    private ClearableTextField oauth2Scope;
+
+    /**
      * 请求 HTTP 版本
      */
     @FXML
@@ -358,6 +388,11 @@ public class ShellHttpRequestTabController extends RichTabController {
      * HEX 是否已加载
      */
     private boolean hexLoaded;
+
+    /**
+     * 响应版本，用于避免异步加载结果覆盖新响应
+     */
+    private long responseVersion;
 
     /**
      * 预览按钮
@@ -504,6 +539,7 @@ public class ShellHttpRequestTabController extends RichTabController {
                 this::bodyTypeLabel);
         this.displayCombo(this.authType,
                 List.of(ShellHttpRequest.AUTH_NONE, ShellHttpRequest.AUTH_BASIC,
+                        ShellHttpRequest.AUTH_DIGEST, ShellHttpRequest.AUTH_OAUTH2,
                         ShellHttpRequest.AUTH_BEARER, ShellHttpRequest.AUTH_API_KEY),
                 this::authTypeLabel);
         this.displayCombo(this.authKeyPlacement,
@@ -556,6 +592,10 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.authKeyValue.setText(StringUtil.blankToDefault(this.request.getAuthKeyValue(), ""));
         this.authKeyPlacement.setValue(StringUtil.blankToDefault(
                 this.request.getAuthKeyPlacement(), ShellHttpRequest.PLACEMENT_HEADER));
+        this.oauth2TokenUrl.setText(StringUtil.blankToDefault(this.request.getOauth2TokenUrl(), ""));
+        this.oauth2ClientId.setText(StringUtil.blankToDefault(this.request.getOauth2ClientId(), ""));
+        this.oauth2ClientSecret.setText(StringUtil.blankToDefault(this.request.getOauth2ClientSecret(), ""));
+        this.oauth2Scope.setText(StringUtil.blankToDefault(this.request.getOauth2Scope(), ""));
         ShellHttpSetting global = this.workspace.getSettings();
         this.requestHttpVersion.setValue(StringUtil.blankToDefault(
                 this.request.getHttpVersion(), global.getHttpVersion()));
@@ -667,6 +707,30 @@ public class ShellHttpRequestTabController extends RichTabController {
                 this.scheduleSave();
             }
         });
+        this.oauth2TokenUrl.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.request.setOauth2TokenUrl(newValue);
+                this.scheduleSave();
+            }
+        });
+        this.oauth2ClientId.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.request.setOauth2ClientId(newValue);
+                this.scheduleSave();
+            }
+        });
+        this.oauth2ClientSecret.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.request.setOauth2ClientSecret(newValue);
+                this.scheduleSave();
+            }
+        });
+        this.oauth2Scope.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.loading) {
+                this.request.setOauth2Scope(newValue);
+                this.scheduleSave();
+            }
+        });
         this.requestBody.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!this.loading) {
                 this.request.setBody(newValue);
@@ -743,15 +807,19 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private void updateAuthEditor() {
         String type = this.authType.getValue();
-        boolean basic = ShellHttpRequest.AUTH_BASIC.equalsIgnoreCase(type);
+        boolean basic = ShellHttpRequest.AUTH_BASIC.equalsIgnoreCase(type)
+                || ShellHttpRequest.AUTH_DIGEST.equalsIgnoreCase(type);
         boolean bearer = ShellHttpRequest.AUTH_BEARER.equalsIgnoreCase(type);
         boolean apiKey = ShellHttpRequest.AUTH_API_KEY.equalsIgnoreCase(type);
+        boolean oauth2 = ShellHttpRequest.AUTH_OAUTH2.equalsIgnoreCase(type);
         this.basicAuthBox.setVisible(basic);
         this.basicAuthBox.setManaged(basic);
         this.bearerAuthBox.setVisible(bearer);
         this.bearerAuthBox.setManaged(bearer);
         this.apiKeyBox.setVisible(apiKey);
         this.apiKeyBox.setManaged(apiKey);
+        this.oauth2AuthBox.setVisible(oauth2);
+        this.oauth2AuthBox.setManaged(oauth2);
     }
 
     /**
@@ -786,6 +854,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         row.enabledProperty().addListener((observable, oldValue, newValue) -> this.onParamsChanged());
         row.keyProperty().addListener((observable, oldValue, newValue) -> this.onParamsChanged());
         row.valueProperty().addListener((observable, oldValue, newValue) -> this.onParamsChanged());
+        row.descriptionProperty().addListener((observable, oldValue, newValue) -> this.scheduleSave());
     }
 
     /**
@@ -835,7 +904,28 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private void syncParamsFromUrl(String url) {
         List<ShellHttpKeyValue> rows = ShellHttpUtil.parseQuery(url);
-        for (ShellHttpKeyValue row : this.paramsTable.getItems()) {
+        List<ShellHttpKeyValue> existing = new ArrayList<>(this.paramsTable.getItems());
+        // URL 变化时尽量保留已有参数的描述
+        for (ShellHttpKeyValue row : rows) {
+            ShellHttpKeyValue matched = null;
+            for (ShellHttpKeyValue old : existing) {
+                if (old == null || !old.isEnabled()
+                        || !StringUtil.equals(old.getKey(), row.getKey())) {
+                    continue;
+                }
+                if (StringUtil.equals(old.getValue(), row.getValue())) {
+                    matched = old;
+                    break;
+                }
+                if (matched == null) {
+                    matched = old;
+                }
+            }
+            if (matched != null && StringUtil.isNotBlank(matched.getDescription())) {
+                row.setDescription(matched.getDescription());
+            }
+        }
+        for (ShellHttpKeyValue row : existing) {
             if (row != null && !row.isEnabled()) {
                 rows.add(row);
             }
@@ -965,6 +1055,10 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.request.setAuthKeyValue(this.authKeyValue.getPassword());
         this.request.setAuthKeyPlacement(StringUtil.blankToDefault(
                 this.authKeyPlacement.getValue(), ShellHttpRequest.PLACEMENT_HEADER));
+        this.request.setOauth2TokenUrl(this.oauth2TokenUrl.getTextTrim());
+        this.request.setOauth2ClientId(this.oauth2ClientId.getTextTrim());
+        this.request.setOauth2ClientSecret(this.oauth2ClientSecret.getPassword());
+        this.request.setOauth2Scope(this.oauth2Scope.getTextTrim());
         this.applyRequestSettings();
         if (this.item != null) {
             this.item.refreshRequest();
@@ -1031,17 +1125,23 @@ public class ShellHttpRequestTabController extends RichTabController {
                 scriptEngine.evalPreRequest(preScript);
                 ShellHttpResponse result = client.execute(snapshot, this.workspace);
                 scriptContext.setResponse(result);
+                String testError = null;
                 try {
                     scriptEngine.evalTests(testsScript);
                 } catch (Throwable testEx) {
                     testEx.printStackTrace();
-                    String message = testEx.getMessage() == null ? testEx.toString() : testEx.getMessage();
-                    System.out.println("[HTTP Test Error] " + message);
-                    FXUtil.runLater(() -> this.testResults.text("[ERROR] " + message));
+                    testError = testEx.getMessage() == null ? testEx.toString() : testEx.getMessage();
+                    System.out.println("[HTTP Test Error] " + testError);
                 }
+                String finalTestError = testError;
                 FXUtil.runLater(() -> {
                     this.showResponse(result);
                     this.showScriptTestResults(scriptContext);
+                    if (StringUtil.isNotBlank(finalTestError)) {
+                        String output = this.testResults.getText();
+                        this.testResults.text((output == null ? "" : output)
+                                + "[ERROR] " + finalTestError + "\n");
+                    }
                 });
             } catch (Throwable ex) {
                 ex.printStackTrace();
@@ -1089,7 +1189,9 @@ public class ShellHttpRequestTabController extends RichTabController {
         String status = result.getStatusCode()
                 + (StringUtil.isBlank(result.getStatusText()) ? "" : " " + result.getStatusText());
         this.responseStatus.text(status);
-        if (result.isSuccessful()) {
+        if (result.isBodyTooLarge()) {
+            this.responseStatus.setTextFill(Color.ORANGE);
+        } else if (result.isSuccessful()) {
             this.responseStatus.setTextFill(Color.GREEN);
         } else if (result.getStatusCode() >= 300 && result.getStatusCode() < 400) {
             this.responseStatus.setTextFill(Color.ORANGE);
@@ -1098,17 +1200,19 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         this.responseTime.text(result.getDurationMs() + " ms");
         this.responseSize.text(ShellHttpUtil.humanSize(result.getSize()));
-        this.responseBodyRaw = StringUtil.blankToDefault(result.getBody(), "");
-        this.responseFormat.setDisable(result.isBinary());
+        this.responseBodyRaw = result.isBodyTooLarge()
+                ? "" : StringUtil.blankToDefault(result.getBody(), "");
+        this.responseFormat.setDisable(result.isBinary() || result.isBodyTooLarge());
         this.responseFormat.setValue(this.detectResponseFormat(result));
         this.renderResponseBody();
         this.responseHeaders.text(ShellHttpClient.headersText(result));
         this.responseHeadersTable.getItems().setAll(this.responseHeaderRows(result));
         this.responseCookies.getItems().setAll(ShellHttpCookie.parse(result));
         this.updateResponseHeadersMode();
-        this.preview.setDisable(!result.isHtml());
-        this.saveResponseBody.setDisable(result.isBinary());
-        this.openResponseFile.setDisable(StringUtil.isBlank(result.getTempFile()));
+        this.preview.setDisable(!result.isHtml() || result.isBodyTooLarge());
+        this.saveResponseBody.setDisable(result.isBinary() || result.isBodyTooLarge());
+        this.openResponseFile.setDisable(StringUtil.isBlank(result.getTempFile())
+                || result.isBodyTooLarge());
         this.loadExtraResponseTab(this.responseTabPane.getSelectionModel().getSelectedItem());
     }
 
@@ -1118,6 +1222,7 @@ public class ShellHttpRequestTabController extends RichTabController {
     private void resetResponseExtraTabs() {
         this.base64Loaded = false;
         this.hexLoaded = false;
+        this.responseVersion++;
         if (this.responseBase64 != null) {
             this.responseBase64.text("");
         }
@@ -1154,7 +1259,19 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         this.base64Loaded = true;
         byte[] data = this.responseData();
-        this.responseBase64.text(data.length == 0 ? "" : Base64.getEncoder().encodeToString(data));
+        if (data.length == 0) {
+            this.responseBase64.text("");
+            return;
+        }
+        long version = this.responseVersion;
+        ThreadUtil.start(() -> {
+            String encoded = Base64.getEncoder().encodeToString(data);
+            FXUtil.runLater(() -> {
+                if (version == this.responseVersion) {
+                    this.responseBase64.text(encoded);
+                }
+            });
+        });
     }
 
     /**
@@ -1199,6 +1316,13 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private void renderResponseBody() {
         if (this.response == null) {
+            return;
+        }
+        if (this.response.isBodyTooLarge()) {
+            long maxBytes = (this.workspace == null ? 50
+                    : this.workspace.getSettings().getMaxResponseSizeMb()) * 1024L * 1024L;
+            this.responseBody.text(ShellI18nHelper.httpResponseTooLarge(
+                    ShellHttpUtil.humanSize(maxBytes)));
             return;
         }
         if (this.response.isBinary()) {
@@ -1502,6 +1626,8 @@ public class ShellHttpRequestTabController extends RichTabController {
     private String authTypeLabel(String value) {
         return switch (value) {
             case ShellHttpRequest.AUTH_BASIC -> ShellI18nHelper.httpBasicAuth();
+            case ShellHttpRequest.AUTH_DIGEST -> ShellI18nHelper.httpDigestAuth();
+            case ShellHttpRequest.AUTH_OAUTH2 -> ShellI18nHelper.httpOAuth2Auth();
             case ShellHttpRequest.AUTH_BEARER -> ShellI18nHelper.httpBearerAuth();
             case ShellHttpRequest.AUTH_API_KEY -> ShellI18nHelper.httpApiKeyAuth();
             default -> I18nHelper.none();

@@ -35,16 +35,19 @@ public class ShellHttpCookieTableView extends FXTableView<ShellHttpCookie> {
                 cookie -> new ReadOnlyStringWrapper(cookie.getValue()));
         FXTableColumn<ShellHttpCookie, String> domain = column(I18nHelper.domain(), 170,
                 cookie -> new ReadOnlyStringWrapper(cookie.getDomain()));
-        FXTableColumn<ShellHttpCookie, String> path = column("Path", 100,
+        FXTableColumn<ShellHttpCookie, String> path = column(I18nHelper.path(), 100,
                 cookie -> new ReadOnlyStringWrapper(cookie.getPath()));
         FXTableColumn<ShellHttpCookie, String> expires = column(
                 ShellI18nHelper.httpCookieExpires(), 180,
                 cookie -> new ReadOnlyStringWrapper(cookie.getExpiresText()));
-        FXTableColumn<ShellHttpCookie, Boolean> httpOnly = booleanColumn("HttpOnly", 80,
+        FXTableColumn<ShellHttpCookie, Boolean> httpOnly = booleanColumn(
+                ShellI18nHelper.httpCookieHttpOnly(), 80,
                 cookie -> new ReadOnlyBooleanWrapper(cookie.isHttpOnly()));
-        FXTableColumn<ShellHttpCookie, Boolean> secure = booleanColumn("Secure", 70,
+        FXTableColumn<ShellHttpCookie, Boolean> secure = booleanColumn(
+                ShellI18nHelper.httpCookieSecure(), 70,
                 cookie -> new ReadOnlyBooleanWrapper(cookie.isSecure()));
-        FXTableColumn<ShellHttpCookie, String> sameSite = column("SameSite", 90,
+        FXTableColumn<ShellHttpCookie, String> sameSite = column(
+                ShellI18nHelper.httpCookieSameSite(), 90,
                 cookie -> new ReadOnlyStringWrapper(cookie.getSameSite()));
 
         this.getColumns().setAll(List.of(name, value, domain, path, expires, httpOnly, secure, sameSite));

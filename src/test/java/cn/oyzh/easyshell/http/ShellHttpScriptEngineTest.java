@@ -7,6 +7,9 @@ import cn.oyzh.easyshell.http.script.ShellHttpScriptContext;
 import cn.oyzh.easyshell.http.script.ShellHttpScriptEngine;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -37,8 +40,14 @@ public class ShellHttpScriptEngineTest {
                 engine.evalPreRequest("""
                         pm.variables.set('token', 'script-token');
                         pm.request.headers.add({key: 'X-Script', value: pm.variables.get('token')});
+                        pm.request.url.addQueryParams('x=1');
+                        pm.request.url.query.add({key: 'y', value: '2'});
                         """);
+                assertEquals(2, request.getParams().size());
                 ShellHttpResponse response = client.execute(request, workspace);
+                response.setHeaders(Map.of(
+                        "content-type", List.of("application/json"),
+                        "set-cookie", List.of("session=mock; Path=/; HttpOnly")));
                 context.setResponse(response);
                 engine.evalTests("""
                         pm.test('status is 200', function () {
@@ -48,8 +57,23 @@ public class ShellHttpScriptEngineTest {
                             var body = pm.response.json();
                             if (body.message !== 'ok') throw new Error('bad message');
                         });
+                        pm.test('modern assertions', function () {
+                            pm.response.to.be.ok;
+                            pm.response.to.have.header('content-type');
+                            pm.response.to.have.header('content-type', 'application/json');
+                            pm.response.to.have.jsonBody();
+                            pm.response.headers.has('content-type');
+                            pm.response.cookies.has('session');
+                            pm.expect('abc').to.include('b');
+                            pm.expect('abc').to.be.a('string');
+                            pm.expect(5).to.be.above(4);
+                            pm.expect(1).to.not.equal(2);
+                            pm.expect(true).to.be.true;
+                            pm.expect(pm.response.json()).to.have.property('message');
+                            pm.response.headers.toObject();
+                        });
                         """);
-                assertEquals(2, context.getTestResults().size());
+                assertEquals(3, context.getTestResults().size());
                 assertTrue(context.getTestResults().stream()
                         .allMatch(ShellHttpScriptContext.TestResult::passed));
             } finally {
@@ -70,10 +94,12 @@ public class ShellHttpScriptEngineTest {
                 pm.request.url = 'https://example.com/api';
                 pm.request.method = 'POST';
                 pm.request.headers.add({key: 'X-Test', value: '1'});
+                pm.request.body.raw = 'body-from-script';
                 """);
         assertEquals("https://example.com/api", request.getUrl());
         assertEquals("POST", request.getMethod());
         assertEquals("1", request.getHeaders().getFirst().getValue());
+        assertEquals("body-from-script", request.getBody());
 
         ShellHttpResponse response = new ShellHttpResponse();
         response.setStatusCode(200);

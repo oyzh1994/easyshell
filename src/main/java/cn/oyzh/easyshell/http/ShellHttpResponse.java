@@ -70,6 +70,11 @@ public class ShellHttpResponse {
     private boolean binary;
 
     /**
+     * 响应体是否超过限制
+     */
+    private boolean bodyTooLarge;
+
+    /**
      * 临时文件
      */
     private String tempFile;
@@ -160,6 +165,14 @@ public class ShellHttpResponse {
 
     public void setBinary(boolean binary) {
         this.binary = binary;
+    }
+
+    public boolean isBodyTooLarge() {
+        return bodyTooLarge;
+    }
+
+    public void setBodyTooLarge(boolean bodyTooLarge) {
+        this.bodyTooLarge = bodyTooLarge;
     }
 
     public String getTempFile() {
