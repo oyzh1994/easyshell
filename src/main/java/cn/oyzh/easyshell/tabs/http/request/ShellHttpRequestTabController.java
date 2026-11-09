@@ -1478,7 +1478,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         }
         try {
             Path file = Path.of(this.response.getTempFile());
-            FXUtil.open(file.toUri().toString());
+            FXUtil.open(file);
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }
