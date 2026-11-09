@@ -267,6 +267,28 @@ public class ShellSSHWorkerDirResolverTest {
     }
 
     @Test
+    public void keepsCurrentDirectoryAfterTypingNextCommand() {
+        ShellWorkerDirResolver resolver = new ShellWorkerDirResolver();
+        assertEquals("/tmp/old", resolver.resolve("user@host:/tmp/old$", "/home/demo"));
+        assertEquals("/opt/project", resolver.resolve("\r\nuser@host:/opt/project$", "/home/demo"));
+
+        // 新提示符后紧跟用户输入后，不再从历史提示符回退到 /tmp/old
+        assertEquals("/opt/project", resolver.resolve(" ls -la\r\n", "/home/demo"));
+        assertEquals("/opt/project", resolver.resolve("file-a file-b\r\n", "/home/demo"));
+        assertEquals("/opt/project", resolver.resolve("user@host:/opt/project$", "/home/demo"));
+    }
+
+    @Test
+    public void keepsLatestDirectoryWhenPromptAndOutputArriveTogether() {
+        ShellWorkerDirResolver resolver = new ShellWorkerDirResolver();
+        String output = "user@host:/tmp/old$\r\n"
+                + "user@host:/opt/project$\r\n"
+                + "command output without a prompt";
+        assertEquals("/opt/project", resolver.resolve(output, "/home/demo"));
+        assertEquals("/opt/project", resolver.resolve("\r\nuser@host:/opt/project$ ls", "/home/demo"));
+    }
+
+    @Test
     public void resetsIncrementalState() {
         ShellWorkerDirResolver resolver = new ShellWorkerDirResolver();
         assertNull(resolver.resolve(ESC + "]7;file://host/tmp", "/home/demo"));
