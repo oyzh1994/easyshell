@@ -13,13 +13,21 @@ import cn.oyzh.common.util.StringUtil;
 public final class ShellWorkerDirResolver {
 
     /**
-     * 未完成提示符的保留上限。
+     * 当前未完成行的保留上限。
      */
-    private static final int MAX_PROMPT_LENGTH = 4096;
+    private static final int MAX_LINE_LENGTH = 4096;
 
-    private final StringBuilder promptBuffer = new StringBuilder();
+    /**
+     * 当前尚未结束的终端行。提示符和用户输入处于同一行，已结束的行不能再参与目录判断。
+     */
+    private final StringBuilder lineBuffer = new StringBuilder();
 
     private final ShellOscParser oscParser = new ShellOscParser();
+
+    /**
+     * 最近一次成功解析出的工作目录。后续输出没有新提示符时继续沿用它。
+     */
+    private String lastDir;
 
     /**
      * 解析一块终端输出
@@ -36,22 +44,54 @@ public final class ShellWorkerDirResolver {
         String oscDir = this.oscParser.parseCwd(output, homeDir);
         if (StringUtil.isNotBlank(oscDir)) {
             // OSC 已提供准确目录，清掉可能残留的旧提示符
-            this.promptBuffer.setLength(0);
+            this.lineBuffer.setLength(0);
+            this.lastDir = oscDir;
             return oscDir;
         }
-        this.promptBuffer.append(output);
-        if (this.promptBuffer.length() > MAX_PROMPT_LENGTH) {
-            this.promptBuffer.delete(0, this.promptBuffer.length() - MAX_PROMPT_LENGTH);
+        this.lineBuffer.append(output);
+        int lineStart = 0;
+        for (int i = 0; i < this.lineBuffer.length(); i++) {
+            char ch = this.lineBuffer.charAt(i);
+            if (ch == '\r' || ch == '\n') {
+                this.resolveLine(this.lineBuffer.substring(lineStart, i), homeDir);
+                // CRLF 只结束一次当前行
+                if (ch == '\r' && i + 1 < this.lineBuffer.length()
+                        && this.lineBuffer.charAt(i + 1) == '\n') {
+                    i++;
+                }
+                lineStart = i + 1;
+            }
         }
-        // 提示符可能尚未接收完整，保留最近输出，下一块到达后可继续解析
-        return ShellSSHUtil.resolvePromptWorkerDir(this.promptBuffer.toString(), homeDir);
+        // 最后一行可能还有后续输入，保留下来以支持提示符跨输出块
+        if (lineStart > 0) {
+            this.lineBuffer.delete(0, lineStart);
+        }
+        this.resolveLine(this.lineBuffer.toString(), homeDir);
+        if (this.lineBuffer.length() > MAX_LINE_LENGTH) {
+            this.lineBuffer.delete(0, this.lineBuffer.length() - MAX_LINE_LENGTH);
+        }
+        return this.lastDir;
+    }
+
+    /**
+     * 解析一个终端行，只有出现新的有效提示符时才更新目录。
+     *
+     * @param line    终端行
+     * @param homeDir 用户home目录
+     */
+    private void resolveLine(String line, String homeDir) {
+        String dir = ShellSSHUtil.resolvePromptWorkerDir(line, homeDir);
+        if (StringUtil.isNotBlank(dir)) {
+            this.lastDir = dir;
+        }
     }
 
     /**
      * 清理跨块解析状态
      */
     public synchronized void reset() {
-        this.promptBuffer.setLength(0);
+        this.lineBuffer.setLength(0);
+        this.lastDir = null;
         this.oscParser.reset();
     }
 }
