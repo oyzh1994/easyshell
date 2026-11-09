@@ -365,6 +365,11 @@
     -fx-padding: 4 9 4 9;
     -fx-background-color: -llm-surface-soft;
     -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.llm-attachment-chip:hover {
+    -fx-background-color: -llm-hover;
 }
 
 .llm-attachment-remove {

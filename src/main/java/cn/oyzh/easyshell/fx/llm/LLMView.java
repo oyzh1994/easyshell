@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.fx.llm;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.llm.LLMAttachmentCache;
 import cn.oyzh.easyshell.llm.LLMDurationUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
@@ -27,6 +29,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.controls.pane.FXStackPane;
+import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
@@ -37,6 +40,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ContextMenu;
@@ -46,6 +50,8 @@ import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Priority;
@@ -74,7 +80,34 @@ public class LLMView extends FXSplitPane {
     /**
      * 输入编辑器
      */
-    private final Editor inputArea = new Editor();
+    private final Editor inputArea = new Editor() {
+        @Override
+        public void paste() {
+            if (!LLMView.this.pasteAttachment()) {
+                super.paste();
+            }
+        }
+
+        @Override
+        public void paste(DataFormat format) {
+            if (!LLMView.this.pasteAttachment()) {
+                super.paste(format);
+            }
+        }
+
+        @Override
+        public List<? extends MenuItem> getMenuItems() {
+            List<? extends MenuItem> items = super.getMenuItems();
+            if (LLMAttachmentCache.hasAttachment(Clipboard.getSystemClipboard())) {
+                for (MenuItem item : items) {
+                    if (I18nHelper.paste().equals(item.getText())) {
+                        item.setDisable(false);
+                    }
+                }
+            }
+            return items;
+        }
+    };
 
     /**
      * 输入占位提示，编辑器本身不支持提示文本，这里用浮层实现
@@ -165,6 +198,8 @@ public class LLMView extends FXSplitPane {
         this.attachmentLabel.getStyleClass().add("llm-attachment-chip");
         this.attachmentLabel.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
         this.attachmentLabel.setMaxWidth(360);
+        this.attachmentLabel.setCursor(Cursor.HAND);
+        this.attachmentLabel.setOnMouseClicked(event -> this.openSelectedFile());
         this.attachmentLabel.setVisible(false);
         this.attachmentLabel.setManaged(false);
         this.attachmentRemoveButton.getStyleClass().add("llm-attachment-remove");
@@ -198,6 +233,10 @@ public class LLMView extends FXSplitPane {
         this.inputArea.setMaxHeight(Double.MAX_VALUE);
         this.inputArea.textProperty().addListener((observable, oldValue, newValue) -> this.updateSendState());
         this.inputArea.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (this.isPasteShortcut(event) && this.pasteAttachment()) {
+                event.consume();
+                return;
+            }
             if (event.getCode() != KeyCode.ENTER
                     || event.isShiftDown() || event.isControlDown()
                     || event.isAltDown() || event.isMetaDown()) {
@@ -484,6 +523,43 @@ public class LLMView extends FXSplitPane {
         File file = FileChooserHelper.choose(I18nHelper.pleaseSelectFile(), this.getWindow());
         if (file != null) {
             this.setSelectedFile(file);
+        }
+    }
+
+    private boolean isPasteShortcut(KeyEvent event) {
+        return event.getCode() == KeyCode.V && event.isShortcutDown()
+                || event.getCode() == KeyCode.INSERT && event.isControlDown() && event.isShiftDown();
+    }
+
+    private boolean pasteAttachment() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        if (!LLMAttachmentCache.hasAttachment(clipboard)) {
+            return false;
+        }
+        try {
+            File attachment = LLMAttachmentCache.fromClipboard(clipboard);
+            if (attachment == null) {
+                return false;
+            }
+            this.setSelectedFile(attachment);
+            return true;
+        } catch (Exception ex) {
+            JulLog.error("cache pasted llm attachment failed", ex);
+            MessageBox.warn(ex.getMessage(), this.getWindow());
+            return true;
+        }
+    }
+
+    private void openSelectedFile() {
+        File file = this.selectedFile;
+        if (file == null || !file.isFile()) {
+            return;
+        }
+        try {
+            FXUtil.open(file);
+        } catch (Exception ex) {
+            JulLog.error("open llm attachment failed", ex);
+            MessageBox.warn(ex.getMessage(), this.getWindow());
         }
     }
 
