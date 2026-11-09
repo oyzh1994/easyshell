@@ -3,7 +3,7 @@
 <?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
 <FXTabPane xmlns:fx="http://javafx.com/fxml/1" fx:id="tabPane"
            fx:controller="cn.oyzh.easyshell.tabs.zk.node.ShellZKNodeTabController"
-           tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="BOTTOM"
+           tabMinHeight="30" tabClosingPolicy="UNAVAILABLE" side="RIGHT"
            flexHeight="100%" flexWidth="100%" rotateGraphic="true">
     <fx:include fx:id="dataTab" source="shellZKNodeDataTab.fxml"/>
     <fx:include fx:id="hexTab" source="shellZKNodeHexTab.fxml"/>

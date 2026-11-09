@@ -80,8 +80,8 @@ public class ShellZKRootTreeItem extends ShellZKTreeItem<ShellZKRootTreeItemValu
         items.add(new ShellZKNodesTreeItem(this.getTreeView()));
         items.add(new ShellZKQueriesTreeItem(this.getTreeView()));
         items.add(new ShellZKAuthTreeItem(this.getTreeView()));
-        items.add(new ShellZKServerTreeItem(this.getTreeView()));
         items.add(new ShellZKTerminalTreeItem(this.getTreeView()));
+        items.add(new ShellZKServerTreeItem(this.getTreeView()));
         this.setChild(items);
         this.setLoaded(true);
         this.expend();
