@@ -219,6 +219,21 @@
     -fx-text-fill: -llm-muted;
 }
 
+.llm-task-status {
+    -fx-text-fill: -llm-muted;
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 11px;
+    -fx-padding: 0 2 0 2;
+}
+
+.llm-task-running {
+    -fx-text-fill: -color-success-fg;
+}
+
+.llm-task-finished {
+    -fx-text-fill: -color-danger-fg;
+}
+
 .llm-combo {
     -fx-background-color: -llm-surface-soft;
     -fx-background-radius: 7;

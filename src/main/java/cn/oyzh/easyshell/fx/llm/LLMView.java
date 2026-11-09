@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.fx.llm;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.llm.LLMDurationUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
@@ -29,6 +30,9 @@ import cn.oyzh.fx.plus.controls.pane.FXStackPane;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -87,6 +91,8 @@ public class LLMView extends FXSplitPane {
 
     private final FXButton sendButton = new FXButton();
 
+    private final FXLabel taskStatusLabel = new FXLabel();
+
     private final SendSVGGlyph sendGlyph = new SendSVGGlyph();
 
     private final StopSVGGlyph stopGlyph = new StopSVGGlyph();
@@ -120,6 +126,14 @@ public class LLMView extends FXSplitPane {
     private File selectedFile;
 
     private volatile boolean busy;
+
+    private Timeline taskTimeline;
+
+    private boolean taskEverStarted;
+
+    private long taskStartedAt;
+
+    private long lastTaskDuration;
 
     public LLMView() {
         this.getStyleClass().add("llm-view");
@@ -215,10 +229,17 @@ public class LLMView extends FXSplitPane {
         Region spacer = new Region();
         FXHBox.setHgrow(spacer, Priority.ALWAYS);
 
+        this.taskStatusLabel.getStyleClass().add("llm-task-status");
+        this.taskStatusLabel.setAlignment(Pos.CENTER_RIGHT);
+        this.taskStatusLabel.setMinWidth(120);
+        this.taskStatusLabel.setVisible(false);
+        this.taskStatusLabel.setManaged(false);
+
         toolbar.addChild(
                 this.labeledCombo(I18nHelper.model(), this.modelComboBox),
                 this.buildSettingsButton(),
                 spacer,
+                this.taskStatusLabel,
                 this.buildSendButton()
         );
         composer.addChild(toolbar);
@@ -508,6 +529,7 @@ public class LLMView extends FXSplitPane {
      */
     public void setMessages(List<LLMMessage> messages) {
         this.messageListView.setMessages(messages);
+        this.resetTaskStatus();
     }
 
     /**
@@ -585,6 +607,7 @@ public class LLMView extends FXSplitPane {
 
     public void clearMessages() {
         this.messageListView.clearMessages();
+        this.resetTaskStatus();
     }
 
     public void setContextUsage(long usedTokens, long maxTokens) {
@@ -615,18 +638,75 @@ public class LLMView extends FXSplitPane {
         });
     }
 
-    public void setBusy(boolean busy) {
+    public synchronized void setBusy(boolean busy) {
+        boolean wasBusy = this.busy;
+        if (busy && !wasBusy) {
+            this.taskEverStarted = true;
+            this.taskStartedAt = System.currentTimeMillis();
+        } else if (!busy && wasBusy && this.taskEverStarted) {
+            this.lastTaskDuration = Math.max(0, System.currentTimeMillis() - this.taskStartedAt);
+        }
         this.busy = busy;
-        FXUtil.runLater(this::applyBusyState);
+        FXUtil.runLater(() -> this.applyBusyState(busy));
     }
 
-    private void applyBusyState() {
-        boolean currentBusy = this.busy;
-        this.sendButton.setGraphic(currentBusy ? this.stopGlyph : this.sendGlyph);
-        this.sendButtonTooltip.setText(currentBusy ? I18nHelper.stop() : I18nHelper.send());
+    private void applyBusyState(boolean targetBusy) {
+        this.sendButton.setGraphic(targetBusy ? this.stopGlyph : this.sendGlyph);
+        this.sendButtonTooltip.setText(targetBusy ? I18nHelper.stop() : I18nHelper.send());
         this.sendButton.getStyleClass().removeAll("llm-send-button", "llm-stop-button");
-        this.sendButton.getStyleClass().add(currentBusy ? "llm-stop-button" : "llm-send-button");
+        this.sendButton.getStyleClass().add(targetBusy ? "llm-stop-button" : "llm-send-button");
+        if (targetBusy) {
+            this.startTaskTimer();
+        } else {
+            this.stopTaskTimer();
+            this.updateTaskStatus();
+        }
         this.updateSendState();
+    }
+
+    private void startTaskTimer() {
+        if (this.taskTimeline == null) {
+            this.taskTimeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> this.updateTaskStatus()));
+            this.taskTimeline.setCycleCount(Animation.INDEFINITE);
+        }
+        this.updateTaskStatus();
+        this.taskTimeline.playFromStart();
+    }
+
+    private void stopTaskTimer() {
+        if (this.taskTimeline != null) {
+            this.taskTimeline.stop();
+        }
+    }
+
+    private void updateTaskStatus() {
+        if (!this.taskEverStarted) {
+            this.taskStatusLabel.setText("");
+            this.taskStatusLabel.getStyleClass().removeAll("llm-task-running", "llm-task-finished");
+            this.taskStatusLabel.setVisible(false);
+            this.taskStatusLabel.setManaged(false);
+            return;
+        }
+        long duration = this.busy
+                ? Math.max(0, System.currentTimeMillis() - this.taskStartedAt)
+                : this.lastTaskDuration;
+        String state = I18nResourceBundle.i18nString(
+                this.busy ? "shell.llm.taskRunning" : "shell.llm.taskFinished");
+        this.taskStatusLabel.getStyleClass().removeAll("llm-task-running", "llm-task-finished");
+        this.taskStatusLabel.getStyleClass().add(this.busy ? "llm-task-running" : "llm-task-finished");
+        this.taskStatusLabel.setText(state + " · " + LLMDurationUtil.format(duration));
+        this.taskStatusLabel.setVisible(true);
+        this.taskStatusLabel.setManaged(true);
+    }
+
+    private synchronized void resetTaskStatus() {
+        this.taskEverStarted = false;
+        this.taskStartedAt = 0;
+        this.lastTaskDuration = 0;
+        FXUtil.runLater(() -> {
+            this.stopTaskTimer();
+            this.updateTaskStatus();
+        });
     }
 
     public boolean isBusy() {
