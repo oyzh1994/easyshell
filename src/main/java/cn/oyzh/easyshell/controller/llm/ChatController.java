@@ -12,12 +12,14 @@ import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
 import cn.oyzh.easyshell.llm.LLMSession;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMSessionUtil;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMToolAudit;
+import cn.oyzh.easyshell.llm.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
@@ -41,6 +43,7 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.memory.ChatMemoryService;
+import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -186,8 +189,11 @@ public class ChatController extends SubStageController {
         request.tools = tools;
         // 执行模式
         LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
-        // 工具
+        // 工具相关配置
         services.tools(tools.toArray());
+        services.maxToolCallingRoundTrips(32);
+        services.toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
+        services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(tools));
         // 工具调用审计
         LLMToolAudit audit = new LLMToolAudit(tools,
                 this.currentSession == null ? null : this.currentSession.getUid(),
@@ -237,7 +243,7 @@ public class ChatController extends SubStageController {
             history.add(item.isUser() ? UserMessage.from(text) : AiMessage.from(text));
         }
         memory.set(history);
-        return memory;
+        return LLMSafeChatMemory.wrap(memory);
     }
 
     /**

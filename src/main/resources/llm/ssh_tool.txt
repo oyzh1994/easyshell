@@ -8,3 +8,5 @@
 - `listDockerContainers`、`listDockerImages`、`getDockerInfo`、`getDockerVersion`：Docker 只读信息。
 
 这些工具不会停止服务或修改远端数据；需要变更时仍通过 `execCommand` 执行，并严格遵循用户授权范围。
+
+工具名区分大小写，必须逐字使用上述名称；`execCommand` 不能写成 `exec_command`、`execute_command` 或其他别名。

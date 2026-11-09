@@ -41,6 +41,7 @@
         <curator-version>4.3.0</curator-version>
         <!-- <jediterm.version>3.73</jediterm.version> -->
         <langchain4j.version>1.23.0</langchain4j.version>
+        <!-- <langchain4j-beta.version>1.23.0-beta33</langchain4j-beta.version> -->
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <!-- <commons-net.version>3.13.0</commons-net.version> -->
         <nashorn.version>15.7</nashorn.version>
@@ -372,6 +373,11 @@
             <artifactId>langchain4j-google-ai-gemini</artifactId>
             <version>${langchain4j.version}</version>
         </dependency>
+        <!-- <dependency> -->
+        <!--     <groupId>dev.langchain4j</groupId> -->
+        <!--     <artifactId>langchain4j-guardrails</artifactId> -->
+        <!--     <version>${langchain4j-beta.version}</version> -->
+        <!-- </dependency> -->
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
         <dependency>
