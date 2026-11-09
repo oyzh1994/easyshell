@@ -16,6 +16,8 @@ public class LLMSessionMessage {
 
     private String message;
 
+    private String thinking;
+
     private String filePath;
 
     private String model;
@@ -52,6 +54,14 @@ public class LLMSessionMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getThinking() {
+        return thinking;
+    }
+
+    public void setThinking(String thinking) {
+        this.thinking = thinking;
     }
 
     public String getFilePath() {

@@ -458,6 +458,22 @@ public class ShellI18nHelper {
         return text("shell.llm.thinkingPlaceholder");
     }
 
+    public static String emptyResponse() {
+        return text("shell.llm.emptyResponse");
+    }
+
+    public static String outputTruncated() {
+        return text("shell.llm.outputTruncated");
+    }
+
+    public static String thinkingLabel() {
+        return text("shell.llm.thinkingLabel");
+    }
+
+    public static String answerLabel() {
+        return text("shell.llm.answerLabel");
+    }
+
     public static String errorPrefix() {
         return text("shell.llm.errorPrefix");
     }

@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.llm;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.ShellMainController;
 import cn.oyzh.easyshell.fx.llm.LLMView;
@@ -12,6 +13,7 @@ import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.LLMResponseUtil;
 import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
 import cn.oyzh.easyshell.llm.LLMSession;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
@@ -41,6 +43,7 @@ import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.memory.ChatMemoryService;
 import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
@@ -191,7 +194,7 @@ public class ChatController extends SubStageController {
         LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
         // 工具相关配置
         services.tools(tools.toArray());
-        services.maxToolCallingRoundTrips(32);
+        services.maxToolCallingRoundTrips(100);
         services.toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
         services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(tools));
         // 工具调用审计
@@ -302,14 +305,24 @@ public class ChatController extends SubStageController {
                 return;
             }
             if (streaming) {
-                AtomicBoolean first = new AtomicBoolean(true);
+                AtomicBoolean firstResponse = new AtomicBoolean(true);
+                AtomicBoolean firstThinking = new AtomicBoolean(true);
                 assistant.chatStream(contents)
+                        .onPartialThinking(token -> {
+                            if (!this.isRequestActive(request) || StringUtil.isBlank(token.text())) {
+                                return;
+                            }
+                            if (firstThinking.getAndSet(false)
+                                    && Objects.equals(placeholder.getMessage(), ShellI18nHelper.thinkingPlaceholder())) {
+                                this.view.replaceMessage(placeholder, "");
+                            }
+                            this.view.appendThinking(placeholder, token.text());
+                        })
                         .onPartialResponse(token -> {
                             if (!this.isRequestActive(request)) {
                                 return;
                             }
-                            if (first.get()) {
-                                first.set(false);
+                            if (firstResponse.getAndSet(false)) {
                                 this.view.replaceMessage(placeholder, token);
                             } else {
                                 this.view.appendMessage(placeholder, token);
@@ -323,15 +336,24 @@ public class ChatController extends SubStageController {
                             this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                             this.finishRequest(request, true);
                         })
-                        .onCompleteResponse(response -> this.finishRequest(request, true))
+                        .onCompleteResponse(response -> this.completeStreamingRequest(request, placeholder, response))
                         .start();
             } else {
                 try {
-                    String response = assistant.chat(contents);
+                    ChatResponse response = assistant.chatResponse(contents);
                     if (!this.isRequestActive(request)) {
                         return;
                     }
-                    this.view.replaceMessage(placeholder, response);
+                    String thinking = LLMResponseUtil.finalThinking(response);
+                    String finalText = LLMResponseUtil.finalText(response);
+                    this.view.replaceThinking(placeholder, thinking == null ? "" : thinking);
+                    this.view.replaceMessage(placeholder, finalText == null ? "" : finalText);
+                    if (finalText == null) {
+                        this.view.addErrorMessage(ShellI18nHelper.emptyResponse(), message.getSessionTabId());
+                    }
+                    if (LLMResponseUtil.outputTruncated(response)) {
+                        this.view.addErrorMessage(ShellI18nHelper.outputTruncated(), message.getSessionTabId());
+                    }
                     this.finishRequest(request, true);
                 } catch (Exception ex) {
                     if (!this.isRequestActive(request)) {
@@ -348,6 +370,36 @@ public class ChatController extends SubStageController {
             }
             JulLog.error("llm request error", ex);
             this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+            this.finishRequest(request, true);
+        }
+    }
+
+    private void completeStreamingRequest(LLMRequest request, LLMMessage placeholder, ChatResponse response) {
+        try {
+            if (!this.isRequestActive(request)) {
+                return;
+            }
+            this.view.flushMessageUpdates();
+            String finalText = LLMResponseUtil.finalText(response);
+            String mergedThinking = LLMResponseUtil.mergeThinking(
+                    placeholder.getThinking(), LLMResponseUtil.finalThinking(response));
+            if (!Objects.equals(mergedThinking, placeholder.getThinking())) {
+                this.view.replaceThinking(placeholder, mergedThinking);
+            }
+            if (finalText != null) {
+                this.view.replaceMessage(placeholder, finalText);
+            } else {
+                String partialText = placeholder.getMessage();
+                if (partialText == null || partialText.isBlank()
+                        || Objects.equals(partialText, ShellI18nHelper.thinkingPlaceholder())) {
+                    this.view.replaceMessage(placeholder, "");
+                    this.view.addErrorMessage(ShellI18nHelper.emptyResponse(), placeholder.getSessionTabId());
+                }
+            }
+            if (LLMResponseUtil.outputTruncated(response)) {
+                this.view.addErrorMessage(ShellI18nHelper.outputTruncated(), placeholder.getSessionTabId());
+            }
+        } finally {
             this.finishRequest(request, true);
         }
     }

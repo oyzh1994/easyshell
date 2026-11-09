@@ -23,6 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LLMUtil {
 
     /**
+     * Default maximum number of output tokens per model response.
+     */
+    public static final int DEFAULT_MAX_OUTPUT_TOKENS = 8192;
+
+    /**
      * 大模型文本资源缓存
      */
     private static final Map<String, String> LLM_TEXT_CACHE = new ConcurrentHashMap<>();
@@ -32,7 +37,8 @@ public class LLMUtil {
             OpenAiChatModel.OpenAiChatModelBuilder builder = new OpenAiChatModel.OpenAiChatModelBuilder()
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
-                    .baseUrl(provider.getBaseUrl());
+                    .baseUrl(provider.getBaseUrl())
+                    .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder.returnThinking(true)
                         .reasoningEffort(thinkingLevel.name().toLowerCase());
@@ -43,7 +49,8 @@ public class LLMUtil {
             AnthropicChatModel.AnthropicChatModelBuilder builder = new AnthropicChatModel.AnthropicChatModelBuilder()
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
-                    .baseUrl(provider.getBaseUrl());
+                    .baseUrl(provider.getBaseUrl())
+                    .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder.returnThinking(true)
                         .thinkingType("enabled");
@@ -54,7 +61,8 @@ public class LLMUtil {
             GoogleAiGeminiChatModel.GoogleAiGeminiChatModelBuilder builder = GoogleAiGeminiChatModel.builder();
             builder.apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
-                    .baseUrl(provider.getBaseUrl());
+                    .baseUrl(provider.getBaseUrl())
+                    .maxOutputTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 GeminiThinkingConfig thinkingConfig = GeminiThinkingConfig.builder()
                         .includeThoughts(true)
@@ -67,7 +75,8 @@ public class LLMUtil {
         }
         OllamaChatModel.OllamaChatModelBuilder builder = new OllamaChatModel.OllamaChatModelBuilder()
                 .modelName(provider.getDefaultModel())
-                .baseUrl(provider.getBaseUrl());
+                .baseUrl(provider.getBaseUrl())
+                .numPredict(DEFAULT_MAX_OUTPUT_TOKENS);
         if (thinkingLevel != LLMThinkingLevel.OFF) {
             builder.returnThinking(true);
         }
@@ -79,7 +88,8 @@ public class LLMUtil {
             OpenAiStreamingChatModel.OpenAiStreamingChatModelBuilder builder = new OpenAiStreamingChatModel.OpenAiStreamingChatModelBuilder()
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
-                    .baseUrl(provider.getBaseUrl());
+                    .baseUrl(provider.getBaseUrl())
+                    .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder = builder.returnThinking(true)
                         .reasoningEffort(thinkingLevel.name().toLowerCase());
@@ -90,7 +100,8 @@ public class LLMUtil {
             AnthropicStreamingChatModel.AnthropicStreamingChatModelBuilder builder = new AnthropicStreamingChatModel.AnthropicStreamingChatModelBuilder()
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
-                    .baseUrl(provider.getBaseUrl());
+                    .baseUrl(provider.getBaseUrl())
+                    .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder = builder.returnThinking(true)
                         .thinkingType("enabled");
@@ -101,7 +112,8 @@ public class LLMUtil {
             GoogleAiGeminiStreamingChatModel.GoogleAiGeminiStreamingChatModelBuilder builder = GoogleAiGeminiStreamingChatModel.builder();
             builder.apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
-                    .baseUrl(provider.getBaseUrl());
+                    .baseUrl(provider.getBaseUrl())
+                    .maxOutputTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 GeminiThinkingConfig thinkingConfig = GeminiThinkingConfig.builder()
                         .includeThoughts(true)
@@ -114,7 +126,8 @@ public class LLMUtil {
         }
         OllamaStreamingChatModel.OllamaStreamingChatModelBuilder builder = new OllamaStreamingChatModel.OllamaStreamingChatModelBuilder()
                 .modelName(provider.getDefaultModel())
-                .baseUrl(provider.getBaseUrl());
+                .baseUrl(provider.getBaseUrl())
+                .numPredict(DEFAULT_MAX_OUTPUT_TOKENS);
         if (thinkingLevel != LLMThinkingLevel.OFF) {
             builder = builder.returnThinking(true);
         }

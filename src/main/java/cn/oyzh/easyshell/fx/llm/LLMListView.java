@@ -117,7 +117,15 @@ public class LLMListView extends FXListView<LLMMessage> {
         if (message == null || StringUtil.isBlank(text)) {
             return;
         }
-        this.pendingAppends.offer(new MessageAppend(message, text));
+        this.pendingAppends.offer(new MessageAppend(message, text, false));
+        this.scheduleAppendFlush();
+    }
+
+    public void appendThinking(LLMMessage message, String text) {
+        if (message == null || StringUtil.isBlank(text)) {
+            return;
+        }
+        this.pendingAppends.offer(new MessageAppend(message, text, true));
         this.scheduleAppendFlush();
     }
 
@@ -134,6 +142,25 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.flushPendingAppends();
         boolean shouldScroll = this.autoScroll && !this.userScrolling;
         message.replaceMessage(text);
+        this.notifyMessageUpdated();
+        if (shouldScroll) {
+            this.scheduleScrollToBottom();
+        }
+    }
+
+    /**
+     * Replaces the thinking content of an existing message.
+     *
+     * @param message target message
+     * @param text    new thinking content
+     */
+    public void replaceThinking(LLMMessage message, String text) {
+        if (message == null) {
+            return;
+        }
+        this.flushPendingAppends();
+        boolean shouldScroll = this.autoScroll && !this.userScrolling;
+        message.replaceThinking(text);
         this.notifyMessageUpdated();
         if (shouldScroll) {
             this.scheduleScrollToBottom();
@@ -287,18 +314,28 @@ public class LLMListView extends FXListView<LLMMessage> {
         boolean updated = false;
         LLMMessage message = null;
         StringBuilder text = new StringBuilder();
+        boolean thinking = false;
         MessageAppend append;
         while ((append = this.pendingAppends.poll()) != null) {
-            if (message != null && message != append.message()) {
-                message.appendMessage(text.toString());
+            if (message != null && (message != append.message() || thinking != append.thinking())) {
+                if (thinking) {
+                    message.appendThinking(text.toString());
+                } else {
+                    message.appendMessage(text.toString());
+                }
                 text.setLength(0);
                 updated = true;
             }
             message = append.message();
+            thinking = append.thinking();
             text.append(append.text());
         }
         if (message != null && !text.isEmpty()) {
-            message.appendMessage(text.toString());
+            if (thinking) {
+                message.appendThinking(text.toString());
+            } else {
+                message.appendMessage(text.toString());
+            }
             updated = true;
         }
         this.appendFlushScheduled.set(false);
@@ -317,7 +354,7 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.pendingAppends.clear();
     }
 
-    private record MessageAppend(LLMMessage message, String text) {
+    private record MessageAppend(LLMMessage message, String text, boolean thinking) {
     }
 
     private void installScrollBarListener() {

@@ -24,6 +24,8 @@ public class LLMMessage {
 
     private final StringProperty message = new SimpleStringProperty("");
 
+    private final StringProperty thinking = new SimpleStringProperty("");
+
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
 
     private final StringProperty model = new SimpleStringProperty("");
@@ -109,6 +111,28 @@ public class LLMMessage {
 
     public StringProperty messageProperty() {
         return message;
+    }
+
+    public String getThinking() {
+        return thinking.get();
+    }
+
+    public void setThinking(String thinking) {
+        this.thinking.set(thinking == null ? "" : thinking);
+    }
+
+    public void replaceThinking(String thinking) {
+        FXUtil.runWait(() -> this.thinking.set(thinking == null ? "" : thinking));
+    }
+
+    public StringProperty thinkingProperty() {
+        return thinking;
+    }
+
+    public void appendThinking(String thinking) {
+        if (thinking != null && !thinking.isEmpty()) {
+            FXUtil.runWait(() -> this.thinking.set(this.thinking.get() + thinking));
+        }
     }
 
     public void appendMessage(String message) {

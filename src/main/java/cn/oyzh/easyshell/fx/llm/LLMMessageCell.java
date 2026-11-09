@@ -40,10 +40,14 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
      * 消息内容变更监听
      */
     private final ChangeListener<String> messageListener = (observable, oldValue, newValue) -> {
-        LLMMessage item = this.getItem();
-        if (item != null) {
-            this.text.setMessage(newValue, this.messageFormat(item));
-        }
+        this.refreshText();
+    };
+
+    /**
+     * 思考内容变更监听
+     */
+    private final ChangeListener<String> thinkingListener = (observable, oldValue, newValue) -> {
+        this.refreshText();
     };
 
     public LLMMessageCell() {
@@ -94,6 +98,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         super.updateItem(item, empty);
         if (this.boundMessage != null && this.boundMessage != item) {
             this.boundMessage.messageProperty().removeListener(this.messageListener);
+            this.boundMessage.thinkingProperty().removeListener(this.thinkingListener);
             this.boundMessage = null;
         }
         if (empty || item == null) {
@@ -121,8 +126,10 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
                 : user ? "llm-bubble-text-user" : "llm-bubble-text-assistant");
         item.messageProperty().removeListener(this.messageListener);
         item.messageProperty().addListener(this.messageListener);
+        item.thinkingProperty().removeListener(this.thinkingListener);
+        item.thinkingProperty().addListener(this.thinkingListener);
         this.boundMessage = item;
-        this.text.setMessageNow(item.getMessage(), this.messageFormat(item));
+        this.text.setMessageNow(this.displayText(item), this.messageFormat(item));
 
         File file = item.getFile();
         boolean hasFile = file != null;
@@ -155,5 +162,31 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
      */
     private EditorFormatType messageFormat(LLMMessage item) {
         return item.isUser() || item.isError() ? EditorFormatType.RAW : EditorFormatType.LLM_CHAT;
+    }
+
+    private void refreshText() {
+        LLMMessage item = this.getItem();
+        if (item != null) {
+            this.text.setMessage(this.displayText(item), this.messageFormat(item));
+        }
+    }
+
+    private String displayText(LLMMessage item) {
+        String thinking = item.getThinking();
+        String message = item.getMessage();
+        boolean hasThinking = thinking != null && !thinking.isBlank();
+        boolean hasMessage = message != null && !message.isBlank();
+        if (!hasThinking) {
+            return message == null ? "" : message;
+        }
+        StringBuilder result = new StringBuilder()
+                .append("**").append(ShellI18nHelper.thinkingLabel()).append("**\n\n")
+                .append(thinking.trim());
+        if (hasMessage) {
+            result.append("\n\n---\n\n")
+                    .append("**").append(ShellI18nHelper.answerLabel()).append("**\n\n")
+                    .append(message.trim());
+        }
+        return result.toString();
     }
 }

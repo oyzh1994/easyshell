@@ -565,6 +565,10 @@ public class LLMView extends FXSplitPane {
         this.messageListView.appendMessage(message, text);
     }
 
+    public void appendThinking(LLMMessage message, String text) {
+        this.messageListView.appendThinking(message, text);
+    }
+
     /**
      * 覆盖已有消息内容，可用于将思考占位消息替换为真实回复
      *
@@ -573,6 +577,10 @@ public class LLMView extends FXSplitPane {
      */
     public void replaceMessage(LLMMessage message, String text) {
         this.messageListView.replaceMessage(message, text);
+    }
+
+    public void replaceThinking(LLMMessage message, String text) {
+        this.messageListView.replaceThinking(message, text);
     }
 
     public void clearMessages() {
