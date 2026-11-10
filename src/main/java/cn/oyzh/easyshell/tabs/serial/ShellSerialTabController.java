@@ -209,7 +209,7 @@ public class ShellSerialTabController extends ShellBaseTabController implements 
             newClient.write("\r");
             this.client = newClient;
             this.replaceWidget(oldWidget, newClient);
-            ThreadUtil.start(this::initBackground);
+//            ThreadUtil.start(this::initBackground);
         } catch (Throwable ex) {
             IOUtil.close(newClient);
             this.client = oldClient;

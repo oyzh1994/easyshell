@@ -359,8 +359,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         this.followTerminalDir.setSelected(connect.isFollowTerminalDir());
         // 显示隐藏文件
         this.showHiddenFile(this.shellConnect().isShowHiddenFile());
-        // 异步加载背景
-        ThreadUtil.start(this::initBackground);
+//        // 异步加载背景
+//        ThreadUtil.start(this::initBackground);
     }
 
     //    private NodeWidthResizer widthResizer;

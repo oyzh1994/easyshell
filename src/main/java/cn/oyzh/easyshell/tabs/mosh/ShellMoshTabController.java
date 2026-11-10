@@ -184,7 +184,7 @@ public class ShellMoshTabController extends ShellBaseTabController implements Sh
             this.client = newClient;
             this.replaceWidget(oldWidget, newClient);
             ShellTermWidgetUtil.close(oldWidget);
-            ThreadUtil.start(this::initBackground);
+//            ThreadUtil.start(this::initBackground);
         } catch (Throwable ex) {
             IOUtil.close(newClient);
             this.client = oldClient;
