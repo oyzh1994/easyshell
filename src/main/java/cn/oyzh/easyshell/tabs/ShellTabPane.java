@@ -7,8 +7,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
-import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.setting.ShellSettingChangedEvent;
+import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
@@ -33,19 +33,19 @@ import cn.oyzh.easyshell.tabs.mongo.ShellMongoTab;
 import cn.oyzh.easyshell.tabs.mosh.ShellMoshTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
 import cn.oyzh.easyshell.tabs.postgresql.ShellPostgresqlTab;
-import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteTab;
 import cn.oyzh.easyshell.tabs.rdp.ShellRdpTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
-import cn.oyzh.easyshell.tabs.valkey.ShellValkeyTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
 import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
 import cn.oyzh.easyshell.tabs.smb.ShellSMBTab;
 import cn.oyzh.easyshell.tabs.split.ShellSplitTab;
+import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteTab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
+import cn.oyzh.easyshell.tabs.valkey.ShellValkeyTab;
 import cn.oyzh.easyshell.tabs.vnc1.ShellVNCTab;
 import cn.oyzh.easyshell.tabs.webdav.ShellWebdavTab;
 import cn.oyzh.easyshell.tabs.zk.ShellZKTab;
@@ -59,9 +59,8 @@ import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
-import javafx.scene.control.Tab;
 import javafx.collections.ListChangeListener;
-import javafx.scene.input.KeyCode;
+import javafx.scene.control.Tab;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -134,8 +133,6 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     @Override
     public void initNode() {
         super.initNode();
-        // 父类构造阶段会触发 initNode，此时子类字段尚未完成初始化。
-        FXUtil.runLater(() -> this.initTabIndexes());
         // this.initHomeTab();
         // // 监听tab
         // this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
@@ -608,4 +605,11 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         }
     }
 
+    @Override
+    public void onNodeInitialize() {
+        FXEventListener.super.onNodeInitialize();
+        if (this.isNodeInitialize()) {
+            this.initTabIndexes();
+        }
+    }
 }
