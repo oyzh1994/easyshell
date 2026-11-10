@@ -1,9 +1,12 @@
 package cn.oyzh.easyshell.trees.connect;
 
+import cn.oyzh.easyshell.domain.ShellConnectTag;
 import cn.oyzh.fx.gui.svg.glyph.file.FolderSVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
+
+import java.util.List;
 
 /**
  * shell分组树节点值
@@ -60,5 +63,10 @@ public class ShellConnectGroupTreeItemValue extends RichTreeItemValue {
     @Override
     public Color extraColor() {
         return Color.DARKGREY;
+    }
+
+    @Override
+    public List<Color> tagColors() {
+        return ShellConnectTag.colors(this.item().value().getTags());
     }
 }

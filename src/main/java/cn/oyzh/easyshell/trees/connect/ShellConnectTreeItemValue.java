@@ -2,12 +2,15 @@ package cn.oyzh.easyshell.trees.connect;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellConnectTag;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.fx.ShellOsTypeComboBox;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.paint.Color;
+
+import java.util.List;
 
 /**
  * shell连接节点值
@@ -144,5 +147,10 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
         // 0E7490
         // 8B5CF6
         return Color.DARKGREY;
+    }
+
+    @Override
+    public List<Color> tagColors() {
+        return ShellConnectTag.colors(this.item().value().getTags());
     }
 }

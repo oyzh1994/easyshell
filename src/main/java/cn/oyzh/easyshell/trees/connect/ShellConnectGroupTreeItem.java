@@ -157,6 +157,7 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
             moveTo.setDisable(true);
         }
         items.add(moveTo);
+        items.add(this.tagMenu());
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
         FXMenuItem sortAsc = MenuItemHelper.sortAsc(this::sortAsc);
@@ -164,6 +165,23 @@ public class ShellConnectGroupTreeItem extends RichTreeItem<ShellConnectGroupTre
         items.add(sortAsc);
         items.add(sortDesc);
         return items;
+    }
+
+    /**
+     * 标签菜单
+     */
+    private Menu tagMenu() {
+        return ShellConnectTagMenu.create(this.value.getTags(), tags -> {
+            String oldTags = this.value.getTags();
+            this.value.setTags(tags);
+            if (this.groupStore.update(this.value)) {
+                this.refresh();
+                return true;
+            }
+            this.value.setTags(oldTags);
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            return false;
+        });
     }
 
     /**

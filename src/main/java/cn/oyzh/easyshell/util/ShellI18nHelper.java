@@ -522,6 +522,38 @@ public class ShellI18nHelper {
         return text("shell.shortcut.tabSwitch.prompt");
     }
 
+    public static String tags() {
+        return text("shell.tags");
+    }
+
+    public static String tagRed() {
+        return text("shell.tags.red");
+    }
+
+    public static String tagOrange() {
+        return text("shell.tags.orange");
+    }
+
+    public static String tagYellow() {
+        return text("shell.tags.yellow");
+    }
+
+    public static String tagGreen() {
+        return text("shell.tags.green");
+    }
+
+    public static String tagBlue() {
+        return text("shell.tags.blue");
+    }
+
+    public static String tagPurple() {
+        return text("shell.tags.purple");
+    }
+
+    public static String tagGray() {
+        return text("shell.tags.gray");
+    }
+
     private static String text(String key, Object... args) {
         String text = I18nResourceBundle.i18nString(key);
         return args.length == 0 ? text : String.format(text, args);

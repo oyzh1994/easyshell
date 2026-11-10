@@ -189,9 +189,27 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             moveTo.setDisable(true);
         }
         items.add(moveTo);
+        items.add(this.tagMenu());
         items.add(MenuItemHelper.separator());
         items.addAll(this.getTreeView().getMenuItems());
         return items;
+    }
+
+    /**
+     * 标签菜单
+     */
+    private Menu tagMenu() {
+        return ShellConnectTagMenu.create(this.value.getTags(), tags -> {
+            String oldTags = this.value.getTags();
+            this.value.setTags(tags);
+            if (this.connectStore.update(this.value)) {
+                this.refresh();
+                return true;
+            }
+            this.value.setTags(oldTags);
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            return false;
+        });
     }
 
     /**

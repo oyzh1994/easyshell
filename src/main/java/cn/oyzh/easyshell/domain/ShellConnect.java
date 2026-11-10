@@ -65,6 +65,12 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     private String groupId;
 
     /**
+     * Fixed tag ids, comma-separated.
+     */
+    @Column
+    private String tags;
+
+    /**
      * 认证用户
      */
     @Column
@@ -606,6 +612,7 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
         this.remark = t1.remark;
         this.osType = t1.osType;
         this.groupId = t1.groupId;
+        this.tags = t1.tags;
         this.charset = t1.charset;
         this.database = t1.database;
         this.connectTimeOut = t1.connectTimeOut;
@@ -762,6 +769,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     /** 设置分组id */
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    /** 获取标签 */
+    public String getTags() {
+        return this.tags;
+    }
+
+    /** 设置标签 */
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     /** 获取认证用户 */
