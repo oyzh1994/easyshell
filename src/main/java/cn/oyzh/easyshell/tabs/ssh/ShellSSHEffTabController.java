@@ -263,16 +263,16 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         return ttyConnector;
     }
 
-    /**
-     * 初始化背景
-     */
-    private void initBackground() {
-        //        ShellConnect connect = this.client().getShellConnect();
-        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
-        // 处理背景
-        //        ShellConnectUtil.initBackground(connect, terminalPanel);
-        ShellConnectUtil.initTermBackground(terminalPanel);
-    }
+//    /**
+//     * 初始化背景
+//     */
+//    private void initBackground() {
+//        //        ShellConnect connect = this.client().getShellConnect();
+//        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+//        // 处理背景
+//        //        ShellConnectUtil.initBackground(connect, terminalPanel);
+//        ShellConnectUtil.initTermBackground(terminalPanel);
+//    }
 
     /**
      * 任务数量监听器
@@ -777,7 +777,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
             ShellTermWidgetUtil.close(oldWidget);
             // SFTP 随主会话重建，文件表格需要重新绑定新客户端
             this.initFileTable();
-            ThreadUtil.start(this::initBackground);
+//            ThreadUtil.start(this::initBackground);
             JulLog.info("ssh terminal refreshed in place");
         } catch (Throwable ex) {
             MessageBox.exception(ex, this.getWindow());

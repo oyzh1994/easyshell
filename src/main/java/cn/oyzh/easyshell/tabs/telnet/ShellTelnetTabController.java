@@ -103,16 +103,16 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
         widget.requestFocus();
     }
 
-    /**
-     * 初始化背景
-     */
-    private void initBackground() {
-//        ShellConnect connect = this.client.getShellConnect();
-        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
-        // 处理背景
-//        ShellConnectUtil.initBackground(connect, terminalPanel);
-        ShellConnectUtil.initTermBackground(terminalPanel);
-    }
+//    /**
+//     * 初始化背景
+//     */
+//    private void initBackground() {
+////        ShellConnect connect = this.client.getShellConnect();
+//        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+//        // 处理背景
+////        ShellConnectUtil.initBackground(connect, terminalPanel);
+//        ShellConnectUtil.initTermBackground(terminalPanel);
+//    }
 
     /**
      * 初始化
@@ -134,8 +134,8 @@ public class ShellTelnetTabController extends ShellBaseTabController implements 
                 this.hideLeft();
                 // 初始化组件
                 this.initWidget();
-                // 异步加载背景
-                ThreadUtil.start(this::initBackground);
+//                // 异步加载背景
+//                ThreadUtil.start(this::initBackground);
             } catch (Throwable ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex, this.getWindow());
