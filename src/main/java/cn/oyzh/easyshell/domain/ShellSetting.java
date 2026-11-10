@@ -50,6 +50,12 @@ public class ShellSetting extends AppSetting {
     private Boolean hiddenLeftAfterConnected;
 
     /**
+     * 显示标签序号
+     */
+    @Column
+    private Boolean showTabIndex;
+
+    /**
      * LLM思考强度
      */
     @Column
@@ -346,6 +352,20 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 是否显示标签序号
+     */
+    public boolean isShowTabIndex() {
+        return BooleanUtil.isTrue(this.showTabIndex);
+    }
+
+    /**
+     * 设置是否显示标签序号
+     */
+    public void setShowTabIndex(boolean showTabIndex) {
+        this.showTabIndex = showTabIndex;
+    }
+
+    /**
      * 获取LLM思考强度
      *
      * @return 思考强度序号
@@ -451,6 +471,7 @@ public class ShellSetting extends AppSetting {
             this.syncShortcut = setting.syncShortcut;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
+            this.showTabIndex = setting.showTabIndex;
             // 大模型
             this.llmStreaming = setting.llmStreaming;
             this.llmProviderUid = setting.llmProviderUid;

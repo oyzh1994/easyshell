@@ -9,6 +9,7 @@ import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.domain.ShellShortcut;
+import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyMapComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
@@ -303,6 +304,12 @@ public class SettingController extends StageController {
      */
     @FXML
     private FXToggleSwitch hiddenLeftAfterConnected;
+
+    /**
+     * 显示标签序号
+     */
+    @FXML
+    private FXToggleSwitch showTabIndex;
 
     /**
      * 终端类型-终端
@@ -658,6 +665,7 @@ public class SettingController extends StageController {
             //        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
             // 连接后收起左侧
             this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
+            this.showTabIndex.setSelected(this.setting.isShowTabIndex());
             // redis
             this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
             // zookeeper
@@ -798,6 +806,7 @@ public class SettingController extends StageController {
             this.shortcutSetting.setEnabled(this.enableShortcutKey.isSelected());
             this.shortcutSetting.setKeyMapsJson(this.shortcutKeyManager.toJson());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
+            this.setting.setShowTabIndex(this.showTabIndex.isSelected());
             // redis
             int keyLoadLimit = this.keyLoadLimit.getIntValue();
             this.setting.setKeyLoadLimit(keyLoadLimit);
@@ -816,6 +825,7 @@ public class SettingController extends StageController {
             this.applySync();
             // 更新设置
             if (this.shortcutStore.replace(this.shortcutSetting) && this.settingStore.update(this.setting)) {
+                ShellEventUtil.settingChanged();
                 // 关闭窗口
                 this.closeWindow();
                 // 应用区域配置

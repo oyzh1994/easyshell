@@ -24,6 +24,7 @@ import cn.oyzh.easyshell.event.key.ShellKeyAddedEvent;
 import cn.oyzh.easyshell.event.key.ShellKeyUpdatedEvent;
 import cn.oyzh.easyshell.event.llm.ShellChatEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
+import cn.oyzh.easyshell.event.setting.ShellSettingChangedEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
@@ -287,6 +288,13 @@ public class ShellEventUtil {
      */
     public static void dataImported() {
         EventUtil.post(new ShellDataImportedEvent());
+    }
+
+    /**
+     * 应用设置已更新
+     */
+    public static void settingChanged() {
+        EventUtil.post(new ShellSettingChangedEvent());
     }
 
 //    /**

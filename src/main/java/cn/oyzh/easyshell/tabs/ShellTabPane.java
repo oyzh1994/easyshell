@@ -4,11 +4,11 @@ import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.thread.ThreadLocalUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.connect.ShellConnectDeletedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectEditEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectOpenedEvent;
 import cn.oyzh.easyshell.event.snippet.ShellRunSnippetEvent;
+import cn.oyzh.easyshell.event.setting.ShellSettingChangedEvent;
 import cn.oyzh.easyshell.event.window.ShellShowKeyEvent;
 import cn.oyzh.easyshell.event.window.ShellShowMessageEvent;
 import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
@@ -23,6 +23,7 @@ import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.dameng.ShellDamengTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
+import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.http.ShellHttpTab;
 import cn.oyzh.easyshell.tabs.key.ShellKeyTab;
 import cn.oyzh.easyshell.tabs.local.ShellLocalTab;
@@ -59,13 +60,16 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
 import javafx.scene.control.Tab;
+import javafx.collections.ListChangeListener;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -78,11 +82,6 @@ import java.util.Objects;
 public class ShellTabPane extends RichTabPane implements FXEventListener {
 
     /**
-     * 程序设置
-     */
-    private final ShellSetting setting = ShellSettingStore.SETTING;
-
-    /**
      * 快捷键配置
      */
     private String shortcutKeyConfig;
@@ -91,6 +90,16 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      * 快捷键方案管理器
      */
     private ShellShortcutManager shortcutKeyManager;
+
+    /**
+     * 标签原始标题
+     */
+    private final Map<Tab, String> tabBaseTitles = new IdentityHashMap<>();
+
+    /**
+     * 已显示的标签标题
+     */
+    private final Map<Tab, String> tabRenderedTitles = new IdentityHashMap<>();
 
     //     @Override
     //     public void onNodeInitialize() {
@@ -125,6 +134,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
     @Override
     public void initNode() {
         super.initNode();
+        // 父类构造阶段会触发 initNode，此时子类字段尚未完成初始化。
+        FXUtil.runLater(() -> this.initTabIndexes());
         // this.initHomeTab();
         // // 监听tab
         // this.getTabs().addListener((ListChangeListener<? super Tab>) (c) -> {
@@ -157,6 +168,70 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 this.closeTab(this.getSelectedItem());
             }
         });
+    }
+
+    /**
+     * 初始化标签序号
+     */
+    private void initTabIndexes() {
+        this.getTabs().forEach(this::registerTabIndex);
+        this.getTabs().addListener((ListChangeListener<Tab>) change -> {
+            while (change.next()) {
+                change.getAddedSubList().forEach(this::registerTabIndex);
+                change.getRemoved().forEach(this::unregisterTabIndex);
+            }
+            this.applyTabIndexes();
+        });
+        this.applyTabIndexes();
+    }
+
+    private void registerTabIndex(Tab tab) {
+        if (tab == null || this.tabBaseTitles.containsKey(tab)) {
+            return;
+        }
+        this.tabBaseTitles.put(tab, tab.getText());
+    }
+
+    private void unregisterTabIndex(Tab tab) {
+        this.tabBaseTitles.remove(tab);
+        this.tabRenderedTitles.remove(tab);
+    }
+
+    private void applyTabIndexes() {
+        boolean enabled = ShellSettingStore.SETTING.isShowTabIndex();
+        int index = 1;
+        for (Tab tab : this.getTabs()) {
+            String baseTitle = this.tabBaseTitles.get(tab);
+            String renderedTitle = this.tabRenderedTitles.get(tab);
+            if (renderedTitle != null && !Objects.equals(renderedTitle, tab.getText())) {
+                baseTitle = tab.getText();
+                this.tabBaseTitles.put(tab, baseTitle);
+            }
+            if (baseTitle == null || baseTitle.isEmpty()) {
+                continue;
+            }
+            if (tab instanceof ShellHomeTab) {
+                if (!Objects.equals(tab.getText(), baseTitle)) {
+                    tab.setText(baseTitle);
+                }
+                this.tabRenderedTitles.put(tab, baseTitle);
+                continue;
+            }
+            String title = enabled ? index + " " + baseTitle : baseTitle;
+            if (!Objects.equals(tab.getText(), title)) {
+                tab.setText(title);
+            }
+            this.tabRenderedTitles.put(tab, title);
+            index++;
+        }
+    }
+
+    /**
+     * 应用设置变更
+     */
+    @EventSubscribe
+    private void settingChanged(ShellSettingChangedEvent event) {
+        this.applyTabIndexes();
     }
 
     /**
