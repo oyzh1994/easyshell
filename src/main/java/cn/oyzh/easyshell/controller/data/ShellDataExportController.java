@@ -71,6 +71,12 @@ public class ShellDataExportController extends StageController {
     @FXML
     private FXCheckBox snippet;
 
+    /**
+     * 快捷键
+     */
+    @FXML
+    private FXCheckBox shortcut;
+
     // /**
     //  * 密钥存储
     //  */
@@ -105,7 +111,8 @@ public class ShellDataExportController extends StageController {
             ShellDataExport export = ShellSyncManager.getSyncData(this.key.isSelected(),
                     this.group.isSelected(),
                     this.snippet.isSelected(),
-                    this.connect.isSelected());
+                    this.connect.isSelected(),
+                    this.shortcut.isSelected());
             // ShellDataExport export = ShellDataExport.of();
             // // 密钥
             // if (this.key.isSelected()) {

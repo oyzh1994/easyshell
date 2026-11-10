@@ -71,6 +71,11 @@
                 <Insets left="10" top="5"/>
             </HBox.margin>
         </FXCheckBox>
+        <FXCheckBox selected="true" fx:id="shortcut" text="%base.shortcutKey">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXCheckBox>
     </FXHBox>
     <FXHBox>
         <ExportButton tipText="%base.export" groupId="exec" onAction="#doExport" realHeight="30">

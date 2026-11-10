@@ -8,12 +8,14 @@ import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.easyshell.domain.ShellShortcut;
 import cn.oyzh.easyshell.dto.ShellDataExport;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.store.ShellGroupStore;
 import cn.oyzh.easyshell.store.ShellKeyStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
+import cn.oyzh.easyshell.store.ShellShortcutStore;
 
 import java.util.List;
 
@@ -106,10 +108,12 @@ public class ShellSyncManager {
      * @param group   是否同步分组
      * @param snippet 是否同步片段
      * @param connect 是否同步连接
+     * @param shortcut 是否同步快捷键
      * @return 同步数据
      * @throws Exception 异常
      */
-    public static ShellDataExport getSyncData(boolean key, boolean group, boolean snippet, boolean connect) throws Exception {
+    public static ShellDataExport getSyncData(boolean key, boolean group, boolean snippet,
+                                              boolean connect, boolean shortcut) throws Exception {
         // 密钥存储
         ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
         // 分组存储
@@ -135,7 +139,19 @@ public class ShellSyncManager {
         if (connect) {
             export.setConnects(connectStore.loadFull());
         }
+        // 快捷键
+        if (shortcut) {
+            export.setShortcuts(List.of(ShellShortcutStore.SHORTCUT.copy()));
+        }
         return export;
+    }
+
+    /**
+     * 获取同步数据，不包含快捷键。
+     */
+    public static ShellDataExport getSyncData(boolean key, boolean group,
+                                              boolean snippet, boolean connect) throws Exception {
+        return getSyncData(key, group, snippet, connect, false);
     }
 
     /**
@@ -146,9 +162,11 @@ public class ShellSyncManager {
      * @param group   是否同步分组
      * @param snippet 是否同步片段
      * @param connect 是否同步连接
+     * @param shortcut 是否同步快捷键
      * @throws Exception 异常
      */
-    public static void saveSyncData(ShellDataExport data, boolean key, boolean group, boolean snippet, boolean connect) throws Exception {
+    public static void saveSyncData(ShellDataExport data, boolean key, boolean group,
+                                    boolean snippet, boolean connect, boolean shortcut) throws Exception {
         // 密钥存储
         ShellKeyStore keyStore = ShellKeyStore.INSTANCE;
         // 分组存储
@@ -181,5 +199,17 @@ public class ShellSyncManager {
                 connectStore.sync(shellConnect);
             }
         }
+        List<ShellShortcut> shortcuts = data.getShortcuts();
+        if (shortcut && CollectionUtil.isNotEmpty(shortcuts)) {
+            ShellShortcutStore.INSTANCE.replace(shortcuts.getFirst());
+        }
+    }
+
+    /**
+     * 保存同步数据，不包含快捷键。
+     */
+    public static void saveSyncData(ShellDataExport data, boolean key, boolean group,
+                                    boolean snippet, boolean connect) throws Exception {
+        saveSyncData(data, key, group, snippet, connect, false);
     }
 }

@@ -15,8 +15,11 @@ import cn.oyzh.easyshell.event.window.ShellShowSplitEvent;
 import cn.oyzh.easyshell.event.window.ShellShowTerminalEvent;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.rdp.ShellRDPUtil;
+import cn.oyzh.easyshell.shortcut.ShellShortcutAction;
+import cn.oyzh.easyshell.shortcut.ShellShortcutManager;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.dameng.ShellDamengTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
@@ -63,6 +66,7 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -77,6 +81,16 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
      * 程序设置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
+
+    /**
+     * 快捷键配置
+     */
+    private String shortcutKeyConfig;
+
+    /**
+     * 快捷键方案管理器
+     */
+    private ShellShortcutManager shortcutKeyManager;
 
     //     @Override
     //     public void onNodeInitialize() {
@@ -122,18 +136,18 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
         // });
         // 绑定快捷键
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (this.setting.isEnableShortcutKey() && KeyboardUtil.isMainModifierDown(event)) {
-                if (event.getCode() == KeyCode.W) {
-                    // macos meta + w
-                    // linux、windows ctrl + shift + w
-                    if (OSUtil.isMacOS() || event.isShiftDown()) {
-                        this.closeTab(this.getSelectedItem());
-                    }
-                } else if (event.getCode().isDigitKey()) {
+            if (ShellShortcutStore.SHORTCUT.isEnabled()) {
+                ShellShortcutManager manager = this.shortcutKeyManager();
+                if (manager.matches(ShellShortcutAction.TAB_CLOSE, event)) {
+                    this.closeTab(this.getSelectedItem());
+                    event.consume();
+                } else if (manager.matches(ShellShortcutAction.TAB_SWITCH, event)
+                        && event.getCode().isDigitKey()) {
                     int digit = KeyboardUtil.getDigit(event.getCode());
                     // 选中tab
                     if (digit >= 1 && digit <= 9) {
                         this.select(digit - 1);
+                        event.consume();
                     }
                 }
             }
@@ -143,6 +157,18 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 this.closeTab(this.getSelectedItem());
             }
         });
+    }
+
+    /**
+     * 获取当前快捷键方案管理器
+     */
+    private ShellShortcutManager shortcutKeyManager() {
+        String config = ShellShortcutStore.SHORTCUT.getKeyMapsJson();
+        if (this.shortcutKeyManager == null || !Objects.equals(this.shortcutKeyConfig, config)) {
+            this.shortcutKeyConfig = config;
+            this.shortcutKeyManager = ShellShortcutManager.loadJson(config);
+        }
+        return this.shortcutKeyManager;
     }
 
     // /**

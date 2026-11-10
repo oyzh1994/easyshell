@@ -65,7 +65,8 @@ public abstract class ShellGistSyncer implements ShellSyncer {
                         this.setting.isSyncKey(),
                         this.setting.isSyncGroup(),
                         this.setting.isSyncSnippet(),
-                        this.setting.isSyncConnect()
+                        this.setting.isSyncConnect(),
+                        this.setting.isSyncShortcut()
                 );
                 this.doUpdate(operator, snippetId, snippetName);
                 ShellEventUtil.dataImported();
@@ -108,7 +109,8 @@ public abstract class ShellGistSyncer implements ShellSyncer {
         ShellDataExport export = ShellSyncManager.getSyncData(this.setting.isSyncKey(),
                 this.setting.isSyncGroup(),
                 this.setting.isSyncSnippet(),
-                this.setting.isSyncConnect());
+                this.setting.isSyncConnect(),
+                this.setting.isSyncShortcut());
         String snippetData = ShellSyncManager.encodeSyncData(export);
         Map<String, String> files = new HashMap<>();
         files.put("data", snippetData);
@@ -132,7 +134,8 @@ public abstract class ShellGistSyncer implements ShellSyncer {
         ShellDataExport export = ShellSyncManager.getSyncData(this.setting.isSyncKey(),
                 this.setting.isSyncGroup(),
                 this.setting.isSyncSnippet(),
-                this.setting.isSyncConnect());
+                this.setting.isSyncConnect(),
+                this.setting.isSyncShortcut());
         String snippetData = ShellSyncManager.encodeSyncData(export);
         Map<String, String> files = new HashMap<>();
         files.put("data", snippetData);

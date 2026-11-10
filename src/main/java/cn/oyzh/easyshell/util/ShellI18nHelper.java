@@ -494,6 +494,34 @@ public class ShellI18nHelper {
         return text("shell.docker.containerId", containerId);
     }
 
+    public static String shortcutConflict() {
+        return text("shell.shortcut.conflict.title");
+    }
+
+    public static String shortcutConflictMessage(Object action) {
+        return text("shell.shortcut.conflict.message", action);
+    }
+
+    public static String shortcutResetTitle() {
+        return text("shell.shortcut.reset.title");
+    }
+
+    public static String shortcutResetConfirm(Object name) {
+        return text("shell.shortcut.reset.confirm", name);
+    }
+
+    public static String shortcutDeleteTitle() {
+        return text("shell.shortcut.delete.title");
+    }
+
+    public static String shortcutDeleteConfirm(Object name) {
+        return text("shell.shortcut.delete.confirm", name);
+    }
+
+    public static String shortcutTabSwitchPrompt() {
+        return text("shell.shortcut.tabSwitch.prompt");
+    }
+
     private static String text(String key, Object... args) {
         String text = I18nResourceBundle.i18nString(key);
         return args.length == 0 ? text : String.format(text, args);

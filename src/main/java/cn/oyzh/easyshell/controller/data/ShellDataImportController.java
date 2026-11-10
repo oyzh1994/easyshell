@@ -78,6 +78,12 @@ public class ShellDataImportController extends StageController {
     @FXML
     private FXCheckBox snippet;
 
+    /**
+     * 快捷键
+     */
+    @FXML
+    private FXCheckBox shortcut;
+
     // /**
     //  * 密钥存储
     //  */
@@ -149,7 +155,8 @@ public class ShellDataImportController extends StageController {
                     this.key.isSelected(),
                     this.group.isSelected(),
                     this.snippet.isSelected(),
-                    this.connect.isSelected());
+                    this.connect.isSelected(),
+                    this.shortcut.isSelected());
 
             // if (success) {
             ShellEventUtil.dataImported();

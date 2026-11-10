@@ -37,6 +37,7 @@ import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.store.ShellSnippetStore;
 import cn.oyzh.easyshell.store.ShellTerminalHistoryStore;
 import cn.oyzh.easyshell.store.ShellTunnelingConfigStore;
@@ -1078,7 +1079,7 @@ public class ShellLLMTools implements LLMTools {
             this.append(result, "redisRowPageLimit", setting.getRowPageLimit());
             this.append(result, "recordPageLimit", setting.getRecordPageLimit());
             this.append(result, "mongoRecordPageLimit", setting.getMongoRecordPageLimit());
-            this.append(result, "shortcutKeyEnabled", setting.isEnableShortcutKey());
+            this.append(result, "shortcutKeyEnabled", ShellShortcutStore.SHORTCUT.isEnabled());
             this.append(result, "graphicMode", setting.getGraphicMode());
             this.append(result, "x11Port", setting.getX11Port());
             this.append(result, "x11Glx", setting.isX11Glx());

@@ -239,10 +239,24 @@ public class ShellSetting extends AppSetting {
     private Boolean syncConnect;
 
     /**
-     * 启用快捷键
+     * 是否同步快捷键
      */
     @Column
+    private Boolean syncShortcut;
+
+    /**
+     * 启用快捷键（旧配置字段，仅用于迁移）
+     */
+    @Deprecated
+    @Column
     private Boolean enableShortcutKey;
+
+    /**
+     * 快捷键方案 JSON（旧配置字段，仅用于迁移）
+     */
+    @Deprecated
+    @Column
+    private String shortcutKeyConfig;
 
     /**
      * 图形模式
@@ -433,6 +447,8 @@ public class ShellSetting extends AppSetting {
             this.graphicMode = setting.graphicMode;
             this.connectShowType = setting.connectShowType;
             this.enableShortcutKey = setting.enableShortcutKey;
+            this.shortcutKeyConfig = setting.shortcutKeyConfig;
+            this.syncShortcut = setting.syncShortcut;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
             // 大模型
@@ -1089,6 +1105,20 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 是否同步快捷键
+     */
+    public boolean isSyncShortcut() {
+        return this.syncShortcut == null || this.syncShortcut;
+    }
+
+    /**
+     * 设置是否同步快捷键
+     */
+    public void setSyncShortcut(boolean syncShortcut) {
+        this.syncShortcut = syncShortcut;
+    }
+
+    /**
      * 获取同步令牌
      */
     public String getSyncToken() {
@@ -1139,6 +1169,7 @@ public class ShellSetting extends AppSetting {
     /**
      * 是否启用快捷键
      */
+    @Deprecated
     public boolean isEnableShortcutKey() {
         return this.enableShortcutKey == null || this.enableShortcutKey;
     }
@@ -1146,8 +1177,25 @@ public class ShellSetting extends AppSetting {
     /**
      * 设置是否启用快捷键
      */
+    @Deprecated
     public void setEnableShortcutKey(boolean enableShortcutKey) {
         this.enableShortcutKey = enableShortcutKey;
+    }
+
+    /**
+     * 获取快捷键方案配置
+     */
+    @Deprecated
+    public String getShortcutKeyConfig() {
+        return this.shortcutKeyConfig;
+    }
+
+    /**
+     * 设置快捷键方案配置
+     */
+    @Deprecated
+    public void setShortcutKeyConfig(String shortcutKeyConfig) {
+        this.shortcutKeyConfig = shortcutKeyConfig;
     }
 
     /**

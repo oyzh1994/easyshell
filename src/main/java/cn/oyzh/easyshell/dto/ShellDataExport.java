@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellGroup;
 import cn.oyzh.easyshell.domain.ShellKey;
 import cn.oyzh.easyshell.domain.ShellSnippet;
+import cn.oyzh.easyshell.domain.ShellShortcut;
 import com.alibaba.fastjson2.JSONObject;
 
 import java.util.ArrayList;
@@ -49,6 +50,11 @@ public class ShellDataExport {
      * 连接
      */
     private List<ShellConnect> connects;
+
+    /**
+     * 快捷键
+     */
+    private List<ShellShortcut> shortcuts;
 
     /**
      * 从shell连接数据生成
@@ -138,6 +144,16 @@ public class ShellDataExport {
         this.connects = connects;
     }
 
+    /** 获取快捷键配置 */
+    public List<ShellShortcut> getShortcuts() {
+        return this.shortcuts;
+    }
+
+    /** 设置快捷键配置 */
+    public void setShortcuts(List<ShellShortcut> shortcuts) {
+        this.shortcuts = shortcuts;
+    }
+
     /**
      * 从json对象数据生成
      *
@@ -157,6 +173,7 @@ public class ShellDataExport {
         export.groups = JSONUtil.toList(object, "groups", ShellGroup.class);
         export.connects = JSONUtil.toList(object, "connects", ShellConnect.class);
         export.snippets = JSONUtil.toList(object, "snippets", ShellSnippet.class);
+        export.shortcuts = JSONUtil.toList(object, "shortcuts", ShellShortcut.class);
         return export;
     }
 

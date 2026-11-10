@@ -8,14 +8,18 @@ import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.common.system.RuntimeUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.domain.ShellShortcut;
 import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox;
+import cn.oyzh.easyshell.fx.ShellShortcutKeyMapComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
+import cn.oyzh.easyshell.shortcut.ShellShortcutManager;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
@@ -90,6 +94,35 @@ public class SettingController extends StageController {
      */
     @FXML
     private ShellShortcutKeyTableView shortcutKeyTableView;
+
+    /**
+     * 快捷键方案
+     */
+    @FXML
+    private ShellShortcutKeyMapComboBox shortcutKeyMapComboBox;
+
+    /**
+     * 复制快捷键方案
+     */
+    @FXML
+    private FXButton copyShortcutKeyMapButton;
+
+    /**
+     * 重置快捷键方案
+     */
+    @FXML
+    private FXButton resetShortcutKeyMapButton;
+
+    /**
+     * 删除快捷键方案
+     */
+    @FXML
+    private FXButton deleteShortcutKeyMapButton;
+
+    /**
+     * 快捷键方案管理器
+     */
+    private ShellShortcutManager shortcutKeyManager;
 
     /**
      * 主面板
@@ -426,6 +459,16 @@ public class SettingController extends StageController {
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
 
     /**
+     * 快捷键配置
+     */
+    private final ShellShortcut shortcutSetting = ShellShortcutStore.SHORTCUT;
+
+    /**
+     * 快捷键配置存储
+     */
+    private final ShellShortcutStore shortcutStore = ShellShortcutStore.INSTANCE;
+
+    /**
      * 是否初始化完毕，初始化完毕后实时生效
      */
     private boolean initReady = false;
@@ -471,6 +514,12 @@ public class SettingController extends StageController {
      */
     @FXML
     private CheckBox syncConnect;
+
+    /**
+     * 同步-快捷键
+     */
+    @FXML
+    private CheckBox syncShortcut;
 
     /**
      * 同步-更新时间
@@ -660,9 +709,11 @@ public class SettingController extends StageController {
             this.syncGroup.setSelected(this.setting.isSyncGroup());
             this.syncSnippet.setSelected(this.setting.isSyncSnippet());
             this.syncConnect.setSelected(this.setting.isSyncConnect());
+            this.syncShortcut.setSelected(this.setting.isSyncShortcut());
 
             // 启用快捷键
-            this.enableShortcutKey.setSelected(this.setting.isEnableShortcutKey());
+            this.enableShortcutKey.setSelected(this.shortcutSetting.isEnabled());
+            this.initShortcutKeyManager();
 
             // 图形模式
             this.graphicMode.select(this.setting.getGraphicMode());
@@ -744,7 +795,8 @@ public class SettingController extends StageController {
             this.setting.setExitMode(exitMode);
             // 其他设置
             //            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
-            this.setting.setEnableShortcutKey(this.enableShortcutKey.isSelected());
+            this.shortcutSetting.setEnabled(this.enableShortcutKey.isSelected());
+            this.shortcutSetting.setKeyMapsJson(this.shortcutKeyManager.toJson());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
             // redis
             int keyLoadLimit = this.keyLoadLimit.getIntValue();
@@ -763,7 +815,7 @@ public class SettingController extends StageController {
             // 同步
             this.applySync();
             // 更新设置
-            if (this.settingStore.update(this.setting)) {
+            if (this.shortcutStore.replace(this.shortcutSetting) && this.settingStore.update(this.setting)) {
                 // 关闭窗口
                 this.closeWindow();
                 // 应用区域配置
@@ -805,6 +857,24 @@ public class SettingController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        var shortcutControlsDisabled = this.enableShortcutKey.selectedProperty().not();
+        this.shortcutKeyMapComboBox.disableProperty().bind(shortcutControlsDisabled);
+        this.copyShortcutKeyMapButton.disableProperty().bind(shortcutControlsDisabled);
+        this.resetShortcutKeyMapButton.disableProperty().bind(shortcutControlsDisabled);
+        this.deleteShortcutKeyMapButton.disableProperty().bind(shortcutControlsDisabled);
+        this.shortcutKeyTableView.disableProperty().bind(shortcutControlsDisabled);
+        this.enableShortcutKey.selectedChanged((observableValue, oldValue, newValue) -> {
+            if (!newValue) {
+                this.shortcutKeyTableView.cancelEditing();
+            }
+        });
+        this.shortcutKeyMapComboBox.selectedItemChanged((observableValue, oldValue, newValue) -> {
+            if (this.shortcutKeyManager != null && newValue != null) {
+                this.shortcutKeyTableView.cancelEditing();
+                this.shortcutKeyManager.select(newValue.getId());
+                this.shortcutKeyTableView.refreshItems();
+            }
+        });
         this.fgColorBox.disableProperty().bind(this.accentColorBox.disabledProperty());
         this.bgColorBox.disableProperty().bind(this.accentColorBox.disabledProperty());
         this.theme.selectedItemChanged((observableValue, number, t1) -> {
@@ -1194,6 +1264,67 @@ public class SettingController extends StageController {
     }
 
     /**
+     * 初始化快捷键方案
+     */
+    private void initShortcutKeyManager() {
+        this.shortcutKeyManager = ShellShortcutManager.load(this.shortcutSetting);
+        this.shortcutKeyTableView.setManager(this.shortcutKeyManager);
+        this.shortcutKeyTableView.setKeyMapChanged(keyMap -> this.shortcutKeyMapComboBox.refreshItems());
+        this.shortcutKeyMapComboBox.setManager(this.shortcutKeyManager);
+    }
+
+    /**
+     * 复制快捷键方案
+     */
+    @FXML
+    private void copyShortcutKeyMap() {
+        this.shortcutKeyTableView.cancelEditing();
+        this.shortcutKeyManager.duplicateSelected();
+        this.shortcutKeyMapComboBox.refreshItems();
+        this.shortcutKeyTableView.refreshItems();
+    }
+
+    /**
+     * 恢复快捷键方案
+     */
+    @FXML
+    private void resetShortcutKeyMap() {
+        this.shortcutKeyTableView.cancelEditing();
+        if (this.shortcutKeyManager.getSelectedKeyMap().isBuiltIn()) {
+            return;
+        }
+        if (!MessageBox.confirm(ShellI18nHelper.shortcutResetTitle(),
+                ShellI18nHelper.shortcutResetConfirm(this.shortcutKeyManager.getSelectedKeyMap().getName()),
+                this.getWindow())) {
+            return;
+        }
+        if (this.shortcutKeyManager.restoreSelected()) {
+            this.shortcutKeyMapComboBox.refreshItems();
+            this.shortcutKeyTableView.refreshItems();
+        }
+    }
+
+    /**
+     * 删除快捷键方案
+     */
+    @FXML
+    private void deleteShortcutKeyMap() {
+        this.shortcutKeyTableView.cancelEditing();
+        if (this.shortcutKeyManager.getSelectedKeyMap().isBuiltIn()) {
+            return;
+        }
+        if (!MessageBox.confirm(ShellI18nHelper.shortcutDeleteTitle(),
+                ShellI18nHelper.shortcutDeleteConfirm(this.shortcutKeyManager.getSelectedKeyMap().getName()),
+                this.getWindow())) {
+            return;
+        }
+        if (this.shortcutKeyManager.deleteSelected()) {
+            this.shortcutKeyMapComboBox.refreshItems();
+            this.shortcutKeyTableView.refreshItems();
+        }
+    }
+
+    /**
      * 清除更新
      */
     @FXML
@@ -1243,6 +1374,7 @@ public class SettingController extends StageController {
         this.setting.setSyncGroup(this.syncGroup.isSelected());
         this.setting.setSyncSnippet(this.syncSnippet.isSelected());
         this.setting.setSyncConnect(this.syncConnect.isSelected());
+        this.setting.setSyncShortcut(this.syncShortcut.isSelected());
     }
 
     /**

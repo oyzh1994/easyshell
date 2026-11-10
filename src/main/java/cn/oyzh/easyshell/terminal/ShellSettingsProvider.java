@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.system.OSUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.shortcut.ShellShortcutAction;
+import cn.oyzh.easyshell.shortcut.ShellShortcutKeyCombination;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.fx.plus.font.FontConfig;
 import cn.oyzh.fx.plus.font.FontManager;
 import cn.oyzh.fx.plus.theme.ThemeManager;
@@ -20,8 +22,6 @@ import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.FXTerminalActionPresentation;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.settings.FXDefaultSettingsProvider;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.text.Font;
 import org.jetbrains.annotations.NotNull;
@@ -55,139 +55,84 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
 
     @Override
     public @NotNull FXTerminalActionPresentation getCopyActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.copy());
-        }
-        KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.C, KeyCombination.META_DOWN)
-                // CTRL + C is used for signal; use CTRL + SHIFT + C instead
-                : new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.copy(), keyCombination);
+        return new FXTerminalActionPresentation(I18nHelper.copy(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_COPY));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getPasteActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.paste());
-        }
-        KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.V, KeyCombination.META_DOWN)
-                // CTRL + V is used for signal; use CTRL + SHIFT + V instead
-                : new KeyCodeCombination(KeyCode.V, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.paste(), keyCombination);
+        return new FXTerminalActionPresentation(I18nHelper.paste(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_PASTE));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getClearBufferActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.clearBuffer());
-        }
-        return new FXTerminalActionPresentation(I18nHelper.clearBuffer(), OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.L, KeyCombination.META_DOWN)
-                // CTRL + L is used for nano; use CTRL + SHIFT + L instead
-                : new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        return new FXTerminalActionPresentation(I18nHelper.clearBuffer(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_CLEAR));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getPageUpActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.pageUp());
-        }
         return new FXTerminalActionPresentation(I18nHelper.pageUp(),
-                new KeyCodeCombination(KeyCode.PAGE_UP, KeyCombination.SHIFT_DOWN));
+                this.keyCombinations(ShellShortcutAction.TERMINAL_PAGE_UP));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getPageDownActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.pageDown());
-        }
         return new FXTerminalActionPresentation(I18nHelper.pageDown(),
-                new KeyCodeCombination(KeyCode.PAGE_DOWN, KeyCombination.SHIFT_DOWN));
+                this.keyCombinations(ShellShortcutAction.TERMINAL_PAGE_DOWN));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getLineUpActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.lineUp());
-        }
-        return new FXTerminalActionPresentation(I18nHelper.lineUp(), OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.UP, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        return new FXTerminalActionPresentation(I18nHelper.lineUp(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_LINE_UP));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getLineDownActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.lineDown());
-        }
-        return new FXTerminalActionPresentation(I18nHelper.lineDown(), OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.DOWN, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        return new FXTerminalActionPresentation(I18nHelper.lineDown(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_LINE_DOWN));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getFindActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.find());
-        }
-        return new FXTerminalActionPresentation(I18nHelper.find(), OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.F, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN));
+        return new FXTerminalActionPresentation(I18nHelper.find(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_FIND));
     }
 
     @Override
     public @NotNull FXTerminalActionPresentation getSelectAllActionPresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.selectAll());
-        }
-        KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.A, KeyCombination.META_DOWN)
-                // CTRL + A is used for signal; use CTRL + SHIFT + A instead
-                : new KeyCodeCombination(KeyCode.A, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.selectAll(), keyCombination);
+        return new FXTerminalActionPresentation(I18nHelper.selectAll(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_SELECT_ALL));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getIncrTermSizePresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.incrFont());
-        }
-        KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.ADD, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.ADD, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        KeyCombination keyCombination1 = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.incrFont(), List.of(keyCombination, keyCombination1));
+        return new FXTerminalActionPresentation(I18nHelper.incrFont(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_FONT_INCREASE));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getDecrTermSizePresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.decrFont());
-        }
-        KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.SUBTRACT, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        KeyCombination keyCombination1 = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.MINUS, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.MINUS, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.decrFont(), List.of(keyCombination, keyCombination1));
+        return new FXTerminalActionPresentation(I18nHelper.decrFont(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_FONT_DECREASE));
     }
 
     @Override
     public @NotNull TerminalActionPresentation getResetTermSizePresentation() {
-        if (!this.setting.isEnableShortcutKey()) {
-            return new FXTerminalActionPresentation(I18nHelper.resetFont());
+        return new FXTerminalActionPresentation(I18nHelper.resetFont(),
+                this.keyCombinations(ShellShortcutAction.TERMINAL_FONT_RESET));
+    }
+
+    /**
+     * Resolves the active key-map binding for a terminal action.
+     */
+    private List<KeyCombination> keyCombinations(String actionId) {
+        if (!ShellShortcutStore.SHORTCUT.isEnabled()) {
+            return List.of();
         }
-        KeyCombination keyCombination = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.SLASH, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        KeyCombination keyCombination1 = OSUtil.isMacOS()
-                ? new KeyCodeCombination(KeyCode.SLASH, KeyCombination.META_DOWN)
-                : new KeyCodeCombination(KeyCode.SLASH, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-        return new FXTerminalActionPresentation(I18nHelper.resetFont(), List.of(keyCombination, keyCombination1));
+        return List.of(new ShellShortcutKeyCombination(ShellShortcutStore.SHORTCUT, actionId));
     }
 
     // @Override

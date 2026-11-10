@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.ShellGraphicModeComboBox?>
+<?import cn.oyzh.easyshell.fx.ShellShortcutKeyMapComboBox?>
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox?>
@@ -38,7 +39,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="650">
+        fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="680">
     <FXHeaderBar/>
     <SettingMainPane fx:id="mainPane" flexWidth="100%" flexHeight="100% - 30">
         <left>
@@ -329,10 +330,37 @@
                             <Insets left="30" top="10"/>
                         </VBox.margin>
                     </InfoLabel>
-                    <ShellShortcutKeyTableView fx:id="shortcutKeyTableView" flexWidth="100%" flexHeight="100% - 100">
+                    <FXHBox>
+                        <ShellShortcutKeyMapComboBox prefHeight="30" fx:id="shortcutKeyMapComboBox"
+                                                     flexWidth="100% - 250">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </ShellShortcutKeyMapComboBox>
+                        <FXButton fx:id="copyShortcutKeyMapButton" text="%base.copy"
+                                  onMousePrimaryClicked="#copyShortcutKeyMap">
+                            <HBox.margin>
+                                <Insets left="5" top="5"/>
+                            </HBox.margin>
+                        </FXButton>
+                        <FXButton fx:id="resetShortcutKeyMapButton" text="%base.reset"
+                                  onMousePrimaryClicked="#resetShortcutKeyMap">
+                            <HBox.margin>
+                                <Insets left="5" top="5"/>
+                            </HBox.margin>
+                        </FXButton>
+                        <FXButton fx:id="deleteShortcutKeyMapButton" text="%base.delete"
+                                  onMousePrimaryClicked="#deleteShortcutKeyMap">
+                            <HBox.margin>
+                                <Insets left="5" top="5"/>
+                            </HBox.margin>
+                        </FXButton>
+                    </FXHBox>
+                    <ShellShortcutKeyTableView fx:id="shortcutKeyTableView" flexWidth="100%" flexHeight="100% - 140">
                         <columns>
-                            <FXTableColumn flexWidth="50%" valueName="key" text="%base.shortcutKey"/>
-                            <FXTableColumn flexWidth="50% - 30" valueName="value" text="%base.desc"/>
+                            <FXTableColumn flexWidth="34%" valueName="key" text="%base.shortcutKey"/>
+                            <FXTableColumn flexWidth="48% - 30" valueName="value" text="%base.desc"/>
+                            <FXTableColumn flexWidth="18%" valueName="state" text="%base.type"/>
                         </columns>
                         <VBox.margin>
                             <Insets left="30" top="5"/>
@@ -395,6 +423,11 @@
                             </HBox.margin>
                         </FXCheckBox>
                         <FXCheckBox selected="true" text="%base.connect" fx:id="syncConnect">
+                            <HBox.margin>
+                                <Insets left="10" top="5"/>
+                            </HBox.margin>
+                        </FXCheckBox>
+                        <FXCheckBox selected="true" text="%base.shortcutKey" fx:id="syncShortcut">
                             <HBox.margin>
                                 <Insets left="10" top="5"/>
                             </HBox.margin>
