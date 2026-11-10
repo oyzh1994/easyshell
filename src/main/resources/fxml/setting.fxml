@@ -8,6 +8,7 @@
 <?import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox?>
 <?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.svg.glyph.ApplySVGGlyph?>
 <?import cn.oyzh.fx.gui.button.SaveButton?>
 <?import cn.oyzh.fx.gui.font.FontFamilyTextField?>
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
@@ -38,6 +39,7 @@
 <?import cn.oyzh.fx.plus.theme.ThemeComboBox?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
+<?import cn.oyzh.fx.gui.button.ApplyButton?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.SettingController" realWidth="750" realHeight="680">
     <FXHeaderBar/>
@@ -112,6 +114,50 @@
                     <!--         </HBox.margin> -->
                     <!--     </FXButton> -->
                     <!-- </FXHBox> -->
+                </FXVBox>
+                <FXVBox managedBindVisible="true" visible="false" fx:id="background_box" flexWidth="100%"
+                        flexHeight="100%" groupId="setting_item">
+                    <InfoLabel text="%shell.background.enable">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXToggleSwitch fx:id="enableBackgroundImage">
+                        <VBox.margin>
+                            <Insets left="30"/>
+                        </VBox.margin>
+                    </FXToggleSwitch>
+                    <FXVBox fx:id="backgroundSettingsBox" flexWidth="100%">
+                        <InfoLabel text="%shell.window.backgroundImage">
+                            <VBox.margin>
+                                <Insets left="30" top="10"/>
+                            </VBox.margin>
+                        </InfoLabel>
+                        <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="windowBackgroundImage"
+                                             tipText="%base.fileTip1">
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
+                        </ChooseFileTextField>
+                        <InfoLabel text="%shell.window.backgroundOpacity">
+                            <VBox.margin>
+                                <Insets left="30" top="10"/>
+                            </VBox.margin>
+                        </InfoLabel>
+                        <FXHBox>
+                            <FXSlider prefHeight="30" fx:id="windowBackgroundOpacity" min="0" max="100" value="75"
+                                      flexWidth="100% - 140">
+                                <HBox.margin>
+                                    <Insets left="30" top="5"/>
+                                </HBox.margin>
+                            </FXSlider>
+                            <UndoSVGGlyph tipText="%base.reset" onMousePrimaryClicked="#resetWindowBackgroundOpacity">
+                                <HBox.margin>
+                                    <Insets left="10" top="10"/>
+                                </HBox.margin>
+                            </UndoSVGGlyph>
+                        </FXHBox>
+                    </FXVBox>
                 </FXVBox>
                 <FXVBox managedBindVisible="true" visible="false" fx:id="window_box" flexWidth="100%" flexHeight="100%"
                         groupId="setting_item">
@@ -264,17 +310,21 @@
                             <Insets left="30" top="5"/>
                         </VBox.margin>
                     </ShellTermFpsComboBox>
-                    <InfoLabel text="%base.background">
-                        <VBox.margin>
-                            <Insets left="30" top="10"/>
-                        </VBox.margin>
-                    </InfoLabel>
-                    <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage"
-                                         tipText="%base.fileTip1">
-                        <VBox.margin>
-                            <Insets left="30" top="5"/>
-                        </VBox.margin>
-                    </ChooseFileTextField>
+                    <!-- 旧版终端背景图设置已废弃，运行时和 UI 均已注释
+                    <FXVBox fx:id="termBackgroundBox" managedBindVisible="true" flexWidth="100%">
+                        <InfoLabel text="%base.background">
+                            <VBox.margin>
+                                <Insets left="30" top="10"/>
+                            </VBox.margin>
+                        </InfoLabel>
+                        <ChooseFileTextField prefHeight="30" flexWidth="100% - 140" fx:id="termBackgroundImage"
+                                             tipText="%base.fileTip1">
+                            <VBox.margin>
+                                <Insets left="30" top="5"/>
+                            </VBox.margin>
+                        </ChooseFileTextField>
+                    </FXVBox>
+                    -->
                     <InfoLabel text="%base.othersOptions">
                         <VBox.margin>
                             <Insets left="30" top="10"/>
@@ -901,9 +951,17 @@
         </right>
         <action>
             <SettingRightAction flexWidth="100%" realHeight="50">
-                <SaveButton onAction="#saveSetting">
+                <ApplyButton onAction="#applySetting">
+                    <graphic>
+                        <ApplySVGGlyph/>
+                    </graphic>
                     <HBox.margin>
                         <Insets left="30" top="20"/>
+                    </HBox.margin>
+                </ApplyButton>
+                <SaveButton onAction="#saveSetting">
+                    <HBox.margin>
+                        <Insets left="15" top="20"/>
                     </HBox.margin>
                 </SaveButton>
                 <CancelButton>

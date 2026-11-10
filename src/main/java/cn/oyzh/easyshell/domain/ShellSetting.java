@@ -148,9 +148,30 @@ public class ShellSetting extends AppSetting {
 
     /**
      * 背景图片-终端
+     *
+     * @deprecated 终端背景图已由主窗口背景图统一替代，后续版本将移除。
      */
+    @Deprecated
     @Column
     private String termBackgroundImage;
+
+    /**
+     * 背景图片-主窗口
+     */
+    @Column
+    private String windowBackgroundImage;
+
+    /**
+     * 主窗口背景图片透明度
+     */
+    @Column
+    private Integer windowBackgroundOpacity = 75;
+
+    /**
+     * 是否启用背景图
+     */
+    @Column
+    private Boolean enableBackgroundImage = false;
 
     // /**
     //  * ssh协议，显示文件
@@ -489,6 +510,9 @@ public class ShellSetting extends AppSetting {
             this.termCopyOnSelected = setting.termCopyOnSelected;
             this.termUseAntialiasing = setting.termUseAntialiasing;
             this.termBackgroundImage = setting.termBackgroundImage;
+            this.windowBackgroundImage = setting.windowBackgroundImage;
+            this.windowBackgroundOpacity = setting.windowBackgroundOpacity;
+            this.enableBackgroundImage = setting.enableBackgroundImage;
             // redis
             this.rowPageLimit = setting.rowPageLimit;
             this.keyLoadLimit = setting.keyLoadLimit;
@@ -593,16 +617,52 @@ public class ShellSetting extends AppSetting {
 
     /**
      * 获取终端背景图片
+     *
+     * @deprecated 终端背景图已由主窗口背景图统一替代，后续版本将移除。
      */
+    @Deprecated
     public String getTermBackgroundImage() {
         return termBackgroundImage;
     }
 
     /**
      * 设置终端背景图片
+     *
+     * @deprecated 终端背景图已由主窗口背景图统一替代，后续版本将移除。
      */
+    @Deprecated
     public void setTermBackgroundImage(String termBackgroundImage) {
         this.termBackgroundImage = termBackgroundImage;
+    }
+
+    /** 获取主窗口背景图片 */
+    public String getWindowBackgroundImage() {
+        return this.windowBackgroundImage;
+    }
+
+    /** 设置主窗口背景图片 */
+    public void setWindowBackgroundImage(String windowBackgroundImage) {
+        this.windowBackgroundImage = windowBackgroundImage;
+    }
+
+    /** 获取主窗口背景图片透明度 */
+    public int getWindowBackgroundOpacity() {
+        return this.windowBackgroundOpacity == null ? 75 : this.windowBackgroundOpacity;
+    }
+
+    /** 设置主窗口背景图片透明度 */
+    public void setWindowBackgroundOpacity(int windowBackgroundOpacity) {
+        this.windowBackgroundOpacity = windowBackgroundOpacity;
+    }
+
+    /** 是否启用背景图 */
+    public boolean isEnableBackgroundImage() {
+        return this.enableBackgroundImage != null && this.enableBackgroundImage;
+    }
+
+    /** 设置是否启用背景图 */
+    public void setEnableBackgroundImage(boolean enableBackgroundImage) {
+        this.enableBackgroundImage = enableBackgroundImage;
     }
 
     /**
@@ -1246,7 +1306,9 @@ public class ShellSetting extends AppSetting {
      * 终端背景图片是否失效
      *
      * @return 结果
+     * @deprecated 终端背景图已由主窗口背景图统一替代，后续版本将移除。
      */
+    @Deprecated
     @JSONField(serialize = false, deserialize = false)
     public boolean isTermBackgroundImageInvalid() {
         if (StringUtil.startWithAnyIgnoreCase(this.termBackgroundImage, "http", "https")) {
@@ -1262,7 +1324,9 @@ public class ShellSetting extends AppSetting {
      * 获取终端背景图片url
      *
      * @return 终端背景图片url
+     * @deprecated 终端背景图已由主窗口背景图统一替代，后续版本将移除。
      */
+    @Deprecated
     @JSONField(serialize = false, deserialize = false)
     public String getTermBackgroundImageUrl() {
         // 处理图片
@@ -1270,6 +1334,32 @@ public class ShellSetting extends AppSetting {
             return ResourceUtil.getLocalFileUrl(this.termBackgroundImage);
         }
         return this.termBackgroundImage;
+    }
+
+    /**
+     * 主窗口背景图片是否失效
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isWindowBackgroundImageInvalid() {
+        if (StringUtil.startWithAnyIgnoreCase(this.windowBackgroundImage, "http", "https")) {
+            return false;
+        }
+        if (FileUtil.exists(this.windowBackgroundImage)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 获取主窗口背景图片url
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public String getWindowBackgroundImageUrl() {
+        if (StringUtil.isNotBlank(this.windowBackgroundImage)
+                && !StringUtil.startWithAnyIgnoreCase(this.windowBackgroundImage, "http", "https")) {
+            return ResourceUtil.getLocalFileUrl(this.windowBackgroundImage);
+        }
+        return this.windowBackgroundImage;
     }
 
     public int getGraphicMode() {

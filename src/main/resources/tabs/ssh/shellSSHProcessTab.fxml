@@ -16,7 +16,7 @@
     <graphic>
         <ProcessSVGGlyph/>
     </graphic>
-    <FXVBox flexWidth="100%" flexHeight="100%">
+    <FXVBox flexWidth="100%" flexHeight="100%" styleClass="ssh-process-panel">
         <FXHBox prefHeight="30">
             <ClearableTextField prefWidth="220" realHeight="24" fx:id="filterProcess" tipText="%base.searchKWTip">
                 <FXHBox.margin>

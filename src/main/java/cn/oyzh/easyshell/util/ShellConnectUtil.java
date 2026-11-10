@@ -289,31 +289,39 @@ public class ShellConnectUtil {
     //        terminalPanel.setBackground(background);
     //    }
 
-    /**
-     * 初始化终端背景
-     */
-    public static void initTermBackground(FXTerminalPanel terminalPanel) {
-        ShellSetting setting = ShellSettingStore.SETTING;
-        // 背景图片
-        String url = setting.getTermBackgroundImageUrl();
-        if (StringUtil.isBlank(url)) {
-            return;
-        }
-        // 背景失效
-        if (setting.isTermBackgroundImageInvalid()) {
-            MessageBox.warn(ShellI18nHelper.connectTip7(), terminalPanel.getWindow());
-            return;
-        }
-        // 处理背景
-        Node canvas = terminalPanel.getFirstChild();
-        // 对画板设置透明度
-        canvas.setOpacity(0.7);
-        Image backgroundImage = new Image(url);
-        // 生成背景
-        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true);
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
-        // 创建 Background 对象
-        Background background = new Background(backgroundImg);
-        terminalPanel.setBackground(background);
-    }
+    // 旧版终端背景图功能已废弃，统一使用主窗口背景图。
+    // 以下代码保留用于回退参考，已不再调用。
+    //     /**
+    //      * 初始化终端背景
+    //      *
+    //      * @deprecated 旧版终端背景图设计，已由主窗口背景图统一替代，后续版本将移除。
+    //      */
+    //     @Deprecated
+    //     public static void initTermBackground(FXTerminalPanel terminalPanel) {
+    //         ShellSetting setting = ShellSettingStore.SETTING;
+    //         // 旧版终端背景图已废弃，统一使用主窗口背景图
+    //         // ------------------------------------------------------------------
+    //         // 旧版终端背景图实现（已过时，待主窗口背景图全面启用后整段删除）
+    //         // ------------------------------------------------------------------
+    //         String url = setting.getTermBackgroundImageUrl();
+    //         if (StringUtil.isBlank(url)) {
+    //             return;
+    //         }
+    //         // 背景失效
+    //         if (setting.isTermBackgroundImageInvalid()) {
+    //             MessageBox.warn(ShellI18nHelper.connectTip7(), terminalPanel.getWindow());
+    //             return;
+    //         }
+    //         // 处理背景
+    //         Node canvas = terminalPanel.getFirstChild();
+    //         // 对画板设置透明度
+    //         canvas.setOpacity(0.7);
+    //         Image backgroundImage = new Image(url);
+    //         // 生成背景
+    //         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true);
+    //         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+    //         // 创建 Background 对象
+    //         Background background = new Background(backgroundImg);
+    //         terminalPanel.setBackground(background);
+    //     }
 }

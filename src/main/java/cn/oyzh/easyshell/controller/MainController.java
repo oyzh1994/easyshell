@@ -3,16 +3,21 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.event.setting.ShellSettingChangedEvent;
+import cn.oyzh.easyshell.fx.ShellWindowBackgroundManager;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.StageController;
+import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
@@ -54,6 +59,12 @@ public class MainController extends ParentStageController {
     private ShellMainController shellMainController;
 
     /**
+     * 主窗口根节点
+     */
+    @FXML
+    private FXPane mainRoot;
+
+    /**
      * shell相关配置
      */
     private final ShellSetting setting = ShellSettingStore.SETTING;
@@ -62,6 +73,11 @@ public class MainController extends ParentStageController {
      * 设置存储
      */
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
+    /**
+     * 主窗口背景
+     */
+    private ShellWindowBackgroundManager windowBackgroundManager;
 
     @Override
     public List<? extends StageController> getSubControllers() {
@@ -88,6 +104,9 @@ public class MainController extends ParentStageController {
 
     @Override
     public void onSystemExit() {
+        if (this.windowBackgroundManager != null) {
+            this.windowBackgroundManager.dispose();
+        }
         boolean savePageInfo = false;
         // 记住页面大小
         if (this.setting.isRememberPageSize()) {
@@ -115,6 +134,8 @@ public class MainController extends ParentStageController {
     public void onStageInitialize(StageAdapter stage) {
         try {
             super.onStageInitialize(stage);
+            this.windowBackgroundManager = new ShellWindowBackgroundManager(this.mainRoot);
+            this.windowBackgroundManager.apply(this.setting);
             // 设置上次保存的页面大小
             if (this.setting.isRememberPageSize()) {
                 if (this.setting.isPageMaximized()) {
@@ -143,7 +164,25 @@ public class MainController extends ParentStageController {
     }
 
     @Override
+    public void onWindowShown(WindowEvent event) {
+        super.onWindowShown(event);
+        if (this.windowBackgroundManager != null) {
+            FXUtil.runLater(() -> this.windowBackgroundManager.apply(this.setting), 100);
+        }
+    }
+
+    @Override
     public String getViewTitle() {
         return I18nResourceBundle.i18nString("shell.title.main");
+    }
+
+    /**
+     * 设置已更新
+     */
+    @EventSubscribe
+    private void settingChanged(ShellSettingChangedEvent event) {
+        if (this.windowBackgroundManager != null) {
+            this.windowBackgroundManager.apply(this.setting);
+        }
     }
 }

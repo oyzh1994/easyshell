@@ -1,0 +1,255 @@
+/*
+ * 主窗口背景图模式。
+ * 背景图片由 ShellWindowBackgroundManager 放在窗口最底层，这里负责让各层容器
+ * 透出背景，同时为表格、标签页等保留轻量的半透明表面，避免影响正文可读性。
+ */
+
+.window-background-enabled .split-pane,
+.window-background-enabled .tab-pane,
+.window-background-enabled .tab-pane > .tab-header-area,
+.window-background-enabled .tab-pane > .tab-content-area,
+.window-background-enabled .tree-view,
+.window-background-enabled .tree-view > .virtual-flow,
+.window-background-enabled .tree-view > .virtual-flow > .clipped-container > .sheet,
+.window-background-enabled .window-connection-toolbar,
+.window-background-enabled .scroll-pane,
+.window-background-enabled .scroll-pane > .viewport,
+.window-background-enabled .virtualized-scroll-pane,
+.window-background-enabled .styled-text-area {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled #headerBar {
+    -fx-background-color: rgba(127, 127, 127, 0.06);
+}
+
+/* 左侧连接区 */
+
+.window-background-enabled .window-connection-view {
+    -fx-background-color: rgba(127, 127, 127, 0.04);
+}
+
+.window-background-enabled .tree-cell {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled .tree-cell:filled:hover {
+    -fx-background-color: rgba(127, 127, 127, 0.12);
+}
+
+.window-background-enabled .tree-cell:filled:selected {
+    -fx-background-color: -color-cell-bg-selected;
+}
+
+.window-background-enabled .tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:filled:selected {
+    -fx-background-color: -color-cell-bg-selected-focused;
+}
+
+/* 标签页 */
+
+.window-background-enabled .tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .tab-pane > .tab-header-area > .headers-region > .tab {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .tab-pane > .tab-header-area > .headers-region > .tab:hover {
+    -fx-background-color: rgba(127, 127, 127, 0.16);
+}
+
+.window-background-enabled .tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: rgba(127, 127, 127, 0.24);
+}
+
+/* 分隔条 */
+
+.window-background-enabled .split-pane > .split-pane-divider {
+    -fx-background-color: rgba(127, 127, 127, 0.22);
+}
+
+/* 表格、列表 */
+
+.window-background-enabled .table-view,
+.window-background-enabled .tree-table-view,
+.window-background-enabled .list-view,
+.window-background-enabled .table-view > .virtual-flow,
+.window-background-enabled .tree-table-view > .virtual-flow,
+.window-background-enabled .list-view > .virtual-flow,
+.window-background-enabled .table-view > .virtual-flow > .clipped-container > .sheet,
+.window-background-enabled .tree-table-view > .virtual-flow > .clipped-container > .sheet,
+.window-background-enabled .list-view > .virtual-flow > .clipped-container > .sheet {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled .table-view .table-row-cell,
+.window-background-enabled .tree-table-view .tree-table-row-cell,
+.window-background-enabled .list-view .list-cell {
+    -fx-background-color: rgba(127, 127, 127, 0.08);
+    -fx-background-insets: 0;
+}
+
+.window-background-enabled .table-view .table-row-cell:filled:hover,
+.window-background-enabled .tree-table-view .tree-table-row-cell:filled:hover,
+.window-background-enabled .list-view .list-cell:filled:hover {
+    -fx-background-color: rgba(127, 127, 127, 0.16);
+}
+
+.window-background-enabled .table-view .table-row-cell:filled:selected,
+.window-background-enabled .tree-table-view .tree-table-row-cell:filled:selected,
+.window-background-enabled .list-view .list-cell:filled:selected {
+    -fx-background-color: -color-cell-bg-selected;
+}
+
+.window-background-enabled .table-view:focused .table-row-cell:filled:selected,
+.window-background-enabled .tree-table-view:focused .tree-table-row-cell:filled:selected,
+.window-background-enabled .list-view:focused .list-cell:filled:selected {
+    -fx-background-color: -color-cell-bg-selected-focused;
+}
+
+.window-background-enabled .table-view > .column-header-background,
+.window-background-enabled .tree-table-view > .column-header-background {
+    -fx-background-color: rgba(127, 127, 127, 0.16);
+    -fx-background-insets: 0;
+}
+
+.window-background-enabled .table-view > .column-header-background > .filler,
+.window-background-enabled .table-view > .column-header-background > .column-header,
+.window-background-enabled .tree-table-view > .column-header-background > .filler,
+.window-background-enabled .tree-table-view > .column-header-background > .column-header {
+    -fx-background-color: transparent;
+}
+
+/* 文本、图表 */
+
+.window-background-enabled .text-area,
+.window-background-enabled .text-area .content,
+.window-background-enabled .rich-text-area,
+.window-background-enabled .chart,
+.window-background-enabled .chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+/* LLM 聊天区 */
+.window-background-enabled .llm-view {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled .llm-view .llm-layout {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled .llm-view .llm-message-list,
+.window-background-enabled .llm-view .llm-message-list .virtual-flow,
+.window-background-enabled .llm-view .llm-message-list .clipped-container,
+.window-background-enabled .llm-view .llm-message-list .sheet {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled .llm-view .llm-layout > .split-pane-divider {
+    -fx-background-color: rgba(127, 127, 127, 0.22);
+}
+
+.window-background-enabled .llm-view .llm-composer {
+    -fx-background-color: rgba(127, 127, 127, 0.06);
+    -fx-border-color: rgba(127, 127, 127, 0.18);
+}
+
+.window-background-enabled .llm-view .llm-bubble-assistant,
+.window-background-enabled .llm-view .llm-bubble-attachment-assistant {
+    -fx-background-color: rgba(127, 127, 127, 0.16);
+}
+
+.window-background-enabled .llm-view .llm-combo,
+.window-background-enabled .llm-view .llm-attachment-chip {
+    -fx-background-color: rgba(127, 127, 127, 0.12);
+}
+
+.window-background-enabled .llm-view .llm-input,
+.window-background-enabled .llm-view .llm-input.rich-text-area,
+.window-background-enabled .llm-view .llm-input.code-area {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .llm-view .llm-input:focused {
+    -fx-background-color: rgba(127, 127, 127, 0.14);
+}
+
+.window-background-enabled .llm-view .llm-input.rich-text-area .content,
+.window-background-enabled .llm-view .llm-input.code-area .content,
+.window-background-enabled .llm-view .llm-input .left-side,
+.window-background-enabled .llm-view .llm-input .scroll-pane,
+.window-background-enabled .llm-view .llm-input .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* 配置/文件编辑器 */
+.window-background-enabled .code-area,
+.window-background-enabled .code-area .content,
+.window-background-enabled .code-area .virtualized-scroll-pane,
+.window-background-enabled .code-area .scroll-pane,
+.window-background-enabled .code-area .scroll-pane .viewport,
+.window-background-enabled .code-area .left-side {
+    -fx-background-color: transparent;
+}
+
+.window-background-enabled .code-area {
+    -fx-background-color: rgba(127, 127, 127, 0.04);
+}
+
+/* SSH 文件区 */
+.window-background-enabled .ssh-file-panel {
+    -fx-background-color: rgba(127, 127, 127, 0.05);
+}
+
+.window-background-enabled .ssh-file-panel .text-field {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .window-connection-view .text-field {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .window-connection-view .text-field:focused {
+    -fx-background-color: rgba(127, 127, 127, 0.16);
+}
+
+/* 图表图例：不再用不透明主题底色盖住图表和背景 */
+.window-background-enabled .chart .chart-legend,
+.window-background-enabled .chart .chart-legend-item {
+    -fx-background-color: transparent;
+}
+
+/* SSH 进程区过滤输入框、用户类型下拉框 */
+.window-background-enabled .ssh-process-panel .text-field,
+.window-background-enabled .ssh-process-panel .combo-box,
+.window-background-enabled .ssh-process-panel .combo-box-base,
+.window-background-enabled .ssh-process-panel .combo-box > .list-cell,
+.window-background-enabled .ssh-process-panel .combo-box > .arrow-button {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+/* 通用输入框、下拉框：避免各业务面板出现独立白色块 */
+.window-background-enabled .text-field,
+.window-background-enabled .combo-box,
+.window-background-enabled .combo-box-base,
+.window-background-enabled .combo-box > .list-cell,
+.window-background-enabled .combo-box > .arrow-button {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .text-field:focused {
+    -fx-background-color: rgba(127, 127, 127, 0.16);
+}
+
+/* 带左右图标的输入框（HighlightTextField 等）同样使用半透明底 */
+.window-background-enabled .custom-text-field,
+.window-background-enabled .custom-text-field:focused {
+    -fx-background-color: rgba(127, 127, 127, 0.10);
+}
+
+.window-background-enabled .text-field .left-pane,
+.window-background-enabled .text-field .right-pane {
+    -fx-background-color: transparent;
+}

@@ -98,6 +98,10 @@ public class ShellI18nHelper {
         return I18nResourceBundle.i18nString("shell.connect.tip7");
     }
 
+    public static String backgroundTab() {
+        return I18nResourceBundle.i18nString("shell.background.tab");
+    }
+
     public static String keyTip1() {
         return I18nResourceBundle.i18nString("shell.key.tip1");
     }

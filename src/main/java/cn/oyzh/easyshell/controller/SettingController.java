@@ -38,6 +38,7 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
+import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -365,11 +366,36 @@ public class SettingController extends StageController {
     @FXML
     private FXToggleSwitch termParseHyperlink;
 
+    // 旧版终端背景图设置已废弃，UI 和运行时均已注释
+    // /**
+    //  * 背景图片-终端
+    //  */
+    // @FXML
+    // private ChooseFileTextField termBackgroundImage;
+
     /**
-     * 背景图片-终端
+     * 主窗口背景图片
      */
     @FXML
-    private ChooseFileTextField termBackgroundImage;
+    private ChooseFileTextField windowBackgroundImage;
+
+    /**
+     * 主窗口背景图片透明度
+     */
+    @FXML
+    private FXSlider windowBackgroundOpacity;
+
+    /**
+     * 是否启用背景图
+     */
+    @FXML
+    private FXToggleSwitch enableBackgroundImage;
+
+    /**
+     * 背景图其他设置容器，启用开关关闭时禁用
+     */
+    @FXML
+    private FXVBox backgroundSettingsBox;
 
     ///**
     // * 鼠标中键粘贴-终端
@@ -654,7 +680,9 @@ public class SettingController extends StageController {
             this.termBeep.setSelected(this.setting.isTermBeep());
             this.termFps.selectFps(this.setting.getTermRefreshRate());
             this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
-            this.termBackgroundImage.setValue(this.setting.getTermBackgroundImage());
+            this.windowBackgroundImage.setValue(this.setting.getWindowBackgroundImage());
+            this.windowBackgroundOpacity.setValue(this.setting.getWindowBackgroundOpacity());
+            this.enableBackgroundImage.setSelected(this.setting.isEnableBackgroundImage());
             //this.termPasteByMiddle.setSelected(this.setting.isTermPasteByMiddle());
             this.termCopyOnSelected.setSelected(this.setting.isTermCopyOnSelected());
             this.termParseHyperlink.setSelected(this.setting.isTermParseHyperlink());
@@ -739,10 +767,27 @@ public class SettingController extends StageController {
     }
 
     /**
-     * 保存设置
+     * 保存设置并关闭页面
      */
     @FXML
     private void saveSetting() {
+        this.doApplySetting(true);
+    }
+
+    /**
+     * 应用设置但保持当前页面打开，便于快速预览
+     */
+    @FXML
+    private void applySetting() {
+        this.doApplySetting(false);
+    }
+
+    /**
+     * 应用设置
+     *
+     * @param closeWindow 是否关闭设置页面
+     */
+    private void doApplySetting(boolean closeWindow) {
         try {
             String locale = this.locale.name();
             Byte fontSize = this.fontSize.byteValue();
@@ -773,7 +818,13 @@ public class SettingController extends StageController {
             this.setting.setTermCursorStyle(this.termCursorStyle.getCursorStyle());
             this.setting.setTermCursorBlinks(this.termCursorBlinks.getCursorBlinks());
             this.setting.setTermUseAntialiasing(this.termUseAntialiasing.isSelected());
-            this.setting.setTermBackgroundImage(this.termBackgroundImage.getTextTrim());
+            this.setting.setWindowBackgroundImage(this.windowBackgroundImage.getTextTrim());
+            this.setting.setWindowBackgroundOpacity((int) this.windowBackgroundOpacity.getValue());
+            this.setting.setEnableBackgroundImage(this.enableBackgroundImage.isSelected());
+            // 背景图片失效提示
+            if (StringUtil.isNotBlank(this.setting.getWindowBackgroundImage()) && this.setting.isWindowBackgroundImageInvalid()) {
+                MessageBox.warn(ShellI18nHelper.connectTip7(), this.getWindow());
+            }
             // 字体相关
             this.setting.setFontSize(fontSize);
             this.setting.setFontFamily(fontFamily);
@@ -826,8 +877,10 @@ public class SettingController extends StageController {
             // 更新设置
             if (this.shortcutStore.replace(this.shortcutSetting) && this.settingStore.update(this.setting)) {
                 ShellEventUtil.settingChanged();
-                // 关闭窗口
-                this.closeWindow();
+                // 保存时关闭窗口；应用时保持窗口打开
+                if (closeWindow) {
+                    this.closeWindow();
+                }
                 // 应用区域配置
                 I18nManager.apply(this.setting.getLocale());
                 // 应用字体配置
@@ -836,8 +889,8 @@ public class SettingController extends StageController {
                 ThemeManager.apply(this.setting.themeConfig());
                 // 应用透明度配置
                 OpacityManager.apply(this.setting.opacityConfig());
-                // 提示不为空，说明需要重启，则执行重启
-                if (StringUtil.isNotBlank(tips) && MessageBox.confirm(tips, this.getWindow())) {
+                // 保存时提示重启；应用时只做预览，不打断操作
+                if (closeWindow && StringUtil.isNotBlank(tips) && MessageBox.confirm(tips, this.getWindow())) {
                     ShellProcessUtil.restartApplication();
                 }
             }
@@ -867,6 +920,10 @@ public class SettingController extends StageController {
     @Override
     protected void bindListeners() {
         super.bindListeners();
+        // 启用背景图开关联动其他背景设置
+        if (this.backgroundSettingsBox != null && this.enableBackgroundImage != null) {
+            this.backgroundSettingsBox.disableProperty().bind(this.enableBackgroundImage.selectedProperty().not());
+        }
         var shortcutControlsDisabled = this.enableShortcutKey.selectedProperty().not();
         this.shortcutKeyMapComboBox.disableProperty().bind(shortcutControlsDisabled);
         this.copyShortcutKeyMapButton.disableProperty().bind(shortcutControlsDisabled);
@@ -994,6 +1051,7 @@ public class SettingController extends StageController {
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.terminal(), "term_box"));
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.window(), "window_box"));
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.shortcutKey(), "shortcut_box"));
+        treeView.addItem(SettingLeftTreeItemValue.of(ShellI18nHelper.backgroundTab(), "background_box"));
 
         // 同步
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.sync(), "sync_box"));
@@ -1062,6 +1120,14 @@ public class SettingController extends StageController {
     @FXML
     private void resetOpacity() {
         this.opacity.setValue(OpacityManager.defaultOpacity * 100);
+    }
+
+    /**
+     * 重置主窗口背景图片透明度
+     */
+    @FXML
+    private void resetWindowBackgroundOpacity() {
+        this.windowBackgroundOpacity.setValue(75);
     }
 
     // /**
@@ -1423,7 +1489,9 @@ public class SettingController extends StageController {
 
         // 过滤器
         FileExtensionFilter filter = new FileExtensionFilter(I18nHelper.pleaseSelectFile(), "*.jpg", ",*.png", "*.jpeg", "*.gif");
-        this.termBackgroundImage.setFilter(filter);
+        // 旧版终端背景图设置已废弃，UI 和运行时均已注释
+        // this.termBackgroundImage.setFilter(filter);
+        this.windowBackgroundImage.setFilter(filter);
 
         // 更新x服务
         this.updateXServerStatus();
