@@ -2,13 +2,15 @@ package cn.oyzh.easyshell.tabs.home;
 
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.controls.text.FXText;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +42,17 @@ public class ShellHomeTabController extends RichTabController {
     private FXText jdkInfo;
 
     /**
+     * 应用Logo
+     */
+    @FXML
+    private ImageView logo;
+
+    /**
+     * 彩蛋管理器
+     */
+    private ShellHomeEasterEggManager easterEggManager;
+
+    /**
      * 项目对象
      */
     private final Project project = Project.load();
@@ -47,7 +60,7 @@ public class ShellHomeTabController extends RichTabController {
     @Override
     public void initialize(URL url, ResourceBundle resource) {
         super.initialize(url, resource);
-//        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
+        //        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
         this.version.setText(ShellI18nHelper.versionInfo("v" + this.project.getVersion()));
         this.update.setText(ShellI18nHelper.updateDateInfo(this.project.getUpdateDate()));
         String jdkInfo = "";
@@ -58,6 +71,14 @@ public class ShellHomeTabController extends RichTabController {
             jdkInfo += System.getProperty("java.vm.version");
         }
         this.jdkInfo.setText(ShellI18nHelper.environmentInfo(jdkInfo));
+        this.logo.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (this.easterEggManager == null && this.logo.getParent() instanceof Pane pane) {
+                this.easterEggManager = new ShellHomeEasterEggManager(this.logo, pane);
+            }
+            if (this.easterEggManager != null) {
+                this.easterEggManager.click(event);
+            }
+        });
     }
 
     /**
