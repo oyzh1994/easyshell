@@ -15,9 +15,9 @@ import cn.oyzh.easyshell.fx.ShellShortcutKeyMapComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
-import cn.oyzh.easyshell.fx.term.ShellTermEngineComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermEngineComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
 import cn.oyzh.easyshell.shortcut.ShellShortcutManager;
 import cn.oyzh.easyshell.store.ShellSettingStore;
@@ -460,25 +460,25 @@ public class SettingController extends StageController {
     @FXML
     private RadioButton viewport1;
 
-//    /**
-//     * 内容视图，zookeeper
-//     */
-//    @FXML
-//    private FXToggleGroup zkContentViewport;
-//
-//    /**
-//     * 内容视图0，zookeeper
-//     */
-//    @FXML
-//    private RadioButton zkContentViewport0;
-//
-//    /**
-//     * 内容视图1，zookeeper
-//     */
-//    @FXML
-//    private RadioButton zkContentViewport1;
-//
-//    ///**
+    //    /**
+    //     * 内容视图，zookeeper
+    //     */
+    //    @FXML
+    //    private FXToggleGroup zkContentViewport;
+    //
+    //    /**
+    //     * 内容视图0，zookeeper
+    //     */
+    //    @FXML
+    //    private RadioButton zkContentViewport0;
+    //
+    //    /**
+    //     * 内容视图1，zookeeper
+    //     */
+    //    @FXML
+    //    private RadioButton zkContentViewport1;
+    //
+    //    ///**
     // * 节点自动认证，zookeeper
     // */
     //@FXML
@@ -734,8 +734,8 @@ public class SettingController extends StageController {
             //                    case 1 -> this.zkContentViewport1.setSelected(true);
             //                }
             //            }
-//            this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
-//            this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
+            //            this.zkContentViewport0.setSelected(this.setting.isZkContentListViewport());
+            //            this.zkContentViewport1.setSelected(this.setting.isZkContentTreeViewport());
             //// 节点认证处理
             // if (this.setting.getAuthMode() != null) {
             //    this.authMode.setSelected(this.setting.isAutoAuth());
@@ -879,11 +879,11 @@ public class SettingController extends StageController {
             int nodeLoadLimit = this.nodeLoadLimit.getIntValue();
             byte loadMode = Byte.parseByte(this.loadMode.selectedUserData());
             byte viewport = Byte.parseByte(this.viewport.selectedUserData());
-//            byte zkContentViewport = Byte.parseByte(this.zkContentViewport.selectedUserData());
+            //            byte zkContentViewport = Byte.parseByte(this.zkContentViewport.selectedUserData());
             this.setting.setLoadMode(loadMode);
             this.setting.setViewport(viewport);
             this.setting.setNodeLoadLimit(nodeLoadLimit);
-//            this.setting.setZkContentViewport(zkContentViewport);
+            //            this.setting.setZkContentViewport(zkContentViewport);
             // xserver
             this.applyX11();
             // 同步
@@ -891,10 +891,6 @@ public class SettingController extends StageController {
             // 更新设置
             if (this.shortcutStore.replace(this.shortcutSetting) && this.settingStore.update(this.setting)) {
                 ShellEventUtil.settingChanged();
-                // 保存时关闭窗口；应用时保持窗口打开
-                if (closeWindow) {
-                    this.closeWindow();
-                }
                 // 应用区域配置
                 I18nManager.apply(this.setting.getLocale());
                 // 应用字体配置
@@ -903,8 +899,12 @@ public class SettingController extends StageController {
                 ThemeManager.apply(this.setting.themeConfig());
                 // 应用透明度配置
                 OpacityManager.apply(this.setting.opacityConfig());
-                // 保存时提示重启；应用时只做预览，不打断操作
-                if (closeWindow && StringUtil.isNotBlank(tips) && MessageBox.confirm(tips, this.getWindow())) {
+                // 保存时关闭窗口；应用时保持窗口打开
+                if (closeWindow) {
+                    this.closeWindow();
+                }
+                // 保存时提示重启
+                if (StringUtil.isNotBlank(tips) && MessageBox.confirm(tips, this.getWindow())) {
                     ShellProcessUtil.restartApplication();
                 }
             }

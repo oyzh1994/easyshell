@@ -5,23 +5,29 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.tty.TtyTermWidget;
 import cn.oyzh.fx.tty.TtyTerminalCanvas;
 import cn.oyzh.fx.tty.ghostty.TerminalTheme;
 import cn.oyzh.fx.tty.ghostty.TerminalView;
 import com.jediterm.terminal.ui.FXTerminalPanel;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,6 +85,26 @@ public final class ShellWindowBackgroundManager {
      */
     private static final double TERMINAL_BACKGROUND_OPACITY = 0;
 
+    /**
+     * 背景图预处理的最大边长
+     */
+    private static final int IMAGE_RENDER_LIMIT = 768;
+
+    /**
+     * 背景图模糊半径
+     */
+    private static final double IMAGE_BLUR_RADIUS = 24;
+
+    /**
+     * 图片比例比较误差
+     */
+    private static final double IMAGE_RATIO_EPSILON = 0.001;
+
+    /**
+     * 图片重绘延迟
+     */
+    private static final Duration IMAGE_RENDER_DELAY = Duration.millis(120);
+
     private final FXPane root;
 
     /**
@@ -111,7 +137,29 @@ public final class ShellWindowBackgroundManager {
 
     private Rectangle washLayer;
 
+    /**
+     * 原始背景图片
+     */
+    private Image sourceImage;
+
+    /**
+     * 已经完成效果处理的背景图片
+     */
+    private Image renderedImage;
+
+    /**
+     * 处理图片对应的目标比例
+     */
+    private double renderedImageRatio;
+
+    /**
+     * 处理图片对应的目标尺寸
+     */
+    private double renderedImageSize;
+
     private ChangeListener<Number> resizeListener;
+
+    private PauseTransition imageRenderDelay;
 
     private ShellSetting setting;
 
@@ -173,9 +221,12 @@ public final class ShellWindowBackgroundManager {
         this.setting = setting;
         this.appliedUrl = url;
         this.active = true;
+        this.sourceImage = image;
+        this.renderedImage = null;
+        this.renderedImageRatio = 0;
+        this.renderedImageSize = 0;
         this.ensureBaseLayer();
         this.ensureImageLayer();
-        this.imageLayer.setImage(image);
         this.imageLayer.setOpacity(Math.max(0, Math.min(100, setting.getWindowBackgroundOpacity())) / 100D);
         this.imageLayer.setVisible(true);
         this.ensureWashLayer();
@@ -201,13 +252,21 @@ public final class ShellWindowBackgroundManager {
                 return null;
             }
             image.errorProperty().addListener((observable, oldValue, newValue) -> {
-                if (Boolean.TRUE.equals(newValue) && this.imageLayer != null && this.imageLayer.getImage() == image) {
-                    Platform.runLater(this::clear);
+                if (Boolean.TRUE.equals(newValue)) {
+                    FXUtil.runLater(() -> {
+                        if (this.sourceImage == image) {
+                            this.clear();
+                        }
+                    });
                 }
             });
             image.progressProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null && newValue.doubleValue() >= 1) {
-                    Platform.runLater(this::resizeLayers);
+                    FXUtil.runLater(() -> {
+                        if (this.sourceImage == image) {
+                            this.resizeLayers();
+                        }
+                    });
                 }
             });
             return image;
@@ -237,16 +296,14 @@ public final class ShellWindowBackgroundManager {
         this.imageLayer.setPickOnBounds(false);
         this.imageLayer.setPreserveRatio(false);
         this.imageLayer.setSmooth(true);
+        this.imageLayer.setCache(true);
+        this.imageLayer.setCacheHint(CacheHint.QUALITY);
         this.root.getChildren().add(Math.min(1, this.root.getChildren().size()), this.imageLayer);
 
-        // 轻微模糊+降饱和，让照片类背景更接近环境色而不是抢内容
-        ColorAdjust colorAdjust = new ColorAdjust();
-        colorAdjust.setSaturation(-0.12);
-        GaussianBlur blur = new GaussianBlur(24);
-        blur.setInput(colorAdjust);
-        this.imageLayer.setEffect(blur);
-
-        this.resizeListener = (observable, oldValue, newValue) -> this.resizeLayers();
+        this.resizeListener = (observable, oldValue, newValue) -> {
+            this.resizeLayers();
+            this.scheduleImageRender();
+        };
         this.root.widthProperty().addListener(this.resizeListener);
         this.root.heightProperty().addListener(this.resizeListener);
         this.resizeLayers();
@@ -286,7 +343,12 @@ public final class ShellWindowBackgroundManager {
         if (this.imageLayer != null) {
             this.imageLayer.setFitWidth(width);
             this.imageLayer.setFitHeight(height);
-            this.resizeImageLayer(width, height);
+            if (this.renderedImage == null) {
+                this.renderBackgroundImage(width, height);
+            } else {
+                this.imageLayer.setImage(this.renderedImage);
+                this.updateImageViewport(this.renderedImage, width, height);
+            }
         }
         if (this.baseLayer != null) {
             this.baseLayer.setWidth(width);
@@ -299,23 +361,104 @@ public final class ShellWindowBackgroundManager {
     }
 
     /**
-     * 按窗口比例裁剪图片，保证铺满窗口且不变形
+     * 在离线图片上执行一次降饱和和模糊，避免运行时对全窗口持续执行 GaussianBlur。
      */
-    private void resizeImageLayer(double width, double height) {
-        Image image = this.imageLayer.getImage();
-        if (image == null || width <= 0 || height <= 0 || image.getWidth() <= 0 || image.getHeight() <= 0) {
+    private void renderBackgroundImage(double width, double height) {
+        if (this.imageLayer == null || this.sourceImage == null || width <= 0 || height <= 0
+                || this.sourceImage.getWidth() <= 0 || this.sourceImage.getHeight() <= 0) {
             return;
         }
         double targetRatio = width / height;
+        if (this.isRenderedImageCurrent(width, height)) {
+            return;
+        }
+        double renderScale = Math.min(1, IMAGE_RENDER_LIMIT / Math.max(width, height));
+        int renderWidth = (int) Math.max(1, Math.round(width * renderScale));
+        int renderHeight = (int) Math.max(1, Math.round(height * renderScale));
+
+        ImageView preview = new ImageView(this.sourceImage);
+        preview.setViewport(this.coverViewport(this.sourceImage, targetRatio));
+        preview.setFitWidth(renderWidth);
+        preview.setFitHeight(renderHeight);
+        preview.setPreserveRatio(false);
+        preview.setSmooth(true);
+
+        ColorAdjust colorAdjust = new ColorAdjust();
+        colorAdjust.setSaturation(-0.12);
+        GaussianBlur blur = new GaussianBlur(Math.max(0.1, IMAGE_BLUR_RADIUS * renderScale));
+        blur.setInput(colorAdjust);
+        preview.setEffect(blur);
+
+        WritableImage rendered = new WritableImage(renderWidth, renderHeight);
+        try {
+            SnapshotParameters parameters = new SnapshotParameters();
+            parameters.setFill(Color.TRANSPARENT);
+            preview.snapshot(parameters, rendered);
+        } catch (RuntimeException ex) {
+            this.imageLayer.setImage(this.sourceImage);
+            this.updateImageViewport(this.sourceImage, width, height);
+            return;
+        }
+        this.renderedImage = rendered;
+        this.renderedImageRatio = targetRatio;
+        this.renderedImageSize = Math.max(width, height);
+        this.imageLayer.setImage(rendered);
+        this.imageLayer.setViewport(null);
+        this.imageLayer.relocate(0, 0);
+    }
+
+    /**
+     * 按窗口比例裁剪图片，保证铺满窗口且不变形。
+     */
+    private void updateImageViewport(Image image, double width, double height) {
+        if (image == null || width <= 0 || height <= 0 || image.getWidth() <= 0 || image.getHeight() <= 0) {
+            this.imageLayer.setViewport(null);
+            return;
+        }
+        this.imageLayer.setViewport(this.coverViewport(image, width / height));
+        this.imageLayer.relocate(0, 0);
+    }
+
+    private Rectangle2D coverViewport(Image image, double targetRatio) {
         double imageRatio = image.getWidth() / image.getHeight();
         if (imageRatio > targetRatio) {
             double viewportWidth = image.getHeight() * targetRatio;
-            this.imageLayer.setViewport(new Rectangle2D((image.getWidth() - viewportWidth) / 2, 0, viewportWidth, image.getHeight()));
-        } else {
-            double viewportHeight = image.getWidth() / targetRatio;
-            this.imageLayer.setViewport(new Rectangle2D(0, (image.getHeight() - viewportHeight) / 2, image.getWidth(), viewportHeight));
+            return new Rectangle2D((image.getWidth() - viewportWidth) / 2, 0, viewportWidth, image.getHeight());
         }
-        this.imageLayer.relocate(0, 0);
+        double viewportHeight = image.getWidth() / targetRatio;
+        return new Rectangle2D(0, (image.getHeight() - viewportHeight) / 2, image.getWidth(), viewportHeight);
+    }
+
+    /**
+     * 延迟重绘背景图，避免拖动窗口时连续执行离线效果。
+     */
+    private void scheduleImageRender() {
+        if (!this.active || this.disposed || this.sourceImage == null) {
+            return;
+        }
+        double width = this.root.getWidth();
+        double height = this.root.getHeight();
+        if (width <= 0 || height <= 0) {
+            return;
+        }
+        if (this.isRenderedImageCurrent(width, height)) {
+            return;
+        }
+        if (this.imageRenderDelay == null) {
+            this.imageRenderDelay = new PauseTransition(IMAGE_RENDER_DELAY);
+            this.imageRenderDelay.setOnFinished(event -> this.renderBackgroundImage(this.root.getWidth(), this.root.getHeight()));
+        }
+        this.imageRenderDelay.playFromStart();
+    }
+
+    private boolean isRenderedImageCurrent(double width, double height) {
+        if (this.renderedImage == null) {
+            return false;
+        }
+        double targetRatio = width / height;
+        double targetSize = Math.max(width, height);
+        return Math.abs(this.renderedImageRatio - targetRatio) <= IMAGE_RATIO_EPSILON
+                && Math.abs(this.renderedImageSize - targetSize) <= Math.max(1, targetSize * 0.05);
     }
 
     /**
@@ -441,17 +584,25 @@ public final class ShellWindowBackgroundManager {
     public void clear() {
         this.active = false;
         this.appliedUrl = null;
-        this.root.getStyleClass().remove(STYLE_CLASS);
+        if (this.imageRenderDelay != null) {
+            this.imageRenderDelay.stop();
+            this.imageRenderDelay = null;
+        }
+        this.root.removeClass(STYLE_CLASS);
         if (this.baseLayer != null) {
-            this.root.getChildren().remove(this.baseLayer);
+            this.root.removeChild(this.baseLayer);
             this.baseLayer = null;
         }
         if (this.imageLayer != null) {
-            this.root.getChildren().remove(this.imageLayer);
+            this.root.removeChild(this.imageLayer);
             this.imageLayer = null;
         }
+        this.sourceImage = null;
+        this.renderedImage = null;
+        this.renderedImageRatio = 0;
+        this.renderedImageSize = 0;
         if (this.washLayer != null) {
-            this.root.getChildren().remove(this.washLayer);
+            this.root.removeChild(this.washLayer);
             this.washLayer = null;
         }
         if (this.resizeListener != null) {
