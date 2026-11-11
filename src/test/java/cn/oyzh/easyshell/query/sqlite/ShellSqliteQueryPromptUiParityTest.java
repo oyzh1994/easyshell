@@ -183,16 +183,16 @@ public class ShellSqliteQueryPromptUiParityTest {
         this.assertPopupListSize(list);
         List<?> rows = new ArrayList<>(list.getItems());
         assertEquals(7, rows.size());
-        this.assertRow(rows.get(0), DatabaseSVGGlyph.class, "main", null, false);
-        this.assertRow(rows.get(1), KeywordsSVGGlyph.class, "SELECT", null, false);
-        this.assertRow(rows.get(2), TableSVGGlyph.class, "prompt_item", "main", true);
-        this.assertRow(rows.get(3), ColumnSVGGlyph.class, "name", "\"main\".\"prompt_item\"", true);
-        this.assertRow(rows.get(4), ViewSVGGlyph.class, "prompt_view", "main", false);
-        this.assertRow(rows.get(5), FunctionSVGGlyph.class, "length", null, true);
-        this.assertRow(rows.get(6), ProcedureSVGGlyph.class, "refresh_cache", null, true);
+        this.assertRow(rows.get(0), DatabaseSVGGlyph.class, "main", null);
+        this.assertRow(rows.get(1), KeywordsSVGGlyph.class, "SELECT", null);
+        this.assertRow(rows.get(2), TableSVGGlyph.class, "prompt_item", "main");
+        this.assertRow(rows.get(3), ColumnSVGGlyph.class, "name", "\"main\".\"prompt_item\"");
+        this.assertRow(rows.get(4), ViewSVGGlyph.class, "prompt_view", "main");
+        this.assertRow(rows.get(5), FunctionSVGGlyph.class, "length", null);
+        this.assertRow(rows.get(6), ProcedureSVGGlyph.class, "refresh_cache", null);
     }
 
-    private void assertRow(Object value, Class<?> glyphType, String content, String extContent, boolean fixedWidth) {
+    private void assertRow(Object value, Class<?> glyphType, String content, String extContent) {
         FXHBox row = (FXHBox) value;
         int expectedChildren = extContent == null ? 1 : 2;
         assertEquals(expectedChildren, row.getChildren().size());
@@ -203,11 +203,7 @@ public class ShellSqliteQueryPromptUiParityTest {
                 glyphType.isInstance(prompt.getGraphic()));
         assertEquals(content, prompt.getText());
         assertEquals(content, prompt.getTipText());
-        if (fixedWidth) {
-            assertEquals(240.0, prompt.getPrefWidth(), 0.001);
-        } else {
-            assertTrue(prompt.getPrefWidth() != 240.0);
-        }
+        assertTrue(prompt.getPrefWidth() > 0);
 
         if (extContent != null) {
             FXLabel ext = (FXLabel) row.getChildren().get(1);

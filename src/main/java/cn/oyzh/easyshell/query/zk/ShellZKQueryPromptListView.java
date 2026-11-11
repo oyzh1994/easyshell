@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.zk;
 
-import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
+import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.ParamSVGGlyph;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -13,7 +13,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellZKQueryPromptListView extends DBQueryPromptListView<ShellZKQueryPromptItem> {
+public class ShellZKQueryPromptListView extends ShellQueryPromptListView<ShellZKQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellZKQueryPromptItem item) {
@@ -24,7 +24,6 @@ public class ShellZKQueryPromptListView extends DBQueryPromptListView<ShellZKQue
         } else if (item.isNodeType()) {
             SVGGlyph svgGlyph = new SVGGlyph("/font/zk/file-text.svg");
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isParamType()) {
             SVGGlyph svgGlyph = new ParamSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);

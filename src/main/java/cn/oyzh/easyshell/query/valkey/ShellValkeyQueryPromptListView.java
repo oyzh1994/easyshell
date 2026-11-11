@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.query.valkey;
 
 import cn.oyzh.easyshell.fx.svg.glyph.valkey.KeysSVGGlyph;
-import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
+import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.ParamSVGGlyph;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -14,7 +14,7 @@ import cn.oyzh.fx.plus.controls.svg.SVGLabel;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellValkeyQueryPromptListView extends DBQueryPromptListView<ShellValkeyQueryPromptItem> {
+public class ShellValkeyQueryPromptListView extends ShellQueryPromptListView<ShellValkeyQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellValkeyQueryPromptItem item) {

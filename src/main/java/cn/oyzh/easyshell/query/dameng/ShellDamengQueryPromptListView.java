@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.dameng;
 
-import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
+import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellDamengQueryPromptListView extends DBQueryPromptListView<ShellDamengQueryPromptItem> {
+public class ShellDamengQueryPromptListView extends ShellQueryPromptListView<ShellDamengQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellDamengQueryPromptItem item) {
@@ -34,23 +34,19 @@ public class ShellDamengQueryPromptListView extends DBQueryPromptListView<ShellD
         } else if (item.isTableType()) {
             SVGGlyph svgGlyph = new TableSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isColumnType()) {
             SVGGlyph svgGlyph = new ColumnSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isViewType()) {
             ViewSVGGlyph svgGlyph = new ViewSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isFunctionType()) {
             FunctionSVGGlyph svgGlyph = new FunctionSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isProcedureType()) {
             ProcedureSVGGlyph svgGlyph = new ProcedureSVGGlyph();
 //            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         }
         if (label != null) {
             label.setTipText(item.getContent());

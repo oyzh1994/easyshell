@@ -1,9 +1,8 @@
 package cn.oyzh.easyshell.query.postgresql;
 
-import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
+import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SchemaSVGGlyph;
@@ -14,13 +13,14 @@ import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import cn.oyzh.fx.plus.controls.svg.SVGLabel;
 import javafx.scene.paint.Color;
 
+
 /**
  * PostgreSQL查询提示列表视图
  *
  * @author oyzh
  * @since 2025-09-01
  */
-public class ShellPostgresqlQueryPromptListView extends DBQueryPromptListView<ShellPostgresqlQueryPromptItem> {
+public class ShellPostgresqlQueryPromptListView extends ShellQueryPromptListView<ShellPostgresqlQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellPostgresqlQueryPromptItem item) {
@@ -34,22 +34,18 @@ public class ShellPostgresqlQueryPromptListView extends DBQueryPromptListView<Sh
         } else if (item.isTableType()) {
             SVGGlyph svgGlyph = new TableSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isColumnType()) {
             SVGGlyph svgGlyph = new ColumnSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isViewType()) {
             ViewSVGGlyph svgGlyph = new ViewSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isFunctionType()) {
             FunctionSVGGlyph svgGlyph = new FunctionSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isProcedureType()) {
             ProcedureSVGGlyph svgGlyph = new ProcedureSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         }
         if (label != null) {
             label.setTipText(item.getContent());

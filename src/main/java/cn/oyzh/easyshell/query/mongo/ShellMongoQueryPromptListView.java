@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.mongo;
 
-import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
+import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2026-06-30
  */
-public class ShellMongoQueryPromptListView extends DBQueryPromptListView<ShellMongoQueryPromptItem> {
+public class ShellMongoQueryPromptListView extends ShellQueryPromptListView<ShellMongoQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellMongoQueryPromptItem item) {
@@ -28,12 +28,10 @@ public class ShellMongoQueryPromptListView extends DBQueryPromptListView<ShellMo
             SVGGlyph svgGlyph = new TableSVGGlyph();
             svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isFunctionType()) {
             FunctionSVGGlyph svgGlyph = new FunctionSVGGlyph();
             svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         }
         if (label != null) {
             label.setTipText(item.getContent());

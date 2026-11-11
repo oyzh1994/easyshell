@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.query.sqlite;
 
-import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
+import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
  * @author oyzh
  * @since 2026-11-02
  */
-public class ShellSqliteQueryPromptListView extends DBQueryPromptListView<ShellSqliteQueryPromptItem> {
+public class ShellSqliteQueryPromptListView extends ShellQueryPromptListView<ShellSqliteQueryPromptItem> {
 
     @Override
     protected SVGLabel initPromptLabel(ShellSqliteQueryPromptItem item) {
@@ -31,21 +31,17 @@ public class ShellSqliteQueryPromptListView extends DBQueryPromptListView<ShellS
         } else if (item.isTableType()) {
             SVGGlyph svgGlyph = new TableSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isColumnType()) {
             SVGGlyph svgGlyph = new ColumnSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isViewType()) {
             label = new SVGLabel(item.getContent(), new ViewSVGGlyph());
         } else if (item.isFunctionType()) {
             SVGGlyph svgGlyph = new FunctionSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         } else if (item.isProcedureType()) {
             SVGGlyph svgGlyph = new ProcedureSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-            label.setRealWidth(240);
         }
         if (label != null) {
             label.setTipText(item.getContent());
