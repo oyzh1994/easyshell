@@ -920,6 +920,25 @@ public class ShellViewFactory {
      * 设置
      */
     public static void setting() {
+        setting(null);
+    }
+
+    /**
+     * 设置，并打开指定设置项
+     *
+     * @param item 设置项
+     */
+    public static void setting(String item) {
+        setting(item, false);
+    }
+
+    /**
+     * 设置，并打开指定设置项
+     *
+     * @param item          设置项
+     * @param updateNotice  是否提示发现新版本
+     */
+    private static void setting(String item, boolean updateNotice) {
         try {
             StageAdapter adapter = StageManager.getStage(SettingController.class);
             if (adapter != null) {
@@ -927,9 +946,22 @@ public class ShellViewFactory {
                     JulLog.info("front setting.");
                 }
                 adapter.front();
+                if (item != null && adapter.controller() instanceof SettingController controller) {
+                    controller.selectSettingItem(item);
+                    if (updateNotice) {
+                        controller.refreshUpdateResult();
+                        controller.showUpdateNotice();
+                    }
+                }
             } else {
                 if (JulLog.isInfoEnabled()) {
                     JulLog.info("show setting.");
+                }
+                if (item != null) {
+                    SettingController.requestSettingItem(item);
+                }
+                if (updateNotice) {
+                    SettingController.requestUpdateNotice();
                 }
                 StageManager.showStage(SettingController.class, StageManager.getPrimaryStage());
             }
@@ -937,6 +969,13 @@ public class ShellViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex, StageManager.getFrontWindow());
         }
+    }
+
+    /**
+     * 打开发布更新设置页
+     */
+    public static void settingUpdate() {
+        setting("update_box", true);
     }
 
     /**

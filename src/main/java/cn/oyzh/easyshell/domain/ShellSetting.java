@@ -180,6 +180,18 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean enableBackgroundImage = false;
 
+    /**
+     * 新版本提醒方式：startup/day/week/month/off
+     */
+    @Column
+    private String versionCheckReminder = "startup";
+
+    /**
+     * 上次自动提醒时间（epoch millis）
+     */
+    @Column
+    private Long versionCheckLastRemindTime;
+
     // /**
     //  * ssh协议，显示文件
     //  */
@@ -521,6 +533,8 @@ public class ShellSetting extends AppSetting {
             this.windowBackgroundImage = setting.windowBackgroundImage;
             this.windowBackgroundOpacity = setting.windowBackgroundOpacity;
             this.enableBackgroundImage = setting.enableBackgroundImage;
+            this.versionCheckReminder = setting.versionCheckReminder;
+            this.versionCheckLastRemindTime = setting.versionCheckLastRemindTime;
             // redis
             this.rowPageLimit = setting.rowPageLimit;
             this.keyLoadLimit = setting.keyLoadLimit;
@@ -1124,6 +1138,42 @@ public class ShellSetting extends AppSetting {
      */
     public void setSyncId(String syncId) {
         this.syncId = syncId;
+    }
+
+    /**
+     * 获取上次自动提醒时间
+     *
+     * @return 上次自动提醒时间（epoch millis）
+     */
+    public Long getVersionCheckLastRemindTime() {
+        return versionCheckLastRemindTime;
+    }
+
+    /**
+     * 设置上次自动提醒时间
+     *
+     * @param versionCheckLastRemindTime 上次自动提醒时间（epoch millis）
+     */
+    public void setVersionCheckLastRemindTime(Long versionCheckLastRemindTime) {
+        this.versionCheckLastRemindTime = versionCheckLastRemindTime;
+    }
+
+    /**
+     * 获取新版本提醒方式
+     *
+     * @return 提醒方式：startup/day/week/month/off
+     */
+    public String getVersionCheckReminder() {
+        return versionCheckReminder;
+    }
+
+    /**
+     * 设置新版本提醒方式
+     *
+     * @param versionCheckReminder 提醒方式：startup/day/week/month/off
+     */
+    public void setVersionCheckReminder(String versionCheckReminder) {
+        this.versionCheckReminder = versionCheckReminder;
     }
 
     /**

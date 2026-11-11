@@ -41,6 +41,7 @@ import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalManager;
 import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalPane;
 import cn.oyzh.easyshell.terminal.zk2.ZKTerminalManager;
 import cn.oyzh.easyshell.terminal.zk2.ZKTerminalPane;
+import cn.oyzh.easyshell.util.ShellVersionChecker;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
@@ -328,6 +329,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
         //     JulLog.warn("showMainView error", ex);
         // }
         ShellViewFactory.shellMain();
+        // 启动时异步检测正式版本更新
+        ShellVersionChecker.checkAsync();
         // 绑定全屏按钮
         if (!OSUtil.isMacOS()) {
             Stage stage = StageManager.getPrimaryStage();

@@ -358,6 +358,106 @@ public class ShellI18nHelper {
         return text("shell.home.environment", environment);
     }
 
+    public static String updateTitle() {
+        return text("shell.update.title");
+    }
+
+    public static String updateMessage(Object latestVersion, Object currentVersion) {
+        return text("shell.update.message", latestVersion, currentVersion);
+    }
+
+    public static String updateGo() {
+        return text("shell.update.go");
+    }
+
+    public static String updateIgnoreDay() {
+        return text("shell.update.ignoreDay");
+    }
+
+    public static String updateIgnoreWeek() {
+        return text("shell.update.ignoreWeek");
+    }
+
+    public static String updateIgnoreMonth() {
+        return text("shell.update.ignoreMonth");
+    }
+
+    public static String updateTab() {
+        return text("shell.update.tab");
+    }
+
+    public static String updateCurrentVersion(Object version) {
+        return text("shell.update.current", version);
+    }
+
+    public static String updateLatestVersion(Object version) {
+        return text("shell.update.latest", version);
+    }
+
+    public static String updateReminderStatus(Object status) {
+        return text("shell.update.reminderStatus", status);
+    }
+
+    public static String updateReminderLabel() {
+        return text("shell.update.reminder");
+    }
+
+    public static String updateStartup() {
+        return text("shell.update.startup");
+    }
+
+    public static String updateNormal() {
+        return text("shell.update.normal");
+    }
+
+    public static String updateForever() {
+        return text("shell.update.forever");
+    }
+
+    public static String updateCheck() {
+        return text("shell.update.check");
+    }
+
+    public static String updateOpen() {
+        return text("shell.update.open");
+    }
+
+    public static String updateChecking() {
+        return text("shell.update.checking");
+    }
+
+    public static String updateUnchecked() {
+        return text("shell.update.unchecked");
+    }
+
+    public static String updateFailed() {
+        return text("shell.update.failed");
+    }
+
+    public static String updateUpToDate() {
+        return text("shell.update.upToDate");
+    }
+
+    public static String updateAvailable() {
+        return text("shell.update.available");
+    }
+
+    public static String updateStatusNormal() {
+        return text("shell.update.statusNormal");
+    }
+
+    public static String updateStatusDays(Object days) {
+        return text("shell.update.statusDays", days);
+    }
+
+    public static String updateStatusForever() {
+        return text("shell.update.statusForever");
+    }
+
+    public static String updateFound() {
+        return text("shell.update.found");
+    }
+
     public static String cloneName(String name) {
         return text("shell.format.cloneName", name);
     }

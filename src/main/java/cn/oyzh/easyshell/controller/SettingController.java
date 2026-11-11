@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.controller;
 
 
 import cn.oyzh.common.date.DateHelper;
+import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.system.OSUtil;
@@ -24,6 +25,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.easyshell.util.ShellVersionChecker;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
@@ -42,6 +44,7 @@ import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.picker.FXColorPicker;
 import cn.oyzh.fx.plus.controls.text.FXSlider;
@@ -56,6 +59,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.opacity.OpacityManager;
 import cn.oyzh.fx.plus.theme.ThemeComboBox;
 import cn.oyzh.fx.plus.theme.ThemeManager;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
@@ -629,6 +633,110 @@ public class SettingController extends StageController {
     @FXML
     private FXLabel x11Status;
 
+    /**
+     * 检查更新-当前版本
+     */
+    @FXML
+    private FXLabel updateCurrentVersion;
+
+    /**
+     * 检查更新-最新版本
+     */
+    @FXML
+    private FXLabel updateLatestVersion;
+
+    /**
+     * 检查更新-提醒设置
+     */
+    @FXML
+    private FXComboBox<String> updateReminder;
+
+    /**
+     * 检查更新按钮
+     */
+    @FXML
+    private FXButton updateCheckButton;
+
+    /**
+     * 前往最新版本按钮
+     */
+    @FXML
+    private FXButton updateOpenButton;
+
+    /**
+     * 检查更新页面是否已完成初始化，避免下拉框初始化时触发保存
+     */
+    private boolean updateReady;
+
+    /**
+     * 检查更新是否正在执行
+     */
+    private boolean updateChecking;
+
+    /**
+     * 提醒设置是否被用户修改
+     */
+    private boolean updateReminderChanged;
+
+    /**
+     * 当前检查结果
+     */
+    private ShellVersionChecker.CheckResult updateResult;
+
+    /**
+     * 窗口首次显示时需要定位的设置项
+     */
+    private static String pendingSettingItem;
+
+    /**
+     * 请求设置窗口打开后定位到指定设置项
+     *
+     * @param item 设置项
+     */
+    public static void requestSettingItem(String item) {
+        pendingSettingItem = item;
+    }
+
+    /**
+     * 定位到指定设置项
+     *
+     * @param item 设置项
+     */
+    public void selectSettingItem(String item) {
+        if (this.settingTreeView != null) {
+            this.settingTreeView.selectItem(item);
+        }
+    }
+
+    /**
+     * 窗口首次显示后是否需要提示发现新版本
+     */
+    private static boolean pendingUpdateNotice;
+
+    /**
+     * 请求设置窗口显示后提示发现新版本
+     */
+    public static void requestUpdateNotice() {
+        pendingUpdateNotice = true;
+    }
+
+    /**
+     * 提示发现新版本
+     */
+    public void showUpdateNotice() {
+        MessageBox.info(ShellI18nHelper.updateFound(), this.getWindow());
+    }
+
+    /**
+     * 使用最近一次检测结果刷新检查更新页面
+     */
+    public void refreshUpdateResult() {
+        ShellVersionChecker.CheckResult cached = ShellVersionChecker.cachedResult();
+        if (cached != null) {
+            this.applyUpdateResult(cached);
+        }
+    }
+
     @Override
     public void onWindowShowing(WindowEvent event) {
         super.onWindowShowing(event);
@@ -888,6 +996,11 @@ public class SettingController extends StageController {
             this.applyX11();
             // 同步
             this.applySync();
+            // 检查更新提醒设置（仅在用户修改后覆盖当前剩余时间）
+            if (this.updateReminderChanged) {
+                this.applyUpdateReminder();
+                this.updateReminderChanged = false;
+            }
             // 更新设置
             if (this.shortcutStore.replace(this.shortcutSetting) && this.settingStore.update(this.setting)) {
                 ShellEventUtil.settingChanged();
@@ -1033,6 +1146,11 @@ public class SettingController extends StageController {
         if (!this.theme.isSystem()) {
             this.accentColorBox.enable();
         }
+        this.updateReminder.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (this.updateReady && newValue != null) {
+                this.updateReminderChanged = true;
+            }
+        });
     }
 
     /**
@@ -1058,8 +1176,110 @@ public class SettingController extends StageController {
         FontManager.apply(this.setting.fontConfig());
     }
 
+    /**
+     * 初始化检查更新页面。
+     */
+    private void initUpdatePage() {
+        Project project = Project.load();
+        this.updateCurrentVersion.setText(ShellI18nHelper.updateCurrentVersion("v" + project.getVersion()));
+        this.updateLatestVersion.setText(ShellI18nHelper.updateLatestVersion(ShellI18nHelper.updateUnchecked()));
+        this.updateOpenButton.setDisable(false);
+        this.updateReminder.getItems().setAll(
+                ShellI18nHelper.updateStartup(),
+                ShellI18nHelper.updateIgnoreDay(),
+                ShellI18nHelper.updateIgnoreWeek(),
+                ShellI18nHelper.updateIgnoreMonth(),
+                ShellI18nHelper.updateForever());
+        this.updateReady = false;
+        String reminder = this.setting.getVersionCheckReminder();
+        if ("day".equals(reminder)) {
+            this.updateReminder.select(1);
+        } else if ("week".equals(reminder)) {
+            this.updateReminder.select(2);
+        } else if ("month".equals(reminder)) {
+            this.updateReminder.select(3);
+        } else if ("off".equals(reminder)) {
+            this.updateReminder.select(4);
+        } else {
+            this.updateReminder.select(0);
+        }
+        this.updateReady = true;
+        this.updateReminderChanged = false;
+
+        ShellVersionChecker.CheckResult cached = ShellVersionChecker.cachedResult();
+        if (cached != null) {
+            this.applyUpdateResult(cached);
+        } else {
+            this.checkUpdate();
+        }
+    }
+
+    /**
+     * 手动检查最新版本。
+     */
+    @FXML
+    private void checkUpdate() {
+        if (this.updateChecking) {
+            return;
+        }
+        this.updateChecking = true;
+        this.updateCheckButton.setDisable(true);
+        this.updateCheckButton.setText(ShellI18nHelper.updateChecking());
+        this.updateLatestVersion.setText(ShellI18nHelper.updateLatestVersion(ShellI18nHelper.updateChecking()));
+        ShellVersionChecker.checkAsync(true, result -> FXUtil.runLater(() -> this.applyUpdateResult(result)));
+    }
+
+    /**
+     * 应用检查结果。
+     *
+     * @param result 检查结果
+     */
+    private void applyUpdateResult(ShellVersionChecker.CheckResult result) {
+        this.updateChecking = false;
+        this.updateResult = result;
+        this.updateCheckButton.setDisable(false);
+        this.updateCheckButton.setText(ShellI18nHelper.updateCheck());
+        this.updateOpenButton.setDisable(false);
+        if (result == null || !result.success() || result.latestVersion() == null) {
+            this.updateLatestVersion.setText(ShellI18nHelper.updateLatestVersion(ShellI18nHelper.updateFailed()));
+            return;
+        }
+        this.updateLatestVersion.setText(ShellI18nHelper.updateLatestVersion("v" + result.latestVersion()));
+    }
+
+    /**
+     * 打开最新版本发布地址。
+     */
+    @FXML
+    private void openLatestRelease() {
+        String url = this.updateResult != null && this.updateResult.success()
+                && StringUtil.isNotBlank(this.updateResult.releaseUrl())
+                ? this.updateResult.releaseUrl()
+                : Project.load().getReleaseUrl();
+        FXUtil.open(url);
+    }
+
+    /**
+     * 将检查更新提醒设置写入配置对象。
+     */
+    private void applyUpdateReminder() {
+        int index = this.updateReminder.getSelectedIndex();
+        if (index < 0) {
+            return;
+        }
+        switch (index) {
+            case 1 -> this.setting.setVersionCheckReminder("day");
+            case 2 -> this.setting.setVersionCheckReminder("week");
+            case 3 -> this.setting.setVersionCheckReminder("month");
+            case 4 -> this.setting.setVersionCheckReminder("off");
+            default -> this.setting.setVersionCheckReminder("startup");
+        }
+    }
+
     @Override
     public void onWindowShown(WindowEvent event) {
+        boolean updateNotice = pendingUpdateNotice;
+        pendingUpdateNotice = false;
         SettingLeftTreeView treeView = this.mainPane.getLeftTreeView();
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.base(), "ssh_box"));
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.terminal(), "term_box"));
@@ -1084,7 +1304,10 @@ public class SettingController extends StageController {
 
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.theme(), "theme_box"));
         treeView.addItem(SettingLeftTreeItemValue.of(I18nHelper.locale(), "locale_box"));
-        treeView.selectItem("ssh_box");
+        treeView.addItem(SettingLeftTreeItemValue.of(ShellI18nHelper.updateTab(), "update_box"));
+        String pendingItem = pendingSettingItem;
+        pendingSettingItem = null;
+        treeView.selectItem(pendingItem == null ? "ssh_box" : pendingItem);
         //// linux隐藏x11
         //if (OSUtil.isLinux()) {
         //    NodeGroupUtil.disappear(this.getStage(), "x11");
@@ -1092,8 +1315,13 @@ public class SettingController extends StageController {
 
         // 更新同步信息
         this.updateSyncInfo();
+        // 初始化检查更新页面并异步检查最新版本
+        this.initUpdatePage();
         super.onWindowShown(event);
         this.stage.hideOnEscape();
+        if (updateNotice) {
+            FXUtil.runLater(this::showUpdateNotice);
+        }
     }
 
     /**

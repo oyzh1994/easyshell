@@ -23,6 +23,7 @@
 <?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
 <?import cn.oyzh.fx.gui.toggle.EnabledToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
@@ -956,6 +957,43 @@
                                 <Insets left="10" top="10"/>
                             </HBox.margin>
                         </UndoSVGGlyph>
+                    </FXHBox>
+                </FXVBox>
+                <FXVBox managedBindVisible="true" visible="false" fx:id="update_box" flexWidth="100%" flexHeight="100%"
+                        groupId="setting_item">
+                    <FXLabel fx:id="updateCurrentVersion" wrapText="true">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <FXLabel fx:id="updateLatestVersion" wrapText="true">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXLabel>
+                    <InfoLabel text="%shell.update.reminder">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXComboBox fx:id="updateReminder" prefHeight="30" flexWidth="100% - 140">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </FXComboBox>
+                    <FXHBox>
+                        <FXButton fx:id="updateOpenButton" text="%shell.update.open"
+                                  onMousePrimaryClicked="#openLatestRelease">
+                            <HBox.margin>
+                                <Insets left="30" top="10"/>
+                            </HBox.margin>
+                        </FXButton>
+                        <FXButton fx:id="updateCheckButton" text="%shell.update.check"
+                                  onMousePrimaryClicked="#checkUpdate">
+                            <HBox.margin>
+                                <Insets left="5" top="10"/>
+                            </HBox.margin>
+                        </FXButton>
                     </FXHBox>
                 </FXVBox>
             </FXVBox>
