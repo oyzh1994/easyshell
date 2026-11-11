@@ -5,7 +5,10 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.fx.plus.controls.pane.FXPane;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
+import cn.oyzh.fx.tty.TtyTermWidget;
 import cn.oyzh.fx.tty.TtyTerminalCanvas;
+import cn.oyzh.fx.tty.ghostty.TerminalTheme;
+import cn.oyzh.fx.tty.ghostty.TerminalView;
 import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -87,6 +90,11 @@ public final class ShellWindowBackgroundManager {
      * 已处理的终端面板
      */
     private final Set<FXTerminalPanel> terminalPanels = Collections.newSetFromMap(new WeakHashMap<>());
+
+    /**
+     * Ghostty 终端原始主题，用于恢复背景
+     */
+    private final Map<TerminalView, TerminalTheme> ghosttyThemes = new WeakHashMap<>();
 
     /**
      * 已监听子节点变化的父节点
@@ -330,6 +338,13 @@ public final class ShellWindowBackgroundManager {
         if (node instanceof TtyTerminalCanvas terminalCanvas) {
             this.applyTerminalBackground(terminalCanvas);
         }
+        if (node instanceof TerminalView terminalView) {
+            this.makeTransparent(terminalView);
+            this.applyGhosttyBackground(terminalView);
+        } else if (node instanceof TtyTermWidget terminalWidget) {
+            // Ghostty 视图嵌在 TtyTermWidget 中；宿主本身也保持透明，避免遮挡背景图
+            this.makeTransparent(terminalWidget);
+        }
         if (node instanceof Parent parent) {
             if (this.observedParents.add(parent)) {
                 parent.getChildrenUnmodifiable().addListener(this.childrenListener);
@@ -375,6 +390,40 @@ public final class ShellWindowBackgroundManager {
         terminalPanel.setBackgroundOpacity(TERMINAL_BACKGROUND_OPACITY);
     }
 
+    /**
+     * 让 Ghostty 终端默认背景透明，以透出主窗口背景图。
+     * <p>
+     * ANSI 颜色、选中背景和光标颜色保持不变；只把默认背景的 alpha 置 0。
+     * 原始主题会被缓存，关闭背景图时恢复。
+     */
+    private void applyGhosttyBackground(TerminalView terminalView) {
+        TerminalTheme current = terminalView.getTheme();
+        TerminalTheme original = this.ghosttyThemes.get(terminalView);
+        // 当前主题是不透明的，说明是新的基础主题（首次应用或外部切换主题），重新记录。
+        if (original == null || current != null && current.background().getOpacity() > 0) {
+            original = current;
+            if (original != null) {
+                this.ghosttyThemes.put(terminalView, original);
+            }
+        }
+        if (original == null) {
+            return;
+        }
+        Color background = original.background();
+        if (background.getOpacity() <= 0) {
+            return;
+        }
+        if (current != null && current.background().getOpacity() <= 0) {
+            return;
+        }
+        Color transparent = new Color(
+                background.getRed(),
+                background.getGreen(),
+                background.getBlue(),
+                0);
+        terminalView.setTheme(original.withBackground(transparent));
+    }
+
     private void scheduleSurfaceRefresh() {
         if (!this.active || this.refreshScheduled || this.disposed) {
             return;
@@ -418,6 +467,10 @@ public final class ShellWindowBackgroundManager {
             terminalPanel.setBackgroundOpacity(1);
         }
         this.terminalPanels.clear();
+        for (Map.Entry<TerminalView, TerminalTheme> entry : this.ghosttyThemes.entrySet()) {
+            entry.getKey().setTheme(entry.getValue());
+        }
+        this.ghosttyThemes.clear();
         for (Parent parent : this.observedParents) {
             parent.getChildrenUnmodifiable().removeListener(this.childrenListener);
         }

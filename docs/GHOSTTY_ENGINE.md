@@ -61,6 +61,14 @@ ZModem 的终端进度通过 `TtyZModemTerminal` 抽象，不再硬编码 JediTe
 
 因此本地、SSH 等连接上的 ZModem 传输进度在 Ghostty 模式下也能正常显示。
 
+## 背景图
+
+启用主窗口背景图时，`ShellWindowBackgroundManager` 会：
+
+- 将 Ghostty 主题的默认背景 alpha 设为 0（保留原始 RGB/主题，关闭背景图时恢复）；
+- 让宿主 `TtyTermWidget` 和 `TerminalView` 的背景透明；
+- 保留 ANSI 背景色、选中背景、光标颜色的不透明度。
+
 ## 已知限制
 
 - 引擎切换只对之后打开的会话生效；已打开会话不会热切换（屏幕状态无法无损迁移）。
