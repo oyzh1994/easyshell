@@ -62,6 +62,13 @@ public class LLMListView extends FXListView<LLMMessage> {
     @Override
     public void changeTheme(ThemeStyle style) {
         super.changeTheme(style);
+        // ListView 不是 Parent，ThemeManager 不会继续遍历虚拟列表中的单元格，
+        // 因此这里手动把新主题应用到当前可见的消息编辑器，重新生成语法高亮颜色。
+        this.lookupAll(".llm-message-text").forEach(node -> {
+            if (node instanceof LLMMessageView view) {
+                view.changeTheme(style);
+            }
+        });
         // 主题变化会影响消息文本字体/行高，需要让虚拟列表重新测量单元格高度
         FXUtil.runLater(this::resetMessageCellSizes);
     }

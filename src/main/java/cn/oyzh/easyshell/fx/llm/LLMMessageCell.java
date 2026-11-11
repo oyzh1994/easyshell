@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.fx.llm;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.plus.theme.ThemeManager;
+import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -35,6 +37,11 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
      * 当前绑定的消息
      */
     private LLMMessage boundMessage;
+
+    /**
+     * 已应用到消息编辑器的主题标识
+     */
+    private String appliedThemeKey;
 
     /**
      * 消息内容变更监听
@@ -93,6 +100,21 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.setGraphic(this.row);
     }
 
+    /**
+     * 将当前主题应用到消息编辑器。
+     */
+    private void applyTheme() {
+        ThemeStyle style = ThemeManager.currentTheme();
+        if (style != null) {
+            String key = style.getName() + "|" + style.getForegroundColorHex()
+                    + "|" + style.getBackgroundColorHex() + "|" + style.getAccentColorHex();
+            if (!key.equals(this.appliedThemeKey)) {
+                this.appliedThemeKey = key;
+                this.text.changeTheme(style);
+            }
+        }
+    }
+
     @Override
     protected void updateItem(LLMMessage item, boolean empty) {
         super.updateItem(item, empty);
@@ -108,6 +130,8 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         }
 
         this.setGraphic(this.row);
+        // 虚拟列表复用单元格时，确保编辑器使用当前主题。
+        this.applyTheme();
         boolean user = item.isUser();
         boolean error = item.isError();
         this.row.setAlignment(user ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
