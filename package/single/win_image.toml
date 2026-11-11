@@ -10,6 +10,7 @@ enable = true
 verbose = true
 vendor = "oyzh"
 java-options = [
+    "--enable-native-access=ALL-UNNAMED",
     "-XX:+UnlockExperimentalVMOptions",
     "-Xss256k",
     "-Xms32m",

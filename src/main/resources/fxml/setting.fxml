@@ -4,6 +4,7 @@
 <?import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView?>
 <?import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox?>
+<?import cn.oyzh.easyshell.fx.term.ShellTermEngineComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox?>
 <?import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox?>
@@ -266,6 +267,16 @@
                             </HBox.margin>
                         </FXButton>
                     </FXHBox>
+                    <InfoLabel text="%shell.term.engine">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ShellTermEngineComboBox prefHeight="30" flexWidth="100% - 140" fx:id="termEngine">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ShellTermEngineComboBox>
                     <InfoLabel text="%base.maxLineCount">
                         <VBox.margin>
                             <Insets left="30" top="10"/>

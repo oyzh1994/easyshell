@@ -9,6 +9,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.domain.AppSetting;
+import cn.oyzh.fx.tty.TtyTerminalEngine;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson2.annotation.JSONField;
@@ -90,6 +91,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private String termType;
+
+    /**
+     * 终端引擎（jediterm / ghostty）
+     */
+    @Column
+    private String terminalEngine;
 
     /**
      * 蜂鸣声-终端
@@ -502,6 +509,7 @@ public class ShellSetting extends AppSetting {
             // 终端
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
+            this.terminalEngine = setting.terminalEngine;
             this.termRefreshRate = setting.termRefreshRate;
             this.termCursorStyle = setting.termCursorStyle;
             this.termCursorBlinks = setting.termCursorBlinks;
@@ -677,6 +685,23 @@ public class ShellSetting extends AppSetting {
      */
     public void setTermType(String termType) {
         this.termType = termType;
+    }
+
+    /**
+     * 获取终端引擎
+     */
+    public String getTerminalEngine() {
+        if (StringUtil.isBlank(this.terminalEngine)) {
+            return TtyTerminalEngine.getDefaultEngine().id();
+        }
+        return this.terminalEngine;
+    }
+
+    /**
+     * 设置终端引擎
+     */
+    public void setTerminalEngine(String terminalEngine) {
+        this.terminalEngine = terminalEngine;
     }
 
     /**

@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.fx.ShellShortcutKeyMapComboBox;
 import cn.oyzh.easyshell.fx.ShellShortcutKeyTableView;
 import cn.oyzh.easyshell.fx.sync.ShellSyncTypeCombobox;
 import cn.oyzh.easyshell.fx.term.ShellTemShellComboBox;
+import cn.oyzh.easyshell.fx.term.ShellTermEngineComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorBlinkComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermCursorStyleComboBox;
 import cn.oyzh.easyshell.fx.term.ShellTermFpsComboBox;
@@ -59,6 +60,8 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.fx.tty.TtyTermWidget;
+import cn.oyzh.fx.tty.TtyTerminalEngine;
 import cn.oyzh.fx.xserver.XAuthorityCookie;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nManager;
@@ -317,6 +320,12 @@ public class SettingController extends StageController {
      */
     @FXML
     private ShellTemShellComboBox termType;
+
+    /**
+     * 终端引擎
+     */
+    @FXML
+    private ShellTermEngineComboBox termEngine;
 
     /**
      * 蜂鸣声-终端
@@ -677,6 +686,7 @@ public class SettingController extends StageController {
             //            this.x11Path.setText(this.setting.x11Path());
             // 终端设置
             this.termType.select(this.setting.getTermType());
+            this.termEngine.selectEngine(TtyTerminalEngine.of(this.setting.getTerminalEngine()));
             this.termBeep.setSelected(this.setting.isTermBeep());
             this.termFps.selectFps(this.setting.getTermRefreshRate());
             this.termMaxLineCount.setValue(this.setting.getTermMaxLineCount());
@@ -811,6 +821,10 @@ public class SettingController extends StageController {
             this.setting.setTermBeep(this.termBeep.isSelected());
             this.setting.setTermRefreshRate(this.termFps.getFps());
             this.setting.setTermType(this.termType.getSelectedItem());
+            this.setting.setTerminalEngine(this.termEngine.getEngine().id());
+            if (System.getProperty(TtyTerminalEngine.PROPERTY) == null) {
+                TtyTermWidget.setDefaultEngine(this.termEngine.getEngine());
+            }
             this.setting.setTermMaxLineCount(this.termMaxLineCount.getIntValue());
             //this.setting.setTermPasteByMiddle(this.termPasteByMiddle.isSelected());
             this.setting.setTermCopyOnSelected(this.termCopyOnSelected.isSelected());

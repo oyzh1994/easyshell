@@ -30,8 +30,8 @@ public class ShellSSHTermWidget extends ShellStreamTermWidget {
         if (termSize == null) {
             return;
         }
-        int width = (int) this.getTerminalPanel().getWidth();
-        int height = (int) this.getTerminalPanel().getHeight();
+        int width = this.getPixelWidth();
+        int height = this.getPixelHeight();
         client.setPtySize(termSize.getColumns(), termSize.getRows(), width, height);
     }
 }

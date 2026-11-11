@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.terminal;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.fx.tty.TtyHyperlinkFilter;
 import cn.oyzh.fx.tty.TtyTermWidget;
+import cn.oyzh.fx.tty.TtyTerminalEngine;
 import com.jediterm.terminal.CursorShape;
 
 /**
@@ -53,6 +54,13 @@ public class ShellTerminalUtil {
      * @param setting 设置
      */
     public static void applySetting(TtyTermWidget widget, ShellSetting setting) {
+        // 终端引擎：全局默认值 + 当前组件显式指定，二者都只影响之后打开的会话。
+        // 启动参数 -Dfx.tty.engine=... 优先级最高，便于排查/强制切换。
+        if (System.getProperty(TtyTerminalEngine.PROPERTY) == null) {
+            TtyTerminalEngine engine = TtyTerminalEngine.of(setting.getTerminalEngine());
+            TtyTermWidget.setDefaultEngine(engine);
+            widget.setEngine(engine);
+        }
         if (setting.isTermParseHyperlink()) {
             widget.addHyperlinkFilter(new TtyHyperlinkFilter());
         }

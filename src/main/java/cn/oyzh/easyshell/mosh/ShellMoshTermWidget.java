@@ -55,14 +55,17 @@ public class ShellMoshTermWidget extends ShellStreamTermWidget {
         if (termSize == null) {
             return;
         }
-        int sizeW = (int) this.getTerminalPanel().getWidth();
-        int sizeH = (int) this.getTerminalPanel().getHeight();
+        int sizeW = this.getPixelWidth();
+        int sizeH = this.getPixelHeight();
         client.setPtySize(termSize.getColumns(), termSize.getRows(), sizeW, sizeH);
     }
 
     @Override
     public void initNode() {
         this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (this.isGhosttyActive()) {
+                return;
+            }
             byte[] seq = ShellMoshHelper.mapKeyToAnsiSequence(event);
             if (seq != null && this.client() != null) {
                 this.client().sendUserInput(seq);

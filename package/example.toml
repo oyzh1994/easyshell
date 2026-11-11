@@ -35,6 +35,7 @@ verbose = true
 vendor = "oyzh"
 # vm参数
 java-options = [
+    "--enable-native-access=ALL-UNNAMED",
     "-XX:+UnlockExperimentalVMOptions",
     "-Xss256k",
     "-Xms32m",
