@@ -278,4 +278,14 @@ public class ShellSettingsProvider extends FXDefaultSettingsProvider implements 
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
         return HyperlinkStyle.HighlightMode.ALWAYS;
     }
+
+    @Override
+    public int getCursorStyle() {
+        return this.setting.getTermCursorStyle();
+    }
+
+    @Override
+    public boolean isParseHyperlink() {
+        return this.setting.isTermParseHyperlink();
+    }
 }

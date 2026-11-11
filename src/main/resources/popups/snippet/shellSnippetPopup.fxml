@@ -9,18 +9,18 @@
 <?import javafx.scene.layout.VBox?>
 <FXHBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.popups.snippet.ShellSnippetPopupController"
-        realHeight="450" realWidth="480">
-    <FXVBox flexHeight="100%" flexWidth="60%">
-        <ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100%" prefHeight="24" tipText="%base.search">
+        realHeight="450" realWidth="500">
+    <FXVBox flexHeight="100%" flexWidth="40%">
+        <ClearableTextField focusTraversable="false" fx:id="kw" flexWidth="100% - 3" prefHeight="24" tipText="%base.search">
 
         </ClearableTextField>
-        <ShellSnippetListView fx:id="listView" flexWidth="100%" flexHeight="100% - 30">
+        <ShellSnippetListView fx:id="listView" flexWidth="100% - 3" flexHeight="100% - 30">
             <FXVBox.margin>
                 <Insets top="5"/>
             </FXVBox.margin>
         </ShellSnippetListView>
     </FXVBox>
-    <ShellDataEditor flexHeight="100%" flexWidth="40%" fx:id="editor" editable="false">
+    <ShellDataEditor flexHeight="100%" flexWidth="60%" fx:id="editor" editable="false">
 
     </ShellDataEditor>
 </FXHBox>

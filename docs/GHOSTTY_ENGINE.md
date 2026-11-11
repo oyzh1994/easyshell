@@ -72,7 +72,13 @@ ZModem 的终端进度通过 `TtyZModemTerminal` 抽象，不再硬编码 JediTe
 ## 已知限制
 
 - 引擎切换只对之后打开的会话生效；已打开会话不会热切换（屏幕状态无法无损迁移）。
-- Ghostty 使用内置快捷键方案；EasyShell 自定义终端快捷键的完整映射仍在 JediTerm 侧。
+- Ghostty 超链接颜色沿用 EasyShell 的 `getHyperlinkColor()`；Ctrl（macOS 为 Command）
+  + 鼠标左键才打开链接，普通点击只做选择。
+- Ghostty 打开会话时会应用终端设置：字体、光标样式/闪烁、最大行数、刷新率、蜂鸣、
+  抗锯齿、超链接解析、选中即复制、Alt 作为 Escape，以及主题和超链接颜色。
+- 切换明暗主题时会重新应用 Ghostty 主题；窗口背景图开启时仍保持终端背景透明。
+- Ghostty 已接入 EasyShell 的终端快捷键与右键菜单（查找、复制、粘贴、全选、清屏、
+  翻页、字体增大/减小/重置），搜索栏结构和 `n of N` 匹配计数也与 JediTerm 对齐。
 - 终端背景图等 JediTerm 专有视觉特性暂未映射到 Ghostty。
 - Ghostty 的 Windows aarch64 库已构建并校验，但尚未在真实 ARM64 Windows 设备上运行验证。
 

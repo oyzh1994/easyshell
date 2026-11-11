@@ -180,7 +180,11 @@ public final class ShellWindowBackgroundManager {
             this.root.getStylesheets().add(STYLE_SHEET);
         }
         this.childrenListener = change -> this.scheduleSurfaceRefresh();
-        this.themeListener = (observable, oldValue, newValue) -> this.updateThemeLayers();
+        this.themeListener = (observable, oldValue, newValue) -> {
+            this.updateThemeLayers();
+            // 主题切换后终端主题会被重新应用，需要再次恢复 Ghostty/终端背景透明。
+            this.scheduleSurfaceRefresh();
+        };
         ThemeManager.currentThemeProperty().addListener(this.themeListener);
     }
 
@@ -548,6 +552,17 @@ public final class ShellWindowBackgroundManager {
             if (original != null) {
                 this.ghosttyThemes.put(terminalView, original);
             }
+        } else if (current != null) {
+            // 当前已经是透明背景，说明主题切换后 RGB 可能变化了；
+            // 用当前透明主题的 RGB 更新缓存的“不透明原始主题”。
+            var background = current.background();
+            original = current.withBackground(new Color(
+                    background.getRed(),
+                    background.getGreen(),
+                    background.getBlue(),
+                    1));
+            this.ghosttyThemes.put(terminalView, original);
+            return;
         }
         if (original == null) {
             return;
@@ -564,6 +579,7 @@ public final class ShellWindowBackgroundManager {
                 background.getGreen(),
                 background.getBlue(),
                 0);
+        terminalView.setBackgroundTransparent(true);
         terminalView.setTheme(original.withBackground(transparent));
     }
 
@@ -619,6 +635,7 @@ public final class ShellWindowBackgroundManager {
         }
         this.terminalPanels.clear();
         for (Map.Entry<TerminalView, TerminalTheme> entry : this.ghosttyThemes.entrySet()) {
+            entry.getKey().setBackgroundTransparent(false);
             entry.getKey().setTheme(entry.getValue());
         }
         this.ghosttyThemes.clear();
