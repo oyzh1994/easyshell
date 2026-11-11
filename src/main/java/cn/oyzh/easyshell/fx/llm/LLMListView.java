@@ -39,6 +39,15 @@ public class LLMListView extends FXListView<LLMMessage> {
         placeholder.getStyleClass().add("llm-placeholder");
         this.setPlaceholder(placeholder);
         this.addEventFilter(ScrollEvent.SCROLL, this::onUserScroll);
+        // 消息列表只用于展示，选中后立即清除选择，避免单元格背景覆盖聊天背景。
+        this.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.intValue() >= 0) {
+                FXUtil.runLater(() -> {
+                    this.getSelectionModel().clearSelection();
+                    this.getFocusModel().focus(-1);
+                });
+            }
+        });
         this.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if (newScene != null) {
                 this.scheduleMessageLayoutRefresh();
