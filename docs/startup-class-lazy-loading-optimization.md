@@ -191,25 +191,25 @@ L1 数据库条件初始化（已完成）
 
 ## 6. 中等收益优化项
 
-### [ ] M1. 延迟文件扩展名图标
+### [x] M1. 延迟文件扩展名图标
 
-- 现状：首次调用 `IconUtil` 时，大 switch 使 JVM 验证并加载 `151` 个 `File*SVGGlyph` 类，但运行时只有极少数图标实例。
-- 证据：`1.196-1.213s` 批量加载文件图标类；类直方图中只观察到 3 个实际图标实例。
-- 代码位置：`fx-plus/src/main/java/cn/oyzh/fx/plus/util/IconUtil.java:292`
-- 当前约加载：`151` 类
-- 预计收益：`0.75-1.5 MB`
-- 首次使用触发点：本地、SFTP、FTP、SMB、S3 等文件列表第一次渲染图标。
-- 候选方案：把扩展名到图标构造器的分派改为小型延迟工厂；避免在同一个巨大方法体中直接 `new` 全部图标类型。
-- 风险等级：中，属于 fx-base 公共能力，影响范围比 EasyShell 单点改动大。
-- 验证范围：常见文档、图片、音视频、压缩包、源码、无扩展名、隐藏文件、目录和链接图标；至少覆盖本地文件列表和一种远程文件列表。
-- 回退方式：恢复 `IconUtil` 原分派逻辑。
-- 状态：待处理
+- 现状：首次加载 `IconUtil` 时，JVM 验证其方法体并带入 `149` 个启动期不会被业务调用的 `File*SVGGlyph` 类；`FolderSVGGlyph`、`FileSVGGlyph` 是启动期真实使用，不属于可延迟范围。
+- 证据：JFR 冷启动录制的 151 个文件图标类加载事件中，2 个来自连接树/Tab 实际使用，其余 149 个紧跟在 `IconUtil` 首次加载后；调用栈中没有 `getSVGIcon`/`getSystemIcon`，确认是类链接/验证触发，不是兜底方法执行。
+- 代码位置：`fx-plus/src/main/java/cn/oyzh/fx/plus/util/FileIconUtil.java`（文件图标）和 `IconUtil.java`（仅应用图标）
+- 当前约加载：启动期仅 2 个真实使用的文件图标类
+- 预计收益：约 `149` 类，Metaspace 约 `0.75-1.5 MB`
+- 首次使用触发点：首次加载 `FileIconUtil`；当前启动主界面不加载 `IconTableCell`，因此至少会推迟到打开文件列表、首次构建文件单元格时。
+- 候选方案：把 `getSystemIcon`、`getSVGIcon`、`iconToFxImage`、`SYSTEM_ICON_CACHE` 及全部文件图标 import 从 `IconUtil` 拆到 `FileIconUtil`；`IconTableCell` 的兜底改为调用 `FileIconUtil`。
+- 风险等级：中低，属于 fx-base 公共能力调整；不保留会反向引用 `FileIconUtil` 的兼容转发，避免把大方法重新带回启动路径。
+- 验证范围：fx-plus 编译/安装成功，EasyShell 重新打包冷启动成功；JFR 确认 `FileIconUtil` 启动期未加载。
+- 回退方式：恢复 `IconUtil` 原文件图标分派逻辑，并还原 `IconTableCell` 调用。
+- 状态：已完成
 - 实施记录：
-  - 改动前类数：
-  - 改动后类数：
-  - 内存变化：
-  - 功能验证：
-  - 结论：待定
+  - 改动前类数：启动期批量加载 151 个文件图标类，其中 149 个无业务调用
+  - 改动后类数：启动期仅加载 `FolderSVGGlyph`、`FileSVGGlyph` 2 个；`FileIconUtil` 加载次数为 0
+  - 内存变化：JFR `jdk.ClassLoad` 事件从 `5528` 降至 `5376`（-152）；未单独测量稳定的 RSS 差值
+  - 功能验证：`fx-plus` 编译、`install` 成功；EasyShell 重新打包并通过冷启动 JFR 验证
+  - 结论：保留。启动期文件图标类加载达到预期，且不引入反射或运行时工厂抽象。
 
 ### [ ] M2. 延迟内置主题实例
 
