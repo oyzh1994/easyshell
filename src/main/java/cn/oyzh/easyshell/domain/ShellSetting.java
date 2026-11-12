@@ -14,8 +14,6 @@ import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.Table;
 import com.alibaba.fastjson2.annotation.JSONField;
 
-import java.util.List;
-
 /**
  * shell设置
  *
@@ -49,6 +47,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Boolean hiddenLeftAfterConnected;
+
+    /**
+     * 主页布局
+     */
+    @Column
+    private Integer layout;
 
     /**
      * 显示标签序号
@@ -392,6 +396,41 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 是否布局1
+     *
+     * @return 结果
+     */
+    public boolean isLayout1() {
+        return this.layout == null || this.layout == 1;
+    }
+
+    /**
+     * 是否布局2
+     *
+     * @return 结果
+     */
+    public boolean isLayout2() {
+        return this.layout != null && this.layout == 2;
+    }
+
+    /**
+     * 获取布局
+     *
+     */
+    public int getLayout() {
+        return this.layout == null ? 1 : this.layout;
+    }
+
+    /**
+     * 设置布局
+     *
+     * @param layout 布局
+     */
+    public void setLayout(int layout) {
+        this.layout = layout;
+    }
+
+    /**
      * 是否显示标签序号
      */
     public boolean isShowTabIndex() {
@@ -504,14 +543,15 @@ public class ShellSetting extends AppSetting {
         if (o instanceof ShellSetting setting) {
             this.x11Path = setting.x11Path;
             //            this.efficiencyMode = setting.efficiencyMode;
+            this.layout = setting.layout;
             this.graphicMode = setting.graphicMode;
+            this.showTabIndex = setting.showTabIndex;
+            this.syncShortcut = setting.syncShortcut;
             this.connectShowType = setting.connectShowType;
             this.enableShortcutKey = setting.enableShortcutKey;
             this.shortcutKeyConfig = setting.shortcutKeyConfig;
-            this.syncShortcut = setting.syncShortcut;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
-            this.showTabIndex = setting.showTabIndex;
             // 大模型
             this.llmStreaming = setting.llmStreaming;
             this.llmProviderUid = setting.llmProviderUid;
@@ -657,32 +697,44 @@ public class ShellSetting extends AppSetting {
         this.termBackgroundImage = termBackgroundImage;
     }
 
-    /** 获取主窗口背景图片 */
+    /**
+     * 获取主窗口背景图片
+     */
     public String getWindowBackgroundImage() {
         return this.windowBackgroundImage;
     }
 
-    /** 设置主窗口背景图片 */
+    /**
+     * 设置主窗口背景图片
+     */
     public void setWindowBackgroundImage(String windowBackgroundImage) {
         this.windowBackgroundImage = windowBackgroundImage;
     }
 
-    /** 获取主窗口背景图片透明度 */
+    /**
+     * 获取主窗口背景图片透明度
+     */
     public int getWindowBackgroundOpacity() {
         return this.windowBackgroundOpacity == null ? 75 : this.windowBackgroundOpacity;
     }
 
-    /** 设置主窗口背景图片透明度 */
+    /**
+     * 设置主窗口背景图片透明度
+     */
     public void setWindowBackgroundOpacity(int windowBackgroundOpacity) {
         this.windowBackgroundOpacity = windowBackgroundOpacity;
     }
 
-    /** 是否启用背景图 */
+    /**
+     * 是否启用背景图
+     */
     public boolean isEnableBackgroundImage() {
         return this.enableBackgroundImage != null && this.enableBackgroundImage;
     }
 
-    /** 设置是否启用背景图 */
+    /**
+     * 设置是否启用背景图
+     */
     public void setEnableBackgroundImage(boolean enableBackgroundImage) {
         this.enableBackgroundImage = enableBackgroundImage;
     }

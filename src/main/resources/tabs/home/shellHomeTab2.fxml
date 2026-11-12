@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.WelcomeTitle?>
+<?import cn.oyzh.easyshell.trees.connect.ShellConnectTreeView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddGroupSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ChangelogSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ImportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.PositioningSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SplitViewSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.label.SortSVGLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.home.ShellHomeTab2Controller" flexWidth="100%" flexHeight="100%">
+    <WelcomeTitle>
+        <FXVBox.margin>
+            <Insets left="10" top="10"/>
+        </FXVBox.margin>
+    </WelcomeTitle>
+    <FXHBox realHeight="30" flexWidth="100%">
+        <ClearableTextField prefWidth="300" realHeight="24" tipText="%base.searchKWTip" fx:id="filter">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ClearableTextField>
+        <AddSVGGlyph tipText="%base.addConnect" onMousePrimaryClicked="#addConnect">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <AddGroupSVGGlyph tipText="%base.compound.add.folder1" onMousePrimaryClicked="#addGroup">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </AddGroupSVGGlyph>
+        <SplitViewSVGGlyph tipText="%base.splitView" onMousePrimaryClicked="#splitView">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </SplitViewSVGGlyph>
+        <TerminalSVGGlyph tipText="%base.localTerminal" onMousePrimaryClicked="#openTerminal">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </TerminalSVGGlyph>
+        <ImportSVGGlyph onMousePrimaryClicked="#dataImport" tipText="%base.importData">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ImportSVGGlyph>
+        <ExportSVGGlyph onMousePrimaryClicked="#dataExport" tipText="%base.exportData">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ExportSVGGlyph>
+        <SortSVGLabel fx:id="sortPane" onMousePrimaryClicked="#sortTree">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </SortSVGLabel>
+        <PositioningSVGGlyph tipText="%base.position" onMousePrimaryClicked="#positionNode">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </PositioningSVGGlyph>
+        <ChangelogSVGGlyph tipText="%base.changelog" onMousePrimaryClicked="#changelog">
+            <HBox.margin>
+                <Insets left="5" top="10"/>
+            </HBox.margin>
+        </ChangelogSVGGlyph>
+    </FXHBox>
+    <ShellConnectTreeView fx:id="tree" flexHeight="100% - 105" flexWidth="100% - 20">
+        <FXVBox.margin>
+            <Insets left="10" top="5"/>
+        </FXVBox.margin>
+    </ShellConnectTreeView>
+</FXVBox>

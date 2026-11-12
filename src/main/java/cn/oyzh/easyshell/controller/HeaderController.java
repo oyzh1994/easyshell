@@ -305,5 +305,10 @@ public class HeaderController extends StageController {
             menuBar.setUseSystemMenuBar(true);
             this.root.setRight(menuBar);
         }
+        // 全屏模式
+        if(this.setting.isLayout2()){
+            this.layoutPane.setVisible(false);
+            this.layoutPane.setManaged(false);
+        }
     }
 }

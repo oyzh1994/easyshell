@@ -25,8 +25,8 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.sync.ShellSyncManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.easyshell.util.ShellVersionChecker;
 import cn.oyzh.easyshell.util.ShellProcessUtil;
+import cn.oyzh.easyshell.util.ShellVersionChecker;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.fx.gui.font.FontFamilyTextField;
 import cn.oyzh.fx.gui.setting.SettingLeftTreeItem;
@@ -312,6 +312,18 @@ public class SettingController extends StageController {
      */
     @FXML
     private FXToggleSwitch hiddenLeftAfterConnected;
+
+    /**
+     * 主页布局-分屏
+     */
+    @FXML
+    private RadioButton homeLayoutSplit;
+
+    /**
+     * 主页布局-全屏
+     */
+    @FXML
+    private RadioButton homeLayoutFull;
 
     /**
      * 显示标签序号
@@ -811,6 +823,8 @@ public class SettingController extends StageController {
             //        this.efficiencyMode.setSelected(this.setting.isEfficiencyMode());
             // 连接后收起左侧
             this.hiddenLeftAfterConnected.setSelected(this.setting.isHiddenLeftAfterConnected());
+            this.homeLayoutFull.setSelected(this.setting.isLayout2());
+            this.homeLayoutSplit.setSelected(this.setting.isLayout1());
             this.showTabIndex.setSelected(this.setting.isShowTabIndex());
             // redis
             this.keyLoadLimit.setValue(this.setting.getKeyLoadLimit());
@@ -976,10 +990,11 @@ public class SettingController extends StageController {
             this.setting.setExitMode(exitMode);
             // 其他设置
             //            this.setting.setEfficiencyMode(this.efficiencyMode.isSelected());
+            this.setting.setShowTabIndex(this.showTabIndex.isSelected());
+            this.setting.setLayout(this.homeLayoutFull.isSelected() ? 2 : 1);
             this.shortcutSetting.setEnabled(this.enableShortcutKey.isSelected());
             this.shortcutSetting.setKeyMapsJson(this.shortcutKeyManager.toJson());
             this.setting.setHiddenLeftAfterConnected(this.hiddenLeftAfterConnected.isSelected());
-            this.setting.setShowTabIndex(this.showTabIndex.isSelected());
             // redis
             int keyLoadLimit = this.keyLoadLimit.getIntValue();
             this.setting.setKeyLoadLimit(keyLoadLimit);
@@ -1039,6 +1054,10 @@ public class SettingController extends StageController {
         }
         int graphicMode = this.graphicMode.getSelectedIndex();
         if (!Objects.equals(this.setting.getGraphicMode(), graphicMode)) {
+            return I18nHelper.restartTip1();
+        }
+        int layout = this.homeLayoutFull.isSelected() ? 2 : 1;
+        if (this.setting.getLayout() != layout) {
             return I18nHelper.restartTip1();
         }
         return "";

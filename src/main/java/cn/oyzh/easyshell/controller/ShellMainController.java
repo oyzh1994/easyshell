@@ -3,8 +3,10 @@ package cn.oyzh.easyshell.controller;
 import cn.oyzh.easyshell.controller.llm.ChatController;
 import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.llm.ShellChatEvent;
 import cn.oyzh.easyshell.event.tree.ShellTreeItemChangedEvent;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.trees.connect.ShellConnectTreeItem;
 import cn.oyzh.event.EventSubscribe;
@@ -69,6 +71,11 @@ public class ShellMainController extends ParentStageController {
     @FXML
     private ChatController chatController;
 
+    /**
+     * 设置对象
+     */
+    private final ShellSetting setting = ShellSettingStore.SETTING;
+
     public ShellTabPane getTabPane() {
         return tabPane;
     }
@@ -107,6 +114,10 @@ public class ShellMainController extends ParentStageController {
      */
     @EventSubscribe
     private void layout2(Layout2Event event) {
+        // 全屏模式忽略
+        if(this.setting.isLayout2()){
+            return;
+        }
         this.connect.display();
         if (!this.root.isShowDivider0()) {
             this.root.setShowDivider0(true);
@@ -123,6 +134,10 @@ public class ShellMainController extends ParentStageController {
      */
     @EventSubscribe
     private void layout1(Layout1Event event) {
+        // 全屏模式忽略
+        if(this.setting.isLayout2()){
+            return;
+        }
         this.connect.disappear();
         if (this.root.isShowDivider0()) {
             this.root.recordPosition0();
@@ -190,10 +205,21 @@ public class ShellMainController extends ParentStageController {
     public void onStageInitialize(StageAdapter stage) {
         super.onStageInitialize(stage);
         this.hideChat();
+        // 全屏模式
+        if (this.setting.isLayout2()) {
+            this.connect.setVisible(false);
+            this.connect.setManaged(false);
+            this.root.setShowDivider0(false);
+            this.root.setDividerPositions(0, 1);
+        }
     }
 
     @Override
     public List<SubStageController> getSubControllers() {
+        // 全屏模式
+        if (this.setting.isLayout2()) {
+            return List.of(this.chatController);
+        }
         return List.of(this.connectController, this.chatController);
     }
 }

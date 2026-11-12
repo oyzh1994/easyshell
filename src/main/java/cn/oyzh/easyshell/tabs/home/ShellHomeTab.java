@@ -1,5 +1,6 @@
  package cn.oyzh.easyshell.tabs.home;
 
+ import cn.oyzh.easyshell.store.ShellSettingStore;
  import cn.oyzh.fx.gui.svg.glyph.HomeSVGGlyph;
  import cn.oyzh.fx.gui.tabs.RichTab;
  import cn.oyzh.i18n.I18nHelper;
@@ -23,6 +24,10 @@
 
      @Override
      protected String url() {
+         // 全屏模式
+         if (ShellSettingStore.SETTING.isLayout2()) {
+             return "/tabs/home/shellHomeTab2.fxml";
+         }
          return "/tabs/home/shellHomeTab.fxml";
      }
 

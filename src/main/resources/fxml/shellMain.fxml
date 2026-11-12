@@ -6,8 +6,7 @@
              fx:controller="cn.oyzh.easyshell.controller.ShellMainController"
              flexWidth="100%" flexHeight="100% - 30" dividerPositions="0.25,1" fx:id="root">
     <fx:include fx:id="connect" source="main/connect.fxml"/>
-    <ShellTabPane fx:id="tabPane" flexHeight="100%"
-                  tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER">
+    <ShellTabPane fx:id="tabPane" flexHeight="100%" tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER">
         <ShellHomeTab/>
     </ShellTabPane>
     <fx:include fx:id="chat" source="llm/chat.fxml"/>
