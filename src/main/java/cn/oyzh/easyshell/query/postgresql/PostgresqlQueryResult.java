@@ -127,6 +127,23 @@ public abstract class PostgresqlQueryResult extends DBQueryResult {
     }
 
     /**
+     * 回填字段所属模式
+     * PostgreSQL的ResultSet元数据通常不返回schema，使用执行SQL时的当前模式补充
+     *
+     * @param schema 模式名称
+     */
+    public void fillSchema(String schema) {
+        if (StringUtil.isBlank(schema) || this.columns == null) {
+            return;
+        }
+        for (PostgresqlColumn column : this.columns) {
+            if (StringUtil.isBlank(column.getSchema())) {
+                column.setSchema(schema);
+            }
+        }
+    }
+
+    /**
      * 获取行列表
      *
      * @return 行列表

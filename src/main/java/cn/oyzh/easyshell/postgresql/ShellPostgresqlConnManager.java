@@ -22,6 +22,22 @@ import java.util.Properties;
 public class ShellPostgresqlConnManager extends DBConnManager {
 
     @Override
+    public Connection connection(String schema) throws Exception {
+        if (StringUtil.isBlank(schema)) {
+            return super.connection();
+        }
+        Connection connection = super.getConnection(schema);
+        if (!this.isValid(connection)) {
+            connection = this.initConnection(null, this.config.getUser(), this.config.getPassword());
+            connection.setSchema(schema);
+            this.addConnection(schema, connection);
+            JulLog.info("initConnection for schema {}", schema);
+        }
+        connection.setAutoCommit(true);
+        return connection;
+    }
+
+    @Override
     public Connection initConnection(String dbName, String user, String password) throws ClassNotFoundException, SQLException {
         // 加载JDBC驱动
         Class.forName("org.postgresql.Driver");

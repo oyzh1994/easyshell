@@ -413,7 +413,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             this.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, DBDialect.POSTGRESQL);
             List<String> list = parser.parseSql();
-            connection = this.getConnManager().connection();
+            connection = this.getConnManager().connection(schema);
             autoCommit = connection.getAutoCommit();
             // PostgreSQL 的 DDL/DML 都是事务性的。查询页按 psql 的自动提交语义逐条执行，
             // 避免关闭连接时回滚未提交的 DDL/DML；用户显式写 BEGIN/COMMIT/ROLLBACK 时仍按事务执行。
@@ -429,6 +429,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         ResultSet resultSet = statement.getResultSet();
                         result.setFullColumn(parser.isFullColumn(sql));
                         result.parseResult(resultSet, connection, !parser.isSelect(sql));
+                        result.fillSchema(schema);
                         IOUtil.close(resultSet);
                         result.setSuccess(true);
                     } else {
@@ -4051,7 +4052,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             this.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, DBDialect.POSTGRESQL);
             List<String> list = parser.parseSql();
-            connection = this.getConnManager().connection();
+            connection = this.getConnManager().connection(schema);
             Statement statement = connection.createStatement();
             for (String execSql : list) {
                 PostgresqlExplainResult result = new PostgresqlExplainResult();
@@ -4061,6 +4062,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                     long startTime = System.nanoTime();
                     ResultSet resultSet = statement.executeQuery(execSql);
                     result.parseResult(resultSet, connection);
+                    result.fillSchema(schema);
                     result.setUsed(System.nanoTime() - startTime);
                     IOUtil.close(resultSet);
                     result.setSuccess(true);
@@ -4095,7 +4097,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             this.printSql(sql);
             DBSqlParser parser = DBSqlParser.getParser(sql, DBDialect.POSTGRESQL);
             String execSql = parser.parseSingleSql();
-            connection = this.getConnManager().connection();
+            connection = this.getConnManager().connection(schema);
             autoCommit = connection.getAutoCommit();
             // 单条语句按自动提交语义执行，兼容 CREATE DATABASE / VACUUM 等不能运行在事务块中的语句
             connection.setAutoCommit(true);
@@ -4106,6 +4108,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 ResultSet resultSet = statement.getResultSet();
                 result.setFullColumn(parser.isFullColumn(sql));
                 result.parseResult(resultSet, connection, !parser.isSelect(sql));
+                result.fillSchema(schema);
                 IOUtil.close(resultSet);
                 result.setSuccess(true);
             } else {
@@ -4143,7 +4146,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
         Statement statement = null;
         try {
             this.printSql(sql);
-            connection = this.getConnManager().connection();
+            connection = this.getConnManager().connection(schema);
             autoCommit = connection.getAutoCommit();
             // 自动提交，兼容 CREATE DATABASE / VACUUM 等不能运行在事务块中的语句
             connection.setAutoCommit(true);
