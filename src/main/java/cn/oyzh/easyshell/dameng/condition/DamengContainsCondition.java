@@ -2,8 +2,6 @@ package cn.oyzh.easyshell.dameng.condition;
 
 import cn.oyzh.i18n.I18nHelper;
 
-import cn.oyzh.easyshell.dameng.condition.DamengCondition;
-
 /**
  * 包含条件
  *
@@ -24,11 +22,15 @@ public class DamengContainsCondition extends DamengCondition {
         super(I18nHelper.contains(), "LIKE");
     }
 
+    public DamengContainsCondition(String name, String value) {
+        super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {
-            return super.wrapCondition("%" + condition + "%");
+            return super.wrapValue("%" + condition + "%");
         }
-        return super.wrapCondition(condition);
+        return super.wrapValue(condition);
     }
 }

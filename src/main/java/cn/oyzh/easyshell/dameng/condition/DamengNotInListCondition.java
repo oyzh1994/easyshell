@@ -11,7 +11,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengNotInListCondition extends DamengCondition {
+public class DamengNotInListCondition extends DamengInListCondition {
 
     /**
      * 单例实例
@@ -23,13 +23,5 @@ public class DamengNotInListCondition extends DamengCondition {
      */
     public DamengNotInListCondition() {
         super(I18nHelper.notInList(), "NOT IN");
-    }
-
-    @Override
-    public String wrapCondition(Object condition) {
-        if (condition != null) {
-            return this.getValue() + " (" + DBUtil.wrapData(condition, DBDialect.DAMENG) + ")";
-        }
-        return super.wrapCondition(condition);
     }
 }

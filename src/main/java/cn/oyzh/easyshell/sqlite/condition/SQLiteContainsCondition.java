@@ -16,8 +16,12 @@ public class SQLiteContainsCondition extends SQLiteCondition {
         super(I18nHelper.contains(), "LIKE");
     }
 
+    public SQLiteContainsCondition(String name, String value) {
+        super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
-        return condition == null ? null : super.wrapCondition("%" + condition + "%");
+        return condition == null ? null : super.wrapValue("%" + condition + "%");
     }
 }

@@ -22,11 +22,15 @@ public class DamengStartWithCondition extends DamengCondition {
         super(I18nHelper.startWith(), "LIKE");
     }
 
+    public DamengStartWithCondition(String name, String value) {
+        super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {
-            return super.wrapCondition("%" + condition);
+            return super.wrapValue("%" + condition);
         }
-        return super.wrapCondition(condition);
+        return super.wrapValue(condition);
     }
 }

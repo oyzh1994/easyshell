@@ -10,7 +10,7 @@ import cn.oyzh.easyshell.dameng.condition.DamengCondition;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengNotContainsCondition extends DamengCondition {
+public class DamengNotContainsCondition extends DamengContainsCondition {
 
     /**
      * 单例实例
@@ -22,13 +22,5 @@ public class DamengNotContainsCondition extends DamengCondition {
      */
     public DamengNotContainsCondition() {
         super(I18nHelper.notContains(), "NOT LIKE");
-    }
-
-    @Override
-    public String wrapCondition(Object condition) {
-        if (condition != null) {
-            return super.wrapCondition("%" + condition + "%");
-        }
-        return super.wrapCondition(condition);
     }
 }

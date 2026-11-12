@@ -37,8 +37,8 @@ public class PostgresqlEndWithCondition extends PostgresqlCondition {
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {
-            return super.wrapCondition("%" + condition);
+            return super.wrapValue("%" + condition);
         }
-        return super.wrapCondition(condition);
+        return super.wrapValue(condition);
     }
 }

@@ -15,7 +15,7 @@ import java.util.Collection;
  * @author oyzh
  * @since 2026-09-02
  */
-public class DamengNotBetweenCondition extends DamengCondition {
+public class DamengNotBetweenCondition extends DamengBetweenCondition {
 
     /**
      * 单例实例
@@ -29,14 +29,4 @@ public class DamengNotBetweenCondition extends DamengCondition {
         super(I18nHelper.notBetween(), "NOT BETWEEN");
     }
 
-    @Override
-    public String wrapCondition(Object condition) {
-        if (condition instanceof Object[] arr) {
-            return this.getValue() + " " + DBUtil.wrapData(arr[0], DBDialect.DAMENG) + " AND " + DBUtil.wrapData(arr[1], DBDialect.DAMENG);
-        }
-        if (condition instanceof Collection coll) {
-            return this.getValue() + " " + DBUtil.wrapData(CollectionUtil.get(coll, 0), DBDialect.DAMENG) + " AND " + DBUtil.wrapData(CollectionUtil.get(coll, 1), DBDialect.DAMENG);
-        }
-        return super.wrapCondition(condition);
-    }
 }

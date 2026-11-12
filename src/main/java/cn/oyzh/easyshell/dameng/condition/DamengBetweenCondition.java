@@ -2,12 +2,6 @@ package cn.oyzh.easyshell.dameng.condition;
 
 import cn.oyzh.i18n.I18nHelper;
 
-import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.util.DBUtil;
-
-import java.util.Collection;
-
 /**
  * 介于条件
  *
@@ -26,6 +20,10 @@ public class DamengBetweenCondition extends DamengCondition {
      */
     public DamengBetweenCondition() {
         super(I18nHelper.between(), "BETWEEN");
+    }
+
+    public DamengBetweenCondition(String name, String value) {
+        super(name, value);
     }
 
     @Override

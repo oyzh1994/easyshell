@@ -2,9 +2,6 @@ package cn.oyzh.easyshell.dameng.condition;
 
 import cn.oyzh.i18n.I18nHelper;
 
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.util.DBUtil;
-
 /**
  * 在列表条件
  *
@@ -23,6 +20,10 @@ public class DamengInListCondition extends DamengCondition {
      */
     public DamengInListCondition() {
         super(I18nHelper.inList(), "IN");
+    }
+
+    public DamengInListCondition(String name, String value) {
+        super(name, value);
     }
 
     @Override

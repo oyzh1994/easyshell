@@ -6,7 +6,9 @@ import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,8 +35,10 @@ public class MongoInListCondition extends MongoCondition {
         if (condition instanceof String str) {
             String[] arr = str.split(",");
             list = Arrays.asList(arr);
-        } else if (condition instanceof List<?> l) {
-            list = l;
+        } else if (condition instanceof Object[] arr) {
+            list = Arrays.asList(arr);
+        } else if (condition instanceof Collection l) {
+            list = new ArrayList<>(l);
         }
         if (list == null) {
             return null;
