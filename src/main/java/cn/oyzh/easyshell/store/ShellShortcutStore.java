@@ -24,10 +24,10 @@ public class ShellShortcutStore extends JdbcStandardStore<ShellShortcut> {
         ShellShortcut shortcut = super.selectOne(ShellShortcut.DEFAULT_ID);
         if (shortcut == null) {
             shortcut = new ShellShortcut();
-            ShellSetting setting = ShellSettingStore.SETTING;
-            shortcut.setEnabled(setting.isEnableShortcutKey());
-            shortcut.setKeyMapsJson(setting.getShortcutKeyConfig());
-            this.insert(shortcut);
+//            ShellSetting setting = ShellSettingStore.SETTING;
+//            shortcut.setEnabled(setting.isEnableShortcutKey());
+//            shortcut.setKeyMapsJson(setting.getShortcutKeyConfig());
+//            this.insert(shortcut);
         }
         return shortcut;
     }
