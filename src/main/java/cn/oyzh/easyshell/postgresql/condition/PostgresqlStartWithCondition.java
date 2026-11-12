@@ -24,6 +24,16 @@ public class PostgresqlStartWithCondition extends PostgresqlCondition {
         super(I18nHelper.startWith(), "LIKE");
     }
 
+    /**
+     * 构造以指定值开头条件
+     *
+     * @param name  条件名称
+     * @param value 条件值
+     */
+    public PostgresqlStartWithCondition(String name, String value) {
+        super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {

@@ -58,4 +58,9 @@ public abstract class MariadbCondition extends DBCondition {
         }
         return this.wrapCondition(condition);
     }
+
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.MARIADB;
+    }
 }

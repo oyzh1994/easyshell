@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2026-09-02
  */
-public class PostgresqlNotInListCondition extends PostgresqlCondition {
+public class PostgresqlNotInListCondition extends PostgresqlInListCondition {
 
     /**
      * 单例实例
@@ -22,10 +22,5 @@ public class PostgresqlNotInListCondition extends PostgresqlCondition {
      */
     public PostgresqlNotInListCondition() {
         super(I18nHelper.notInList(), "NOT IN");
-    }
-
-    @Override
-    public String wrapCondition(Object condition) {
-        return this.wrapListCondition(condition);
     }
 }

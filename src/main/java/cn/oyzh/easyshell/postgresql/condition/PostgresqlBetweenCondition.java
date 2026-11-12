@@ -27,13 +27,23 @@ public class PostgresqlBetweenCondition extends PostgresqlCondition {
         super(I18nHelper.between(), "BETWEEN");
     }
 
+    /**
+     * 构造介于条件
+     *
+     * @param name  条件名称
+     * @param value 条件值
+     */
+    public PostgresqlBetweenCondition(String name, String value) {
+        super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
         if (condition instanceof Object[] arr) {
-            return this.getValue() + " " + this.wrapValue(arr[0]) + " AND " + this.wrapValue(arr[1]);
+            return this.wrapValue(arr[0]) + " AND " + this.wrapValue(arr[1]);
         }
         if (condition instanceof Collection coll) {
-            return this.getValue() + " " + this.wrapValue(CollectionUtil.get(coll, 0)) + " AND " + this.wrapValue(CollectionUtil.get(coll, 1));
+            return this.wrapValue(CollectionUtil.get(coll, 0)) + " AND " + this.wrapValue(CollectionUtil.get(coll, 1));
         }
         return super.wrapCondition(condition);
     }

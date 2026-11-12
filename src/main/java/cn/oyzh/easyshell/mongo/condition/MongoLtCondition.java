@@ -22,7 +22,6 @@ public class MongoLtCondition extends MongoCondition {
         super(I18nHelper.lt(), "<");
     }
 
-
     @Override
     public Bson wrapCondition(String columnName, Object condition) {
         Bson bson1;

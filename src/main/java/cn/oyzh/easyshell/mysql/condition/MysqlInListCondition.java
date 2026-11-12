@@ -36,16 +36,6 @@ public class MysqlInListCondition extends MysqlCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        if (condition instanceof String str) {
-            String[] arr = str.split(",");
-            StringBuilder sb = new StringBuilder();
-            for (String s : arr) {
-                sb.append(",").append(DBUtil.wrapData(s, DBDialect.MYSQL));
-            }
-            if (!sb.isEmpty()) {
-                return this.getValue() + " (" + sb.substring(1) + ")";
-            }
-        }
-        return super.wrapCondition(condition);
+        return super.wrapListCondition(condition);
     }
 }

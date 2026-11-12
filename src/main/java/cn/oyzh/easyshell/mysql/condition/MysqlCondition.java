@@ -58,4 +58,9 @@ public abstract class MysqlCondition extends DBCondition {
         }
         return this.wrapCondition(condition);
     }
+
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.MYSQL;
+    }
 }

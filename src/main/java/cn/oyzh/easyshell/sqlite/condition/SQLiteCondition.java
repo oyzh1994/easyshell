@@ -59,13 +59,8 @@ public abstract class SQLiteCondition extends DBCondition {
         return wrapped == null ? null : this.getValue() + " " + wrapped;
     }
 
-    /**
-     * 包装条件值
-     *
-     * @param value 条件值
-     * @return 包装后的条件值
-     */
-    protected String wrapValue(Object value) {
-        return String.valueOf(DBUtil.wrapData(value, DBDialect.SQLITE));
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.SQLITE;
     }
 }

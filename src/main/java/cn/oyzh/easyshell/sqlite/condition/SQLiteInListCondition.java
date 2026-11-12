@@ -22,17 +22,6 @@ public class SQLiteInListCondition extends SQLiteCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        if (!(condition instanceof String value) || value.isBlank()) {
-            return null;
-        }
-        StringBuilder builder = new StringBuilder("(");
-        String[] items = value.split(",");
-        for (int index = 0; index < items.length; index++) {
-            if (index > 0) {
-                builder.append(", ");
-            }
-            builder.append(this.wrapValue(items[index].trim()));
-        }
-        return builder.append(')').toString();
+        return super.wrapListCondition(condition);
     }
 }

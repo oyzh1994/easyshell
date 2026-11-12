@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mongo.condition;
 
 
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.condition.DBCondition;
 import org.bson.conversions.Bson;
 
@@ -11,7 +12,6 @@ import org.bson.conversions.Bson;
  * @since 2025-11-06
  */
 public abstract class MongoCondition extends DBCondition {
-
 
     public MongoCondition() {
         super();
@@ -28,5 +28,10 @@ public abstract class MongoCondition extends DBCondition {
     @Override
     public Bson wrapCondition(String columnName, Object condition) {
         return null;
+    }
+
+    @Override
+    public DBDialect getDialect() {
+        return DBDialect.MONGODB;
     }
 }

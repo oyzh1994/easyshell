@@ -24,8 +24,18 @@ public class PostgresqlInListCondition extends PostgresqlCondition {
         super(I18nHelper.inList(), "IN");
     }
 
+    /**
+     * 构造在列表条件
+     *
+     * @param name  条件名称
+     * @param value 条件值
+     */
+    public PostgresqlInListCondition(String name, String value) {
+        super(name, value);
+    }
+
     @Override
     public String wrapCondition(Object condition) {
-        return this.wrapListCondition(condition);
+        return super.wrapListCondition(condition);
     }
 }

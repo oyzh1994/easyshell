@@ -10,7 +10,7 @@ import cn.oyzh.i18n.I18nHelper;
  * @author oyzh
  * @since 2026-09-02
  */
-public class PostgresqlNotEndWithCondition extends PostgresqlCondition {
+public class PostgresqlNotEndWithCondition extends PostgresqlEndWithCondition {
 
     /**
      * 单例实例
@@ -22,13 +22,5 @@ public class PostgresqlNotEndWithCondition extends PostgresqlCondition {
      */
     public PostgresqlNotEndWithCondition() {
         super(I18nHelper.notEndWith(), "NOT LIKE");
-    }
-
-    @Override
-    public String wrapCondition(Object condition) {
-        if (condition != null) {
-            return super.wrapCondition("%" + condition);
-        }
-        return super.wrapCondition(condition);
     }
 }

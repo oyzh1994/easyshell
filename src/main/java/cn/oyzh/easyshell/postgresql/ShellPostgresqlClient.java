@@ -1689,10 +1689,6 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 PostgresqlRecord record = new PostgresqlRecord(columns, param.isReadonly());
                 for (PostgresqlColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
-                    //                    // 获取几何值
-                    //                    if (column.supportGeometry()) {
-                    //                        data = PostgresqlHelper.getGeometryString(connection, data);
-                    //                    }
                     record.putValue(column, data);
                 }
                 records.add(record);

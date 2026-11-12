@@ -27,9 +27,6 @@ public class DamengInListCondition extends DamengCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        if (condition != null) {
-            return this.getValue() + " (" + DBUtil.wrapData(condition, DBDialect.DAMENG) + ")";
-        }
-        return super.wrapCondition(condition);
+        return super.wrapListCondition(condition);
     }
 }
