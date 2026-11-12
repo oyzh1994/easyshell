@@ -613,7 +613,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param param 参数
      * @return 结果
      */
-    public List<MongoRecord> selectCollectionRecords(MongoSelectRecordParam param) {
+    public List<MongoRecord> selectCollectionRecords(MongoSelectRecordParam param) throws Exception {
         String dbName = param.getDbName();
         String collectionName = param.getCollectionName();
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, collectionName);
@@ -655,7 +655,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param param 参数
      * @return 结果
      */
-    public long selectCollectionRecordCount(MongoSelectRecordParam param) {
+    public long selectCollectionRecordCount(MongoSelectRecordParam param) throws Exception {
         String dbName = param.getDbName();
         String collectionName = param.getCollectionName();
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, collectionName);
@@ -1018,7 +1018,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param param 参数
      * @return 结果
      */
-    public List<MongoBucketFile> selectBucketRecords(MongoSelectRecordParam param) {
+    public List<MongoBucketFile> selectBucketRecords(MongoSelectRecordParam param) throws Exception {
         String dbName = param.getDbName();
         String bucketName = param.getCollectionName();
         GridFSBucket bucket = this.bucket(dbName, bucketName);
@@ -1099,7 +1099,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param param 参数
      * @return 结果
      */
-    public long selectBucketRecordCount(MongoSelectRecordParam param) {
+    public long selectBucketRecordCount(MongoSelectRecordParam param) throws Exception {
         String dbName = param.getDbName();
         String collectionName = param.getCollectionName();
         com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, collectionName + ".files");
@@ -1338,7 +1338,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
      * @param param 参数
      * @return 字段列表
      */
-    public List<? extends MongoColumn> selectColumns(MongoSelectRecordParam param) {
+    public List<? extends MongoColumn> selectColumns(MongoSelectRecordParam param) throws Exception {
         List<MongoRecord> records = this.selectCollectionRecords(param);
         return ShellMongoRecordUtil.columns(records);
     }

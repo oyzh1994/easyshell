@@ -39,12 +39,6 @@ public class MariadbBetweenCondition extends MariadbCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        if (condition instanceof Object[] arr) {
-            return this.getValue() + " " + DBUtil.wrapData(arr[0], DBDialect.MARIADB) + " AND " + DBUtil.wrapData(arr[1], DBDialect.MARIADB);
-        }
-        if (condition instanceof Collection<?> coll) {
-            return this.getValue() + " " + DBUtil.wrapData(CollectionUtil.get(coll, 0), DBDialect.MARIADB) + " AND " + DBUtil.wrapData(CollectionUtil.get(coll, 1), DBDialect.MARIADB);
-        }
-        return super.wrapCondition(condition);
+        return super.wrapBetweenCondition(condition);
     }
 }

@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.fx.mongo.ShellMongoDatabaseComboBox;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.data.ui.DBDataDateTextFiled;
 import cn.oyzh.fx.db.data.ui.DBDataFieldSeparatorComboBox;
 import cn.oyzh.fx.db.data.ui.DBDataRecordSeparatorComboBox;
@@ -33,7 +34,6 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.RadioButton;
@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @StageAttribute(
         multipliable = true,
         stageStyle = FXStageStyle.EXTENDED,
-//        modality = Modality.APPLICATION_MODAL,
+        //        modality = Modality.APPLICATION_MODAL,
         value = FXConst.FXML_PATH + "mongo/data/shellMongoDataExport.fxml"
 )
 public class ShellMongoDataExportController extends StageController {
@@ -441,9 +441,9 @@ public class ShellMongoDataExportController extends StageController {
             MessageBox.warn(I18nHelper.pleaseSelectType(), this.getWindow());
             return;
         }
-//        if (this.exportTableView.isItemEmpty()) {
-            StageManager.showMask(this.getWindow(), this::initTables);
-//        }
+        //        if (this.exportTableView.isItemEmpty()) {
+        StageManager.showMask(this.getWindow(), this::initTables);
+        //        }
         this.step1.disappear();
         this.step3.disappear();
         this.step2.display();
@@ -454,21 +454,25 @@ public class ShellMongoDataExportController extends StageController {
      */
     @FXML
     private void showStep3() {
-        if (!this.exportTableView.hasSelectedTable()) {
-            MessageBox.warn(I18nHelper.pleaseSelectTable(), this.getWindow());
-            return;
-        }
-        this.tableCombobox.clearItems();
-        for (ShellMongoDataExportCollection o : this.exportTableView.getSelectedTables()) {
-            if (!o.hasColumns()) {
-                o.columns(this.dbClient.selectColumns(new MongoSelectRecordParam(this.dbName, o.getName())));
+        try {
+            if (!this.exportTableView.hasSelectedTable()) {
+                MessageBox.warn(I18nHelper.pleaseSelectTable(), this.getWindow());
+                return;
             }
-            this.tableCombobox.addItem(o);
+            this.tableCombobox.clearItems();
+            for (ShellMongoDataExportCollection o : this.exportTableView.getSelectedTables()) {
+                if (!o.hasColumns()) {
+                    o.columns(this.dbClient.selectColumns(new MongoSelectRecordParam(this.dbName, o.getName())));
+                }
+                this.tableCombobox.addItem(o);
+            }
+            this.tableCombobox.selectFirst();
+            this.step2.disappear();
+            this.step4.disappear();
+            this.step3.display();
+        } catch (Exception ex) {
+            MessageBox.exception(ex, this.getWindow());
         }
-        this.tableCombobox.selectFirst();
-        this.step2.disappear();
-        this.step4.disappear();
-        this.step3.display();
     }
 
     /**

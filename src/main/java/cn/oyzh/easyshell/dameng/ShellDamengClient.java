@@ -1327,7 +1327,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getSchema());
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG));
-            String filterCondition = DamengConditionUtil.buildCondition(param.getFilters());
+            String filterCondition = DBUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
             }
@@ -1382,7 +1382,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getSchema());
             StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ");
             builder.append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG));
-            String filterCondition = DamengConditionUtil.buildCondition(param.getFilters());
+            String filterCondition = DBUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
             }
@@ -2621,7 +2621,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(schema);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(schema, viewName, DBDialect.DAMENG));
-            String filterCondition = DamengConditionUtil.buildCondition(filters);
+            String filterCondition = DBUtil.buildCondition(filters);
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
             }

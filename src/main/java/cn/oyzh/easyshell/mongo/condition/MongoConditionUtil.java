@@ -56,7 +56,7 @@ public class MongoConditionUtil {
      * @param filters 过滤条件
      * @return 条件
      */
-    public static Bson buildCondition(List<MongoRecordFilter> filters) {
+    public static Bson buildCondition(List<MongoRecordFilter> filters) throws Exception {
         Bson bson = new Document();
         if (filters == null || filters.isEmpty()) {
             return bson;
@@ -67,8 +67,7 @@ public class MongoConditionUtil {
             if (!filter.isEnabled()) {
                 continue;
             }
-            Bson bson1 = filter.condition();
-            if (bson1 != null) {
+            if (filter.condition() instanceof  Bson bson1) {
                 if (first) {
                     bson = bson1;
                     first = false;

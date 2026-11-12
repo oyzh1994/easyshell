@@ -40,10 +40,10 @@ public class PostgresqlBetweenCondition extends PostgresqlCondition {
     @Override
     public String wrapCondition(Object condition) {
         if (condition instanceof Object[] arr) {
-            return this.wrapValue(arr[0]) + " AND " + this.wrapValue(arr[1]);
+            return this.wrapCondition(arr[0]) + " AND " + this.wrapCondition(arr[1]);
         }
         if (condition instanceof Collection coll) {
-            return this.wrapValue(CollectionUtil.get(coll, 0)) + " AND " + this.wrapValue(CollectionUtil.get(coll, 1));
+            return this.wrapCondition(CollectionUtil.get(coll, 0)) + " AND " + this.wrapCondition(CollectionUtil.get(coll, 1));
         }
         return super.wrapCondition(condition);
     }

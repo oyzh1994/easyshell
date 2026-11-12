@@ -40,25 +40,6 @@ public abstract class PostgresqlCondition extends DBCondition {
         super(name, value, requireCondition);
     }
 
-    /**
-     * 包装条件值
-     *
-     * @param condition 条件值
-     * @return 包装后的条件值
-     */
-    public String wrapCondition(Object condition) {
-        Object value = DBUtil.wrapData(condition, this.getDialect());
-        return value == null ? null : value.toString();
-    }
-
-    @Override
-    public String wrapCondition(String columnName, Object condition) {
-        if (this.isRequireCondition()) {
-            return condition == null ? this.getValue() : this.getValue() + " " + this.wrapCondition(condition);
-        }
-        return this.wrapCondition(condition);
-    }
-
     @Override
     public DBDialect getDialect() {
         return DBDialect.POSTGRESQL;

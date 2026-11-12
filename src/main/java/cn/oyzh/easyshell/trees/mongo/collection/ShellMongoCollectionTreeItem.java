@@ -227,7 +227,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
      * @param columns 列信息
      * @return 分页结果
      */
-    public Paging<MongoRecord> recordPage(long pageNo, long limit, List<MongoRecordFilter> filters, MongoColumns columns) {
+    public Paging<MongoRecord> recordPage(long pageNo, long limit, List<MongoRecordFilter> filters, MongoColumns columns) throws Exception {
         MongoSelectRecordParam param = new MongoSelectRecordParam();
         param.setLimit(limit);
         param.setFilters(filters);

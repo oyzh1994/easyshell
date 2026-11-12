@@ -40,25 +40,6 @@ public abstract class SQLiteCondition extends DBCondition {
         super(name, value, requireCondition);
     }
 
-    /**
-     * 包装条件值
-     *
-     * @param condition 条件值
-     * @return 包装后的条件值
-     */
-    public String wrapCondition(Object condition) {
-        return condition == null ? null : this.wrapValue(condition);
-    }
-
-    @Override
-    public String wrapCondition(String columnName, Object condition) {
-        if (!this.isRequireCondition()) {
-            return this.getValue();
-        }
-        String wrapped = this.wrapCondition(condition);
-        return wrapped == null ? null : this.getValue() + " " + wrapped;
-    }
-
     @Override
     public DBDialect getDialect() {
         return DBDialect.SQLITE;

@@ -40,25 +40,6 @@ public abstract class MysqlCondition extends DBCondition {
         super(name, value, requireCondition);
     }
 
-    /**
-     * 包装条件值
-     *
-     * @param condition 条件值
-     * @return 包装后的条件值
-     */
-    public String wrapCondition(Object condition) {
-        Object d = DBUtil.wrapData(condition, DBDialect.MYSQL);
-        return d == null ? null : d.toString();
-    }
-
-    @Override
-    public String wrapCondition(String columnName, Object condition) {
-        if (this.isRequireCondition()) {
-            return condition == null ? this.getValue() : this.getValue() + " " + this.wrapCondition(condition);
-        }
-        return this.wrapCondition(condition);
-    }
-
     @Override
     public DBDialect getDialect() {
         return DBDialect.MYSQL;

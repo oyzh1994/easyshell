@@ -53,33 +53,33 @@ public class SQLiteConditionUtil {
         }
     }
 
-    public static String buildCondition(List<SQLiteRecordFilter> filters) throws Exception {
-        if (filters == null || filters.isEmpty()) {
-            return "";
-        }
-        List<SQLiteRecordFilter> activeFilters = new ArrayList<>();
-        List<String> conditions = new ArrayList<>();
-        for (SQLiteRecordFilter filter : filters) {
-            String condition = filter.condition();
-            if (StringUtil.isNotBlank(condition)) {
-                activeFilters.add(filter);
-                conditions.add(SQLiteGeneratorUtil.quote(filter.column()) + " " + condition);
-            }
-        }
-        if (conditions.isEmpty()) {
-            return "";
-        }
-        StringBuilder builder = new StringBuilder();
-        for (int index = 0; index < conditions.size(); index++) {
-            builder.append(conditions.get(index));
-            if (index != conditions.size() - 1) {
-                builder.append(' ')
-                        .append(StringUtil.blankToDefault(activeFilters.get(index).getJoinSymbol(), "AND"))
-                        .append(' ');
-            }
-        }
-        return builder.toString();
-    }
+//    public static String buildCondition(List<SQLiteRecordFilter> filters) throws Exception {
+//        if (filters == null || filters.isEmpty()) {
+//            return "";
+//        }
+//        List<SQLiteRecordFilter> activeFilters = new ArrayList<>();
+//        List<String> conditions = new ArrayList<>();
+//        for (SQLiteRecordFilter filter : filters) {
+//            String condition = filter.condition();
+//            if (StringUtil.isNotBlank(condition)) {
+//                activeFilters.add(filter);
+//                conditions.add(SQLiteGeneratorUtil.quote(filter.column()) + " " + condition);
+//            }
+//        }
+//        if (conditions.isEmpty()) {
+//            return "";
+//        }
+//        StringBuilder builder = new StringBuilder();
+//        for (int index = 0; index < conditions.size(); index++) {
+//            builder.append(conditions.get(index));
+//            if (index != conditions.size() - 1) {
+//                builder.append(' ')
+//                        .append(StringUtil.blankToDefault(activeFilters.get(index).getJoinSymbol(), "AND"))
+//                        .append(' ');
+//            }
+//        }
+//        return builder.toString();
+//    }
 
     public static boolean isInCondition(SQLiteCondition condition) {
         return condition == IN || condition == NOT_IN;

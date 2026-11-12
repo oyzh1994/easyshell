@@ -25,18 +25,6 @@ public class SQLiteBetweenCondition extends SQLiteCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        Object first = null;
-        Object second = null;
-        if (condition instanceof Object[] values && values.length >= 2) {
-            first = values[0];
-            second = values[1];
-        } else if (condition instanceof Collection<?> values && values.size() >= 2) {
-            first = CollectionUtil.get(values, 0);
-            second = CollectionUtil.get(values, 1);
-        }
-        if (first == null || second == null) {
-            return null;
-        }
-        return this.wrapValue(first) + " AND " + this.wrapValue(second);
+        return super.wrapBetweenCondition(condition);
     }
 }

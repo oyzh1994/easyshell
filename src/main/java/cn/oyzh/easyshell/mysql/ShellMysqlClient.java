@@ -1287,7 +1287,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getDbName());
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
-            String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
+            String filterCondition = DBUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
             }
@@ -1341,7 +1341,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getDbName());
             StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ");
             builder.append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()));
-            String filterCondition = MysqlConditionUtil.buildCondition(param.getFilters());
+            String filterCondition = DBUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
             }
@@ -2574,7 +2574,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(dbName);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
             builder.append(DBUtil.wrap(dbName, viewName, this.dialect()));
-            String filterCondition = MysqlConditionUtil.buildCondition(filters);
+            String filterCondition = DBUtil.buildCondition(filters);
             if (StringUtil.isNotBlank(filterCondition)) {
                 builder.append(" WHERE ").append(filterCondition);
             }

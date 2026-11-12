@@ -30,12 +30,6 @@ public class DamengBetweenCondition extends DamengCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        if (condition instanceof Object[] arr) {
-            return this.getValue() + " " + DBUtil.wrapData(arr[0], DBDialect.DAMENG) + " AND " + DBUtil.wrapData(arr[1], DBDialect.DAMENG);
-        }
-        if (condition instanceof Collection coll) {
-            return this.getValue() + " " + DBUtil.wrapData(CollectionUtil.get(coll, 0), DBDialect.DAMENG) + " AND " + DBUtil.wrapData(CollectionUtil.get(coll, 1), DBDialect.DAMENG);
-        }
-        return super.wrapCondition(condition);
+        return super.wrapBetweenCondition(condition);
     }
 }

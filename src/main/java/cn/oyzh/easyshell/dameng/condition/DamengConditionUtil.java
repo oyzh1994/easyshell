@@ -47,33 +47,33 @@ public class DamengConditionUtil {
         DBConditionManager.putCondition(DBDialect.DAMENG, DamengNotEndWithCondition.INSTANCE);
     }
 
-    /**
-     * 构建条件
-     *
-     * @param filters 过滤条件
-     * @return 条件
-     * @throws Exception 异常
-     */
-    public static String buildCondition(List<DamengRecordFilter> filters) throws Exception {
-        if (filters == null || filters.isEmpty()) {
-            return "";
-        }
-        StringBuilder conditions = new StringBuilder();
-        for (int i = 0; i < filters.size(); i++) {
-            DamengRecordFilter filter = filters.get(i);
-            String condition = filter.condition();
-            if (StringUtil.isNotBlank(condition)) {
-                conditions.append(DBUtil.wrap(filter.column(), DBDialect.DAMENG))
-                        .append(" ")
-                        .append(condition)
-                        .append(" ");
-            }
-            if (i != filters.size() - 1) {
-                conditions.append(filter.getJoinSymbol()).append(" ");
-            }
-        }
-        return conditions.toString();
-    }
+//    /**
+//     * 构建条件
+//     *
+//     * @param filters 过滤条件
+//     * @return 条件
+//     * @throws Exception 异常
+//     */
+//    public static String buildCondition(List<DamengRecordFilter> filters) throws Exception {
+//        if (filters == null || filters.isEmpty()) {
+//            return "";
+//        }
+//        StringBuilder conditions = new StringBuilder();
+//        for (int i = 0; i < filters.size(); i++) {
+//            DamengRecordFilter filter = filters.get(i);
+//            String condition = filter.condition();
+//            if (StringUtil.isNotBlank(condition)) {
+//                conditions.append(DBUtil.wrap(filter.column(), DBDialect.DAMENG))
+//                        .append(" ")
+//                        .append(condition)
+//                        .append(" ");
+//            }
+//            if (i != filters.size() - 1) {
+//                conditions.append(filter.getJoinSymbol()).append(" ");
+//            }
+//        }
+//        return conditions.toString();
+//    }
 
     /**
      * 是否in条件

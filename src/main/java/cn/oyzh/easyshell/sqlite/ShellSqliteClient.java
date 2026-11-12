@@ -1087,7 +1087,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         StringBuilder builder = new StringBuilder("SELECT * FROM ")
                 .append(SQLiteGeneratorUtil.quote(param.getTableName()));
         try {
-            String filter = SQLiteConditionUtil.buildCondition(param.getFilters());
+            String filter = DBUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filter)) {
                 builder.append(" WHERE ").append(filter);
             }
@@ -1152,7 +1152,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         StringBuilder builder = new StringBuilder("SELECT COUNT(*) FROM ")
                 .append(SQLiteGeneratorUtil.quote(param.getTableName()));
         try {
-            String filter = SQLiteConditionUtil.buildCondition(param.getFilters());
+            String filter = DBUtil.buildCondition(param.getFilters());
             if (StringUtil.isNotBlank(filter)) {
                 builder.append(" WHERE ").append(filter);
             }
@@ -1190,7 +1190,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                 builder.append(SQLiteGeneratorUtil.quote(param.getPrimaryKey().getColumnName()));
                 builder.append(value == null ? " IS NULL" : " = ?");
             } else {
-                String filter = SQLiteConditionUtil.buildCondition(param.getFilters());
+                String filter = DBUtil.buildCondition(param.getFilters());
                 if (StringUtil.isBlank(filter)) {
                     return null;
                 }

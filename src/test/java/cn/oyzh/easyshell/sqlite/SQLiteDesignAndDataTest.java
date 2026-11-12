@@ -32,6 +32,7 @@ import cn.oyzh.easyshell.sqlite.trigger.SQLiteTriggerControl;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
+import cn.oyzh.fx.db.util.DBUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -227,31 +228,31 @@ public class SQLiteDesignAndDataTest {
 
             SQLiteRecordFilter contains = this.filter(columns, "name",
                     SQLiteConditionUtil.CONTAINS, "a", "AND");
-            assertTrue(SQLiteConditionUtil.buildCondition(List.of(contains))
+            assertTrue(DBUtil.buildCondition(List.of(contains))
                     .contains("LIKE '%a%'"));
             assertEquals(3, client.selectRowCount("filter_item",
-                    SQLiteConditionUtil.buildCondition(List.of(contains))));
+                    DBUtil.buildCondition(List.of(contains))));
 
             SQLiteRecordFilter isNull = this.filter(columns, "note",
                     SQLiteConditionUtil.NULL, null, "AND");
             assertEquals(2, client.selectRowCount("filter_item",
-                    SQLiteConditionUtil.buildCondition(List.of(isNull))));
+                    DBUtil.buildCondition(List.of(isNull))));
 
             SQLiteRecordFilter inList = this.filter(columns, "name",
                     SQLiteConditionUtil.IN, "Alice, Carol", "AND");
             assertEquals(2, client.selectRowCount("filter_item",
-                    SQLiteConditionUtil.buildCondition(List.of(inList))));
+                    DBUtil.buildCondition(List.of(inList))));
 
             SQLiteRecordFilter between = this.filter(columns, "age",
                     SQLiteConditionUtil.BETWEEN, List.of(20, 30), "AND");
             assertEquals(3, client.selectRowCount("filter_item",
-                    SQLiteConditionUtil.buildCondition(List.of(between))));
+                    DBUtil.buildCondition(List.of(between))));
             assertEquals(2, client.selectRecords("filter_item", columns, 1, 2,
-                    SQLiteConditionUtil.buildCondition(List.of(between))).size());
+                    DBUtil.buildCondition(List.of(between))).size());
 
             SQLiteRecordFilter blank = this.filter(columns, "name",
                     SQLiteConditionUtil.CONTAINS, null, "AND");
-            String blankCondition = SQLiteConditionUtil.buildCondition(List.of(blank, contains));
+            String blankCondition = DBUtil.buildCondition(List.of(blank, contains));
             assertFalse(blankCondition.startsWith("AND"));
             assertFalse(blankCondition.endsWith("AND"));
             assertEquals(3, client.selectRowCount("filter_item", blankCondition));
@@ -260,7 +261,7 @@ public class SQLiteDesignAndDataTest {
                     SQLiteConditionUtil.GT_EQ, 30, "OR");
             SQLiteRecordFilter nullNote = this.filter(columns, "note",
                     SQLiteConditionUtil.NULL, null, "AND");
-            String mixedCondition = SQLiteConditionUtil.buildCondition(List.of(older, nullNote));
+            String mixedCondition = DBUtil.buildCondition(List.of(older, nullNote));
             assertTrue(mixedCondition.contains(">= 30 OR"));
             assertTrue(mixedCondition.contains("IS NULL"));
             assertEquals(4, client.selectRowCount("filter_item", mixedCondition));
