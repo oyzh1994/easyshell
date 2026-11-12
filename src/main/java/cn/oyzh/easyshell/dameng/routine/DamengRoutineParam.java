@@ -320,7 +320,7 @@ public class DamengRoutineParam extends DBObject implements DBRoutineParam {
      */
     public ShellDamengParamModeComboBox getModeControl() {
         ShellDamengParamModeComboBox comboBox = new ShellDamengParamModeComboBox();
-        comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.mode = newValue);
+        comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMode(newValue));
         comboBox.selectFirstIfNull(this.mode);
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;

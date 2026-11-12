@@ -343,7 +343,7 @@ public class PostgresqlRoutineParam extends DBObject implements DBRoutineParam {
      */
     public ShellPostgresqlParamModeComboBox getModeControl() {
         ShellPostgresqlParamModeComboBox comboBox = new ShellPostgresqlParamModeComboBox();
-        comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.mode = newValue);
+        comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMode(newValue));
         comboBox.selectFirstIfNull(this.mode);
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;
