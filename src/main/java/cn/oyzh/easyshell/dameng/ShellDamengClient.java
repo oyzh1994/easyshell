@@ -434,7 +434,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public int procedureSize(String schema) {
         int size = 0;
         try {
-            Connection connection = this.getConnManager().procedureConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -465,7 +465,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public int functionSize(String schema) {
         int size = 0;
         try {
-            Connection connection = this.getConnManager().functionConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -499,7 +499,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public void alertFunction(DamengAlertFunctionParam param) {
         try {
-            Connection connection = this.getConnManager().functionConnection(param.getSchema());
+            Connection connection = this.getConnManager().connection(param.getSchema());
             Statement statement = connection.createStatement();
             String sql = DamengFunctionAlertSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
@@ -855,7 +855,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
 
     //    public DamengEvent selectEvent(String schema, String eventName) {
     //        try {
-    //            Connection connection = this.functionConnection(schema, null);
+    //            Connection connection = this.connection(schema, null);
     //            String sql = """
     //                    SELECT
     //                        t1.ENABLED AS STATUS,
@@ -892,7 +892,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     //    public Integer eventSize(String schema) {
     //        int size = 0;
     //        try {
-    //            Connection connection = this.functionConnection(schema, null);
+    //            Connection connection = this.connection(schema, null);
     //            String sql = """
     //                    SELECT
     //                        COUNT(*)
@@ -916,7 +916,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
 
     //    public List<DamengEvent> events(String schema) {
     //        try {
-    //            Connection connection = this.functionConnection(schema, null);
+    //            Connection connection = this.connection(schema, null);
     //            String sql = """
     //                    SELECT
     //                        t1.JOB_NAME AS NAME,
@@ -1676,7 +1676,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public String showCreateFunction(String schema, String functionName) {
         try {
-            Connection connection = this.getConnManager().functionConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', ?) FROM DUAL";
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -1704,7 +1704,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public String showCreateSequence(String schema, String sequenceName) {
         try {
-            Connection connection = this.getConnManager().functionConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             String sql = "SELECT DBMS_METADATA.GET_DDL('SEQUENCE', ?) FROM DUAL";
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -1732,7 +1732,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      */
     public String showCreateProcedure(String schema, String procedureName) {
         try {
-            Connection connection = this.getConnManager().procedureConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             String sql = "SELECT DBMS_METADATA.GET_DDL('PROCEDURE', ?) FROM DUAL";
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -3189,7 +3189,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         O.OBJECT_TYPE = 'FUNCTION'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().functionConnection(schema).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
             statement.setString(1, schema);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -3299,7 +3299,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         O.OBJECT_TYPE = 'PROCEDURE'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().procedureConnection(schema).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
             statement.setString(1, schema);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -3414,7 +3414,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         O.OBJECT_TYPE = 'PROCEDURE'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().procedureConnection(schema).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
             statement.setString(1, schema);
             statement.setString(2, produceName);
             // 执行SQL查询并获取结果集
@@ -3479,7 +3479,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(routine.getSchema(), routine.getName(), DBDialect.DAMENG);
             this.printSql(sql);
-            Statement statement = this.getConnManager().procedureConnection(routine.getSchema()).createStatement();
+            Statement statement = this.getConnManager().connection(routine.getSchema()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3497,7 +3497,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = DamengProcedureCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.getConnManager().procedureConnection(param.getSchema()).createStatement();
+            Statement statement = this.getConnManager().connection(param.getSchema()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3515,7 +3515,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = DamengProcedureAlertSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.getConnManager().procedureConnection(param.getSchema()).createStatement();
+            Statement statement = this.getConnManager().connection(param.getSchema()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3533,7 +3533,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = "DROP FUNCTION IF EXISTS " + DBUtil.wrap(function.getSchema(), function.getName(), DBDialect.DAMENG);
             this.printSql(sql);
-            Statement statement = this.getConnManager().functionConnection(function.getSchema()).createStatement();
+            Statement statement = this.getConnManager().connection(function.getSchema()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3601,7 +3601,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                         O.OBJECT_TYPE = 'FUNCTION'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().functionConnection(schema).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
             statement.setString(1, schema);
             statement.setString(2, functionName);
             // 执行SQL查询并获取结果集
@@ -3666,7 +3666,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         try {
             String sql = DamengFunctionCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.getConnManager().functionConnection(param.getSchema()).createStatement();
+            Statement statement = this.getConnManager().connection(param.getSchema()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3961,7 +3961,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.DAMENG), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.DAMENG));
             sql = sql.replace("FUNCTION " + DBUtil.wrap(schema, functionName, DBDialect.DAMENG), "FUNCTION " + DBUtil.wrap(schema, newFunctionName, DBDialect.DAMENG));
             this.printSql(sql);
-            Connection connection = this.getConnManager().functionConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
             IOUtil.close(stmt);
@@ -3984,7 +3984,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.DAMENG), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.DAMENG));
             sql = sql.replace("PROCEDURE " + DBUtil.wrap(schema, procedureName, DBDialect.DAMENG), "PROCEDURE " + DBUtil.wrap(schema, newProcedureName, DBDialect.DAMENG));
             this.printSql(sql);
-            Connection connection = this.getConnManager().procedureConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
             IOUtil.close(stmt);
@@ -4136,7 +4136,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     public int sequenceSize(String schema) {
         int size = 0;
         try {
-            Connection connection = this.getConnManager().functionConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -4176,7 +4176,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             sql = sql.replace("SEQUENCE " + DBUtil.wrap(sequenceName, DBDialect.DAMENG), "SEQUENCE " + DBUtil.wrap(newSequenceName, DBDialect.DAMENG));
             sql = sql.replace("SEQUENCE " + DBUtil.wrap(schema, sequenceName, DBDialect.DAMENG), "SEQUENCE " + DBUtil.wrap(schema, newSequenceName, DBDialect.DAMENG));
             this.printSql(sql);
-            Connection connection = this.getConnManager().functionConnection(schema);
+            Connection connection = this.getConnManager().connection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
             IOUtil.close(stmt);

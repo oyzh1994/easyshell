@@ -466,7 +466,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public int procedureSize(String dbName) {
         // int size = 0;
         // try {
-        //     Connection connection = this.procedureConnection(dbName, schema);
+        //     Connection connection = this.connection(dbName, schema);
         //     DatabaseMetaData metaData = connection.getMetaData();
         //     ResultSet resultSet = metaData.getProcedures(dbName, schema, "%");
         //     DBUtil.printMetaData(resultSet);
@@ -483,7 +483,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         // return size;
         int size = 0;
         try {
-            Connection connection = this.getConnManager().procedureConnection(dbName);
+            Connection connection = this.getConnManager().connection(dbName);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -514,7 +514,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public int functionSize(String dbName) {
         // int size = 0;
         // try {
-        //     Connection connection = this.functionConnection(dbName, schema);
+        //     Connection connection = this.connection(dbName, schema);
         //     DatabaseMetaData metaData = connection.getMetaData();
         //     ResultSet resultSet = metaData.getFunctions(dbName, schema, "%");
         //     DBUtil.printMetaData(resultSet);
@@ -531,7 +531,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         // return size;
         int size = 0;
         try {
-            Connection connection = this.getConnManager().functionConnection(dbName);
+            Connection connection = this.getConnManager().connection(dbName);
             String sql = """
                     SELECT
                         COUNT(*)
@@ -566,7 +566,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public void alertFunction(MysqlAlertFunctionParam param) {
         Connection connection = null;
         try {
-            connection = this.getConnManager().functionConnection(param.getDbName());
+            connection = this.getConnManager().connection(param.getDbName());
             connection.setAutoCommit(false);
             List<String> list = MysqlFunctionAlertSqlGenerator.generateSql(param);
             Statement statement = connection.createStatement();
@@ -1616,7 +1616,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      */
     public String showCreateFunction(String dbName, String functionName) {
         try {
-            Connection connection = this.getConnManager().functionConnection(dbName);
+            Connection connection = this.getConnManager().connection(dbName);
             String sql = "SHOW CREATE FUNCTION " + DBUtil.wrap(functionName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
@@ -1643,7 +1643,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      */
     public String showCreateProcedure(String dbName, String procedureName) {
         try {
-            Connection connection = this.getConnManager().procedureConnection(dbName);
+            Connection connection = this.getConnManager().connection(dbName);
             String sql = "SHOW CREATE PROCEDURE " + DBUtil.wrap(procedureName, this.dialect());
             this.printSql(sql);
             Statement statement = connection.createStatement();
@@ -3265,7 +3265,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                         `ROUTINE_TYPE` = 'FUNCTION'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().functionConnection(dbName).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, functionName);
             // 执行SQL查询并获取结果集
@@ -3350,7 +3350,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                         `ROUTINE_TYPE` = 'FUNCTION'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().functionConnection(dbName).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -3441,7 +3441,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                         `ROUTINE_TYPE` = 'PROCEDURE'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().procedureConnection(dbName).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             statement.setString(2, procedureName);
             // 执行SQL查询并获取结果集
@@ -3527,7 +3527,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                         `ROUTINE_TYPE` = 'PROCEDURE'
                     """;
             this.printSql(sql);
-            PreparedStatement statement = this.getConnManager().procedureConnection(dbName).prepareStatement(sql);
+            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
             statement.setString(1, dbName);
             // 执行SQL查询并获取结果集
             ResultSet resultSet = statement.executeQuery();
@@ -3573,7 +3573,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         try {
             String sql = "DROP PROCEDURE IF EXISTS " + DBUtil.wrap(dbName, routine.getName(), this.dialect());
             this.printSql(sql);
-            Statement statement = this.getConnManager().procedureConnection(dbName).createStatement();
+            Statement statement = this.getConnManager().connection(dbName).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3591,7 +3591,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         try {
             String sql = MysqlProcedureCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.getConnManager().procedureConnection(param.getDbName()).createStatement();
+            Statement statement = this.getConnManager().connection(param.getDbName()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3608,7 +3608,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
     public void alertProcedure(MysqlAlertProcedureParam param) {
         Connection connection = null;
         try {
-            connection = this.getConnManager().procedureConnection(param.getDbName());
+            connection = this.getConnManager().connection(param.getDbName());
             connection.setAutoCommit(false);
             List<String> list = MysqlProcedureAlertSqlGenerator.generateSql(param);
             Statement statement = connection.createStatement();
@@ -3635,7 +3635,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         try {
             String sql = "DROP function IF EXISTS " + DBUtil.wrap(dbName, function.getName(), this.dialect());
             this.printSql(sql);
-            Statement statement = this.getConnManager().functionConnection(dbName).createStatement();
+            Statement statement = this.getConnManager().connection(dbName).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3704,7 +3704,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         try {
             String sql = MysqlFunctionCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.getConnManager().functionConnection(param.getDbName()).createStatement();
+            Statement statement = this.getConnManager().connection(param.getDbName()).createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3943,7 +3943,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.MYSQL), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.MYSQL));
             sql = sql.replace("FUNCTION " + DBUtil.wrap(dbName, functionName, DBDialect.MYSQL), "FUNCTION " + DBUtil.wrap(dbName, newFunctionName, DBDialect.MYSQL));
             this.printSql(sql);
-            Connection connection = this.getConnManager().functionConnection(dbName);
+            Connection connection = this.getConnManager().connection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
             IOUtil.close(stmt);
@@ -3966,7 +3966,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.MYSQL), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.MYSQL));
             sql = sql.replace("PROCEDURE " + DBUtil.wrap(dbName, procedureName, DBDialect.MYSQL), "PROCEDURE " + DBUtil.wrap(dbName, newProcedureName, DBDialect.MYSQL));
             this.printSql(sql);
-            Connection connection = this.getConnManager().procedureConnection(dbName);
+            Connection connection = this.getConnManager().connection(dbName);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
             IOUtil.close(stmt);

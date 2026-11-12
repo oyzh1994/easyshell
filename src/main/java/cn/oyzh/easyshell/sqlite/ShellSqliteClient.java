@@ -185,7 +185,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
             if (this.connManager == null) {
                 return false;
             }
-            Connection connection = this.connManager.getServerConnection();
+            Connection connection = this.connManager.connection();
             return connection != null && !connection.isClosed() && connection.isValid(1);
         } catch (Exception ex) {
             return false;
