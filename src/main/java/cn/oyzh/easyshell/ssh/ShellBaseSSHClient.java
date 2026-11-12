@@ -1100,6 +1100,9 @@ public abstract class ShellBaseSSHClient implements ShellBaseClient {
                 this.onSessionConnected();
                 return;
             } catch (JSchException ex) {
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.legacyAlgorithmFallback && this.isAlgorithmNegotiationFailure(ex)) {
                     this.legacyAlgorithmFallback = true;
                     JulLog.warn("ssh algorithm negotiation failed, retrying with legacy algorithms");

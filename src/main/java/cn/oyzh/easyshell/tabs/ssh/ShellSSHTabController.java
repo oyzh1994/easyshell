@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.ssh;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
@@ -7,10 +8,10 @@ import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -61,17 +62,17 @@ public class ShellSSHTabController extends ShellParentTabController {
     @FXML
     private ShellSSHEffTabController effTabController;
 
-//    /**
-//     * 终端
-//     */
-//    @FXML
-//    private ShellSSHTermTabController termTabController;
+    //    /**
+    //     * 终端
+    //     */
+    //    @FXML
+    //    private ShellSSHTermTabController termTabController;
 
-//    /**
-//     * 文件
-//     */
-//    @FXML
-//    private ShellSSHSFTPTabController sftpTabController;
+    //    /**
+    //     * 文件
+    //     */
+    //    @FXML
+    //    private ShellSSHSFTPTabController sftpTabController;
 
     /**
      * 服务器信息
@@ -103,10 +104,10 @@ public class ShellSSHTabController extends ShellParentTabController {
     @FXML
     private ShellSSHConfigTabController configTabController;
 
-//    /**
-//     * 设置
-//     */
-//    private final ShellSetting setting = ShellSettingStore.SETTING;
+    //    /**
+    //     * 设置
+    //     */
+    //    private final ShellSetting setting = ShellSettingStore.SETTING;
 
     /**
      * 设置shell客户端
@@ -121,38 +122,44 @@ public class ShellSSHTabController extends ShellParentTabController {
                 MessageBox.warn(ShellI18nHelper.connectSuspended(this.client.connectName()), this.getWindow());
             }
         });
-        StageManager.showMask(this.getWindow(), () -> {
-            try {
-                if (!this.client.isConnected()) {
-                    this.client.start();
-                }
-                if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
-                    this.closeTab();
-                    return;
-                }
-                // 收起左侧
-                // if (this.setting.isHiddenLeftAfterConnected()) {
-                //     ShellEventUtil.layout1();
-                // }
-                this.hideLeft();
-//                // 效率模式
-//                if (this.setting.isEfficiencyMode()) {
-                    this.effTabController.init();
-//                } else {// 正常模式
-//                    this.termTabController.init();
-//                }
-                this.serverTabController.setClient(this.client);
-                this.configTabController.setClient(this.client);
-                this.dockerTabController.setClient(this.client);
-                this.monitorTabController.setClient(this.client);
-                this.processTabController.setClient(this.client);
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
-                this.closeTab();
-            }
-        });
+        StageManager.showMask(this.getWindow(),
+                () -> {
+                    try {
+                        if (!this.client.isConnected()) {
+                            this.client.start();
+                        }
+                        if (ThreadUtil.isInterrupted()) {
+                            return;
+                        }
+                        if (!this.client.isConnected()) {
+                            MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
+                            this.closeTab();
+                            return;
+                        }
+                        // 收起左侧
+                        // if (this.setting.isHiddenLeftAfterConnected()) {
+                        //     ShellEventUtil.layout1();
+                        // }
+                        this.hideLeft();
+                        //                // 效率模式
+                        //                if (this.setting.isEfficiencyMode()) {
+                        this.effTabController.init();
+                        //                } else {// 正常模式
+                        //                    this.termTabController.init();
+                        //                }
+                        this.serverTabController.setClient(this.client);
+                        this.configTabController.setClient(this.client);
+                        this.dockerTabController.setClient(this.client);
+                        this.monitorTabController.setClient(this.client);
+                        this.processTabController.setClient(this.client);
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
+                        MessageBox.exception(ex, this.getWindow());
+                        this.closeTab();
+                    }
+                },
+                this::closeTab
+        );
     }
 
     @Override
@@ -175,12 +182,12 @@ public class ShellSSHTabController extends ShellParentTabController {
         controllers.add(this.processTabController);
         controllers.add(this.monitorTabController);
         controllers.add(this.configTabController);
-//        if (this.setting.isEfficiencyMode()) {
-            controllers.add(this.effTabController);
-//        } else {
-//            controllers.add(this.termTabController);
-//            controllers.add(this.sftpTabController);
-//        }
+        //        if (this.setting.isEfficiencyMode()) {
+        controllers.add(this.effTabController);
+        //        } else {
+        //            controllers.add(this.termTabController);
+        //            controllers.add(this.sftpTabController);
+        //        }
         return controllers;
     }
 
@@ -191,29 +198,29 @@ public class ShellSSHTabController extends ShellParentTabController {
      * @throws IOException 异常
      */
     public void runSnippet(String content) throws IOException {
-//        if (this.effTabController != null) {
-            this.effTabController.runSnippet(content);
-//        } else if (this.termTabController != null) {
-//            this.termTabController.runSnippet(content);
-//        }
+        //        if (this.effTabController != null) {
+        this.effTabController.runSnippet(content);
+        //        } else if (this.termTabController != null) {
+        //            this.termTabController.runSnippet(content);
+        //        }
     }
 
-//    @Override
-//    public void destroy() {
-////        if (this.effTabController != null) {
-//            this.effTabController.destroy();
-////        }
-////        if (this.sftpTabController != null) {
-////            this.sftpTabController.destroy();
-////        }
-////        if (this.termTabController != null) {
-////            this.termTabController.destroy();
-////        }
-//        this.dockerTabController.destroy();
-//        this.serverTabController.destroy();
-//        this.processTabController.destroy();
-//        this.monitorTabController.destroy();
-//        this.configTabController.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    ////        if (this.effTabController != null) {
+    //            this.effTabController.destroy();
+    ////        }
+    ////        if (this.sftpTabController != null) {
+    ////            this.sftpTabController.destroy();
+    ////        }
+    ////        if (this.termTabController != null) {
+    ////            this.termTabController.destroy();
+    ////        }
+    //        this.dockerTabController.destroy();
+    //        this.serverTabController.destroy();
+    //        this.processTabController.destroy();
+    //        this.monitorTabController.destroy();
+    //        this.configTabController.destroy();
+    //        super.destroy();
+    //    }
 }

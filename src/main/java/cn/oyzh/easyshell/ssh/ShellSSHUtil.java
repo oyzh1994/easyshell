@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.ssh;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -567,6 +568,9 @@ public class ShellSSHUtil {
      * @return 处理后的连接
      */
     public static ShellConnect onVerifyFailure(ShellConnect connect) {
+        if (ThreadUtil.isInterrupted()) {
+            return connect;
+        }
         AtomicReference<ShellConnect> reference = new AtomicReference<>();
         FXUtil.runWait(() -> {
             StageAdapter adapter = ShellViewFactory.sshAuth(connect);

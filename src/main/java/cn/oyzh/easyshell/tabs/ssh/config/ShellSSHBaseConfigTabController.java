@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.ssh.config;
 
 import cn.oyzh.common.exception.ExceptionUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -82,7 +83,7 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         StageManager.showMask(this.getWindow(), () -> {
             try {
                 String output = this.fileContent();
-                this.data.setText(output);
+                this.data.text(output);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 MessageBox.exception(ex, this.getWindow());
@@ -211,9 +212,9 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
         if (this.dataFilter != null) {
             this.dataFilter.setTipKeyCombination(KeyboardUtil.search_keyCombination);
             // 监听内容，设置高亮
-//            this.dataFilter.addTextChangeListener((observableValue, s, t1) -> {
-//                this.data.setHighlight(t1);
-//            });
+            //            this.dataFilter.addTextChangeListener((observableValue, s, t1) -> {
+            //                this.data.setHighlight(t1);
+            //            });
             this.data.highlightProperty().bind(this.dataFilter.textProperty());
             this.data.highlightRegexProperty().bind(this.dataFilter.regexPropery());
             this.data.highlightMacthCaseProperty().bind(this.dataFilter.matchCasePropery());
@@ -269,11 +270,11 @@ public abstract class ShellSSHBaseConfigTabController extends SubTabController {
      */
     protected abstract String fileContent();
 
-//    @Override
-//    public void destroy() {
-//        if (this.data != null) {
-//            this.data.destroy();
-//        }
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        if (this.data != null) {
+    //            this.data.destroy();
+    //        }
+    //        super.destroy();
+    //    }
 }
