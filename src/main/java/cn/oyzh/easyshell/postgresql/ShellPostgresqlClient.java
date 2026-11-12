@@ -807,8 +807,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 trigger.setTableName(tableName);
                 trigger.setCreateDefinition(createDefinition);
                 trigger.setFunctionDefinition(functionDefinition);
-                trigger.setDefinition(ShellPostgresqlHelper.fixTiggerDefinition(ShellPostgresqlHelper.parseFunctionBody(functionDefinition)));
-                trigger.setPolicy(this.triggerTiming(type), this.triggerManipulation(type));
+                String policy = this.triggerTiming(type) + " " + this.triggerManipulation(type);
+                trigger.setPolicy(policy);
+                trigger.setDefinition(ShellPostgresqlHelper.normalizeTriggerBody(
+                        ShellPostgresqlHelper.fixTiggerDefinition(ShellPostgresqlHelper.parseFunctionBody(functionDefinition)),
+                        policy));
                 list.add(trigger);
             }
             IOUtil.close(resultSet);

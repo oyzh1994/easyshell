@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * PostgreSQL工具类
@@ -501,6 +502,45 @@ public class ShellPostgresqlHelper {
             }
         }
         return definition.trim();
+    }
+
+    /**
+     * 规范化PostgreSQL触发器函数体，确保函数不会执行到末尾仍未返回
+     *
+     * @param definition 触发器定义
+     * @param policy     触发器策略
+     * @return 函数体
+     */
+    public static String normalizeTriggerBody(String definition, String policy) {
+        String body = definition == null ? null : definition.trim();
+        if (StringUtil.isBlank(body)) {
+            return null;
+        }
+        String upper = body.toUpperCase();
+        if (!upper.startsWith("BEGIN") && !upper.startsWith("DECLARE")) {
+            if (!body.endsWith(";")) {
+                body = body + ";";
+            }
+            body = "BEGIN " + body + " END;";
+        } else if (!body.endsWith(";")) {
+            body = body + ";";
+        }
+        // 避免 BEGIN 与后续语句粘连成 BEGINinsert 等非法标识符
+        body = Pattern.compile("(?i)(^|[\\s;])BEGIN(?=\\S)")
+                .matcher(body)
+                .replaceAll("$1BEGIN ");
+        int endIndex = body.toUpperCase().lastIndexOf("END");
+        if (endIndex < 0) {
+            return body;
+        }
+        String beforeEnd = body.substring(0, endIndex).stripTrailing();
+        // 最后一条语句不是RETURN时补充默认返回路径
+        if (!Pattern.compile("(?is)RETURN\\s+[^;]*;\\s*$").matcher(beforeEnd).find()) {
+            String returnValue = StringUtil.containsIgnoreCase(policy, "DELETE") ? "OLD" : "NEW";
+            beforeEnd = beforeEnd + " RETURN " + returnValue + ";";
+        }
+        body = beforeEnd + " " + body.substring(endIndex);
+        return body;
     }
 
     /**
