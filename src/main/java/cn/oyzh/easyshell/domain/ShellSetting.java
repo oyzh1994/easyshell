@@ -192,10 +192,10 @@ public class ShellSetting extends AppSetting {
     private Boolean enableBackgroundImage = false;
 
     /**
-     * 新版本提醒方式：startup/day/week/month/off
+     * 新版本提醒方式：always/day/week/month/off
      */
     @Column
-    private String versionCheckReminder = "startup";
+    private String versionCheckReminder = "off";
 
     /**
      * 上次自动提醒时间（epoch millis）
@@ -1239,7 +1239,7 @@ public class ShellSetting extends AppSetting {
     /**
      * 获取新版本提醒方式
      *
-     * @return 提醒方式：startup/day/week/month/off
+     * @return 提醒方式：always/day/week/month/off
      */
     public String getVersionCheckReminder() {
         return versionCheckReminder;
@@ -1248,7 +1248,7 @@ public class ShellSetting extends AppSetting {
     /**
      * 设置新版本提醒方式
      *
-     * @param versionCheckReminder 提醒方式：startup/day/week/month/off
+     * @param versionCheckReminder 提醒方式：always/day/week/month/off
      */
     public void setVersionCheckReminder(String versionCheckReminder) {
         this.versionCheckReminder = versionCheckReminder;

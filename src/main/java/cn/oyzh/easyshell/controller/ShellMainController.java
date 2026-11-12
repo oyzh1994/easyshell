@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.controller.llm.ChatController;
 import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
@@ -16,6 +17,8 @@ import cn.oyzh.fx.plus.controller.ParentStageController;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
+import cn.oyzh.fx.plus.ext.FXMLResult;
+import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import javafx.fxml.FXML;
 
@@ -115,7 +118,7 @@ public class ShellMainController extends ParentStageController {
     @EventSubscribe
     private void layout2(Layout2Event event) {
         // 全屏模式忽略
-        if(this.setting.isLayout2()){
+        if (this.setting.isLayout2()) {
             return;
         }
         this.connect.display();
@@ -135,7 +138,7 @@ public class ShellMainController extends ParentStageController {
     @EventSubscribe
     private void layout1(Layout1Event event) {
         // 全屏模式忽略
-        if(this.setting.isLayout2()){
+        if (this.setting.isLayout2()) {
             return;
         }
         this.connect.disappear();
@@ -163,6 +166,10 @@ public class ShellMainController extends ParentStageController {
      * 显示聊天
      */
     private void showChat() {
+        this.ensureChat();
+        if (this.chatController == null) {
+            return;
+        }
         double positions_0 = this.connect.isVisible() ? this.root.getPosition0(0.25) : 0;
         double positions_1 = this.root.getPosition1(DEFAULT_CHAT_DIVIDER_POSITION);
         this.chat.display();
@@ -170,6 +177,37 @@ public class ShellMainController extends ParentStageController {
         this.root.setDividerPositions(positions_0, positions_1);
         this.root.requestLayout();
         this.root.layout();
+    }
+
+    /**
+     * 首次显示聊天时再加载聊天面板，避免启动时加载大模型相关组件。
+     */
+    private void ensureChat() {
+        if (this.chatController != null) {
+            return;
+        }
+        if (this.stage == null) {
+            JulLog.warn("load chat view before stage initialize");
+            return;
+        }
+        FXMLResult result = FXMLLoaderExt.loadFromUrl("/fxml/llm/chat.fxml");
+        if (!(result.node() instanceof FXVBox chatNode)
+                || !(result.controller() instanceof ChatController controller)) {
+            JulLog.warn("load chat view failed");
+            return;
+        }
+        int index = this.root.getItems().indexOf(this.chat);
+        if (index < 0) {
+            JulLog.warn("chat placeholder not found");
+            return;
+        }
+        this.root.getItems().set(index, chatNode);
+        this.chat = chatNode;
+        this.chatController = controller;
+        controller.setParent(this);
+        controller.onWindowShown(null);
+        controller.onWindowShowing(null);
+        controller.onStageInitialize(this.stage);
     }
 
     /**
@@ -211,6 +249,10 @@ public class ShellMainController extends ParentStageController {
             this.connect.setManaged(false);
             this.root.setShowDivider0(false);
             this.root.setDividerPositions(0, 1);
+        } else {
+            this.connect.setVisible(true);
+            this.connect.setManaged(true);
+            this.root.setDividerPositions(0.25, 1);
         }
     }
 
@@ -218,7 +260,10 @@ public class ShellMainController extends ParentStageController {
     public List<SubStageController> getSubControllers() {
         // 全屏模式
         if (this.setting.isLayout2()) {
-            return List.of(this.chatController);
+            return this.chatController == null ? List.of() : List.of(this.chatController);
+        }
+        if (this.chatController == null) {
+            return List.of(this.connectController);
         }
         return List.of(this.connectController, this.chatController);
     }

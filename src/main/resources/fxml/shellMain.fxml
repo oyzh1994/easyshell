@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.tabs.home.ShellHomeTab?>
 <?import cn.oyzh.easyshell.tabs.ShellTabPane?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.pane.FXSplitPane?>
 <FXSplitPane xmlns:fx="http://javafx.com/fxml/1"
              fx:controller="cn.oyzh.easyshell.controller.ShellMainController"
@@ -9,5 +10,5 @@
     <ShellTabPane fx:id="tabPane" flexHeight="100%" tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER">
         <ShellHomeTab/>
     </ShellTabPane>
-    <fx:include fx:id="chat" source="llm/chat.fxml"/>
+    <FXVBox fx:id="chat" visible="false" managed="false" managedBindVisible="true"/>
 </FXSplitPane>

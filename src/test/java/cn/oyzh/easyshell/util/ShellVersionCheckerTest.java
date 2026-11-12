@@ -43,10 +43,18 @@ class ShellVersionCheckerTest {
     void appliesReminderFrequency() {
         ShellSetting setting = new ShellSetting();
         long now = System.currentTimeMillis();
+        assertEquals("off", setting.getVersionCheckReminder());
+        assertFalse(ShellVersionChecker.shouldRemind(setting));
 
-        setting.setVersionCheckReminder("startup");
+        setting.setVersionCheckReminder("");
+        assertFalse(ShellVersionChecker.shouldRemind(setting));
+
+        setting.setVersionCheckReminder("always");
         setting.setVersionCheckLastRemindTime(now);
         assertTrue(ShellVersionChecker.shouldRemind(setting));
+
+        setting.setVersionCheckReminder("startup");
+        assertFalse(ShellVersionChecker.shouldRemind(setting));
 
         setting.setVersionCheckReminder("off");
         setting.setVersionCheckLastRemindTime(null);
@@ -71,6 +79,29 @@ class ShellVersionCheckerTest {
         assertFalse(ShellVersionChecker.shouldRemind(setting));
         setting.setVersionCheckLastRemindTime(now - TimeUnit.DAYS.toMillis(30) - 1000);
         assertTrue(ShellVersionChecker.shouldRemind(setting));
+    }
+
+    @Test
+    void checksOnStartupOnlyWhenReminderEnabled() {
+        ShellSetting setting = new ShellSetting();
+        assertFalse(ShellVersionChecker.isReminderEnabled(setting));
+
+        setting.setVersionCheckReminder("");
+        assertFalse(ShellVersionChecker.isReminderEnabled(setting));
+
+        setting.setVersionCheckReminder("off");
+        assertFalse(ShellVersionChecker.isReminderEnabled(setting));
+
+        setting.setVersionCheckReminder("unknown");
+        assertFalse(ShellVersionChecker.isReminderEnabled(setting));
+
+        setting.setVersionCheckReminder("startup");
+        assertFalse(ShellVersionChecker.isReminderEnabled(setting));
+
+        for (String reminder : new String[]{"always", "day", "week", "month"}) {
+            setting.setVersionCheckReminder(reminder);
+            assertTrue(ShellVersionChecker.isReminderEnabled(setting));
+        }
     }
 
     @Test

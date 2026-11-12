@@ -4,7 +4,6 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.controller.MainController;
 import cn.oyzh.easyshell.controller.ShellMainController;
 import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.internal.ShellLLMTools;
@@ -27,12 +26,10 @@ import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
-import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import dev.langchain4j.data.message.AiMessage;
@@ -454,18 +451,11 @@ public class ChatController extends SubStageController {
 
     @Override
     public void onStageInitialize(StageAdapter stage) {
-        StageManager.getPrimaryStage().onShownProperty().addListener((observable, oldValue, newValue) -> {
-            StageAdapter adapter = StageManager.getAdapter(StageManager.getPrimaryStage());
-            MainController controller = (MainController) adapter.controller();
-            for (StageController subController : controller.getSubControllers()) {
-                if (subController instanceof ShellMainController mainController) {
-                    this.tabPane = mainController.getTabPane();
-                    this.init();
-                    break;
-                }
-            }
-        });
         super.onStageInitialize(stage);
+        if (this.getParent() instanceof ShellMainController mainController) {
+            this.tabPane = mainController.getTabPane();
+            this.init();
+        }
     }
 
     /**

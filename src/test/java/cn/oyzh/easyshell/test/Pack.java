@@ -234,7 +234,7 @@ public class Pack {
             } else if (StringUtil.equalsIgnoreCase(packType, "windows_image")) {
                 pack.win_image();
             } else {
-                throw new RuntimeException("unkown packType:" + packType);
+                throw new RuntimeException("unknown packType:" + packType);
             }
         }
     }

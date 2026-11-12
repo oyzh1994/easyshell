@@ -329,8 +329,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
         //     JulLog.warn("showMainView error", ex);
         // }
         ShellViewFactory.shellMain();
-        // 启动时异步检测正式版本更新
-        ShellVersionChecker.checkAsync();
+        // 开启更新提醒时才在启动后异步检测正式版本
+        ShellVersionChecker.checkOnStartup();
         // 绑定全屏按钮
         if (!OSUtil.isMacOS()) {
             Stage stage = StageManager.getPrimaryStage();

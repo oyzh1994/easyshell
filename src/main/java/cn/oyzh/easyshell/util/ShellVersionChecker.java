@@ -70,10 +70,30 @@ public final class ShellVersionChecker {
     }
 
     /**
-     * 启动时异步检测新版本，不弹窗。
+     * 启动时异步检测新版本，未开启更新提醒时不执行。
      */
-    public static void checkAsync() {
+    public static void checkOnStartup() {
+        if (!isReminderEnabled(ShellSettingStore.SETTING)) {
+            return;
+        }
         checkAsync(false, null);
+    }
+
+    /**
+     * 是否开启了更新提醒。
+     *
+     * @param setting 设置
+     * @return 是否开启
+     */
+    static boolean isReminderEnabled(ShellSetting setting) {
+        if (setting == null) {
+            return false;
+        }
+        String reminder = setting.getVersionCheckReminder();
+        return "always".equals(reminder)
+                || "day".equals(reminder)
+                || "week".equals(reminder)
+                || "month".equals(reminder);
     }
 
     /**
@@ -98,7 +118,7 @@ public final class ShellVersionChecker {
                     if (shouldRemind(setting)) {
                         // “每次启动提醒”不参与提醒日期记录，只有按周期提醒才记录
                         String reminder = setting.getVersionCheckReminder();
-                        if (StringUtil.isNotBlank(reminder) && !"startup".equals(reminder)) {
+                        if (StringUtil.isNotBlank(reminder) && !"always".equals(reminder)) {
                             setting.setVersionCheckLastRemindTime(System.currentTimeMillis());
                             ShellSettingStore.INSTANCE.update(setting);
                         }
@@ -148,14 +168,14 @@ public final class ShellVersionChecker {
      */
     static boolean shouldRemind(ShellSetting setting) {
         if (setting == null) {
-            return true;
+            return false;
         }
         String reminder = setting.getVersionCheckReminder();
-        if (StringUtil.isBlank(reminder) || "startup".equals(reminder)) {
-            return true;
-        }
-        if ("off".equals(reminder)) {
+        if (StringUtil.isBlank(reminder) || "off".equals(reminder) || "startup".equals(reminder)) {
             return false;
+        }
+        if ("always".equals(reminder)) {
+            return true;
         }
         long interval;
         if ("day".equals(reminder)) {
@@ -165,7 +185,7 @@ public final class ShellVersionChecker {
         } else if ("month".equals(reminder)) {
             interval = TimeUnit.DAYS.toMillis(30);
         } else {
-            return true;
+            return false;
         }
         Long lastRemindTime = setting.getVersionCheckLastRemindTime();
         return lastRemindTime == null

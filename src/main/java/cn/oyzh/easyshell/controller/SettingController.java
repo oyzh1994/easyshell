@@ -1170,6 +1170,11 @@ public class SettingController extends StageController {
                 this.updateReminderChanged = true;
             }
         });
+        this.settingTreeView.selectedItemChanged((observable, oldValue, newValue) -> {
+            if (newValue instanceof SettingLeftTreeItem item && "update_box".equals(item.getItemId())) {
+                this.ensureUpdateChecked();
+            }
+        });
     }
 
     /**
@@ -1211,7 +1216,9 @@ public class SettingController extends StageController {
                 ShellI18nHelper.updateForever());
         this.updateReady = false;
         String reminder = this.setting.getVersionCheckReminder();
-        if ("day".equals(reminder)) {
+        if ("always".equals(reminder)) {
+            this.updateReminder.select(0);
+        } else if ("day".equals(reminder)) {
             this.updateReminder.select(1);
         } else if ("week".equals(reminder)) {
             this.updateReminder.select(2);
@@ -1220,11 +1227,21 @@ public class SettingController extends StageController {
         } else if ("off".equals(reminder)) {
             this.updateReminder.select(4);
         } else {
-            this.updateReminder.select(0);
+            this.updateReminder.select(4);
         }
         this.updateReady = true;
         this.updateReminderChanged = false;
 
+        ShellVersionChecker.CheckResult cached = ShellVersionChecker.cachedResult();
+        if (cached != null) {
+            this.applyUpdateResult(cached);
+        }
+    }
+
+    /**
+     * 进入检查更新页面时检测新版本，已有检测结果时直接复用。
+     */
+    private void ensureUpdateChecked() {
         ShellVersionChecker.CheckResult cached = ShellVersionChecker.cachedResult();
         if (cached != null) {
             this.applyUpdateResult(cached);
@@ -1291,7 +1308,7 @@ public class SettingController extends StageController {
             case 2 -> this.setting.setVersionCheckReminder("week");
             case 3 -> this.setting.setVersionCheckReminder("month");
             case 4 -> this.setting.setVersionCheckReminder("off");
-            default -> this.setting.setVersionCheckReminder("startup");
+            default -> this.setting.setVersionCheckReminder("always");
         }
     }
 
