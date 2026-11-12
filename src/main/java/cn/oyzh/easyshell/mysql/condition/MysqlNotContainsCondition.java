@@ -21,12 +21,4 @@ public class MysqlNotContainsCondition extends MysqlContainsCondition {
     public MysqlNotContainsCondition() {
         super(I18nHelper.notContains(), "NOT LIKE");
     }
-
-    // @Override
-    // public String wrapCondition(Object condition) {
-    //     if (condition != null) {
-    //         return super.wrapCondition("%" + condition + "%");
-    //     }
-    //     return super.wrapCondition(condition);
-    // }
 }

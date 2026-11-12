@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.postgresql;
 
+import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.condition.PostgresqlBetweenCondition;
 import cn.oyzh.easyshell.postgresql.condition.PostgresqlContainsCondition;
 import cn.oyzh.easyshell.postgresql.condition.PostgresqlEmptyCondition;
@@ -13,7 +14,9 @@ import cn.oyzh.easyshell.postgresql.condition.PostgresqlNotInListCondition;
 import cn.oyzh.easyshell.postgresql.condition.PostgresqlNotStartWithCondition;
 import cn.oyzh.easyshell.postgresql.condition.PostgresqlNullCondition;
 import cn.oyzh.easyshell.postgresql.condition.PostgresqlStartWithCondition;
+import cn.oyzh.easyshell.postgresql.record.PostgresqlRecordFilter;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.util.DBUtil;
 import org.junit.Test;
 
 import java.util.List;
@@ -46,5 +49,19 @@ public class PostgresqlConditionTest {
         assertTrue(PostgresqlNotInListCondition.INSTANCE instanceof PostgresqlInListCondition);
         assertTrue(PostgresqlNotStartWithCondition.INSTANCE instanceof PostgresqlStartWithCondition);
         assertTrue(PostgresqlNotEndWithCondition.INSTANCE instanceof PostgresqlEndWithCondition);
+    }
+
+    @Test
+    public void buildsCompleteContainsCondition() throws Exception {
+        PostgresqlRecordFilter filter = new PostgresqlRecordFilter() {
+            @Override
+            public Object value() {
+                return "1";
+            }
+        };
+        filter.setColumn(new PostgresqlColumn("id"));
+        filter.setCondition(PostgresqlContainsCondition.INSTANCE);
+
+        assertEquals("\"id\" LIKE '%1%'", DBUtil.buildCondition(List.of(filter)).trim());
     }
 }

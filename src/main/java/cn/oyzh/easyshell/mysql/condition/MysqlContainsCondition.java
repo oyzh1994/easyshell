@@ -35,8 +35,8 @@ public class MysqlContainsCondition extends MysqlCondition {
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {
-            return super.wrapValue("%" + condition + "%");
+            return this.getValue() + " " + super.wrapValue("%" + condition + "%");
         }
-        return super.wrapValue(condition);
+        return null;
     }
 }

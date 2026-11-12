@@ -1,7 +1,5 @@
 package cn.oyzh.easyshell.mariadb.condition;
 
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.i18n.I18nHelper;
 
 /**
@@ -36,6 +34,6 @@ public class MariadbInListCondition extends MariadbCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return this.getValue() + " " +super.wrapListCondition(condition);
+        return this.getValue() + " " + super.wrapListCondition(condition);
     }
 }

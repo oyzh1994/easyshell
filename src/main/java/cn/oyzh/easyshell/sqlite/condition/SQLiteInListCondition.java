@@ -22,6 +22,6 @@ public class SQLiteInListCondition extends SQLiteCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return this.getValue() + " " +super.wrapListCondition(condition);
+        return this.getValue() + " " + super.wrapListCondition(condition);
     }
 }

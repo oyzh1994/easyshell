@@ -34,6 +34,6 @@ public class MysqlBetweenCondition extends MysqlCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return this.getValue() + " " +super.wrapBetweenCondition(condition);
+        return this.getValue() + " " + super.wrapBetweenCondition(condition);
     }
 }

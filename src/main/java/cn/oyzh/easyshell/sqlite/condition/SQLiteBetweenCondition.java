@@ -1,9 +1,6 @@
 package cn.oyzh.easyshell.sqlite.condition;
 
-import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.i18n.I18nHelper;
-
-import java.util.Collection;
 
 /**
  * SQLite 介于条件。
@@ -25,6 +22,6 @@ public class SQLiteBetweenCondition extends SQLiteCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return this.getValue() + " " +super.wrapBetweenCondition(condition);
+        return this.getValue() + " " + super.wrapBetweenCondition(condition);
     }
 }

@@ -21,9 +21,4 @@ public class PostgresqlEmptyCondition extends PostgresqlCondition {
     public PostgresqlEmptyCondition() {
         super(I18nHelper.isEmpty(), "= ''", false);
     }
-
-    @Override
-    public String wrapCondition(Object condition) {
-        return condition == null ? null : condition.toString();
-    }
 }

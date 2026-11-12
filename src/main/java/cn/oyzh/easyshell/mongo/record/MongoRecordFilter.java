@@ -121,15 +121,6 @@ public class MongoRecordFilter extends DBRecordFilter {
         return this.column.getName();
     }
 
-//    /**
-//     * 获取条件
-//     *
-//     * @return 条件
-//     */
-//    public Bson condition() {
-//        return this.condition.wrapCondition(this.column(), this.value());
-//    }
-
     /**
      * 是否需要条件
      *

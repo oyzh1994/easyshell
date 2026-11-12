@@ -36,6 +36,7 @@ public class PostgresqlInListCondition extends PostgresqlCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return this.getValue() + " " +super.wrapListCondition(condition);
+        String wrapped = super.wrapListCondition(condition);
+        return wrapped == null ? null : this.getValue() + " " + wrapped;
     }
 }

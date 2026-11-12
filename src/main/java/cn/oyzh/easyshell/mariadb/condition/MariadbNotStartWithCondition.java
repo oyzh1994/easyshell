@@ -21,12 +21,4 @@ public class MariadbNotStartWithCondition extends MariadbStartWithCondition {
     public MariadbNotStartWithCondition() {
         super(I18nHelper.notStartWith(), "NOT LIKE");
     }
-
-    // @Override
-    // public String wrapCondition(Object condition) {
-    //     if (condition != null) {
-    //         return super.wrapCondition("%" + condition);
-    //     }
-    //     return super.wrapCondition(condition);
-    // }
 }

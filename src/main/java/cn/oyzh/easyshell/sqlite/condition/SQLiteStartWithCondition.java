@@ -22,6 +22,6 @@ public class SQLiteStartWithCondition extends SQLiteCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return condition == null ? null : super.wrapValue(condition + "%");
+        return condition == null ? null : this.getValue() + " " +  super.wrapValue(condition + "%");
     }
 }

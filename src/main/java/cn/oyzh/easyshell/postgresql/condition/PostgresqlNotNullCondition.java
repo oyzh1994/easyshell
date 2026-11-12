@@ -21,9 +21,4 @@ public class PostgresqlNotNullCondition extends PostgresqlCondition {
     public PostgresqlNotNullCondition() {
         super(I18nHelper.notIsNull(), "IS NOT NULL", false);
     }
-
-    @Override
-    public String wrapCondition(Object condition) {
-        return condition == null ? null : condition.toString();
-    }
 }

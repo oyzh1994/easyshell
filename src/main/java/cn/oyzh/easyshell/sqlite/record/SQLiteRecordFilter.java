@@ -103,10 +103,6 @@ public class SQLiteRecordFilter extends DBRecordFilter {
         return this.column.getName();
     }
 
-//    public String condition() throws Exception {
-//        return this.condition.wrapCondition(this.column(), this.value());
-//    }
-
     public boolean isRequireCondition() {
         return this.condition.isRequireCondition();
     }

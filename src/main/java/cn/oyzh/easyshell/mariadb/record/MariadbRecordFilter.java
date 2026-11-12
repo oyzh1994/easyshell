@@ -120,17 +120,6 @@ public class MariadbRecordFilter extends DBRecordFilter {
         return this.column.getName();
     }
 
-//    /**
-//     * 获取条件
-//     *
-//     * @return 条件
-//     * @throws Exception 异常
-//     */
-//    public String condition() throws Exception {
-//        Object obj = this.condition.wrapCondition(this.column(), this.value());
-//        return obj == null ? null : obj.toString();
-//    }
-
     /**
      * 是否需要条件
      *

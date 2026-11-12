@@ -35,8 +35,8 @@ public class MariadbContainsCondition extends MariadbCondition {
     @Override
     public String wrapCondition(Object condition) {
         if (condition != null) {
-            return super.wrapValue("%" + condition + "%");
+            return  this.getValue() + " " + super.wrapValue("%" + condition + "%");
         }
-        return super.wrapValue(condition);
+        return null;
     }
 }

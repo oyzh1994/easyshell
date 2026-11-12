@@ -21,12 +21,4 @@ public class MariadbNotEndWithCondition extends MariadbEndWithCondition {
     public MariadbNotEndWithCondition() {
         super(I18nHelper.notEndWith(), "NOT LIKE");
     }
-
-    // @Override
-    // public String wrapCondition(Object condition) {
-    //     if (condition != null) {
-    //         return super.wrapCondition(condition + "%");
-    //     }
-    //     return super.wrapCondition(condition);
-    // }
 }
