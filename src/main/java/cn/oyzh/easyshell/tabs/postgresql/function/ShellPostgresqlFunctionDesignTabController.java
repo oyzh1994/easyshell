@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.postgresql.function;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.postgresql.ShellPostgresqlHelper;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlAlertFunctionParam;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlCreateFunctionParam;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlFunction;
@@ -420,10 +421,8 @@ public class ShellPostgresqlFunctionDesignTabController extends RichTabControlle
         tempFunction.setOriginalReturnParam(this.function.getReturnParam());
         tempFunction.setParams(this.paramTable.getItems());
         String definition = this.definition.getTextTrim();
-        // 含 OUT/INOUT 参数时，默认模板里的 RETURN 0 不合法，改为 RETURN
-        if (this.hasOutputParam() && definition.contains("-- Routine body goes here...")) {
-            definition = definition.replaceAll("(?i)RETURN\\s+0\\s*;", "RETURN;");
-        }
+        // 含OUT/INOUT参数时，默认模板中的RETURN表达式不合法
+        definition = ShellPostgresqlHelper.normalizeFunctionBody(definition, this.hasOutputParam());
         tempFunction.setDefinition(definition);
         tempFunction.setSecurityType(this.securityType.getSelectedItem());
 

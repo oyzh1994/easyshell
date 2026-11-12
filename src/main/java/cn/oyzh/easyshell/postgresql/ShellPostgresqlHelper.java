@@ -544,6 +544,24 @@ public class ShellPostgresqlHelper {
     }
 
     /**
+     * 规范化函数默认模板
+     * 含OUT/INOUT参数时，PostgreSQL要求使用无参数RETURN
+     *
+     * @param definition     函数定义
+     * @param hasOutputParam 是否存在输出参数
+     * @return 函数定义
+     */
+    public static String normalizeFunctionBody(String definition, boolean hasOutputParam) {
+        if (!hasOutputParam || StringUtil.isBlank(definition)
+                || !definition.contains("-- Routine body goes here...")) {
+            return definition;
+        }
+        return definition.replaceAll(
+                "(?im)^([\\t ]*)RETURN[\\t ]+[^;]*;[\\t ]*$",
+                "$1RETURN;");
+    }
+
+    /**
      * 解析函数定义中的函数体
      * 支持AS $$ ... $$、AS $tag$ ... $tag$以及AS '...'三种形式
      *
