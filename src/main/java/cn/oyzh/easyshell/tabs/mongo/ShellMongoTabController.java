@@ -85,7 +85,12 @@ public class ShellMongoTabController extends ShellBaseTabController {
         // 加载根节点
         StageManager.showMask(this.getWindow(), () -> {
             try {
-                this.client.start();
+                if (!this.client.isConnected()) {
+                    this.client.start();
+                }
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.client.isConnected()) {
                     this.client.close();
                     MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
@@ -98,11 +103,13 @@ public class ShellMongoTabController extends ShellBaseTabController {
                 this.treeView.root().expend();
                 this.hideLeft();
             } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
+                if (!ThreadUtil.isInterrupted()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
                 this.closeTab();
             }
-        });
+        }, this::closeTab);
     }
 
     /**

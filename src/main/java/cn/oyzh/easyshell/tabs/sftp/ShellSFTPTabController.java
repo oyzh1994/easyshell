@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.sftp;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
@@ -15,6 +16,7 @@ import cn.oyzh.easyshell.sftp.ShellSFTPFile;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
@@ -27,7 +29,6 @@ import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
@@ -160,7 +161,11 @@ public class ShellSFTPTabController extends ShellBaseTabController {
                 if (!this.client.isConnected()) {
                     this.client.start();
                 }
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.client.isConnected()) {
+                    this.client.close();
                     MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
@@ -181,11 +186,13 @@ public class ShellSFTPTabController extends ShellBaseTabController {
                 // 设置收藏处理
                 this.location.setFileCollectSupplier(() -> ShellFileUtil.fileCollect(this.client));
             } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
+                if (!ThreadUtil.isInterrupted()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
                 this.closeTab();
             }
-        });
+        }, this::closeTab);
     }
 
     @Override
@@ -377,9 +384,9 @@ public class ShellSFTPTabController extends ShellBaseTabController {
 
     @Override
     public void destroy() {
-//        this.client = null;
-//        this.connectStore = null;
-//        this.fileTable.destroy();
+        //        this.client = null;
+        //        this.connectStore = null;
+        //        this.fileTable.destroy();
         this.client.removeTaskSizeListener(this.taskSizeListener, this.taskTypes);
         super.destroy();
     }

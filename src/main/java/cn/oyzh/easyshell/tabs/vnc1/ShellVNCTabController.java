@@ -6,11 +6,11 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.vnc1.ShellVNCClient;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.vnc.VncFramebufferView;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -78,7 +78,11 @@ public class ShellVNCTabController extends ShellBaseTabController {
                 if (!this.client.isConnected()) {
                     this.client.start();
                 }
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.client.isConnected()) {
+                    this.client.close();
                     MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
@@ -87,11 +91,13 @@ public class ShellVNCTabController extends ShellBaseTabController {
                 this.initVncView();
                 this.hideLeft();
             } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
+                if (!ThreadUtil.isInterrupted()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
                 this.closeTab();
             }
-        });
+        }, this::closeTab);
     }
 
     /**

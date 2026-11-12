@@ -11,14 +11,12 @@ import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.terminal.ShellTermWidgetUtil;
 import cn.oyzh.easyshell.util.ShellClientUtil;
-import cn.oyzh.easyshell.util.ShellConnectUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
-import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -32,7 +30,7 @@ import java.io.IOException;
  * @author oyzh
  * @since 2025-04-24
  */
-public class ShellRLoginTabController extends ShellBaseTabController implements ShellSnippetAdapter{
+public class ShellRLoginTabController extends ShellBaseTabController implements ShellSnippetAdapter {
 
     /**
      * 终端组件
@@ -108,15 +106,15 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         widget.requestFocus();
     }
 
-//    /**
-//     * 初始化背景
-//     */
-//    private void initBackground() {
-//        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
-//        // 处理背景
-////        ShellConnectUtil.initBackground(connect, terminalPanel);
-//        ShellConnectUtil.initTermBackground(terminalPanel);
-//    }
+    //    /**
+    //     * 初始化背景
+    //     */
+    //    private void initBackground() {
+    //        FXTerminalPanel terminalPanel = this.widget.getTerminalPanel();
+    //        // 处理背景
+    ////        ShellConnectUtil.initBackground(connect, terminalPanel);
+    //        ShellConnectUtil.initTermBackground(terminalPanel);
+    //    }
 
     /**
      * 初始化
@@ -131,7 +129,11 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
                 if (!this.client.isConnected()) {
                     this.client.start();
                 }
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.client.isConnected()) {
+                    this.client.close();
                     MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
@@ -143,14 +145,16 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
                 this.hideLeft();
                 // 初始化组件
                 this.initWidget();
-//                // 异步加载背景
-//                ThreadUtil.start(this::initBackground);
+                //                // 异步加载背景
+                //                ThreadUtil.start(this::initBackground);
             } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
+                if (!ThreadUtil.isInterrupted()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
                 this.closeTab();
             }
-        });
+        }, this::closeTab);
     }
 
     @Override
@@ -195,7 +199,7 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
             this.client = newClient;
             this.replaceWidget(oldWidget, newClient);
             ShellTermWidgetUtil.close(oldWidget);
-//            ThreadUtil.start(this::initBackground);
+            //            ThreadUtil.start(this::initBackground);
         } catch (Throwable ex) {
             IOUtil.close(newClient);
             this.client = oldClient;
@@ -251,9 +255,9 @@ public class ShellRLoginTabController extends ShellBaseTabController implements 
         this.widget.getTtyConnector().write(content);
     }
 
-//    @Override
-//    public void destroy() {
-//        this.widget.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.widget.destroy();
+    //        super.destroy();
+    //    }
 }

@@ -1,16 +1,17 @@
 package cn.oyzh.easyshell.tabs.rdp;
 
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.rdp.RdpView;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
@@ -78,7 +79,11 @@ public class ShellRdpTabController extends ShellBaseTabController {
                 if (!this.client.isConnected()) {
                     this.client.start();
                 }
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.client.isConnected()) {
+                    this.client.close();
                     MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
@@ -95,11 +100,13 @@ public class ShellRdpTabController extends ShellBaseTabController {
                 }
                 this.hideLeft();
             } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
+                if (!ThreadUtil.isInterrupted()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
                 this.closeTab();
             }
-        });
+        }, this::closeTab);
     }
 
     @Override

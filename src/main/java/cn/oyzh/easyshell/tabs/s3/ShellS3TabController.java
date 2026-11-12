@@ -1,15 +1,16 @@
 package cn.oyzh.easyshell.tabs.s3;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.tabs.ShellParentTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -73,7 +74,11 @@ public class ShellS3TabController extends ShellParentTabController {
                 if (!this.client.isConnected()) {
                     this.client.start();
                 }
+                if (ThreadUtil.isInterrupted()) {
+                    return;
+                }
                 if (!this.client.isConnected()) {
+                    this.client.close();
                     MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                     this.closeTab();
                     return;
@@ -86,11 +91,13 @@ public class ShellS3TabController extends ShellParentTabController {
                 this.fileTabController.init();
                 // this.bucketTabController.init();
             } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
+                if (!ThreadUtil.isInterrupted()) {
+                    ex.printStackTrace();
+                    MessageBox.exception(ex, this.getWindow());
+                }
                 this.closeTab();
             }
-        });
+        }, this::closeTab);
     }
 
     @Override
@@ -104,10 +111,10 @@ public class ShellS3TabController extends ShellParentTabController {
         return List.of(this.fileTabController, this.bucketTabController);
     }
 
-//    @Override
-//    public void destroy() {
-//        this.fileTabController.destroy();
-//        this.bucketTabController.destroy();
-//        super.destroy();
-//    }
+    //    @Override
+    //    public void destroy() {
+    //        this.fileTabController.destroy();
+    //        this.bucketTabController.destroy();
+    //        super.destroy();
+    //    }
 }
