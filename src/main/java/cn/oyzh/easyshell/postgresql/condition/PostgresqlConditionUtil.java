@@ -21,6 +21,17 @@ import java.util.List;
  */
 public class PostgresqlConditionUtil {
 
+    static {
+        ensureRegistered();
+    }
+
+    /**
+     * 确保条件初始化器已注册
+     */
+    public static void ensureRegistered() {
+        DBConditionManager.registerInitializer(DBDialect.POSTGRESQL, PostgresqlConditionUtil::init);
+    }
+
     /**
      * 初始化
      */

@@ -101,6 +101,7 @@ public class DamengRecordFilter extends DBRecordFilter {
      * @return 条件组件
      */
     public DBConditionComboBox getConditionControl() {
+        DamengConditionUtil.ensureRegistered();
         DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.DAMENG);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = (DamengCondition) newValue;

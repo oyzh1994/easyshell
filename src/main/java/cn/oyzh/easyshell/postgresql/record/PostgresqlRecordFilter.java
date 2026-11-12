@@ -101,6 +101,7 @@ public class PostgresqlRecordFilter extends DBRecordFilter {
      * @return 条件组件
      */
     public DBConditionComboBox getConditionControl() {
+        PostgresqlConditionUtil.ensureRegistered();
         DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.POSTGRESQL);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = (PostgresqlCondition) newValue;

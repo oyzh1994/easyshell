@@ -102,6 +102,7 @@ public class MongoRecordFilter extends DBRecordFilter {
      * @return 条件组件
      */
     public DBConditionComboBox getConditionControl() {
+        MongoConditionUtil.ensureRegistered();
         DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.MONGODB);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = (MongoCondition) newValue;

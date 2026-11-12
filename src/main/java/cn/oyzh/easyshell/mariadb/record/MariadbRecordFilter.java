@@ -101,6 +101,7 @@ public class MariadbRecordFilter extends DBRecordFilter {
      * @return 条件组件
      */
     public DBConditionComboBox getConditionControl() {
+        MariadbConditionUtil.ensureRegistered();
         DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.MARIADB);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = (MariadbCondition) newValue;

@@ -101,6 +101,7 @@ public class MysqlRecordFilter extends DBRecordFilter {
      * @return 条件组件
      */
     public DBConditionComboBox getConditionControl() {
+        MysqlConditionUtil.ensureRegistered();
         DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.MYSQL);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = (MysqlCondition) newValue;

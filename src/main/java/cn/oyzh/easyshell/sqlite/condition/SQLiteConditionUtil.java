@@ -21,6 +21,17 @@ import java.util.List;
  */
 public class SQLiteConditionUtil {
 
+    static {
+        ensureRegistered();
+    }
+
+    /**
+     * 确保条件初始化器已注册
+     */
+    public static void ensureRegistered() {
+        DBConditionManager.registerInitializer(DBDialect.SQLITE, SQLiteConditionUtil::init);
+    }
+
     public static final SQLiteCondition CONTAINS = SQLiteContainsCondition.INSTANCE;
     public static final SQLiteCondition NOT_CONTAINS = SQLiteNotContainsCondition.INSTANCE;
     public static final SQLiteCondition EQ = SQLiteEqCondition.INSTANCE;

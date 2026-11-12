@@ -23,6 +23,17 @@ import java.util.regex.Pattern;
  */
 public class MongoConditionUtil {
 
+    static {
+        ensureRegistered();
+    }
+
+    /**
+     * 确保条件初始化器已注册
+     */
+    public static void ensureRegistered() {
+        DBConditionManager.registerInitializer(DBDialect.MONGODB, MongoConditionUtil::init);
+    }
+
     /**
      * 初始化
      *

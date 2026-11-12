@@ -21,6 +21,17 @@ import java.util.List;
  */
 public class MysqlConditionUtil {
 
+    static {
+        ensureRegistered();
+    }
+
+    /**
+     * 确保条件初始化器已注册
+     */
+    public static void ensureRegistered() {
+        DBConditionManager.registerInitializer(DBDialect.MYSQL, MysqlConditionUtil::init);
+    }
+
     /**
      * 初始化
      */

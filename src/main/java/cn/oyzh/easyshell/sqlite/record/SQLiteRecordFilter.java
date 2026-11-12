@@ -89,6 +89,7 @@ public class SQLiteRecordFilter extends DBRecordFilter {
     }
 
     public DBConditionComboBox getConditionControl() {
+        SQLiteConditionUtil.ensureRegistered();
         DBConditionComboBox comboBox = new DBConditionComboBox(DBDialect.SQLITE);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> {
             this.condition = (SQLiteCondition) newValue;
