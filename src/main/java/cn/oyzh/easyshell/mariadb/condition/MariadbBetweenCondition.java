@@ -39,6 +39,6 @@ public class MariadbBetweenCondition extends MariadbCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return super.wrapBetweenCondition(condition);
+        return this.getValue() + " " +super.wrapBetweenCondition(condition);
     }
 }

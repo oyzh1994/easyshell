@@ -28,6 +28,6 @@ public class DamengInListCondition extends DamengCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return super.wrapListCondition(condition);
+        return this.getValue() + " " +super.wrapListCondition(condition);
     }
 }
