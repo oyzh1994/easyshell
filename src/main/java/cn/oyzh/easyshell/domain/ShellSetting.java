@@ -7,6 +7,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.domain.AppSetting;
 import cn.oyzh.fx.tty.TtyTerminalEngine;
@@ -89,6 +90,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Integer llmExecutionMode = LLMExecutionMode.APPROVE.ordinal();
+
+    /**
+     * LLM请求超时时间（分钟），0表示无限制
+     */
+    @Column
+    private Integer llmTimeoutMinutes = LLMRequestTimeout.DEFAULT_MINUTES;
 
     /**
      * 终端类型
@@ -294,19 +301,19 @@ public class ShellSetting extends AppSetting {
     @Column
     private Boolean syncShortcut;
 
-    /**
-     * 启用快捷键（旧配置字段，仅用于迁移）
-     */
-    @Deprecated
-    @Column
-    private Boolean enableShortcutKey;
+//    /**
+//     * 启用快捷键（旧配置字段，仅用于迁移）
+//     */
+//    @Deprecated
+//    @Column
+//    private Boolean enableShortcutKey;
 
-    /**
-     * 快捷键方案 JSON（旧配置字段，仅用于迁移）
-     */
-    @Deprecated
-    @Column
-    private String shortcutKeyConfig;
+//    /**
+//     * 快捷键方案 JSON（旧配置字段，仅用于迁移）
+//     */
+//    @Deprecated
+//    @Column
+//    private String shortcutKeyConfig;
 
     /**
      * 图形模式
@@ -537,6 +544,24 @@ public class ShellSetting extends AppSetting {
         this.llmExecutionMode = LLMExecutionMode.fromOrdinal(llmExecutionMode).ordinal();
     }
 
+    /**
+     * 获取LLM请求超时时间（分钟）
+     *
+     * @return 超时时间，0表示无限制
+     */
+    public int getLlmTimeoutMinutes() {
+        return LLMRequestTimeout.fromMinutes(this.llmTimeoutMinutes).getMinutes();
+    }
+
+    /**
+     * 设置LLM请求超时时间（分钟）
+     *
+     * @param llmTimeoutMinutes 超时时间，0表示无限制
+     */
+    public void setLlmTimeoutMinutes(int llmTimeoutMinutes) {
+        this.llmTimeoutMinutes = LLMRequestTimeout.fromMinutes(llmTimeoutMinutes).getMinutes();
+    }
+
     @Override
     public void copy(Object o) {
         super.copy(o);
@@ -548,8 +573,8 @@ public class ShellSetting extends AppSetting {
             this.showTabIndex = setting.showTabIndex;
             this.syncShortcut = setting.syncShortcut;
             this.connectShowType = setting.connectShowType;
-            this.enableShortcutKey = setting.enableShortcutKey;
-            this.shortcutKeyConfig = setting.shortcutKeyConfig;
+//            this.enableShortcutKey = setting.enableShortcutKey;
+//            this.shortcutKeyConfig = setting.shortcutKeyConfig;
             this.connectShowMoreInfo = setting.connectShowMoreInfo;
             this.hiddenLeftAfterConnected = setting.hiddenLeftAfterConnected;
             // 大模型
@@ -558,6 +583,7 @@ public class ShellSetting extends AppSetting {
             this.llmMaxMessages = setting.llmMaxMessages;
             this.llmThinkingLevel = setting.llmThinkingLevel;
             this.llmExecutionMode = setting.llmExecutionMode;
+            this.llmTimeoutMinutes = setting.llmTimeoutMinutes;
             // 终端
             this.termBeep = setting.termBeep;
             this.termType = setting.termType;
@@ -1374,37 +1400,37 @@ public class ShellSetting extends AppSetting {
         this.recordPageLimit = recordPageLimit;
     }
 
-    /**
-     * 是否启用快捷键
-     */
-    @Deprecated
-    public boolean isEnableShortcutKey() {
-        return this.enableShortcutKey == null || this.enableShortcutKey;
-    }
-
-    /**
-     * 设置是否启用快捷键
-     */
-    @Deprecated
-    public void setEnableShortcutKey(boolean enableShortcutKey) {
-        this.enableShortcutKey = enableShortcutKey;
-    }
-
-    /**
-     * 获取快捷键方案配置
-     */
-    @Deprecated
-    public String getShortcutKeyConfig() {
-        return this.shortcutKeyConfig;
-    }
-
-    /**
-     * 设置快捷键方案配置
-     */
-    @Deprecated
-    public void setShortcutKeyConfig(String shortcutKeyConfig) {
-        this.shortcutKeyConfig = shortcutKeyConfig;
-    }
+//    /**
+//     * 是否启用快捷键
+//     */
+//    @Deprecated
+//    public boolean isEnableShortcutKey() {
+//        return this.enableShortcutKey == null || this.enableShortcutKey;
+//    }
+//
+//    /**
+//     * 设置是否启用快捷键
+//     */
+//    @Deprecated
+//    public void setEnableShortcutKey(boolean enableShortcutKey) {
+//        this.enableShortcutKey = enableShortcutKey;
+//    }
+//
+//    /**
+//     * 获取快捷键方案配置
+//     */
+//    @Deprecated
+//    public String getShortcutKeyConfig() {
+//        return this.shortcutKeyConfig;
+//    }
+//
+//    /**
+//     * 设置快捷键方案配置
+//     */
+//    @Deprecated
+//    public void setShortcutKeyConfig(String shortcutKeyConfig) {
+//        this.shortcutKeyConfig = shortcutKeyConfig;
+//    }
 
     /**
      * mongo记录每页限制

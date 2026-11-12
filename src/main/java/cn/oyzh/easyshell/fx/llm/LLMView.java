@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.llm.LLMDurationUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
 import cn.oyzh.easyshell.llm.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
@@ -351,6 +352,7 @@ public class LLMView extends FXSplitPane {
                 this.buildThinkingMenu(),
                 this.buildExecutionModeMenu(),
                 this.buildStreamingMenu(),
+                this.buildTimeoutMenu(),
                 this.buildMessageLimitMenu()
         );
         menu.show(this.settingsButton, Side.TOP, 0, -4);
@@ -460,6 +462,27 @@ public class LLMView extends FXSplitPane {
         disabledItem.setOnAction(event -> this.setStreamingEnabled(false));
         menu.getItems().addAll(enabledItem, disabledItem);
         return menu;
+    }
+
+    private Menu buildTimeoutMenu() {
+        LLMRequestTimeout selected = LLMRequestTimeout.fromMinutes(this.setting.getLlmTimeoutMinutes());
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.timeout"));
+        ToggleGroup group = new ToggleGroup();
+        for (LLMRequestTimeout timeout : LLMRequestTimeout.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getTimeoutName(timeout));
+            item.setToggleGroup(group);
+            item.setSelected(timeout == selected);
+            item.setOnAction(event -> this.setLlmTimeout(timeout));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private String getTimeoutName(LLMRequestTimeout timeout) {
+        if (timeout == LLMRequestTimeout.UNLIMITED) {
+            return I18nResourceBundle.i18nString("shell.llm.timeout.unlimited");
+        }
+        return String.format(I18nResourceBundle.i18nString("shell.llm.timeout.minutes"), timeout.getMinutes());
     }
 
     /**
@@ -932,6 +955,18 @@ public class LLMView extends FXSplitPane {
     public void setLlmMaxMessages(int limit) {
         this.setting.setLlmMaxMessages(limit);
         this.settingStore.replace(this.setting);
+    }
+
+    /**
+     * 设置请求超时时间，并持久化到设置
+     *
+     * @param timeout 超时时间
+     */
+    public void setLlmTimeout(LLMRequestTimeout timeout) {
+        if (timeout != null) {
+            this.setting.setLlmTimeoutMinutes(timeout.getMinutes());
+            this.settingStore.replace(this.setting);
+        }
     }
 
     /**

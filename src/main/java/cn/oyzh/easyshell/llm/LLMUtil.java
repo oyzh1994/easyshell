@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.llm;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ResourceUtil;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel;
 import dev.langchain4j.model.chat.ChatModel;
@@ -14,9 +15,12 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
+import dev.langchain4j.http.client.HttpClientBuilder;
+import dev.langchain4j.http.client.HttpClientBuilderLoader;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,6 +30,11 @@ public class LLMUtil {
      * Default maximum number of output tokens per model response.
      */
     public static final int DEFAULT_MAX_OUTPUT_TOKENS = 8192;
+
+    /**
+     * 大模型聊天连接超时时间。
+     */
+    public static final Duration DEFAULT_CONNECT_TIMEOUT = Duration.ofSeconds(15);
 
     /**
      * 大模型文本资源缓存
@@ -38,6 +47,7 @@ public class LLMUtil {
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
                     .baseUrl(provider.getBaseUrl())
+                    .httpClientBuilder(createHttpClientBuilder())
                     .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder.returnThinking(true)
@@ -50,6 +60,7 @@ public class LLMUtil {
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
                     .baseUrl(provider.getBaseUrl())
+                    .httpClientBuilder(createHttpClientBuilder())
                     .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder.returnThinking(true)
@@ -62,6 +73,7 @@ public class LLMUtil {
             builder.apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
                     .baseUrl(provider.getBaseUrl())
+                    .httpClientBuilder(createHttpClientBuilder())
                     .maxOutputTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 GeminiThinkingConfig thinkingConfig = GeminiThinkingConfig.builder()
@@ -76,6 +88,7 @@ public class LLMUtil {
         OllamaChatModel.OllamaChatModelBuilder builder = new OllamaChatModel.OllamaChatModelBuilder()
                 .modelName(provider.getDefaultModel())
                 .baseUrl(provider.getBaseUrl())
+                .httpClientBuilder(createHttpClientBuilder())
                 .numPredict(DEFAULT_MAX_OUTPUT_TOKENS);
         if (thinkingLevel != LLMThinkingLevel.OFF) {
             builder.returnThinking(true);
@@ -89,6 +102,7 @@ public class LLMUtil {
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
                     .baseUrl(provider.getBaseUrl())
+                    .httpClientBuilder(createHttpClientBuilder())
                     .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder = builder.returnThinking(true)
@@ -101,6 +115,7 @@ public class LLMUtil {
                     .apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
                     .baseUrl(provider.getBaseUrl())
+                    .httpClientBuilder(createHttpClientBuilder())
                     .maxTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 builder = builder.returnThinking(true)
@@ -113,6 +128,7 @@ public class LLMUtil {
             builder.apiKey(provider.getSk())
                     .modelName(provider.getDefaultModel())
                     .baseUrl(provider.getBaseUrl())
+                    .httpClientBuilder(createHttpClientBuilder())
                     .maxOutputTokens(DEFAULT_MAX_OUTPUT_TOKENS);
             if (thinkingLevel != LLMThinkingLevel.OFF) {
                 GeminiThinkingConfig thinkingConfig = GeminiThinkingConfig.builder()
@@ -127,11 +143,19 @@ public class LLMUtil {
         OllamaStreamingChatModel.OllamaStreamingChatModelBuilder builder = new OllamaStreamingChatModel.OllamaStreamingChatModelBuilder()
                 .modelName(provider.getDefaultModel())
                 .baseUrl(provider.getBaseUrl())
+                .httpClientBuilder(createHttpClientBuilder())
                 .numPredict(DEFAULT_MAX_OUTPUT_TOKENS);
         if (thinkingLevel != LLMThinkingLevel.OFF) {
             builder = builder.returnThinking(true);
         }
         return new OllamaStreamingChatModel(builder);
+    }
+
+    private static HttpClientBuilder createHttpClientBuilder() {
+        HttpClientBuilder builder = HttpClientBuilderLoader.loadHttpClientBuilder()
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT);
+        Duration requestTimeout = LLMRequestTimeout.fromMinutes(ShellSettingStore.SETTING.getLlmTimeoutMinutes()).getDuration();
+        return requestTimeout == null ? builder : builder.readTimeout(requestTimeout);
     }
 
     /**
