@@ -36,6 +36,6 @@ public class PostgresqlStartWithCondition extends PostgresqlCondition {
 
     @Override
     public String wrapCondition(Object condition) {
-        return condition == null ? null :  this.getValue() + " " + super.wrapCondition(condition + "%");
+        return condition == null ? null : "::text " + this.getValue() + " " + super.wrapValue(condition + "%");
     }
 }

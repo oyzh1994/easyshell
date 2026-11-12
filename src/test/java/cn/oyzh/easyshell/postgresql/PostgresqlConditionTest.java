@@ -29,12 +29,12 @@ public class PostgresqlConditionTest {
     @Test
     public void reusesBaseConditionDesign() {
         assertEquals("= 'a'", PostgresqlEqCondition.INSTANCE.wrapCondition("name", "a"));
-        assertEquals("LIKE '%a%'", PostgresqlContainsCondition.INSTANCE.wrapCondition("name", "a"));
-        assertEquals("NOT LIKE '%a%'", PostgresqlNotContainsCondition.INSTANCE.wrapCondition("name", "a"));
+        assertEquals("::text LIKE '%a%'", PostgresqlContainsCondition.INSTANCE.wrapCondition("name", "a"));
+        assertEquals("::text NOT LIKE '%a%'", PostgresqlNotContainsCondition.INSTANCE.wrapCondition("name", "a"));
         assertEquals("IS NULL", PostgresqlNullCondition.INSTANCE.wrapCondition("name", "IS NULL"));
         assertEquals("= ''", PostgresqlEmptyCondition.INSTANCE.wrapCondition("name", "= ''"));
-        assertEquals("LIKE 'a%'", PostgresqlStartWithCondition.INSTANCE.wrapCondition("name", "a"));
-        assertEquals("LIKE '%a'", PostgresqlEndWithCondition.INSTANCE.wrapCondition("name", "a"));
+        assertEquals("::text LIKE 'a%'", PostgresqlStartWithCondition.INSTANCE.wrapCondition("name", "a"));
+        assertEquals("::text LIKE '%a'", PostgresqlEndWithCondition.INSTANCE.wrapCondition("name", "a"));
         assertEquals("BETWEEN 1 AND 9", PostgresqlBetweenCondition.INSTANCE.wrapCondition("age", List.of(1, 9)));
         assertEquals("NOT BETWEEN 1 AND 9", PostgresqlNotBetweenCondition.INSTANCE.wrapCondition("age", List.of(1, 9)));
         assertEquals("IN ('a', 'b')", PostgresqlInListCondition.INSTANCE.wrapCondition("name", "a,b"));
@@ -62,6 +62,6 @@ public class PostgresqlConditionTest {
         filter.setColumn(new PostgresqlColumn("id"));
         filter.setCondition(PostgresqlContainsCondition.INSTANCE);
 
-        assertEquals("\"id\" LIKE '%1%'", DBUtil.buildCondition(List.of(filter)).trim());
+        assertEquals("\"id\" ::text LIKE '%1%'", DBUtil.buildCondition(List.of(filter)).trim());
     }
 }
