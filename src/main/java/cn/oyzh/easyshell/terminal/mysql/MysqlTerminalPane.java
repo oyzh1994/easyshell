@@ -72,6 +72,10 @@ public class MysqlTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "mysql";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, MysqlTerminalManager::registerHandlers);
+    }
+
     @Override
     public String terminalName() {
         return TERMINAL_NAME;

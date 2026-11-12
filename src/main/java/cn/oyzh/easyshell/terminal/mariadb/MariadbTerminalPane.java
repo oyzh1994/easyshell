@@ -72,6 +72,10 @@ public class MariadbTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "mariadb";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, MariadbTerminalManager::registerHandlers);
+    }
+
     @Override
     public String terminalName() {
         return TERMINAL_NAME;

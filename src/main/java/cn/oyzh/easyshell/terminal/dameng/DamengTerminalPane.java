@@ -86,6 +86,10 @@ public class DamengTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "dameng";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, DamengTerminalManager::registerHandlers);
+    }
+
     @Override
     public String terminalName() {
         return TERMINAL_NAME;

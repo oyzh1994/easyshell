@@ -3,7 +3,7 @@
 > 分析日期：2026-11-13  
 > 适用版本：1.2.5  
 > 目标：在不影响现有功能的前提下，按条收敛启动期的非必要类加载。  
-> 当前状态：L1 已实施并完成冷启动验证；其余项目待逐项评估。
+> 当前状态：L1、L4 已实施并完成冷启动验证；L2/L3 已评估并回滚，暂不实施；其余项目待逐项评估。
 
 ## 1. 结论摘要
 
@@ -11,7 +11,10 @@
 - 启动后 12 秒 JVM 私有内存约 `74.5 MB`，后续在 `82-85 MB` 区间随 GC 波动。
 - 之前的新包约 `8103` 类，当前减少约 `1711` 类。聊天懒加载和关闭更新提醒的启动检测已经取得主要效果。
 - L1 已完成：六种数据库的 `132` 个条件类不再随应用启动加载。各 `*ConditionUtil` 通过静态块自注册，`getConditionControl()` 通过幂等的 `ensureRegistered()` 触发类初始化，首次真正取条件时才初始化。
+- L4 已完成：9 个终端 Manager 的注册从启动阶段移到对应 Pane 的静态初始化块；两次冷启动中 9 个 Manager 和原先由方法引用生成的 9 个 `EasyShellApp$$Lambda` 均未加载，EasyShell 应用类由 `210` 降至 `192`。
 - L1 后直接运行 fat JAR 的原始总类数为 `6320-6339`，不能与安装包的 `6395` 直接相减：fat JAR 额外加载约 `95` 个 Spring Boot loader 类，而安装包 compact launcher 约 `10` 个。按唯一类名对比，EasyShell 应用类由 `306` 降至 `174`，减少的正好是 `132` 个条件类。
+- L2/L3 已做过一次试改：可延迟 `22` 个协议 Tab 和 `34` 个图标，共 `56` 个目标类；两次冷启动的唯一类名均为 `6280`，较 L1 的 `6320` 净减少 `40` 类，Metaspace used 两次均为 `27.89 MB`。没有同轮 L1 基线进程，不能把该值直接归因于 L2/L3。
+- 该试改需要把连接 Tab 和图标分派改为基于类名的反射工厂，增加了类名维护和运行时失败风险；实际收益仅约 `0.25-0.35 MB` 启动期元数据，Heap、任务管理器观感和启动时间基本无变化。综合收益与维护成本，L2/L3 已回滚，暂不实施。
 - 当前剩余问题主要不是业务功能真的提前使用，而是大方法、长分支或静态注册导致 JVM 验证/链接阶段提前加载了整个类族。
 - 继续做延迟加载的收益已经进入边际递减区间。预计全部候选做完可再减少约 `400-450` 个类、`2-4 MB` 实际内存，不建议为此大规模重构 JavaFX 主界面或连接模型。
 
@@ -89,7 +92,7 @@ L1 后冷启动观测（直接运行 `target/easyshell-1.2.5.jar`）：
 
 ```text
 L1 数据库条件初始化（已完成）
-  -> L4 终端 Manager 注册（待评估）
+  -> L4 终端 Manager 注册（已完成）
   -> L2 连接 Tab 分派
   -> L3 OS/协议图标分派
   -> 评估 M1 文件图标
@@ -126,63 +129,65 @@ L1 数据库条件初始化（已完成）
 
 ### [ ] L2. 拆分连接 Tab 分派
 
-- 现状：`ShellTabPane.connectionOpened()` 的长 if/else 链包含所有连接类型的静态 `of()` 调用，启动时即加载 SSH、SFTP、Redis、MySQL 等连接 Tab 类。
-- 证据：`1.096s` 左右一次性加载约 34 个 `cn.oyzh.easyshell.tabs.*` 类；直方图中仅有少量 Tab 实例，绝大多数只加载了类元数据。
+- 现状：`ShellTabPane.connectionOpened()` 的长 if/else 链包含所有连接类型的静态 `of()` 调用，启动时即加载 SSH、SFTP、Redis、MySQL 等连接 Tab 类，但没有创建这些 Tab 的实例。
+- 证据：`1.096-1.099s` 连续加载全部 `23` 个协议 Tab 类（SSH、Local、Telnet、SFTP、SMB、FTP、S3、Serial、VNC、RLogin、Redis、Valkey、ZK、Webdav、MySQL、SQLite、MariaDB、MongoDB、Mosh、达梦、PostgreSQL、HTTP、RDP）；连同 `ShellConnectTab`、`ShellTermTab`、`ShellKeyTab`、`ShellSplitTab`、`ShellMessageTab`、`ShellTerminalTab`、`ShellChangelogTab` 等共 `29` 个 Tab 相关类。启动后的类直方图中只有 `1` 个 `ShellHomeTab` 实例，没有任何协议 Tab 实例。
 - 代码位置：`src/main/java/cn/oyzh/easyshell/tabs/ShellTabPane.java:337`
-- 当前约加载：`34` 类
+- 当前约加载：`29` 类，其中协议 Tab `23` 类
 - 预计收益：`0.15-0.25 MB`
 - 首次使用触发点：用户打开某种类型的连接。
 - 候选方案：把每种连接的分派拆到独立小方法，或将类型到工厂的映射改为延迟查找，避免一个方法体引用全部 Tab 类型。
 - 风险等级：低
 - 验证范围：SSH、本地、Telnet、SFTP、SMB、FTP、S3、串口、VNC、RLogin、Redis、Valkey、ZK、WebDAV、MySQL、SQLite、MariaDB、MongoDB、Mosh、达梦、PostgreSQL、HTTP、RDP 的打开和复用。
 - 回退方式：恢复原 if/else 分派。
-- 状态：待处理
-- 实施记录：
-  - 改动前类数：
-  - 改动后类数：
-  - 内存变化：
-  - 功能验证：
-  - 结论：待定
+- 状态：已评估并回滚，暂不实施
+- 评估记录：
+  - 试改结果：除 `ShellSSHTab` 外，其余 `22` 个协议 Tab 均可从启动期移除；`ShellSSHTab` 仍会加载，因为 `getConnectTab()`、`connectEdit()` 直接引用该类
+  - 冷启动结果：两次唯一类名均为 `6280`，较 L1 的 `6320` 净减少 `40` 类；该净差值受启动时序和 Lambda 类增删影响，不能全部归因于 L2/L3
+  - 验证结果：编译、打包和两次冷启动通过；23 个 Tab 类的 `FXTab` 继承关系、静态 `of(ShellConnect)` 方法及返回类型校验全部通过
+  - 决策：回滚。收益约 `0.15-0.2 MB` 元数据，低于反射分派、类名维护和运行时失败风险带来的成本
 
 ### [ ] L3. 拆分 OS/协议图标分派
 
-- 现状：`ShellOsTypeComboBox.getGlyph()` 的大 switch 在首次绘制连接树时加载约 30 个图标类，即使当前连接只使用其中少数类型。
-- 证据：`1.05-1.09s` 加载 OS 和协议 SVG 类；直方图中只有少量图标实例。
+- 现状：`ShellOsTypeComboBox.getGlyph()` 的大 switch 在首次绘制连接树时加载全部图标类，即使当前连接只使用其中少数类型。
+- 证据：`1.079-1.083s` 一次性加载 switch 中全部 `38` 个唯一 `SVGGlyph` 类，包含 12 个 OS 图标、协议图标、云厂商图标和数据库图标；启动后的类直方图中这些类总共只有 `8` 个实例（Linux 5、Windows 1、RLogin 1、Redis 1），其余 `34` 个类只有类元数据，没有对象实例。
 - 代码位置：`src/main/java/cn/oyzh/easyshell/fx/ShellOsTypeComboBox.java:184`
-- 当前约加载：`30` 类
-- 预计收益：`0.1-0.2 MB`
+- 当前约加载：`38` 类
+- 预计收益：约 `0.2 MB`
 - 首次使用触发点：连接树或连接编辑界面首次绘制某类型图标。
 - 候选方案：按操作系统/协议拆成独立方法；或使用延迟工厂，只在命中某个类型时解析对应类。
 - 风险等级：低
 - 验证范围：连接树图标、连接编辑页类型下拉框、导入导出后的图标显示。
 - 回退方式：恢复单个 switch。
-- 状态：待处理
-- 实施记录：
-  - 改动前类数：
-  - 改动后类数：
-  - 内存变化：
-  - 功能验证：
-  - 结论：待定
+- 状态：已评估并回滚，暂不实施
+- 评估记录：
+  - 试改结果：启动期只加载当前连接树实际使用的 `4` 个类型（Linux、Windows、RLogin、Redis），其余 `34` 个图标类可从启动期移除
+  - 冷启动结果：L2/L3 合计唯一类名为 `6280`，Metaspace used 两次均为 `27.89 MB`；图标对象实例不变，Heap 基本无收益
+  - 验证结果：30 个 EasyShell 图标类和 8 个 fx-plus 图标类的继承关系、无参构造器校验共 `38/38` 通过
+  - 决策：回滚。收益约 `0.1-0.15 MB` 元数据，不足以抵消反射工厂带来的额外抽象和维护成本
 
-### [ ] L4. 延迟终端 Manager 注册
+### [x] L4. 延迟终端 Manager 注册
 
 - 现状：启动时通过方法引用注册 9 个终端 Manager，方法引用解析会加载对应 Manager 类。
 - 证据：`1.44s` 左右集中加载 ZK、Redis、Valkey、MySQL、MariaDB、Mongo、达梦、PostgreSQL、SQLite 终端 Manager。
-- 代码位置：`src/main/java/cn/oyzh/easyshell/EasyShellApp.java:243`
-- 当前约加载：`9` 类
+- 代码位置：原注册点为 `src/main/java/cn/oyzh/easyshell/EasyShellApp.java:236`；现分别位于 9 个 `*TerminalPane` 的静态初始化块。
+- 当前约加载：`9` 个 Manager 类，以及原方法引用在 `EasyShellApp` 中生成的 `9` 个合成 Lambda 类，共 `18` 个 EasyShell 应用类。
 - 预计收益：约 `0.05 MB`
-- 首次使用触发点：第一次创建对应类型的数据库终端。
-- 候选方案：保持单独立项意义不大，建议与 L1 同批处理；在首次终端加载时注册对应 handler。
+- 首次使用触发点：第一次初始化对应类型的终端 Pane。Pane 的静态块调用 `TerminalManager.setLoadHandler(...)`，首次查询命令处理器时再执行 Manager 注册。
+- 实施方式：从 `EasyShellApp.start()` 删除 9 个 `setLoadHandler` 调用；在每个 `*TerminalPane` 的 `TERMINAL_NAME` 常量之后增加静态块，保存同包 Manager 的 `registerHandlers` 方法引用。未引入反射、类名映射或额外注册中心。
 - 风险等级：低
-- 验证范围：各数据库终端首次打开、重复打开和命令执行。
-- 回退方式：恢复启动时统一注册。
-- 状态：待处理
+- 验证范围：各数据库终端首次打开、重复打开、命令补全和命令执行。
+- 回退方式：删除 9 个 Pane 静态块，恢复 `EasyShellApp.start()` 中的统一注册。
+- 状态：已完成编码、打包和启动验证，待实际连接回归
 - 实施记录：
-  - 改动前类数：
-  - 改动后类数：
-  - 内存变化：
-  - 功能验证：
-  - 结论：待定
+  - 打包时间：2026-11-13 01:52
+  - JAR：`target/easyshell-1.2.5.jar`，`140,922,492` 字节
+  - 启动次数：2 次冷启动
+  - 改动前类数：EasyShell 应用类 `210`；日志中 9 个 Manager 和 9 个 `EasyShellApp$$Lambda` 均存在，原始类加载数为 `6320`
+  - 改动后类数：EasyShell 应用类 `192`，减少 `18`；两次冷启动的 9 个 Manager 均为 `0`，原始类加载数均为 `6314`。原始总数只减少 `6`，是因为其他 JVM 合成 Lambda 和启动时序存在增删，应用类对比更能反映本项改动
+  - 内存变化：`18` 个类理论收益约 `0.05 MB`，低于冷启动波动，任务管理器观感无可归因变化
+  - 功能验证：`mvn -q -DskipTests compile`、`mvn -q -DskipTests package` 通过；逐一初始化 9 个 Pane 后，对应 `TerminalManager.listHandler(name)` 的 handler 数量分别为 ZK `4`、Redis `4`、Valkey `4`、MySQL `6`、MariaDB `6`、Mongo `7`、达梦 `6`、PostgreSQL `6`、SQLite `6`，初始化前均为 `0`
+  - 未手工验证：尚未实际连接 9 种服务并逐项执行命令；需回归首次打开、关闭后重开、命令补全和 `help`/`clear` 等内置命令
+  - 结论：保留。达到预期且无额外维护抽象；收益很低，不期待明显内存变化
 
 ## 6. 中等收益优化项
 
@@ -313,6 +318,7 @@ jcmd <JVM_PID> GC.class_histogram
 
 - 类加载日志：`target/classload-latest.log`
 - L1 类加载日志：`target/classload-l1.log`、`target/classload-l1-prod.log`、`target/classload-l1-static.log`、`target/classload-l1-static-final.log`
+- L4 类加载日志：`target/classload-l4.log`、`target/classload-l4-2.log`
 - 类直方图：`target/class-histogram.txt`
 - 入口类：`src/main/java/cn/oyzh/easyshell/EasyShellBootstrap.java`
 - 启动主流程：`src/main/java/cn/oyzh/easyshell/EasyShellApp.java`

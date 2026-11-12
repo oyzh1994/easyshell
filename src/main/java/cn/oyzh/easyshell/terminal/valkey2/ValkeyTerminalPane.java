@@ -45,6 +45,10 @@ public class ValkeyTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "valkey-v2";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, ValkeyTerminalManager::registerHandlers);
+    }
+
     /**
      * Valkey 原生命令执行器。
      */

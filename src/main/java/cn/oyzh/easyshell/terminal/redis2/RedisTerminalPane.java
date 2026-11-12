@@ -45,6 +45,10 @@ public class RedisTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "redis-v2";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, RedisTerminalManager::registerHandlers);
+    }
+
     /**
      * Redis 原生命令执行器。
      */

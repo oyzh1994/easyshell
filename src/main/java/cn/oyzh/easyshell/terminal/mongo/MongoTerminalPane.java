@@ -79,6 +79,10 @@ public class MongoTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "mongo";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, MongoTerminalManager::registerHandlers);
+    }
+
     @Override
     public String terminalName() {
         return TERMINAL_NAME;

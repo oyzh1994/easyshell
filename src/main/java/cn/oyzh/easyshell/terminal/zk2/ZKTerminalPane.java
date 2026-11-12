@@ -41,6 +41,10 @@ public class ZKTerminalPane extends TerminalPane {
     /** ZooKeeper v2 终端名称。 */
     public static final String TERMINAL_NAME = "zookeeper-v2";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, ZKTerminalManager::registerHandlers);
+    }
+
     /** 不需要 ZooKeeper 连接即可执行的 CLI 命令。 */
     public static final Set<String> CLI_COMMANDS_WITHOUT_CONNECTION = Set.of("version");
 

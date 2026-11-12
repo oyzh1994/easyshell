@@ -35,6 +35,10 @@ public class ShellSqliteTerminalPane extends TerminalPane {
 
     public static final String TERMINAL_NAME = "sqlite";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, ShellSqliteTerminalManager::registerHandlers);
+    }
+
     private ShellSqliteClient client;
 
     /**

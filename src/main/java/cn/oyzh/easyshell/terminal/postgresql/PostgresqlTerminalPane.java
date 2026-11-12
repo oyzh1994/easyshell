@@ -93,6 +93,10 @@ public class PostgresqlTerminalPane extends TerminalPane {
      */
     public static final String TERMINAL_NAME = "postgresql";
 
+    static {
+        TerminalManager.setLoadHandler(TERMINAL_NAME, PostgresqlTerminalManager::registerHandlers);
+    }
+
     @Override
     public String terminalName() {
         return TERMINAL_NAME;
