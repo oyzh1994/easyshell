@@ -62,6 +62,7 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExecuteResult;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExplainResult;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -4182,11 +4183,28 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
         Statement statement = null;
         int result = 0;
         try {
-            connection = parallel ? this.getConnManager().newConnection(null) : this.getConnManager().connection();
+            connection = parallel ? this.getConnManager().newConnection(null) : this.getConnManager().connection(schema);
+            if (parallel && StringUtil.isNotBlank(schema)) {
+                connection.setSchema(schema);
+            }
             autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
             statement = connection.createStatement();
+            Map<String, Boolean> identityCache = new HashMap<>();
             for (String sql : sqlList) {
+                String[] target = ShellPostgresqlUtil.parseInsertTarget(sql);
+                if (target != null) {
+                    String targetSchema = StringUtil.isBlank(target[0]) ? schema : target[0];
+                    String cacheKey = targetSchema + "." + target[1];
+                    Boolean alwaysIdentity = identityCache.get(cacheKey);
+                    if (alwaysIdentity == null) {
+                        alwaysIdentity = this.hasAlwaysIdentityColumn(targetSchema, target[1]);
+                        identityCache.put(cacheKey, alwaysIdentity);
+                    }
+                    if (alwaysIdentity) {
+                        sql = ShellPostgresqlUtil.addOverridingSystemValue(sql);
+                    }
+                }
                 this.printSql(sql);
                 statement.addBatch(sql);
             }

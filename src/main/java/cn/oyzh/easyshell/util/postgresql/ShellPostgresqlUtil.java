@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,116 @@ import java.util.stream.Collectors;
 public class ShellPostgresqlUtil {
 
     public static boolean ENABLE_PRINT_METADATA = true;
+
+    /**
+     * INSERT目标表
+     */
+    private static final Pattern INSERT_TARGET_PATTERN = Pattern.compile(
+            "(?is)^\\s*INSERT\\s+INTO\\s+"
+                    + "(\"(?:\"\"|[^\"])+\"|[A-Za-z_][A-Za-z0-9_$]*)"
+                    + "(?:\\s*\\.\\s*(\"(?:\"\"|[^\"])+\"|[A-Za-z_][A-Za-z0-9_$]*))?");
+
+    /**
+     * 解析INSERT目标表
+     *
+     * @param sql SQL
+     * @return 索引0为模式，索引1为表名；无模式时索引0为null
+     */
+    public static String[] parseInsertTarget(String sql) {
+        if (StringUtil.isBlank(sql)) {
+            return null;
+        }
+        Matcher matcher = INSERT_TARGET_PATTERN.matcher(sql);
+        if (!matcher.find()) {
+            return null;
+        }
+        String first = unquoteIdentifier(matcher.group(1));
+        String second = matcher.group(2);
+        return second == null
+                ? new String[]{null, first}
+                : new String[]{first, unquoteIdentifier(second)};
+    }
+
+    /**
+     * 为显式写入GENERATED ALWAYS AS IDENTITY列的INSERT补充OVERRIDING SYSTEM VALUE
+     *
+     * @param sql SQL
+     * @return 处理后的SQL
+     */
+    public static String addOverridingSystemValue(String sql) {
+        if (StringUtil.isBlank(sql)
+                || Pattern.compile("(?i)\\bOVERRIDING\\s+(?:SYSTEM|USER)\\s+VALUE\\b").matcher(sql).find()) {
+            return sql;
+        }
+        int valuesIndex = topLevelValuesIndex(sql);
+        if (valuesIndex < 0) {
+            return sql;
+        }
+        String prefix = sql.substring(0, valuesIndex).stripTrailing();
+        if (prefix.toUpperCase().endsWith("DEFAULT")) {
+            return sql;
+        }
+        return sql.substring(0, valuesIndex) + "OVERRIDING SYSTEM VALUE " + sql.substring(valuesIndex);
+    }
+
+    /**
+     * 查找顶层VALUES关键字
+     *
+     * @param sql SQL
+     * @return 索引，未找到返回-1
+     */
+    private static int topLevelValuesIndex(String sql) {
+        boolean singleQuote = false;
+        boolean doubleQuote = false;
+        int depth = 0;
+        for (int i = 0; i < sql.length(); i++) {
+            char c = sql.charAt(i);
+            if (singleQuote) {
+                if (c == '\'' && (i + 1 >= sql.length() || sql.charAt(i + 1) != '\'')) {
+                    singleQuote = false;
+                } else if (c == '\'' && i + 1 < sql.length()) {
+                    i++;
+                }
+                continue;
+            }
+            if (doubleQuote) {
+                if (c == '"' && (i + 1 >= sql.length() || sql.charAt(i + 1) != '"')) {
+                    doubleQuote = false;
+                } else if (c == '"' && i + 1 < sql.length()) {
+                    i++;
+                }
+                continue;
+            }
+            if (c == '\'') {
+                singleQuote = true;
+            } else if (c == '"') {
+                doubleQuote = true;
+            } else if (c == '(') {
+                depth++;
+            } else if (c == ')') {
+                depth = Math.max(0, depth - 1);
+            } else if (depth == 0 && (c == 'V' || c == 'v')
+                    && sql.regionMatches(true, i, "VALUES", 0, 6)
+                    && (i == 0 || !Character.isLetterOrDigit(sql.charAt(i - 1)))
+                    && (i + 6 == sql.length() || !Character.isLetterOrDigit(sql.charAt(i + 6)))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 去除标识符引号
+     *
+     * @param identifier 标识符
+     * @return 结果
+     */
+    private static String unquoteIdentifier(String identifier) {
+        if (identifier != null && identifier.startsWith("\"") && identifier.endsWith("\"")) {
+            return identifier.substring(1, identifier.length() - 1).replace("\"\"", "\"");
+        }
+        return identifier;
+    }
 
     /**
      * 是否内部库
