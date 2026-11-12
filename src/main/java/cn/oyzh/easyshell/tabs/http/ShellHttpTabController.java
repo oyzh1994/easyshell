@@ -4,9 +4,10 @@ import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.http.ShellHttpWorkspace;
-import cn.oyzh.easyshell.store.http.ShellHttpSettingStore;
 import cn.oyzh.easyshell.store.http.ShellHttpWorkspaceStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
+import cn.oyzh.easyshell.trees.http.ShellHttpTreeItem;
+import cn.oyzh.easyshell.trees.http.ShellHttpTreeView;
 import cn.oyzh.easyshell.trees.http.collection.ShellHttpCollectionTreeItem;
 import cn.oyzh.easyshell.trees.http.collection.ShellHttpCollectionsTreeItem;
 import cn.oyzh.easyshell.trees.http.environment.ShellHttpEnvironmentTreeItem;
@@ -14,8 +15,6 @@ import cn.oyzh.easyshell.trees.http.environment.ShellHttpEnvironmentsTreeItem;
 import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
 import cn.oyzh.easyshell.trees.http.root.ShellHttpRootTreeItem;
 import cn.oyzh.easyshell.trees.http.settings.ShellHttpSettingsTreeItem;
-import cn.oyzh.easyshell.trees.http.ShellHttpTreeItem;
-import cn.oyzh.easyshell.trees.http.ShellHttpTreeView;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -24,8 +23,8 @@ import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageManager;
 import javafx.event.Event;
-import javafx.scene.control.TreeItem;
 import javafx.fxml.FXML;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -99,18 +98,8 @@ public class ShellHttpTabController extends ShellBaseTabController {
     private void initWorkspace() {
         try {
             this.client.start();
-            this.workspace = ShellHttpWorkspaceStore.INSTANCE.load(this.shellConnect.getId(),
-                    this.shellConnect.getConnectTimeOut() == null ? 30 : this.shellConnect.getConnectTimeOut());
-            if (ShellHttpSettingStore.INSTANCE.getByIid(this.shellConnect.getId()) == null
-                    && this.workspace.getCollections().isEmpty()
-                    && this.workspace.getEnvironments().isEmpty()) {
-                Object legacy = this.shellConnect.getExtra(ShellHttpWorkspaceStore.LEGACY_EXTRA_KEY);
-                if (legacy != null) {
-                    ShellHttpWorkspaceStore.INSTANCE.migrate(this.shellConnect.getId(), legacy.toString());
-                    this.workspace = ShellHttpWorkspaceStore.INSTANCE.load(this.shellConnect.getId(),
-                            this.shellConnect.getConnectTimeOut() == null ? 30 : this.shellConnect.getConnectTimeOut());
-                }
-            }
+            int timeout = this.shellConnect.getConnectTimeOut() == null ? 30 : this.shellConnect.getConnectTimeOut();
+            this.workspace = ShellHttpWorkspaceStore.INSTANCE.load(this.shellConnect.getId(), timeout);
             this.tabPane.setClient(this.client);
             this.tabPane.setWorkspace(this.workspace);
             this.tabPane.setTabController(this);

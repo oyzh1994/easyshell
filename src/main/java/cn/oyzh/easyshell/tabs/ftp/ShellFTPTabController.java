@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.ftp;
 
+import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
@@ -15,6 +16,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.store.ShellConnectStore;
 import cn.oyzh.easyshell.tabs.ShellBaseTabController;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
@@ -27,7 +29,6 @@ import cn.oyzh.fx.plus.controls.table.IconTableCell;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyboardUtil;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
@@ -158,34 +159,43 @@ public class ShellFTPTabController extends ShellBaseTabController {
                 MessageBox.warn(ShellI18nHelper.connectSuspended(this.client.connectName()), this.getWindow());
             }
         });
-        StageManager.showMask(this.getWindow(), () -> {
-            try {
-                if (!this.client.isConnected()) {
-                    this.client.start();
-                }
-                if (!this.client.isConnected()) {
-                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
-                    this.closeTab();
-                    return;
-                }
-                this.hideLeft();
-                this.fileTable.setClient(this.client);
-                // 显示隐藏文件
-                this.showHiddenFile(this.shellConnect().isShowHiddenFile());
-                // 任务数量监听
-                this.taskSizeListener = this.client.addTaskSizeListener(() -> {
-                    if (this.client.isTaskEmpty(this.taskTypes)) {
-                        this.manage.clear();
-                    } else {
-                        this.manage.text("(" + this.client.getTaskSize() + ")");
+        StageManager.showMask(this.getWindow(),
+                () -> {
+                    try {
+                        if (!this.client.isConnected()) {
+                            this.client.start();
+                        }
+                        if (ThreadUtil.isInterrupted()) {
+                            return;
+                        }
+                        if (!this.client.isConnected()) {
+                            this.client.close();
+                            MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
+                            this.closeTab();
+                            return;
+                        }
+                        this.hideLeft();
+                        this.fileTable.setClient(this.client);
+                        // 显示隐藏文件
+                        this.showHiddenFile(this.shellConnect().isShowHiddenFile());
+                        // 任务数量监听
+                        this.taskSizeListener = this.client.addTaskSizeListener(() -> {
+                            if (this.client.isTaskEmpty(this.taskTypes)) {
+                                this.manage.clear();
+                            } else {
+                                this.manage.text("(" + this.client.getTaskSize() + ")");
+                            }
+                        }, this.taskTypes);
+                    } catch (Throwable ex) {
+                        if (!ThreadUtil.isInterrupted()) {
+                            ex.printStackTrace();
+                            MessageBox.exception(ex, this.getWindow());
+                        }
+                        this.closeTab();
                     }
-                }, this.taskTypes);
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
-                this.closeTab();
-            }
-        });
+                },
+                this::closeTab
+        );
     }
 
     @Override

@@ -26,11 +26,6 @@ public class ShellHttpWorkspaceStore {
     public static final ShellHttpWorkspaceStore INSTANCE = new ShellHttpWorkspaceStore();
 
     /**
-     * 旧版本 HTTP 工作区在连接扩展字段中的键
-     */
-    public static final String LEGACY_EXTRA_KEY = "httpWorkspace";
-
-    /**
      * 加载工作区。
      *
      * @param iid 连接id
