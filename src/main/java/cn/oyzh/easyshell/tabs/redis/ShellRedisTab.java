@@ -20,12 +20,6 @@ import java.util.function.Supplier;
  */
 public class ShellRedisTab extends ShellConnectTab implements LLMTabCapability {
 
-    //public ShellRedisTab(ShellConnect connect) {
-    //    super();
-    //    this.init(connect);
-    //    ObjectWatcherManager.watch(this);
-    //}
-
     @Override
     public String getTabTitle() {
         return this.shellConnect().getName() + "(" + this.shellConnect().getType().toUpperCase() + ")";

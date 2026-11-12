@@ -132,6 +132,7 @@ public class ShellSSHTabController extends ShellParentTabController {
                             return;
                         }
                         if (!this.client.isConnected()) {
+                            this.client.close();
                             MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
                             this.closeTab();
                             return;
@@ -153,8 +154,10 @@ public class ShellSSHTabController extends ShellParentTabController {
                         this.monitorTabController.setClient(this.client);
                         this.processTabController.setClient(this.client);
                     } catch (Throwable ex) {
-                        ex.printStackTrace();
-                        MessageBox.exception(ex, this.getWindow());
+                        if (!ThreadUtil.isInterrupted()) {
+                            ex.printStackTrace();
+                            MessageBox.exception(ex, this.getWindow());
+                        }
                         this.closeTab();
                     }
                 },

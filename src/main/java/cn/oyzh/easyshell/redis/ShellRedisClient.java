@@ -58,8 +58,8 @@ import redis.clients.jedis.params.BitPosParams;
 import redis.clients.jedis.params.GeoAddParams;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.params.XAddParams;
-import redis.clients.jedis.resps.CommandInfo;
 import redis.clients.jedis.resps.CommandDocument;
+import redis.clients.jedis.resps.CommandInfo;
 import redis.clients.jedis.resps.ScanResult;
 import redis.clients.jedis.resps.Slowlog;
 import redis.clients.jedis.resps.StreamEntry;
@@ -91,10 +91,10 @@ import java.util.Set;
  */
 public class ShellRedisClient implements ShellBaseClient {
 
-//    /**
-//     * redis连接池
-//     */
-//    private JedisPool pool;
+    //    /**
+    //     * redis连接池
+    //     */
+    //    private JedisPool pool;
 
     // /**
     //  * 静默关闭标志位
@@ -116,10 +116,10 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     private CommandObjects commandObjects;
 
-//    /**
-//     * redis哨兵连接池
-//     */
-//    private JedisSentinelPool sentinelPool;
+    //    /**
+    //     * redis哨兵连接池
+    //     */
+    //    private JedisSentinelPool sentinelPool;
 
     /**
      * 当前连接角色
@@ -169,10 +169,10 @@ public class ShellRedisClient implements ShellBaseClient {
     //  */
     // private final ReadOnlyObjectWrapper<RedisConnState> state = new ReadOnlyObjectWrapper<>(RedisConnState.NOT_INITIALIZED);
 
-//    /**
-//     * ssh配置储存
-//     */
-//    private final RedisSSHConfigStore sshConfigStore = RedisSSHConfigStore.INSTANCE;
+    //    /**
+    //     * ssh配置储存
+    //     */
+    //    private final RedisSSHConfigStore sshConfigStore = RedisSSHConfigStore.INSTANCE;
 
     // /**
     //  * 跳板配置存储
@@ -233,17 +233,17 @@ public class ShellRedisClient implements ShellBaseClient {
     //     return this.state.getReadOnlyProperty();
     // }
 
-//     /**
-//      * 添加连接状态监听器
-//      *
-//      * @param stateListener 监听器
-//      */
-//     public void addStateListener(ChangeListener<RedisConnState> stateListener) {
-//         if (stateListener != null) {
-//             this.state.addListener(stateListener);
-// //            this.state.addListener(new WeakChangeListener<>(stateListener));
-//         }
-//     }
+    //     /**
+    //      * 添加连接状态监听器
+    //      *
+    //      * @param stateListener 监听器
+    //      */
+    //     public void addStateListener(ChangeListener<RedisConnState> stateListener) {
+    //         if (stateListener != null) {
+    //             this.state.addListener(stateListener);
+    // //            this.state.addListener(new WeakChangeListener<>(stateListener));
+    //         }
+    //     }
 
     /**
      * 初始化连接
@@ -253,14 +253,14 @@ public class ShellRedisClient implements ShellBaseClient {
     private String initHost() {
         // 连接地址
         String host;
-//        // 初始化跳板配置
-//        List<RedisJumpConfig> jumpConfigs = this.redisConnect.getJumpConfigs();
-//        // 从数据库获取
-//        if (jumpConfigs == null) {
-//            jumpConfigs = this.jumpConfigStore.loadByIid(this.redisConnect.getId());
-//        }
-//        // 过滤配置
-//        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(RedisJumpConfig::isEnabled).collect(Collectors.toList());
+        //        // 初始化跳板配置
+        //        List<RedisJumpConfig> jumpConfigs = this.redisConnect.getJumpConfigs();
+        //        // 从数据库获取
+        //        if (jumpConfigs == null) {
+        //            jumpConfigs = this.jumpConfigStore.loadByIid(this.redisConnect.getId());
+        //        }
+        //        // 过滤配置
+        //        jumpConfigs = jumpConfigs == null ? Collections.emptyList() : jumpConfigs.stream().filter(RedisJumpConfig::isEnabled).collect(Collectors.toList());
         // 初始化跳板转发
         if (this.shellConnect.isEnableJump()) {
             if (this.jumpForwarder == null) {
@@ -487,26 +487,26 @@ public class ShellRedisClient implements ShellBaseClient {
         // return this.cluster;
     }
 
-// /**
-//  * 获取cluster集群的主节点连接
-//  *
-//  * @return List<ConnectionPool>
-//  */
-// @Deprecated
-// private List<ConnectionPool> getClusterMasterPools() {
-//     Map<String, ConnectionPool> poolMap = this.cluster.getClusterNodes();
-//     if (CollectionUtil.isNotEmpty(poolMap) && (this.clusterMasterPools == null || !poolMap.values().containsAll(this.clusterMasterPools))) {
-//         this.clusterMasterPools = new ArrayList<>();
-//         for (ConnectionPool connectionPool : poolMap.values()) {
-//             List<Object> roleList = this.role(connectionPool);
-//             Object role = CollectionUtil.getFirst(roleList);
-//             if (StringUtil.equalsIgnoreCase("master", (String) role)) {
-//                 this.clusterMasterPools.add(connectionPool);
-//             }
-//         }
-//     }
-//     return this.clusterMasterPools == null ? Collections.emptyList() : this.clusterMasterPools;
-// }
+    // /**
+    //  * 获取cluster集群的主节点连接
+    //  *
+    //  * @return List<ConnectionPool>
+    //  */
+    // @Deprecated
+    // private List<ConnectionPool> getClusterMasterPools() {
+    //     Map<String, ConnectionPool> poolMap = this.cluster.getClusterNodes();
+    //     if (CollectionUtil.isNotEmpty(poolMap) && (this.clusterMasterPools == null || !poolMap.values().containsAll(this.clusterMasterPools))) {
+    //         this.clusterMasterPools = new ArrayList<>();
+    //         for (ConnectionPool connectionPool : poolMap.values()) {
+    //             List<Object> roleList = this.role(connectionPool);
+    //             Object role = CollectionUtil.getFirst(roleList);
+    //             if (StringUtil.equalsIgnoreCase("master", (String) role)) {
+    //                 this.clusterMasterPools.add(connectionPool);
+    //             }
+    //         }
+    //     }
+    //     return this.clusterMasterPools == null ? Collections.emptyList() : this.clusterMasterPools;
+    // }
 
     /**
      * 获取cluster集群的主节点连接
@@ -540,24 +540,24 @@ public class ShellRedisClient implements ShellBaseClient {
         return this.poolManager.getResource(dbIndex);
     }
 
-//    /**
-//     * 获取连接
-//     *
-//     * @return Jedis
-//     */
-//    private Jedis getResource() {
-//        try {
-//            if (this.sentinelPool != null) {
-//                return this.sentinelPool.getResource();
-//            }
-//            if (this.pool != null) {
-//                return this.pool.getResource();
-//            }
-//        } finally {
-//            ThreadLocalUtil.setVal("connectName", this.connectName());
-//        }
-//        return null;
-//    }
+    //    /**
+    //     * 获取连接
+    //     *
+    //     * @return Jedis
+    //     */
+    //    private Jedis getResource() {
+    //        try {
+    //            if (this.sentinelPool != null) {
+    //                return this.sentinelPool.getResource();
+    //            }
+    //            if (this.pool != null) {
+    //                return this.pool.getResource();
+    //            }
+    //        } finally {
+    //            ThreadLocalUtil.setVal("connectName", this.connectName());
+    //        }
+    //        return null;
+    //    }
 
     /**
      * 返还连接
@@ -565,13 +565,13 @@ public class ShellRedisClient implements ShellBaseClient {
      * @param jedis 连接
      */
     private void returnResource(Jedis jedis) {
-//        ThreadUtil.startVirtual(() -> {
-//            if (this.sentinelPool != null) {
-//                this.sentinelPool.returnResource(jedis);
-//            } else if (this.pool != null) {
-//                this.pool.returnResource(jedis);
-//            }
-//        });
+        //        ThreadUtil.startVirtual(() -> {
+        //            if (this.sentinelPool != null) {
+        //                this.sentinelPool.returnResource(jedis);
+        //            } else if (this.pool != null) {
+        //                this.pool.returnResource(jedis);
+        //            }
+        //        });
         this.poolManager.returnResource(jedis);
     }
 
@@ -592,16 +592,16 @@ public class ShellRedisClient implements ShellBaseClient {
             //     this.cluster.close();
             //     isClosed = true;
             // }
-//            // 关闭连接池
-//            if (this.pool != null && !this.pool.isClosed()) {
-//                this.pool.close();
-//                isClosed = true;
-//            }
-//            // 关闭哨兵连接池
-//            if (this.sentinelPool != null && !this.sentinelPool.isClosed()) {
-//                this.sentinelPool.close();
-//                isClosed = true;
-//            }
+            //            // 关闭连接池
+            //            if (this.pool != null && !this.pool.isClosed()) {
+            //                this.pool.close();
+            //                isClosed = true;
+            //            }
+            //            // 关闭哨兵连接池
+            //            if (this.sentinelPool != null && !this.sentinelPool.isClosed()) {
+            //                this.sentinelPool.close();
+            //                isClosed = true;
+            //            }
             // 销毁端口转发
             if (this.jumpForwarder != null) {
                 IOUtil.close(this.jumpForwarder);
@@ -610,15 +610,15 @@ public class ShellRedisClient implements ShellBaseClient {
             // 已关闭
             // if (isClosed) {
             this.state.set(ShellConnState.CLOSED);
-//                RedisEventUtil.connectionClosed(this);
+            //                RedisEventUtil.connectionClosed(this);
             // }
             // 重置变量
-//            this.pool = null;
+            //            this.pool = null;
             this.role = null;
             // this.cluster = null;
             this.databases = null;
             this.clearInfoProp();
-//            this.sentinelPool = null;
+            //            this.sentinelPool = null;
             this.commandObjects = null;
             this.removeStateListener(this.stateListener);
             // this.clusterMasterPools = null;
@@ -633,7 +633,7 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     public void reset() {
         // 移除监听器
-//        this.close();
+        //        this.close();
         this.state.set(ShellConnState.NOT_INITIALIZED);
     }
 
@@ -700,7 +700,7 @@ public class ShellRedisClient implements ShellBaseClient {
             JulLog.warn("Redis client start error", ex);
             throw new ShellException(ex);
             // this.errorMsg = ex.getMessage();
-//            throw new RedisException(ex);
+            //            throw new RedisException(ex);
         }
     }
 
@@ -718,13 +718,13 @@ public class ShellRedisClient implements ShellBaseClient {
         }
     }
 
-//    @Override
-//    public boolean isConnecting() {
-//        if (!this.isClosed()) {
-//            return this.state.get() == ShellConnState.CONNECTING;
-//        }
-//        return false;
-//    }
+    //    @Override
+    //    public boolean isConnecting() {
+    //        if (!this.isClosed()) {
+    //            return this.state.get() == ShellConnState.CONNECTING;
+    //        }
+    //        return false;
+    //    }
 
     @Override
     public boolean isConnected() {
@@ -751,7 +751,7 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     private Pool<?> getPool() {
         return this.poolManager.getJedisPool();
-//        return this.pool == null ? this.sentinelPool : this.pool;
+        //        return this.pool == null ? this.sentinelPool : this.pool;
     }
 
     /**
@@ -4585,14 +4585,17 @@ public class ShellRedisClient implements ShellBaseClient {
      */
     public String info(String section) {
         Jedis jedis = this.getResource(this.dbIndex);
-        try {
-            if (section == null) {
-                return jedis.info();
+        if (jedis != null) {
+            try {
+                if (section == null) {
+                    return jedis.info();
+                }
+                return jedis.info(section);
+            } finally {
+                this.returnResource(jedis);
             }
-            return jedis.info(section);
-        } finally {
-            this.returnResource(jedis);
         }
+        return null;
     }
 
     /**
@@ -5056,37 +5059,37 @@ public class ShellRedisClient implements ShellBaseClient {
         return result;
     }
 
-//
-//    public List<RedisScript> listScripts() {
-//        List<RedisScript> result = new ArrayList<>();
-//        try (Jedis jedis = this.getResource()) {
-//            List<Object> response = (List<Object>) jedis.sendCommand(Protocol.Command.SCRIPT, "LIST");
-//            // 解析返回结果
-//            for (Object scriptObj : response) {
-//                List<Object> scriptInfo = (List<Object>) scriptObj;
-//                String sha1 = SafeEncoder.encode((byte[]) scriptInfo.getFirst());
-//                RedisScript script = new RedisScript();
-//                script.setSha1(sha1);
-//                System.out.println("---------------------------");
-//                System.out.println("SHA1: " + sha1);
-//                // Redis 6.2+ 可能返回脚本内容（索引 1）
-//                if (scriptInfo.size() > 1) {
-//                    String content = SafeEncoder.encode((byte[]) scriptInfo.get(1));
-//                    script.setScript(content);
-//                    System.out.println("Script Content:\n" + content);
-//                } else {
-//                    System.out.println("Script content not available (Redis < 6.2).");
-//                }
-//                result.add(script);
-//            }
-//        }
-//        return result;
-//
-//    }
-//
-//    public boolean deleteScript(String sha1) {
-//        return false;
-//    }
+    //
+    //    public List<RedisScript> listScripts() {
+    //        List<RedisScript> result = new ArrayList<>();
+    //        try (Jedis jedis = this.getResource()) {
+    //            List<Object> response = (List<Object>) jedis.sendCommand(Protocol.Command.SCRIPT, "LIST");
+    //            // 解析返回结果
+    //            for (Object scriptObj : response) {
+    //                List<Object> scriptInfo = (List<Object>) scriptObj;
+    //                String sha1 = SafeEncoder.encode((byte[]) scriptInfo.getFirst());
+    //                RedisScript script = new RedisScript();
+    //                script.setSha1(sha1);
+    //                System.out.println("---------------------------");
+    //                System.out.println("SHA1: " + sha1);
+    //                // Redis 6.2+ 可能返回脚本内容（索引 1）
+    //                if (scriptInfo.size() > 1) {
+    //                    String content = SafeEncoder.encode((byte[]) scriptInfo.get(1));
+    //                    script.setScript(content);
+    //                    System.out.println("Script Content:\n" + content);
+    //                } else {
+    //                    System.out.println("Script content not available (Redis < 6.2).");
+    //                }
+    //                result.add(script);
+    //            }
+    //        }
+    //        return result;
+    //
+    //    }
+    //
+    //    public boolean deleteScript(String sha1) {
+    //        return false;
+    //    }
 
     @Override
     public ShellRedisClient forkClient() throws Throwable {

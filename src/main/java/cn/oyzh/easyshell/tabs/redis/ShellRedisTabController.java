@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.tabs.redis.key.ShellRedisKeyTab;
 import cn.oyzh.easyshell.tabs.redis.query.ShellRedisQueryTab;
 import cn.oyzh.easyshell.trees.redis.ShellRedisTreeView;
 import cn.oyzh.easyshell.util.ShellClientUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.fx.gui.text.field.FilterTextField;
 import cn.oyzh.fx.plus.controls.pane.FXSplitPane;
@@ -18,7 +19,6 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.keyboard.KeyHandler;
 import cn.oyzh.fx.plus.keyboard.KeyListener;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -92,27 +92,36 @@ public class ShellRedisTabController extends ShellBaseTabController {
             }
         });
         // 加载根节点
-        StageManager.showMask(this.getWindow(), () -> {
-            try {
-                this.client.start();
-                if (!this.client.isConnected()) {
-                    this.client.close();
-                    MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
-                    this.closeTab();
-                    return;
-                }
-                this.tabPane.setClient(this.client);
-                this.treeView.setTabPane(this.tabPane);
-                this.treeView.setClient(this.client);
-                this.treeView.loadItems();
-                this.treeView.root().expend();
-                this.hideLeft();
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-                MessageBox.exception(ex, this.getWindow());
-                this.closeTab();
-            }
-        });
+        StageManager.showMask(this.getWindow(),
+                () -> {
+                    try {
+                        if (!this.client.isConnected()) {
+                            this.client.start();
+                        }
+                        if (ThreadUtil.isInterrupted()) {
+                            return;
+                        }
+                        if (!this.client.isConnected()) {
+                            this.client.close();
+                            MessageBox.warn(I18nHelper.connectFail(), this.getWindow());
+                            this.closeTab();
+                            return;
+                        }
+                        this.tabPane.setClient(this.client);
+                        this.treeView.setTabPane(this.tabPane);
+                        this.treeView.setClient(this.client);
+                        this.treeView.loadItems();
+                        this.treeView.root().expend();
+                        this.hideLeft();
+                    } catch (Throwable ex) {
+                        if (!ThreadUtil.isInterrupted()) {
+                            ex.printStackTrace();
+                            MessageBox.exception(ex, this.getWindow());
+                        }
+                        this.closeTab();
+                    }
+                },
+                this::closeTab);
     }
 
     /**
