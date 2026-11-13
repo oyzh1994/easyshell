@@ -1027,13 +1027,13 @@ public class SettingController extends StageController {
                 ThemeManager.apply(this.setting.themeConfig());
                 // 应用透明度配置
                 OpacityManager.apply(this.setting.opacityConfig());
-                // 保存时关闭窗口；应用时保持窗口打开
-                if (closeWindow) {
-                    this.closeWindow();
-                }
                 // 保存时提示重启
                 if (StringUtil.isNotBlank(tips) && MessageBox.confirm(tips, this.getWindow())) {
                     ShellProcessUtil.restartApplication();
+                }
+                // 保存时关闭窗口；应用时保持窗口打开
+                if (closeWindow) {
+                    this.closeWindow();
                 }
             }
         } catch (Exception ex) {
