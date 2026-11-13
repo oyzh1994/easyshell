@@ -780,7 +780,11 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      * 设置连接地址
      */
     public void setHost(String host) {
-        this.host = host.trim();
+        if (host != null) {
+            this.host = host.trim();
+        } else {
+            this.host = null;
+        }
     }
 
     /**

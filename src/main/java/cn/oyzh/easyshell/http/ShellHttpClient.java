@@ -1,8 +1,10 @@
 package cn.oyzh.easyshell.http;
 
 import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.common.network.ProxyUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.domain.http.ShellHttpEnvironment;
 import cn.oyzh.easyshell.domain.http.ShellHttpRequest;
 import cn.oyzh.easyshell.domain.http.ShellHttpSetting;
@@ -25,8 +27,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Authenticator;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.PasswordAuthentication;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -54,6 +58,14 @@ import java.util.Map;
  * @since 2026-11-07
  */
 public class ShellHttpClient implements ShellBaseClient {
+
+    static {
+        // JDK 默认禁止 CONNECT 隧道上的 Basic 代理认证。HTTP 工作区允许用户
+        // 显式配置代理凭据，因此需要放开该方案；认证信息仍只在收到 407 时发送。
+        if (System.getProperty("jdk.http.auth.tunneling.disabledSchemes") != null) {
+            System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+        }
+    }
 
     /**
      * 连接
@@ -732,7 +744,8 @@ public class ShellHttpClient implements ShellBaseClient {
             settings = new ShellHttpSetting();
         }
         String key = settings.getHttpVersion() + "|" + settings.isFollowRedirects()
-                + "|" + settings.isVerifySsl() + "|" + settings.getTimeoutSeconds();
+                + "|" + settings.isVerifySsl() + "|" + settings.getTimeoutSeconds()
+                + "|" + this.proxyCacheKey();
         synchronized (this.clientLock) {
             HttpClientEntry entry = this.httpClients.get(key);
             if (entry == null) {
@@ -758,6 +771,28 @@ public class ShellHttpClient implements ShellBaseClient {
             lease.entry.references = Math.max(0, lease.entry.references - 1);
             this.evictIdleClients();
         }
+    }
+
+    /**
+     * 构建客户端缓存使用的代理标识。
+     *
+     * @return 代理标识
+     */
+    private String proxyCacheKey() {
+        if (!this.shellConnect.isEnableProxy()) {
+            return "proxy:off";
+        }
+        ShellProxyConfig config = this.shellConnect.getProxyConfig();
+        if (config == null) {
+            return "proxy:none";
+        }
+        return String.join(":",
+                StringUtil.blankToDefault(config.getProtocol(), ""),
+                StringUtil.blankToDefault(config.getHost(), ""),
+                String.valueOf(config.getPort()),
+                StringUtil.blankToDefault(config.getAuthType(), ""),
+                StringUtil.blankToDefault(config.getUser(), ""),
+                String.valueOf(config.getPassword() == null ? 0 : config.getPassword().hashCode()));
     }
 
     /**
@@ -820,10 +855,11 @@ public class ShellHttpClient implements ShellBaseClient {
                 .connectTimeout(Duration.ofSeconds(settings.getTimeoutSeconds()))
                 .followRedirects(settings.isFollowRedirects()
                         ? HttpClient.Redirect.NORMAL : HttpClient.Redirect.NEVER)
-                .cookieHandler(this.cookieManager);
-        ProxySelector proxySelector = ProxySelector.getDefault();
-        if (proxySelector != null) {
-            builder.proxy(proxySelector);
+                .cookieHandler(this.cookieManager)
+                .proxy(this.proxySelector());
+        Authenticator proxyAuthenticator = this.proxyAuthenticator();
+        if (proxyAuthenticator != null) {
+            builder.authenticator(proxyAuthenticator);
         }
         if (!settings.isVerifySsl()) {
             try {
@@ -835,6 +871,59 @@ public class ShellHttpClient implements ShellBaseClient {
             }
         }
         return builder.build();
+    }
+
+    /**
+     * 创建当前连接使用的代理选择器。
+     *
+     * @return 代理选择器
+     */
+    private ProxySelector proxySelector() {
+        if (!this.shellConnect.isEnableProxy()) {
+            return ProxySelector.of(null);
+        }
+        ShellProxyConfig config = this.shellConnect.getProxyConfig();
+        if (config == null) {
+            throw new IllegalArgumentException("Proxy is enabled but proxy config is empty");
+        }
+        if (config.isNoneProxy()) {
+            return ProxySelector.of(null);
+        }
+        if (StringUtil.isBlank(config.getHost()) || config.getPort() <= 0) {
+            throw new IllegalArgumentException("Proxy host or port is invalid");
+        }
+        if (config.isHttpProxy()) {
+            return ProxyUtil.createHttpProxySelector(config.getHost(), config.getPort());
+        }
+        if (config.isSocksProxy()) {
+            throw new IllegalArgumentException(
+                    "HTTP workspaces currently support HTTP proxies only; SOCKS is not supported by JDK HttpClient");
+        }
+        return ProxySelector.of(null);
+    }
+
+    /**
+     * 创建代理密码认证器。未启用密码认证时返回 null。
+     *
+     * @return 代理认证器
+     */
+    private Authenticator proxyAuthenticator() {
+        ShellProxyConfig config = this.shellConnect.isEnableProxy()
+                ? this.shellConnect.getProxyConfig() : null;
+        if (config == null || !config.isPasswordAuth()) {
+            return null;
+        }
+        String user = StringUtil.blankToDefault(config.getUser(), "");
+        String password = StringUtil.blankToDefault(config.getPassword(), "");
+        return new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                if (this.getRequestorType() == RequestorType.PROXY) {
+                    return new PasswordAuthentication(user, password.toCharArray());
+                }
+                return null;
+            }
+        };
     }
 
     /**

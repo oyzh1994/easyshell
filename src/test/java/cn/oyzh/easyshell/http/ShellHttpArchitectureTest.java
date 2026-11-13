@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -127,6 +128,48 @@ public class ShellHttpArchitectureTest {
                     Parent root = loader.load();
                     assertNotNull(resource, root);
                     assertNotNull(resource, loader.getController());
+                }
+            } catch (Throwable ex) {
+                error.set(ex);
+            } finally {
+                loaded.countDown();
+            }
+        });
+        assertTrue(loaded.await(20, TimeUnit.SECONDS));
+        if (error.get() != null) {
+            throw new AssertionError(error.get());
+        }
+    }
+
+    @Test
+    public void connectFormsLoadWithProxyControls() throws Exception {
+        CountDownLatch startup = new CountDownLatch(1);
+        try {
+            Platform.startup(startup::countDown);
+        } catch (IllegalStateException ex) {
+            startup.countDown();
+        }
+        assertTrue(startup.await(10, TimeUnit.SECONDS));
+
+        AtomicReference<Throwable> error = new AtomicReference<>();
+        CountDownLatch loaded = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                for (String resource : List.of(
+                        "/fxml/connect/http/shellAddHttpConnect.fxml",
+                        "/fxml/connect/http/shellUpdateHttpConnect.fxml")) {
+                    FXMLLoader loader = new FXMLLoader(ShellHttpArchitectureTest.class.getResource(resource));
+                    loader.setResources(cn.oyzh.i18n.I18nResourceBundle.INSTANCE);
+                    Parent root = loader.load();
+                    assertNotNull(resource, root);
+                    Object controller = loader.getController();
+                    assertNotNull(resource, controller);
+                    Field enableProxy = controller.getClass().getDeclaredField("enableProxy");
+                    enableProxy.setAccessible(true);
+                    assertNotNull(resource, enableProxy.get(controller));
+                    Field proxyHost = controller.getClass().getDeclaredField("proxyHost");
+                    proxyHost.setAccessible(true);
+                    assertNotNull(resource, proxyHost.get(controller));
                 }
             } catch (Throwable ex) {
                 error.set(ex);
