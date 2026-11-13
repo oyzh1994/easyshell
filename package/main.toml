@@ -218,7 +218,8 @@ excludes = [
     "NOTICE.*",
     "NOTICE.md",
     "NOTICE.txt",
-    "data.zip",
+    # H2 support removed; filter only H2's exact data.zip path.
+    ".*org/h2/util/data.zip",
     "git.properties",
     "reflect-config.json",
     "native-image.properties",
@@ -232,6 +233,7 @@ excludes = [
     ".*META-INF/.*.DSA",
     ".*.md",
     ".*.pro",
+    # All theme-library .bss files are runtime-unused and excluded.
     ".*.bss",
     ".*.xsd",
     ".*.proto",
@@ -240,9 +242,20 @@ excludes = [
     ".*.handlers",
     ".*.processors",
     ".*.kotlin_module",
+    ".*.kotlin_builtins",
+    # build metadata and docs
+    ".*META-INF/maven/.*",
+    ".*META-INF/licenses/.*",
+    ".*META-INF/.*.txt",
+    ".*META-INF/.*.html",
+    ".*META-INF/.*.htm",
+    ".*META-INF/.*.pdf",
+    ".*META-INF/.*.adoc",
+    ".*META-INF/.*.rst",
     # 特定裁剪开始
     ".*Android/.*",
-    ".*mozilla/.*",
+    # keep httpclient/mozilla/public-suffix-list.txt (cookie domain matching)
+    ".*org/bouncycastle/(asn1/)?mozilla/.*",
     ".*META-INF/native-image/.*",
     # 特定裁剪结束
     # 各类杂项裁剪结束
