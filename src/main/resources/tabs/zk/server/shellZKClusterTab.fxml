@@ -16,7 +16,7 @@
         <FXHBox realHeight="30" flexWidth="100% ">
             <RefreshSVGGlyph onMousePrimaryClicked="#refreshCluster">
                 <HBox.margin>
-                    <Insets  top="10"/>
+                    <Insets left="5" top="10"/>
                 </HBox.margin>
             </RefreshSVGGlyph>
         </FXHBox>
