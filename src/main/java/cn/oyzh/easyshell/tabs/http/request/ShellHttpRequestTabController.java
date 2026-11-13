@@ -1079,7 +1079,7 @@ public class ShellHttpRequestTabController extends RichTabController {
     @FXML
     private void saveRequest() {
         this.flush();
-        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
+//        MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
     /**
@@ -1443,7 +1443,7 @@ public class ShellHttpRequestTabController extends RichTabController {
             if (file != null) {
                 file = this.ensureResponseBodyExtension(file, extension);
                 FileUtil.writeUtf8String(this.responseBodyRaw, file);
-                MessageBox.info(I18nHelper.operationSuccess(), this.getWindow());
+                MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             }
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

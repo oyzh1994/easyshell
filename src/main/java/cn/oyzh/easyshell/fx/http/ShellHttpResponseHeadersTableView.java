@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.fx.http;
 import cn.oyzh.easyshell.http.ShellHttpKeyValue;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -18,6 +19,7 @@ public class ShellHttpResponseHeadersTableView extends FXTableView<ShellHttpKeyV
     @Override
     public void initNode() {
         super.initNode();
+        TableViewUtil.copyCellDataOnDoubleClicked(this);
 
         FXTableColumn<ShellHttpKeyValue, String> name = new FXTableColumn<>();
         name.setText(I18nHelper.key());
