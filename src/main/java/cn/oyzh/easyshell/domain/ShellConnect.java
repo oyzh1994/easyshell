@@ -1185,6 +1185,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否Rsh类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isRshType() {
+        return "rsh".equalsIgnoreCase(this.type);
+    }
+
+    /**
      * 是否S3类型
      *
      * @return 结果
@@ -1477,7 +1487,8 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
      */
     @JSONField(serialize = false, deserialize = false)
     public boolean isTermType() {
-        return this.isSSHType() || this.isLocalType() || this.isTelnetType() || this.isSerialType() || this.isRloginType() || this.isMoshType();
+        return this.isSSHType() || this.isLocalType() || this.isTelnetType() || this.isSerialType()
+                || this.isRloginType() || this.isRshType() || this.isMoshType();
     }
 
     /**

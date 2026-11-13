@@ -1,4 +1,4 @@
-terminalProtocols: SSH, Local, Telnet, Serial, RLogin, Mosh
+terminalProtocols: SSH, Local, Telnet, Serial, RLogin, Rsh, Mosh
 fileProtocols: SSH/SFTP, FTP, S3/MinIO, WebDAV, SMB
 databaseProtocols: MySQL, MariaDB, Dameng
 nosqlProtocols: Redis, MongoDB, ZooKeeper

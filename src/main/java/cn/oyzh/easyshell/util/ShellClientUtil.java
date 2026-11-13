@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.rdp.ShellRDPClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
+import cn.oyzh.easyshell.rsh.ShellRshClient;
 import cn.oyzh.easyshell.s3.ShellS3ClientV2;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
@@ -56,6 +57,8 @@ public class ShellClientUtil {
             client = new ShellTelnetClient(connect);
         } else if (connect.isRloginType()) {
             client = new ShellRLoginClient(connect);
+        } else if (connect.isRshType()) {
+            client = new ShellRshClient(connect);
         } else if (connect.isVNCType()) {
             client = new ShellVNCClient(connect);
         } else if (connect.isLocalType()) {

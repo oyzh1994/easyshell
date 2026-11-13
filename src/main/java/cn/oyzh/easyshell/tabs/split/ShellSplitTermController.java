@@ -10,6 +10,8 @@ import cn.oyzh.easyshell.mosh.ShellMoshClient;
 import cn.oyzh.easyshell.mosh.ShellMoshTermWidget;
 import cn.oyzh.easyshell.rlogin.ShellRLoginClient;
 import cn.oyzh.easyshell.rlogin.ShellRLoginTermWidget;
+import cn.oyzh.easyshell.rsh.ShellRshClient;
+import cn.oyzh.easyshell.rsh.ShellRshTermWidget;
 import cn.oyzh.easyshell.serial.ShellSerialClient;
 import cn.oyzh.easyshell.serial.ShellSerialTermWidget;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
@@ -79,6 +81,10 @@ public class ShellSplitTermController extends SubTabController {
         } else if (this.client instanceof ShellRLoginClient rLoginClient) {
             ShellRLoginTermWidget widget = new ShellRLoginTermWidget();
             ttyConnector = widget.createTtyConnector(rLoginClient);
+            this.widget = widget;
+        } else if (this.client instanceof ShellRshClient rshClient) {
+            ShellRshTermWidget widget = new ShellRshTermWidget();
+            ttyConnector = widget.createTtyConnector(rshClient);
             this.widget = widget;
         } else if (this.client instanceof ShellTelnetClient telnetClient) {
             ShellTelnetTermWidget widget = new ShellTelnetTermWidget();

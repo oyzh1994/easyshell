@@ -69,6 +69,11 @@ public class ShellPrototype {
    public static final String RLOGIN = "RLogin";
 
     /**
+     * Rsh 连接类型
+     */
+    public static final String RSH = "Rsh";
+
+    /**
      * Webdav 连接类型
      */
    public static final String WEBDAV = "Webdav";

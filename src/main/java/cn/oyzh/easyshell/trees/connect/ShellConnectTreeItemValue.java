@@ -104,6 +104,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
         if (this.item().isRloginType()) {
             return Color.valueOf("#D97706");
         }
+        if (this.item().isRshType()) {
+            return Color.valueOf("#B45309");
+        }
         if (this.item().isLocalType()) {
             return Color.valueOf("#166534");
         }

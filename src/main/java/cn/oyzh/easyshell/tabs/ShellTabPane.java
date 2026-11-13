@@ -36,6 +36,7 @@ import cn.oyzh.easyshell.tabs.postgresql.ShellPostgresqlTab;
 import cn.oyzh.easyshell.tabs.rdp.ShellRdpTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
+import cn.oyzh.easyshell.tabs.rsh.ShellRshTab;
 import cn.oyzh.easyshell.tabs.s3.ShellS3Tab;
 import cn.oyzh.easyshell.tabs.serial.ShellSerialTab;
 import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
@@ -358,6 +359,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = ShellVNCTab.of(connect);
             } else if (connect.isRloginType()) {
                 tab = ShellRLoginTab.of(connect);
+            } else if (connect.isRshType()) {
+                tab = ShellRshTab.of(connect);
             } else if (connect.isRedisType()) {
                 tab = ShellRedisTab.of(connect);
             } else if (connect.isValkeyType()) {

@@ -41,6 +41,7 @@ import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.protol.RshSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
 import javafx.scene.control.ListCell;
@@ -80,6 +81,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.REDIS);
         this.addItem(ShellPrototype.VALKEY);
         this.addItem(ShellPrototype.RLOGIN);
+        this.addItem(ShellPrototype.RSH);
         this.addItem(ShellPrototype.WEBDAV);
         this.addItem(ShellPrototype.TELNET);
         this.addItem(ShellPrototype.ZOOKEEPER);
@@ -141,6 +143,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.SERIAL);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RLOGIN)) {
             super.select(ShellPrototype.RLOGIN);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.RSH)) {
+            super.select(ShellPrototype.RSH);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MINIO)) {
             super.select(ShellPrototype.MINIO);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.REDIS)) {
@@ -206,6 +210,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "telnet" -> new TelnetSVGGlyph();
             case "serial" -> new SerialPortSVGGlyph();
             case "rlogin" -> new RLoginSVGGlyph();
+            case "rsh" -> new RshSVGGlyph();
             case "minio" -> new MinioSVGGlyph();
             case "alibaba cloud" -> new AlibabaCloudSVGGlyph();
             case "tencent cloud" -> new TencentCloudSVGGlyph();

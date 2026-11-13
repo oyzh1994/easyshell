@@ -82,7 +82,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      * 过滤模式
      * ssh ssh连接
      * file ssh、sftp、ftp连接
-     * term ssh、local、串口、telnet、rlogin连接
+     * term ssh、local、串口、telnet、rlogin、rsh连接
      * zk zk连接
      * mysql mysql连接
      * redis redis连接
