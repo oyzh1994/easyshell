@@ -3,7 +3,7 @@
 > 分析日期：2026-11-13  
 > 适用版本：1.2.5  
 > 目标：在不影响现有功能的前提下，按条收敛启动期的非必要类加载。  
-> 当前状态：L1、L4 已实施并完成冷启动验证；L2/L3 已评估并回滚，暂不实施；其余项目待逐项评估。
+> 当前状态：L1、L4、M1 已实施；L2/L3 已评估并回滚，暂不实施；JVM/JavaFX 参数已完成冷启动实测，当前配置不再调整。
 
 ## 1. 结论摘要
 
@@ -267,7 +267,190 @@ L1 数据库条件初始化（已完成）
 - LLM 包仅剩少量设置枚举，继续优化收益很低。
 - 保持现状，只做回归验证。
 
-## 8. 统一验收模板
+## 8. JVM 启动参数与运行时内存实测
+
+### 8.1 测试口径
+
+- 测试包：`C:\Package\EasyShell\1.2.5\EasyShell`，使用正式 `EasyShell.cfg`，兼容图形模式 `graphicMode=2`。
+- 测试方式：每轮冷启动，等待首屏稳定后读取 `Process.PrivateWorkingSetSize`（PWS）、`PrivateMemorySize64`、`WorkingSet64`，并用 `jcmd` 读取堆、Metaspace、类数量和 CodeCache。
+- 样本量：CodeCache 组和基线各 5 次；JavaFX、CDS、图形模式各 3 次。差值小于约 `1 MB` 视为冷启动噪声，不据此改配置。
+- 当前基线：PWS 平均 `65.75 MB`（`64.92-66.32 MB`），私有内存平均 `72.73 MB`，工作集约 `128-138 MB`，堆约 `66-68 MB`，Metaspace used 约 `34,565 KB`，已加载类 `6,887`，CodeCache used 约 `1.9 MB`。
+- 这里的 `6,887` 是 JVM 统计的已加载类（包含数组类、隐藏类和 Lambda 类），会高于类加载日志中的唯一业务类名数量，两者不能直接混用。
+
+### 8.2 JVM 参数对照
+
+| 方案 | PWS 均值 | 相对基线 | 结论 |
+| --- | ---: | ---: | --- |
+| 当前正式参数 | 65.75 MB | - | 保留 |
+| `-XX:ReservedCodeCacheSize=16m` | 65.60 MB | -0.15 MB | 噪声内，不采用 |
+| 关闭分段 CodeCache + 16 MB 预留 + 512 KB 初始值 | 65.76 MB | +0.01 MB | 无收益，不采用 |
+| `-XX:-SegmentedCodeCache` | 65.86 MB | +0.11 MB | 无收益，不采用 |
+| `-XX:InitialCodeCacheSize=512k` | 66.28 MB | +0.53 MB | 略差，不采用 |
+
+另外测试过但不进入正式配置的项：
+
+- `-Xms32m`：最多约 `0.5-1 MB`，处于噪声内；考虑到扩容带来的额外 GC 和 CPU，保留当前不显式设置 `-Xms`。
+- `-XX:-UsePerfData`：无稳定收益，且会损失运行时性能计数能力。
+- `-XX:-UseStringDeduplication`：无稳定收益，反而失去字符串去重能力，保留开启。
+- `-XX:ZCollectionInterval=5`：最多约 `1 MB`，但会引入周期性 GC，不建议。
+- `-XX:+UseCompactObjectHeaders`：无稳定收益，不采用。
+- AOT 缓存：启动更快，但实测总私有内存约 `100 MB`，不符合本轮降内存目标。
+- G1、Serial：均明显差于当前 ZGC 小堆配置，不采用。
+- 资源目录中的 `-XX:+PrintFlagsFinal` 只存在于 `vmArgs.windows.txt` 开发参数，正式 `EasyShell.cfg` 没有该参数，无需处理。
+
+结论：当前 JVM 参数已经进入边际区，继续压缩 CodeCache、PerfData、字符串去重或初始堆，收益都在噪声内，甚至可能增加 CPU 与 GC 开销。正式配置保持现状。
+
+### 8.3 CDS 实测
+
+生成与 ZGC 非压缩指针匹配的 `classes_nocoops.jsa` 后，类元数据账面值下降，但进程内存没有下降：
+
+| 指标 | 基线 | CDS |
+| --- | ---: | ---: |
+| PWS 均值 | 66.69 MB | 67.46 MB |
+| Metaspace used | 约 34,567 KB | 约 24,535 KB |
+| NMT Class Metadata committed | 29 MB | 20 MB |
+| NMT Shared class space committed | 0 MB | 13 MB |
+| NMT Total committed | 124 MB | 124 MB |
+
+CDS 把约 `10 MB` 类元数据从 Metaspace 转移到了 `.jsa` 的共享映射，账面上 Metaspace 变小，但总 committed 和进程 PWS 没有下降。正式配置继续使用 `-Xshare:off`，不启用 CDS。
+
+### 8.4 JavaFX 参数实测
+
+| 参数 | PWS 均值 | 相对基线 | 结论 |
+| --- | ---: | ---: | --- |
+| 基线 | 65.75 MB | - | 保留 |
+| `-Dprism.cacheshapes=false` | 65.51 MB | -0.24 MB | 噪声内，不采用 |
+| `-Dprism.glyphCache=512` | 66.14 MB | +0.39 MB | 无收益，不采用 |
+| shapes off + glyph 512 | 66.08 MB | +0.33 MB | 无收益，不采用 |
+| `-Dprism.disableRegionCaching=true` | 66.05 MB | +0.30 MB | 无收益，不采用 |
+| `-Dprism.dirtyopts=false` | 65.77 MB | +0.02 MB | 无收益，不采用 |
+| `-Dprism.cachefonts=false -Dprism.cacheimages=false` | 66.41 MB | 同轮基线 66.40 MB，差 +0.01 MB | 5+5 次复测，噪声内，不采用 |
+| `-Dprism.numrenderbuckets=1 -Dquantum.multithreaded=false` | 66.73 MB | 同轮基线 67.17 MB，差 -0.44 MB | 3 次，噪声内，不采用 |
+
+后两组补测使用同轮基线，不与首行历史基线直接相减。JavaFX 的 shape、glyph、region、字体和图片缓存参数均没有可测收益；关闭缓存或单线程渲染还可能增加重复绘制 CPU，因此不进入正式配置。
+
+### 8.5 图形模式实测
+
+| 图形模式 | 私有内存均值 | PWS 均值 | 工作集均值 | 类数均值 | 主要对象 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 兼容模式（`graphicMode=2`） | 73.41 MB | 66.52 MB | 130.61 MB | 6,887 | `JavaSurface` 1,211、`SWRTTexture` 903 |
+| 性能/均衡模式（`graphicMode=1`） | 155.02 MB | 90.64 MB | 172.23 MB | 6,961 | `D3DPipeline` 1,724、`D3DTexture` 233 |
+
+D3D 把软件渲染的全窗像素缓冲从 Java 堆移走，堆从约 `66 MB` 降到约 `60 MB`，但进程私有内存增加约 `82 MB`、PWS 增加约 `24 MB`，并额外加载约 `74` 个类。因此当前兼容模式/软件渲染是更省内存的选择，测试后已恢复 `graphicMode=2`。
+
+### 8.6 启动堆转储证据
+
+启动 15 秒、执行 GC 后生成约 `40.5 MB` 的堆转储，存活对象 `271,784` 个、类 `6,888` 个。按 shallow size 统计：
+
+- `JavaSurface` 背后的 `int[]` 约 `8.19 MB`（长度 `2,047,500`），对应主窗口软件渲染全窗缓冲。它是软件渲染的必要成本；改 D3D 会把成本转移到进程私有内存，整体更差。
+- `ZipFile$Source.cen` 共 `139` 个 JAR，合计约 `6.76 MB`；`entries` 约 `0.80 MB`，`table` 约 `0.14 MB`。JAR 中央目录合计约 `7.70 MB`，是 compact 包多 JAR 结构的固定开销。
+- CSS 相关对象中，`SimpleSelector` 3,606 个约 `285 KB`，`ParsedValueImpl` 6,578 个约 `250 KB`；连同 `Declaration`、`Rule`、`Size` 等合计约 `1-2 MB`。
+- 字体 CMap、Marlin 渲染缓存等各为数百 KB，没有明显异常大对象。
+
+### 8.7 后续空间判断
+
+- 参数层：JVM 参数、CodeCache、CDS、AOT、JavaFX 缓存均已测试，没有稳定且值得保留的收益。
+- 打包层：合并 JAR 对内存几乎没有收益。137 个依赖 JAR 共 `58,609` 个条目，合并后唯一路径仍有 `58,388` 个；中央目录估算仅从 `6,034,166` 字节降到 `6,017,366` 字节，约 `16.8 KB`，再加 137 个 EOCD 也只有约 `20 KB`。此前“合并可省 5-7 MB”的估算不成立，详见 8.8。
+- 应用层：CSS/主题懒加载仍有约 `1-2 MB` 理论空间，但需要处理主题切换、自定义主题和回退路径，收益低于复杂度，暂不作为目标。
+- 渲染层：全窗软件缓冲约 `8.19 MB` 是当前低进程内存模式的代价；D3D 只是换账本，实测更差。
+
+结论：本轮不新增或修改 JVM/JavaFX 参数，也不合并 JAR。当前没有证据表明还存在低风险且可测的显著内存收益；裁剪未使用依赖和 JAR 条目已在 8.9 复核，只有 2 个小依赖可删，对启动类加载没有收益，详见 8.9。
+
+### 8.8 JAR 合并可行性复核
+
+运行态结构已经确认：
+
+- compact 启动器会把 payload 解到 `~/.cache/compact-jar-cache`，启动子 JVM 时使用 `application.jar + 137 个 lib/*.jar + classpath.jar`。
+- 当前 `application.jar` 约 `15.6 MB`，137 个依赖 JAR 合计约 `242.3 MB`，其中实际保存的是未压缩类与资源。
+- 堆转储中 `ZipFile$Source.cen` 约 `6.76 MB`、`entries` 约 `0.80 MB`、`table` 约 `0.14 MB`。这是 139 个独立 JAR（应用、137 个依赖和 classpath JAR）的索引，而不是可随 JAR 数量直接消失的额外副本。
+
+合并前后的索引计算：
+
+| 指标 | 当前 137 个依赖 JAR | 合并为 1 个 JAR | 变化 |
+| --- | ---: | ---: | ---: |
+| 条目数 | 58,609 | 58,388（去重后） | -221 |
+| 中央目录估算 | 6,034,166 B | 6,017,366 B | -16,800 B |
+| 每 JAR EOCD | 137 x 22 B | 22 B | -3,014 B |
+| 合计节省 | - | - | 约 19.8 KB |
+
+中央目录仍要为几乎全部条目保存文件名、偏移和属性，所以合并 JAR 不会让 `ZipFile$Source.cen` 从 6-7 MB 变成几百 KB。`entries` 和 `table` 也基本随总条目数增长，合并只能省掉重复条目和少量每 JAR 固定开销，预计总收益不到 `0.3 MB`。
+
+技术上也存在实际兼容点：
+
+- `META-INF/services/java.sql.Driver` 有 6 个提供者，直接覆盖会导致部分 JDBC 驱动消失；必须按 ServiceLoader 语义合并文本。
+- POI 的 3 个 Service 文件各有 2 个提供者，也必须合并。
+- 77 个重复路径中有 69 个内容不同，包括 `fx-plus` 对 JavaFX FXML 类的定制、`fx-editor` 对 RichText 类的定制，以及 `base-mongodb`/`mongodb-driver-core`、`base-store`/`h2` 的重复类。合并必须严格保持当前 classpath 的优先顺序，否则会换掉实际生效的实现。
+- 还有 222 个 `META-INF/versions` 多版本条目、8 个原生库条目，以及各依赖自己的 `MANIFEST.MF`、OSGi 元数据和资源查找路径；不能简单用 `jar -uf` 覆盖。
+- 当前依赖没有签名条目，但未来若引入签名 JAR，合并后还必须重新签名并验证 `jarsigner`。
+- `base-pkg` 现有的 `mergeLibs` 只是把依赖目录重新加入可执行 JAR，并不是将依赖类扁平化，因此没有现成的“合并成一个 JAR”开关。
+- 如果目标只是消除 `ZipFile` 中央目录，理论上可以把依赖改成目录 classpath：目录类路径不需要 JAR 中央目录，可能省下约 7.7 MB。但 137 个依赖展开后会产生约 58,600 个文件，破坏 compact 单文件缓存和清理逻辑，并显著增加安装、Windows Defender、冷启动和更新成本；多版本 JAR 还需额外展开。该方案比合并 JAR 改造更大，同样不建议。
+
+因此，合并 JAR 在工程上可以做，但需要自定义确定性合并器，处理 Service、重复类优先级、多版本条目、原生库和资源路径；换来的实测预期只有几百 KB 以内，风险收益比不成立。若未来仍要压缩中央目录，方向应是减少条目本身，例如裁剪确实未使用的依赖/资源，而不是减少 JAR 文件数量；该方向已在 8.9 复核，只有 2 个依赖和 7 个空壳 JAR，包体约省 0.66 MB，启动类加载收益为 0。
+
+### 8.9 未使用依赖与 JAR 条目复核
+
+结论先说：确实还存在未使用项，但数量很少，而且对启动内存没有可见收益。`curator-recipes` 已完成替换删除；`javax.annotation-api` 已完成运行时移除，保留 test scope 以兼容既有测试链路；另有 7 个只有 MANIFEST 的空壳 JavaFX JAR。没有发现能解释 MB 级内存差异的大块无用依赖。
+
+本轮使用四类独立证据，没有把 Maven 的“未使用声明”直接当结论：
+
+1. `maven-dependency-plugin:3.11.0:analyze`。3.8.1 读取 Java 25 class（major 69）会失败，3.11.0 才能完成。
+2. 用 137 个运行时依赖 JAR 的显式 classpath 运行 `jdeps -verbose:class`，检查 `application.jar` 的 64 个直接 JAR 引用以及依赖之间的引用。
+3. 解压扫描 `application.jar` 和 137 个 JAR 的全部 class 常量池与非 class 资源，查找类名/反射/配置字符串，排除仅靠 `jdeps` 看不到的动态引用。
+4. 结合 `-Xlog:class+load`：137 个依赖 JAR 中只有 28 个在启动阶段加载了类，109 个为 0；但 0 启动类不等于未使用，必须继续查 ServiceLoader、反射和懒加载路径。
+
+Maven 3.11.0 共报告 8 个 `Unused declared dependencies`，逐项复核结果：
+
+| 依赖 | 实际证据 | 结论 |
+| --- | --- | --- |
+| `com.google.zxing:core` | `base-common` 的 `cn.oyzh.common.qrcode.QRCodeUtil` 直接引用 `MultiFormatWriter`、`BitMatrix`、`BarcodeFormat` 等；EasyShell 的 ZK/Redis/Valkey 三个二维码 Popup 调用 `QRCodeUtil.createImage` | 使用中，保留 |
+| `javax.annotation:javax.annotation-api` | `src/main` 0 处引用；最终发布包的 `BOOT-INF/classes` 和全部运行时 JAR 中，15 个精确类名命中 0；唯一精确引用来自 test scope 的 Sisu | 已移除生产依赖，降为 test scope |
+| `com.google.guava:guava` | `curator-client` 254 处、`curator-framework` 13 处、`curator-recipes` 28 处、`minio` 21 处类引用 | 使用中，保留 |
+| `org.xerial:sqlite-jdbc` | 有 `META-INF/services/java.sql.Driver`；启动日志在 `0.446s` 加载 `org.sqlite.JDBC` 等 83 个类，本地存储依赖它 | 使用中，保留 |
+| `org.apache.curator:curator-recipes` | `application.jar`、其他依赖和资源的 class/字符串扫描中，除自身外 0 处引用；应用直接使用 `curator-framework`/`curator-client`，不使用 recipes API | 已删除并通过构建验证，改为直接依赖 framework/client |
+| `org.openjfx:javafx-media`（无 classifier 的通用包） | 该 JAR 只有 `META-INF/MANIFEST.MF`，307 B、0 个 class；真正生效的是 `javafx-media-27.0.1-win.jar`，启动时加载 `javafx.scene.media.MediaView` | 通用空壳无类可加载；媒体功能仍在用，保留依赖 |
+| `org.slf4j:slf4j-nop` | `META-INF/services/org.slf4j.spi.SLF4JServiceProvider`；启动日志在 `0.450s` 加载 `org.slf4j.nop.NOPServiceProvider` | ServiceLoader 使用中，保留 |
+| `org.apache.commons:commons-compress` | `base-common` 的 `CompressUtil`/`ArchiveUtil` 引用；EasyShell 在 `ShellFilePkgUploadController` 调用 `CompressUtil.compress(..., TAR_GZ)`；POI 和 MinIO 也引用 | 使用中，保留 |
+
+真正可删项及量化：
+
+| 项目 | JAR 文件大小 | 中央目录估算 | 启动加载类数 |
+| --- | ---: | ---: | ---: |
+| `curator-recipes-4.3.0.jar` | 646,099 B | 24,677 B | 0 |
+| `javax.annotation-api-1.3.2.jar` | 13,476 B | 1,335 B | 0 |
+| 合计 | 659,575 B（约 0.66 MB） | 26,012 B | 0 |
+
+这 0.66 MB 是 JAR 文件大小，不是运行时堆或 Metaspace。两者在启动阶段都没有加载类，所以删除它们不能降低启动类数，也不能证明能降低 MB 级内存；理论上只少 JAR 的中央目录/文件句柄开销。
+
+`curator-recipes` 实施记录：
+
+- 2026-11-13：`pom.xml` 中删除 `curator-recipes`，改为直接声明 `curator-framework` 和 `curator-client`，版本仍为 `4.3.0`，并保留原有的 zookeeper/guava 排除。
+- 依赖映射核对：应用实际导入的 12 个 Curator 类型中，`CuratorZookeeperClient`、`RetryPolicy`、`RetryOneTime`、`ZookeeperFactory` 位于 `curator-client`；`AuthInfo`、`CuratorFramework`、`CuratorFrameworkFactory`、`Builders`、`ConnectionState` 等位于 `curator-framework`；没有任何一个来自 `curator-recipes`。`base-zookeeper`、framework、client 也没有反向引用 recipes。
+- 构建验证：`mvn -Dmaven.test.skip=true package` 成功；`mvn -DskipTests test-compile` 成功，209 个测试源码也都能在无 recipes 的 classpath 下编译。
+- 包体变化：`target/easyshell-1.2.5.jar` 从 `140,922,891 B` 降到 `140,626,983 B`，减少 `295,908 B`（约 289 KB）；`BOOT-INF/lib` 从 137 个依赖 JAR 降到 136 个，`curator-recipes-4.3.0.jar` 已不存在；framework/client 保留，`org.apache.zookeeper:zookeeper` 仍未进入依赖树。
+- 内存预期：recipes 在启动日志中加载 0 个类，因此不降低启动类数或 Metaspace；收益是包体/类路径条目减少，不应期待 MB 级内存变化。
+- 未实测：尚未连接真实 ZK 服务执行连接、节点 CRUD、ACL、监听等回归；由于源码和依赖字节码均无 recipes API 引用，功能风险低，但最终仍以一次真实 ZK 连接验证为准。
+
+`javax.annotation-api` 穷尽排查与实施记录（2026-11-13）：
+
+- 结论：最终发布包中未发现对 `javax.annotation-api:1.3.2` 所含 15 个类的任何静态引用；生产依赖已移除，为不改变已有测试链路，保留为 `test` scope。
+- 排查范围不只是项目源码 import，也不是直接采用 Maven 的 unused 结论：直接打开 Spring Boot 可执行 JAR，遍历 `BOOT-INF/classes` 和全部嵌套运行时 JAR；逐个解压 class 常量池、Service 配置、MANIFEST、POM 及其他资源，按字节搜索 slash/dot 两种类名。
+- 目标类固定为：`Resource`、`Resource.AuthenticationType`、`Resources`、`ManagedBean`、`Generated`、`PreDestroy`、`Priority`、`PostConstruct`、`sql.DataSourceDefinition`、`sql.DataSourceDefinitions`、`security.RolesAllowed`、`security.PermitAll`、`security.DeclareRoles`、`security.RunAs`、`security.DenyAll`。
+- 结果：移除前的 136 个运行时依赖 JAR 中，15 个精确类名命中 0；`javax.annotation` 泛前缀命中 95 处，全部是 JSR-305 的 `Nonnull`、`Nullable`、`meta.TypeQualifier*` 等，这些类不由 `javax.annotation-api` 提供。移除后新包复扫 135 个 JAR 和应用类共 66,774 个条目，精确命中仍为 0。
+- 测试类路径单独扫描 187 个 JAR：唯一精确引用位于 test scope 的 `org.eclipse.sisu.inject-1.1.0.jar`，其中 `LifecycleBuilder` 使用 `PostConstruct/PreDestroy`，`Implementations` 使用 `Priority`。依赖路径为 `base-pkg:test -> maven-core:test -> sisu.inject:test`，不会进入 Spring Boot 发布包。
+- 实施：`pom.xml` 将该依赖改为 `<scope>test</scope>`；`dependency:tree -Dscope=runtime` 已无该依赖，`-Dscope=test` 仍保留，209 个测试源码的既有类路径不变。
+- 验证：`mvn -B -DskipTests test-compile` 成功；`mvn -B -Dmaven.test.skip=true package` 成功；`BOOT-INF/lib` 为 135 个 JAR，`javax.annotation-api-1.3.2.jar` 不存在；当前包体 `140,600,292 B`，较移除前 `140,626,983 B` 少 `26,691 B`（依赖自身 13,476 B，其余包含重建压缩波动，不作为精确内存收益）。
+- 边界：字节级扫描能证明发行物中没有该 API 的直接或字符串引用，但理论上无法排除第三方在运行时用字符串拼接加反射生成类名；本轮已覆盖所有显式类名和包前缀，未发现此类构造。该依赖在启动阶段加载 0 个类，因此不降低启动类数或内存。
+
+JAR 条目层面的证据：
+
+- 7 个通用 JavaFX/JFX Incubator JAR 只有 `META-INF/MANIFEST.MF`，合计 2,170 B、中央目录 847 B：`javafx-base/controls/graphics/fxml/media`、`jfx-incubator-input/richtext`（均无 classifier）。它们是实际空壳，但对内存的贡献接近 0。
+- 137 个依赖 JAR 共 58,609 个条目，去重后 58,388 个，有 77 个重复路径、221 个多余条目；其中 8 个路径字节相同、69 个内容不同。合并/去重中央目录最多约省 16.8 KB，详见 8.8。
+- 重复条目不能直接当“无用条目”删除：包括 `fx-plus`/`fx-editor` 对 JavaFX/RichText 的定制类、`base-mongodb`/`mongodb-driver-core`、`base-store`/`h2` 的重名类，以及必须合并的 6 个 JDBC Service 文件和 3 组 POI Service 文件。简单删除会改变 classpath 优先级或丢失 provider。
+- 109 个“启动时 0 类”的 JAR 中，已确认 `zxing`、`commons-compress`、`guava`、JAXB/JDBC provider 等属于懒加载或反射/ServiceLoader 路径，不能按启动加载数判定未使用。
+
+因此，“项目还有未使用依赖/JAR 条目”这个判断只在很小的包体清理层面成立。`curator-recipes` 和 `javax.annotation-api` 均已从生产包清理，另外 7 个空壳 JAR 合计仅约 2 KB。没有实际证据表明还有大块未使用依赖；继续从依赖/JAR 清单里追求内存下降，收益已经基本挖尽。
+
+## 9. 统一验收模板
 
 每项收敛时复制以下模板到对应条目的“实施记录”：
 
@@ -285,7 +468,7 @@ L1 数据库条件初始化（已完成）
 - 结论：保留 / 回退 / 放弃
 ```
 
-## 9. 测量方法
+## 10. 测量方法
 
 类加载日志：
 
@@ -314,12 +497,16 @@ jcmd <JVM_PID> VM.metaspace
 jcmd <JVM_PID> GC.class_histogram
 ```
 
-## 10. 本轮分析产物
+## 11. 本轮分析产物
 
 - 类加载日志：`target/classload-latest.log`
 - L1 类加载日志：`target/classload-l1.log`、`target/classload-l1-prod.log`、`target/classload-l1-static.log`、`target/classload-l1-static-final.log`
 - L4 类加载日志：`target/classload-l4.log`、`target/classload-l4-2.log`
 - 类直方图：`target/class-histogram.txt`
+- JVM/JavaFX 基准：`target/bench-final-codecache.csv`、`bench-final-lowmem.csv`、`bench-final-prism.csv`、`bench-final-prism-extra.csv`、`bench-final-prism-cacheoff-5x.csv`、`bench-final-cds.csv`、`bench-final-cds-nmt.txt`、`bench-graphic-mode.csv`
+- JAR 合并评估：`target/analyze-jar-merge.ps1`、`target/analyze-jar-duplicates.ps1`、`target/analyze-jar-entries.ps1`
+- 依赖/JAR 条目复核：`target/mvn-dependency-analyze-311.log`、`target/runtime-dependencies-381.txt`、`target/jdeps-app-explicit.txt`、`target/jdeps-jar-graph.csv`、`target/mvn-package-no-recipes.log`、`target/mvn-test-compile-no-recipes.log`、`target/mvn-tree-no-recipes.log`、`target/javax-annotation-exhaustive-scan.txt`、`target/javax-annotation-testcp-scan.txt`、`target/javax-annotation-runtime-rescan.txt`、`target/mvn-test-compile-javax-test-scope-retry.log`、`target/mvn-package-javax-test-scope.log`、`target/mvn-tree-javax-runtime.log`、`target/mvn-tree-javax-test.log`
+- 启动堆转储脚本与分析：`target/dump-startup-heap.ps1`、`target/analyze-hprof.js`、`target/startup-live-analysis.txt`
 - 入口类：`src/main/java/cn/oyzh/easyshell/EasyShellBootstrap.java`
 - 启动主流程：`src/main/java/cn/oyzh/easyshell/EasyShellApp.java`
 

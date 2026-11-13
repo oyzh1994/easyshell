@@ -467,11 +467,12 @@
             <version>${valkey.version}</version>
         </dependency>
 
-        <!-- java注解 -->
+        <!-- javax.annotation-api：生产代码和发布包无引用；仅测试链路 base-pkg -> maven-core -> sisu.inject 使用 -->
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.3.2</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- 默认日志占位，排除其他类库的日志依赖 -->
@@ -483,10 +484,28 @@
         </dependency>
 
         <!-- zookeeper协议开始 -->
-        <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
+        <!-- 直接依赖实际使用的Curator SDK，不引入未使用的curator-recipes -->
+        <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-framework -->
         <dependency>
             <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
+            <artifactId>curator-framework</artifactId>
+            <version>${curator-version}</version>
+            <exclusions>
+                <!-- 排除zookeeper，使用自定义zookeeper -->
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-client -->
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-client</artifactId>
             <version>${curator-version}</version>
             <exclusions>
                 <!-- 排除zookeeper，使用自定义zookeeper -->
