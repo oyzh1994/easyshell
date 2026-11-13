@@ -2,6 +2,7 @@
 <?import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField?>
 <?import cn.oyzh.easyshell.fx.file.ShellFileSizeTableColumn?>
 <?import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView?>
+<?import cn.oyzh.easyshell.fx.ssh.ShellServerMonitorPane?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.ReturnFolderSVGGlyph?>
 <?import cn.oyzh.easyshell.ssh.ShellSSHTermWidget?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
@@ -166,11 +167,7 @@
                         <Insets left="5" top="5"/>
                     </FXHBox.margin>
                 </FXToggleSwitch>
-                <FXLabel fx:id="serverMonitorInfo">
-                    <FXHBox.margin>
-                        <Insets left="5" top="8"/>
-                    </FXHBox.margin>
-                </FXLabel>
+                <ShellServerMonitorPane fx:id="serverMonitorPane" prefHeight="30" maxHeight="30"/>
             </FXHBox>
         </FXVBox>
     </FXSplitPane>

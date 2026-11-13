@@ -1,0 +1,94 @@
+.server-monitor-pane {
+    -fx-padding: 2 4 2 4;
+    -fx-background-color: transparent;
+}
+
+.server-metric-card {
+    -fx-padding: 2 9 2 6;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 5;
+    -fx-border-color: -color-border-subtle;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+}
+
+.server-metric-card:hover {
+    -fx-background-color: -color-bg-inset;
+}
+
+.server-metric-marker {
+    -fx-min-width: 3;
+    -fx-pref-width: 3;
+    -fx-max-width: 3;
+    -fx-min-height: 16;
+    -fx-pref-height: 16;
+    -fx-background-radius: 2;
+}
+
+.server-metric-cpu .server-metric-marker {
+    -fx-background-color: -color-accent-emphasis;
+}
+
+.server-metric-memory .server-metric-marker {
+    -fx-background-color: -color-success-emphasis;
+}
+
+.server-metric-network .server-metric-marker {
+    -fx-background-color: -color-chart-1;
+}
+
+.server-metric-disk .server-metric-marker {
+    -fx-background-color: -color-warning-emphasis;
+}
+
+.server-metric-title {
+    -fx-text-fill: -color-fg-muted;
+}
+
+.server-metric-value {
+    -fx-text-fill: -color-fg-default;
+}
+
+.server-metric-gauge,
+.server-metric-gauge-row {
+    -fx-min-height: 3;
+    -fx-pref-height: 3;
+    -fx-max-height: 3;
+}
+
+.server-metric-gauge > .track {
+    -fx-background-color: -color-neutral-muted;
+    -fx-background-radius: 2;
+    -fx-background-insets: 0;
+}
+
+.server-metric-gauge > .bar {
+    -fx-background-color: -color-accent-emphasis;
+    -fx-background-radius: 2;
+    -fx-background-insets: 0;
+    -fx-padding: 1.5;
+}
+
+.server-metric-memory .server-metric-gauge > .bar {
+    -fx-background-color: -color-success-emphasis;
+}
+
+.server-metric-network .server-metric-gauge-second > .bar {
+    -fx-background-color: -color-success-emphasis;
+}
+
+.server-metric-disk .server-metric-gauge-first > .bar {
+    -fx-background-color: -color-warning-emphasis;
+}
+
+.server-metric-disk .server-metric-gauge-second > .bar {
+    -fx-background-color: -color-chart-6;
+}
+
+.server-metric-card.metric-warning .server-metric-gauge > .bar {
+    -fx-background-color: -color-warning-emphasis;
+}
+
+.server-metric-card.metric-danger .server-metric-gauge > .bar {
+    -fx-background-color: -color-danger-emphasis;
+}

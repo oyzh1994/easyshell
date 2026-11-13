@@ -3,8 +3,6 @@ package cn.oyzh.easyshell.tabs.ssh;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ExecutorUtil;
 import cn.oyzh.common.thread.TaskManager;
-import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.NumberUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.file.ShellFileDraggedEvent;
 import cn.oyzh.easyshell.file.ShellFile;
@@ -12,6 +10,7 @@ import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.file.ShellFileTaskType;
 import cn.oyzh.easyshell.file.ShellFileUtil;
 import cn.oyzh.easyshell.fx.file.ShellFileLocationTextField;
+import cn.oyzh.easyshell.fx.ssh.ShellServerMonitorPane;
 import cn.oyzh.easyshell.fx.sftp.ShellSSHSFTPFileTableView;
 import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.sftp.ShellSFTPFile;
@@ -23,8 +22,6 @@ import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerMonitor;
 import cn.oyzh.easyshell.tabs.ShellSnippetAdapter;
 import cn.oyzh.easyshell.terminal.ShellTermWidgetUtil;
-import cn.oyzh.easyshell.util.ShellConnectUtil;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.svg.label.HiddenSVGLabel;
@@ -46,7 +43,6 @@ import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.fx.tty.TtyTerminalUtil;
 import cn.oyzh.i18n.I18nHelper;
 import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.FXTerminalPanel;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -144,7 +140,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      * 服务监控信息
      */
     @FXML
-    private FXLabel serverMonitorInfo;
+    private ShellServerMonitorPane serverMonitorPane;
 
     /**
      * 监控任务
@@ -665,7 +661,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
      */
     private void initMonitorTask() {
         // 处理组件
-        this.serverMonitorInfo.display();
+        this.serverMonitorPane.showMetrics();
         if (this.serverMonitorTask != null) {
             return;
         }
@@ -682,20 +678,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
                 if (monitor == null) {
                     return;
                 }
-                StringBuilder sb = new StringBuilder();
-                double cpuUsage = NumberUtil.scale(monitor.getCpuUsage(), 2);
-                double memoryUsage = NumberUtil.scale(monitor.getMemoryUsage(), 2);
-                double networkRecv = NumberUtil.scale(monitor.getNetworkReceiveSpeed(), 2);
-                double networkSend = NumberUtil.scale(monitor.getNetworkSendSpeed(), 2);
-                double diskRead = NumberUtil.scale(monitor.getDiskReadSpeed(), 2);
-                double diskWrite = NumberUtil.scale(monitor.getDiskWriteSpeed(), 2);
-                sb.append("CPU:").append(cpuUsage).append("% | ");
-                sb.append(ShellI18nHelper.label(I18nHelper.memory(), memoryUsage + "%")).append(" | ");
-                sb.append(ShellI18nHelper.label(I18nHelper.networkInput(), networkRecv + "KB/s")).append(" | ");
-                sb.append(ShellI18nHelper.label(I18nHelper.networkOutput(), networkSend + "KB/s")).append(" | ");
-                sb.append(ShellI18nHelper.label(I18nHelper.diskRead(), diskRead + "MB/s")).append(" | ");
-                sb.append(ShellI18nHelper.label(I18nHelper.diskWrite(), diskWrite + "MB/s"));
-                this.serverMonitorInfo.text(sb.toString());
+                this.serverMonitorPane.update(monitor);
             }, 3_000, 0);
             if (JulLog.isDebugEnabled()) {
                 JulLog.debug("MonitorTask started.");
@@ -713,8 +696,8 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         try {
             ExecutorUtil.cancel(this.serverMonitorTask);
             this.serverMonitorTask = null;
-            this.serverMonitorInfo.clear();
-            this.serverMonitorInfo.disappear();
+            this.serverMonitorPane.clear();
+            this.serverMonitorPane.hideMetrics();
             if (JulLog.isDebugEnabled()) {
                 JulLog.debug("MonitorTask closed.");
             }
