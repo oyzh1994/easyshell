@@ -23,10 +23,7 @@ public class ShellLocalTermWidget extends ShellProcessTermWidget {
      * @throws IOException 异常
      */
     public ShellLocalTtyConnector createTtyConnector(ShellLocalClient client) throws IOException {
-        PtyProcess process = this.createProcess();
-        String[] command = this.getProcessCommand();
         ShellConnect shellConnect = client.getShellConnect();
-        // 初始化部分参数
         if (shellConnect.getTermType() != null) {
             this.putEnvironment("TERM", shellConnect.getTermType());
         } else {
@@ -35,6 +32,8 @@ public class ShellLocalTermWidget extends ShellProcessTermWidget {
         if (client.getCharset() != null) {
             this.putEnvironment("LANG", "en_US." + client.getCharset());
         }
+        PtyProcess process = this.createProcess();
+        String[] command = this.getProcessCommand();
         return new ShellLocalTtyConnector(client, process, List.of(command));
     }
 

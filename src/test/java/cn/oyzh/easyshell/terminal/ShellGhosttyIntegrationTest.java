@@ -1,7 +1,10 @@
 package cn.oyzh.easyshell.terminal;
 
 import cn.oyzh.common.system.OSUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.local.ShellLocalClient;
+import cn.oyzh.easyshell.local.ShellLocalTermWidget;
 import cn.oyzh.easyshell.fx.term.ShellTermEngineComboBox;
 import cn.oyzh.fx.tty.TtyTermWidget;
 import cn.oyzh.fx.tty.TtyTerminalEngine;
@@ -11,6 +14,7 @@ import javafx.application.Platform;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.FutureTask;
@@ -126,6 +130,43 @@ public class ShellGhosttyIntegrationTest {
                 }
                 assertEquals("typed-ghostty", title);
             }
+        } finally {
+            callOnFxThread(() -> {
+                widget.close();
+                return null;
+            });
+        }
+    }
+
+    @Test
+    public void localConnectionPassesTerminalTypeBeforeProcessStart() throws Exception {
+        var connect = new ShellConnect();
+        connect.setCharset(StandardCharsets.UTF_8.name());
+        connect.setTermType("linux");
+        var widget = callOnFxThread(ShellLocalTermWidget::new);
+        try {
+            var connector = callOnFxThread(() -> {
+                widget.setEngine(TtyTerminalEngine.GHOSTTY);
+                var created = widget.createTtyConnector(new ShellLocalClient(connect));
+                widget.openSession(created);
+                return created;
+            });
+            assertNotNull(connector);
+            callOnFxThread(() -> {
+                widget.getGhosttyView().sendText("printf '\\033]2;term-%s\\007' \"$TERM\"\r");
+                return null;
+            });
+
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+            String title = null;
+            while (System.nanoTime() < deadline) {
+                title = callOnFxThread(() -> widget.getGhosttyView().getTitle());
+                if ("term-linux".equals(title)) {
+                    break;
+                }
+                Thread.sleep(100);
+            }
+            assertEquals("term-linux", title);
         } finally {
             callOnFxThread(() -> {
                 widget.close();

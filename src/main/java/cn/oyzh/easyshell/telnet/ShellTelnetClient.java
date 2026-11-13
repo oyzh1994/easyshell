@@ -10,7 +10,9 @@ import cn.oyzh.easyshell.util.ShellProxyUtil;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.apache.commons.net.telnet.TelnetClient;
+import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 import org.apache.commons.net.telnet.WindowSizeOptionHandler;
 
 import java.io.IOException;
@@ -66,6 +68,14 @@ public class ShellTelnetClient implements ShellBaseClient {
     private void initClient() {
         this.client = new TelnetClient();
         this.client.setCharset(ShellBaseClient.super.getCharset());
+        String termType = this.shellConnect.getTermType();
+        if (termType != null && !termType.isBlank()) {
+            try {
+                this.client.addOptionHandler(new TerminalTypeOptionHandler(termType, true, false, true, false));
+            } catch (InvalidTelnetOptionException | IOException ex) {
+                JulLog.warn("Telnet terminal type handler error.", ex);
+            }
+        }
         // 代理处理
         if (this.shellConnect.isEnableProxy()) {
             this.client.setProxy(ShellProxyUtil.initProxy1(this.shellConnect.getProxyConfig()));

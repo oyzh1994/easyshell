@@ -212,7 +212,7 @@ public class ShellProcessTermWidget extends TtyTermWidget {
             } else if (OSUtil.isWindows()) {
                 // this.envs.put("TERM", "xterm-256color");
             }
-            this.envs.put("TERM", "xterm");
+            this.envs.put("TERM", "xterm-256color");
         }
         return this.envs;
     }
