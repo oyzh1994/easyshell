@@ -56,6 +56,11 @@ public class ShellHttpEnvironmentTabController extends RichTabController {
     private Future<?> saveFuture;
 
     /**
+     * 是否已丢弃界面待保存状态
+     */
+    private boolean discarded;
+
+    /**
      * 初始化
      *
      * @param item    环境节点
@@ -107,7 +112,7 @@ public class ShellHttpEnvironmentTabController extends RichTabController {
      * 延迟保存
      */
     private void onValuesChanged() {
-        if (this.loading || this.environment == null) {
+        if (this.loading || this.discarded || this.environment == null) {
             return;
         }
         this.apply();
@@ -118,14 +123,17 @@ public class ShellHttpEnvironmentTabController extends RichTabController {
      * 延迟保存环境。
      */
     private void scheduleSave() {
-        if (this.loading || this.environment == null) {
+        if (this.loading || this.discarded || this.environment == null) {
             return;
         }
         if (this.saveFuture != null) {
             this.saveFuture.cancel(false);
         }
-        this.saveFuture = TaskManager.startDelay(() -> FXUtil.runLater(
-                () -> ShellHttpEnvironmentStore.INSTANCE.update(this.environment)), 300);
+        this.saveFuture = TaskManager.startDelay(() -> FXUtil.runLater(() -> {
+            if (!this.discarded) {
+                ShellHttpEnvironmentStore.INSTANCE.update(this.environment);
+            }
+        }), 300);
     }
 
     /**
@@ -145,8 +153,23 @@ public class ShellHttpEnvironmentTabController extends RichTabController {
             this.saveFuture.cancel(false);
             this.saveFuture = null;
         }
+        if (this.discarded) {
+            return;
+        }
         this.apply();
         ShellHttpEnvironmentStore.INSTANCE.update(this.environment);
+    }
+
+    /**
+     * 丢弃界面待保存状态，避免覆盖外部已经写入的数据。
+     */
+    public void discardPendingChanges() {
+        this.discarded = true;
+        this.loading = true;
+        if (this.saveFuture != null) {
+            this.saveFuture.cancel(false);
+            this.saveFuture = null;
+        }
     }
 
     @FXML

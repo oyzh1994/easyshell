@@ -111,6 +111,11 @@ public class ShellHttpSettingsTabController extends RichTabController {
     private boolean flushing;
 
     /**
+     * 是否已丢弃界面待保存状态
+     */
+    private boolean discarded;
+
+    /**
      * 初始化
      *
      * @param workspace 工作区
@@ -210,7 +215,7 @@ public class ShellHttpSettingsTabController extends RichTabController {
      * 应用设置
      */
     private void apply() {
-        if (this.loading || this.workspace == null) {
+        if (this.loading || this.discarded || this.workspace == null) {
             return;
         }
         ShellHttpSetting settings = this.workspace.getSettings();
@@ -246,6 +251,9 @@ public class ShellHttpSettingsTabController extends RichTabController {
             this.saveFuture.cancel(false);
             this.saveFuture = null;
         }
+        if (this.discarded) {
+            return;
+        }
         this.flushing = true;
         try {
             this.apply();
@@ -256,16 +264,31 @@ public class ShellHttpSettingsTabController extends RichTabController {
     }
 
     /**
+     * 丢弃界面待保存状态，避免覆盖外部已经写入的数据。
+     */
+    public void discardPendingChanges() {
+        this.discarded = true;
+        this.loading = true;
+        if (this.saveFuture != null) {
+            this.saveFuture.cancel(false);
+            this.saveFuture = null;
+        }
+    }
+
+    /**
      * 延迟保存设置。
      */
     private void schedulePersist() {
-        if (this.loading || this.workspace == null) {
+        if (this.loading || this.discarded || this.workspace == null) {
             return;
         }
         if (this.saveFuture != null) {
             this.saveFuture.cancel(false);
         }
-        this.saveFuture = TaskManager.startDelay(() -> FXUtil.runLater(
-                () -> ShellHttpWorkspaceStore.INSTANCE.saveSetting(this.workspace)), 300);
+        this.saveFuture = TaskManager.startDelay(() -> FXUtil.runLater(() -> {
+            if (!this.discarded) {
+                ShellHttpWorkspaceStore.INSTANCE.saveSetting(this.workspace);
+            }
+        }), 300);
     }
 }

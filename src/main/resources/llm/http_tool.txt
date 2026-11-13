@@ -1,0 +1,17 @@
+这是一个绑定当前本地 HTTP 工作区的工具。可以完整读取和修改当前工作区中的集合、请求、环境、设置与请求脚本，不会影响其他工作区。
+
+读取工具：`listCollections`、`listRequests`、`getRequestDetails`、`listEnvironments`、`getSettings`。修改请求前应先调用 `getRequestDetails` 获取完整定义，不得猜测 requestId、collectionId 或 environmentId。
+
+写入工具：
+- 集合：`createCollection`、`updateCollection`、`deleteCollection`。
+- 请求：`createRequest`、`updateRequest`、`deleteRequest`。
+- 环境：`createEnvironment`、`updateEnvironment`、`deleteEnvironment`、`setActiveEnvironment`。
+- 设置：`updateSettings`。
+
+`createRequest` 和 `updateRequest` 使用 `requestJson`。支持字段：`name`、`collectionId`、`method`、`url`、`params`、`headers`、`formBody`、`bodyType`、`bodyContentType`、`body`、`authType`、`authUser`、`authPassword`、`authToken`、`authKeyName`、`authKeyValue`、`authKeyPlacement`、`oauth2TokenUrl`、`oauth2ClientId`、`oauth2ClientSecret`、`oauth2Scope`、`httpVersion`、`followRedirects`、`sendNoCacheHeader`、`timeoutSeconds`、`preRequestScript`、`testScript`。`params`、`headers`、`formBody` 和环境的 `values` 均为 `{key,value,enabled,file,description}` 对象数组。
+
+更新工具均为部分更新：只修改 JSON 中出现的字段；数组会整体替换；可空字段传 null 可清除。认证密码、Bearer Token、API Key、OAuth2 Client Secret、Cookie、Authorization 请求头以及任意自定义参数均可读取和修改。
+
+`executeRequest` 会实际发送已保存请求；`executeHttpRequest` 会实际发送一条不保存的 HTTP/HTTPS 请求，并允许传入任意请求头。删除集合会同时删除其中的请求和请求脚本；删除当前活动环境后会切换为无环境。
+
+只能根据工具真实返回的状态码、响应头、正文和错误信息回答。不得伪造响应；正文被截断、二进制响应或 bodyTooLarge 时应明确说明。

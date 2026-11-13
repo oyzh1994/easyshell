@@ -486,6 +486,11 @@ public class ShellHttpRequestTabController extends RichTabController {
     private boolean syncingParams;
 
     /**
+     * 是否已丢弃界面待保存状态
+     */
+    private boolean discarded;
+
+    /**
      * 已监听变更的参数行
      */
     private final Set<ShellHttpKeyValue> paramRows =
@@ -1006,6 +1011,14 @@ public class ShellHttpRequestTabController extends RichTabController {
     }
 
     /**
+     * 丢弃界面待保存状态，避免覆盖外部已经写入的数据。
+     */
+    public void discardPendingChanges() {
+        this.discarded = true;
+        this.loading = true;
+    }
+
+    /**
      * 重命名请求
      *
      * @param name 名称
@@ -1024,7 +1037,7 @@ public class ShellHttpRequestTabController extends RichTabController {
      * 保存请求
      */
     public void flush() {
-        if (this.request == null) {
+        if (this.discarded || this.request == null) {
             return;
         }
         this.request.setMethod(StringUtil.blankToDefault(

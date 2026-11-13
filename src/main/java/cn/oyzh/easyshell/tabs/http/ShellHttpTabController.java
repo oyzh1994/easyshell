@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.http;
 
 import cn.oyzh.common.thread.ThreadUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.http.ShellHttpClient;
 import cn.oyzh.easyshell.http.ShellHttpWorkspace;
@@ -124,6 +125,15 @@ public class ShellHttpTabController extends ShellBaseTabController {
     }
 
     /**
+     * 获取工作区。
+     *
+     * @return 工作区
+     */
+    public ShellHttpWorkspace getWorkspace() {
+        return workspace;
+    }
+
+    /**
      * 初始化过滤
      */
     private void initFilter() {
@@ -170,6 +180,39 @@ public class ShellHttpTabController extends ShellBaseTabController {
         }
         if (this.tabPane != null) {
             this.tabPane.refreshHomeTab();
+        }
+    }
+
+    /**
+     * 处理 LLM 工具对工作区的变更。
+     *
+     * @param type 变更类型
+     * @param id   变更对象标识
+     */
+    public void onWorkspaceChanged(String type, String id) {
+        if (this.tabPane != null) {
+            switch (StringUtil.blankToDefault(type, "")) {
+                case "request-updated", "request-deleted" -> this.tabPane.closeRequestTabSilently(id);
+                case "collection-deleted" -> this.tabPane.closeCollectionTabsSilently(id);
+                case "environment-updated", "environment-deleted" -> this.tabPane.closeEnvironmentTabSilently(id);
+                case "settings-updated" -> this.tabPane.closeSettingsTabSilently();
+                default -> {
+                }
+            }
+        }
+        this.refreshWorkspaceState();
+    }
+
+    /**
+     * 刷新工作区树、首页及环境下拉框。
+     */
+    public void refreshWorkspaceState() {
+        if (this.treeView != null) {
+            this.treeView.reload();
+        }
+        if (this.tabPane != null) {
+            this.tabPane.refreshHomeTab();
+            this.tabPane.refreshEnvironmentCombo();
         }
     }
 

@@ -2,11 +2,13 @@ terminalProtocols: SSH, Local, Telnet, Serial, RLogin, Rsh, Mosh
 fileProtocols: SSH/SFTP, FTP, S3/MinIO, WebDAV, SMB
 databaseProtocols: MySQL, MariaDB, Dameng
 nosqlProtocols: Redis, MongoDB, ZooKeeper
+httpProtocols: HTTP
 remoteDesktopProtocols: RDP, VNC
 terminalFeatures: command execution, shell history, snippets, jump hosts, proxies, SSL, tunneling
 fileFeatures: browsing, transfer, collection, text inspection, permissions, recursive operations
 databaseFeatures: SQL execution, raw result sets, schema browsing, design, import, export, dump, transfer
 dataFeatures: connection data, groups, keys, snippets, queries, settings, terminal history
+httpFeatures: collections, saved requests, environments, settings and request scripts; complete local workspace CRUD; full parameter and authentication mutation; active environment selection; saved request execution; temporary HTTP requests; response inspection
 x11Features: built-in X server, X11 forwarding, GLX, local mode, client status
 llmFeatures: providers, sessions, streaming, thinking levels, execution modes, attachments, per-tab tools
 uiFeatures: theme listing, theme switching, font listing, application font configuration
@@ -16,6 +18,6 @@ connectionSafeWrites: create connection, rename connection, move connection betw
 contentSafeWrites: create terminal snippet, create saved query
 contentSafeReads: terminal snippet content, saved query content by id, file/Redis/ZooKeeper favorite metadata, LLM provider metadata, LLM session metadata
 projectDataInventories: keys, groups, snippets, queries, connections, file/Redis/ZooKeeper favorites, LLM providers, sessions, authorization configs, history
-projectDataRestrictions: no deletion, no destructive import/export, no credential or advanced network configuration mutation through LLM tools
-protocolInspection: SSH host/process/Docker info, SQL schema/table/view/DDL/index/explain, MongoDB database/collection/bucket/function/user info, Redis server/key metadata, ZooKeeper node data/stat/ACL, file connection metadata
+projectDataRestrictions: HTTP workspace tools may create, update, and delete local HTTP collections, requests, environments, settings, and request scripts; other project data does not allow deletion, destructive import/export, or credential mutation through LLM tools
+protocolInspection: SSH host/process/Docker info, SQL schema/table/view/DDL/index/explain, MongoDB database/collection/bucket/function/user info, Redis server/key metadata, ZooKeeper node data/stat/ACL, complete HTTP workspace definitions and response status, file connection metadata
 localCommandExecution: direct host commands, working directories, timeouts, exit codes, stdout, stderr

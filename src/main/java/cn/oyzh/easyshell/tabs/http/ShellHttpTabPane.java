@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.tabs.http.request.ShellHttpRequestTab;
 import cn.oyzh.easyshell.tabs.http.settings.ShellHttpSettingsTab;
 import cn.oyzh.easyshell.trees.http.environment.ShellHttpEnvironmentTreeItem;
 import cn.oyzh.easyshell.trees.http.request.ShellHttpRequestTreeItem;
+import cn.oyzh.fx.gui.tabs.RichTab;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import cn.oyzh.fx.plus.util.FXUtil;
@@ -261,6 +262,21 @@ public class ShellHttpTabPane extends RichTabPane {
     }
 
     /**
+     * 静默关闭请求标签页，不触发界面状态回写。
+     *
+     * @param requestId 请求标识
+     */
+    public void closeRequestTabSilently(String requestId) {
+        ShellHttpRequestTab tab = this.getRequestTab(requestId);
+        if (tab != null) {
+            if (tab.controller() != null) {
+                tab.controller().discardPendingChanges();
+            }
+            this.closeTabSilently(tab);
+        }
+    }
+
+    /**
      * 关闭集合下的全部请求标签页
      *
      * @param collection 集合
@@ -271,6 +287,49 @@ public class ShellHttpTabPane extends RichTabPane {
         }
         for (ShellHttpRequest request : collection.getRequests()) {
             this.closeRequestTab(request.getId());
+        }
+    }
+
+    /**
+     * 关闭集合下的全部请求标签页。
+     *
+     * @param collectionId 集合标识
+     */
+    public void closeCollectionTabs(String collectionId) {
+        if (StringUtil.isBlank(collectionId)) {
+            return;
+        }
+        List<Tab> tabs = new ArrayList<>(this.getTabs());
+        for (Tab tab : tabs) {
+            if (tab instanceof ShellHttpRequestTab requestTab) {
+                ShellHttpRequest request = requestTab.request();
+                if (request != null && collectionId.equals(request.getCollectionId())) {
+                    requestTab.closeTab();
+                }
+            }
+        }
+    }
+
+    /**
+     * 静默关闭集合下的全部请求标签页，不触发界面状态回写。
+     *
+     * @param collectionId 集合标识
+     */
+    public void closeCollectionTabsSilently(String collectionId) {
+        if (StringUtil.isBlank(collectionId)) {
+            return;
+        }
+        List<Tab> tabs = new ArrayList<>(this.getTabs());
+        for (Tab tab : tabs) {
+            if (tab instanceof ShellHttpRequestTab requestTab) {
+                ShellHttpRequest request = requestTab.request();
+                if (request != null && collectionId.equals(request.getCollectionId())) {
+                    if (requestTab.controller() != null) {
+                        requestTab.controller().discardPendingChanges();
+                    }
+                    this.closeTabSilently(requestTab);
+                }
+            }
         }
     }
 
@@ -336,6 +395,21 @@ public class ShellHttpTabPane extends RichTabPane {
     }
 
     /**
+     * 静默关闭环境标签页，不触发界面状态回写。
+     *
+     * @param environmentId 环境标识
+     */
+    public void closeEnvironmentTabSilently(String environmentId) {
+        ShellHttpEnvironmentTab tab = this.getEnvironmentTab(environmentId);
+        if (tab != null) {
+            if (tab.controller() != null) {
+                tab.controller().discardPendingChanges();
+            }
+            this.closeTabSilently(tab);
+        }
+    }
+
+    /**
      * 打开设置标签页
      */
     public void openSettings() {
@@ -346,6 +420,46 @@ public class ShellHttpTabPane extends RichTabPane {
             tab.init(this.workspace, this);
         }
         this.select(tab);
+    }
+
+    /**
+     * 关闭设置标签页。
+     */
+    public void closeSettingsTab() {
+        ShellHttpSettingsTab tab = this.getTab(ShellHttpSettingsTab.class);
+        if (tab != null) {
+            tab.closeTab();
+        }
+    }
+
+    /**
+     * 静默关闭设置标签页，不触发界面状态回写。
+     */
+    public void closeSettingsTabSilently() {
+        ShellHttpSettingsTab tab = this.getTab(ShellHttpSettingsTab.class);
+        if (tab != null) {
+            if (tab.controller() != null) {
+                tab.controller().discardPendingChanges();
+            }
+            this.closeTabSilently(tab);
+        }
+    }
+
+    /**
+     * 移除并销毁标签页，不触发关闭事件中的状态保存。
+     *
+     * @param tab 标签页
+     */
+    private void closeTabSilently(Tab tab) {
+        if (tab == null) {
+            return;
+        }
+        FXUtil.runWait(() -> {
+            this.getTabs().remove(tab);
+            if (tab instanceof RichTab richTab) {
+                richTab.destroy();
+            }
+        });
     }
 
     /**
