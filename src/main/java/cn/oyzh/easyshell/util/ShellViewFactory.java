@@ -31,6 +31,8 @@ import cn.oyzh.easyshell.controller.connect.redis.ShellUpdateRedisConnectControl
 import cn.oyzh.easyshell.controller.connect.valkey.ShellUpdateValkeyConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellAddRLoginConnectController;
 import cn.oyzh.easyshell.controller.connect.rlogin.ShellUpdateRLoginConnectController;
+import cn.oyzh.easyshell.controller.connect.rsh.ShellAddRshConnectController;
+import cn.oyzh.easyshell.controller.connect.rsh.ShellUpdateRshConnectController;
 import cn.oyzh.easyshell.controller.connect.s3.ShellAddS3ConnectController;
 import cn.oyzh.easyshell.controller.connect.s3.ShellUpdateS3ConnectController;
 import cn.oyzh.easyshell.controller.connect.serial.ShellAddSerialConnectController;
@@ -298,6 +300,22 @@ public class ShellViewFactory {
     public static void addRLoginConnect(ShellGroup group) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellAddRLoginConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 新增Rsh连接
+     *
+     * @param group 分组
+     */
+    public static void addRshConnect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddRshConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("group", group);
             adapter.display();
         } catch (Exception ex) {
@@ -667,6 +685,22 @@ public class ShellViewFactory {
     public static void updateRLoginConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateRLoginConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 修改Rsh连接
+     *
+     * @param connect 连接
+     */
+    public static void updateRshConnect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateRshConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

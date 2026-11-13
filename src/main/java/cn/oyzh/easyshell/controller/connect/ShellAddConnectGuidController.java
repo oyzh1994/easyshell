@@ -71,6 +71,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addVNCConnect(group);
             } else if (ShellPrototype.RLOGIN.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addRLoginConnect(group);
+            } else if (ShellPrototype.RSH.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addRshConnect(group);
             } else if (ShellPrototype.SMB.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSMBConnect(group);
             } else if (ShellPrototype.REDIS.equalsIgnoreCase(userData)) {

@@ -452,6 +452,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         return value.isRloginType();
     }
 
+    /**
+     * 是否Rsh类型
+     *
+     * @return 结果
+     */
+    public boolean isRshType() {
+        return value.isRshType();
+    }
+
     @Override
     public void clearChild() {
         super.clearChild();
@@ -485,6 +494,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateVNCConnect(this.value);
         } else if (this.isRloginType()) {
             ShellViewFactory.updateRLoginConnect(this.value);
+        } else if (this.isRshType()) {
+            ShellViewFactory.updateRshConnect(this.value);
         } else if (this.isSMBType()) {
             ShellViewFactory.updateSMBConnect(this.value);
         } else if (this.isValkeyType()) {

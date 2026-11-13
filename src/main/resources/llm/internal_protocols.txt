@@ -6,6 +6,7 @@ Local：本机 Shell、命令执行、脚本、终端历史。
 Telnet：明文远程终端。
 Serial：串口终端与串口参数配置。
 RLogin：RLogin 远程终端。
+Rsh：Rsh 远程命令终端。
 Mosh：移动网络友好的远程终端。
 
 ## 文件与对象存储

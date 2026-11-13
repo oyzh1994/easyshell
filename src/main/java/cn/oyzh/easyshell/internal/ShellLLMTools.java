@@ -724,7 +724,7 @@ public class ShellLLMTools implements LLMTools {
     @Tool(name = "createConnection",
             value = "Create and persist a new EasyShell connection without connecting to it. Existing connections are never modified or deleted.")
     public String createConnection(
-            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, mosh, rdp, vnc, mysql, mariadb, dameng, sqlite, mongodb, redis, valkey, or zookeeper") String type,
+            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, rsh, mosh, rdp, vnc, mysql, mariadb, dameng, sqlite, mongodb, redis, valkey, or zookeeper") String type,
             @P(name = "name", value = "Display name for the new connection") String name,
             @P(name = "host", value = "Host or address. For SQLite use the database file path. Ignored for Local and Serial.") String host,
             @P(name = "port", value = "Port, ignored when the host already contains a port or for Local, Serial, and SQLite", required = false) Integer port,
@@ -1706,6 +1706,7 @@ public class ShellLLMTools implements LLMTools {
             case "telnet" -> "telnet";
             case "serial" -> "serial";
             case "rlogin" -> "rlogin";
+            case "rsh" -> "rsh";
             case "mosh" -> "mosh";
             case "rdp" -> "rdp";
             case "vnc" -> "vnc";
