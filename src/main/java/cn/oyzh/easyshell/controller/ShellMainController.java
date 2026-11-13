@@ -205,9 +205,9 @@ public class ShellMainController extends ParentStageController {
         this.chat = chatNode;
         this.chatController = controller;
         controller.setParent(this);
+        controller.onStageInitialize(this.stage);
         controller.onWindowShown(null);
         controller.onWindowShowing(null);
-        controller.onStageInitialize(this.stage);
     }
 
     /**
