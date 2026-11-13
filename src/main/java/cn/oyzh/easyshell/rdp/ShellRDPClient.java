@@ -168,11 +168,13 @@ public class ShellRDPClient implements ShellBaseClient {
                         }
                         Boolean redirectClipboard = this.shellConnect.getExtra("redirectClipboard");
                         if (redirectClipboard == null) {
-                            redirectClipboard = false;
+                            // 与连接编辑界面的默认值保持一致。历史连接没有保存
+                            // redirectClipboard 时，不能让剪贴板重定向被静默关闭。
+                            redirectClipboard = true;
                         }
                         boolean enableWallpaper = ShellRDPUtil.isWallpaperEnabled(this.shellConnect);
                         this.client.connect(host, port, user, password, domain, width, height, color,
-                                sslMode, remoteAudio, redirectClipboard, enableWallpaper);
+                                sslMode, redirectClipboard, remoteAudio, enableWallpaper);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         ref.set(ex);
