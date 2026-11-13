@@ -177,7 +177,7 @@ public final class ShellHomeEasterEggManager {
     }
 
     private void playConfetti() {
-        Bounds bounds = this.logo.getBoundsInParent();
+        Bounds bounds = this.logoBoundsInLayer();
         double centerX = bounds.getMinX() + bounds.getWidth() / 2;
         double centerY = bounds.getMinY() + bounds.getHeight() / 2;
         List<Circle> confetti = new ArrayList<>();
@@ -220,7 +220,7 @@ public final class ShellHomeEasterEggManager {
     }
 
     private void playOrbit() {
-        Bounds bounds = this.logo.getBoundsInParent();
+        Bounds bounds = this.logoBoundsInLayer();
         double centerX = bounds.getMinX() + bounds.getWidth() / 2;
         double centerY = bounds.getMinY() + bounds.getHeight() / 2;
         Group orbit = new Group();
@@ -268,7 +268,7 @@ public final class ShellHomeEasterEggManager {
     }
 
     private void playPulse() {
-        Bounds bounds = this.logo.getBoundsInParent();
+        Bounds bounds = this.logoBoundsInLayer();
         double centerX = bounds.getMinX() + bounds.getWidth() / 2;
         double centerY = bounds.getMinY() + bounds.getHeight() / 2;
         Color accent = ThemeManager.currentAccentColor();
@@ -365,6 +365,7 @@ public final class ShellHomeEasterEggManager {
     }
 
     private ImageView createGhost(double hue) {
+        Bounds bounds = this.logoBoundsInLayer();
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setHue(hue);
         colorAdjust.setSaturation(1);
@@ -375,15 +376,15 @@ public final class ShellHomeEasterEggManager {
         ghost.setFitHeight(this.logo.getFitHeight());
         ghost.setPreserveRatio(this.logo.isPreserveRatio());
         ghost.setSmooth(this.logo.isSmooth());
-        ghost.setLayoutX(this.logo.getLayoutX());
-        ghost.setLayoutY(this.logo.getLayoutY());
+        ghost.setLayoutX(bounds.getMinX());
+        ghost.setLayoutY(bounds.getMinY());
         ghost.setOpacity(0.32);
         ghost.setEffect(colorAdjust);
         return ghost;
     }
 
     private void playStarRain() {
-        Bounds bounds = this.logo.getBoundsInParent();
+        Bounds bounds = this.logoBoundsInLayer();
         String accent = this.toWebColor(ThemeManager.currentAccentColor());
         String foreground = this.toWebColor(ThemeManager.currentForegroundColor());
         String[] symbols = {"✦", "01", "+", "×", "•", "◇", "∞"};
@@ -430,7 +431,7 @@ public final class ShellHomeEasterEggManager {
     }
 
     private void playVortex() {
-        Bounds bounds = this.logo.getBoundsInParent();
+        Bounds bounds = this.logoBoundsInLayer();
         double centerX = bounds.getMinX() + bounds.getWidth() / 2;
         double centerY = bounds.getMinY() + bounds.getHeight() / 2;
         Color accent = ThemeManager.currentAccentColor();
@@ -507,6 +508,11 @@ public final class ShellHomeEasterEggManager {
         this.logo.setScaleX(1);
         this.logo.setScaleY(1);
         this.logo.setOpacity(1);
+    }
+
+    private Bounds logoBoundsInLayer() {
+        Bounds sceneBounds = this.logo.localToScene(this.logo.getBoundsInLocal());
+        return this.layer.sceneToLocal(sceneBounds);
     }
 
     private String toWebColor(Color color) {

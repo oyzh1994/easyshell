@@ -50,7 +50,7 @@
 ![zhuye1.png](resource/screenshot/zhuye1.png)
 ![zhuye2.png](resource/screenshot/zhuye2.png)
 
-### ai
+### AI
 ![llm1.png](resource/screenshot/llm1.png)
 ![llm2.png](resource/screenshot/llm2.png)
 ![llm3.png](resource/screenshot/llm3.png)
@@ -75,6 +75,8 @@
 ![shezhi9.png](resource/screenshot/shezhi9.png)
 ![shezhi10.png](resource/screenshot/shezhi10.png)
 ![shezhi11.png](resource/screenshot/shezhi11.png)
+![shezhi12.png](resource/screenshot/shezhi12.png)
+![shezhi13.png](resource/screenshot/shezhi13.png)
 
 ### 连接
 ![lianjie1.png](resource/screenshot/lianjie1.png)
@@ -343,12 +345,17 @@
 ![postgresql25.png](resource/screenshot/postgresql25.png)
 ![postgresql26.png](resource/screenshot/postgresql26.png)
 ![postgresql27.png](resource/screenshot/postgresql27.png)
-![postgresql28.png](resource/screenshot/postgresql28.png)
-![postgresql29.png](resource/screenshot/postgresql29.png)
 
 ### Mosh
 ![mosh1.png](resource/screenshot/mosh1.png)
 ![mosh2.png](resource/screenshot/mosh2.png)
+
+### Http
+![http1.png](resource/screenshot/http1.png)
+![http2.png](resource/screenshot/http2.png)
+![http3.png](resource/screenshot/http3.png)
+![http4.png](resource/screenshot/http4.png)
+![http5.png](resource/screenshot/http5.png)
 
 ### 工具
 ![gongju1.png](resource/screenshot/gongju1.png)

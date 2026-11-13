@@ -6,32 +6,33 @@ A powerful, modern, cross-platform, multi-protocol client.
 
 ## Features
 
-- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, ZooKeeper, HTTP, Serial Port, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, PostgreSQL, SQLite, Mosh, local terminals, and more.
+- **Multi-Protocol Support**: SSH, FTP, SFTP, Redis, Valkey, ZooKeeper, HTTP, serial ports, VNC, Telnet, RLogin, S3, RDP, SMB, WebDAV, MySQL, MongoDB, MariaDB, Dameng, PostgreSQL, SQLite, Mosh, local terminals, and more.
 - **Connection Management**: Add, edit, delete, import, and export connections.
 - **Key Management**: Generate, import, export, edit, and copy keys to hosts.
 - **Snippet Execution**: Save and execute code snippets.
-- **SSH Terminal Emulation**: SSH connections, service monitoring, SFTP, Docker management, process management, service information viewing, configuration file editing, and more.
-- **RLogin Terminal Emulation**: RLogin protocol connections.
-- **Telnet Terminal Emulation**: Telnet protocol connections.
-- **SerialPort Terminal Emulation**: SerialPort protocol connections.
-- **S3 Client**: S3 connections, file management, upload, download, rename, preview, editing, share links, and bucket creation, modification, and deletion.
-- **SMB Client**: SMB connections, file management, upload, download, rename, preview, and editing.
-- **WebDAV Client**: WebDAV connections, file management, upload, download, rename, preview, and editing.
-- **FTP Client**: FTP connections, file management, upload, download, rename, preview, and editing.
-- **SFTP Client**: SFTP connections, file management, upload, download, rename, preview, and editing.
-- **VNC Client**: VNC connection and management.
-- **RDP Client**: RDP connection and management, with built-in and native connection modes.
-- **Redis Client**: Redis CRUD operations, export, import, transfer, and terminal access.
-- **ZooKeeper Client**: ZooKeeper CRUD operations, permission management, import, export, transfer, and terminal access.
-- **HTTP Client**: HTTP request collections, environments, headers, bodies, authentication, response inspection, and HTML preview.
-- **MySQL Client**: MySQL table, view, function, procedure, and event management, queries, import, export, transfer, dump, and terminal access.
-- **Dameng Client**: Dameng table, view, function, and user management, queries, import, export, transfer, dump, and terminal access.
-- **PostgreSQL Client**: PostgreSQL schema, table, view, function, procedure, and sequence management, queries, import, export, transfer, dump, and terminal access.
-- **SQLite Client**: SQLite table, view, function, and query management, import, export, transfer, dump, and terminal access.
-- **MongoDB Client**: MongoDB collection, bucket, function, and user management, queries, import, export, transfer, dump, and terminal access.
-- **Mosh Terminal Emulation**: Mosh protocol connections.
-- **Local Terminal**: Local terminals on Windows, Linux, and macOS, including sh, bash, zsh, cmd, PowerShell, Git-SH, Git-Bash, and more.
-- **Xserver**: A built-in Xserver service that requires no third-party dependencies.
+- **SSH Terminal Emulation**: Connect over SSH, monitor services, use SFTP, manage Docker and processes, view service information, edit configuration files, and more.
+- **RLogin Terminal Emulation**: Connect using the RLogin protocol.
+- **Telnet Terminal Emulation**: Connect using the Telnet protocol.
+- **SerialPort Terminal Emulation**: Connect using the SerialPort protocol.
+- **S3 Client**: Connect to S3, manage files, upload, download, rename, preview, edit, create share links, and create, modify, or delete buckets.
+- **SMB Client**: Connect to SMB and manage files, including upload, download, rename, preview, and editing.
+- **WebDAV Client**: Connect to WebDAV and manage files, including upload, download, rename, preview, and editing.
+- **FTP Client**: Connect to FTP and manage files, including upload, download, rename, preview, and editing.
+- **SFTP Client**: Connect to SFTP and manage files, including upload, download, rename, preview, and editing.
+- **VNC Client**: Connect to and manage VNC sessions.
+- **RDP Client**: Connect to and manage RDP sessions, with built-in and native connection modes.
+- **Redis Client**: Perform Redis CRUD operations, export, import, transfer data, and access terminals.
+- **Valkey Client**: Perform Valkey CRUD operations, export, import, transfer data, and access terminals.
+- **ZooKeeper Client**: Perform ZooKeeper CRUD operations, manage permissions, export, import, transfer data, and access terminals.
+- **HTTP Client**: Work with HTTP request collections, environments, headers, bodies, authentication, response inspection, and HTML previews.
+- **MySQL Client**: Manage MySQL databases, tables, views, functions, procedures, and events; run queries; export, import, transfer, and dump data; and access terminals.
+- **Dameng Client**: Manage Dameng schemas, tables, views, functions, procedures, sequences, and users; run queries; export, import, transfer, and dump data; and access terminals.
+- **PostgreSQL Client**: Manage PostgreSQL schemas, tables, views, functions, procedures, and sequences; run queries; export, import, transfer, and dump data; and access terminals.
+- **SQLite Client**: Manage SQLite tables, views, functions, and queries; export, import, transfer, and dump data; and access terminals.
+- **MongoDB Client**: Manage MongoDB collections, buckets, functions, and users; run queries; export, import, transfer, and dump data; and access terminals.
+- **Mosh Terminal Emulation**: Connect using the Mosh protocol.
+- **Local Terminal**: Use local terminals on Windows, Linux, and macOS, including sh, bash, zsh, cmd, PowerShell, Git-SH, Git-Bash, and more.
+- **XServer**: Use the built-in XServer service without third-party dependencies.
 - **Cross-Platform**: Supports Windows, macOS, Linux, and other operating systems.
 
 ## Download
@@ -74,6 +75,8 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![shezhi9.png](resource/screenshot/shezhi9.png)
 ![shezhi10.png](resource/screenshot/shezhi10.png)
 ![shezhi11.png](resource/screenshot/shezhi11.png)
+![shezhi12.png](resource/screenshot/shezhi12.png)
+![shezhi13.png](resource/screenshot/shezhi13.png)
 
 ### Connections
 ![lianjie1.png](resource/screenshot/lianjie1.png)
@@ -118,6 +121,7 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![zk16.png](resource/screenshot/zk16.png)
 ![zk17.png](resource/screenshot/zk17.png)
 ![zk18.png](resource/screenshot/zk18.png)
+![zk19.png](resource/screenshot/zk19.png)
 
 ### Redis
 ![redis1.png](resource/screenshot/redis1.png)
@@ -137,6 +141,25 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![redis15.png](resource/screenshot/redis15.png)
 ![redis16.png](resource/screenshot/redis16.png)
 ![redis17.png](resource/screenshot/redis17.png)
+
+### Valkey
+![valkey1.png](resource/screenshot/valkey1.png)
+![valkey2.png](resource/screenshot/valkey2.png)
+![valkey3.png](resource/screenshot/valkey3.png)
+![valkey4.png](resource/screenshot/valkey4.png)
+![valkey5.png](resource/screenshot/valkey5.png)
+![valkey6.png](resource/screenshot/valkey6.png)
+![valkey7.png](resource/screenshot/valkey7.png)
+![valkey8.png](resource/screenshot/valkey8.png)
+![valkey9.png](resource/screenshot/valkey9.png)
+![valkey10.png](resource/screenshot/valkey10.png)
+![valkey11.png](resource/screenshot/valkey11.png)
+![valkey12.png](resource/screenshot/valkey12.png)
+![valkey13.png](resource/screenshot/valkey13.png)
+![valkey14.png](resource/screenshot/valkey14.png)
+![valkey15.png](resource/screenshot/valkey15.png)
+![valkey16.png](resource/screenshot/valkey16.png)
+![valkey17.png](resource/screenshot/valkey17.png)
 
 ### SFTP
 ![sftp1.png](resource/screenshot/sftp1.png)
@@ -294,9 +317,45 @@ Please refer to [dev.README_EN.md](dev.README_EN.md) for project development det
 ![mariadb26.png](resource/screenshot/mariadb26.png)
 ![mariadb27.png](resource/screenshot/mariadb27.png)
 
+### PostgreSQL
+![postgresql1.png](resource/screenshot/postgresql1.png)
+![postgresql2.png](resource/screenshot/postgresql2.png)
+![postgresql3.png](resource/screenshot/postgresql3.png)
+![postgresql4.png](resource/screenshot/postgresql4.png)
+![postgresql5.png](resource/screenshot/postgresql5.png)
+![postgresql6.png](resource/screenshot/postgresql6.png)
+![postgresql7.png](resource/screenshot/postgresql7.png)
+![postgresql8.png](resource/screenshot/postgresql8.png)
+![postgresql9.png](resource/screenshot/postgresql9.png)
+![postgresql10.png](resource/screenshot/postgresql10.png)
+![postgresql11.png](resource/screenshot/postgresql11.png)
+![postgresql12.png](resource/screenshot/postgresql12.png)
+![postgresql13.png](resource/screenshot/postgresql13.png)
+![postgresql14.png](resource/screenshot/postgresql14.png)
+![postgresql15.png](resource/screenshot/postgresql15.png)
+![postgresql16.png](resource/screenshot/postgresql16.png)
+![postgresql17.png](resource/screenshot/postgresql17.png)
+![postgresql18.png](resource/screenshot/postgresql18.png)
+![postgresql19.png](resource/screenshot/postgresql19.png)
+![postgresql20.png](resource/screenshot/postgresql20.png)
+![postgresql21.png](resource/screenshot/postgresql21.png)
+![postgresql22.png](resource/screenshot/postgresql22.png)
+![postgresql23.png](resource/screenshot/postgresql23.png)
+![postgresql24.png](resource/screenshot/postgresql24.png)
+![postgresql25.png](resource/screenshot/postgresql25.png)
+![postgresql26.png](resource/screenshot/postgresql26.png)
+![postgresql27.png](resource/screenshot/postgresql27.png)
+
 ### Mosh
 ![mosh1.png](resource/screenshot/mosh1.png)
 ![mosh2.png](resource/screenshot/mosh2.png)
+
+### HTTP
+![http1.png](resource/screenshot/http1.png)
+![http2.png](resource/screenshot/http2.png)
+![http3.png](resource/screenshot/http3.png)
+![http4.png](resource/screenshot/http4.png)
+![http5.png](resource/screenshot/http5.png)
 
 ### Tools
 ![gongju1.png](resource/screenshot/gongju1.png)
