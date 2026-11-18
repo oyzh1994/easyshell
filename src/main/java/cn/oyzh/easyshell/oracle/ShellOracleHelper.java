@@ -640,7 +640,7 @@ public class ShellOracleHelper {
                 boolean ordered = StringUtil.equalsIgnoreCase("Y", resultSet.getString(7));
                 return "CREATE SEQUENCE " + DBUtil.wrap(schema, sequenceName, DBDialect.ORACLE)
                         + " MINVALUE " + decimal(minValue, BigDecimal.ONE)
-                        + " MAXVALUE " + decimal(maxValue, new BigDecimal("999999999999999999999999999"))
+                        + " MAXVALUE " + decimal(maxValue, new BigDecimal("9999999999999999999999999999"))
                         + " INCREMENT BY " + decimal(incrementBy, BigDecimal.ONE)
                         + " START WITH " + decimal(current, BigDecimal.ONE)
                         + (cacheSize == null || cacheSize.signum() <= 0 ? " NOCACHE" : " CACHE " + cacheSize.toPlainString())

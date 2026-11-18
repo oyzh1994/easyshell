@@ -28,12 +28,12 @@ public class PostgresqlSequenceCreateSqlGenerator extends DBSqlGenerator {
             this.sqlBuilder.append(" INCREMENT BY ").append(sequence.getIncrementBy());
         }
         // PostgreSQL中min/max为0或空时使用默认值
-        if (sequence.getMinVal() != null && sequence.getMinVal() != 0) {
+        if (sequence.getMinVal() != null && sequence.getMinVal().signum() != 0) {
             this.sqlBuilder.append(" MINVALUE ").append(sequence.getMinVal());
         } else {
             this.sqlBuilder.append(" NO MINVALUE");
         }
-        if (sequence.getMaxVal() != null && sequence.getMaxVal() != 0) {
+        if (sequence.getMaxVal() != null && sequence.getMaxVal().signum() != 0) {
             this.sqlBuilder.append(" MAXVALUE ").append(sequence.getMaxVal());
         } else {
             this.sqlBuilder.append(" NO MAXVALUE");

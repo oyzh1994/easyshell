@@ -62,6 +62,7 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.oracle.OracleExecuteResult;
 import cn.oyzh.easyshell.query.oracle.OracleExplainResult;
+import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -81,7 +82,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.CallableStatement;
 import java.sql.DatabaseMetaData;
@@ -1392,16 +1393,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         return "C".equalsIgnoreCase(charUsed) && charLength > 0 ? charLength : dataLength;
     }
 
-    private static Long sequenceNumber(ResultSet resultSet, String column) throws SQLException {
-        BigDecimal value = resultSet.getBigDecimal(column);
-        if (value == null) {
-            return null;
-        }
-        try {
-            return value.longValueExact();
-        } catch (ArithmeticException ex) {
-            return null;
-        }
+    private static BigInteger sequenceNumber(ResultSet resultSet, String column) throws SQLException {
+        return ShellSequenceUtil.getBigInteger(resultSet, column);
     }
 
     /**

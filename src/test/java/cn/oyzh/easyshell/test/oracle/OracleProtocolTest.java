@@ -20,6 +20,7 @@ import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBObjects;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -169,9 +170,9 @@ public class OracleProtocolTest {
     public void generatesCompatibleSequenceAndViewDdl() {
         OracleSequence sequence = new OracleSequence("USER_ID_SEQ");
         sequence.setSchema("APP");
-        sequence.setIncrementBy(1L);
-        sequence.setMinVal(1L);
-        sequence.setCurrentVal(1L);
+        sequence.setIncrementBy(BigInteger.ONE);
+        sequence.setMinVal(BigInteger.ONE);
+        sequence.setCurrentVal(BigInteger.ONE);
 
         OracleCreateSequenceParam sequenceParam = new OracleCreateSequenceParam();
         sequenceParam.setSequence(sequence);

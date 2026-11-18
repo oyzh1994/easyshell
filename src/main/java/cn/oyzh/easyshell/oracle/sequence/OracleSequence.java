@@ -6,6 +6,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBSequence;
 
+import java.math.BigInteger;
+
 /**
  * Oracle检查约束对象
  *
@@ -27,27 +29,27 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
     /**
      * 最小值
      */
-    private Long minVal;
+    private BigInteger minVal;
 
     /**
      * 最大值
      */
-    private Long maxVal;
+    private BigInteger maxVal;
 
     /**
      * 当前值
      */
-    private Long currentVal;
+    private BigInteger currentVal;
 
     /**
      * 缓存
      */
-    private Long cacheSize;
+    private BigInteger cacheSize;
 
     /**
      * 递进
      */
-    private Long incrementBy;
+    private BigInteger incrementBy;
 
     /**
      * 循环
@@ -104,12 +106,12 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
         return (String) super.getOriginalData("name");
     }
 
-    public void setMinVal(Long minVal) {
+    public void setMinVal(BigInteger minVal) {
         this.minVal = minVal;
         super.putOriginalData("minVal", minVal);
     }
 
-    public Long getMinVal() {
+    public BigInteger getMinVal() {
         return minVal;
     }
 
@@ -117,11 +119,11 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
         return super.checkOriginalData("minVal", this.minVal);
     }
 
-    public Long getMaxVal() {
+    public BigInteger getMaxVal() {
         return maxVal;
     }
 
-    public void setMaxVal(Long maxVal) {
+    public void setMaxVal(BigInteger maxVal) {
         this.maxVal = maxVal;
         super.putOriginalData("maxVal", maxVal);
     }
@@ -130,11 +132,11 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
         return super.checkOriginalData("maxVal", this.maxVal);
     }
 
-    public Long getCurrentVal() {
+    public BigInteger getCurrentVal() {
         return currentVal;
     }
 
-    public void setCurrentVal(Long currentVal) {
+    public void setCurrentVal(BigInteger currentVal) {
         this.currentVal = currentVal;
         super.putOriginalData("currentVal", currentVal);
     }
@@ -143,11 +145,11 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
         return super.checkOriginalData("currentVal", this.currentVal);
     }
 
-    public Long getCacheSize() {
-        return cacheSize == null ? null : Math.max(2, this.cacheSize);
+    public BigInteger getCacheSize() {
+        return cacheSize == null ? null : this.cacheSize.max(BigInteger.TWO);
     }
 
-    public void setCacheSize(Long cacheSize) {
+    public void setCacheSize(BigInteger cacheSize) {
         this.cacheSize = cacheSize;
         super.putOriginalData("cacheSize", cacheSize);
     }
@@ -156,11 +158,11 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
         return super.checkOriginalData("cacheSize", this.cacheSize);
     }
 
-    public Long getIncrementBy() {
+    public BigInteger getIncrementBy() {
         return incrementBy;
     }
 
-    public void setIncrementBy(Long incrementBy) {
+    public void setIncrementBy(BigInteger incrementBy) {
         this.incrementBy = incrementBy;
         super.putOriginalData("incrementBy", incrementBy);
     }
@@ -203,6 +205,7 @@ public class OracleSequence extends DBObject implements DBSequence, ObjectCopier
             this.cycle = check.cycle;
             this.minVal = check.minVal;
             this.maxVal = check.maxVal;
+            this.currentVal = check.currentVal;
             this.schema = check.schema;
             this.cacheSize = check.cacheSize;
             this.incrementBy = check.incrementBy;

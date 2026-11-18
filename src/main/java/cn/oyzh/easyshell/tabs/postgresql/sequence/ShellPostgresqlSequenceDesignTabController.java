@@ -24,6 +24,8 @@ import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 
+import java.math.BigInteger;
+
 
 /**
  * db序列内容组件
@@ -320,19 +322,19 @@ public class ShellPostgresqlSequenceDesignTabController extends RichTabControlle
         // 基本信息处理
         tempSequence.setSchema(this.sequence.getSchema());
         if (StringUtil.isNotBlank(this.minVal.getText())) {
-            tempSequence.setMinVal(this.minVal.getLongValue());
+            tempSequence.setMinVal(new BigInteger(this.minVal.getText()));
         }
         if (StringUtil.isNotBlank(this.maxVal.getText())) {
-            tempSequence.setMaxVal(this.maxVal.getLongValue());
+            tempSequence.setMaxVal(new BigInteger(this.maxVal.getText()));
         }
         if (StringUtil.isNotBlank(this.cacheSize.getText())) {
-            tempSequence.setCacheSize(this.cacheSize.getLongValue());
+            tempSequence.setCacheSize(new BigInteger(this.cacheSize.getText()));
         }
         if (StringUtil.isNotBlank(this.currentVal.getText())) {
-            tempSequence.setCurrentVal(this.currentVal.getLongValue());
+            tempSequence.setCurrentVal(new BigInteger(this.currentVal.getText()));
         }
         if (StringUtil.isNotBlank(this.incrementBy.getText())) {
-            tempSequence.setIncrementBy(this.incrementBy.getLongValue());
+            tempSequence.setIncrementBy(new BigInteger(this.incrementBy.getText()));
         }
         tempSequence.setOrder(this.order.isSelected());
         tempSequence.setCycle(this.cycle.isSelected());

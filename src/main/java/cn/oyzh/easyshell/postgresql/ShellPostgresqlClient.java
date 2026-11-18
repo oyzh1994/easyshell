@@ -62,6 +62,7 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExecuteResult;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExplainResult;
+import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
@@ -82,6 +83,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -923,18 +925,13 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             DBObjects<PostgresqlSequence> list = new DBObjects<>();
             while (resultSet.next()) {
                 PostgresqlSequence sequence = new PostgresqlSequence();
-                long minValue = resultSet.getLong("MIN_VALUE");
-                Long minVal = resultSet.wasNull() ? null : minValue;
-                long maxValue = resultSet.getLong("MAX_VALUE");
-                Long maxVal = resultSet.wasNull() ? null : maxValue;
-                long cacheSize = resultSet.getLong("CACHE_SIZE");
-                Long cache = resultSet.wasNull() ? null : cacheSize;
+                BigInteger minVal = ShellSequenceUtil.getBigInteger(resultSet, "MIN_VALUE");
+                BigInteger maxVal = ShellSequenceUtil.getBigInteger(resultSet, "MAX_VALUE");
+                BigInteger cache = ShellSequenceUtil.getBigInteger(resultSet, "CACHE_SIZE");
                 String name = resultSet.getString("SEQUENCE_NAME");
                 boolean cycle = resultSet.getBoolean("CYCLE_FLAG");
-                long incrementBy = resultSet.getLong("INCREMENT_BY");
-                Long increment = resultSet.wasNull() ? null : incrementBy;
-                long currentValue = resultSet.getLong("CURRENT_VALUE");
-                Long currentVal = resultSet.wasNull() ? null : currentValue;
+                BigInteger increment = ShellSequenceUtil.getBigInteger(resultSet, "INCREMENT_BY");
+                BigInteger currentVal = ShellSequenceUtil.getBigInteger(resultSet, "CURRENT_VALUE");
                 sequence.setName(name);
                 sequence.setSchema(schema);
                 sequence.setMinVal(minVal);
@@ -2524,11 +2521,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             ResultSet resultSet = stmt.executeQuery();
             StringBuilder builder = new StringBuilder();
             if (resultSet.next()) {
-                Long startValue = this.getLong(resultSet, "START_VALUE");
-                Long minValue = this.getLong(resultSet, "MIN_VALUE");
-                Long maxValue = this.getLong(resultSet, "MAX_VALUE");
-                Long incrementBy = this.getLong(resultSet, "INCREMENT_BY");
-                Long cacheSize = this.getLong(resultSet, "CACHE_SIZE");
+                BigInteger startValue = ShellSequenceUtil.getBigInteger(resultSet, "START_VALUE");
+                BigInteger minValue = ShellSequenceUtil.getBigInteger(resultSet, "MIN_VALUE");
+                BigInteger maxValue = ShellSequenceUtil.getBigInteger(resultSet, "MAX_VALUE");
+                BigInteger incrementBy = ShellSequenceUtil.getBigInteger(resultSet, "INCREMENT_BY");
+                BigInteger cacheSize = ShellSequenceUtil.getBigInteger(resultSet, "CACHE_SIZE");
                 boolean cycle = resultSet.getBoolean("CYCLE");
                 builder.append("CREATE SEQUENCE ")
                         .append(DBUtil.wrap(schema, sequenceName, DBDialect.POSTGRESQL));
@@ -2556,19 +2553,6 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
-    }
-
-    /**
-     * 获取可能为空的long值
-     *
-     * @param resultSet 结果集
-     * @param column    字段名称
-     * @return 结果
-     * @throws SQLException 异常
-     */
-    private Long getLong(ResultSet resultSet, String column) throws SQLException {
-        long value = resultSet.getLong(column);
-        return resultSet.wasNull() ? null : value;
     }
 
     /**
@@ -5526,12 +5510,12 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             PostgresqlSequence sequence = new PostgresqlSequence();
             sequence.setName(sequenceName);
             while (resultSet.next()) {
-                Long minValue = this.getLong(resultSet, "MIN_VALUE");
-                Long maxValue = this.getLong(resultSet, "MAX_VALUE");
-                Long cacheSize = this.getLong(resultSet, "CACHE_SIZE");
+                BigInteger minValue = ShellSequenceUtil.getBigInteger(resultSet, "MIN_VALUE");
+                BigInteger maxValue = ShellSequenceUtil.getBigInteger(resultSet, "MAX_VALUE");
+                BigInteger cacheSize = ShellSequenceUtil.getBigInteger(resultSet, "CACHE_SIZE");
                 boolean cycle = resultSet.getBoolean("CYCLE");
-                Long incrementBy = this.getLong(resultSet, "INCREMENT_BY");
-                Long currentValue = this.getLong(resultSet, "CURRENT_VALUE");
+                BigInteger incrementBy = ShellSequenceUtil.getBigInteger(resultSet, "INCREMENT_BY");
+                BigInteger currentValue = ShellSequenceUtil.getBigInteger(resultSet, "CURRENT_VALUE");
                 sequence.setSchema(schema);
                 sequence.setMinVal(minValue);
                 sequence.setMaxVal(maxValue);

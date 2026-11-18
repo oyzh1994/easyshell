@@ -30,7 +30,7 @@ public class DamengSequenceCreateSqlGenerator extends DBSqlGenerator {
         if (sequence.getMaxVal() != null) {
             this.sqlBuilder.append(" MAXVALUE ").append(sequence.getMaxVal());
         }
-        if (sequence.getMaxVal() != null) {
+        if (sequence.getMinVal() != null) {
             this.sqlBuilder.append(" MINVALUE ").append(sequence.getMinVal());
         }
         if (sequence.getCurrentVal() != null) {

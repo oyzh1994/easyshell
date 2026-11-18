@@ -16,6 +16,7 @@ import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -31,7 +32,6 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -91,6 +91,7 @@ public class OracleDockerIntegrationTest {
             assertPlSql(connection);
             assertPagination(connection, version);
             assertEasyShellClientMetadata();
+            assertSystemSequencesUseBigInteger();
         }
 
         String serviceDatabase = mode.equals("11g") ? "XE" : "FREEPDB1";
@@ -252,9 +253,9 @@ public class OracleDockerIntegrationTest {
 
             OracleSequence sequence = client.selectSequence("DEMO", "DEMO_SEQ");
             assertEquals("DEMO_SEQ", sequence.getName());
-            assertEquals(Long.valueOf(1), sequence.getMinVal());
-            assertEquals(Long.valueOf(5), sequence.getIncrementBy());
-            assertNull(sequence.getMaxVal());
+            assertEquals(BigInteger.ONE, sequence.getMinVal());
+            assertEquals(BigInteger.valueOf(5), sequence.getIncrementBy());
+            assertEquals(new BigInteger("9999999999999999999999999999"), sequence.getMaxVal());
             assertFalse(sequence.getCreateDefinition().isBlank());
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
@@ -262,6 +263,34 @@ public class OracleDockerIntegrationTest {
             columnParam.setTableName("USERS");
             List<OracleColumn> columns = client.selectColumns(columnParam);
             assertTrue(columns.stream().anyMatch(column -> "ID".equals(column.getName())));
+        } finally {
+            client.close();
+        }
+    }
+
+    private static void assertSystemSequencesUseBigInteger() throws Exception {
+        ShellConnect shellConnect = new ShellConnect();
+        shellConnect.setType(ShellPrototype.ORACLE);
+        shellConnect.setHost(host + ":" + port);
+        shellConnect.setDatabase(mode.equals("11g") ? "XE" : "FREEPDB1");
+        shellConnect.setUser(systemUser);
+        shellConnect.setPassword(systemPassword);
+        shellConnect.setConnectTimeOut(10);
+
+        ShellOracleClient client = new ShellOracleClient(shellConnect);
+        try {
+            try {
+                client.start(10000);
+            } catch (Exception ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+            var sequences = client.selectSequencesSimple("SYSTEM");
+            if (mode.equals("11g")) {
+                assertTrue(sequences.stream().anyMatch(sequence -> sequence.getMaxVal() != null
+                        && sequence.getMaxVal().compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0));
+            }
         } finally {
             client.close();
         }
