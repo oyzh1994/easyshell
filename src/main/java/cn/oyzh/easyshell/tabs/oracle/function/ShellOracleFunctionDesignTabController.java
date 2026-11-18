@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.tabs.oracle.function;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleFunction;
@@ -287,8 +288,12 @@ public class ShellOracleFunctionDesignTabController extends RichTabController {
 
         // 返回值处理
         OracleRoutineParam returnParam = this.function.getReturnParam();
-        if (returnParam != null) {
-            this.returnType.select(returnParam.getType());
+        if (returnParam != null && StringUtil.isNotBlank(returnParam.getType())) {
+            String returnType = returnParam.getType();
+            if (!this.returnType.getItems().contains(returnType)) {
+                this.returnType.addItem(returnType);
+            }
+            this.returnType.select(returnType);
             if (returnParam.getSize() != null) {
                 this.returnSize.setValue(returnParam.getSize());
             }
@@ -350,6 +355,10 @@ public class ShellOracleFunctionDesignTabController extends RichTabController {
                 tempFunction.setName(this.functionName);
             } else {
                 this.functionName = tempFunction.getName();
+            }
+
+            if (StringUtil.isBlank(tempFunction.getReturnType())) {
+                throw new ShellException("Oracle function return type is required");
             }
 
             // 创建函数
@@ -415,21 +424,45 @@ public class ShellOracleFunctionDesignTabController extends RichTabController {
         if (!characteristic.isEmpty()) {
             tempFunction.setCharacteristic(characteristic.substring(1));
         }
-        // 返回值处理
-        OracleRoutineParam returnParam = new OracleRoutineParam();
-        returnParam.setType(this.returnType.getValue());
-        if (this.returnSize.isEnable()) {
-            returnParam.setSize(this.returnSize.getIntValue());
+        // 返回值处理；未重新选择类型时沿用原函数的返回值定义
+        String selectedReturnType = this.returnType.getValue();
+        OracleRoutineParam originalReturnParam = this.function.getReturnParam();
+        if (StringUtil.isBlank(selectedReturnType)
+                && originalReturnParam != null
+                && StringUtil.isNotBlank(originalReturnParam.getType())) {
+            tempFunction.setReturnParam(copyReturnParam(originalReturnParam));
+        } else if (StringUtil.isNotBlank(selectedReturnType)) {
+            OracleRoutineParam returnParam = new OracleRoutineParam();
+            returnParam.setType(selectedReturnType);
+            if (this.returnSize.isEnable()) {
+                returnParam.setSize(this.returnSize.getIntValue());
+            }
+            if (this.returnValues.isEnable()) {
+                returnParam.setValue(this.returnValues.getTextTrim());
+            }
+            if (this.returnDigits.isEnable()) {
+                returnParam.setDigits(this.returnDigits.getIntValue());
+            }
+            tempFunction.setReturnParam(returnParam);
         }
-        if (this.returnValues.isEnable()) {
-            returnParam.setValue(this.returnValues.getTextTrim());
-        }
-        if (this.returnDigits.isEnable()) {
-            returnParam.setDigits(this.returnDigits.getIntValue());
-        }
-        tempFunction.setReturnParam(returnParam);
 
         return tempFunction;
+    }
+
+    /**
+     * 复制返回值参数。
+     *
+     * @param source 原返回值参数
+     * @return 返回值参数副本
+     */
+    private OracleRoutineParam copyReturnParam(OracleRoutineParam source) {
+        OracleRoutineParam target = new OracleRoutineParam();
+        target.setType(source.getType());
+        target.setSize(source.getSize());
+        target.setDigits(source.getDigits());
+        target.setValue(source.getValue());
+        target.setCharset(source.getCharset());
+        return target;
     }
 
     /**

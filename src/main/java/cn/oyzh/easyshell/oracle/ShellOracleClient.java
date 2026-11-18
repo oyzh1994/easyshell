@@ -513,12 +513,23 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      */
     public void alertFunction(OracleAlertFunctionParam param) {
         try {
+            OracleFunction function = param.getFunction();
+            if (function != null && StringUtil.isBlank(function.getReturnType())) {
+                OracleFunction original = this.selectFunction(param.getSchema(), function.getName());
+                if (original != null && StringUtil.isNotBlank(original.getReturnType())) {
+                    function.setReturnParam(original.getReturnParam());
+                }
+            }
+            if (function == null || StringUtil.isBlank(function.getReturnType())) {
+                throw new ShellException("Oracle function return type is required");
+            }
             Connection connection = this.getConnManager().connection(param.getSchema());
             Statement statement = connection.createStatement();
             String sql = OracleFunctionAlertSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
             statement.executeUpdate(sql);
             IOUtil.close(statement);
+            this.assertFunctionValid(connection, param.getSchema(), function.getName());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -3695,29 +3706,31 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         ? ShellOracleHelper.getFunctionDefinition(connection, schema, functionName) : "";
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
-                StringBuilder characteristic = new StringBuilder();
+                String characteristic = "";
                 if (param.isFull()) {
                     List<OracleRoutineParam> params = this.listFunctionParam(schema, functionName);
                     function.setParams(params);
                 }
                 String definition = routineBody(createDefinition);
-                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                    characteristic.append(",PARALLEL_ENABLE");
-                }
-                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                    characteristic.append(",RESULT_CACHE");
-                }
+                characteristic = this.appendCharacteristicFromDefinition(characteristic, createDefinition, "PARALLEL_ENABLE");
+                characteristic = this.appendCharacteristicFromDefinition(characteristic, createDefinition, "RESULT_CACHE");
+                characteristic = this.appendCharacteristicFromDefinition(characteristic, createDefinition, "AGGREGATE");
+                characteristic = this.appendCharacteristicFromDefinition(characteristic, createDefinition, "PIPELINED");
+                characteristic = this.appendCharacteristicFromDefinition(characteristic, createDefinition, "DETERMINISTIC");
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
-                    characteristic.append(",AGGREGATE");
+                    characteristic = appendCharacteristicIfMissing(characteristic, "AGGREGATE");
                 }
                 if (StringUtil.equalsIgnoreCase("YES", pipelined)) {
-                    characteristic.append(",PIPELINED");
+                    characteristic = appendCharacteristicIfMissing(characteristic, "PIPELINED");
                 }
                 if (StringUtil.equalsIgnoreCase("YES", deterministic)) {
-                    characteristic.append(",DETERMINISTIC");
+                    characteristic = appendCharacteristicIfMissing(characteristic, "DETERMINISTIC");
                 }
-                if (!characteristic.isEmpty()) {
-                    function.setCharacteristic(characteristic.substring(1));
+                if (StringUtil.isNotBlank(characteristic)) {
+                    function.setCharacteristic(characteristic);
+                }
+                if (StringUtil.isBlank(securityType) && param.isFull()) {
+                    securityType = this.parseSecurityType(createDefinition);
                 }
                 function.setSchema(schema);
                 function.setDefinition(definition);
@@ -3741,11 +3754,16 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      */
     public void createFunction(OracleCreateFunctionParam param) {
         try {
+            if (param.getFunction() == null || StringUtil.isBlank(param.getFunction().getReturnType())) {
+                throw new ShellException("Oracle function return type is required");
+            }
             String sql = OracleFunctionCreateSqlGenerator.generateSqlSingle(param);
             this.printSql(sql);
-            Statement statement = this.getConnManager().connection(param.getSchema()).createStatement();
+            Connection connection = this.getConnManager().connection(param.getSchema());
+            Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
             IOUtil.close(statement);
+            this.assertFunctionValid(connection, param.getSchema(), param.getFunction().getName());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
@@ -4179,6 +4197,51 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
 
     private static String appendCharacteristic(String characteristic, String value) {
         return StringUtil.isBlank(characteristic) ? value : characteristic + "," + value;
+    }
+
+    private static String appendCharacteristicIfMissing(String characteristic, String value) {
+        if (StringUtil.containsIgnoreCase(characteristic, value)) {
+            return characteristic;
+        }
+        return appendCharacteristic(characteristic, value);
+    }
+
+    private static String appendCharacteristicFromDefinition(String characteristic, String definition, String value) {
+        if (StringUtil.containsIgnoreCase(definition, value)) {
+            return appendCharacteristicIfMissing(characteristic, value);
+        }
+        return characteristic;
+    }
+
+    private static String parseSecurityType(String definition) {
+        if (StringUtil.containsIgnoreCase(definition, "AUTHID")) {
+            if (StringUtil.containsIgnoreCase(definition, "CURRENT_USER")) {
+                return "CURRENT_USER";
+            }
+            if (StringUtil.containsIgnoreCase(definition, "DEFINER")) {
+                return "DEFINER";
+            }
+        }
+        return null;
+    }
+
+    private void assertFunctionValid(Connection connection, String schema, String functionName) throws SQLException {
+        String sql = """
+                SELECT STATUS
+                FROM ALL_OBJECTS
+                WHERE OWNER = ?
+                AND OBJECT_NAME = ?
+                AND OBJECT_TYPE = 'FUNCTION'
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, functionName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next() || !"VALID".equalsIgnoreCase(resultSet.getString("STATUS"))) {
+                    throw new ShellException("Oracle function compilation failed: " + schema + "." + functionName);
+                }
+            }
+        }
     }
 
     //    private Boolean dbaRole;

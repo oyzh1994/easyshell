@@ -9,10 +9,15 @@ import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
+import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
+import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
+import cn.oyzh.easyshell.oracle.function.OracleFunction;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
+import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
+import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
 import org.junit.Assume;
@@ -60,6 +65,7 @@ public class OracleDockerIntegrationTest {
 
     @BeforeClass
     public static void loadConfiguration() {
+        ShellOracleColumnUtil.init();
         mode = value("oracle.docker.mode", "ORACLE_DOCKER_MODE", "23c").toLowerCase(Locale.ROOT);
         url = value("oracle.docker.url", "ORACLE_DOCKER_URL", null);
         user = value("oracle.docker.user", "ORACLE_DOCKER_USER", "DEMO");
@@ -262,6 +268,9 @@ public class OracleDockerIntegrationTest {
             assertFalse(sequence.getCreateDefinition().isBlank());
             assertSequenceAlterExecution(client);
             assertProcedureRenameExecution(client);
+            assertFunctionParameterRoundTrip(client);
+            assertFunctionParameterCreationRoundTrip(client);
+            assertPipelinedMetadataFallback(client);
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
             columnParam.setSchema("DEMO");
@@ -350,6 +359,122 @@ public class OracleDockerIntegrationTest {
             procedure.setSchema(schema);
             procedure.setName(name);
             client.dropProcedure(procedure);
+        }
+    }
+
+    private static void assertFunctionParameterRoundTrip(ShellOracleClient client) {
+        String schema = "DEMO";
+        String name = "EASYSHELL_PARAM_FUNC";
+        dropFunctionIfPresent(client, schema, name);
+        OracleFunction function = new OracleFunction();
+        function.setSchema(schema);
+        function.setName(name);
+        function.setDefinition("BEGIN\n    RETURN 2;\nEND;");
+        OracleRoutineParam initialReturnParam = new OracleRoutineParam();
+        initialReturnParam.setType("NUMBER");
+        function.setReturnParam(initialReturnParam);
+        OracleCreateFunctionParam createParam = new OracleCreateFunctionParam();
+        createParam.setSchema(schema);
+        createParam.setFunction(function);
+        client.createFunction(createParam);
+        try {
+            function.setParams(List.of(
+                    routineParam("P_IN_VALUE", "VARCHAR2", "IN"),
+                    routineParam("P_OUT_VALUE", "NUMBER", "OUT"),
+                    routineParam("P_INOUT_VALUE", "VARCHAR2", "IN/OUT")
+            ));
+            function.setReturnParam(null);
+            function.setDefinition("BEGIN\n    p_out_value := 1;\n    RETURN 2;\nEND;");
+            OracleAlertFunctionParam alertParam = new OracleAlertFunctionParam();
+            alertParam.setSchema(schema);
+            alertParam.setFunction(function);
+            client.alertFunction(alertParam);
+
+            OracleFunction loaded = client.selectFunction(schema, name);
+            assertEquals(3, loaded.getParams().size());
+            assertTrue(loaded.getParams().stream().anyMatch(item ->
+                    "P_IN_VALUE".equals(item.getName()) && "IN".equals(item.getMode())));
+            assertTrue(loaded.getParams().stream().anyMatch(item ->
+                    "P_OUT_VALUE".equals(item.getName()) && "OUT".equals(item.getMode())));
+            assertTrue(loaded.getParams().stream().anyMatch(item ->
+                    "P_INOUT_VALUE".equals(item.getName()) && "IN/OUT".equals(item.getMode())));
+            assertTrue(loaded.getCreateDefinition().contains("P_IN_VALUE"));
+            assertTrue(loaded.getCreateDefinition().contains("P_OUT_VALUE"));
+            assertTrue(loaded.getCreateDefinition().contains("P_INOUT_VALUE"));
+        } finally {
+            dropFunctionIfPresent(client, schema, name);
+        }
+    }
+
+    private static void assertFunctionParameterCreationRoundTrip(ShellOracleClient client) {
+        String schema = "DEMO";
+        String name = "EASYSHELL_PARAM_CREATE_FUNC";
+        dropFunctionIfPresent(client, schema, name);
+        OracleFunction function = new OracleFunction();
+        function.setSchema(schema);
+        function.setName(name);
+        function.setParams(List.of(
+                routineParam("P_IN_VALUE", "VARCHAR2", "IN"),
+                routineParam("P_OUT_VALUE", "NUMBER", "OUT"),
+                routineParam("P_INOUT_VALUE", "VARCHAR2", "IN/OUT")
+        ));
+        OracleRoutineParam returnParam = new OracleRoutineParam();
+        returnParam.setType("NUMBER");
+        function.setReturnParam(returnParam);
+        function.setDefinition("BEGIN\n    p_out_value := 1;\n    RETURN 2;\nEND;");
+        OracleCreateFunctionParam param = new OracleCreateFunctionParam();
+        param.setSchema(schema);
+        param.setFunction(function);
+        client.createFunction(param);
+        try {
+            OracleFunction loaded = client.selectFunction(schema, name);
+            assertEquals(3, loaded.getParams().size());
+            assertTrue(loaded.getParams().stream().anyMatch(item ->
+                    "P_IN_VALUE".equals(item.getName()) && "IN".equals(item.getMode())));
+            assertTrue(loaded.getParams().stream().anyMatch(item ->
+                    "P_OUT_VALUE".equals(item.getName()) && "OUT".equals(item.getMode())));
+            assertTrue(loaded.getParams().stream().anyMatch(item ->
+                    "P_INOUT_VALUE".equals(item.getName()) && "IN/OUT".equals(item.getMode())));
+            assertTrue(loaded.getCreateDefinition().contains("P_IN_VALUE"));
+            assertTrue(loaded.getCreateDefinition().contains("P_OUT_VALUE"));
+            assertTrue(loaded.getCreateDefinition().contains("P_INOUT_VALUE"));
+        } finally {
+            dropFunctionIfPresent(client, schema, name);
+        }
+    }
+
+    private static void assertPipelinedMetadataFallback(ShellOracleClient client) throws Exception {
+        String schema = "DEMO";
+        String name = "EASYSHELL_INVALID_PIPE_FUNC";
+        dropFunctionIfPresent(client, schema, name);
+        try (Statement statement = client.getConnManager().connection(schema).createStatement()) {
+            statement.execute("CREATE OR REPLACE FUNCTION " + name
+                    + " RETURN NUMBER PIPELINED AUTHID DEFINER AS BEGIN RETURN; END;");
+        }
+        try {
+            OracleFunction loaded = client.selectFunction(schema, name);
+            assertEquals("DEFINER", loaded.getSecurityType());
+            assertTrue(loaded.getCharacteristic().contains("PIPELINED"));
+        } finally {
+            dropFunctionIfPresent(client, schema, name);
+        }
+    }
+
+    private static OracleRoutineParam routineParam(String name, String type, String mode) {
+        OracleRoutineParam param = new OracleRoutineParam();
+        param.setName(name);
+        param.setType(type);
+        param.setMode(mode);
+        param.setSize(22);
+        return param;
+    }
+
+    private static void dropFunctionIfPresent(ShellOracleClient client, String schema, String name) {
+        if (client.selectFunctionsSimple(schema).stream().anyMatch(function -> name.equals(function.getName()))) {
+            OracleFunction function = new OracleFunction();
+            function.setSchema(schema);
+            function.setName(name);
+            client.dropFunction(function);
         }
     }
 

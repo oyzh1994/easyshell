@@ -355,18 +355,6 @@ public class OracleRoutineParam extends DBObject implements DBRoutineParam {
             }
         }
         definition += " " + this.getType();
-        definition += " (";
-        if (DBColumnFieldManager.supportSize(DBDialect.ORACLE, this.getType()) && this.getSize() != null) {
-            definition += this.getSize();
-            if (DBColumnFieldManager.supportDigits(DBDialect.ORACLE, this.getType()) && this.getDigits() != null) {
-                definition += "," + this.getDigits();
-            }
-        }
-        if (DBColumnFieldManager.supportValue(DBDialect.ORACLE, this.getType()) && this.getValue() != null) {
-            definition += this.getValue();
-        }
-        definition += ")";
-        definition = definition.replaceFirst("\\(\\)", "");
         return definition;
     }
 
@@ -376,17 +364,10 @@ public class OracleRoutineParam extends DBObject implements DBRoutineParam {
      * @return 类型定义
      */
     public String getTypeDefinition() {
-        StringBuilder definition = new StringBuilder(this.getType());
-        if (DBColumnFieldManager.supportSize(DBDialect.ORACLE, this.getType()) && this.getSize() != null) {
-            definition.append("(").append(this.getSize());
-            if (DBColumnFieldManager.supportDigits(DBDialect.ORACLE, this.getType()) && this.getDigits() != null) {
-                definition.append(",").append(this.getDigits());
-            }
-            definition.append(")");
-        } else if (DBColumnFieldManager.supportValue(DBDialect.ORACLE, this.getType()) && this.getValue() != null) {
-            definition.append("(").append(this.getValue()).append(")");
+        if (StringUtil.isBlank(this.getType())) {
+            return "";
         }
-        return definition.toString();
+        return this.getType();
     }
 
     /**
