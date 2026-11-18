@@ -6,6 +6,9 @@ hs_err_*.log
 
 ### IntelliJ IDEA ###
 .idea/
+*.iws
+*.iml
+*.ipr
 
 ### logs ###
 logs/

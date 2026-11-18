@@ -49,6 +49,7 @@
 ### 主页
 ![zhuye1.png](resource/screenshot/zhuye1.png)
 ![zhuye2.png](resource/screenshot/zhuye2.png)
+![zhuye3.png](resource/screenshot/zhuye3.png)
 
 ### AI
 ![llm1.png](resource/screenshot/llm1.png)
@@ -62,6 +63,7 @@
 ![llm9.png](resource/screenshot/llm9.png)
 ![llm10.png](resource/screenshot/llm10.png)
 ![llm11.png](resource/screenshot/llm11.png)
+![llm12.png](resource/screenshot/llm12.png)
 
 ### 设置
 ![shezhi1.png](resource/screenshot/shezhi1.png)
