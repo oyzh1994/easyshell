@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.common.util.HexUtil;
+import oracle.sql.TIMESTAMP;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -648,6 +649,13 @@ public class ShellOracleDataUtil {
      * @return 规整后的值
      */
     public static Object valueStandardization(Object value) {
+        if (value instanceof TIMESTAMP timestamp) {
+            try {
+                return timestamp.timestampValue();
+            } catch (SQLException ex) {
+                return timestamp.toString();
+            }
+        }
         if (value instanceof Clob clob) {
             try {
                 return clob.getSubString(1, Math.toIntExact(clob.length()));

@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
 import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
+import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
 import org.junit.Assume;
@@ -96,6 +97,7 @@ public class OracleDockerIntegrationTest {
             assertScalar(managedConnection, "SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') FROM DUAL", "DEMO");
             assertObjects(connection);
             assertResultMetadata(connection);
+            assertTimestampDisplay(connection);
             assertCrud(connection);
             assertPlSql(connection);
             assertPagination(connection, version);
@@ -157,6 +159,15 @@ public class OracleDockerIntegrationTest {
             assertEquals("USERNAME", metadata.getColumnLabel(2));
             assertEquals("NUMBER", metadata.getColumnTypeName(1));
             assertEquals("VARCHAR2", metadata.getColumnTypeName(2));
+        }
+    }
+
+    private static void assertTimestampDisplay(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT CREATED_AT FROM USERS WHERE ROWNUM = 1")) {
+            assertTrue(resultSet.next());
+            Object value = ShellOracleDataUtil.valueStandardization(resultSet.getObject(1));
+            assertTrue(value instanceof java.sql.Timestamp);
         }
     }
 
