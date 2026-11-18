@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.test.oracle;
 
 import cn.oyzh.common.db.SqlDatabase;
 import cn.oyzh.common.db.SqlUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
@@ -227,14 +228,25 @@ public class OracleDockerIntegrationTest {
                 throw new RuntimeException(ex);
             }
 
+            assertTrue(client.selectTablesSimple("DEMO").stream()
+                    .allMatch(table -> StringUtil.isBlank(table.getCreateDefinition())));
             assertTrue(client.selectTables("DEMO").stream().anyMatch(table -> "USERS".equals(table.getName())
                     && !table.getCreateDefinition().isBlank()));
-            assertTrue(client.selectViews("DEMO").stream().anyMatch(view -> "V_USERS".equals(view.getName())
-                    && !view.getCreateDefinition().isBlank()));
+            assertTrue(client.selectViewsSimple("DEMO").stream()
+                    .allMatch(view -> StringUtil.isBlank(view.getDefinition())
+                            && StringUtil.isBlank(view.getCreateDefinition())));
+            var views = client.selectViews("DEMO");
+            assertTrue(views.size() >= 3);
+            assertTrue(views.stream().anyMatch(view -> "V_USERS".equals(view.getName())
+                    && !view.getDefinition().isBlank() && !view.getCreateDefinition().isBlank()));
+            assertTrue(views.stream().allMatch(view -> !view.getCreateDefinition().isBlank()));
             assertTrue(client.selectProcedures("DEMO").stream().anyMatch(procedure -> "ADD_USER".equals(procedure.getName())
                     && !procedure.getCreateDefinition().isBlank()));
             assertTrue(client.selectFunctions("DEMO").stream().anyMatch(function -> "USER_COUNT".equals(function.getName())
                     && !function.getCreateDefinition().isBlank()));
+            assertTrue(client.selectTriggersSimple("DEMO").stream()
+                    .allMatch(trigger -> StringUtil.isBlank(trigger.getDefinition())
+                            && StringUtil.isBlank(trigger.getCreateDefinition())));
             assertTrue(client.selectTriggers("DEMO").stream().anyMatch(trigger -> "USERS_UPDATED_AT_TRG".equals(trigger.getName())
                     && !trigger.getCreateDefinition().isBlank()));
 

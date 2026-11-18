@@ -320,19 +320,19 @@ public class ShellDamengSequenceDesignTabController extends RichTabController {
         // 基本信息处理
         tempSequence.setSchema(this.sequence.getSchema());
         if (StringUtil.isNotBlank(this.minVal.getText())) {
-            tempSequence.setMinVal(this.minVal.getValue());
+            tempSequence.setMinVal(this.minVal.getLongValue());
         }
         if (StringUtil.isNotBlank(this.maxVal.getText())) {
-            tempSequence.setMaxVal(this.maxVal.getValue());
+            tempSequence.setMaxVal(this.maxVal.getLongValue());
         }
         if (StringUtil.isNotBlank(this.cacheSize.getText())) {
-            tempSequence.setCacheSize(this.cacheSize.getValue());
+            tempSequence.setCacheSize(this.cacheSize.getLongValue());
         }
         if (StringUtil.isNotBlank(this.currentVal.getText())) {
-            tempSequence.setCurrentVal(this.currentVal.getValue());
+            tempSequence.setCurrentVal(this.currentVal.getLongValue());
         }
         if (StringUtil.isNotBlank(this.incrementBy.getText())) {
-            tempSequence.setIncrementBy(this.incrementBy.getValue());
+            tempSequence.setIncrementBy(this.incrementBy.getLongValue());
         }
         tempSequence.setOrder(this.order.isSelected());
         tempSequence.setCycle(this.cycle.isSelected());

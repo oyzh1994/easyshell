@@ -564,22 +564,22 @@ public class ShellOracleDataTransportController extends StageController {
     @FXML
     private void showStep3() {
         if (this.viewList.isItemEmpty()) {
-            this.viewList.of(this.sourceClient.selectViews(this.sourceDatabase.getSelectedItem()));
+            this.viewList.of(this.sourceClient.selectViewsSimple(this.sourceDatabase.getSelectedItem()));
         }
         if (this.tableList.isItemEmpty()) {
-            this.tableList.of(this.sourceClient.selectTables(this.sourceDatabase.getSelectedItem()));
+            this.tableList.of(this.sourceClient.selectTablesSimple(this.sourceDatabase.getSelectedItem()));
         }
         if (this.triggerList.isItemEmpty()) {
-            this.triggerList.of(this.sourceClient.selectTriggers(this.sourceDatabase.getSelectedItem()));
+            this.triggerList.of(this.sourceClient.selectTriggersSimple(this.sourceDatabase.getSelectedItem()));
         }
         if (this.functionList.isItemEmpty()) {
-            this.functionList.of(this.sourceClient.selectFunctions(this.sourceDatabase.getSelectedItem()));
+            this.functionList.of(this.sourceClient.selectFunctionsSimple(this.sourceDatabase.getSelectedItem()));
         }
         if (this.procedureList.isItemEmpty()) {
-            this.procedureList.of(this.sourceClient.selectProcedures(this.sourceDatabase.getSelectedItem()));
+            this.procedureList.of(this.sourceClient.selectProceduresSimple(this.sourceDatabase.getSelectedItem()));
         }
         if (this.sequenceList.isItemEmpty()) {
-            this.sequenceList.of(this.sourceClient.selectSequences(this.sourceDatabase.getSelectedItem()));
+            this.sequenceList.of(this.sourceClient.selectSequencesSimple(this.sourceDatabase.getSelectedItem()));
         }
         this.step2.disappear();
         this.step4.disappear();

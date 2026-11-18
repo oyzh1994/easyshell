@@ -264,7 +264,7 @@ public class ShellValkeyKeyAddController extends StageController {
         String key = this.key.getTextTrim();
         int dbIndex = this.dbIndex;
         try {
-            long ttl = this.ttlValue.getValue();
+            long ttl = this.ttlValue.getLongValue();
             if (ttl == 0) {
                 MessageBox.warn(ShellI18nHelper.redisAddTip2(), this.getWindow());
                 return;

@@ -102,12 +102,12 @@ public class ShellDockerResourceController extends StageController {
     @FXML
     private void save() {
         try {
-            long memory = this.memory.getValue();
-            long memorySwap = this.memorySwap.getValue();
-            double cpuPeriod = this.cpuPeriod.getValue();
-            long cpuShares = this.cpuShares.getValue();
+            long memory = this.memory.getLongValue();
+            long memorySwap = this.memorySwap.getLongValue();
+            double cpuPeriod = this.cpuPeriod.getLongValue();
+            long cpuShares = this.cpuShares.getLongValue();
             double nanoCpus = this.nanoCpus.getValue();
-            long cpuQuota = this.cpuQuota.getValue();
+            long cpuQuota = this.cpuQuota.getLongValue();
             ShellDockerResource resource = new ShellDockerResource();
             resource.setMemory(memory);
             resource.setMemorySwap(memorySwap);

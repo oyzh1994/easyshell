@@ -222,7 +222,7 @@ public class ShellRedisKeyBatchOperationController extends StageController {
                     List<String> keys = this.findKeys(this.keys2, pattern);
                     int succCount = 0;
                     int failCount = 0;
-                    long ttl = this.ttl.getValue();
+                    long ttl = this.ttl.getLongValue();
                     for (String key : keys) {
                         if (ThreadUtil.isInterrupted()) {
                             break;

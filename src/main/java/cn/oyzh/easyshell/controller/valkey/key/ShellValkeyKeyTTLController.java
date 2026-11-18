@@ -124,7 +124,7 @@ public class ShellValkeyKeyTTLController extends StageController {
      */
     @FXML
     private void appendWith1M() {
-        long ttl = this.ttl.getValue();
+        long ttl = this.ttl.getLongValue();
         if (ttl <= -1) {
             this.expireAt1M();
         } else {
@@ -137,7 +137,7 @@ public class ShellValkeyKeyTTLController extends StageController {
      */
     @FXML
     private void appendWith1H() {
-        long ttl = this.ttl.getValue();
+        long ttl = this.ttl.getLongValue();
         if (ttl <= -1) {
             this.expireAt1H();
         } else {
@@ -150,7 +150,7 @@ public class ShellValkeyKeyTTLController extends StageController {
      */
     @FXML
     private void appendWith1D() {
-        long ttl = this.ttl.getValue();
+        long ttl = this.ttl.getLongValue();
         if (ttl <= -1) {
             this.expireAt1D();
         } else {
@@ -169,7 +169,7 @@ public class ShellValkeyKeyTTLController extends StageController {
     @Override
     protected void bindListeners() {
         this.ttl.addTextChangeListener((observable, oldValue, newValue) -> {
-            long ttl = this.ttl.getValue();
+            long ttl = this.ttl.getLongValue();
             if (ttl <= -1) {
                 this.expirePreview.setText(I18nHelper.neverExpire());
             } else {

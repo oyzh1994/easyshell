@@ -158,7 +158,7 @@ mvn -Dtest=OracleDockerIntegrationTest \
   test
 ```
 
-测试覆盖 Service Name、SID、TNS 描述符连接，模式切换，对象元数据，CRUD/结果元数据，PL/SQL，以及 11g ROWNUM 和 23c OFFSET/FETCH 分页。
+测试覆盖 Service Name、SID、TNS 描述符连接，模式切换，轻量对象列表与完整 DDL、对象元数据，CRUD/结果元数据，PL/SQL，以及 11g ROWNUM 和 23c OFFSET/FETCH 分页。
 
 ## 6. 常用运维命令
 

@@ -538,6 +538,19 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 查询触发器列表(简要信息)
+     *
+     * @param schema 模式
+     * @return 触发器列表
+     */
+    public List<OracleTrigger> selectTriggersSimple(String schema) {
+        OracleSelectTriggerParam param = new OracleSelectTriggerParam();
+        param.setFull(false);
+        param.setSchema(schema);
+        return this.selectTriggers(param);
+    }
+
+    /**
      * 查询触发器列表
      *
      * @param schema    模式
@@ -647,20 +660,23 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             PreparedStatement statement;
             Connection connection = this.getConnManager().connection(schema);
+            String actionStatementColumn = param.isFull()
+                    ? "A.TRIGGER_BODY AS ACTION_STATEMENT"
+                    : "NULL AS ACTION_STATEMENT";
             if (param.getTableName() == null) {
                 String sql = """
                         SELECT
                             A.TRIGGER_NAME,
                             A.TRIGGER_TYPE AS TRIGGER_TYPE,
                             A.TABLE_NAME AS EVENT_OBJECT_TABLE,
-                            A.TRIGGER_BODY AS ACTION_STATEMENT,    
+                            %s,
                             A.TRIGGERING_EVENT AS EVENT_MANIPULATION,
                             NULL AS DLL
                         FROM
                             ALL_TRIGGERS A
                         WHERE
                             A.OWNER = ?
-                        """;
+                        """.formatted(actionStatementColumn);
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, schema);
             } else {
@@ -669,7 +685,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                             A.TRIGGER_NAME, 
                             A.TRIGGER_TYPE AS TRIGGER_TYPE, 
                             A.TABLE_NAME AS EVENT_OBJECT_TABLE,
-                            A.TRIGGER_BODY AS ACTION_STATEMENT,   
+                            %s,
                             A.TRIGGERING_EVENT AS EVENT_MANIPULATION, 
                             NULL AS DLL
                         FROM
@@ -678,7 +694,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                             A.OWNER = ?
                         AND
                             A.TABLE_NAME = ?
-                        """;
+                        """.formatted(actionStatementColumn);
                 this.printSql(sql);
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, schema);
@@ -693,17 +709,21 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 String actionStatement = resultSet.getString("ACTION_STATEMENT");
                 String tableName = resultSet.getString("EVENT_OBJECT_TABLE");
                 String manipulation = resultSet.getString("EVENT_MANIPULATION");
-                String createDefinition = ShellOracleHelper.getTriggerDefinition(connection, schema, name);
                 trigger.setName(name);
                 trigger.setSchema(schema);
                 trigger.setTableName(tableName);
-                trigger.setCreateDefinition(createDefinition);
-                trigger.setDefinition(ShellOracleHelper.fixTiggerDefinition(actionStatement));
+                trigger.setDefinition(param.isFull()
+                        ? ShellOracleHelper.fixTiggerDefinition(actionStatement) : "");
                 trigger.setPolicy(type.contains("BEFORE") ? "BEFORE" : "AFTER", manipulation);
                 list.add(trigger);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                for (OracleTrigger trigger : list) {
+                    trigger.setCreateDefinition(ShellOracleHelper.getTriggerDefinition(connection, schema, trigger.getName()));
+                }
+            }
             DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
@@ -755,7 +775,6 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 OracleSequence sequence = new OracleSequence();
                 String name = resultSet.getString("SEQUENCE_NAME");
-                String createDefinition = ShellOracleHelper.getSequenceDefinition(connection, schema, name);
                 String cycleFlag = resultSet.getString("CYCLE_FLAG");
                 String orderFlag = resultSet.getString("ORDER_FLAG");
                 sequence.setName(name);
@@ -765,13 +784,18 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 sequence.setCacheSize(sequenceNumber(resultSet, "CACHE_SIZE"));
                 sequence.setCurrentVal(sequenceNumber(resultSet, "CURRENT_VALUE"));
                 sequence.setIncrementBy(sequenceNumber(resultSet, "INCREMENT_BY"));
-                sequence.setCreateDefinition(createDefinition);
                 sequence.setCycle(StringUtil.equalsIgnoreCase("Y", cycleFlag));
                 sequence.setOrder(StringUtil.equalsIgnoreCase("Y", orderFlag));
                 list.add(sequence);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                for (OracleSequence sequence : list) {
+                    sequence.setCreateDefinition(ShellOracleHelper.getSequenceDefinition(
+                            connection, schema, sequence.getName()));
+                }
+            }
             DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
@@ -1074,18 +1098,22 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 OracleTable table = new OracleTable();
                 String tableName = resultSet.getString("TABLE_NAME");
-                String createDefinition = ShellOracleHelper.getTableDefinition(connection, schema, tableName);
                 String tableSpace = resultSet.getString("TABLE_SPACE");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 table.setSchema(schema);
                 table.setName(tableName);
                 table.setComment(tableComment);
                 table.setTableSpace(tableSpace);
-                table.setCreateDefinition(createDefinition);
                 tables.add(table);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                for (OracleTable table : tables) {
+                    table.setCreateDefinition(ShellOracleHelper.getTableDefinition(
+                            connection, schema, table.getName()));
+                }
+            }
             DBName.sortItems(tables);
             return tables;
         } catch (Exception ex) {
@@ -1930,15 +1958,16 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
-                String createDefinition = ShellOracleHelper.getTableDefinition(connection, schema, tableName);
                 String tableSpace = resultSet.getString("TABLE_SPACE");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 table.setComment(tableComment);
                 table.setTableSpace(tableSpace);
-                table.setCreateDefinition(createDefinition);
             }
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                table.setCreateDefinition(ShellOracleHelper.getTableDefinition(connection, schema, tableName));
+            }
             return table;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1986,11 +2015,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         try {
             String schema = param.getSchema();
             String viewName = param.getViewName();
-            String sql;
-            sql = """
+            String definitionColumn = param.isFull() ? "V.TEXT AS DEFINITION" : "NULL AS DEFINITION";
+            String sql = """
                     SELECT
                         V.VIEW_NAME,
-                        V.TEXT AS DEFINITION,
+                        %s,
                         C.COMMENTS AS TABLE_COMMENT,
                         NULL AS "DLL"
                     FROM 
@@ -2005,7 +2034,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         V.OWNER = ?
                     AND
                         V.VIEW_NAME = ?
-                    """;
+                    """.formatted(definitionColumn);
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -2019,26 +2048,26 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             OracleView view = new OracleView();
             while (resultSet.next()) {
                 String name = resultSet.getString("VIEW_NAME");
-                String readOnly = null;
-                String definition = resultSet.getString("DEFINITION");
+                String definition = param.isFull() ? resultSet.getString("DEFINITION") : "";
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                String createDefinition = ShellOracleHelper.getViewDefinition(connection, schema, viewName);
-                if (readOnly == null) {
-                    readOnly = ShellOracleHelper.getViewReadOnly(connection, schema, viewName);
-                }
-                if (readOnly == null) {
-                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
-                }
                 view.setName(name);
                 view.setSchema(schema);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
-                view.setCreateDefinition(createDefinition);
-                view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                view.setUpdatable(true);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                String createDefinition = ShellOracleHelper.getViewDefinition(connection, schema, viewName);
+                String readOnly = ShellOracleHelper.getViewReadOnly(connection, schema, viewName);
+                if (readOnly == null) {
+                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
+                }
+                view.setCreateDefinition(createDefinition);
+                view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+            }
             return view;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2082,23 +2111,24 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         try {
             String schema = param.getSchema();
             List<OracleView> list = new ArrayList<>();
+            String definitionColumn = param.isFull() ? "V.TEXT AS DEFINITION" : "NULL AS DEFINITION";
             String sql = """
-                    SELECT 
+                    SELECT
                         V.VIEW_NAME,
-                        V.TEXT AS DEFINITION,
+                        %s,
                         C.COMMENTS AS TABLE_COMMENT,
                         NULL AS "DLL"
-                    FROM 
+                    FROM
                         ALL_VIEWS V
-                    LEFT JOIN 
-                        ALL_TAB_COMMENTS C 
-                    ON 
+                    LEFT JOIN
+                        ALL_TAB_COMMENTS C
+                    ON
                         V.OWNER = C.OWNER
-                    AND 
-                        V.VIEW_NAME = C.TABLE_NAME 
-                    WHERE 
+                    AND
+                        V.VIEW_NAME = C.TABLE_NAME
+                    WHERE
                         V.OWNER = ?
-                    """;
+                    """.formatted(definitionColumn);
 
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
@@ -2111,27 +2141,30 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 OracleView view = new OracleView();
                 String name = resultSet.getString("VIEW_NAME");
-                String readOnly = null;
-                String definition = resultSet.getString("DEFINITION");
+                String definition = param.isFull() ? resultSet.getString("DEFINITION") : "";
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                String createDefinition = ShellOracleHelper.getViewDefinition(connection, schema, name);
-                if (readOnly == null) {
-                    readOnly = ShellOracleHelper.getViewReadOnly(connection, schema, name);
-                }
-                if (readOnly == null) {
-                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
-                }
                 view.setSchema(schema);
                 view.setName(name);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
-                view.setCreateDefinition(createDefinition);
-                view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                view.setUpdatable(true);
                 list.add(view);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                for (OracleView view : list) {
+                    String name = view.getName();
+                    String createDefinition = ShellOracleHelper.getViewDefinition(connection, schema, name);
+                    String readOnly = ShellOracleHelper.getViewReadOnly(connection, schema, name);
+                    if (readOnly == null) {
+                        readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
+                    }
+                    view.setCreateDefinition(createDefinition);
+                    view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                }
+            }
             DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
@@ -3237,23 +3270,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 OracleFunction function = new OracleFunction();
                 String name = resultSet.getString("ROUTINE_NAME");
-                String createDefinition = ShellOracleHelper.getFunctionDefinition(connection, schema, name);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
-                if (param.isFull()) {
-                    List<OracleRoutineParam> params = this.listFunctionParam(schema, name);
-                    function.setParams(params);
-                }
-                String definition = routineBody(createDefinition);
-                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                    characteristic.append(",PARALLEL_ENABLE");
-                }
-                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                    characteristic.append(",RESULT_CACHE");
-                }
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
                     characteristic.append(",AGGREGATE");
                 }
@@ -3268,14 +3289,30 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 }
                 function.setName(name);
                 function.setSchema(schema);
-                function.setDefinition(definition);
+                function.setDefinition("");
                 function.setSecurityType(securityType);
-                function.setCreateDefinition(createDefinition);
                 list.add(function);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                for (OracleFunction function : list) {
+                    String createDefinition = ShellOracleHelper.getFunctionDefinition(
+                            connection, schema, function.getName());
+                    function.setParams(this.listFunctionParam(schema, function.getName()));
+                    function.setDefinition(routineBody(createDefinition));
+                    function.setCreateDefinition(createDefinition);
+                    String characteristic = function.getCharacteristic();
+                    if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
+                        characteristic = appendCharacteristic(characteristic, "PARALLEL_ENABLE");
+                    }
+                    if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
+                        characteristic = appendCharacteristic(characteristic, "RESULT_CACHE");
+                    }
+                    function.setCharacteristic(characteristic);
+                }
+            }
             DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
@@ -3350,21 +3387,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 String name = resultSet.getString("ROUTINE_NAME");
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
-                String createDefinition = ShellOracleHelper.getProcedureDefinition(connection, schema, name);
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
-                if (param.isFull()) {
-                    List<OracleRoutineParam> params = this.listProcedureParam(schema, name);
-                    procedure.setParams(params);
-                }
-                String definition = routineBody(createDefinition);
-                if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
-                    characteristic.append(",PARALLEL_ENABLE");
-                }
-                if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
-                    characteristic.append(",RESULT_CACHE");
-                }
                 if (StringUtil.equalsIgnoreCase("YES", aggregate)) {
                     characteristic.append(",AGGREGATE");
                 }
@@ -3379,14 +3404,30 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 }
                 procedure.setName(name);
                 procedure.setSchema(schema);
-                procedure.setDefinition(definition);
+                procedure.setDefinition("");
                 procedure.setSecurityType(securityType);
-                procedure.setCreateDefinition(createDefinition);
                 list.add(procedure);
             }
             // 关闭连接和释放资源
             IOUtil.close(resultSet);
             IOUtil.close(statement);
+            if (param.isFull()) {
+                for (OracleProcedure procedure : list) {
+                    String createDefinition = ShellOracleHelper.getProcedureDefinition(
+                            connection, schema, procedure.getName());
+                    procedure.setParams(this.listProcedureParam(schema, procedure.getName()));
+                    procedure.setDefinition(routineBody(createDefinition));
+                    procedure.setCreateDefinition(createDefinition);
+                    String characteristic = procedure.getCharacteristic();
+                    if (StringUtil.contains(createDefinition, "PARALLEL_ENABLE")) {
+                        characteristic = appendCharacteristic(characteristic, "PARALLEL_ENABLE");
+                    }
+                    if (StringUtil.contains(createDefinition, "RESULT_CACHE")) {
+                        characteristic = appendCharacteristic(characteristic, "RESULT_CACHE");
+                    }
+                    procedure.setCharacteristic(characteristic);
+                }
+            }
             DBName.sortItems(list);
             return list;
         } catch (Exception ex) {
@@ -3468,7 +3509,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
-                String createDefinition = ShellOracleHelper.getProcedureDefinition(connection, schema, produceName);
+                String createDefinition = param.isFull()
+                        ? ShellOracleHelper.getProcedureDefinition(connection, schema, produceName) : "";
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
@@ -3656,7 +3698,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 String aggregate = resultSet.getString("AGGREGATE");
                 String pipelined = resultSet.getString("PIPELINED");
-                String createDefinition = ShellOracleHelper.getFunctionDefinition(connection, schema, functionName);
+                String createDefinition = param.isFull()
+                        ? ShellOracleHelper.getFunctionDefinition(connection, schema, functionName) : "";
                 String securityType = resultSet.getString("SECURITY_TYPE");
                 String deterministic = resultSet.getString("DETERMINISTIC");
                 StringBuilder characteristic = new StringBuilder();
@@ -4135,6 +4178,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             }
         }
         return start < 0 ? createDefinition : createDefinition.substring(start + markerLength).strip();
+    }
+
+    private static String appendCharacteristic(String characteristic, String value) {
+        return StringUtil.isBlank(characteristic) ? value : characteristic + "," + value;
     }
 
     //    private Boolean dbaRole;

@@ -404,7 +404,7 @@ public class ShellOracleDataExportController extends StageController {
         this.exportTableView.clearItems();
         // 正常导出
         if (this.exportMode == 0) {
-            List<OracleTable> tables = this.dbClient.selectTables(this.dbName);
+            List<OracleTable> tables = this.dbClient.selectTablesSimple(this.dbName);
             AtomicReference<ShellOracleDataExportTable> ref = new AtomicReference<>();
             for (OracleTable table : tables) {
                 ShellOracleDataExportTable exportTable = new ShellOracleDataExportTable();

@@ -251,7 +251,7 @@ public class ShellMariadbTableDesignTabController extends ParentTabController {
 
         // 自动递增
         if (this.tableAutoIncrementBox.isVisible()) {
-            Long autoIncrement = this.tableAutoIncrement.getValue();
+            Long autoIncrement = this.tableAutoIncrement.getLongValue();
             if (!Objects.equals(autoIncrement, this.table.getAutoIncrement())) {
                 tempTable.setAutoIncrement(autoIncrement);
             }
