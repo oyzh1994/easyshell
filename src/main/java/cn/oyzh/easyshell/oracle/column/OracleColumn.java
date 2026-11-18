@@ -511,6 +511,12 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     }
 
     @Override
+    public boolean supportTimestamp() {
+        return ShellOracleColumnUtil.isDateTimeType(this.getType())
+                || DBColumnFieldManager.supportTimestamp(DBDialect.ORACLE, this.getType());
+    }
+
+    @Override
     public boolean isTimeType() {
         return ShellOracleColumnUtil.isTimeType(this.getType());
     }

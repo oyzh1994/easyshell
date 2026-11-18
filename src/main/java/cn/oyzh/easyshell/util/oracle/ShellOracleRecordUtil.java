@@ -13,6 +13,7 @@ import cn.oyzh.fx.gui.text.field.BitTextField;
 import cn.oyzh.fx.gui.text.field.BooleanTextFiled;
 import cn.oyzh.fx.gui.text.field.DateTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
+import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.gui.text.field.TimeTextField;
 import cn.oyzh.fx.gui.text.field.YearTextField;
@@ -142,6 +143,8 @@ public class ShellOracleRecordUtil {
             val = TimeTextField.format(object);
         } else if (column.isYearType()) {
             val = YearTextField.format(object);
+        } else if (column.supportTimestamp()) {
+            val = DateTimeTextField.format(object);
         } else if (column.supportText()) {
             val = LongTextFiled.format(object);
             // } else if (column.supportString()) {

@@ -246,11 +246,13 @@ public class ShellOracleViewTreeItem extends ShellOracleTreeItem<ShellOracleView
         }
         OracleColumn dbColumn = null;
         if (this.value.columns() != null) {
-            for (OracleColumn column : this.value.columns()) {
+            for (OracleColumn column : this.value.columns().primaryKeys()) {
                 if (column.isAutoIncrement()) {
-                    dbColumn = column;
-                    break;
+                    return column;
                 }
+            }
+            for (OracleColumn column : this.value.columns().primaryKeys()) {
+                return column;
             }
         }
         return dbColumn;

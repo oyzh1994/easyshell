@@ -94,9 +94,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
@@ -2643,11 +2645,54 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             IOUtil.close(resultSet);
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, viewName, columns, true);
+            this.initViewPrimaryKeys(connection, schema, viewName, columns);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
+        }
+    }
+
+    private void initViewPrimaryKeys(Connection connection, String schema, String viewName,
+                                     OracleColumns columns) throws SQLException {
+        if (connection == null || StringUtil.isBlank(schema) || StringUtil.isBlank(viewName)
+                || columns == null || columns.isEmpty()) {
+            return;
+        }
+        Set<String> primaryKeys = new HashSet<>();
+        String dependencySql = """
+                SELECT DISTINCT REFERENCED_OWNER, REFERENCED_NAME
+                FROM ALL_DEPENDENCIES
+                WHERE OWNER = ?
+                  AND NAME = ?
+                  AND REFERENCED_TYPE = 'TABLE'
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(dependencySql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String owner = resultSet.getString(1);
+                    String tableName = resultSet.getString(2);
+                    if (StringUtil.isBlank(owner) || StringUtil.isBlank(tableName)) {
+                        continue;
+                    }
+                    try (ResultSet keys = connection.getMetaData().getPrimaryKeys(null, owner, tableName)) {
+                        while (keys.next()) {
+                            primaryKeys.add(keys.getString("COLUMN_NAME"));
+                        }
+                    }
+                }
+            }
+        }
+        if (primaryKeys.isEmpty()) {
+            return;
+        }
+        for (OracleColumn column : columns) {
+            if (primaryKeys.contains(column.getName())) {
+                column.setPrimaryKey(true);
+            }
         }
     }
 

@@ -5,6 +5,8 @@ import cn.oyzh.fx.db.DBColumnField;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 
+import java.util.Locale;
+
 /**
  * @author oyzh
  * @since 2026-09-02
@@ -241,7 +243,11 @@ public class ShellOracleColumnUtil {
     }
 
     public static boolean isDateTimeType(String type) {
-        return "DATETIME".equalsIgnoreCase(type);
+        if (type == null) {
+            return false;
+        }
+        String normalized = type.trim().toUpperCase(Locale.ROOT);
+        return normalized.startsWith("TIMESTAMP") || "DATETIME".equals(normalized);
     }
 
     public static boolean isTimeType(String type) {

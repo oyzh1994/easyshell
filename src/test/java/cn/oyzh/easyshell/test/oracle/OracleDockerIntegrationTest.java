@@ -277,6 +277,23 @@ public class OracleDockerIntegrationTest {
             columnParam.setTableName("USERS");
             List<OracleColumn> columns = client.selectColumns(columnParam);
             assertTrue(columns.stream().anyMatch(column -> "ID".equals(column.getName())));
+
+            List<OracleColumn> viewColumns = client.viewColumns("DEMO", "V_ORDERS");
+            OracleColumn viewId = viewColumns.stream()
+                    .filter(column -> "ID".equals(column.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            assertTrue(viewId.isPrimaryKey());
+            OracleColumn viewCreatedAt = viewColumns.stream()
+                    .filter(column -> "CREATED_AT".equals(column.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            assertTrue(viewCreatedAt.supportTimestamp());
+            assertTrue(viewCreatedAt.isDateTimeType());
+
+            var viewResult = client.executeSingleSql("DEMO", "SELECT * FROM V_ORDERS");
+            assertTrue(viewResult.getPrimaryKey() != null && "ID".equals(viewResult.getPrimaryKey().getName()));
+            assertTrue(viewResult.getColumns().column("CREATED_AT").supportTimestamp());
         } finally {
             client.close();
         }
