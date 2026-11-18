@@ -17,6 +17,9 @@ import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
+import cn.oyzh.easyshell.oracle.view.OracleAlertViewParam;
+import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
+import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
 import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -281,7 +284,9 @@ public class OracleDockerIntegrationTest {
             assertProcedureRenameExecution(client);
             assertFunctionParameterRoundTrip(client);
             assertFunctionParameterCreationRoundTrip(client);
+            assertFunctionSecurityRoundTrip(client);
             assertPipelinedMetadataFallback(client);
+            assertViewCreateAndAlertExecution(client);
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
             columnParam.setSchema("DEMO");
@@ -350,6 +355,54 @@ public class OracleDockerIntegrationTest {
             assertEquals(BigInteger.valueOf(5), altered.getIncrementBy());
         } finally {
             client.dropSequence(sequence);
+        }
+    }
+
+    private static void assertViewCreateAndAlertExecution(ShellOracleClient client) {
+        String viewName = "EASYSHELL_VIEW_CREATE_TEST";
+        OracleView view = new OracleView();
+        view.setSchema("DEMO");
+        view.setName(viewName);
+        view.setDefinition("SELECT ID, USERNAME FROM USERS");
+        view.setSecurityType("CURRENT_USER");
+        view.setComment("EASYSHELL_VIEW_COMMENT");
+        view.setUpdatable(false);
+        OracleCreateViewParam param = new OracleCreateViewParam();
+        param.setSchema("DEMO");
+        param.setView(view);
+        client.createView(param);
+        try {
+            OracleView created = client.selectView("DEMO", viewName);
+            assertFalse("created view should be read only", created.isUpdatable());
+            if (mode.equals("11g")) {
+                assertTrue(StringUtil.isBlank(created.getSecurityType()));
+            } else {
+                assertEquals("CURRENT_USER", created.getSecurityType());
+            }
+            assertEquals("EASYSHELL_VIEW_COMMENT", created.getComment());
+            assertFalse(created.getDefinition().toUpperCase(Locale.ROOT).contains("WITH READ ONLY"));
+
+            view.setDefinition(created.getDefinition() + "\nWITH READ ONLY");
+            view.setSecurityType("DEFINER");
+            view.setComment("EASYSHELL_VIEW_COMMENT_UPDATED");
+            view.setUpdatable(false);
+            OracleAlertViewParam alertParam = new OracleAlertViewParam();
+            alertParam.setSchema("DEMO");
+            alertParam.setView(view);
+            client.alertView(alertParam);
+
+            OracleView altered = client.selectView("DEMO", viewName);
+            assertFalse("altered view should be read only", altered.isUpdatable());
+            if (mode.equals("11g")) {
+                assertTrue(StringUtil.isBlank(altered.getSecurityType()));
+            } else {
+                assertEquals("DEFINER", altered.getSecurityType());
+            }
+            assertEquals("EASYSHELL_VIEW_COMMENT_UPDATED", altered.getComment());
+            assertEquals(0, altered.getDefinition().toUpperCase(Locale.ROOT)
+                    .split("WITH READ ONLY", -1).length - 1);
+        } finally {
+            client.dropView(view);
         }
     }
 
@@ -466,6 +519,49 @@ public class OracleDockerIntegrationTest {
             assertTrue(loaded.getCreateDefinition().contains("P_IN_VALUE"));
             assertTrue(loaded.getCreateDefinition().contains("P_OUT_VALUE"));
             assertTrue(loaded.getCreateDefinition().contains("P_INOUT_VALUE"));
+        } finally {
+            dropFunctionIfPresent(client, schema, name);
+        }
+    }
+
+    private static void assertFunctionSecurityRoundTrip(ShellOracleClient client) {
+        String schema = "DEMO";
+        String name = "EASYSHELL_SECURITY_FUNC";
+        dropFunctionIfPresent(client, schema, name);
+        OracleFunction function = new OracleFunction();
+        function.setSchema(schema);
+        function.setName(name);
+        function.setParams(List.of(
+                routineParam("P_IN_VALUE", "VARCHAR2", "IN"),
+                routineParam("P_OUT_VALUE", "NUMBER", "OUT")
+        ));
+        OracleRoutineParam returnParam = new OracleRoutineParam();
+        returnParam.setType("NUMBER");
+        function.setReturnParam(returnParam);
+        function.setSecurityType("CURRENT_USER");
+        function.setDefinition("BEGIN\n    p_out_value := 1;\n    RETURN 2;\nEND;");
+        OracleCreateFunctionParam createParam = new OracleCreateFunctionParam();
+        createParam.setSchema(schema);
+        createParam.setFunction(function);
+        client.createFunction(createParam);
+        try {
+            OracleFunction created = client.selectFunction(schema, name);
+            assertEquals("CURRENT_USER", created.getSecurityType());
+            assertEquals(2, created.getParams().size());
+
+            function.setSecurityType("DEFINER");
+            OracleAlertFunctionParam alertParam = new OracleAlertFunctionParam();
+            alertParam.setSchema(schema);
+            alertParam.setFunction(function);
+            client.alertFunction(alertParam);
+
+            OracleFunction altered = client.selectFunction(schema, name);
+            assertEquals("DEFINER", altered.getSecurityType());
+            assertEquals(2, altered.getParams().size());
+            assertTrue(altered.getParams().stream().anyMatch(item ->
+                    "P_IN_VALUE".equals(item.getName()) && "IN".equals(item.getMode())));
+            assertTrue(altered.getParams().stream().anyMatch(item ->
+                    "P_OUT_VALUE".equals(item.getName()) && "OUT".equals(item.getMode())));
         } finally {
             dropFunctionIfPresent(client, schema, name);
         }

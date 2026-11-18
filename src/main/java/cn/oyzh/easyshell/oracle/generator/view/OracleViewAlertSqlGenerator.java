@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.oracle.generator.view;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.easyshell.oracle.view.OracleAlertViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.fx.db.DBDialect;
@@ -22,7 +23,7 @@ public class OracleViewAlertSqlGenerator extends DBSqlGenerator {
      *
      * @param param 修改视图参数
      */
-    private void _generate(OracleAlertViewParam param) {
+    private void _generate(OracleAlertViewParam param, boolean includeSecurityType) {
         OracleView view = param.getView();
         String schema = param.getSchema();
         String viewName = param.getViewName();
@@ -30,14 +31,14 @@ public class OracleViewAlertSqlGenerator extends DBSqlGenerator {
 
         this.sqlBuilder.append("CREATE OR REPLACE ");
         this.sqlBuilder.append(" VIEW ")
-                .append(viewFullName)
-                .append(" AS \n")
-                .append(view.getDefinition());
-        if (StringUtil.isNotBlank(view.getSecurityType())) {
+                .append(viewFullName);
+        if (includeSecurityType && StringUtil.isNotBlank(view.getSecurityType())) {
             this.sqlBuilder.append("\n")
                     .append("BEQUEATH ")
                     .append(view.getSecurityType());
         }
+        this.sqlBuilder.append(" AS \n")
+                .append(ShellOracleHelper.stripViewReadOnlyClause(view.getDefinition()));
         if (!view.isUpdatable()) {
             this.sqlBuilder.append("\n")
                     .append("WITH READ ONLY");
@@ -47,7 +48,7 @@ public class OracleViewAlertSqlGenerator extends DBSqlGenerator {
         // 注释
         if (StringUtil.isNotBlank(view.getComment())) {
             StringBuilder builder = new StringBuilder();
-            builder.append("COMMENT ON VIEW ")
+            builder.append("COMMENT ON TABLE ")
                     .append(viewFullName)
                     .append(" IS ")
                     .append(DBUtil.wrapData(view.getComment(), DBDialect.ORACLE)).append(";");
@@ -62,7 +63,19 @@ public class OracleViewAlertSqlGenerator extends DBSqlGenerator {
      * @return SQL列表
      */
     public List<String> generate(OracleAlertViewParam param) {
-        this._generate(param);
+        this._generate(param, true);
+        return this.buildSql();
+    }
+
+    /**
+     * 生成SQL列表
+     *
+     * @param param             修改视图参数
+     * @param includeSecurityType 是否包含BEQUEATH子句
+     * @return SQL列表
+     */
+    public List<String> generate(OracleAlertViewParam param, boolean includeSecurityType) {
+        this._generate(param, includeSecurityType);
         return this.buildSql();
     }
 
@@ -73,7 +86,7 @@ public class OracleViewAlertSqlGenerator extends DBSqlGenerator {
      * @return SQL语句
      */
     public String generateSingle(OracleAlertViewParam param) {
-        this._generate(param);
+        this._generate(param, true);
         return this.buildSqlSingle();
     }
 
@@ -85,6 +98,17 @@ public class OracleViewAlertSqlGenerator extends DBSqlGenerator {
      */
     public static List<String> generateSql(OracleAlertViewParam param) {
         return new OracleViewAlertSqlGenerator().generate(param);
+    }
+
+    /**
+     * 生成SQL列表
+     *
+     * @param param             修改视图参数
+     * @param includeSecurityType 是否包含BEQUEATH子句
+     * @return SQL列表
+     */
+    public static List<String> generateSql(OracleAlertViewParam param, boolean includeSecurityType) {
+        return new OracleViewAlertSqlGenerator().generate(param, includeSecurityType);
     }
 
     /**

@@ -227,14 +227,18 @@ public class OracleProtocolTest {
         OracleView view = new OracleView();
         view.setSchema("APP");
         view.setName("ACTIVE_USERS");
-        view.setDefinition("SELECT * FROM \"APP\".\"USERS\" WHERE \"ACTIVE\" = 1");
+        view.setDefinition("SELECT * FROM \"APP\".\"USERS\" WHERE \"ACTIVE\" = 1\nWITH READ ONLY");
+        view.setSecurityType("CURRENT_USER");
         view.setUpdatable(false);
 
         OracleCreateViewParam viewParam = new OracleCreateViewParam();
         viewParam.setView(view);
         String viewDdl = OracleViewCreateSqlGenerator.generateSqlSingle(viewParam);
-        assertTrue(viewDdl.contains("CREATE VIEW \"APP\".\"ACTIVE_USERS\" AS"));
+        assertTrue(viewDdl.contains("CREATE VIEW \"APP\".\"ACTIVE_USERS\"\nBEQUEATH CURRENT_USER AS"));
         assertTrue(viewDdl.endsWith("WITH READ ONLY;"));
+        assertEquals(viewDdl.indexOf("WITH READ ONLY"), viewDdl.lastIndexOf("WITH READ ONLY"));
+        assertFalse(OracleViewCreateSqlGenerator.generateSql(viewParam, false).get(0)
+                .contains("BEQUEATH CURRENT_USER"));
     }
 
     @Test

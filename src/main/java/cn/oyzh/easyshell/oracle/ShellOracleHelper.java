@@ -32,6 +32,9 @@ import java.util.regex.Pattern;
  */
 public class ShellOracleHelper {
 
+    private static final Pattern VIEW_READ_ONLY_PATTERN = Pattern.compile(
+            "(?is)\\s+WITH\\s+READ\\s+ONLY\\s*;?\\s*$");
+
     //    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
     //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";
     //        Statement statement = connection.createStatement();
@@ -202,6 +205,7 @@ public class ShellOracleHelper {
                     SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END AS READ_ONLY
                     FROM ALL_UPDATABLE_COLUMNS
                     WHERE OWNER = ? AND TABLE_NAME = ?
+                    AND UPDATABLE = 'YES'
                     """;
             DBUtil.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -549,6 +553,24 @@ public class ShellOracleHelper {
         } catch (SQLException ex) {
             return buildViewDefinition(connection, schema, viewName);
         }
+    }
+
+    /**
+     * 移除视图查询末尾的WITH READ ONLY子句。
+     *
+     * @param definition 视图查询
+     * @return 不包含只读子句的查询
+     */
+    public static String stripViewReadOnlyClause(String definition) {
+        if (StringUtil.isBlank(definition)) {
+            return definition;
+        }
+        String result = definition.strip();
+        Matcher matcher = VIEW_READ_ONLY_PATTERN.matcher(result);
+        if (matcher.find()) {
+            result = result.substring(0, matcher.start()).stripTrailing();
+        }
+        return result;
     }
 
     public static String getFunctionDefinition(Connection connection, String schema, String functionName) throws SQLException {

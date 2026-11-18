@@ -2022,9 +2022,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             String viewName = param.getViewName();
             String definitionColumn = param.isFull() ? "V.TEXT AS DEFINITION" : "NULL AS DEFINITION";
+            String securityTypeColumn = this.supportsBequeath()
+                    ? "V.BEQUEATH AS SECURITY_TYPE"
+                    : "NULL AS SECURITY_TYPE";
             String sql = """
                     SELECT
                         V.VIEW_NAME,
+                        %s,
                         %s,
                         C.COMMENTS AS TABLE_COMMENT,
                         NULL AS "DLL"
@@ -2040,7 +2044,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         V.OWNER = ?
                     AND
                         V.VIEW_NAME = ?
-                    """.formatted(definitionColumn);
+                    """.formatted(definitionColumn, securityTypeColumn);
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -2054,12 +2058,15 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             OracleView view = new OracleView();
             while (resultSet.next()) {
                 String name = resultSet.getString("VIEW_NAME");
-                String definition = param.isFull() ? resultSet.getString("DEFINITION") : "";
+                String definition = param.isFull()
+                        ? ShellOracleHelper.stripViewReadOnlyClause(resultSet.getString("DEFINITION"))
+                        : "";
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 view.setName(name);
                 view.setSchema(schema);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
+                view.setSecurityType(resultSet.getString("SECURITY_TYPE"));
                 view.setUpdatable(true);
             }
             // 关闭连接和释放资源
@@ -2069,10 +2076,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 String createDefinition = ShellOracleHelper.getViewDefinition(connection, schema, viewName);
                 String readOnly = ShellOracleHelper.getViewReadOnly(connection, schema, viewName);
                 if (readOnly == null) {
-                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
+                    readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY") ? "Y" : "N";
                 }
                 view.setCreateDefinition(createDefinition);
                 view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                if (StringUtil.isBlank(view.getSecurityType())) {
+                    view.setSecurityType(parseSecurityType(createDefinition));
+                }
             }
             return view;
         } catch (Exception ex) {
@@ -2118,9 +2128,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             List<OracleView> list = new ArrayList<>();
             String definitionColumn = param.isFull() ? "V.TEXT AS DEFINITION" : "NULL AS DEFINITION";
+            String securityTypeColumn = this.supportsBequeath()
+                    ? "V.BEQUEATH AS SECURITY_TYPE"
+                    : "NULL AS SECURITY_TYPE";
             String sql = """
                     SELECT
                         V.VIEW_NAME,
+                        %s,
                         %s,
                         C.COMMENTS AS TABLE_COMMENT,
                         NULL AS "DLL"
@@ -2134,7 +2148,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         V.VIEW_NAME = C.TABLE_NAME
                     WHERE
                         V.OWNER = ?
-                    """.formatted(definitionColumn);
+                    """.formatted(definitionColumn, securityTypeColumn);
 
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
@@ -2147,12 +2161,15 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 OracleView view = new OracleView();
                 String name = resultSet.getString("VIEW_NAME");
-                String definition = param.isFull() ? resultSet.getString("DEFINITION") : "";
+                String definition = param.isFull()
+                        ? ShellOracleHelper.stripViewReadOnlyClause(resultSet.getString("DEFINITION"))
+                        : "";
                 String tableComment = resultSet.getString("TABLE_COMMENT");
                 view.setSchema(schema);
                 view.setName(name);
                 view.setComment(tableComment);
                 view.setDefinition(definition);
+                view.setSecurityType(resultSet.getString("SECURITY_TYPE"));
                 view.setUpdatable(true);
                 list.add(view);
             }
@@ -2165,10 +2182,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     String createDefinition = ShellOracleHelper.getViewDefinition(connection, schema, name);
                     String readOnly = ShellOracleHelper.getViewReadOnly(connection, schema, name);
                     if (readOnly == null) {
-                        readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY;") ? "Y" : "N";
+                        readOnly = StringUtil.containsIgnoreCase(createDefinition, "WITH READ ONLY") ? "Y" : "N";
                     }
                     view.setCreateDefinition(createDefinition);
                     view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
+                    if (StringUtil.isBlank(view.getSecurityType())) {
+                        view.setSecurityType(parseSecurityType(createDefinition));
+                    }
                 }
             }
             DBName.sortItems(list);
@@ -2229,7 +2249,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void createView(OracleCreateViewParam param) {
         Connection connection = null;
         try {
-            List<String> sqlList = OracleViewCreateSqlGenerator.generateSql(param);
+            List<String> sqlList = OracleViewCreateSqlGenerator.generateSql(param, this.supportsBequeath());
             // 无变化
             if (CollectionUtil.isEmpty(sqlList)) {
                 return;
@@ -2242,8 +2262,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(sql)) {
                     continue;
                 }
-                this.printSql(sql);
-                statement.executeUpdate(sql);
+                String executableSql = this.stripStatementTerminator(sql);
+                this.printSql(executableSql);
+                statement.executeUpdate(executableSql);
             }
             connection.commit();
             IOUtil.close(statement);
@@ -2262,7 +2283,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void alertView(OracleAlertViewParam param) {
         Connection connection = null;
         try {
-            List<String> sqlList = OracleViewAlertSqlGenerator.generateSql(param);
+            List<String> sqlList = OracleViewAlertSqlGenerator.generateSql(param, this.supportsBequeath());
             // 无变化
             if (CollectionUtil.isEmpty(sqlList)) {
                 return;
@@ -2275,8 +2296,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(sql)) {
                     continue;
                 }
-                this.printSql(sql);
-                statement.executeUpdate(sql);
+                String executableSql = this.stripStatementTerminator(sql);
+                this.printSql(executableSql);
+                statement.executeUpdate(executableSql);
             }
             connection.commit();
             IOUtil.close(statement);
@@ -2285,6 +2307,18 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
+    }
+
+    private String stripStatementTerminator(String sql) {
+        String result = sql.strip();
+        while (result.endsWith(";")) {
+            result = result.substring(0, result.length() - 1).stripTrailing();
+        }
+        return result;
+    }
+
+    private boolean supportsBequeath() {
+        return DBOraclePagination.supportsOffsetFetch(this.selectVersion());
     }
 
     /**
@@ -4259,7 +4293,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     private static String parseSecurityType(String definition) {
-        if (StringUtil.containsIgnoreCase(definition, "AUTHID")) {
+        if (StringUtil.containsIgnoreCase(definition, "AUTHID")
+                || StringUtil.containsIgnoreCase(definition, "BEQUEATH")) {
             if (StringUtil.containsIgnoreCase(definition, "CURRENT_USER")) {
                 return "CURRENT_USER";
             }
