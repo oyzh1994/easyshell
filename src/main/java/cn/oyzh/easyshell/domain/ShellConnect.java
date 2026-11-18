@@ -1315,6 +1315,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否Oracle类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isOracleType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.ORACLE);
+    }
+
+    /**
      * 是否 HTTP 工作区类型
      *
      * @return 结果

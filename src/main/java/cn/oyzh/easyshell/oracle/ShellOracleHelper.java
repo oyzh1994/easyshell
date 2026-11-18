@@ -1,0 +1,808 @@
+package cn.oyzh.easyshell.oracle;
+
+import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.oracle.column.OracleColumn;
+import cn.oyzh.easyshell.oracle.column.OracleColumns;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.util.DBUtil;
+import cn.oyzh.fx.db.sql.DBOraclePagination;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Oracle工具类
+ *
+ * @author oyzh
+ * @since 2026-09-02
+ */
+public class ShellOracleHelper {
+
+    //    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
+    //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";
+    //        Statement statement = connection.createStatement();
+    //        // 执行SQL查询并获取结果集
+    //        ResultSet resultSet = statement.executeQuery(sql);
+    //        String createDefinition = "";
+    //        if (resultSet.next()) {
+    //            createDefinition = resultSet.getString(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(statement);
+    //        return createDefinition;
+    //    }
+    //
+    //    public static String showCreateProcedure(Connection connection, String procedureName) throws Exception {
+    //        String sql = "SELECT DBMS_METADATA.GET_DDL('PROCEDURE', " + DBUtil.wrapData(procedureName) + ") FROM DUAL";
+    //        Statement statement = connection.createStatement();
+    //        // 执行SQL查询并获取结果集
+    //        ResultSet resultSet = statement.executeQuery(sql);
+    //        String createDefinition = "";
+    //        if (resultSet.next()) {
+    //            createDefinition = resultSet.getString(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(statement);
+    //        return createDefinition;
+    //    }
+    //
+    //    public static String showCreateTrigger(Connection connection, String triggerName) throws Exception {
+    //        String sql = "SELECT DBMS_METADATA.GET_DDL('TRIGGER', " + DBUtil.wrapData(triggerName) + ") FROM DUAL";
+    //        Statement statement = connection.createStatement();
+    //        // 执行SQL查询并获取结果集
+    //        ResultSet resultSet = statement.executeQuery(sql);
+    //        String createDefinition = "";
+    //        if (resultSet.next()) {
+    //            createDefinition = resultSet.getString(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(statement);
+    //        return createDefinition;
+    //    }
+    //
+    //    public static String showCreateFunction(Connection connection, String functionName) throws Exception {
+    //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";
+    //        Statement statement = connection.createStatement();
+    //        // 执行SQL查询并获取结果集
+    //        ResultSet resultSet = statement.executeQuery(sql);
+    //        String createDefinition = "";
+    //        if (resultSet.next()) {
+    //            createDefinition = resultSet.getString(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(statement);
+    //        return createDefinition;
+    //    }
+
+    //public static List<OracleRoutineParam> listRoutineParam(Connection connection, String dbName, String routineName, String routineType) throws Exception {
+    //    String sql = """
+    //            SELECT
+    //            	a.POSITION,
+    //            	a.DATA_TYPE,
+    //            	a.DATA_LENGTH AS SIZE,
+    //            	a.DATA_SCALE AS DIGITS,
+    //            	a.IN_OUT AS PARAMETER_MODE,
+    //            	a.ARGUMENT_NAME AS PARAMETER_NAME,
+    //            	a.CHARACTER_SET_NAME
+    //            FROM
+    //            	ALL_ARGUMENTS a
+    //            WHERE
+    //            	a.OWNER = ?
+    //            AND
+    //            	a.OBJECT_NAME = ?
+    //            AND
+    //            	a.PACKAGE_NAME IS NULL
+    //            """;
+    //    List<OracleRoutineParam> params = new ArrayList<>();
+    //    PreparedStatement statement = connection.prepareStatement(sql);
+    //    statement.setString(1, dbName);
+    //    statement.setString(2, routineName);
+    //    // 执行SQL查询并获取结果集
+    //    ResultSet resultSet = statement.executeQuery();
+    //    while (resultSet.next()) {
+    //        OracleRoutineParam param = new OracleRoutineParam();
+    //        param.setSize(resultSet.getInt("SIZE"));
+    //        param.setDigits(resultSet.getInt("DIGITS"));
+    //        param.setPosition(resultSet.getInt("POSITION"));
+    //        param.setType(resultSet.getString("DATA_TYPE"));
+    //        param.setName(resultSet.getString("PARAMETER_NAME"));
+    //        param.setMode(resultSet.getString("PARAMETER_MODE"));
+    //        param.setCharset(resultSet.getString("CHARACTER_SET_NAME"));
+    //        params.add(param);
+    //    }
+    //    DBUtil.close(resultSet);
+    //    DBUtil.close(statement);
+    //    return params;
+    //}
+    //
+    //public static List<OracleRoutineParam> listFunctionParam(Connection connection, String dbName, String functionName) throws Exception {
+    //    return listRoutineParam(connection, dbName, functionName, "FUNCTION");
+    //}
+    //
+    //public static List<OracleRoutineParam> listProcedureParam(Connection connection, String dbName, String procedureName) throws Exception {
+    //    return listRoutineParam(connection, dbName, procedureName, "PROCEDURE");
+    //}
+
+    //    public static String getProcedureDefiner(Connection connection, String procedureName) throws Exception {
+    //        // Oracle通过ALL_PROCEDURES查询定义者，而非SHOW CREATE PROCEDURE
+    //        String sql = "SELECT OWNER FROM ALL_PROCEDURES WHERE OBJECT_NAME = ? AND OWNER = (SELECT USERNAME FROM USER_USERS)";
+    //        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+    //            stmt.setString(1, procedureName);
+    //            ResultSet rs = stmt.executeQuery();
+    //            if (rs.next()) {
+    //                return rs.getString(1);
+    //            }
+    //        }
+    //        return null;
+    //    }
+
+    /**
+     * 视图是否可更新
+     *
+     * @param connection 数据库连接
+     * @param schema     模式名称
+     * @param viewName   视图名称
+     * @return 结果
+     * @throws Exception 异常
+     */
+    public static boolean isViewUpdatable(Connection connection, String schema, String viewName) throws Exception {
+        try {
+            String sql = """
+                    SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END AS IS_UPDATABLE
+                    FROM ALL_UPDATABLE_COLUMNS
+                    WHERE OWNER = ? AND TABLE_NAME = ?
+                    """;
+            DBUtil.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            // 执行SQL查询并获取结果集
+            ResultSet resultSet = statement.executeQuery();
+            // 打印元数据
+            DBUtil.printMetaData(resultSet);
+            String isUpdatable = "";
+            if (resultSet.next()) {
+                isUpdatable = resultSet.getString("IS_UPDATABLE");
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return StringUtil.equalsIgnoreCase(isUpdatable, "Y");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 获取视图只读属性
+     *
+     * @param connection 数据库连接
+     * @param schema     模式名称
+     * @param viewName   视图名称
+     * @return 结果
+     * @throws Exception 异常
+     */
+    public static String getViewReadOnly(Connection connection, String schema, String viewName) throws Exception {
+        try {
+            String sql = """
+                    SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END AS READ_ONLY
+                    FROM ALL_UPDATABLE_COLUMNS
+                    WHERE OWNER = ? AND TABLE_NAME = ?
+                    """;
+            DBUtil.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            // 执行SQL查询并获取结果集
+            ResultSet resultSet = statement.executeQuery();
+            // 打印元数据
+            DBUtil.printMetaData(resultSet);
+            String readOnly = null;
+            if (resultSet.next()) {
+                readOnly = "Y".equalsIgnoreCase(resultSet.getString("READ_ONLY")) ? "N" : "Y";
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return readOnly;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    //    public static Map<String, String> getViewInfo(Connection connection, String dbName, String viewName) throws Exception {
+    //        String sql = """
+    //                SELECT
+    //                    NULL AS UPDATABLE,
+    //                    NULL AS CHECK_OPTION,
+    //                    TEXT AS DEFINITION,
+    //                    NULL AS SECURITY_TYPE
+    //                FROM
+    //                    USER_VIEWS
+    //                WHERE
+    //                    VIEW_NAME = ?
+    //                """;
+    //        PreparedStatement statement = connection.prepareStatement(sql);
+    //        statement.setString(1, viewName);
+    //        // 执行SQL查询并获取结果集
+    //        ResultSet resultSet = statement.executeQuery();
+    //        Map<String, String> info = new HashMap<>();
+    //        while (resultSet.next()) {
+    //            info.put("UPDATABLE", resultSet.getString("UPDATABLE"));
+    //            info.put("DEFINITION", resultSet.getString("DEFINITION"));
+    //            info.put("CHECK_OPTION", resultSet.getString("CHECK_OPTION"));
+    //            info.put("SECURITY_TYPE", resultSet.getString("SECURITY_TYPE"));
+    //        }
+    //        String createView = showCreateView(connection, viewName);
+    //        String[] arr = createView.split(" ");
+    //        for (String string : arr) {
+    //            if (StringUtil.startWithIgnoreCase(string, "DEFINER=")) {
+    //                info.put("DEFINER", string.substring(8));
+    //            }
+    //            if (StringUtil.startWithIgnoreCase(string, "ALGORITHM=")) {
+    //                info.put("ALGORITHM", string.substring(10));
+    //            }
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(statement);
+    //        return info;
+    //    }
+    //
+    //    public static String getGeometryString(Connection connection, Object val) throws Exception {
+    //        String value = null;
+    //        if (val != null) {
+    //            String sql = "SELECT ST_AsText(?);";
+    //            PreparedStatement statement = connection.prepareStatement(sql);
+    //            statement.setObject(1, val);
+    //            // 执行SQL查询并获取结果集
+    //            ResultSet resultSet = statement.executeQuery();
+    //            if (resultSet.next()) {
+    //                value = resultSet.getString(1);
+    //            }
+    //            DBUtil.close(resultSet);
+    //            DBUtil.close(statement);
+    //        }
+    //        return value;
+    //    }
+    //
+    //    public static String showCreateTable(Connection connection, String tableName) throws Exception {
+    //        String sql = "SELECT DBMS_METADATA.GET_DDL('TABLE', " + DBUtil.wrapData(tableName) + ") FROM DUAL";
+    //        Statement stmt = connection.createStatement();
+    //        ResultSet resultSet = stmt.executeQuery(sql);
+    //        String definition = "";
+    //        if (resultSet.next()) {
+    //            definition = resultSet.getString(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(stmt);
+    //        return definition;
+    //    }
+    //
+    //    public static boolean hasPrimaryKey(Connection connection, String dbName, String tableName) throws Exception {
+    //        String sql = "SELECT COUNT(*) FROM ALL_CONSTRAINTS WHERE OWNER = ? AND TABLE_NAME = ? AND CONSTRAINT_TYPE = 'P'";
+    //        PreparedStatement stmt = connection.prepareStatement(sql);
+    //        stmt.setString(1, dbName);
+    //        stmt.setString(2, tableName);
+    //        ResultSet resultSet = stmt.executeQuery();
+    //        Long count = null;
+    //        if (resultSet.next()) {
+    //            count = resultSet.getLong(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(stmt);
+    //        return count != null && count > 0;
+    //    }
+    //
+    //    public static boolean isZeroFill(String showTableDefinition, String columnName) throws SQLException {
+    //        // Oracle does not support ZEROFILL; always return false
+    //        return false;
+    //    }
+    //
+    //    public static Integer getKeySize(String showTableDefinition, String columnName) throws SQLException {
+    //        if (StringUtil.isNotBlank(showTableDefinition)) {
+    //            String[] arr = showTableDefinition.split("PRIMARY KEY ");
+    //            if (arr.length < 2) {
+    //                return null;
+    //            }
+    //            // Find the parenthesized column list after PRIMARY KEY
+    //            int startIdx = arr[1].indexOf("(");
+    //            if (startIdx < 0) {
+    //                return null;
+    //            }
+    //            int endIdx = arr[1].indexOf(")", startIdx);
+    //            if (endIdx < 0) {
+    //                return null;
+    //            }
+    //            String pkColumns = arr[1].substring(startIdx + 1, endIdx);
+    //            String[] colArr = pkColumns.split(",");
+    //            for (String s : colArr) {
+    //                s = s.trim();
+    //                // Check against Oracle double-quoted identifier
+    //                if (StringUtil.containsIgnoreCase(s, DBUtil.wrap(columnName))
+    //                        || StringUtil.containsIgnoreCase(s, columnName)) {
+    //                    // Check for key size like "COL"(32)
+    //                    int idx = s.indexOf("(");
+    //                    if (idx >= 0) {
+    //                        return Integer.parseInt(s.substring(idx + 1, s.indexOf(")", idx)));
+    //                    }
+    //                    return null;
+    //                }
+    //            }
+    //        }
+    //        return null;
+    //    }
+
+//    public static Long lastInsertId(Connection connection) throws Exception {
+//        //        String sql = "SELECT IDENTITY_VAL_LOCAL();";
+//        String sql = "SELECT @@IDENTITY FROM DUAL";
+//        Statement statement = connection.createStatement();
+//        ResultSet resultSet = statement.executeQuery(sql);
+//        Long insertId = null;
+//        if (resultSet.next()) {
+//            insertId = resultSet.getLong(1);
+//        }
+//        IOUtil.close(statement);
+//        IOUtil.close(resultSet);
+//        return insertId;
+//    }
+
+    //    public static String columnType(Connection connection, String dbName, String tableName, String columnName) throws Exception {
+    //        String sql = "SELECT DATA_TYPE FROM ALL_TAB_COLUMNS WHERE OWNER = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?";
+    //        PreparedStatement stmt = connection.prepareStatement(sql);
+    //        stmt.setString(1, dbName);
+    //        stmt.setString(2, tableName);
+    //        stmt.setString(3, columnName);
+    //        ResultSet resultSet = stmt.executeQuery();
+    //        String colType = null;
+    //        if (resultSet.next()) {
+    //            colType = resultSet.getString(1);
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(stmt);
+    //        return colType;
+    //    }
+
+    /**
+     * 解析字段列表
+     *
+     * @param resultSet 结果集
+     * @return 字段列表
+     * @throws SQLException 异常
+     */
+    public static OracleColumns parseColumns(ResultSet resultSet) throws SQLException {
+        return parseColumns(resultSet, Collections.emptyList());
+    }
+
+    /**
+     * 解析字段列表
+     *
+     * @param resultSet 结果集
+     * @param excludes  排除的字段
+     * @return 字段列表
+     * @throws SQLException 异常
+     */
+    public static OracleColumns parseColumns(ResultSet resultSet, List<String> excludes) throws SQLException {
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+        int columnCount = resultSetMetaData.getColumnCount();
+        OracleColumns columns = new OracleColumns();
+        // 遍历结果集并输出列名
+        for (int i = 1; i <= columnCount; i++) {
+            // 获取列名
+//            String columnName = resultSetMetaData.getColumnLabel(i);
+            String columnLabel = resultSetMetaData.getColumnLabel(i);
+            if (excludes.contains(columnLabel)
+                    || DBOraclePagination.ROW_NUMBER_ALIAS.equalsIgnoreCase(columnLabel)) {
+                continue;
+            }
+            int columnType = resultSetMetaData.getColumnType(i);
+            String columnTypeName = resultSetMetaData.getColumnTypeName(i);
+            int displaySize = resultSetMetaData.getColumnDisplaySize(i);
+            boolean autoIncrement = resultSetMetaData.isAutoIncrement(i);
+            int nullable = resultSetMetaData.isNullable(i);
+            int scale = resultSetMetaData.getScale(i);
+            String tableName = resultSetMetaData.getTableName(i);
+            String schemaName = resultSetMetaData.getSchemaName(i);
+            OracleColumn dbColumn = new OracleColumn();
+            dbColumn.setDigits(scale);
+            dbColumn.setName(columnLabel);
+            dbColumn.setSize(displaySize);
+            dbColumn.setSchema(schemaName);
+            dbColumn.setTableName(tableName);
+            dbColumn.setType(columnTypeName);
+            dbColumn.setAutoIncrement(autoIncrement);
+            dbColumn.setNullable(nullable == ResultSetMetaData.columnNullable);
+
+            columns.add(dbColumn);
+        }
+        return columns;
+    }
+
+    //    public static String showCreateView(Connection connection, String viewName) throws Exception {
+    //        // Oracle中 DBMS_METADATA.GET_DDL 可能因权限不足失败，直接从 USER_VIEWS 查询视图定义
+    //        String sql = "SELECT TEXT FROM USER_VIEWS WHERE VIEW_NAME = ?";
+    //        PreparedStatement statement = connection.prepareStatement(sql);
+    //        statement.setString(1, viewName);
+    //        ResultSet resultSet = statement.executeQuery();
+    //        String createDefinition = "";
+    //        if (resultSet.next()) {
+    //            String text = resultSet.getString(1);
+    //            createDefinition = "CREATE OR REPLACE VIEW " + viewName + " AS\n" + text;
+    //        }
+    //        DBUtil.close(resultSet);
+    //        DBUtil.close(statement);
+    //        return createDefinition;
+    //    }
+
+    /**
+     * 修正触发器定义
+     *
+     * @param definition 定义
+     * @return 结果
+     */
+    public static String fixTiggerDefinition(String definition) {
+        return normalizeTriggerBody(definition);
+    }
+
+    /**
+     * 将完整触发器DDL、PL/SQL块或裸PL/SQL语句统一为可嵌入触发器的主体。
+     */
+    public static String normalizeTriggerBody(String definition) {
+        if (StringUtil.isBlank(definition)) {
+            return "NULL;";
+        }
+        String body = definition.strip();
+        if (body.endsWith("/")) {
+            body = body.substring(0, body.length() - 1).stripTrailing();
+        }
+        if (body.matches("(?is)^CREATE(\\s+OR\\s+REPLACE)?\\s+TRIGGER\\s+.*")) {
+            int beginIndex = indexOfKeyword(body, "BEGIN");
+            int declareIndex = indexOfKeyword(body, "DECLARE");
+            int startIndex = Math.min(beginIndex < 0 ? Integer.MAX_VALUE : beginIndex,
+                    declareIndex < 0 ? Integer.MAX_VALUE : declareIndex);
+            if (startIndex == Integer.MAX_VALUE) {
+                return "NULL;";
+            }
+            body = body.substring(startIndex);
+        }
+        if (!body.endsWith(";")) {
+            body += ";";
+        }
+        if (body.matches("(?is)^BEGIN\\b.*") || body.matches("(?is)^DECLARE\\b.*")) {
+            return body;
+        }
+        return "BEGIN " + body + " END;";
+    }
+
+    public static String getTableDefinition(Connection connection, String schema, String tableName) throws SQLException {
+        try {
+            return getMetadataDefinition(connection, schema, "TABLE", tableName);
+        } catch (SQLException ex) {
+            return buildTableDefinition(connection, schema, tableName);
+        }
+    }
+
+    public static String getViewDefinition(Connection connection, String schema, String viewName) throws SQLException {
+        try {
+            return getMetadataDefinition(connection, schema, "VIEW", viewName);
+        } catch (SQLException ex) {
+            return buildViewDefinition(connection, schema, viewName);
+        }
+    }
+
+    public static String getFunctionDefinition(Connection connection, String schema, String functionName) throws SQLException {
+        try {
+            return getMetadataDefinition(connection, schema, "FUNCTION", functionName);
+        } catch (SQLException ex) {
+            return buildRoutineDefinition(connection, schema, functionName, "FUNCTION");
+        }
+    }
+
+    public static String getProcedureDefinition(Connection connection, String schema, String procedureName) throws SQLException {
+        try {
+            return getMetadataDefinition(connection, schema, "PROCEDURE", procedureName);
+        } catch (SQLException ex) {
+            return buildRoutineDefinition(connection, schema, procedureName, "PROCEDURE");
+        }
+    }
+
+    public static String getTriggerDefinition(Connection connection, String schema, String triggerName) throws SQLException {
+        try {
+            return getMetadataDefinition(connection, schema, "TRIGGER", triggerName);
+        } catch (SQLException ex) {
+            return buildTriggerDefinition(connection, schema, triggerName);
+        }
+    }
+
+    public static String getSequenceDefinition(Connection connection, String schema, String sequenceName) throws SQLException {
+        try {
+            return getMetadataDefinition(connection, schema, "SEQUENCE", sequenceName);
+        } catch (SQLException ex) {
+            return buildSequenceDefinition(connection, schema, sequenceName);
+        }
+    }
+
+    private static String getMetadataDefinition(Connection connection, String schema, String objectType, String objectName) throws SQLException {
+        String sql = "SELECT DBMS_METADATA.GET_DDL(?, ?, ?) FROM DUAL";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, objectType);
+            statement.setString(2, objectName);
+            statement.setString(3, schema);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? resultSet.getString(1) : "";
+            }
+        }
+    }
+
+    private static String buildViewDefinition(Connection connection, String schema, String viewName) throws SQLException {
+        String sql = "SELECT TEXT FROM ALL_VIEWS WHERE OWNER = ? AND VIEW_NAME = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return "";
+                }
+                String name = DBUtil.wrap(schema, viewName, DBDialect.ORACLE);
+                return "CREATE OR REPLACE VIEW " + name + " AS\n" + resultSet.getString(1);
+            }
+        }
+    }
+
+    private static String buildRoutineDefinition(Connection connection, String schema, String routineName, String routineType) throws SQLException {
+        String sql = """
+                SELECT TEXT
+                FROM ALL_SOURCE
+                WHERE OWNER = ?
+                AND NAME = ?
+                AND TYPE = ?
+                ORDER BY LINE
+                """;
+        StringBuilder source = new StringBuilder();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, routineName);
+            statement.setString(3, routineType);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    source.append(resultSet.getString(1));
+                }
+            }
+        }
+        if (source.isEmpty()) {
+            return "";
+        }
+        return "CREATE OR REPLACE " + source.toString().strip();
+    }
+
+    private static String buildTriggerDefinition(Connection connection, String schema, String triggerName) throws SQLException {
+        String sql = """
+                SELECT DESCRIPTION, TRIGGER_BODY, WHEN_CLAUSE
+                FROM ALL_TRIGGERS
+                WHERE OWNER = ?
+                AND TRIGGER_NAME = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, triggerName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return "";
+                }
+                String description = resultSet.getString(1);
+                String body = resultSet.getString(2);
+                String whenClause = resultSet.getString(3);
+                if (StringUtil.isBlank(description)) {
+                    description = DBUtil.wrap(schema, triggerName, DBDialect.ORACLE);
+                }
+                StringBuilder definition = new StringBuilder("CREATE OR REPLACE TRIGGER ")
+                        .append(description.strip());
+                if (StringUtil.isNotBlank(whenClause)) {
+                    definition.append(" WHEN ").append(whenClause.strip());
+                }
+                return definition.append('\n').append(normalizeTriggerBody(body)).toString();
+            }
+        }
+    }
+
+    private static String buildSequenceDefinition(Connection connection, String schema, String sequenceName) throws SQLException {
+        String sql = """
+                SELECT MIN_VALUE, MAX_VALUE, INCREMENT_BY, LAST_NUMBER, CACHE_SIZE, CYCLE_FLAG, ORDER_FLAG
+                FROM ALL_SEQUENCES
+                WHERE SEQUENCE_OWNER = ?
+                AND SEQUENCE_NAME = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, sequenceName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return "";
+                }
+                BigDecimal minValue = resultSet.getBigDecimal(1);
+                BigDecimal maxValue = resultSet.getBigDecimal(2);
+                BigDecimal incrementBy = resultSet.getBigDecimal(3);
+                BigDecimal current = resultSet.getBigDecimal(4);
+                BigDecimal cacheSize = resultSet.getBigDecimal(5);
+                boolean cycle = StringUtil.equalsIgnoreCase("Y", resultSet.getString(6));
+                boolean ordered = StringUtil.equalsIgnoreCase("Y", resultSet.getString(7));
+                return "CREATE SEQUENCE " + DBUtil.wrap(schema, sequenceName, DBDialect.ORACLE)
+                        + " MINVALUE " + decimal(minValue, BigDecimal.ONE)
+                        + " MAXVALUE " + decimal(maxValue, new BigDecimal("999999999999999999999999999"))
+                        + " INCREMENT BY " + decimal(incrementBy, BigDecimal.ONE)
+                        + " START WITH " + decimal(current, BigDecimal.ONE)
+                        + (cacheSize == null || cacheSize.signum() <= 0 ? " NOCACHE" : " CACHE " + cacheSize.toPlainString())
+                        + (cycle ? " CYCLE" : " NOCYCLE")
+                        + (ordered ? " ORDER" : " NOORDER");
+            }
+        }
+    }
+
+    private static String buildTableDefinition(Connection connection, String schema, String tableName) throws SQLException {
+        String columnSql = """
+                SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE, DATA_DEFAULT
+                FROM ALL_TAB_COLUMNS
+                WHERE OWNER = ?
+                AND TABLE_NAME = ?
+                ORDER BY COLUMN_ID
+                """;
+        List<String> definitions = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(columnSql)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String name = DBUtil.wrap(resultSet.getString(1), DBDialect.ORACLE);
+                    String dataType = resultSet.getString(2);
+                    int dataLength = resultSet.getInt(3);
+                    int precision = resultSet.getInt(4);
+                    int scale = resultSet.getInt(5);
+                    boolean nullable = StringUtil.equalsIgnoreCase("Y", resultSet.getString(6));
+                    String defaultValue = resultSet.getString(7);
+                    StringBuilder definition = new StringBuilder(name).append(' ').append(columnType(dataType, dataLength, precision, scale));
+                    if (StringUtil.isNotBlank(defaultValue)) {
+                        definition.append(" DEFAULT ").append(defaultValue.strip());
+                    }
+                    if (!nullable) {
+                        definition.append(" NOT NULL");
+                    }
+                    definitions.add("  " + definition);
+                }
+            }
+        }
+        definitions.addAll(readTableConstraints(connection, schema, tableName));
+        String tableNameDefinition = DBUtil.wrap(schema, tableName, DBDialect.ORACLE);
+        return "CREATE TABLE " + tableNameDefinition + " (\n" + String.join(",\n", definitions) + "\n)";
+    }
+
+    private static List<String> readTableConstraints(Connection connection, String schema, String tableName) throws SQLException {
+        String sql = """
+                SELECT C.CONSTRAINT_NAME, C.CONSTRAINT_TYPE, CC.COLUMN_NAME
+                FROM ALL_CONSTRAINTS C
+                JOIN ALL_CONS_COLUMNS CC
+                ON CC.OWNER = C.OWNER
+                AND CC.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+                AND CC.TABLE_NAME = C.TABLE_NAME
+                WHERE C.OWNER = ?
+                AND C.TABLE_NAME = ?
+                AND C.CONSTRAINT_TYPE IN ('P', 'U')
+                ORDER BY C.CONSTRAINT_NAME, CC.POSITION
+                """;
+        Map<String, StringBuilder> columns = new LinkedHashMap<>();
+        Map<String, String> types = new HashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String constraintName = resultSet.getString(1);
+                    String constraintType = resultSet.getString(2);
+                    String columnName = DBUtil.wrap(resultSet.getString(3), DBDialect.ORACLE);
+                    types.put(constraintName, constraintType);
+                    StringBuilder values = columns.computeIfAbsent(constraintName, key -> new StringBuilder());
+                    if (!values.isEmpty()) {
+                        values.append(", ");
+                    }
+                    values.append(columnName);
+                }
+            }
+        }
+        List<String> definitions = new ArrayList<>();
+        columns.forEach((constraintName, columnNames) -> {
+            String type = StringUtil.equalsIgnoreCase("P", types.get(constraintName)) ? "PRIMARY KEY" : "UNIQUE";
+            definitions.add("  CONSTRAINT " + DBUtil.wrap(constraintName, DBDialect.ORACLE)
+                    + " " + type + " (" + columnNames + ")");
+        });
+        return definitions;
+    }
+
+    private static String columnType(String dataType, int dataLength, int precision, int scale) {
+        String normalized = dataType.toUpperCase();
+        if (normalized.equals("NUMBER") && precision > 0) {
+            return scale > 0 ? "NUMBER(" + precision + "," + scale + ")" : "NUMBER(" + precision + ")";
+        }
+        if (normalized.contains("CHAR") || normalized.equals("RAW")) {
+            return dataType + "(" + dataLength + ")";
+        }
+        return dataType;
+    }
+
+    private static String decimal(BigDecimal value, BigDecimal defaultValue) {
+        return value == null ? defaultValue.toPlainString() : value.toPlainString();
+    }
+
+    private static int indexOfKeyword(String value, String keyword) {
+        Pattern pattern = Pattern.compile("\\b" + keyword + "\\b", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(value);
+        return matcher.find() ? matcher.start() : -1;
+    }
+
+    //    public static void parseJobExpr(String expr, OracleEvent event){
+    //        if (StringUtil.isNotBlank(expr)) {
+    //            String[] arr = expr.split(";");
+    //            for (String s : arr) {
+    //                if (StringUtil.startWithIgnoreCase(s, "FREQ")) {
+    //                    event.setIntervalField(s.split("=")[1]);
+    //                }else if (StringUtil.startWithIgnoreCase(s, "INTERVAL")) {
+    //                    event.setIntervalValue(Integer.valueOf(s.split("=")[1]));
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    public static void parseJobAction(String action, OracleEvent event){
+    //        if (StringUtil.isNotBlank(action)) {
+    //        }
+    //    }
+
+//    /**
+//     * 是否自增列错误
+//     *
+//     * @param err 错误
+//     * @return 结果
+//     */
+//    public static boolean isIdentityError(Throwable err) {
+//        if (ExceptionUtil.hasMessage(err, "不存在IDENTITY列")) {
+//            return true;
+//        }
+//        if (ExceptionUtil.hasMessage(err, "[")
+//                && ExceptionUtil.hasMessage(err, "]")
+//                && ExceptionUtil.hasMessage(err, "IDENTITY")) {
+//            return true;
+//        }
+//        return false;
+//    }
+
+    /**
+     * 默认环境变量
+     */
+    public static Map<String, String> DEFAULT_ENVIRONMENT = new HashMap<>();
+
+    static {
+    }
+
+    /**
+     * 获取默认环境变量字符串
+     *
+     * @return 默认环境变量字符串
+     */
+    public static String defaultEnvironment() {
+        StringBuilder sb = new StringBuilder();
+        DEFAULT_ENVIRONMENT.forEach((key, value) -> {
+            sb.append(key).append("=").append(value).append("\n");
+        });
+        return sb.toString();
+    }
+}

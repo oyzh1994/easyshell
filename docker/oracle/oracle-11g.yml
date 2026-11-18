@@ -1,0 +1,20 @@
+name: easyshell-oracle11
+
+services:
+  oracle11:
+    image: gvenzl/oracle-xe:11-slim-faststart
+    platform: linux/amd64
+    container_name: easyshell-oracle11
+    environment:
+      # SYSTEM/SYS password. The application login created by init-11g.sql is DEMO/Demo2026.
+      ORACLE_PASSWORD: easyshell@2026
+    ports:
+      - "21521:1521"
+    volumes:
+      - ./init-11g.sql:/container-entrypoint-initdb.d/init-11g.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+      start_period: 60s

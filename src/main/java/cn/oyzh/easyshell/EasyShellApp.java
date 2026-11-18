@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.tabs.message.ShellMessageTabController;
 import cn.oyzh.easyshell.util.ShellVersionChecker;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
+import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbColumnUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
@@ -229,6 +230,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             DBColumnFieldManager.registerInitializer(DBDialect.SQLITE, ShellSqliteColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MARIADB, ShellMariadbColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.POSTGRESQL, ShellPostgresqlColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.ORACLE, ShellOracleColumnUtil::init);
             // 正式环境
             if (SystemUtil.isProd()) {
                 // 开启定期gc

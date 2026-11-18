@@ -175,7 +175,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         // 初始化客户端
         this.initClient();
         // 连接超时
-        this.getConnManager().setConnectTimeout(timeout);
+        this.getConnManager().setConnectTimeout(Math.max(1, timeout / 1000));
         try {
             // 开始连接时间
             final AtomicLong starTime = new AtomicLong();
@@ -184,7 +184,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             // 更新连接状态
             this.state.set(ShellConnState.CONNECTING);
             // 连接成功前阻塞线程
-            if (this.getConnManager().connection().isValid(timeout / 1000)) {
+            if (this.getConnManager().connection().isValid(Math.max(1, timeout / 1000))) {
                 // 更新连接状态
                 this.state.set(ShellConnState.CONNECTED);
                 // 添加到状态监听器队列
@@ -302,7 +302,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             if (connection == null) {
                 return false;
             }
-            return !connection.isClosed() && connection.isValid(1000);
+            return !connection.isClosed() && connection.isValid(Math.max(1, this.getConnManager().getConnectTimeout()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -22,6 +22,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.ShellShortcutStore;
 import cn.oyzh.easyshell.tabs.changelog.ShellChangelogTab;
 import cn.oyzh.easyshell.tabs.dameng.ShellDamengTab;
+import cn.oyzh.easyshell.tabs.oracle.ShellOracleTab;
 import cn.oyzh.easyshell.tabs.ftp.ShellFTPTab;
 import cn.oyzh.easyshell.tabs.home.ShellHomeTab;
 import cn.oyzh.easyshell.tabs.http.ShellHttpTab;
@@ -383,6 +384,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = ShellDamengTab.of(connect);
             } else if (connect.isPostgresqlType()) {
                 tab = ShellPostgresqlTab.of(connect);
+            } else if (connect.isOracleType()) {
+                tab = ShellOracleTab.of(connect);
             } else if (connect.isHttpType()) {
                 tab = ShellHttpTab.of(connect);
             } else if (connect.isRDPType()) {

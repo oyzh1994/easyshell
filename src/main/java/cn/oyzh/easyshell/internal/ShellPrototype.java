@@ -118,6 +118,9 @@ public class ShellPrototype {
      */
     public static final String POSTGRESQL = "PostgreSQL";
 
+    /** Oracle连接类型 */
+    public static final String ORACLE = "Oracle";
+
     /**
      * MongoDB 连接类型
      */

@@ -271,8 +271,9 @@ public class ShellMariadbConnManager extends DBConnManager {
         }
         // 预设环境参数设置
         props.put("sslMode", this.config.isUseSSL() ? "verify-full" : "disable");
-        props.put("socketTimeout", this.getConnectTimeout() + "");
-        props.put("connectTimeout", this.getConnectTimeout() + "");
+        int connectTimeout = Math.max(1, this.getConnectTimeout()) * 1000;
+        props.put("socketTimeout", String.valueOf(connectTimeout));
+        props.put("connectTimeout", String.valueOf(connectTimeout));
         props.putAll(ShellMariadbHelper.DEFAULT_ENVIRONMENT);
 
         // 自定义环境参数设置

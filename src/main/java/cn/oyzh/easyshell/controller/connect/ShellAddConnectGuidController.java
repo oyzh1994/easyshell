@@ -95,6 +95,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addDamengConnect(group);
             } else if (ShellPrototype.POSTGRESQL.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addPostgresqlConnect(group);
+            } else if (ShellPrototype.ORACLE.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addOracleConnect(group);
             } else if (ShellPrototype.MONGO.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addMongoConnect(group);
             } else if (ShellPrototype.MOSH.equalsIgnoreCase(userData)) {

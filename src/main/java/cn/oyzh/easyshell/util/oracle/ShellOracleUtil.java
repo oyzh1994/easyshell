@@ -1,0 +1,726 @@
+package cn.oyzh.easyshell.util.oracle;
+
+import cn.oyzh.common.function.ExceptionConsumer;
+import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.oracle.ShellOracleClient;
+import cn.oyzh.easyshell.oracle.column.OracleColumn;
+import cn.oyzh.easyshell.oracle.column.OracleColumns;
+import cn.oyzh.easyshell.oracle.record.OracleRecord;
+import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
+import cn.oyzh.easyshell.oracle.table.OracleTable;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.data.handler.DataHandler;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+/**
+ * db工具类
+ *
+ * @author oyzh
+ * @since 2026-09-02
+ */
+public class ShellOracleUtil {
+
+    public static boolean ENABLE_PRINT_METADATA = true;
+
+    /**
+     * 是否内部库
+     *
+     * @param dbName 数据库名称
+     * @return 结果
+     */
+    public static boolean isInternalDatabase(String dbName) {
+        return StringUtil.equalsAnyIgnoreCase(dbName, "SYS", "SYSDBA", "SYSSSO", "SYSAUDITOR", "CTISYS");
+    }
+
+//    /**
+//     * 检查表类型
+//     *
+//     * @param resultSet 结果集
+//     * @param dbName    数据库名称
+//     * @return 结果
+//     * @throws SQLException 异常
+//     */
+//    public static boolean checkTableType(ResultSet resultSet, String dbName) throws SQLException {
+//        String tableCat = resultSet.getString("TABLE_CAT");
+//        String tableType = resultSet.getString("TABLE_TYPE");
+//        return StringUtil.equalsIgnoreCase(tableCat, dbName) && !StringUtil.equalsIgnoreCase("VIEW", tableType);
+//    }
+//
+//    /**
+//     * 检查视图类型
+//     *
+//     * @param resultSet 结果集
+//     * @param dbName    数据库名称
+//     * @return 结果
+//     * @throws SQLException 异常
+//     */
+//    public static boolean checkViewType(ResultSet resultSet, String dbName) throws SQLException {
+//        String tableCat = resultSet.getString("TABLE_CAT");
+//        String tableType = resultSet.getString("TABLE_TYPE");
+//        return StringUtil.equalsIgnoreCase(tableCat, dbName) && StringUtil.equalsIgnoreCase("VIEW", tableType);
+//    }
+//
+//    /**
+//     * 检查数据库是否相同
+//     *
+//     * @param resultSet 结果集
+//     * @param dbName    数据库名称
+//     * @return 结果
+//     * @throws SQLException 异常
+//     */
+//    public static boolean checkTableCat(ResultSet resultSet, String dbName, String tableName) throws SQLException {
+//        String tableCat = resultSet.getString("TABLE_CAT");
+//        String tableName1 = resultSet.getString("TABLE_NAME");
+//        return Objects.equals(tableCat, dbName) && Objects.equals(tableName1, tableName);
+//    }
+
+//    /**
+//     * 检查数据库是否相同
+//     *
+//     * @param resultSet 结果集
+//     * @param dbName    数据库名称
+//     * @return 结果
+//     * @throws SQLException 异常
+//     */
+//    @Deprecated
+//    public static boolean checkProcedureType(ResultSet resultSet, String dbName) throws SQLException {
+//        String tableCat = resultSet.getString("PROCEDURE_CAT");
+//        String type = resultSet.getString("PROCEDURE_TYPE");
+//        return StringUtil.equals(tableCat, dbName) && "1".equals(type);
+//    }
+//
+//    /**
+//     * 检查数据库是否相同
+//     *
+//     * @param resultSet 结果集
+//     * @param dbName    数据库名称
+//     * @return 结果
+//     * @throws SQLException 异常
+//     */
+//    @Deprecated
+//    public static boolean checkFunctionType(ResultSet resultSet, String dbName) throws SQLException {
+//        String functionCat = resultSet.getString("FUNCTION_CAT");
+//        String type = resultSet.getString("FUNCTION_TYPE");
+//        return StringUtil.equalsIgnoreCase(functionCat, dbName) && "1".equals(type);
+//    }
+//
+//    /**
+//     * 检查数据库是否相同
+//     *
+//     * @param resultSet 结果集
+//     * @param dbName    数据库名称
+//     * @return 结果
+//     * @throws SQLException 异常
+//     */
+//    public static boolean checkFunctionType(ResultSet resultSet, String dbName, String schema) throws SQLException {
+//        String functionCat = resultSet.getString("FUNCTION_CAT");
+//        if (!StringUtil.equalsIgnoreCase(functionCat, dbName)) {
+//            return false;
+//        }
+//        if (schema == null) {
+//            return true;
+//        }
+//        String functionSchem = resultSet.getString("FUNCTION_SCHEM");
+//        if (functionSchem != null) {
+//            return StringUtil.equalsIgnoreCase(functionSchem, schema);
+//        }
+//        return true;
+//    }
+
+    /**
+     * 打印元数据
+     *
+     * @param resultSet 结果集
+     * @throws SQLException 异常
+     */
+    public static void printMetaData(ResultSet resultSet) throws SQLException {
+        if (ENABLE_PRINT_METADATA) {
+            // 获取结果集元数据
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            // 获取列数
+            int columnCount = metaData.getColumnCount();
+            // 遍历结果集并输出列名
+            for (int i = 1; i <= columnCount; i++) {
+                // 获取列名
+                String columnName = metaData.getColumnName(i);
+                JulLog.info("Column Name: {}", columnName);
+            }
+            JulLog.info("printMetaData======================>");
+        }
+    }
+
+//    /**
+//     * 打印sql
+//     *
+//     * @param sql sql语句
+//     */
+//    public static void printSql(String sql) {
+//        JulLog.info("\n" + sql);
+//        // JulLog.info("printSql======================>");
+//    }
+//
+//    /**
+//     * 打印sql
+//     *
+//     * @param sqlList sql列表
+//     */
+//    public static void printSql(List<String> sqlList) {
+//        JulLog.info("\n" + Arrays.toString(sqlList.toArray()));
+//        // JulLog.info("printSql======================>");
+//    }
+
+//    /**
+//     * 打印数据
+//     *
+//     * @param data 数据
+//     */
+//    public static void printData(DBRecordData data) {
+//        if (data != null) {
+//            for (Map.Entry<OracleColumn, Object> entry : data.entries()) {
+//                JulLog.info(entry.getKey().getName() + "=" + entry.getValue());
+//            }
+//            JulLog.info("printData======================>");
+//        }
+//    }
+//
+//    /**
+//     * 打印信息
+//     *
+//     * @param sql  sql
+//     * @param data 数据
+//     */
+//    public static void printInfo(String sql, DBRecordData data) {
+//        DBUtil.printSql(sql);
+//        printData(data);
+//    }
+
+    // @Deprecated
+    // public static String wrap(String name) {
+    //     if (name == null) {
+    //         return "";
+    //     }
+    //     StringBuilder builder = new StringBuilder();
+    //     if (!name.startsWith("`")) {
+    //         builder.append("`");
+    //     }
+    //     builder.append(name);
+    //     if (!name.endsWith("`")) {
+    //         builder.append("`");
+    //     }
+    //     return builder.toString();
+    // }
+
+
+    public static String wrap(String name, DBDialect dialect) {
+        StringBuilder builder = new StringBuilder();
+        if (dialect == DBDialect.ORACLE) {
+            if (!name.startsWith("\"")) {
+                builder.append("\"");
+            }
+            builder.append(name);
+            if (!name.endsWith("\"")) {
+                builder.append("\"");
+            }
+        }
+        return builder.toString();
+    }
+
+//    public static String wrap(String dbName, String tableName, DBDialect dialect) {
+//        return wrap(dbName, dialect) + "." + wrap(tableName, dialect);
+//    }
+//
+//    public static Object wrapData(Object val,DBDialect dialect) {
+//        if (val == null) {
+//            return null;
+//        }
+//        if (val instanceof Number) {
+//            return val;
+//        }
+//        if(dialect==DBDialect.ORACLE) {
+//
+//            if (val instanceof CharSequence v) {
+//                String v1 = v.toString();
+//                if (v1.isEmpty()) {
+//                    return "''";
+//                }
+//                if (!v1.startsWith("'") && !v1.startsWith("\"")) {
+//                    v1 = "'" + v1;
+//                }
+//                if (!v1.endsWith("'") && !v1.endsWith("\"")) {
+//                    v1 = v1 + "'";
+//                }
+//                return v1;
+//            }
+//            if (val instanceof LocalDateTime) {
+//                return "'" + val + "'";
+//            }
+//        }
+//        return val;
+//    }
+//
+//    public static Object unwrapData(Object val,DBDialect dialect) {
+//        if (val == null) {
+//            return null;
+//        }
+//        if(dialect==DBDialect.ORACLE) {
+//            if (val instanceof CharSequence v) {
+//                String v1 = v.toString();
+//                if (v1.isEmpty()) {
+//                    return null;
+//                }
+//                if (v1.startsWith("'") || v1.startsWith("\"")) {
+//                    v1 = v1.substring(1);
+//                }
+//                if (v1.endsWith("'") || v1.endsWith("\"")) {
+//                    v1 = v1.substring(0, v1.length() - 1);
+//                }
+//                return v1;
+//            }
+//        }
+//        return val;
+//    }
+
+//    public static void setVal(PreparedStatement statement, Object val, int index) throws SQLException {
+//        if (val == null) {
+//            statement.setNull(index, Types.NULL);
+//            //            statement.setObject(index, null);
+//        } else if (val instanceof byte[] x) {
+//            statement.setBytes(index, x);
+//        } else if (val instanceof Boolean x) {
+//            statement.setBoolean(index, x);
+//        } else if (val instanceof Byte x) {
+//            statement.setByte(index, x);
+//        } else if (val instanceof Short x) {
+//            statement.setShort(index, x);
+//        } else if (val instanceof Integer x) {
+//            statement.setInt(index, x);
+//        } else if (val instanceof Long x) {
+//            statement.setLong(index, x);
+//        } else if (val instanceof Float x) {
+//            statement.setFloat(index, x);
+//        } else if (val instanceof Double x) {
+//            statement.setDouble(index, x);
+//        } else if (val instanceof CharSequence x) {
+//            statement.setString(index, x.toString());
+//        } else if (val instanceof Date x) {
+//            statement.setDate(index, x);
+//        } else if (val instanceof Timestamp x) {
+//            statement.setTimestamp(index, x);
+//        } else if (val instanceof java.util.Date x) {
+//            statement.setDate(index, new Date(x.getTime()));
+//        } else if (val instanceof LocalDate x) {
+//            statement.setDate(index, Date.valueOf(x));
+//        } else if (val instanceof LocalDateTime x) {
+//            statement.setTimestamp(index, Timestamp.valueOf(x));
+//        } else if (val instanceof Object x) {
+//            statement.setObject(index, x);
+//        }
+//    }
+//
+//    public static boolean isSameVal(Object val, Object nVal) {
+//        if (val == nVal) {
+//            return true;
+//        }
+//        if (Objects.equals(val, nVal)) {
+//            return true;
+//        }
+//        if (val instanceof Number n1 && nVal instanceof Number n2) {
+//            if (n1.doubleValue() == n2.doubleValue()) {
+//                return true;
+//            }
+//        }
+//        if (val instanceof byte[] b1 && nVal instanceof byte[] b2) {
+//            if (StringUtil.equals(new String(b1), new String(b2))) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    public static void rollback(Connection connection) {
+//        try {
+//            if (connection != null && !connection.getAutoCommit()) {
+//                connection.rollback();
+//            }
+//        } catch (SQLException ex) {
+//            throw new DBException(ex);
+//        }
+//    }
+//
+//    public static int executeUpdate(PreparedStatement statement) throws SQLException {
+//        int result = statement.executeUpdate();
+//        statement.close();
+//        return result;
+//    }
+//
+//    public static void close(AutoCloseable o) throws Exception {
+//        if (o instanceof ResultSet resultSet) {
+//            resultSet.close();
+//        } else if (o instanceof Statement statement) {
+//            statement.close();
+//        } else if (o instanceof Connection connection) {
+//            connection.close();
+//        } else if (o != null) {
+//            o.close();
+//        }
+//    }
+//
+//    /**
+//     * 生成索引名称
+//     *
+//     * @return 索引名称
+//     */
+//    public static String genIndexName() {
+//        return "index_" + UUIDUtil.uuidSimple().substring(0, 5);
+//    }
+//
+//    /**
+//     * 生成检查名称
+//     *
+//     * @return 检查名称
+//     */
+//    public static String genCheckName() {
+//        return "check_" + UUIDUtil.uuidSimple().substring(0, 5);
+//    }
+//
+//    /**
+//     * 生成触发器名称
+//     *
+//     * @return 触发器名称
+//     */
+//    public static String genTriggerName() {
+//        return "trigger_" + UUIDUtil.uuidSimple().substring(0, 5);
+//    }
+//
+//    /**
+//     * 生成外键名称
+//     *
+//     * @return 外键名称
+//     */
+//    public static String genForeignKeyName() {
+//        return "fk_" + UUIDUtil.uuidSimple().substring(0, 5);
+//    }
+//
+//    /**
+//     * 生成复制名称
+//     *
+//     * @return 复制名称
+//     */
+//    public static String genCopyName() {
+//        return "_copy_" + UUIDUtil.uuidSimple().substring(0, 5);
+//    }
+//
+//    /**
+//     * 生成克隆名称
+//     *
+//     * @return 复制名称
+//     */
+//    public static String genCloneName() {
+//        return "_clone_" + UUIDUtil.uuidSimple().substring(0, 5);
+//    }
+
+//    /**
+//     * 转换为插入参数
+//     *
+//     * @param columns 字段列表
+//     * @param record  记录
+//     */
+//    public static OracleInsertRecordParam toInsertRecordParam(OracleColumns columns, OracleRecord record) {
+//        OracleColumn column = columns.getFirst();
+//        OracleRecordData recordData = record.getRecordData();
+//        OracleRecordPrimaryKey primaryKey = initPrimaryKey(columns, record);
+//        OracleInsertRecordParam insertRecordParam = new OracleInsertRecordParam();
+//        insertRecordParam.setRecord(recordData);
+//        insertRecordParam.setPrimaryKey(primaryKey);
+//        insertRecordParam.setDbName(column.getDbName());
+//        insertRecordParam.setTableName(column.getTableName());
+//        return insertRecordParam;
+//    }
+
+    /**
+     * 初始化主键
+     *
+     * @param columns 字段列表
+     * @param record  记录
+     * @return 主键
+     */
+    public static OracleRecordPrimaryKey initPrimaryKey(OracleColumns columns, OracleRecord record) {
+        if (columns == null || columns.isEmpty()) {
+            return null;
+        }
+        OracleColumn column = CollectionUtil.getFirst(columns.primaryKeys());
+        if (column == null) {
+            return null;
+        }
+        OracleRecordPrimaryKey pk = new OracleRecordPrimaryKey();
+        pk.init(column, record);
+        return pk;
+    }
+
+    ///**
+    // * 移除注释
+    // *
+    // * @param sql sql
+    // * @return 结果
+    // */
+    //public static String removeComment(String sql) {
+    //    StringBuilder builder = new StringBuilder();
+    //    AtomicBoolean commentFlag = new AtomicBoolean(false);
+    //    sql.lines().forEach(line -> {
+    //        // 单行注释1
+    //        if (line.stripLeading().startsWith("-- ")) {
+    //            return;
+    //        }
+    //        // 单行注释2
+    //        if (line.stripLeading().startsWith("#")) {
+    //            return;
+    //        }
+    //        // 多行注释开始
+    //        if (line.stripLeading().startsWith("/*")) {
+    //            commentFlag.set(true);
+    //        }
+    //        // 多行注释结束
+    //        if (line.stripTrailing().endsWith("*/")) {
+    //            commentFlag.set(false);
+    //            return;
+    //        }
+    //        // 正常行
+    //        if (!commentFlag.get() && StringUtil.isNotBlank(line)) {
+    //            builder.append(line).append("\n");
+    //        }
+    //    });
+    //    return builder.toString();
+    //}
+
+    ///**
+    // * 是否查询全部字段
+    // *
+    // * @param sql sql
+    // * @return 结果
+    // */
+    //public static boolean isFullColumn(String sql) {
+    //    sql = removeComment(sql);
+    //    // druid无法解析这些语句，直接返回
+    //    if (StringUtil.startWithAnyIgnoreCase(sql,
+    //            "SHOW VARIABLES LIKE",
+    //            "SHOW CREATE EVENT"
+    //    )) {
+    //        return false;
+    //    }
+    //    DbType dbType = DbType.dm;
+    //    List<SQLStatement> sqlStatements = SQLUtils.parseStatements(sql, dbType, SQLParserFeature.SkipComments);
+    //    SQLStatement statement = sqlStatements.getFirst();
+    //    SchemaStatVisitor visitor = new SchemaStatVisitor(dbType);
+    //    statement.accept(visitor);
+    //    Collection<TableStat.Column> columns = visitor.getColumns();
+    //    if (CollectionUtil.isNotEmpty(columns)) {
+    //        for (TableStat.Column column : columns) {
+    //            if (StringUtil.equals("*", column.getName())) {
+    //                return true;
+    //            }
+    //        }
+    //    }
+    //    return false;
+    //}
+
+    /**
+     * 对表进行排序，被外键引用的父表排在前面，子表排在后面
+     *
+     * @param tables   表列表
+     * @param dbClient Oracle客户端
+     * @param handler  数据处理器
+     * @throws InterruptedException 中断异常
+     */
+    public static void sortTablesInHandler(List<OracleTable> tables, ShellOracleClient dbClient, DataHandler handler) throws InterruptedException {
+        if (tables == null || tables.isEmpty()) {
+            return;
+        }
+        // 表名 -> 表对象映射
+        Map<String, OracleTable> tableMap = tables.stream()
+                .collect(Collectors.toMap(OracleTable::getName, t -> t, (a, b) -> a));
+        Set<String> tableNames = tableMap.keySet();
+        Map<String, Integer> tableIndex = new HashMap<>();
+        for (int i = 0; i < tables.size(); i++) {
+            tableIndex.putIfAbsent(tables.get(i).getName(), i);
+        }
+
+        // 邻接表: 父表 -> 依赖它的子表集合
+        Map<String, Set<String>> dependents = new HashMap<>();
+        // 每个表的入度（被引用次数）
+        Map<String, Integer> inDegree = new HashMap<>();
+        for (OracleTable table : tables) {
+            inDegree.putIfAbsent(table.getName(), 0);
+            dependents.putIfAbsent(table.getName(), new LinkedHashSet<>());
+        }
+
+        // 查询外键，构建依赖图：子表 -> 父表（子表依赖父表）
+        // 查询有外键的表名称
+        List<String> fTables = dbClient.selectForeignKeyTables(tables.getFirst().getSchema());
+        for (OracleTable table : tables) {
+            if (!fTables.contains(table.getName())) {
+                continue;
+            }
+            List<String> parentTables = dbClient.selectParentTables(table.getSchema(), table.getName());
+            for (String parentTable : parentTables) {
+                handler.checkInterrupt();
+                // 仅处理属于当前表列表的引用
+                if (parentTable != null && tableNames.contains(parentTable) && !parentTable.equals(table.getName())) {
+                    Set<String> children = dependents.computeIfAbsent(parentTable, k -> new LinkedHashSet<>());
+                    if (children.add(table.getName())) {
+                        inDegree.merge(table.getName(), 1, Integer::sum);
+                    }
+                }
+                // 更新状态
+                handler.processed(0);
+            }
+        }
+
+        // 拓扑排序（BFS / Kahn算法）
+        Queue<String> queue = new PriorityQueue<>(Comparator.comparingInt(tableIndex::get));
+        Set<String> queued = new LinkedHashSet<>();
+        for (OracleTable table : tables) {
+            if (inDegree.get(table.getName()) == 0 && queued.add(table.getName())) {
+                queue.add(table.getName());
+            }
+        }
+
+        List<OracleTable> sorted = new ArrayList<>(tables.size());
+        while (!queue.isEmpty()) {
+            String tableName = queue.poll();
+            sorted.add(tableMap.get(tableName));
+            for (String child : dependents.getOrDefault(tableName, Collections.emptySet())) {
+                int newDegree = inDegree.merge(child, -1, Integer::sum);
+                if (newDegree == 0 && queued.add(child)) {
+                    queue.add(child);
+                }
+            }
+        }
+
+        // 存在循环依赖时，将剩余表追加到末尾
+        if (sorted.size() < tables.size()) {
+            Set<String> sortedNames = sorted.stream().map(OracleTable::getName).collect(Collectors.toSet());
+            for (OracleTable table : tables) {
+                if (!sortedNames.contains(table.getName())) {
+                    sorted.add(table);
+                }
+            }
+        }
+
+        // 替换原列表内容
+        tables.clear();
+        tables.addAll(sorted);
+    }
+
+    /**
+     * 执行表排序并回调，被外键引用的父表先回调，子表后回调
+     *
+     * @param dbClient 客户端
+     * @param tables   传输表
+     * @param callback 回调
+     */
+    public static void sortTablesByCallback(ShellOracleClient dbClient, List<OracleTable> tables, ExceptionConsumer<OracleTable> callback) throws Exception {
+        if (CollectionUtil.isEmpty(tables)) {
+            return;
+        }
+        String schema = tables.getFirst().getSchema();
+        // 有外键的表名称
+        Set<String> fTables = new HashSet<>(dbClient.selectForeignKeyTables(schema));
+        // 表名 -> 表对象映射
+        Map<String, OracleTable> tableMap = tables.stream()
+                .collect(Collectors.toMap(OracleTable::getName, t -> t, (a, b) -> a));
+        // 已处理表名称
+        Set<String> handles = new HashSet<>();
+        doSortTablesByCallback(dbClient, schema, fTables, tableMap, tables, handles, callback);
+    }
+
+    /**
+     * 执行表排序并回调
+     *
+     * @param dbClient 客户端
+     * @param schema   模式
+     * @param fTables  外键表
+     * @param tableMap 表名 -> 表对象映射
+     * @param tables   本次处理的表
+     * @param handles  已处理表
+     * @param callback 回调
+     */
+    private static void doSortTablesByCallback(ShellOracleClient dbClient, String schema, Set<String> fTables, Map<String, OracleTable> tableMap, List<OracleTable> tables, Set<String> handles, ExceptionConsumer<OracleTable> callback) throws Exception {
+        for (OracleTable table : tables) {
+            String tName = table.getName();
+            // 已处理或正在处理的表，跳过
+            if (handles.contains(tName)) {
+                continue;
+            }
+            // 必须在处理父表之前标记，否则自引用、循环外键会无限递归
+            handles.add(tName);
+            // 判断是否在外键表
+            if (fTables.contains(tName)) {
+                // 父表列表
+                List<OracleTable> parents = new ArrayList<>();
+                for (String parent : dbClient.selectParentTables(schema, tName)) {
+                    OracleTable parentTable = tableMap.get(parent);
+                    if (parentTable != null && !StringUtil.equals(parent, tName)) {
+                        parents.add(parentTable);
+                    }
+                }
+                // 先处理父表
+                doSortTablesByCallback(dbClient, schema, fTables, tableMap, parents, handles, callback);
+            }
+            // 再处理自身
+            if (callback != null) {
+                callback.accept(table);
+            }
+        }
+    }
+
+    /**
+     * 移除 SQL 中指定模式名前缀，保留对象名。
+     * 严格大小写、不容忍空白字符。
+     * 例如（schema = "a"）：
+     *   CREATE TABLE "a"."t" (...)      -> CREATE TABLE "t" (...)
+     *   ALTER TABLE "a"."c" ... REFERENCES "a"."p" -> ... REFERENCES "p"
+     *   CREATE TABLE a.t (...)          -> CREATE TABLE t (...)   （无引号形式）
+     * 而 "A"."t"、a1.t、x.a.t、列名 "a" 均不会被误伤。
+     *
+     * @param sql    原始 SQL
+     * @param schema 模式名（不带引号，大小写需与 DDL 中完全一致，例如 a）
+     * @return 处理后的 SQL
+     */
+    public static String removeSchema(String sql, String schema) {
+        if (sql == null || sql.isEmpty() || schema == null || schema.isEmpty()) {
+            return sql;
+        }
+
+        String q = Pattern.quote(schema);
+
+        // 1) 带双引号："schema".
+        String quoted = "\"" + q + "\"\\.";
+
+        // 2) 不带引号：schema.
+        //    - 前一个字符不能是标识符字符 / $ / 双引号 / 点（Unicode 感知，兼容中文标识符）
+        //    - 后一个字符不能是标识符字符 / $（防止 a1. / ab. 误伤）
+        String unquoted = "(?<![\\p{L}\\p{N}_$.])" + q + "(?![\\p{L}\\p{N}_$])\\.";
+
+        String result = sql.replaceAll(quoted, "");
+        result = result.replaceAll(unquoted, "");
+        return result;
+    }
+}

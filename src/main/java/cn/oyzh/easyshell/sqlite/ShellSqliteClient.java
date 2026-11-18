@@ -148,7 +148,7 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
         this.registerStateListener();
         this.state.set(ShellConnState.CONNECTING);
         try {
-            this.getConnManager().setConnectTimeout(timeout);
+            this.getConnManager().setConnectTimeout(Math.max(1, timeout / 1000));
             Connection connection = this.getConnManager().connection();
             if (connection == null || !connection.isValid(Math.max(1, timeout / 1000))) {
                 throw new ShellException("SQLite connection is invalid");

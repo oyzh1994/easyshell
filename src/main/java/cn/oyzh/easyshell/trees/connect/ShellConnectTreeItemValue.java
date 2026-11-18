@@ -134,6 +134,9 @@ public class ShellConnectTreeItemValue extends RichTreeItemValue {
         if (this.item().isPostgresqlType()) {
             return Color.valueOf("#336791");
         }
+        if (this.item().isOracleType()) {
+            return Color.valueOf("#C74634");
+        }
         if (this.item().isSqliteType()) {
             return Color.valueOf("#2563EB");
         }

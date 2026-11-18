@@ -89,6 +89,7 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
      * mongo mongo连接
      * dameng dameng连接
      * postgresql postgresql连接
+     * oracle oracle连接
      * sqlite sqlite
      * all 全部连接
      */
@@ -144,6 +145,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadDamengType();
         } else if (ShellPrototype.POSTGRESQL.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadPostgresqlType();
+        } else if (ShellPrototype.ORACLE.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadOracleType();
         } else {
             this.connects = store.load();
         }

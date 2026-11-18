@@ -25,6 +25,7 @@ import cn.oyzh.easyshell.local.ShellLocalCommandExecutor;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.valkey.ShellValkeyClient;
@@ -724,7 +725,7 @@ public class ShellLLMTools implements LLMTools {
     @Tool(name = "createConnection",
             value = "Create and persist a new EasyShell connection without connecting to it. Existing connections are never modified or deleted.")
     public String createConnection(
-            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, rsh, mosh, rdp, vnc, mysql, mariadb, dameng, sqlite, mongodb, redis, valkey, or zookeeper") String type,
+            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, rsh, mosh, rdp, vnc, mysql, mariadb, dameng, oracle, sqlite, mongodb, redis, valkey, or zookeeper") String type,
             @P(name = "name", value = "Display name for the new connection") String name,
             @P(name = "host", value = "Host or address. For SQLite use the database file path. Ignored for Local and Serial.") String host,
             @P(name = "port", value = "Port, ignored when the host already contains a port or for Local, Serial, and SQLite", required = false) Integer port,
@@ -738,7 +739,7 @@ public class ShellLLMTools implements LLMTools {
             @P(name = "readonly", value = "Optional readonly flag for protocols that support it", required = false) Boolean readonly,
             @P(name = "connectTimeoutSeconds", value = "Optional connection timeout in seconds, default 15 and capped at 600", required = false) Integer connectTimeoutSeconds,
             @P(name = "sslMode", value = "Optional SSL flag for protocols that support it", required = false) Boolean sslMode,
-            @P(name = "typeOptions", value = "Optional JSON object for type-specific settings. Supported keys: osType, termType, backspaceType (0-2), altSendsEscape, environment, ftpPassiveMode, showHiddenFile, region, s3Type, smbShareName, domain, mongoAuthDatabase, mongoSpecifiedDatabase, executeTimeoutSeconds, serialPortName, serialBaudRate, serialDataBits, serialStopBits, serialParity (none/even/odd/mark/space), serialFlowControl (none/rtscts/xonxoff), saslAuth, sessionTimeoutMinutes, zkCompatibility, forwardAgent, x11forwarding, showFile, serverMonitor, followTerminalDir, enableCompress, enableZModem", required = false) String typeOptions) {
+            @P(name = "typeOptions", value = "Optional JSON object for type-specific settings. Supported keys: database (Oracle Service Name, SID:NAME, or full DESCRIPTION), osType, termType, backspaceType (0-2), altSendsEscape, environment, ftpPassiveMode, showHiddenFile, region, s3Type, smbShareName, domain, mongoAuthDatabase, mongoSpecifiedDatabase, executeTimeoutSeconds, serialPortName, serialBaudRate, serialDataBits, serialStopBits, serialParity (none/even/odd/mark/space), serialFlowControl (none/rtscts/xonxoff), saslAuth, sessionTimeoutMinutes, zkCompatibility, forwardAgent, x11forwarding, showFile, serverMonitor, followTerminalDir, enableCompress, enableZModem", required = false) String typeOptions) {
         try {
             String connectionType = this.normalizeConnectionType(type);
             String connectionName = name == null ? "" : name.trim();
@@ -1011,6 +1012,8 @@ public class ShellLLMTools implements LLMTools {
                 .append(this.packageVersion("org.mariadb.jdbc.Driver")).append('\n');
         result.append("dameng: type=SQL | liveVersionAvailable=true | driverVersion=")
                 .append(this.packageVersion("dm.jdbc.driver.DmDriver")).append('\n');
+        result.append("oracle: type=SQL | liveVersionAvailable=true | driverVersion=")
+                .append(this.packageVersion("oracle.jdbc.OracleDriver")).append('\n');
         result.append("mongodb: type=NoSQL | liveVersionAvailable=true | driverVersion=")
                 .append(this.packageVersion("com.mongodb.client.MongoClient")).append('\n');
         result.append("redis: type=NoSQL | liveVersionAvailable=true | driverVersion=")
@@ -1248,6 +1251,7 @@ public class ShellLLMTools implements LLMTools {
         versions.put("mysqlDriver", this.packageVersion("com.mysql.cj.conf.PropertyDefinitions"));
         versions.put("mariaDbDriver", this.packageVersion("org.mariadb.jdbc.Driver"));
         versions.put("damengDriver", this.packageVersion("dm.jdbc.driver.DmDriver"));
+        versions.put("oracleDriver", this.packageVersion("oracle.jdbc.OracleDriver"));
         versions.put("mongoDriver", this.packageVersion("com.mongodb.client.MongoClient"));
         versions.put("jedis", this.packageVersion("redis.clients.jedis.JedisPooled"));
         versions.put("zookeeper", this.packageVersion("org.apache.zookeeper.ZooKeeper"));
@@ -1522,7 +1526,7 @@ public class ShellLLMTools implements LLMTools {
                 throw new IllegalArgumentException("typeOptions must be a JSON object.");
             }
             Set<String> supportedKeys = Set.of(
-                    "osType", "termType", "backspaceType", "altSendsEscape", "environment", "ftpPassiveMode", "showHiddenFile",
+                    "database", "osType", "termType", "backspaceType", "altSendsEscape", "environment", "ftpPassiveMode", "showHiddenFile",
                     "region", "s3Type", "smbShareName", "domain", "mongoAuthDatabase",
                     "mongoSpecifiedDatabase", "executeTimeoutSeconds", "serialPortName", "serialBaudRate",
                     "serialDataBits", "serialStopBits", "serialParity", "serialFlowControl",
@@ -1537,6 +1541,7 @@ public class ShellLLMTools implements LLMTools {
         if (options == null) {
             options = new JSONObject();
         }
+        this.applyStringOption(options, "database", connection::setDatabase);
         this.applyStringOption(options, "osType", connection::setOsType);
         this.applyStringOption(options, "termType", connection::setTermType);
         this.applyStringOption(options, "environment", connection::setEnvironment);
@@ -1713,6 +1718,7 @@ public class ShellLLMTools implements LLMTools {
             case "mysql" -> "mysql";
             case "maria", "mariadb" -> "mariadb";
             case "dm", "dameng" -> "dameng";
+            case "oracle" -> "oracle";
             case "sqlite" -> "sqlite";
             case "mongo", "mongodb" -> "mongodb";
             case "redis" -> "redis";
@@ -1839,6 +1845,7 @@ public class ShellLLMTools implements LLMTools {
         return client instanceof ShellMysqlClient
                 || client instanceof ShellMariadbClient
                 || client instanceof ShellDamengClient
+                || client instanceof ShellOracleClient
                 || client instanceof ShellPostgresqlClient
                 || client instanceof ShellMongoClient
                 || client instanceof ShellRedisClient
@@ -1855,6 +1862,9 @@ public class ShellLLMTools implements LLMTools {
             }
             if (client instanceof ShellDamengClient damengClient) {
                 return damengClient.selectVersion();
+            }
+            if (client instanceof ShellOracleClient oracleClient) {
+                return oracleClient.selectVersion();
             }
             if (client instanceof ShellPostgresqlClient postgresqlClient) {
                 return postgresqlClient.selectVersion();

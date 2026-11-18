@@ -1,0 +1,44 @@
+package cn.oyzh.easyshell.trees.oracle;
+
+import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.trees.oracle.function.ShellOracleFunctionsTreeItem;
+import cn.oyzh.easyshell.trees.oracle.procedure.ShellOracleProceduresTreeItem;
+import cn.oyzh.easyshell.trees.oracle.query.ShellOracleQueriesTreeItem;
+import cn.oyzh.easyshell.trees.oracle.root.ShellOracleRootTreeItem;
+import cn.oyzh.easyshell.trees.oracle.schema.ShellOracleSchemaTreeItem;
+import cn.oyzh.easyshell.trees.oracle.table.ShellOracleTablesTreeItem;
+import cn.oyzh.easyshell.trees.oracle.view.ShellOracleViewsTreeItem;
+import cn.oyzh.fx.gui.tree.view.RichTreeItem;
+import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
+import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
+
+/**
+ * Oracle数据库树节点过滤器
+ *
+ * @author oyzh
+ * @since 2026-09-02
+ */
+public class ShellOracleTreeItemFilter extends RichTreeItemFilter {
+
+    @Override
+    public boolean test(RichTreeItem<?> item) {
+        // 部分节点不参与过滤
+        if (item instanceof ShellOracleRootTreeItem
+                || item instanceof ShellOracleViewsTreeItem
+                || item instanceof ShellOracleTablesTreeItem
+                || item instanceof ShellOracleQueriesTreeItem
+                || item instanceof ShellOracleSchemaTreeItem
+                || item instanceof ShellOracleFunctionsTreeItem
+                || item instanceof ShellOracleProceduresTreeItem) {
+            return true;
+        }
+        // 键节点
+        if (item instanceof ShellOracleTreeItem<?> treeItem) {
+            RichTreeItemValue value = treeItem.getValue();
+            String name = value.name();
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+        }
+        return true;
+    }
+}

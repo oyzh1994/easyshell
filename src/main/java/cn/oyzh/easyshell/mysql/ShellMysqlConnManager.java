@@ -276,8 +276,9 @@ public class ShellMysqlConnManager extends DBConnManager {
         }
         // 预设环境参数设置
         props.put(PropertyKey.useSSL.getKeyName(), this.config.isUseSSL() ? "true" : "false");
-        props.put(PropertyKey.socketTimeout.getKeyName(), this.getConnectTimeout() + "");
-        props.put(PropertyKey.connectTimeout.getKeyName(), this.getConnectTimeout() + "");
+        int connectTimeout = Math.max(1, this.getConnectTimeout()) * 1000;
+        props.put(PropertyKey.socketTimeout.getKeyName(), String.valueOf(connectTimeout));
+        props.put(PropertyKey.connectTimeout.getKeyName(), String.valueOf(connectTimeout));
         props.putAll(ShellMysqlHelper.DEFAULT_ENVIRONMENT);
 
         // 自定义环境参数设置

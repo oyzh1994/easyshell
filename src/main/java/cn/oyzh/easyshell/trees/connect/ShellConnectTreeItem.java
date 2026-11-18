@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.util.mariadb.ShellMariadbViewFactory;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
+import cn.oyzh.easyshell.util.oracle.ShellOracleViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
@@ -162,6 +163,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isPostgresqlType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellPostgresqlViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isOracleType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellOracleViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
         } else if (this.isSqliteType()) {
@@ -408,6 +414,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否Oracle类型
+     *
+     * @return 结果
+     */
+    public boolean isOracleType() {
+        return value.isOracleType();
+    }
+
+    /**
      * 是否PostgreSQL类型
      *
      * @return 结果
@@ -518,6 +533,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateDamengConnect(this.value);
         } else if (this.isPostgresqlType()) {
             ShellViewFactory.updatePostgresqlConnect(this.value);
+        } else if (this.isOracleType()) {
+            ShellViewFactory.updateOracleConnect(this.value);
         } else if (this.isMongoType()) {
             ShellViewFactory.updateMongoConnect(this.value);
         } else if (this.isMoshType()) {

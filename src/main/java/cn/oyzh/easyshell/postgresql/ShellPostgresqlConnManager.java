@@ -53,8 +53,8 @@ public class ShellPostgresqlConnManager extends DBConnManager {
         Properties props = new Properties();
         props.put("user", StringUtil.isNotBlank(user) ? user : this.config.getUser());
         props.put("password", StringUtil.isNotBlank(password) ? password : this.config.getPassword());
-        // 连接超时（PostgreSQL的connectTimeout单位为秒，配置中为毫秒）
-        int connectTimeout = Math.max(1, this.config.getConnectTimeout() / 1000);
+        // 连接超时（PostgreSQL的connectTimeout单位为秒）
+        int connectTimeout = Math.max(1, this.config.getConnectTimeout());
         props.put("connectTimeout", String.valueOf(connectTimeout));
         props.put("loginTimeout", String.valueOf(connectTimeout));
         // SSL
@@ -70,7 +70,10 @@ public class ShellPostgresqlConnManager extends DBConnManager {
             proxyConfig.setUser(this.config.getProxyUser());
             proxyConfig.setPassword(this.config.getProxyPassword());
             props.put("socketFactory", this.config.getSocketFactory());
-            props.put("socketFactoryArg", ShellPostgresqlProxySocketFactory.buildArg(proxyConfig, this.config.getConnectTimeout()));
+            props.put("socketFactoryArg", ShellPostgresqlProxySocketFactory.buildArg(
+                    proxyConfig,
+                    Math.max(1, this.config.getConnectTimeout()) * 1000
+            ));
         }
         // 自定义环境参数设置
         String envs = this.config.getEnv();

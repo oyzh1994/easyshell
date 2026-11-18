@@ -1,0 +1,22 @@
+name: easyshell-oracle23
+
+services:
+  oracle23:
+    image: gvenzl/oracle-free:23-slim-faststart
+    container_name: easyshell-oracle23
+    environment:
+      ORACLE_PASSWORD: easyshell@2026
+    ports:
+      - "31521:1521"
+    volumes:
+      - ./init-23c.sql:/container-entrypoint-initdb.d/init-23c.sql:ro
+      - oracle23-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+
+volumes:
+  oracle23-data:
