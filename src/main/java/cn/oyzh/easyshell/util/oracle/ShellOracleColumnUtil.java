@@ -234,6 +234,23 @@ public class ShellOracleColumnUtil {
         return null;
     }
 
+    /**
+     * 获取Oracle中省略长度时必须补写的默认长度。
+     *
+     * @param type 字段类型
+     * @return 默认长度，无须长度时返回null
+     */
+    public static Integer requiredSize(String type) {
+        if (type == null) {
+            return null;
+        }
+        String normalized = type.trim().toUpperCase(Locale.ROOT);
+        return switch (normalized) {
+            case "CHAR", "VARCHAR", "VARCHAR2", "NCHAR", "NVARCHAR2", "RAW" -> 255;
+            default -> null;
+        };
+    }
+
     public static boolean isYearType(String type) {
         return "YEAR".equalsIgnoreCase(type);
     }

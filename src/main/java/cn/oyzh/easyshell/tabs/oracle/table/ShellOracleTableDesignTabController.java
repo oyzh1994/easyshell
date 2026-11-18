@@ -712,10 +712,12 @@ public class ShellOracleTableDesignTabController extends ParentTabController {
                     column.setTableName(param.tableName());
                 }
             }
-            sql = OracleTableCreateSqlGenerator.generateSqlSingle(param);
+            sql = String.join("\n", OracleTableCreateSqlGenerator.generateSql(
+                    param, this.dbItem.client().supportsIdentity()));
         } else {
             OracleAlertTableParam param = this.initAlertParam();
-            sql = OracleTableAlertSqlGenerator.generateSqlSingle(param);
+            sql = String.join("\n", OracleTableAlertSqlGenerator.generateSql(
+                    param, this.dbItem.client().supportsIdentity()));
         }
         this.preview.text(sql);
     }

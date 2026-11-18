@@ -679,6 +679,16 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
         return BooleanUtil.isTrue(this.nullable);
     }
 
+    /**
+     * 获取字段原始是否可为空。
+     *
+     * @return 是否可为空
+     */
+    public boolean isNullableOriginal() {
+        Boolean original = (Boolean) super.getOriginalData("nullable");
+        return original == null ? this.isNullable() : BooleanUtil.isTrue(original);
+    }
+
     @Override
     public void initStatus() {
         if (this.size == null) {

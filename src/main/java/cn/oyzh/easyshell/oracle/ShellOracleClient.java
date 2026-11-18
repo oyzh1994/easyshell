@@ -834,6 +834,25 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         return version;
     }
 
+    /**
+     * 当前Oracle版本是否支持列IDENTITY。
+     *
+     * @return 是否支持
+     */
+    public boolean supportsIdentity() {
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("\\d+")
+                .matcher(this.selectVersion());
+        if (!matcher.find()) {
+            return false;
+        }
+        try {
+            return Integer.parseInt(matcher.group()) >= 12;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+
     @Override
     public String selectProduct() {
         if (this.hasProperty("product")) {
@@ -2311,6 +2330,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
 
     private String stripStatementTerminator(String sql) {
         String result = sql.strip();
+        String upper = result.toUpperCase(java.util.Locale.ROOT);
+        if (upper.startsWith("CREATE OR REPLACE TRIGGER") || upper.startsWith("CREATE TRIGGER")) {
+            return result;
+        }
         while (result.endsWith(";")) {
             result = result.substring(0, result.length() - 1).stripTrailing();
         }
@@ -2794,11 +2817,12 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String schema = param.schema();
             connection = this.getConnManager().connection(schema);
             Statement statement = connection.createStatement();
-            List<String> sqlList = OracleTableCreateSqlGenerator.generateSql(param);
+            List<String> sqlList = OracleTableCreateSqlGenerator.generateSql(param, this.supportsIdentity());
             connection.setAutoCommit(false);
             for (String sqlStr : sqlList) {
-                this.printSql(sqlStr);
-                statement.executeUpdate(sqlStr);
+                String executableSql = this.stripStatementTerminator(sqlStr);
+                this.printSql(executableSql);
+                statement.executeUpdate(executableSql);
             }
             connection.commit();
             IOUtil.close(statement);
@@ -2817,7 +2841,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void alertTable(OracleAlertTableParam param) {
         Connection connection = null;
         try {
-            List<String> sqlList = OracleTableAlertSqlGenerator.generateSql(param);
+            List<String> sqlList = OracleTableAlertSqlGenerator.generateSql(param, this.supportsIdentity());
             // 无变化
             if (CollectionUtil.isEmpty(sqlList)) {
                 return;
@@ -2830,8 +2854,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(sql)) {
                     continue;
                 }
-                this.printSql(sql);
-                statement.executeUpdate(sql);
+                String executableSql = this.stripStatementTerminator(sql);
+                this.printSql(executableSql);
+                statement.executeUpdate(executableSql);
             }
             connection.commit();
             IOUtil.close(statement);

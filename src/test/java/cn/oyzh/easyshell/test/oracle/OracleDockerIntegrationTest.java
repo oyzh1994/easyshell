@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
+import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
 import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
@@ -17,18 +18,23 @@ import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
+import cn.oyzh.easyshell.oracle.table.OracleAlertTableParam;
+import cn.oyzh.easyshell.oracle.table.OracleCreateTableParam;
+import cn.oyzh.easyshell.oracle.table.OracleTable;
 import cn.oyzh.easyshell.oracle.view.OracleAlertViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
 import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.DBConnConfig;
+import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -37,6 +43,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -127,6 +134,7 @@ public class OracleDockerIntegrationTest {
                 ShellOracleConnManager.buildConnectionString(descriptorConfig));
         try (Connection ignored = open("jdbc:oracle:thin:@" + descriptor, user, password)) {
         }
+        assertInvalidServiceRejected();
     }
 
     private static void assertObjects(Connection connection) throws SQLException {
@@ -252,6 +260,7 @@ public class OracleDockerIntegrationTest {
                 throw new RuntimeException(ex);
             }
 
+            assertTableDesignRoundTrip(client);
             assertTrue(client.selectTablesSimple("DEMO").stream()
                     .allMatch(table -> StringUtil.isBlank(table.getCreateDefinition())));
             assertTrue(client.selectTables("DEMO").stream().anyMatch(table -> "USERS".equals(table.getName())
@@ -287,6 +296,7 @@ public class OracleDockerIntegrationTest {
             assertFunctionSecurityRoundTrip(client);
             assertPipelinedMetadataFallback(client);
             assertViewCreateAndAlertExecution(client);
+            assertMetadataReloadStability(client);
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
             columnParam.setSchema("DEMO");
@@ -310,8 +320,144 @@ public class OracleDockerIntegrationTest {
             var viewResult = client.executeSingleSql("DEMO", "SELECT * FROM V_ORDERS");
             assertTrue(viewResult.getPrimaryKey() != null && "ID".equals(viewResult.getPrimaryKey().getName()));
             assertTrue(viewResult.getColumns().column("CREATED_AT").supportTimestamp());
+            assertTrue(viewResult.getCount() > 0);
+            Object viewTimestamp = ShellOracleDataUtil.valueStandardization(
+                    viewResult.getRecords().get(0).getValue("CREATED_AT"));
+            assertTrue(viewTimestamp instanceof java.sql.Timestamp);
         } finally {
             client.close();
+        }
+    }
+
+    private static void assertInvalidServiceRejected() {
+        boolean rejected = false;
+        try (Connection ignored = open("jdbc:oracle:thin:@tcp://" + host + ":" + port
+                + "/EASYSHELL_INVALID_SERVICE", user, password)) {
+        } catch (SQLException ex) {
+            rejected = ex.getMessage() != null && ex.getMessage().contains("12514");
+        }
+        assertTrue("invalid Oracle service should be rejected with ORA-12514", rejected);
+    }
+
+    private static void assertMetadataReloadStability(ShellOracleClient client) {
+        for (int attempt = 0; attempt < 2; attempt++) {
+            assertTrue(client.selectTables("DEMO").stream()
+                    .anyMatch(table -> "USERS".equals(table.getName())));
+            assertTrue(client.selectViews("DEMO").stream()
+                    .anyMatch(view -> "V_USERS".equals(view.getName())
+                            && !view.getDefinition().isBlank()
+                            && !view.getCreateDefinition().isBlank()));
+
+            OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
+            columnParam.setSchema("DEMO");
+            columnParam.setTableName("USERS");
+            assertFalse(client.selectColumns(columnParam).isEmpty());
+            assertFalse(client.viewColumns("DEMO", "V_ORDERS").isEmpty());
+        }
+    }
+
+    private static void assertTableDesignRoundTrip(ShellOracleClient client) throws Exception {
+        String tableName = "t1";
+        OracleTable table = new OracleTable();
+        table.setSchema("DEMO");
+        table.setName(tableName);
+
+        OracleColumn text = new OracleColumn("a");
+        text.setSchema("DEMO");
+        text.setTableName(tableName);
+        text.setType("VARCHAR");
+        text.setNullable(true);
+
+        OracleColumn id = new OracleColumn("id");
+        id.setSchema("DEMO");
+        id.setTableName(tableName);
+        id.setType("INT");
+        id.setPrimaryKey(true);
+        id.setNullable(false);
+        id.setAutoIncrement(true);
+        id.setAutoIncrementType("IDENTITY");
+
+        OracleCreateTableParam createParam = new OracleCreateTableParam();
+        createParam.setTable(table);
+        createParam.setColumns(new OracleColumns(List.of(text, id)));
+        createParam.setTriggers(new DBObjects<>());
+        try {
+            dropGeneratedAutoIncrementObjects(client, tableName);
+            client.createTable(createParam);
+
+            OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
+            columnParam.setSchema("DEMO");
+            columnParam.setTableName(tableName);
+            List<OracleColumn> createdColumns = client.selectColumns(columnParam);
+            OracleColumn createdText = createdColumns.stream()
+                    .filter(column -> "a".equals(column.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            OracleColumn createdId = createdColumns.stream()
+                    .filter(column -> "id".equals(column.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            assertEquals(Integer.valueOf(255), createdText.getSize());
+            assertTrue(createdId.isPrimaryKey());
+            assertTrue(createdId.isAutoIncrement());
+            assertEquals(mode.equals("11g") ? "SEQUENCE_TRIGGER" : "IDENTITY",
+                    createdId.getAutoIncrementType());
+
+            try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+                statement.executeUpdate("INSERT INTO \"DEMO\".\"t1\" (\"a\") VALUES ('smoke')");
+            }
+            try (Statement statement = client.getConnManager().connection("DEMO").createStatement();
+                 ResultSet resultSet = statement.executeQuery(
+                         "SELECT \"id\" FROM \"DEMO\".\"t1\" WHERE \"a\" = 'smoke'")) {
+                assertTrue(resultSet.next());
+                assertTrue(resultSet.getLong(1) > 0);
+                assertFalse(resultSet.next());
+            }
+
+            createdText.setSize(128);
+            OracleColumn createdAt = new OracleColumn("created_at");
+            createdAt.setSchema("DEMO");
+            createdAt.setTableName(tableName);
+            createdAt.setType("TIMESTAMP");
+            createdAt.setNullable(true);
+            createdAt.setCreated(true);
+
+            OracleAlertTableParam alertParam = new OracleAlertTableParam();
+            alertParam.setTable(table);
+            alertParam.setColumns(new OracleColumns(List.of(createdText, createdId, createdAt)));
+            alertParam.setTriggers(new DBObjects<>());
+            client.alertTable(alertParam);
+
+            createdColumns = client.selectColumns(columnParam);
+            assertEquals(Integer.valueOf(128), createdColumns.stream()
+                    .filter(column -> "a".equals(column.getName()))
+                    .findFirst()
+                    .orElseThrow()
+                    .getSize());
+            assertTrue(createdColumns.stream().anyMatch(column ->
+                    "created_at".equals(column.getName()) && column.isDateTimeType()));
+        } finally {
+            if (client.selectTablesSimple("DEMO").stream()
+                    .anyMatch(existing -> tableName.equals(existing.getName()))) {
+                client.dropTable("DEMO", tableName);
+            }
+            dropGeneratedAutoIncrementObjects(client, tableName);
+        }
+    }
+
+    private static void dropGeneratedAutoIncrementObjects(ShellOracleClient client, String tableName) throws Exception {
+        String upperName = tableName.toUpperCase(Locale.ROOT);
+        try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+            try {
+                statement.executeUpdate("DROP TRIGGER \"DEMO\".\"" + upperName + "_ID_TRG\"");
+            } catch (SQLException ignored) {
+            }
+            try {
+                statement.executeUpdate("DROP SEQUENCE \"DEMO\".\"" + upperName + "_ID_SEQ\"");
+            } catch (SQLException ignored) {
+            }
+        } catch (Exception ex) {
+            throw new AssertionError("Unable to clean generated auto-increment objects", ex);
         }
     }
 
@@ -464,7 +610,9 @@ public class OracleDockerIntegrationTest {
                     routineParam("P_OUT_VALUE", "NUMBER", "OUT"),
                     routineParam("P_INOUT_VALUE", "VARCHAR2", "IN/OUT")
             ));
-            function.setReturnParam(null);
+            OracleRoutineParam editedReturnParam = new OracleRoutineParam();
+            editedReturnParam.setType("NUMBER");
+            function.setReturnParam(editedReturnParam);
             function.setDefinition("BEGIN\n    p_out_value := 1;\n    RETURN 2;\nEND;");
             OracleAlertFunctionParam alertParam = new OracleAlertFunctionParam();
             alertParam.setSchema(schema);
@@ -473,6 +621,7 @@ public class OracleDockerIntegrationTest {
 
             OracleFunction loaded = client.selectFunction(schema, name);
             assertEquals(3, loaded.getParams().size());
+            assertEquals("NUMBER", loaded.getReturnType());
             assertTrue(loaded.getParams().stream().anyMatch(item ->
                     "P_IN_VALUE".equals(item.getName()) && "IN".equals(item.getMode())));
             assertTrue(loaded.getParams().stream().anyMatch(item ->
@@ -502,7 +651,7 @@ public class OracleDockerIntegrationTest {
         OracleRoutineParam returnParam = new OracleRoutineParam();
         returnParam.setType("NUMBER");
         function.setReturnParam(returnParam);
-        function.setDefinition("BEGIN\n    p_out_value := 1;\n    RETURN 2;\nEND;");
+        function.setDefinition("BEGIN\n    p_out_value := 1;\n    p_inout_value := p_in_value;\n    RETURN 2;\nEND;");
         OracleCreateFunctionParam param = new OracleCreateFunctionParam();
         param.setSchema(schema);
         param.setFunction(function);
@@ -510,6 +659,7 @@ public class OracleDockerIntegrationTest {
         try {
             OracleFunction loaded = client.selectFunction(schema, name);
             assertEquals(3, loaded.getParams().size());
+            assertEquals("NUMBER", loaded.getReturnType());
             assertTrue(loaded.getParams().stream().anyMatch(item ->
                     "P_IN_VALUE".equals(item.getName()) && "IN".equals(item.getMode())));
             assertTrue(loaded.getParams().stream().anyMatch(item ->
@@ -519,6 +669,7 @@ public class OracleDockerIntegrationTest {
             assertTrue(loaded.getCreateDefinition().contains("P_IN_VALUE"));
             assertTrue(loaded.getCreateDefinition().contains("P_OUT_VALUE"));
             assertTrue(loaded.getCreateDefinition().contains("P_INOUT_VALUE"));
+            assertFunctionInvocation(client, schema, name);
         } finally {
             dropFunctionIfPresent(client, schema, name);
         }
@@ -548,6 +699,7 @@ public class OracleDockerIntegrationTest {
             OracleFunction created = client.selectFunction(schema, name);
             assertEquals("CURRENT_USER", created.getSecurityType());
             assertEquals(2, created.getParams().size());
+            assertEquals("NUMBER", created.getReturnType());
 
             function.setSecurityType("DEFINER");
             OracleAlertFunctionParam alertParam = new OracleAlertFunctionParam();
@@ -558,12 +710,29 @@ public class OracleDockerIntegrationTest {
             OracleFunction altered = client.selectFunction(schema, name);
             assertEquals("DEFINER", altered.getSecurityType());
             assertEquals(2, altered.getParams().size());
+            assertEquals("NUMBER", altered.getReturnType());
             assertTrue(altered.getParams().stream().anyMatch(item ->
                     "P_IN_VALUE".equals(item.getName()) && "IN".equals(item.getMode())));
             assertTrue(altered.getParams().stream().anyMatch(item ->
                     "P_OUT_VALUE".equals(item.getName()) && "OUT".equals(item.getMode())));
         } finally {
             dropFunctionIfPresent(client, schema, name);
+        }
+    }
+
+    private static void assertFunctionInvocation(ShellOracleClient client, String schema, String functionName) {
+        String sql = "{? = call " + functionName + "(?, ?, ?)}";
+        try (CallableStatement statement = client.getConnManager().connection(schema).prepareCall(sql)) {
+            statement.registerOutParameter(1, Types.NUMERIC);
+            statement.setString(2, "input");
+            statement.registerOutParameter(3, Types.NUMERIC);
+            statement.registerOutParameter(4, Types.VARCHAR);
+            statement.execute();
+            assertEquals(BigInteger.valueOf(2), statement.getBigDecimal(1).toBigInteger());
+            assertEquals(BigInteger.ONE, statement.getBigDecimal(3).toBigInteger());
+            assertEquals("input", statement.getString(4));
+        } catch (Exception ex) {
+            throw new AssertionError("Oracle function invocation failed", ex);
         }
     }
 
@@ -621,9 +790,38 @@ public class OracleDockerIntegrationTest {
                 throw new RuntimeException(ex);
             }
             var sequences = client.selectSequencesSimple("SYSTEM");
+            assertFalse(sequences.isEmpty());
+            assertTrue(sequences.stream().allMatch(sequence -> sequence.getMaxVal() != null));
             if (mode.equals("11g")) {
-                assertTrue(sequences.stream().anyMatch(sequence -> sequence.getMaxVal() != null
-                        && sequence.getMaxVal().compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0));
+                assertTrue(sequences.stream().anyMatch(sequence ->
+                        sequence.getMaxVal().compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0));
+            }
+
+            String sequenceName = "EASYSHELL_SYSTEM_BIG_SEQ";
+            if (sequences.stream().anyMatch(sequence -> sequenceName.equals(sequence.getName()))) {
+                OracleSequence existing = new OracleSequence(sequenceName);
+                existing.setSchema("SYSTEM");
+                client.dropSequence(existing);
+            }
+            OracleSequence extreme = new OracleSequence(sequenceName);
+            extreme.setSchema("SYSTEM");
+            extreme.setMinVal(BigInteger.ONE);
+            extreme.setMaxVal(new BigInteger("9999999999999999999999999999"));
+            extreme.setCacheSize(BigInteger.valueOf(20));
+            extreme.setIncrementBy(BigInteger.ONE);
+            extreme.setCycle(false);
+            extreme.setOrder(false);
+            OracleCreateSequenceParam createParam = new OracleCreateSequenceParam();
+            createParam.setSchema("SYSTEM");
+            createParam.setSequence(extreme);
+            client.createSequence(createParam);
+            try {
+                OracleSequence loaded = client.selectSequence("SYSTEM", sequenceName);
+                assertEquals(new BigInteger("9999999999999999999999999999"), loaded.getMaxVal());
+                assertEquals(BigInteger.valueOf(20), loaded.getCacheSize());
+                assertEquals(BigInteger.ONE, loaded.getIncrementBy());
+            } finally {
+                client.dropSequence(extreme);
             }
         } finally {
             client.close();
