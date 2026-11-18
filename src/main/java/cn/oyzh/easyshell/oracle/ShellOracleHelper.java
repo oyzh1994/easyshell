@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -486,9 +487,56 @@ public class ShellOracleHelper {
         return "BEGIN " + body + " END;";
     }
 
+    public static String renameRoutineDefinition(String definition, String routineType, String oldName, String newName) {
+        if (StringUtil.isBlank(definition)) {
+            throw new IllegalArgumentException("Routine definition is empty");
+        }
+        if (StringUtil.isBlank(oldName) || StringUtil.isBlank(newName)) {
+            throw new IllegalArgumentException("Routine name is empty");
+        }
+
+        String result = removeSqlPlusTerminator(definition);
+        String identifier = "(?:\"(?:[^\"]|\"\")*\"|[A-Za-z][A-Za-z0-9_$#]*)";
+        Pattern pattern = Pattern.compile(
+                "(?is)(\\bCREATE\\s+(?:OR\\s+REPLACE\\s+)?(?:(?:NON)?EDITIONABLE\\s+)?"
+                        + Pattern.quote(routineType) + "\\s+)((?:" + identifier + "\\s*\\.\\s*)?)(" + identifier + ")");
+        Matcher matcher = pattern.matcher(result);
+        while (matcher.find()) {
+            if (identifierEquals(matcher.group(3), oldName)) {
+                String replacement = matcher.group(1) + matcher.group(2)
+                        + DBUtil.wrap(newName, DBDialect.ORACLE);
+                return result.substring(0, matcher.start()) + replacement + result.substring(matcher.end());
+            }
+        }
+        throw new IllegalArgumentException("Unable to locate " + routineType.toLowerCase(Locale.ROOT)
+                + " definition name: " + oldName);
+    }
+
+    public static String removeSqlPlusTerminator(String definition) {
+        String result = definition.strip();
+        return result.endsWith("/") ? result.substring(0, result.length() - 1).stripTrailing() : result;
+    }
+
+    private static boolean identifierEquals(String value, String expected) {
+        String normalizedValue = unwrapIdentifier(value);
+        String normalizedExpected = unwrapIdentifier(expected);
+        return value.startsWith("\"") || expected.startsWith("\"")
+                ? normalizedValue.equals(normalizedExpected)
+                : normalizedValue.equalsIgnoreCase(normalizedExpected);
+    }
+
+    private static String unwrapIdentifier(String value) {
+        String result = value.strip();
+        if (result.length() > 1 && result.startsWith("\"") && result.endsWith("\"")) {
+            return result.substring(1, result.length() - 1).replace("\"\"", "\"");
+        }
+        return result;
+    }
+
     public static String getTableDefinition(Connection connection, String schema, String tableName) throws SQLException {
         try {
-            return getMetadataDefinition(connection, schema, "TABLE", tableName);
+            String definition = getMetadataDefinition(connection, schema, "TABLE", tableName);
+            return StringUtil.isBlank(definition) ? buildTableDefinition(connection, schema, tableName) : definition;
         } catch (SQLException ex) {
             return buildTableDefinition(connection, schema, tableName);
         }
@@ -496,7 +544,8 @@ public class ShellOracleHelper {
 
     public static String getViewDefinition(Connection connection, String schema, String viewName) throws SQLException {
         try {
-            return getMetadataDefinition(connection, schema, "VIEW", viewName);
+            String definition = getMetadataDefinition(connection, schema, "VIEW", viewName);
+            return StringUtil.isBlank(definition) ? buildViewDefinition(connection, schema, viewName) : definition;
         } catch (SQLException ex) {
             return buildViewDefinition(connection, schema, viewName);
         }
@@ -504,7 +553,8 @@ public class ShellOracleHelper {
 
     public static String getFunctionDefinition(Connection connection, String schema, String functionName) throws SQLException {
         try {
-            return getMetadataDefinition(connection, schema, "FUNCTION", functionName);
+            String definition = getMetadataDefinition(connection, schema, "FUNCTION", functionName);
+            return StringUtil.isBlank(definition) ? buildRoutineDefinition(connection, schema, functionName, "FUNCTION") : definition;
         } catch (SQLException ex) {
             return buildRoutineDefinition(connection, schema, functionName, "FUNCTION");
         }
@@ -512,7 +562,8 @@ public class ShellOracleHelper {
 
     public static String getProcedureDefinition(Connection connection, String schema, String procedureName) throws SQLException {
         try {
-            return getMetadataDefinition(connection, schema, "PROCEDURE", procedureName);
+            String definition = getMetadataDefinition(connection, schema, "PROCEDURE", procedureName);
+            return StringUtil.isBlank(definition) ? buildRoutineDefinition(connection, schema, procedureName, "PROCEDURE") : definition;
         } catch (SQLException ex) {
             return buildRoutineDefinition(connection, schema, procedureName, "PROCEDURE");
         }
@@ -520,7 +571,8 @@ public class ShellOracleHelper {
 
     public static String getTriggerDefinition(Connection connection, String schema, String triggerName) throws SQLException {
         try {
-            return getMetadataDefinition(connection, schema, "TRIGGER", triggerName);
+            String definition = getMetadataDefinition(connection, schema, "TRIGGER", triggerName);
+            return StringUtil.isBlank(definition) ? buildTriggerDefinition(connection, schema, triggerName) : definition;
         } catch (SQLException ex) {
             return buildTriggerDefinition(connection, schema, triggerName);
         }
@@ -528,7 +580,8 @@ public class ShellOracleHelper {
 
     public static String getSequenceDefinition(Connection connection, String schema, String sequenceName) throws SQLException {
         try {
-            return getMetadataDefinition(connection, schema, "SEQUENCE", sequenceName);
+            String definition = getMetadataDefinition(connection, schema, "SEQUENCE", sequenceName);
+            return StringUtil.isBlank(definition) ? buildSequenceDefinition(connection, schema, sequenceName) : definition;
         } catch (SQLException ex) {
             return buildSequenceDefinition(connection, schema, sequenceName);
         }
@@ -584,7 +637,12 @@ public class ShellOracleHelper {
         if (source.isEmpty()) {
             return "";
         }
-        return "CREATE OR REPLACE " + source.toString().strip();
+        String definition = source.toString().strip();
+        String routinePrefix = "^CREATE(?:\\s+OR\\s+REPLACE)?(?:\\s+(?:NON)?EDITIONABLE)?\\s+"
+                + Pattern.quote(routineType) + "\\b";
+        return definition.matches("(?is)" + routinePrefix)
+                ? definition
+                : "CREATE OR REPLACE " + definition;
     }
 
     private static String buildTriggerDefinition(Connection connection, String schema, String triggerName) throws SQLException {

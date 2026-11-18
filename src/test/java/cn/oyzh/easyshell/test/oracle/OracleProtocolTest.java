@@ -26,6 +26,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Oracle协议连接与DDL兼容性测试。
@@ -54,6 +55,48 @@ public class OracleProtocolTest {
         config.setUseSSL(true);
         assertEquals("jdbc:oracle:thin:@tcps://db.example.com:1521/FREEPDB1",
                 ShellOracleConnManager.buildConnectionString(config));
+    }
+
+    @Test
+    public void renamesOracleRoutineDefinitionsWithoutChangingBody() {
+        String procedureDefinition = """
+                CREATE OR REPLACE PROCEDURE      ADD_USER(
+                    p_username IN VARCHAR2
+                ) AS
+                BEGIN
+                    ADD_USER(p_username);
+                END;
+                /
+                """;
+        String expectedDefinition = """
+                CREATE OR REPLACE PROCEDURE      "ADD_USER_RENAMED"(
+                    p_username IN VARCHAR2
+                ) AS
+                BEGIN
+                    ADD_USER(p_username);
+                END;
+                """;
+        assertEquals(expectedDefinition.stripTrailing(), ShellOracleHelper.renameRoutineDefinition(
+                procedureDefinition, "PROCEDURE", "ADD_USER", "ADD_USER_RENAMED"));
+
+        String qualifiedDefinition = "CREATE OR REPLACE PROCEDURE \"DEMO\".\"ADD_USER\" AS BEGIN NULL; END;";
+        assertEquals("CREATE OR REPLACE PROCEDURE \"DEMO\".\"ADD_USER_RENAMED\" AS BEGIN NULL; END;",
+                ShellOracleHelper.renameRoutineDefinition(
+                        qualifiedDefinition, "PROCEDURE", "ADD_USER", "ADD_USER_RENAMED"));
+
+        String functionDefinition = "CREATE OR REPLACE NONEDITIONABLE FUNCTION DEMO . USER_COUNT RETURN NUMBER AS BEGIN RETURN 0; END; /";
+        assertEquals("CREATE OR REPLACE NONEDITIONABLE FUNCTION DEMO . \"USER_COUNT_RENAMED\" RETURN NUMBER AS BEGIN RETURN 0; END;",
+                ShellOracleHelper.renameRoutineDefinition(
+                        functionDefinition, "FUNCTION", "USER_COUNT", "USER_COUNT_RENAMED"));
+
+        try {
+            ShellOracleHelper.renameRoutineDefinition(
+                    "CREATE OR REPLACE PROCEDURE ADD_USER AS BEGIN NULL; END;",
+                    "PROCEDURE", "MISSING_PROCEDURE", "NEW_PROCEDURE");
+            fail("Expected missing routine name to be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertTrue(expected.getMessage().contains("MISSING_PROCEDURE"));
+        }
     }
 
     @Test

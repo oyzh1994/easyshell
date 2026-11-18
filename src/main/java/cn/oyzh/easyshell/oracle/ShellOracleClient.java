@@ -4029,8 +4029,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void cloneFunction(String schema, String functionName, String newFunctionName) {
         String sql = this.showCreateFunction(schema, functionName);
         try {
-            sql = sql.replace("FUNCTION " + DBUtil.wrap(functionName, DBDialect.ORACLE), "FUNCTION " + DBUtil.wrap(newFunctionName, DBDialect.ORACLE));
-            sql = sql.replace("FUNCTION " + DBUtil.wrap(schema, functionName, DBDialect.ORACLE), "FUNCTION " + DBUtil.wrap(schema, newFunctionName, DBDialect.ORACLE));
+            if (StringUtil.isBlank(sql)) {
+                throw new ShellException("Function definition is empty");
+            }
+            sql = ShellOracleHelper.renameRoutineDefinition(sql, "FUNCTION", functionName, newFunctionName);
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);
@@ -4052,8 +4054,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void cloneProcedure(String schema, String procedureName, String newProcedureName) {
         String sql = this.showCreateProcedure(schema, procedureName);
         try {
-            sql = sql.replace("PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.ORACLE), "PROCEDURE " + DBUtil.wrap(newProcedureName, DBDialect.ORACLE));
-            sql = sql.replace("PROCEDURE " + DBUtil.wrap(schema, procedureName, DBDialect.ORACLE), "PROCEDURE " + DBUtil.wrap(schema, newProcedureName, DBDialect.ORACLE));
+            if (StringUtil.isBlank(sql)) {
+                throw new ShellException("Procedure definition is empty");
+            }
+            sql = ShellOracleHelper.renameRoutineDefinition(sql, "PROCEDURE", procedureName, newProcedureName);
             this.printSql(sql);
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement stmt = connection.prepareStatement(sql);

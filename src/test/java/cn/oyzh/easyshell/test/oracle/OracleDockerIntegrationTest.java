@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
+import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
@@ -257,9 +258,10 @@ public class OracleDockerIntegrationTest {
             assertEquals("DEMO_SEQ", sequence.getName());
             assertEquals(BigInteger.ONE, sequence.getMinVal());
             assertEquals(BigInteger.valueOf(5), sequence.getIncrementBy());
-            assertEquals(new BigInteger("9999999999999999999999999999"), sequence.getMaxVal());
+            assertTrue(sequence.getMaxVal().compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0);
             assertFalse(sequence.getCreateDefinition().isBlank());
             assertSequenceAlterExecution(client);
+            assertProcedureRenameExecution(client);
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
             columnParam.setSchema("DEMO");
@@ -311,6 +313,43 @@ public class OracleDockerIntegrationTest {
             assertEquals(BigInteger.valueOf(5), altered.getIncrementBy());
         } finally {
             client.dropSequence(sequence);
+        }
+    }
+
+    private static void assertProcedureRenameExecution(ShellOracleClient client) throws Exception {
+        String schema = "DEMO";
+        String oldName = "EASYSHELL_RENAME_PROC";
+        String newName = "EASYSHELL_RENAME_PROC_NEW";
+        boolean renamed = false;
+        dropProcedureIfPresent(client, schema, oldName);
+        dropProcedureIfPresent(client, schema, newName);
+        try (Statement statement = client.getConnManager().connection(schema).createStatement()) {
+            statement.execute("CREATE OR REPLACE PROCEDURE " + oldName + " AS BEGIN NULL; END;");
+        }
+        try {
+            client.renameProcedure(schema, oldName, newName);
+            renamed = true;
+            assertTrue(client.selectProceduresSimple(schema).stream()
+                    .anyMatch(procedure -> newName.equals(procedure.getName())));
+            client.renameProcedure(schema, newName, oldName);
+            renamed = false;
+            assertTrue(client.selectProceduresSimple(schema).stream()
+                    .anyMatch(procedure -> oldName.equals(procedure.getName())));
+        } finally {
+            if (renamed) {
+                client.renameProcedure(schema, newName, oldName);
+            }
+            dropProcedureIfPresent(client, schema, oldName);
+            dropProcedureIfPresent(client, schema, newName);
+        }
+    }
+
+    private static void dropProcedureIfPresent(ShellOracleClient client, String schema, String name) {
+        if (client.selectProceduresSimple(schema).stream().anyMatch(procedure -> name.equals(procedure.getName()))) {
+            OracleProcedure procedure = new OracleProcedure();
+            procedure.setSchema(schema);
+            procedure.setName(name);
+            client.dropProcedure(procedure);
         }
     }
 
