@@ -8,6 +8,7 @@ import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Oracle修改序列SQL生成器
@@ -24,37 +25,44 @@ public class OracleSequenceAlertSqlGenerator extends DBSqlGenerator {
      */
     private void _generate(OracleAlertSequenceParam param) {
         OracleSequence sequence = param.getSequence();
+        OracleSequence originalSequence = param.getOriginalSequence();
         this.sqlBuilder.append("ALTER SEQUENCE ");
         this.sqlBuilder.append(DBUtil.wrap(sequence.getSchema(), sequence.getName(), DBDialect.ORACLE));
         int len = this.sqlBuilder.length();
         // 参数
-        if (sequence.getIncrementBy() != null) {
+        if (changed(sequence.getIncrementBy(), originalSequence == null ? null : originalSequence.getIncrementBy())) {
             this.sqlBuilder.append(" INCREMENT BY ").append(sequence.getIncrementBy());
         }
-        if (sequence.getMaxVal() != null) {
+        if (changed(sequence.getMaxVal(), originalSequence == null ? null : originalSequence.getMaxVal())) {
             this.sqlBuilder.append(" MAXVALUE ").append(sequence.getMaxVal());
         }
-        if (sequence.getMinVal() != null) {
+        if (changed(sequence.getMinVal(), originalSequence == null ? null : originalSequence.getMinVal())) {
             this.sqlBuilder.append(" MINVALUE ").append(sequence.getMinVal());
         }
-        if (sequence.getCacheSize() != null) {
+        if (changed(sequence.getCacheSize(), originalSequence == null ? null : originalSequence.getCacheSize())) {
             this.sqlBuilder.append(" CACHE ").append(sequence.getCacheSize());
         }
-        if (sequence.isOrder()) {
-            this.sqlBuilder.append(" ORDER ");
-        } else {
-            this.sqlBuilder.append(" NOORDER ");
+        if (originalSequence == null || sequence.isOrder() != originalSequence.isOrder()) {
+            if (sequence.isOrder()) {
+                this.sqlBuilder.append(" ORDER ");
+            } else {
+                this.sqlBuilder.append(" NOORDER ");
+            }
         }
-        if (sequence.isCycle()) {
-            this.sqlBuilder.append(" CYCLE ");
-        } else {
-            this.sqlBuilder.append(" NOCYCLE ");
+        if (originalSequence == null || sequence.isCycle() != originalSequence.isCycle()) {
+            if (sequence.isCycle()) {
+                this.sqlBuilder.append(" CYCLE ");
+            } else {
+                this.sqlBuilder.append(" NOCYCLE ");
+            }
         }
         if (len == this.sqlBuilder.length()) {
             StringUtil.clear(this.sqlBuilder);
-        } else {
-            this.sqlBuilder.append(";");
         }
+    }
+
+    private static boolean changed(Object value, Object originalValue) {
+        return value != null && (originalValue == null || !Objects.equals(value, originalValue));
     }
 
     /**

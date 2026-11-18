@@ -26,6 +26,7 @@ import java.math.BigInteger;
 import java.sql.Types;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SequenceBigIntegerTest {
@@ -71,6 +72,21 @@ public class SequenceBigIntegerTest {
         assertEquals(INCREMENT_BY, sequence.getIncrementBy());
         assertSequenceSql(OracleSequenceCreateSqlGenerator.generateSqlSingle(createParam(sequence)),
                 OracleSequenceAlertSqlGenerator.generateSqlSingle(alertParam(sequence)));
+    }
+
+    @Test
+    public void oracleAlertSqlOmitsUnchangedMinValue() {
+        OracleSequence original = oracleSequence();
+        OracleSequence changed = oracleSequence();
+        changed.setMaxVal(MAX_VAL.subtract(BigInteger.ONE));
+
+        OracleAlertSequenceParam param = alertParam(changed);
+        param.setOriginalSequence(original);
+        String sql = OracleSequenceAlertSqlGenerator.generateSqlSingle(param);
+
+        assertFalse(sql.contains(" MINVALUE "));
+        assertTrue(sql.contains(" MAXVALUE " + changed.getMaxVal()));
+        assertFalse(sql.endsWith(";"));
     }
 
     @Test
@@ -135,6 +151,7 @@ public class SequenceBigIntegerTest {
 
     private static void assertSequenceSql(String createSql, String alertSql) {
         for (String sql : new String[]{createSql, alertSql}) {
+            assertFalse(sql.endsWith(";"));
             assertTrue(sql.contains(" INCREMENT BY " + INCREMENT_BY));
             assertTrue(sql.contains(" MAXVALUE " + MAX_VAL));
             assertTrue(sql.contains(" MINVALUE " + MIN_VAL));

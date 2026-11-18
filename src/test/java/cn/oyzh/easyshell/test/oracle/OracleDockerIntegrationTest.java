@@ -9,6 +9,8 @@ import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
+import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
+import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
@@ -257,6 +259,7 @@ public class OracleDockerIntegrationTest {
             assertEquals(BigInteger.valueOf(5), sequence.getIncrementBy());
             assertEquals(new BigInteger("9999999999999999999999999999"), sequence.getMaxVal());
             assertFalse(sequence.getCreateDefinition().isBlank());
+            assertSequenceAlterExecution(client);
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
             columnParam.setSchema("DEMO");
@@ -265,6 +268,49 @@ public class OracleDockerIntegrationTest {
             assertTrue(columns.stream().anyMatch(column -> "ID".equals(column.getName())));
         } finally {
             client.close();
+        }
+    }
+
+    private static void assertSequenceAlterExecution(ShellOracleClient client) {
+        String name = "ALTER_SEQ_TEST";
+        String schema = "DEMO";
+        BigInteger maxVal = new BigInteger("9999999999999999999999999998");
+        OracleSequence original = new OracleSequence(name);
+        original.setSchema(schema);
+        original.setMinVal(BigInteger.ONE);
+        original.setMaxVal(maxVal.add(BigInteger.ONE));
+        original.setCurrentVal(BigInteger.ONE);
+        original.setCacheSize(BigInteger.TWO);
+        original.setIncrementBy(BigInteger.valueOf(5));
+        original.setCycle(false);
+        original.setOrder(false);
+        OracleSequence sequence = new OracleSequence(name);
+        sequence.setSchema(schema);
+        sequence.setMinVal(BigInteger.ONE);
+        sequence.setMaxVal(maxVal);
+        sequence.setCurrentVal(BigInteger.ONE);
+        sequence.setCacheSize(BigInteger.TWO);
+        sequence.setIncrementBy(BigInteger.valueOf(5));
+        sequence.setCycle(false);
+        sequence.setOrder(false);
+
+        OracleCreateSequenceParam createParam = new OracleCreateSequenceParam();
+        createParam.setSchema(schema);
+        createParam.setSequence(original);
+        client.createSequence(createParam);
+        try {
+            OracleAlertSequenceParam alertParam = new OracleAlertSequenceParam();
+            alertParam.setSchema(schema);
+            alertParam.setSequence(sequence);
+            client.alertSequence(alertParam);
+
+            OracleSequence altered = client.selectSequence(schema, name);
+            assertEquals(BigInteger.ONE, altered.getMinVal());
+            assertEquals(maxVal, altered.getMaxVal());
+            assertEquals(BigInteger.TWO, altered.getCacheSize());
+            assertEquals(BigInteger.valueOf(5), altered.getIncrementBy());
+        } finally {
+            client.dropSequence(sequence);
         }
     }
 

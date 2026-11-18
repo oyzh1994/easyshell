@@ -38,7 +38,7 @@ public class ShellPostgresqlSequenceDesignTab extends ShellPostgresqlBaseTab {
     public void flushTitle() {
         String name = this.sequenceName();
         if (StringUtil.isBlank(name)) {
-            name = I18nHelper.unnamedProcedure();
+            name = I18nHelper.unnamedSequence();
         }
         // 设置提示文本
         if (this.isUnsaved()) {

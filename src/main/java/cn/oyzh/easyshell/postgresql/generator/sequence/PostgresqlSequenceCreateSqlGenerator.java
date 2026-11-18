@@ -51,7 +51,6 @@ public class PostgresqlSequenceCreateSqlGenerator extends DBSqlGenerator {
         } else {
             this.sqlBuilder.append(" NO CYCLE");
         }
-        this.sqlBuilder.append(";");
     }
 
     /**

@@ -55,8 +55,6 @@ public class DamengSequenceAlertSqlGenerator extends DBSqlGenerator {
         }
         if (len == this.sqlBuilder.length()) {
             StringUtil.clear(this.sqlBuilder);
-        } else {
-            this.sqlBuilder.append(";");
         }
     }
 

@@ -20,6 +20,11 @@ public class OracleAlertSequenceParam {
     private OracleSequence sequence;
 
     /**
+     * 原序列
+     */
+    private OracleSequence originalSequence;
+
+    /**
      * 获取模式名称
      *
      * @return 模式名称
@@ -61,5 +66,13 @@ public class OracleAlertSequenceParam {
 
     public void setSequence(OracleSequence sequence) {
         this.sequence = sequence;
+    }
+
+    public OracleSequence getOriginalSequence() {
+        return originalSequence;
+    }
+
+    public void setOriginalSequence(OracleSequence originalSequence) {
+        this.originalSequence = originalSequence;
     }
 }

@@ -4369,12 +4369,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void alertSequence(OracleAlertSequenceParam param) {
         Connection connection = null;
         try {
+            String schema = param.getSchema();
+            param.setOriginalSequence(this.selectSequence(schema, param.getSequenceName()));
             String sql = OracleSequenceAlertSqlGenerator.generateSqlSingle(param);
             // 无变化
             if (StringUtil.isBlank(sql)) {
                 return;
             }
-            String schema = param.getSchema();
             connection = this.getConnManager().connection(schema);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();

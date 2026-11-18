@@ -321,20 +321,20 @@ public class ShellOracleSequenceDesignTabController extends RichTabController {
 
         // 基本信息处理
         tempSequence.setSchema(this.sequence.getSchema());
-        if (StringUtil.isNotBlank(this.minVal.getText())) {
-            tempSequence.setMinVal(new BigInteger(this.minVal.getText()));
+        if (!this.minVal.isBlank()) {
+            tempSequence.setMinVal(this.minVal.getValue());
         }
-        if (StringUtil.isNotBlank(this.maxVal.getText())) {
-            tempSequence.setMaxVal(new BigInteger(this.maxVal.getText()));
+        if (!this.maxVal.isBlank()) {
+            tempSequence.setMaxVal(this.maxVal.getValue());
         }
-        if (StringUtil.isNotBlank(this.cacheSize.getText())) {
-            tempSequence.setCacheSize(new BigInteger(this.cacheSize.getText()));
+        if (!this.cacheSize.isBlank()) {
+            tempSequence.setCacheSize(this.cacheSize.getValue());
         }
-        if (StringUtil.isNotBlank(this.currentVal.getText())) {
-            tempSequence.setCurrentVal(new BigInteger(this.currentVal.getText()));
+        if (!this.currentVal.isBlank()) {
+            tempSequence.setCurrentVal(this.currentVal.getValue());
         }
-        if (StringUtil.isNotBlank(this.incrementBy.getText())) {
-            tempSequence.setIncrementBy(new BigInteger(this.incrementBy.getText()));
+        if (!this.incrementBy.isBlank()) {
+            tempSequence.setIncrementBy(this.incrementBy.getValue());
         }
         tempSequence.setOrder(this.order.isSelected());
         tempSequence.setCycle(this.cycle.isSelected());
@@ -358,6 +358,7 @@ public class ShellOracleSequenceDesignTabController extends RichTabController {
         } else {
             OracleAlertSequenceParam param = new OracleAlertSequenceParam();
             param.setSequence(temp);
+            param.setOriginalSequence(this.sequence);
             param.setSchema(this.schema());
             sql = OracleSequenceAlertSqlGenerator.generateSqlSingle(param);
         }
