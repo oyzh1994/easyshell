@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
+import cn.oyzh.easyshell.oracle.check.OracleCheck;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
@@ -425,6 +426,11 @@ public class OracleDockerIntegrationTest {
             OracleAlertTableParam alertParam = new OracleAlertTableParam();
             alertParam.setTable(table);
             alertParam.setColumns(new OracleColumns(List.of(createdText, createdId, createdAt)));
+            OracleCheck check = new OracleCheck();
+            check.setName("T1_CHECK_SMOKE");
+            check.setClause("\"a\" IS NOT NULL");
+            check.setCreated(true);
+            alertParam.setChecks(new DBObjects<>(List.of(check)));
             alertParam.setTriggers(new DBObjects<>());
             client.alertTable(alertParam);
 
@@ -436,7 +442,16 @@ public class OracleDockerIntegrationTest {
                     .getSize());
             assertTrue(createdColumns.stream().anyMatch(column ->
                     "created_at".equals(column.getName()) && column.isDateTimeType()));
+            assertTrue(client.selectChecks("DEMO", tableName).stream()
+                    .anyMatch(item -> "T1_CHECK_SMOKE".equals(item.getName())
+                            && "\"a\" IS NOT NULL".equalsIgnoreCase(item.getClause())));
         } finally {
+            try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+                try {
+                    statement.executeUpdate("ALTER TABLE \"DEMO\".\"t1\" DROP CONSTRAINT \"T1_CHECK_SMOKE\"");
+                } catch (SQLException ignored) {
+                }
+            }
             if (client.selectTablesSimple("DEMO").stream()
                     .anyMatch(existing -> tableName.equals(existing.getName()))) {
                 client.dropTable("DEMO", tableName);

@@ -2443,7 +2443,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     WHERE 
                         CONSTRAINT_TYPE = 'C'
                     AND
-                        GENERATED = 'USER_NAME'
+                        GENERATED = 'USER NAME'
                     AND 
                         OWNER = ?
                     AND 
