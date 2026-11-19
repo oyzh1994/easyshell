@@ -91,13 +91,11 @@ public class ShellOracleColumnUtil {
         smallintFiled.supportAutoIncrement = true;
 
         DBColumnField floatField = new DBColumnField("FLOAT");
-        // floatField.supportSize = true;
-        // floatField.supportDigits = true;
+        floatField.supportDigits = true;
         floatField.supportDefaultValue = true;
 
         DBColumnField doublePrecisionField = new DBColumnField("DOUBLE PRECISION");
-        // doublePrecisionField.supportSize = true;
-        // doublePrecisionField.supportDigits = true;
+        doublePrecisionField.supportDigits = true;
         doublePrecisionField.supportDefaultValue = true;
 
         DBColumnField decimalField = new DBColumnField("DECIMAL");
@@ -149,9 +147,11 @@ public class ShellOracleColumnUtil {
         rawField.supportDefaultValue = true;
 
         DBColumnField binaryFloatField = new DBColumnField("BINARY_FLOAT");
+        binaryFloatField.supportDigits = true;
         binaryFloatField.supportDefaultValue = true;
 
         DBColumnField binaryDoubleField = new DBColumnField("BINARY_DOUBLE");
+        binaryDoubleField.supportDigits = true;
         binaryDoubleField.supportDefaultValue = true;
 
         DBColumnField longField = new DBColumnField("LONG");

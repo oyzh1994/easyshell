@@ -82,6 +82,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.CallableStatement;
@@ -91,6 +93,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1202,46 +1205,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             String tableName = param.getTableName();
             OracleColumns columns = new OracleColumns();
-            String sql;
-            //            if (this.isDbaRole()) {
-            //                sql = """
-            //                        SELECT
-            //                            C.COLUMN_ID AS "POSITION",
-            //                            C.COLUMN_NAME AS "Field",
-            //                            C.DATA_SCALE AS "DATA_SCALE",
-            //                            C.DATA_LENGTH AS "DATA_LENGTH",
-            //                            CASE WHEN C.NULLABLE='Y' THEN 'YES' ELSE 'NO' END AS "Null",
-            //                            C.DATA_TYPE AS "Type",
-            //                            CC.COMMENT$ AS "Comment",
-            //                            C.DATA_DEFAULT AS "Default",
-            //                            CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
-            //                        FROM
-            //                            ALL_TAB_COLUMNS C
-            //                        LEFT JOIN
-            //                            SYS.SYSCOLUMNCOMMENTS CC
-            //                        ON
-            //                            C.OWNER = CC.SCHNAME
-            //                        AND
-            //                            C.TABLE_NAME = CC.TVNAME
-            //                        AND
-            //                            C.COLUMN_NAME = CC.COLNAME
-            //                        LEFT JOIN
-            //                            ALL_CONS_COLUMNS CONS
-            //                        ON
-            //                            C.OWNER = CONS.OWNER
-            //                        AND
-            //                            C.TABLE_NAME = CONS.TABLE_NAME
-            //                        AND
-            //                            C.COLUMN_NAME = CONS.COLUMN_NAME
-            //                        AND
-            //                            EXISTS (SELECT 1 FROM ALL_CONSTRAINTS AC WHERE AC.OWNER=CONS.OWNER AND AC.CONSTRAINT_NAME=CONS.CONSTRAINT_NAME AND AC.CONSTRAINT_TYPE='P')
-            //                        WHERE
-            //                            C.OWNER = ?
-            //                        AND
-            //                            C.TABLE_NAME = ?
-            //                        """;
-            //            } else {
-            sql = """
+            String sql = """
                     SELECT
                         C.DATA_TYPE AS "Type",
                         C.COLUMN_NAME AS "Field",
@@ -1253,10 +1217,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         C.DATA_LENGTH AS "DATA_LENGTH",
                         C.CHAR_LENGTH AS "CHAR_LENGTH",
                         C.CHAR_USED AS "CHAR_USED",
+                        C.VIRTUAL_COLUMN AS "VIRTUAL",
                         CASE WHEN C.NULLABLE = 'Y' THEN 'YES' ELSE 'NO' END AS "Null",
                         CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
                     FROM
-                        ALL_TAB_COLUMNS C
+                        ALL_TAB_COLS C
                     LEFT JOIN
                         ALL_COL_COMMENTS CC
                     ON
@@ -1279,14 +1244,14 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         C.OWNER = ?
                     AND
                         C.TABLE_NAME = ?
+                    AND
+                        C.HIDDEN_COLUMN = 'NO'
                     """;
-            //            }
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
             statement.setString(2, tableName);
             ResultSet resultSet = statement.executeQuery();
-            //            DatabaseMetaData metaData = connection.getMetaData();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 Object def = resultSet.getObject("Default");
@@ -1301,14 +1266,6 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 int dataScale = resultSet.getInt("DATA_SCALE");
                 String comment = resultSet.getString("Comment");
                 int dataLength = resultSet.getInt("DATA_LENGTH");
-                // 自动递增
-                //                Boolean autoIncrement = null;
-                //                ResultSet rs = metaData.getColumns(null, schema, tableName, field);
-                //                if (rs.next()) {
-                //                    String is_autoincrement = rs.getString("IS_AUTOINCREMENT");
-                //                    autoIncrement = StringUtil.equalsIgnoreCase("YES", is_autoincrement);
-                //                }
-                //                IOUtil.close(rs);
                 OracleColumn column = new OracleColumn();
                 column.parseKey(key);
                 column.setName(field);
@@ -1322,6 +1279,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 column.setPosition(position);
                 column.setTableName(tableName);
                 column.setNullable("yes".equalsIgnoreCase(nullable));
+                column.setVirtual(StringUtil.equalsIgnoreCase("YES", resultSet.getString("VIRTUAL")));
                 columns.add(column);
             }
             IOUtil.close(resultSet);
@@ -1467,10 +1425,6 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 OracleRecord record = new OracleRecord(columns, param.isReadonly());
                 for (OracleColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
-                    //                    // 获取几何值
-                    //                    if (column.supportGeometry()) {
-                    //                        data = OracleHelper.getGeometryString(connection, data);
-                    //                    }
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -1528,48 +1482,48 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         try {
             OracleRecordPrimaryKey primaryKey = param.getPrimaryKey();
             boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
+            DBRecordData recordData = param.getRecord();
+            List<DBColumn> insertColumns = recordData.entries().stream()
+                    .map(Map.Entry::getKey)
+                    .filter(column -> !recordData.isDefaultValueSequence(column.getName()))
+                    .toList();
+            boolean directLobInsert = insertColumns.stream().anyMatch(this::isLobColumn);
             StringBuilder builder = new StringBuilder();
             builder.append("INSERT INTO ")
                     .append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.ORACLE))
                     .append("(");
-            for (String column : param.getRecord().columns()) {
-                // 序列
-                if (param.getRecord().isDefaultValueSequence(column)) {
-                    continue;
-                }
-                builder.append(DBUtil.wrap(column, DBDialect.ORACLE)).append(",");
+            for (DBColumn column : insertColumns) {
+                builder.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE)).append(",");
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
-            for (String column : param.getRecord().columns()) {
-                // 序列
-                if (param.getRecord().isDefaultValueSequence(column)) {
-                    continue;
+            for (DBColumn column : insertColumns) {
+                if (this.isXmlTypeColumn(column) && this.hasXmlContent(recordData.value(column.getName()))) {
+                    builder.append("XMLTYPE(?),");
+                } else {
+                    builder.append("?,");
                 }
-                builder.append("?,");
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
-            if (returnGeneratedKey) {
-                builder.append(" RETURNING ")
-                        .append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.ORACLE))
-                        .append(" INTO ?");
+            Connection connection = this.getConnManager().connection(param.getSchema());
+            String insertSql = builder.toString();
+            if (directLobInsert) {
+                return this.insertRecordDirect(connection, insertSql, insertColumns, recordData, primaryKey,
+                        param.getSchema(), param.getTableName());
             }
-            String sql = builder.toString();
+            String sql = insertSql;
             if (returnGeneratedKey) {
-                sql = "BEGIN " + sql + "; END;";
+                sql = "BEGIN " + sql + " RETURNING "
+                        + DBUtil.wrap(primaryKey.getColumnName(), DBDialect.ORACLE)
+                        + " INTO ?; END;";
             }
             this.printSql(sql);
-            Connection connection = this.getConnManager().connection(param.getSchema());
             CallableStatement statement = connection.prepareCall(sql);
             int index = 1;
-            for (String column : param.getRecord().columns()) {
-                // 序列
-                if (param.getRecord().isDefaultValueSequence(column)) {
-                    continue;
-                }
-                DBUtil.setVal(statement, param.getRecord().value(column), index++);
+            for (DBColumn column : insertColumns) {
+                DBUtil.setVal(statement, recordData.value(column.getName()), index++);
             }
             if (returnGeneratedKey) {
                 statement.registerOutParameter(index, java.sql.Types.NUMERIC);
@@ -1598,6 +1552,231 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
+        }
+    }
+
+    private int insertRecordDirect(Connection connection, String insertSql, List<DBColumn> insertColumns,
+                                   DBRecordData recordData, OracleRecordPrimaryKey primaryKey,
+                                   String schema, String tableName) throws Exception {
+        try {
+            return this.insertRecordDirectOnce(connection, insertSql, insertColumns, recordData, primaryKey);
+        } catch (SQLException ex) {
+            if (ex.getErrorCode() != 22295 || !this.requiresSplitInsert(insertColumns)) {
+                throw ex;
+            }
+            return this.insertRecordSplit(connection, insertColumns, recordData, primaryKey, schema, tableName);
+        }
+    }
+
+    private int insertRecordDirectOnce(Connection connection, String insertSql, List<DBColumn> insertColumns,
+                                       DBRecordData recordData, OracleRecordPrimaryKey primaryKey) throws Exception {
+        boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
+        boolean identity = returnGeneratedKey && primaryKey.getColumn().isIdentityAutoIncrementType();
+        this.printSql(insertSql);
+        int count;
+        Long generatedKey = null;
+        if (identity) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    insertSql, new String[]{primaryKey.getColumnName()})) {
+                this.bindInsertValues(statement, insertColumns, recordData);
+                count = statement.executeUpdate();
+                try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        generatedKey = resultSet.getLong(1);
+                    }
+                }
+            }
+        } else {
+            try (PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                this.bindInsertValues(statement, insertColumns, recordData);
+                count = statement.executeUpdate();
+            }
+            if (returnGeneratedKey) {
+                generatedKey = this.getAutoIncrementCurrVal(connection, primaryKey.getColumn());
+            }
+        }
+        if (generatedKey == null && primaryKey != null && primaryKey.getColumn().isDefaultValueSequence()) {
+            generatedKey = this.getAutoIncrementCurrVal(connection, primaryKey.getColumn());
+        }
+        if (primaryKey != null && generatedKey != null) {
+            primaryKey.setReturnData(generatedKey);
+            if (primaryKey.getData() == null) {
+                primaryKey.setData(generatedKey);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Oracle 11g不允许在同一条语句中同时绑定超过4000字节的LONG和LOB数据，
+     * 此时先插入普通列和LONG列并返回ROWID，再按ROWID更新LOB列。
+     */
+    private int insertRecordSplit(Connection connection, List<DBColumn> insertColumns,
+                                  DBRecordData recordData, OracleRecordPrimaryKey primaryKey,
+                                  String schema, String tableName) throws Exception {
+        List<DBColumn> deferredColumns = insertColumns.stream()
+                .filter(this::isDeferredLobColumn)
+                .toList();
+        List<DBColumn> baseColumns = insertColumns.stream()
+                .filter(column -> !this.isDeferredLobColumn(column))
+                .toList();
+        boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
+        StringBuilder builder = new StringBuilder("BEGIN INSERT INTO ")
+                .append(DBUtil.wrap(schema, tableName, DBDialect.ORACLE))
+                .append("(");
+        for (DBColumn column : baseColumns) {
+            builder.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE)).append(",");
+        }
+        StringUtil.deleteLast(builder);
+        builder.append(") VALUES(");
+        for (int i = 0; i < baseColumns.size(); i++) {
+            builder.append("?,");
+        }
+        StringUtil.deleteLast(builder);
+        builder.append(") RETURNING ROWID");
+        if (returnGeneratedKey) {
+            builder.append(", ").append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.ORACLE));
+        }
+        builder.append(" INTO ?");
+        if (returnGeneratedKey) {
+            builder.append(", ?");
+        }
+        builder.append("; END;");
+
+        String sql = builder.toString();
+        this.printSql(sql);
+        String rowid;
+        Long generatedKey = null;
+        try (CallableStatement statement = connection.prepareCall(sql)) {
+            int index = 1;
+            for (DBColumn column : baseColumns) {
+                this.bindInsertValue(statement, column, recordData.value(column.getName()), index++);
+            }
+            statement.registerOutParameter(index, Types.ROWID);
+            int rowidIndex = index++;
+            int keyIndex = 0;
+            if (returnGeneratedKey) {
+                statement.registerOutParameter(index, Types.NUMERIC);
+                keyIndex = index;
+            }
+            statement.execute();
+            rowid = statement.getString(rowidIndex);
+            if (returnGeneratedKey) {
+                generatedKey = statement.getLong(keyIndex);
+            }
+        }
+        if (generatedKey == null && primaryKey != null && primaryKey.getColumn().isDefaultValueSequence()) {
+            generatedKey = this.getAutoIncrementCurrVal(connection, primaryKey.getColumn());
+        }
+        if (primaryKey != null && generatedKey != null) {
+            primaryKey.setReturnData(generatedKey);
+            if (primaryKey.getData() == null) {
+                primaryKey.setData(generatedKey);
+            }
+        }
+        for (DBColumn column : deferredColumns) {
+            StringBuilder update = new StringBuilder("UPDATE ")
+                    .append(DBUtil.wrap(schema, tableName, DBDialect.ORACLE))
+                    .append(" SET ")
+                    .append(DBUtil.wrap(column.getName(), DBDialect.ORACLE))
+                    .append("=")
+                    .append(this.isXmlTypeColumn(column)
+                            && this.hasXmlContent(recordData.value(column.getName())) ? "XMLTYPE(?)" : "?")
+                    .append(" WHERE ROWID=?");
+            String updateSql = update.toString();
+            this.printSql(updateSql);
+            try (PreparedStatement statement = connection.prepareStatement(updateSql)) {
+                this.bindInsertValue(statement, column, recordData.value(column.getName()), 1);
+                statement.setString(2, rowid);
+                statement.executeUpdate();
+            }
+        }
+        return 1;
+    }
+
+    private void bindInsertValues(PreparedStatement statement, List<DBColumn> insertColumns,
+                                  DBRecordData recordData) throws SQLException {
+        int index = 1;
+        for (DBColumn column : insertColumns) {
+            this.bindInsertValue(statement, column, recordData.value(column.getName()), index++);
+        }
+    }
+
+    private void bindInsertValue(PreparedStatement statement, DBColumn column, Object value, int index)
+            throws SQLException {
+        if (value == null) {
+            statement.setNull(index, Types.NULL);
+        } else if (this.isXmlTypeColumn(column) && value instanceof CharSequence sequence) {
+            String text = sequence.toString();
+            if (text.isEmpty()) {
+                statement.setNull(index, Types.NULL);
+            } else {
+                statement.setClob(index, new StringReader(text), text.length());
+            }
+        } else if (this.isClobColumn(column) && value instanceof CharSequence sequence) {
+            String text = sequence.toString();
+            statement.setCharacterStream(index, new StringReader(text), text.length());
+        } else if (this.isNclobColumn(column) && value instanceof CharSequence sequence) {
+            String text = sequence.toString();
+            statement.setNCharacterStream(index, new StringReader(text), text.length());
+        } else if (this.isBlobColumn(column) && value instanceof byte[] bytes) {
+            statement.setBinaryStream(index, new ByteArrayInputStream(bytes), bytes.length);
+        } else {
+            DBUtil.setVal(statement, value, index);
+        }
+    }
+
+    private boolean isLobColumn(DBColumn column) {
+        return column.supportText() || column.supportBinary();
+    }
+
+    private boolean isLongColumn(DBColumn column) {
+        return StringUtil.equalsAnyIgnoreCase(column.getType(), "LONG", "LONG RAW");
+    }
+
+    private boolean isActualLobColumn(DBColumn column) {
+        return StringUtil.equalsAnyIgnoreCase(column.getType(), "CLOB", "NCLOB", "BLOB");
+    }
+
+    private boolean isDeferredLobColumn(DBColumn column) {
+        return this.isActualLobColumn(column) || this.isXmlTypeColumn(column);
+    }
+
+    private boolean requiresSplitInsert(List<DBColumn> insertColumns) {
+        return insertColumns.stream().anyMatch(this::isLongColumn)
+                && insertColumns.stream().anyMatch(this::isActualLobColumn);
+    }
+
+    private boolean isXmlTypeColumn(DBColumn column) {
+        return StringUtil.equalsIgnoreCase(column.getType(), "XMLTYPE");
+    }
+
+    private boolean hasXmlContent(Object value) {
+        return value instanceof CharSequence sequence && !sequence.isEmpty();
+    }
+
+    private boolean isClobColumn(DBColumn column) {
+        return StringUtil.equalsAnyIgnoreCase(column.getType(), "CLOB", "LONG");
+    }
+
+    private boolean isNclobColumn(DBColumn column) {
+        return StringUtil.equalsIgnoreCase(column.getType(), "NCLOB");
+    }
+
+    private boolean isBlobColumn(DBColumn column) {
+        return StringUtil.equalsAnyIgnoreCase(column.getType(), "BLOB", "LONG RAW");
+    }
+
+    private Long getAutoIncrementCurrVal(Connection connection, OracleColumn column) throws SQLException {
+        String sequenceName = StringUtil.blankToDefault(
+                column.getAutoIncrementSequenceName(), column.getSequenceName());
+        if (StringUtil.isBlank(sequenceName)) {
+            return null;
+        }
+        String sql = "SELECT " + DBUtil.wrap(sequenceName, DBDialect.ORACLE) + ".CURRVAL FROM DUAL";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            return resultSet.next() ? resultSet.getLong(1) : null;
         }
     }
 

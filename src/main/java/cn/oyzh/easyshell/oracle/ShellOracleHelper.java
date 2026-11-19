@@ -901,10 +901,12 @@ public class ShellOracleHelper {
 
     private static String buildTableDefinition(Connection connection, String schema, String tableName) throws SQLException {
         String columnSql = """
-                SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE, DATA_DEFAULT
-                FROM ALL_TAB_COLUMNS
+                SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION, DATA_SCALE, NULLABLE,
+                       DATA_DEFAULT, VIRTUAL_COLUMN
+                FROM ALL_TAB_COLS
                 WHERE OWNER = ?
                 AND TABLE_NAME = ?
+                AND HIDDEN_COLUMN = 'NO'
                 ORDER BY COLUMN_ID
                 """;
         List<String> definitions = new ArrayList<>();
@@ -920,11 +922,15 @@ public class ShellOracleHelper {
                     int scale = resultSet.getInt(5);
                     boolean nullable = StringUtil.equalsIgnoreCase("Y", resultSet.getString(6));
                     String defaultValue = resultSet.getString(7);
+                    boolean virtual = StringUtil.equalsIgnoreCase("YES", resultSet.getString(8));
                     StringBuilder definition = new StringBuilder(name).append(' ').append(columnType(dataType, dataLength, precision, scale));
-                    if (StringUtil.isNotBlank(defaultValue)) {
+                    boolean computedVirtual = virtual && !StringUtil.equalsIgnoreCase(dataType, "XMLTYPE");
+                    if (computedVirtual && StringUtil.isNotBlank(defaultValue)) {
+                        definition.append(" GENERATED ALWAYS AS (").append(defaultValue.strip()).append(") VIRTUAL");
+                    } else if (StringUtil.isNotBlank(defaultValue)) {
                         definition.append(" DEFAULT ").append(defaultValue.strip());
                     }
-                    if (!nullable) {
+                    if (!computedVirtual && !nullable) {
                         definition.append(" NOT NULL");
                     }
                     definitions.add("  " + definition);

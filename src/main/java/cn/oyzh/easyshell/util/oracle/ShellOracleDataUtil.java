@@ -452,6 +452,9 @@ public class ShellOracleDataUtil {
             if (includeFields) {
                 sql.append(" (");
                 for (OracleColumn dbColumn : columnList) {
+                    if (!dbColumn.isDmlWritable()) {
+                        continue;
+                    }
                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.ORACLE)).append(", ");
                 }
                 if (sql.toString().endsWith(", ")) {
@@ -461,6 +464,9 @@ public class ShellOracleDataUtil {
             }
             sql.append(" VALUES (");
             for (OracleColumn dbColumn : columnList) {
+                if (!dbColumn.isDmlWritable()) {
+                    continue;
+                }
                 Object value = record.getValue(dbColumn.getName());
                 value = valueStandardization(value);
                 value = parameterizedForSql(dbColumn, value);
@@ -491,6 +497,9 @@ public class ShellOracleDataUtil {
                 .append(" SET ");
         boolean doSet = false;
         for (OracleColumn column : columns) {
+            if (!column.isDmlWritable()) {
+                continue;
+            }
             if (primaryKey != null && column == primaryKey.getColumn()) {
                 continue;
             }

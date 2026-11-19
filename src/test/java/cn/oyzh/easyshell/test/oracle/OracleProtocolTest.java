@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.oracle.table.OracleTable;
 import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
+import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
@@ -77,6 +78,12 @@ public class OracleProtocolTest {
         assertTrue(DBColumnFieldManager.supportTimestamp(DBDialect.ORACLE, "TIMESTAMP(6) WITH TIME ZONE"));
         assertTrue(DBColumnFieldManager.supportString(DBDialect.ORACLE, "VARCHAR2(100)"));
         assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "NUMBER(10,2)"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "FLOAT"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "DOUBLE PRECISION"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "BINARY_FLOAT"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "BINARY_DOUBLE"));
+        assertFalse(DBColumnFieldManager.supportString(DBDialect.ORACLE, "BINARY_FLOAT"));
+        assertFalse(DBColumnFieldManager.supportString(DBDialect.ORACLE, "BINARY_DOUBLE"));
         assertNull(DBColumnFieldManager.exampleValue(DBDialect.ORACLE, "TIMESTAMP(6)"));
     }
 
@@ -88,6 +95,35 @@ public class OracleProtocolTest {
 
         DBRecordData data = record.getRecordData();
         assertFalse(data.columns().contains("CREATED_AT"));
+    }
+
+    @Test
+    public void excludesOracleVirtualColumnsFromDml() {
+        OracleColumn username = column("USERNAME", "VARCHAR2", "DEMO", "ALL_TYPE_TEST");
+        OracleColumn virtual = column("C_VIRTUAL", "VARCHAR2", "DEMO", "ALL_TYPE_TEST");
+        virtual.setVirtual(true);
+        OracleColumn bfile = column("C_BFILE", "BFILE", "DEMO", "ALL_TYPE_TEST");
+        OracleColumn xml = column("C_XML", "XMLTYPE", "DEMO", "ALL_TYPE_TEST");
+        // Oracle 11g在ALL_TAB_COLS中把XMLTYPE标记为虚拟列，但它仍然允许写入
+        xml.setVirtual(true);
+
+        OracleColumns columns = new OracleColumns(List.of(username, virtual, bfile, xml));
+        OracleRecord record = new OracleRecord(columns);
+        record.putValue(username, "alice");
+        record.putValue(virtual, "computed");
+        record.putValue(bfile, "external.dat");
+        record.putValue(xml, "<root/>");
+
+        DBRecordData data = record.getRecordData();
+        assertFalse(data.columns().contains("C_VIRTUAL"));
+        assertFalse(data.columns().contains("C_BFILE"));
+        assertTrue(data.columns().contains("C_XML"));
+
+        String sql = ShellOracleDataUtil.toInsertSql(columns, record, true);
+        assertFalse(sql.contains("\"C_VIRTUAL\""));
+        assertFalse(sql.contains("\"C_BFILE\""));
+        assertTrue(sql.contains("\"USERNAME\""));
+        assertTrue(sql.contains("\"C_XML\""));
     }
 
     @Test

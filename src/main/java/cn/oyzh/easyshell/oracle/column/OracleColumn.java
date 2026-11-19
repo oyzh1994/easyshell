@@ -54,6 +54,11 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     private StringProperty valueProperty;
 
     /**
+     * 是否虚拟列
+     */
+    private boolean virtual;
+
+    /**
      * 注释
      */
     private String comment;
@@ -763,6 +768,7 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
             this.setSize(column.size);
             this.setName(column.name);
             this.setSchema(column.schema);
+            this.setVirtual(column.virtual);
             this.setDigits(column.digits);
             this.setType(column.getType());
             this.setComment(column.comment);
@@ -851,6 +857,52 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
             this.valueProperty = new SimpleStringProperty();
         }
         return valueProperty;
+    }
+
+    /**
+     * 是否虚拟列
+     *
+     * @return 结果
+     */
+    public boolean isVirtual() {
+        return virtual;
+    }
+
+    /**
+     * 设置是否虚拟列
+     *
+     * @param virtual 是否虚拟列
+     */
+    public void setVirtual(boolean virtual) {
+        this.virtual = virtual;
+    }
+
+    /**
+     * 是否BFILE类型
+     *
+     * @return 结果
+     */
+    public boolean isBfile() {
+        return StringUtil.equalsIgnoreCase(this.getType(), "BFILE");
+    }
+
+    /**
+     * 是否XMLTYPE类型
+     *
+     * @return 结果
+     */
+    public boolean isXmlType() {
+        return StringUtil.equalsIgnoreCase(this.getType(), "XMLTYPE");
+    }
+
+    /**
+     * 是否允许参与新增和修改
+     *
+     * @return 结果
+     */
+    public boolean isDmlWritable() {
+        // Oracle 11g在ALL_TAB_COLS中把XMLTYPE标记为虚拟列，但它实际允许写入
+        return (!this.isVirtual() || this.isXmlType()) && !this.isBfile();
     }
 
     /**

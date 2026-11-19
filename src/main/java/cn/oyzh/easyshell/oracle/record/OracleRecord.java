@@ -117,7 +117,7 @@ public class OracleRecord extends DBObject implements DBRecord, ObjectCopier<Ora
     public OracleRecordProperty putValue(OracleColumn column, Object value) {
         OracleRecordProperty property = (OracleRecordProperty) this.getProperty(column.getName());
         if (property == null) {
-            property = new OracleRecordProperty(this, column, value, this.readonly);
+            property = new OracleRecordProperty(this, column, value, this.readonly || !column.isDmlWritable());
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
             this.properties.put(column.getName(), property);
         } else {
@@ -187,7 +187,7 @@ public class OracleRecord extends DBObject implements DBRecord, ObjectCopier<Ora
         DBRecordData recordData = new DBRecordData();
         for (OracleColumn column : this.getColumns()) {
             OracleRecordProperty property = (OracleRecordProperty) this.getProperty(column.getName());
-            if (property == null) {
+            if (property == null || !column.isDmlWritable()) {
                 continue;
             }
             // 主键忽略
@@ -205,6 +205,18 @@ public class OracleRecord extends DBObject implements DBRecord, ObjectCopier<Ora
                 continue;
             }
             recordData.put(property.getColumn(), value);
+        }
+        return recordData;
+    }
+
+    @Override
+    public DBRecordData getChangedRecordData() {
+        DBRecordData recordData = new DBRecordData();
+        for (String columnName : this.columns()) {
+            OracleRecordProperty property = (OracleRecordProperty) this.getProperty(columnName);
+            if (property != null && property.isChanged() && property.getColumn().isDmlWritable()) {
+                recordData.put(property.getColumn(), property.get());
+            }
         }
         return recordData;
     }
