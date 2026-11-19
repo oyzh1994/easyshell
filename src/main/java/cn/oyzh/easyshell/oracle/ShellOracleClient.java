@@ -1551,7 +1551,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             if (returnGeneratedKey) {
                 builder.append(" RETURNING ")
                         .append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.ORACLE))
-                        .append(" INTO :newId");
+                        .append(" INTO ?");
             }
             String sql = builder.toString();
             if (returnGeneratedKey) {

@@ -15,6 +15,9 @@ import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleFunction;
 import cn.oyzh.easyshell.oracle.foreignKey.OracleForeignKey;
+import cn.oyzh.easyshell.oracle.record.OracleInsertRecordParam;
+import cn.oyzh.easyshell.oracle.record.OracleRecord;
+import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
 import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
@@ -465,6 +468,18 @@ public class OracleDockerIntegrationTest {
                 assertTrue(resultSet.getLong(1) > 0);
                 assertFalse(resultSet.next());
             }
+
+            OracleRecord generatedRecord = new OracleRecord(createdColumns);
+            generatedRecord.putValue(createdText, "generated-key");
+            OracleRecordPrimaryKey generatedPrimaryKey = new OracleRecordPrimaryKey();
+            generatedPrimaryKey.init(createdId, generatedRecord);
+            OracleInsertRecordParam insertParam = new OracleInsertRecordParam();
+            insertParam.setSchema("DEMO");
+            insertParam.setTableName(tableName);
+            insertParam.setRecord(generatedRecord.getRecordData());
+            insertParam.setPrimaryKey(generatedPrimaryKey);
+            assertEquals(1, client.insertRecord(insertParam));
+            assertTrue(generatedPrimaryKey.getReturnData() != null);
 
             createdText.setSize(128);
             OracleColumn createdAt = new OracleColumn("created_at");
