@@ -4185,17 +4185,17 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      *
      * @param schema   模式名称
      * @param sqlList  SQL列表
-     * @param parallel 是否使用独立连接并行执行
+     * @param newConnection 是否使用新连接
      * @return 受影响的行数
      */
-    public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
+    public int insertBatch(String schema, List<String> sqlList, boolean newConnection) {
         Connection connection = null;
         boolean autoCommit = true;
         Statement statement = null;
         int result = 0;
         try {
-            connection = parallel ? this.getConnManager().newConnection(null) : this.getConnManager().connection(schema);
-            if (parallel && StringUtil.isNotBlank(schema)) {
+            connection = newConnection ? this.getConnManager().newConnection(null) : this.getConnManager().connection(schema);
+            if (newConnection && StringUtil.isNotBlank(schema)) {
                 connection.setSchema(schema);
             }
             autoCommit = connection.getAutoCommit();
@@ -4232,7 +4232,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
         } finally {
             IOUtil.close(statement);
             if (connection != null) {
-                if (parallel) {
+                if (newConnection) {
                     IOUtil.close(connection);
                 } else {
                     try {

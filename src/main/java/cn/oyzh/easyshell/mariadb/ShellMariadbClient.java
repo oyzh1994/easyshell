@@ -3188,10 +3188,6 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             int[] results = statement.executeBatch();
             connection.commit();
             IOUtil.close(statement);
-            // 新连接需要立刻释放
-            if (newConnection) {
-                IOUtil.close(connection);
-            }
             for (int i : results) {
                 result += i;
             }
@@ -3200,6 +3196,10 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             DBUtil.rollback(connection);
             throw new ShellException(ex);
+        }finally {
+            if (newConnection) {
+                IOUtil.close(connection);
+            }
         }
         return result;
     }

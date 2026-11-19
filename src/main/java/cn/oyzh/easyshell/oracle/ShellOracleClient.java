@@ -3769,15 +3769,14 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      *
      * @param schema   模式名称
      * @param sqlList  SQL列表
-     * @param parallel 是否使用独立连接并行执行
+     * @param newConnection 是否使用新连接
      * @return 受影响的行数
      */
-    public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
+    public int insertBatch(String schema, List<String> sqlList, boolean newConnection) {
         Connection connection = null;
         int result = 0;
-        boolean closeConnection = parallel;
         try {
-            connection = parallel ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
+            connection = newConnection ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
@@ -3797,7 +3796,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             DBUtil.rollback(connection);
             throw new ShellException(ex);
         } finally {
-            if (closeConnection) {
+            if (newConnection) {
                 IOUtil.close(connection);
             }
         }

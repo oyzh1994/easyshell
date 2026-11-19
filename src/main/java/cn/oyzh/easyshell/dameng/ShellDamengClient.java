@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
-import cn.oyzh.easyshell.dameng.condition.DamengConditionUtil;
 import cn.oyzh.easyshell.dameng.foreignKey.DamengForeignKey;
 import cn.oyzh.easyshell.dameng.function.DamengAlertFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengCreateFunctionParam;
@@ -3093,14 +3092,14 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      *
      * @param schema   模式名称
      * @param sqlList  SQL列表
-     * @param parallel 是否使用独立连接并行执行
+     * @param newConnection 是否使用新连接
      * @return 受影响的行数
      */
-    public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
+    public int insertBatch(String schema, List<String> sqlList, boolean newConnection) {
         Connection connection = null;
         int result = 0;
         try {
-            connection = parallel ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
+            connection = newConnection ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
@@ -3110,9 +3109,6 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             int[] results = statement.executeBatch();
             connection.commit();
             IOUtil.close(statement);
-            if (parallel) {
-                IOUtil.close(connection);
-            }
             for (int i : results) {
                 result += i;
             }
@@ -3121,6 +3117,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             DBUtil.rollback(connection);
             throw new ShellException(ex);
+        } finally {
+            if (newConnection) {
+                IOUtil.close(connection);
+            }
         }
         return result;
     }
