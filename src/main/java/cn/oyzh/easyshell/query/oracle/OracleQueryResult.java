@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.query.oracle;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
@@ -122,6 +123,23 @@ public abstract class OracleQueryResult extends DBQueryResult {
      */
     public void setColumns(OracleColumns columns) {
         this.columns = columns;
+    }
+
+    /**
+     * 回填字段所属模式
+     * Oracle表达式、聚合等结果的元数据通常不返回模式，使用执行SQL时的当前模式补充
+     *
+     * @param schema 模式名称
+     */
+    public void fillSchema(String schema) {
+        if (StringUtil.isBlank(schema) || this.columns == null) {
+            return;
+        }
+        for (OracleColumn column : this.columns) {
+            if (StringUtil.isBlank(column.getSchema())) {
+                column.setSchema(schema);
+            }
+        }
     }
 
     /**

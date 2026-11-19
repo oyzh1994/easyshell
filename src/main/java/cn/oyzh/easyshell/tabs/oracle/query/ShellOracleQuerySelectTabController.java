@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.oracle.query;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.data.oracle.dto.ShellOracleDataExportTable;
@@ -406,7 +407,9 @@ public class ShellOracleQuerySelectTabController extends RichTabController {
             exportTable.setName(query.getName());
             exportTable.columns(this.result.getColumns());
             exportTable.setRecords(this.result.getRecords());
-            ShellOracleViewFactory.exportData(this.dbItem.client(), this.result.schema(), null, 1, exportTable);
+            String schema = StringUtil.isNotBlank(this.result.schema())
+                    ? this.result.schema() : this.dbItem.schema();
+            ShellOracleViewFactory.exportData(this.dbItem.client(), schema, null, 1, exportTable);
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }

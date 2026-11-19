@@ -348,8 +348,8 @@ public class OracleDockerIntegrationTest {
             assertTrue(columns.stream().anyMatch(column -> "ID".equals(column.getName())));
             assertTrue(client.selectForeignKeys("DEMO", "ORDERS").stream()
                     .anyMatch(foreignKey -> "ORDERS_USER_FK".equals(foreignKey.getName())
-                            && "RESTRICT".equals(foreignKey.getUpdatePolicy())
-                            && "RESTRICT".equals(foreignKey.getDeletePolicy())));
+                            && "NO ACTION".equals(foreignKey.getUpdatePolicy())
+                            && "NO ACTION".equals(foreignKey.getDeletePolicy())));
 
             List<OracleColumn> viewColumns = client.viewColumns("DEMO", "V_ORDERS");
             OracleColumn viewId = viewColumns.stream()
@@ -371,6 +371,9 @@ public class OracleDockerIntegrationTest {
             Object viewTimestamp = ShellOracleDataUtil.valueStandardization(
                     viewResult.getRecords().get(0).getValue("CREATED_AT"));
             assertTrue(viewTimestamp instanceof java.sql.Timestamp);
+
+            var expressionResult = client.executeSingleSql("DEMO", "SELECT ID + 1 AS NEXT_ID FROM USERS");
+            assertEquals("DEMO", expressionResult.schema());
         } finally {
             client.close();
         }
@@ -551,7 +554,7 @@ public class OracleDockerIntegrationTest {
 
         try {
             client.createTable(createParam);
-            assertForeignKeyPolicies(client, childName, "RESTRICT", "RESTRICT");
+            assertForeignKeyPolicies(client, childName, "NO ACTION", "NO ACTION");
 
             OracleForeignKey loaded = client.selectForeignKeys("DEMO", childName).stream()
                     .filter(item -> constraintName.equals(item.getName()))
@@ -559,7 +562,7 @@ public class OracleDockerIntegrationTest {
                     .orElseThrow();
             loaded.setDeletePolicy("CASCADE");
             alertForeignKeyPolicy(client, childTable, loaded);
-            assertForeignKeyPolicies(client, childName, "CASCADE", "RESTRICT");
+            assertForeignKeyPolicies(client, childName, "CASCADE", "NO ACTION");
 
             loaded = client.selectForeignKeys("DEMO", childName).stream()
                     .filter(item -> constraintName.equals(item.getName()))
@@ -568,7 +571,7 @@ public class OracleDockerIntegrationTest {
             loaded.setDeletePolicy("RESTRICT");
             loaded.setUpdatePolicy("RESTRICT");
             alertForeignKeyPolicy(client, childTable, loaded);
-            assertForeignKeyPolicies(client, childName, "RESTRICT", "RESTRICT");
+            assertForeignKeyPolicies(client, childName, "NO ACTION", "NO ACTION");
         } finally {
             dropForeignKeyTables(client, parentName, childName);
         }

@@ -408,6 +408,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         ResultSet resultSet = statement.getResultSet();
                         result.setFullColumn(parser.isFullColumn(sql));
                         result.parseResult(resultSet, connection, !parser.isSelect(sql));
+                        result.fillSchema(schema);
                         IOUtil.close(resultSet);
                         result.setSuccess(true);
                     } else {
@@ -3180,6 +3181,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                             WHERE STATEMENT_ID = '""" + statementId + "' ORDER BY ID";
                     ResultSet resultSet = statement.executeQuery(planSql);
                     result.parseResult(resultSet, connection);
+                    result.fillSchema(schema);
                     result.setUsed(System.nanoTime() - startTime);
                     IOUtil.close(resultSet);
                     result.setSuccess(true);
@@ -3221,6 +3223,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     ResultSet resultSet = statement.getResultSet();
                     result.setFullColumn(parser.isFullColumn(sql));
                     result.parseResult(resultSet, connection, !parser.isSelect(sql));
+                    result.fillSchema(schema);
                     IOUtil.close(resultSet);
                     result.setSuccess(true);
                 } else {
