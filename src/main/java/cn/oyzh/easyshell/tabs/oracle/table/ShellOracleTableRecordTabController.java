@@ -2,18 +2,19 @@ package cn.oyzh.easyshell.tabs.oracle.table;
 
 import cn.oyzh.common.dto.Paging;
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.fx.oracle.record.ShellOracleRecordColumn;
+import cn.oyzh.easyshell.fx.oracle.record.ShellOracleRecordTableView;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleRecordFilter;
 import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
-import cn.oyzh.easyshell.domain.ShellSetting;
-import cn.oyzh.easyshell.fx.oracle.record.ShellOracleRecordColumn;
-import cn.oyzh.easyshell.fx.oracle.record.ShellOracleRecordTableView;
-import cn.oyzh.easyshell.popups.oracle.ShellOracleRecordFilterPopupController;
 import cn.oyzh.easyshell.popups.db.ShellDBPageSettingPopupController;
+import cn.oyzh.easyshell.popups.oracle.ShellOracleRecordFilterPopupController;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.trees.oracle.table.ShellOracleTableTreeItem;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.oracle.ShellOracleViewFactory;
 import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.DBRecordData;
@@ -33,7 +34,6 @@ import cn.oyzh.fx.plus.node.NodeUtil;
 import cn.oyzh.fx.plus.window.PopupAdapter;
 import cn.oyzh.fx.plus.window.PopupManager;
 import cn.oyzh.fx.plus.window.StageManager;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -390,10 +390,10 @@ public class ShellOracleTableRecordTabController extends RichTabController {
      */
     private void doReload() {
         try {
-            // 检查是否有未保存的数据
-            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
-                return;
-            }
+//            // 检查是否有未保存的数据
+//            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+//                return;
+//            }
             // 初始化字段
             this.initColumns(new OracleColumns(this.getItem().columns()));
             // 初始化数据

@@ -404,10 +404,10 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
      */
     private void doReload() {
         try {
-            // 检查是否有未保存的数据
-            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
-                return;
-            }
+//            // 检查是否有未保存的数据
+//            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+//                return;
+//            }
             // 执行查询
             this.result = this.dbItem.executeSingleScript(this.result.getContent());
             // 初始化数据

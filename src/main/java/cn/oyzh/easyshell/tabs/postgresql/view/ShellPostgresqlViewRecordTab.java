@@ -19,11 +19,6 @@ import java.util.List;
  */
 public class ShellPostgresqlViewRecordTab extends ShellPostgresqlBaseTab {
 
-    /**
-     * 标签打开时间
-     */
-    private final long openedTime = System.currentTimeMillis();
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "postgresql/view/shellPostgresqlViewRecordTab.fxml";

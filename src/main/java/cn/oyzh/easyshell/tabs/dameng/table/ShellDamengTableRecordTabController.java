@@ -390,10 +390,10 @@ public class ShellDamengTableRecordTabController extends RichTabController {
      */
     private void doReload() {
         try {
-            // 检查是否有未保存的数据
-            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
-                return;
-            }
+//            // 检查是否有未保存的数据
+//            if (this.apply.isEnable() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+//                return;
+//            }
             // 初始化字段
             this.initColumns(new DamengColumns(this.getItem().columns()));
             // 初始化数据

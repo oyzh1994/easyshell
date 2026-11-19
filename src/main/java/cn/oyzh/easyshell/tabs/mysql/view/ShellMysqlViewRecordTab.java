@@ -19,11 +19,6 @@ import java.util.List;
  */
 public class ShellMysqlViewRecordTab extends ShellMysqlBaseTab {
 
-    /**
-     * 标签打开时间
-     */
-    private final long openedTime = System.currentTimeMillis();
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "mysql/view/shellMysqlViewRecordTab.fxml";

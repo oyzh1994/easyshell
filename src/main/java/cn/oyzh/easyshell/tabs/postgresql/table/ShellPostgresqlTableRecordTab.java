@@ -20,13 +20,6 @@ import java.util.List;
  */
 public class ShellPostgresqlTableRecordTab extends ShellPostgresqlBaseTab {
 
-    // /**
-    //  * 标签打开时间
-    //  */
-    // private final long openedTime = System.currentTimeMillis();
-
-    // private PostgresqlTableTreeItem item;
-
     @Override
     protected String url() {
         return FXConst.TAB_PATH + "postgresql/table/shellPostgresqlTableRecordTab.fxml";
