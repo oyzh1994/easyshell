@@ -53,6 +53,11 @@ public class OracleRecordPrimaryKey {
         this.columnName = column.getName();
         this.autoIncrement = column.isAutoIncrement();
         this.data = record.getValue(this.columnName);
+        if (this.data != null
+                && column.isDefaultValueSequence()
+                && this.data.toString().strip().equalsIgnoreCase(column.getDefaultValueString())) {
+            this.data = null;
+        }
         this.originalData = record.getOriginal(this.columnName);
     }
 

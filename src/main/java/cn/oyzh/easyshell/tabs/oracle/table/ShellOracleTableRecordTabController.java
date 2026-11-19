@@ -246,7 +246,8 @@ public class ShellOracleTableRecordTabController extends RichTabController {
         record.setCreated(true);
         for (OracleColumn column : record.getColumns()) {
             Object val = null;
-            if (column.supportDefaultValue()) {
+            // 自增列和序列默认值由数据库生成，不能在新增记录时填入表达式
+            if (column.supportDefaultValue() && !column.isAutoIncrement() && !column.isDefaultValueSequence()) {
                 val = column.getDefaultValue();
             }
             record.putValue(column, val);

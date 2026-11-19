@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.oracle.generator.view.OracleViewCreateSqlGenerator;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
+import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
 import cn.oyzh.easyshell.oracle.table.OracleAlertTableParam;
 import cn.oyzh.easyshell.oracle.table.OracleCreateTableParam;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
@@ -95,6 +96,20 @@ public class OracleProtocolTest {
 
         DBRecordData data = record.getRecordData();
         assertFalse(data.columns().contains("CREATED_AT"));
+    }
+
+    @Test
+    public void treatsSequenceDefaultAsMissingPrimaryKeyValue() {
+        OracleColumn id = column("ID", "NUMBER", "DEMO", "USERS");
+        id.setAutoIncrement(true);
+        id.setDefaultValue("\"DEMO\".\"ISEQ$$_75188\".nextval");
+        OracleRecord record = new OracleRecord(new OracleColumns(List.of(id)));
+        record.putValue(id, id.getDefaultValue());
+
+        OracleRecordPrimaryKey primaryKey = new OracleRecordPrimaryKey();
+        primaryKey.init(id, record);
+        assertNull(primaryKey.getData());
+        assertTrue(primaryKey.shouldReturnData());
     }
 
     @Test

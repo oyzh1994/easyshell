@@ -1059,7 +1059,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             Connection connection = statement.getConnection();
             IOUtil.close(statement);
             String sequenceName = column.getSequenceName();
-            String sql = "SELECT " + DBUtil.wrap(sequenceName, DBDialect.ORACLE) + ".CURRVAL FROM DUAL";
+            // DATA_DEFAULT中的序列引用已经带有必要的模式名和引号，不能再整体包装
+            String sql = "SELECT " + sequenceName + ".CURRVAL FROM DUAL";
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             if (resultSet.next()) {
@@ -1773,7 +1774,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         if (StringUtil.isBlank(sequenceName)) {
             return null;
         }
-        String sql = "SELECT " + DBUtil.wrap(sequenceName, DBDialect.ORACLE) + ".CURRVAL FROM DUAL";
+        // 序列名可能来自触发器或DATA_DEFAULT，可能已经带模式名/引号
+        String sql = "SELECT " + sequenceName + ".CURRVAL FROM DUAL";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             return resultSet.next() ? resultSet.getLong(1) : null;

@@ -642,6 +642,21 @@ public class OracleDockerIntegrationTest {
             assertEquals(1, client.insertRecord(insertParam));
             assertTrue(generatedPrimaryKey.getReturnData() != null);
 
+            OracleRecord defaultKeyRecord = new OracleRecord(createdColumns);
+            defaultKeyRecord.putValue(createdText, "generated-key-with-default");
+            if (createdId.getDefaultValue() != null) {
+                defaultKeyRecord.putValue(createdId, createdId.getDefaultValue());
+            }
+            OracleRecordPrimaryKey defaultKeyPrimaryKey = new OracleRecordPrimaryKey();
+            defaultKeyPrimaryKey.init(createdId, defaultKeyRecord);
+            OracleInsertRecordParam defaultKeyParam = new OracleInsertRecordParam();
+            defaultKeyParam.setSchema("DEMO");
+            defaultKeyParam.setTableName(tableName);
+            defaultKeyParam.setRecord(defaultKeyRecord.getRecordData());
+            defaultKeyParam.setPrimaryKey(defaultKeyPrimaryKey);
+            assertEquals(1, client.insertRecord(defaultKeyParam));
+            assertTrue(defaultKeyPrimaryKey.getReturnData() != null);
+
             createdText.setSize(128);
             OracleColumn createdAt = new OracleColumn("created_at");
             createdAt.setSchema("DEMO");
