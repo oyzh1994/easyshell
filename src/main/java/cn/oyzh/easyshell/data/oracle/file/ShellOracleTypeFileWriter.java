@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.oracle.file;
 
 import cn.oyzh.common.date.DateUtil;
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
@@ -10,7 +11,11 @@ import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileWriter;
 
 import java.io.Closeable;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +47,19 @@ public abstract class ShellOracleTypeFileWriter extends DBDataTypeFileWriter {
         //            return "ST_GeomFromText('" + value + "')";
         //        }
         if (column.isDateType() || column.supportTimestamp()) {
+            if (value instanceof OffsetDateTime date) {
+                if (isTimestampTz(column)) {
+                    return date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                }
+                return DateUtil.format(date.toLocalDateTime(), config.getDateFormat());
+            }
+            if (value instanceof Instant instant) {
+                OffsetDateTime date = instant.atOffset(ZoneOffset.UTC);
+                if (isTimestampTz(column)) {
+                    return date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                }
+                return DateUtil.format(date.toLocalDateTime(), config.getDateFormat());
+            }
             if (value instanceof LocalDateTime date) {
                 return DateUtil.format(date, config.getDateFormat());
             }
@@ -49,8 +67,14 @@ public abstract class ShellOracleTypeFileWriter extends DBDataTypeFileWriter {
                 return DateUtil.format(date, config.getDateFormat());
             }
         }
+        if (column.isObjectType() || column.isCollectionType()) {
+            String json = value instanceof CharSequence sequence
+                    ? sequence.toString() : JSONUtil.toJson(value);
+            return TextUtil.escape(json);
+        }
         if (column.supportJson()) {
-            return TextUtil.escape(value.toString());
+            return TextUtil.escape(value instanceof CharSequence sequence
+                    ? sequence.toString() : JSONUtil.toJson(value));
         }
         if (column.supportBinary()) {
             byte[] bytes = (byte[]) value;
@@ -61,7 +85,7 @@ public abstract class ShellOracleTypeFileWriter extends DBDataTypeFileWriter {
         }
         if (column.supportBoolean()) {
             if (value instanceof Boolean b) {
-                return b ? "1" : "0";
+                return b ? "TRUE" : "FALSE";
             }
         }
         if (column.supportBit()) {
@@ -81,5 +105,12 @@ public abstract class ShellOracleTypeFileWriter extends DBDataTypeFileWriter {
             return value;
         }
         return value.toString();
+    }
+
+    private static boolean isTimestampTz(OracleColumn column) {
+        String type = column.getType();
+        return type != null
+                && type.toUpperCase().contains("WITH TIME ZONE")
+                && !type.toUpperCase().contains("LOCAL");
     }
 }

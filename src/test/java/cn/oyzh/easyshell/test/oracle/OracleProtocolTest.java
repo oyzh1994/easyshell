@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.test.oracle;
 
 import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataRunSqlFileHandler;
+import cn.oyzh.easyshell.data.oracle.file.ShellOracleDataImportHelper;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
+import cn.oyzh.easyshell.oracle.column.OracleTypeMeta;
 import cn.oyzh.easyshell.oracle.generator.sequence.OracleSequenceCreateSqlGenerator;
 import cn.oyzh.easyshell.oracle.generator.table.OracleTableAlertSqlGenerator;
 import cn.oyzh.easyshell.oracle.generator.table.OracleTableCreateSqlGenerator;
@@ -26,11 +28,18 @@ import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import oracle.sql.INTERVALDS;
+import oracle.sql.INTERVALYM;
+import oracle.sql.ROWID;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -91,6 +100,79 @@ public class OracleProtocolTest {
     }
 
     @Test
+    public void formatsUnconventionalOracleSqlLiterals() {
+        assertEquals("5-3", ShellOracleDataUtil.valueStandardization(new INTERVALYM("5-3")));
+        assertEquals("12 3:4:5.678901",
+                ShellOracleDataUtil.valueStandardization(new INTERVALDS("12 3:4:5.678901")));
+        try {
+            assertEquals("AAAR3qAAEAAACvaAAA",
+                    ShellOracleDataUtil.valueStandardization(new ROWID("AAAR3qAAEAAACvaAAA")));
+        } catch (SQLException ex) {
+            fail(ex.getMessage());
+        }
+        OracleColumn intervalYm = column("V", "INTERVAL YEAR(2) TO MONTH", "DEMO", "T");
+        assertEquals("INTERVAL '5-3' YEAR TO MONTH",
+                ShellOracleDataUtil.parameterizedForSql(intervalYm, "5-3"));
+        OracleColumn intervalDs = column("V", "INTERVAL DAY(2) TO SECOND(6)", "DEMO", "T");
+        assertEquals("INTERVAL '12 3:4:5.678901' DAY TO SECOND(6)",
+                ShellOracleDataUtil.parameterizedForSql(intervalDs, "12 3:4:5.678901"));
+        OracleColumn rowid = column("V", "ROWID", "DEMO", "T");
+        assertEquals("'AAAR3qAAEAAACvaAAA'",
+                ShellOracleDataUtil.parameterizedForSql(rowid, "AAAR3qAAEAAACvaAAA"));
+        OracleColumn xml = column("V", "XMLTYPE", "DEMO", "T");
+        assertEquals("XMLTYPE('<root/>')",
+                ShellOracleDataUtil.parameterizedForSql(xml, "<root/>"));
+        OracleColumn json = column("V", "JSON", "DEMO", "T");
+        assertEquals("JSON('{\"a\":1}')",
+                ShellOracleDataUtil.parameterizedForSql(json, "{\"a\":1}"));
+        OracleColumn vector = column("V", "VECTOR", "DEMO", "T");
+        assertEquals("TO_VECTOR('[1,2,3]')",
+                ShellOracleDataUtil.parameterizedForSql(vector, "[1,2,3]"));
+        OracleColumn bool = column("V", "BOOLEAN", "DEMO", "T");
+        assertEquals("TRUE", ShellOracleDataUtil.parameterizedForSql(bool, true));
+        OracleColumn date = column("V", "DATE", "DEMO", "T");
+        assertEquals("TO_DATE('2026-02-11 10:20:30','YYYY-MM-DD HH24:MI:SS')",
+                ShellOracleDataUtil.parameterizedForSql(date, LocalDateTime.of(2026, 2, 11, 10, 20, 30)));
+        OracleColumn timestampTz = column("V", "TIMESTAMP(6) WITH TIME ZONE", "DEMO", "T");
+        assertEquals("TO_TIMESTAMP_TZ('2026-02-11 10:20:30.123456+08:00','YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')",
+                ShellOracleDataUtil.parameterizedForSql(timestampTz,
+                        OffsetDateTime.of(2026, 2, 11, 10, 20, 30, 123456000, ZoneOffset.ofHours(8))));
+    }
+
+    @Test
+    public void parsesIsoTimestampValuesOnImport() throws Exception {
+        DBDataImportConfig config = new DBDataImportConfig();
+        config.setDateFormat("yyyy-MM-dd HH:mm:ss");
+        OracleColumn timestampTz = column("V", "TIMESTAMP(6) WITH TIME ZONE", "DEMO", "T");
+        assertEquals("TO_TIMESTAMP_TZ('2026-02-11 10:20:30.123456+08:00','YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')",
+                ShellOracleDataImportHelper.parameterized(timestampTz,
+                        "2026-02-11T10:20:30.123456+08:00", config));
+        OracleColumn timestamp = column("V", "TIMESTAMP(6)", "DEMO", "T");
+        assertEquals("TO_TIMESTAMP('2026-02-11 10:20:30.123456','YYYY-MM-DD HH24:MI:SS.FF6')",
+                ShellOracleDataImportHelper.parameterized(timestamp,
+                        "2026-02-11T10:20:30.123456", config));
+    }
+
+    @Test
+    public void excludesNonWritableColumnsFromImportSql() throws Exception {
+        OracleColumn id = column("ID", "NUMBER", "DEMO", "T");
+        OracleColumn virtual = column("C_VIRTUAL", "NUMBER", "DEMO", "T");
+        virtual.setVirtual(true);
+        OracleColumn bfile = column("C_BFILE", "BFILE", "DEMO", "T");
+        OracleColumns columns = new OracleColumns(List.of(id, virtual, bfile));
+        OracleRecord record = new OracleRecord(columns);
+        record.putValue(id, 1);
+        record.putValue(virtual, 2);
+        record.putValue(bfile, "a.bfile");
+        DBDataImportConfig config = new DBDataImportConfig();
+        String sql = ShellOracleDataImportHelper.toInsertSql(
+                columns, List.of(record), config).get(0);
+        assertTrue(sql.contains("\"ID\""));
+        assertFalse(sql.contains("C_VIRTUAL"));
+        assertFalse(sql.contains("C_BFILE"));
+    }
+
+    @Test
     public void ignoresOracleTimestampDefaultExpressions() {
         OracleColumn createdAt = column("CREATED_AT", "TIMESTAMP(6)", "DEMO", "USERS");
         OracleRecord record = new OracleRecord(new OracleColumns(List.of(createdAt)));
@@ -127,6 +209,9 @@ public class OracleProtocolTest {
         OracleColumn object = column("C_OBJECT", "T_ADDR", "DEMO", "ALL_TYPE_TEST_OBJ");
         object.setTypeOwner("DEMO");
         object.setTypeCode("OBJECT");
+        OracleTypeMeta varcharMeta = new OracleTypeMeta(null, "VARCHAR2", null, List.of(), null);
+        object.setTypeMeta(new OracleTypeMeta("DEMO", "T_ADDR", "OBJECT",
+                List.of(new OracleTypeMeta.Attribute("STREET", varcharMeta)), null));
         OracleColumn anyData = column("C_ANYDATA", "ANYDATA", "DEMO", "ALL_TYPE_TEST_OBJ");
         anyData.setTypeOwner("SYS");
         anyData.setTypeCode("ANYDATA");
@@ -137,7 +222,7 @@ public class OracleProtocolTest {
         record.putValue(virtual, "computed");
         record.putValue(bfile, "external.dat");
         record.putValue(xml, "<root/>");
-        record.putValue(object, "T_ADDR(1)");
+        record.putValue(object, "{\"STREET\":\"Main St\"}");
         record.putValue(anyData, "data");
 
         DBRecordData data = record.getRecordData();

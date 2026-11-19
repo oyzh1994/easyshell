@@ -491,6 +491,12 @@ public class OracleDockerIntegrationTest {
             assertTrue(nestedValue instanceof List);
             assertEquals(List.of("tag1", "tag2"), nestedValue);
             assertNull(records.get(0).getValue("C_ANYDATA"));
+            String insertSql = ShellOracleDataUtil.toInsertSql(
+                    new OracleColumns(columns), records.get(0), true);
+            assertTrue(insertSql.contains("\"T_ADDR\"("));
+            assertTrue(insertSql.contains("\"T_NUM_ARRAY\"("));
+            assertTrue(insertSql.contains("\"T_TAG_LIST\"("));
+            assertTrue(insertSql.contains("'Main St'"));
 
             OracleRecord emptyRecord = new OracleRecord(columns);
             emptyRecord.putValue(id, 2);

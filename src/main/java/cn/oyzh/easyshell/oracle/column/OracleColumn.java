@@ -59,6 +59,11 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     private String typeCode;
 
     /**
+     * 对象/集合类型元数据
+     */
+    private OracleTypeMeta typeMeta;
+
+    /**
      * 字段值
      */
     private StringProperty valueProperty;
@@ -783,6 +788,7 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
             this.setType(column.getType());
             this.setTypeOwner(column.typeOwner);
             this.setTypeCode(column.typeCode);
+            this.setTypeMeta(column.typeMeta);
             this.setComment(column.comment);
             this.setValue(column.getValue());
             this.setNullable(column.nullable);
@@ -1013,6 +1019,24 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
      */
     public void setTypeCode(String typeCode) {
         this.typeCode = typeCode;
+    }
+
+    /**
+     * 获取类型元数据
+     *
+     * @return 类型元数据
+     */
+    public OracleTypeMeta getTypeMeta() {
+        return typeMeta;
+    }
+
+    /**
+     * 设置类型元数据
+     *
+     * @param typeMeta 类型元数据
+     */
+    public void setTypeMeta(OracleTypeMeta typeMeta) {
+        this.typeMeta = typeMeta;
     }
 
     /**

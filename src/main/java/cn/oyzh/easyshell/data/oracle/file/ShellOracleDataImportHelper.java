@@ -1,10 +1,13 @@
 package cn.oyzh.easyshell.data.oracle.file;
 
 import cn.oyzh.common.date.DateUtil;
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
+import cn.oyzh.easyshell.util.oracle.OracleComplexValueUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -15,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +47,44 @@ public class ShellOracleDataImportHelper {
         if (value.toString().isEmpty()) {
             return null;
         }
+        if (column.isObjectType() || column.isCollectionType()) {
+            return OracleComplexValueUtil.toSqlLiteral(column, value);
+        }
+        if (column.supportBoolean()) {
+            if (value instanceof Boolean bool) {
+                return bool ? "TRUE" : "FALSE";
+            }
+            if (value instanceof Number number) {
+                return number.intValue() != 0 ? "TRUE" : "FALSE";
+            }
+            String text = value.toString().trim();
+            if ("1".equals(text) || "true".equalsIgnoreCase(text)) {
+                return "TRUE";
+            }
+            if ("0".equals(text) || "false".equalsIgnoreCase(text)) {
+                return "FALSE";
+            }
+        }
+        String type = column.getType() == null ? "" : column.getType().toUpperCase();
+        if (isIntervalYm(type)) {
+            return "INTERVAL " + DBUtil.wrapData(value, DBDialect.ORACLE) + " YEAR TO MONTH";
+        }
+        if (isIntervalDs(type)) {
+            return "INTERVAL " + DBUtil.wrapData(value, DBDialect.ORACLE) + " DAY TO SECOND(6)";
+        }
+        if (isRowId(type)) {
+            return DBUtil.wrapData(value, DBDialect.ORACLE);
+        }
+        if (isXmlType(type)) {
+            return "XMLTYPE(" + DBUtil.wrapData(value, DBDialect.ORACLE) + ")";
+        }
+        if (isVector(type)) {
+            return "TO_VECTOR(" + DBUtil.wrapData(value, DBDialect.ORACLE) + ")";
+        }
+        if (column.supportJson()) {
+            String json = value instanceof CharSequence sequence ? sequence.toString() : JSONUtil.toJson(value);
+            return "JSON(" + DBUtil.wrapData(json, DBDialect.ORACLE) + ")";
+        }
         if (column.isDateType()) {
             if (value instanceof CharSequence date) {
                 Date date1 = DateUtil.parse(date, config.getDateFormat());
@@ -54,15 +96,24 @@ public class ShellOracleDataImportHelper {
         }
         if (column.supportTimestamp()) {
             if (value instanceof CharSequence date) {
-                LocalDateTime date1 = DateUtil.parseLocalDateTime(date, config.getDateFormat());
+                OffsetDateTime offsetDateTime = parseOffsetDateTime(date.toString(), config.getDateFormat());
+                if (offsetDateTime != null) {
+                    if (isTimestampTz(column)) {
+                        return timestampTzLiteral(offsetDateTime);
+                    }
+                    return timestampLiteral(offsetDateTime.toLocalDateTime());
+                }
+                LocalDateTime date1 = parseLocalDateTime(date.toString(), config.getDateFormat());
                 return timestampLiteral(date1);
             }
             if (value instanceof Date date) {
                 return timestampLiteral(new java.sql.Timestamp(date.getTime()).toLocalDateTime());
             }
             if (value instanceof OffsetDateTime date) {
-                return "TO_TIMESTAMP_TZ('" + date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSXXX"))
-                        + "','YYYY-MM-DD HH24:MI:SS.FF3TZH:TZM')";
+                if (isTimestampTz(column)) {
+                    return timestampTzLiteral(date);
+                }
+                return timestampLiteral(date.toLocalDateTime());
             }
             if (value instanceof Instant date) {
                 return timestampLiteral(date.atOffset(ZoneOffset.UTC).toLocalDateTime());
@@ -77,8 +128,79 @@ public class ShellOracleDataImportHelper {
     }
 
     private static String timestampLiteral(LocalDateTime value) {
-        return "TO_TIMESTAMP('" + value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
-                + "','YYYY-MM-DD HH24:MI:SS.FF3')";
+        return "TO_TIMESTAMP('" + value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"))
+                + "','YYYY-MM-DD HH24:MI:SS.FF6')";
+    }
+
+    private static String timestampTzLiteral(OffsetDateTime value) {
+        return "TO_TIMESTAMP_TZ('" + value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSXXX"))
+                + "','YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')";
+    }
+
+    private static boolean isTimestampTz(OracleColumn column) {
+        String type = column.getType();
+        return type != null && type.toUpperCase().contains("WITH TIME ZONE");
+    }
+
+    private static boolean isIntervalYm(String type) {
+        return type.contains("INTERVAL YEAR");
+    }
+
+    private static boolean isIntervalDs(String type) {
+        return type.contains("INTERVAL DAY");
+    }
+
+    private static boolean isRowId(String type) {
+        return "ROWID".equals(type) || "UROWID".equals(type);
+    }
+
+    private static boolean isXmlType(String type) {
+        return type.contains("XMLTYPE");
+    }
+
+    private static boolean isVector(String type) {
+        return "VECTOR".equals(type);
+    }
+
+    private static OffsetDateTime parseOffsetDateTime(String value, String dateFormat) {
+        List<DateTimeFormatter> formatters = new ArrayList<>();
+        formatters.add(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS XXX"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS XXX"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss XXX"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSXXX"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSXXX"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssXXX"));
+        if (StringUtil.isNotBlank(dateFormat)
+                && !dateFormat.contains("X") && !dateFormat.contains("Z")) {
+            formatters.add(DateTimeFormatter.ofPattern(dateFormat + " XXX"));
+        }
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return OffsetDateTime.parse(value, formatter);
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        return null;
+    }
+
+    private static LocalDateTime parseLocalDateTime(String value, String dateFormat) throws ParseException {
+        List<DateTimeFormatter> formatters = new ArrayList<>();
+        formatters.add(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                return LocalDateTime.parse(value, formatter);
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        try {
+            return DateUtil.parseLocalDateTime(value, dateFormat);
+        } catch (Exception ex) {
+            throw new ParseException("Unable to parse Oracle timestamp value: " + value, 0);
+        }
     }
 
     /**
@@ -92,16 +214,22 @@ public class ShellOracleDataImportHelper {
      */
     public static List<String> toInsertSql(OracleColumns columns, List<OracleRecord> records, DBDataImportConfig config) throws Exception {
         List<String> insertSql = new ArrayList<>();
+        List<OracleColumn> columnList = columns.stream()
+                .filter(OracleColumn::isDmlWritable)
+                .toList();
+        if (columnList.isEmpty()) {
+            return insertSql;
+        }
         for (OracleRecord record : records) {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.append(DBUtil.wrap(columns.tableName(), DBDialect.ORACLE));
             sql.append("(");
-            for (OracleColumn column : columns) {
+            for (OracleColumn column : columnList) {
                 sql.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(") VALUES (");
-            for (OracleColumn column : columns) {
+            for (OracleColumn column : columnList) {
                 Object val = record.getValue(column.getName());
                 val = DBUtil.unwrapData(val, DBDialect.ORACLE);
                 val = parameterized(column, val, config);

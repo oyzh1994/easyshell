@@ -64,6 +64,7 @@ import cn.oyzh.easyshell.query.oracle.OracleExecuteResult;
 import cn.oyzh.easyshell.query.oracle.OracleExplainResult;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
 import cn.oyzh.easyshell.util.oracle.OracleComplexValueUtil;
+import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -1297,6 +1298,16 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            for (OracleColumn column : columns) {
+                if (column.isObjectType() || column.isCollectionType()) {
+                    try {
+                        column.setTypeMeta(OracleComplexValueUtil.loadTypeMeta(
+                                connection, column.getTypeOwner(), column.getType()));
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, tableName, columns, false);
             // 返回排序后的数据
@@ -1441,6 +1452,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     Object data = resultSet.getObject(column.getName());
                     if (column.isObjectType() || column.isCollectionType()) {
                         data = OracleComplexValueUtil.toJsonValue(connection, data);
+                    } else if (data instanceof oracle.sql.TIMESTAMPLTZ) {
+                        data = ShellOracleDataUtil.valueStandardization(connection, data);
                     }
                     record.putValue(column, data);
                 }
@@ -4200,6 +4213,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     Object data = resultSet.getObject(column.getName());
                     if (column.isObjectType() || column.isCollectionType()) {
                         data = OracleComplexValueUtil.toJsonValue(connection, data);
+                    } else if (data instanceof oracle.sql.TIMESTAMPLTZ) {
+                        data = ShellOracleDataUtil.valueStandardization(connection, data);
                     }
                     record.putValue(column, data);
                 }

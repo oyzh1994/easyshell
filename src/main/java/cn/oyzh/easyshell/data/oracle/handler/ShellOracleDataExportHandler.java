@@ -4,6 +4,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
+import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleSelectRecordParam;
@@ -21,6 +22,7 @@ import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +119,11 @@ public class ShellOracleDataExportHandler extends DBDataExportHandler {
         this.message("Exporting Table " + table.getName());
         this.message("Exporting Records of Table " + table.getName());
         long start = 0;
-        OracleColumns columns = new OracleColumns(table.selectedColumns());
+        // 虚拟列、BFILE、ANYDATA等不可直接写入的列不参与导出
+        List<OracleColumn> exportColumns = table.selectedColumns().stream()
+                .filter(OracleColumn::isDmlWritable)
+                .toList();
+        OracleColumns columns = new OracleColumns(exportColumns);
         try (ShellOracleTypeFileWriter writer = this.initWriter(table.getFilePath(), columns)) {
             this.writeHeader(writer, table, columns);
             if (!columns.isEmpty()) {
@@ -211,9 +217,10 @@ public class ShellOracleDataExportHandler extends DBDataExportHandler {
             objects.add(object.toMap());
         }
         // 规整化值
+        Connection connection = this.dbClient.getConnManager().connection(this.getName());
         for (Map<String, Object> object : objects) {
             for (Map.Entry<String, Object> entry : object.entrySet()) {
-                entry.setValue(ShellOracleDataUtil.valueStandardization(entry.getValue()));
+                entry.setValue(ShellOracleDataUtil.valueStandardization(connection, entry.getValue()));
             }
         }
         writer.writeRecords(objects);
