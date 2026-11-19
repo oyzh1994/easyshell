@@ -1,0 +1,162 @@
+package cn.oyzh.easyshell.postgresql;
+
+import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
+import cn.oyzh.easyshell.postgresql.column.PostgresqlColumnControl;
+import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
+import cn.oyzh.easyshell.postgresql.generator.table.PostgresqlTableAlertSqlGenerator;
+import cn.oyzh.easyshell.postgresql.generator.table.PostgresqlTableCreateSqlGenerator;
+import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
+import cn.oyzh.easyshell.postgresql.table.PostgresqlAlertTableParam;
+import cn.oyzh.easyshell.postgresql.table.PostgresqlCreateTableParam;
+import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlDataUtil;
+import cn.oyzh.fx.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class PostgresqlSerialAutoIncrementTest {
+
+    static {
+        DBColumnFieldManager.registerInitializer(DBDialect.POSTGRESQL, ShellPostgresqlColumnUtil::init);
+    }
+
+    @Test
+    public void infersSerialTypesFromPhysicalIntegers() {
+        assertEquals("SMALLSERIAL", ShellPostgresqlColumnUtil.serialTypeFor("SMALLINT"));
+        assertEquals("SERIAL", ShellPostgresqlColumnUtil.serialTypeFor("INTEGER"));
+        assertEquals("BIGSERIAL", ShellPostgresqlColumnUtil.serialTypeFor("BIGINT"));
+        assertEquals("SMALLINT", ShellPostgresqlColumnUtil.serialBaseType("SMALLSERIAL"));
+        assertEquals("INTEGER", ShellPostgresqlColumnUtil.serialBaseType("SERIAL"));
+        assertEquals("BIGINT", ShellPostgresqlColumnUtil.serialBaseType("BIGSERIAL"));
+    }
+
+    @Test
+    public void createsSerialWithoutIdentityOrDefaultClause() {
+        PostgresqlColumn id = column("id", "INTEGER", true, "SERIAL");
+        PostgresqlColumns columns = columns(id);
+        PostgresqlCreateTableParam param = new PostgresqlCreateTableParam();
+        param.setTable(table());
+        param.setColumns(columns);
+
+        String sql = PostgresqlTableCreateSqlGenerator.generateSqlSingle(param);
+
+        assertTrue(sql, sql.contains("\"id\" SERIAL"));
+        assertFalse(sql, sql.contains("GENERATED"));
+        assertFalse(sql, sql.contains("DEFAULT nextval"));
+    }
+
+    @Test
+    public void explicitInsertOnlyOverridesGeneratedAlwaysIdentity() {
+        PostgresqlColumn serial = column("id", "INTEGER", true, "SERIAL");
+        PostgresqlColumns serialColumns = columns(serial);
+        PostgresqlRecord serialRecord = new PostgresqlRecord(serialColumns);
+        serialRecord.putValue(serial, 1L);
+        String serialSql = ShellPostgresqlDataUtil.toInsertSql(serialColumns, serialRecord, true);
+
+        assertFalse(serialSql, serialSql.contains("OVERRIDING SYSTEM VALUE"));
+
+        PostgresqlColumn identity = column("id", "INTEGER", true, "GENERATED ALWAYS");
+        PostgresqlColumns identityColumns = columns(identity);
+        PostgresqlRecord identityRecord = new PostgresqlRecord(identityColumns);
+        identityRecord.putValue(identity, 1L);
+        String identitySql = ShellPostgresqlDataUtil.toInsertSql(identityColumns, identityRecord, true);
+
+        assertTrue(identitySql, identitySql.contains("OVERRIDING SYSTEM VALUE"));
+    }
+
+    @Test
+    public void convertsOrdinaryIntegerToSerialWithSequenceDefault() {
+        PostgresqlColumn original = column("id", "INTEGER", false, null);
+        PostgresqlColumn changed = PostgresqlColumnControl.of(original);
+        changed.setAutoIncrement(true);
+        changed.setAutoIncrementType("SERIAL");
+
+        String sql = PostgresqlTableAlertSqlGenerator.generateSqlSingle(alertParam(columns(changed)));
+
+        assertTrue(sql, sql.contains("CREATE SEQUENCE IF NOT EXISTS \"demo\".\"item_id_seq\" AS INTEGER;"));
+        assertTrue(sql, sql.contains("ALTER SEQUENCE \"demo\".\"item_id_seq\" OWNED BY \"demo\".\"item\".\"id\";"));
+        assertTrue(sql, sql.contains("SET DEFAULT nextval('\"demo\".\"item_id_seq\"'::regclass)"));
+    }
+
+    @Test
+    public void changesSerialWidthUsingPhysicalType() {
+        PostgresqlColumn original = column("id", "INTEGER", true, "SERIAL");
+        PostgresqlColumn changed = PostgresqlColumnControl.of(original);
+        changed.setAutoIncrementType("BIGSERIAL");
+
+        String sql = PostgresqlTableAlertSqlGenerator.generateSqlSingle(alertParam(columns(changed)));
+
+        assertTrue(sql, sql.contains("ALTER COLUMN \"id\" TYPE BIGINT"));
+        assertFalse(sql, sql.contains("TYPE BIGSERIAL"));
+        assertTrue(sql, sql.contains("ALTER SEQUENCE \"demo\".\"item_id_seq\" AS BIGINT;"));
+    }
+
+    @Test
+    public void convertsIdentityToSerial() {
+        PostgresqlColumn original = column("id", "INTEGER", true, "GENERATED BY DEFAULT");
+        PostgresqlColumn changed = PostgresqlColumnControl.of(original);
+        changed.setAutoIncrementType("SERIAL");
+
+        PostgresqlAlertTableParam param = alertParam(columns(changed));
+        param.setExistAutoIncrement(true);
+        String sql = PostgresqlTableAlertSqlGenerator.generateSqlSingle(param);
+
+        assertTrue(sql, sql.contains("DROP IDENTITY IF EXISTS;"));
+        assertTrue(sql, sql.contains("CREATE SEQUENCE IF NOT EXISTS \"demo\".\"item_id_seq\""));
+        assertFalse(sql, sql.contains("ADD GENERATED"));
+    }
+
+    @Test
+    public void convertsSerialToIdentity() {
+        PostgresqlColumn original = column("id", "INTEGER", true, "SERIAL");
+        PostgresqlColumn changed = PostgresqlColumnControl.of(original);
+        changed.setAutoIncrementType("GENERATED ALWAYS");
+
+        PostgresqlAlertTableParam param = alertParam(columns(changed));
+        param.setExistAutoIncrement(true);
+        String sql = PostgresqlTableAlertSqlGenerator.generateSqlSingle(param);
+
+        assertTrue(sql, sql.contains("DROP DEFAULT"));
+        assertTrue(sql, sql.contains("ADD GENERATED ALWAYS AS IDENTITY"));
+        assertFalse(sql, sql.contains("CREATE SEQUENCE"));
+    }
+
+    private static PostgresqlColumn column(String name, String type, boolean autoIncrement,
+                                           String autoIncrementType) {
+        PostgresqlColumn column = new PostgresqlColumn();
+        column.setName(name);
+        column.setType(type);
+        column.setSchema("demo");
+        column.setTableName("item");
+        column.setPosition(1);
+        column.setNullable(false);
+        column.setAutoIncrement(autoIncrement);
+        column.setAutoIncrementType(autoIncrementType);
+        return column;
+    }
+
+    private static PostgresqlColumns columns(PostgresqlColumn column) {
+        return new PostgresqlColumns(List.of(column));
+    }
+
+    private static PostgresqlTable table() {
+        PostgresqlTable table = new PostgresqlTable();
+        table.setSchema("demo");
+        table.setName("item");
+        return table;
+    }
+
+    private static PostgresqlAlertTableParam alertParam(PostgresqlColumns columns) {
+        PostgresqlAlertTableParam param = new PostgresqlAlertTableParam();
+        param.setTable(table());
+        param.setColumns(columns);
+        return param;
+    }
+}

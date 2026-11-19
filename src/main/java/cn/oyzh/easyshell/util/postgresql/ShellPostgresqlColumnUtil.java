@@ -380,4 +380,73 @@ public class ShellPostgresqlColumnUtil {
                 "TIME WITHOUT TIME ZONE",
                 "TIME WITH TIME ZONE");
     }
+
+    /**
+     * 是否为早期SERIAL系列伪类型
+     *
+     * @param type 类型
+     * @return 结果
+     */
+    public static boolean isSerialType(String type) {
+        return StringUtil.equalsAnyIgnoreCase(type,
+                "SMALLSERIAL", "SERIAL2",
+                "SERIAL", "SERIAL4",
+                "BIGSERIAL", "SERIAL8");
+    }
+
+    /**
+     * 根据物理整型推断SERIAL系列伪类型
+     *
+     * @param type 类型
+     * @return SERIAL类型，非整型返回null
+     */
+    public static String serialTypeFor(String type) {
+        if (StringUtil.equalsAnyIgnoreCase(type, "SMALLSERIAL", "SERIAL2")) {
+            return "SMALLSERIAL";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "SERIAL", "SERIAL4")) {
+            return "SERIAL";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "BIGSERIAL", "SERIAL8")) {
+            return "BIGSERIAL";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "SMALLINT", "INT2")) {
+            return "SMALLSERIAL";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "INTEGER", "INT", "INT4")) {
+            return "SERIAL";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "BIGINT", "INT8")) {
+            return "BIGSERIAL";
+        }
+        return null;
+    }
+
+    /**
+     * 获取SERIAL系列伪类型对应的物理整型
+     *
+     * @param type 类型
+     * @return 物理整型，非SERIAL类型原样返回
+     */
+    public static String serialBaseType(String type) {
+        if (StringUtil.equalsAnyIgnoreCase(type, "SMALLSERIAL", "SERIAL2")) {
+            return "SMALLINT";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "SERIAL", "SERIAL4")) {
+            return "INTEGER";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "BIGSERIAL", "SERIAL8")) {
+            return "BIGINT";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "SMALLINT", "INT2")) {
+            return "SMALLINT";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "INTEGER", "INT", "INT4")) {
+            return "INTEGER";
+        }
+        if (StringUtil.equalsAnyIgnoreCase(type, "BIGINT", "INT8")) {
+            return "BIGINT";
+        }
+        return type;
+    }
 }

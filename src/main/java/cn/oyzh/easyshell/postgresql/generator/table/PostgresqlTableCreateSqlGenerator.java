@@ -145,8 +145,9 @@ public class PostgresqlTableCreateSqlGenerator extends DBSqlGenerator {
      */
     protected void columnHandle(StringBuilder builder, PostgresqlCreateTableParam param) {
         for (PostgresqlColumn column : param.getColumns()) {
+            String serialType = column.getSerialType();
             builder.append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL));
-            builder.append(" ").append(column.getType());
+            builder.append(" ").append(serialType == null ? column.getType() : serialType);
 
             // 字段长度
             if (column.supportSize() && column.getSize() != null) {
@@ -162,10 +163,10 @@ public class PostgresqlTableCreateSqlGenerator extends DBSqlGenerator {
 
             // PostgreSQL自增列使用 IDENTITY（SERIAL 系列类型本身即自增，不能再叠加 IDENTITY）
             boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement()
-                    && !this.isSerialType(column.getType());
+                    && serialType == null;
 
             // 默认值（PostgreSQL自增列不能有DEFAULT约束）
-            if (!isIdentity && column.getDefaultValueFix() != null) {
+            if (!isIdentity && serialType == null && column.getDefaultValueFix() != null) {
                 builder.append(" DEFAULT ").append(column.getDefaultValueFix());
             }
 
@@ -176,7 +177,7 @@ public class PostgresqlTableCreateSqlGenerator extends DBSqlGenerator {
                 builder.append(" NOT NULL");
             }
 
-            // PostgreSQL自增列统一使用 GENERATED ... AS IDENTITY
+            // SERIAL系列已在类型定义中体现，其余自增列使用GENERATED ... AS IDENTITY
             if (isIdentity) {
                 builder.append(" ").append(this.identityClause(column));
             }
@@ -308,17 +309,6 @@ public class PostgresqlTableCreateSqlGenerator extends DBSqlGenerator {
             builder.append(",\n");
             this.changeFlag = true;
         }
-    }
-
-    /**
-     * 是否为SERIAL系列类型
-     *
-     * @param type 类型
-     * @return 结果
-     */
-    private boolean isSerialType(String type) {
-        return StringUtil.equalsAnyIgnoreCase(type, "SERIAL", "BIGSERIAL", "SMALLSERIAL",
-                "SERIAL2", "SERIAL4", "SERIAL8");
     }
 
     /**

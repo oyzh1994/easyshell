@@ -95,6 +95,38 @@ public class ShellPostgresqlUtil {
     }
 
     /**
+     * 构建将普通整型列转换为SERIAL语义所需的SQL
+     *
+     * @param schema       模式名称
+     * @param tableName    表名称
+     * @param columnName   字段名称
+     * @param physicalType 物理整型
+     * @return SQL列表
+     */
+    public static List<String> buildSerialColumnSql(String schema, String tableName,
+                                                    String columnName, String physicalType) {
+        String fullName = StringUtil.isBlank(schema)
+                ? DBUtil.wrap(tableName, DBDialect.POSTGRESQL)
+                : DBUtil.wrap(schema, tableName, DBDialect.POSTGRESQL);
+        String sequenceName = tableName + "_" + columnName + "_seq";
+        String sequence = StringUtil.isBlank(schema)
+                ? DBUtil.wrap(sequenceName, DBDialect.POSTGRESQL)
+                : DBUtil.wrap(schema, sequenceName, DBDialect.POSTGRESQL);
+        String column = DBUtil.wrap(columnName, DBDialect.POSTGRESQL);
+        String columnFullName = fullName + "." + column;
+        String sequenceLiteral = String.valueOf(DBUtil.wrapData(sequence, DBDialect.POSTGRESQL));
+        return List.of(
+                "CREATE SEQUENCE IF NOT EXISTS " + sequence + " AS " + physicalType + ";",
+                "ALTER SEQUENCE " + sequence + " AS " + physicalType + ";",
+                "ALTER SEQUENCE " + sequence + " OWNED BY " + columnFullName + ";",
+                "ALTER TABLE " + fullName + " ALTER COLUMN " + column
+                        + " SET DEFAULT nextval(" + sequenceLiteral + "::regclass);",
+                "SELECT setval(" + sequenceLiteral + "::regclass, COALESCE(MAX("
+                        + column + "), 1), MAX(" + column + ") IS NOT NULL) FROM " + fullName + ";"
+        );
+    }
+
+    /**
      * 查找顶层VALUES关键字
      *
      * @param sql SQL

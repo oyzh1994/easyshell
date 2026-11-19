@@ -87,8 +87,8 @@ public class ShellPostgresqlDataUtil {
         List<String> list = new ArrayList<>();
         List<PostgresqlColumn> columnList = columns.sortOfPosition();
         final String sqlBase = "INSERT INTO " + tableFullName(columns);
-        // 是否包含标识列
-        boolean identityColumn = hasIdentityColumn(columnList);
+        // 只有GENERATED ALWAYS AS IDENTITY需要覆写系统值，SERIAL和BY DEFAULT允许直接写入
+        boolean alwaysIdentityColumn = hasGeneratedAlwaysIdentityColumn(columnList);
         for (PostgresqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
             if (includeFields) {
@@ -101,8 +101,7 @@ public class ShellPostgresqlDataUtil {
                 }
                 sql.append(")");
             }
-            // PostgreSQL标识列（GENERATED ALWAYS AS IDENTITY）显式插入值需要指定OVERRIDING SYSTEM VALUE
-            if (identityColumn) {
+            if (alwaysIdentityColumn) {
                 sql.append(" OVERRIDING SYSTEM VALUE");
             }
             sql.append(" VALUES (");
@@ -199,14 +198,14 @@ public class ShellPostgresqlDataUtil {
     }
 
     /**
-     * 是否包含标识列
+     * 是否包含GENERATED ALWAYS AS IDENTITY字段
      *
      * @param columns 字段列表
      * @return 结果
      */
-    private static boolean hasIdentityColumn(List<PostgresqlColumn> columns) {
+    private static boolean hasGeneratedAlwaysIdentityColumn(List<PostgresqlColumn> columns) {
         for (PostgresqlColumn column : columns) {
-            if (column.isAutoIncrement() && column.supportAutoIncrement()) {
+            if (column.isGeneratedAlwaysIdentity()) {
                 return true;
             }
         }

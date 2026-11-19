@@ -4,6 +4,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.sql.Connection;
@@ -409,11 +410,14 @@ public class ShellPostgresqlHelper {
             if (excludes.contains(columnLabel)) {
                 continue;
             }
-            String columnTypeName = normalizeColumnType(resultSetMetaData.getColumnTypeName(i));
+            String rawTypeName = resultSetMetaData.getColumnTypeName(i);
+            String columnTypeName = normalizeColumnType(rawTypeName);
             int displaySize = resultSetMetaData.getColumnDisplaySize(i);
             int precision = resultSetMetaData.getPrecision(i);
             int scale = resultSetMetaData.getScale(i);
-            boolean autoIncrement = resultSetMetaData.isAutoIncrement(i);
+            boolean serial = ShellPostgresqlColumnUtil.isSerialType(rawTypeName)
+                    || ShellPostgresqlColumnUtil.isSerialType(columnTypeName);
+            boolean autoIncrement = resultSetMetaData.isAutoIncrement(i) || serial;
             int nullable = resultSetMetaData.isNullable(i);
             String tableName = resultSetMetaData.getTableName(i);
             String schemaName = resultSetMetaData.getSchemaName(i);
@@ -431,6 +435,9 @@ public class ShellPostgresqlHelper {
             dbColumn.setTableName(tableName);
             dbColumn.setType(columnTypeName);
             dbColumn.setAutoIncrement(autoIncrement);
+            if (serial) {
+                dbColumn.setAutoIncrementType(columnTypeName);
+            }
             dbColumn.setNullable(nullable == ResultSetMetaData.columnNullable);
 
             columns.add(dbColumn);
@@ -449,9 +456,12 @@ public class ShellPostgresqlHelper {
             return null;
         }
         return switch (typeName.toLowerCase()) {
-            case "int2", "smallserial" -> "SMALLINT";
-            case "int4", "serial" -> "INTEGER";
-            case "int8", "bigserial" -> "BIGINT";
+            case "int2" -> "SMALLINT";
+            case "int4" -> "INTEGER";
+            case "int8" -> "BIGINT";
+            case "smallserial", "serial2" -> "SMALLSERIAL";
+            case "serial", "serial4" -> "SERIAL";
+            case "bigserial", "serial8" -> "BIGSERIAL";
             case "float4" -> "REAL";
             case "float8" -> "DOUBLE PRECISION";
             case "bool" -> "BOOLEAN";

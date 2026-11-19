@@ -363,6 +363,97 @@ public class PostgresqlColumn extends DBObject implements DBColumn, ObjectCopier
     }
 
     /**
+     * 获取原自动递增状态
+     *
+     * @return 原自动递增状态
+     */
+    public Boolean getAutoIncrementOriginal() {
+        return (Boolean) super.getOriginalData("autoIncrement");
+    }
+
+    /**
+     * 获取原字段类型
+     *
+     * @return 原字段类型
+     */
+    public String getTypeOriginal() {
+        return (String) super.getOriginalData("type");
+    }
+
+    /**
+     * 获取SERIAL系列类型
+     *
+     * @return SERIAL类型，非SERIAL自增返回null
+     */
+    public String getSerialType() {
+        if (ShellPostgresqlColumnUtil.isSerialType(this.getType())) {
+            return ShellPostgresqlColumnUtil.serialTypeFor(this.getType());
+        }
+        if (!this.isAutoIncrement()) {
+            return null;
+        }
+        if (ShellPostgresqlColumnUtil.isSerialType(this.autoIncrementType)) {
+            return ShellPostgresqlColumnUtil.serialTypeFor(this.autoIncrementType);
+        }
+        return this.isDefaultValueSequence() ? ShellPostgresqlColumnUtil.serialTypeFor(this.getType()) : null;
+    }
+
+    /**
+     * 获取原SERIAL系列类型
+     *
+     * @return SERIAL类型，非SERIAL自增返回null
+     */
+    public String getSerialTypeOriginal() {
+        if (ShellPostgresqlColumnUtil.isSerialType(this.getTypeOriginal())) {
+            return ShellPostgresqlColumnUtil.serialTypeFor(this.getTypeOriginal());
+        }
+        if (!BooleanUtil.isTrue((Boolean) super.getOriginalData("autoIncrement"))) {
+            return null;
+        }
+        return ShellPostgresqlColumnUtil.isSerialType(this.getAutoIncrementTypeOriginal())
+                ? ShellPostgresqlColumnUtil.serialTypeFor(this.getAutoIncrementTypeOriginal())
+                : null;
+    }
+
+    /**
+     * 是否为SERIAL系列自增
+     *
+     * @return 结果
+     */
+    public boolean isSerialAutoIncrement() {
+        return this.getSerialType() != null;
+    }
+
+    /**
+     * 原字段是否为自动递增
+     *
+     * @return 结果
+     */
+    public boolean wasAutoIncrement() {
+        return BooleanUtil.isTrue(this.getAutoIncrementOriginal());
+    }
+
+    /**
+     * 原字段是否为SERIAL系列自增
+     *
+     * @return 结果
+     */
+    public boolean wasSerialAutoIncrement() {
+        return this.getSerialTypeOriginal() != null;
+    }
+
+    /**
+     * 是否为GENERATED ALWAYS AS IDENTITY
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedAlwaysIdentity() {
+        return this.isAutoIncrement()
+                && !this.isSerialAutoIncrement()
+                && StringUtil.containsIgnoreCase(this.autoIncrementType == null ? "" : this.autoIncrementType, "ALWAYS");
+    }
+
+    /**
      * 是否IDENTITY自动递增类型
      *
      * @return 结果

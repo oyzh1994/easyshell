@@ -10,6 +10,8 @@ import cn.oyzh.easyshell.postgresql.index.PostgresqlIndex;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlAlertTableParam;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
 import cn.oyzh.easyshell.postgresql.trigger.PostgresqlTrigger;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjectList;
 import cn.oyzh.fx.db.DBObjects;
@@ -200,11 +202,13 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
         // 修改字段
         for (PostgresqlColumn column : param.getColumns()) {
             if (PostgresqlColumns.isChanged(column)) {
-                boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement()
-                        && !this.isSerialType(column.getType());
-                boolean identityChanged = column.isAutoIncrementChanged() || column.isAutoIncrementTypeChanged();
+                String targetSerialType = column.getSerialType();
+                boolean isSerial = targetSerialType != null;
+                boolean isIdentity = column.isAutoIncrement() && !isSerial;
+                boolean autoIncrementChanged = column.isAutoIncrementChanged() || column.isAutoIncrementTypeChanged();
                 // 删除原有IDENTITY
-                if (param.isExistAutoIncrement() && identityChanged) {
+                if (param.isExistAutoIncrement() && column.wasAutoIncrement() && !column.wasSerialAutoIncrement()
+                        && autoIncrementChanged) {
                     builder = new StringBuilder();
                     builder.append("ALTER TABLE ")
                             .append(fullName)
@@ -213,9 +217,14 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                             .append(" DROP IDENTITY IF EXISTS;");
                     this.sqlList.add(builder.toString());
                 }
-                // 修改字段类型：只有类型、长度或小数位真正变化时才生成 TYPE 语句，
-                // 避免仅修改注释/默认值等属性时改写原始字段类型定义。
-                boolean typeChanged = column.isTypeChanged()
+                // SERIAL只是伪类型，ALTER COLUMN TYPE必须使用其物理整型
+                String originalSerialType = column.getSerialTypeOriginal();
+                String originalPhysicalType = ShellPostgresqlColumnUtil.serialBaseType(
+                        originalSerialType == null ? column.getTypeOriginal() : originalSerialType);
+                String targetPhysicalType = ShellPostgresqlColumnUtil.serialBaseType(
+                        isSerial ? targetSerialType : column.getType());
+                boolean physicalTypeChanged = !StringUtil.equalsIgnoreCase(originalPhysicalType, targetPhysicalType);
+                boolean typeChanged = physicalTypeChanged
                         || column.isSizeChanged()
                         || column.isDigitsChanged();
                 if (typeChanged) {
@@ -225,37 +234,28 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                             .append(" ALTER COLUMN ")
                             .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL))
                             .append(" TYPE");
-                    this.appendColumnTypeOnly(builder, column);
+                    this.appendColumnTypeOnly(builder, column, false, targetPhysicalType);
                     builder.append(";");
                     this.sqlList.add(builder.toString());
                 }
-                // 修改默认值，PostgreSQL自增列不能有DEFAULT约束
-                if (column.isDefaultValueChanged()) {
+                // 切换自增模式时清理旧的IDENTITY或序列默认值
+                boolean dropDefault = column.isDefaultValueChanged()
+                        || (column.wasAutoIncrement() && !(isSerial && column.wasSerialAutoIncrement()))
+                        || (isIdentity && column.getDefaultValue() != null);
+                if (dropDefault) {
                     builder = new StringBuilder();
                     builder.append("ALTER TABLE ")
                             .append(fullName)
                             .append(" ALTER COLUMN ")
                             .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL));
-                    Object defaultValue = column.getDefaultValueFix();
-                    if (!isIdentity && defaultValue != null) {
+                    Object defaultValue = isSerial ? null : column.getDefaultValueFix();
+                    if (!isIdentity && !isSerial && defaultValue != null) {
                         builder.append(" SET DEFAULT ").append(defaultValue);
                     } else {
                         builder.append(" DROP DEFAULT");
                     }
                     builder.append(";");
                     this.sqlList.add(builder.toString());
-                } else if (identityChanged) {
-                    // 切换自增属性时，需清理原有的序列默认值或普通默认值
-                    if ((isIdentity && column.getDefaultValue() != null)
-                            || (!isIdentity && column.isDefaultValueSequence())) {
-                        builder = new StringBuilder();
-                        builder.append("ALTER TABLE ")
-                                .append(fullName)
-                                .append(" ALTER COLUMN ")
-                                .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL))
-                                .append(" DROP DEFAULT;");
-                        this.sqlList.add(builder.toString());
-                    }
                 }
                 // 修改非空约束：仅在可空属性真正变化时生成语句
                 if (column.isNullableChanged()) {
@@ -272,7 +272,7 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                     this.sqlList.add(builder.toString());
                 }
                 // 新增IDENTITY
-                if (isIdentity && identityChanged) {
+                if (isIdentity && autoIncrementChanged) {
                     builder = new StringBuilder();
                     builder.append("ALTER TABLE ")
                             .append(fullName)
@@ -280,6 +280,10 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
                             .append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL))
                             .append(" ADD ").append(this.identityClause(column)).append(";");
                     this.sqlList.add(builder.toString());
+                }
+                // 新增或切换SERIAL
+                if (isSerial && (autoIncrementChanged || physicalTypeChanged)) {
+                    this.serialHandle(param.getSchema(), param.tableName(), column, targetPhysicalType);
                 }
             }
         }
@@ -501,10 +505,12 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
      * @param created 是否为新增列
      */
     private void appendColumnType(StringBuilder builder, PostgresqlColumn column, boolean created) {
-        this.appendColumnTypeOnly(builder, column);
+        this.appendColumnTypeOnly(builder, column, true, null);
+        String serialType = column.getSerialType();
+        boolean isSerial = serialType != null;
         boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement()
-                && !this.isSerialType(column.getType());
-        if (!isIdentity && column.getDefaultValueFix() != null) {
+                && !isSerial;
+        if (!isIdentity && !isSerial && column.getDefaultValueFix() != null) {
             builder.append(" DEFAULT ").append(column.getDefaultValueFix());
         }
         if (column.isNullable()) {
@@ -521,10 +527,17 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
      * 追加列类型与长度定义
      *
      * @param builder SQL构建器
-     * @param column  列
+     * @param column           列
+     * @param allowSerial      是否允许输出SERIAL伪类型
+     * @param physicalType     物理类型覆盖值
      */
-    private void appendColumnTypeOnly(StringBuilder builder, PostgresqlColumn column) {
-        builder.append(" ").append(column.getType());
+    private void appendColumnTypeOnly(StringBuilder builder, PostgresqlColumn column,
+                                      boolean allowSerial, String physicalType) {
+        String serialType = allowSerial ? column.getSerialType() : null;
+        String type = allowSerial
+                ? (serialType == null ? column.getType() : serialType)
+                : (physicalType == null ? ShellPostgresqlColumnUtil.serialBaseType(column.getType()) : physicalType);
+        builder.append(" ").append(type);
         if (column.supportSize() && column.getSize() != null) {
             builder.append("(").append(column.getSize());
             if (column.supportDigits() && column.getDigits() != null) {
@@ -537,14 +550,17 @@ public class PostgresqlTableAlertSqlGenerator extends DBSqlGenerator {
     }
 
     /**
-     * 是否为SERIAL系列类型
+     * 为列建立SERIAL兼容的序列和默认值
      *
-     * @param type 类型
-     * @return 结果
+     * @param schema       模式名称
+     * @param tableName    表名称
+     * @param column       字段
+     * @param physicalType 物理整型
      */
-    private boolean isSerialType(String type) {
-        return StringUtil.equalsAnyIgnoreCase(type, "SERIAL", "BIGSERIAL", "SMALLSERIAL",
-                "SERIAL2", "SERIAL4", "SERIAL8");
+    private void serialHandle(String schema, String tableName,
+                              PostgresqlColumn column, String physicalType) {
+        this.sqlList.addAll(ShellPostgresqlUtil.buildSerialColumnSql(
+                schema, tableName, column.getName(), physicalType));
     }
 
     /**
