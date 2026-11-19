@@ -17,6 +17,7 @@ import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
 import cn.oyzh.easyshell.oracle.table.OracleSelectTableParam;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
 import cn.oyzh.easyshell.oracle.trigger.OracleTrigger;
+import cn.oyzh.easyshell.oracle.type.OracleTypeDefinition;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.easyshell.util.oracle.ShellOracleUtil;
@@ -65,6 +66,11 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
         try {
             this.writeHeader();
             if (this.dumpType == 1) {
+                try {
+                    this.dumpType();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
                 try {
                     this.dumpTable();
                 } catch (Exception ex) {
@@ -156,6 +162,34 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
     @Override
     protected void writeTail() throws IOException {
 
+    }
+
+    /**
+     * 转储用户自定义类型；类型必须先于依赖它的表和集合创建。
+     *
+     * @throws Exception 异常
+     */
+    protected void dumpType() throws Exception {
+        List<OracleTypeDefinition> types = this.dbClient.selectTypes(this.dbName);
+        for (OracleTypeDefinition type : types) {
+            this.checkInterrupt();
+            this.message("Dumping Type " + type.getName());
+            String line0 = "";
+            String line1 = "-- ----------------------------";
+            String line2 = "-- Type structure for " + type.getName();
+            String line3 = "-- ----------------------------";
+            String dropType = ShellOracleHelper.buildDropIfExistsSql("TYPE", type.getName(), "FORCE");
+            String createDefinition = sqlStatement(
+                    ShellOracleUtil.removeSchema(type.getCreateDefinition(), this.dbName));
+            this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropType, createDefinition));
+            if (StringUtil.isNotBlank(type.getBodyDefinition())) {
+                String body = sqlPlusBlock(
+                        ShellOracleUtil.removeSchema(type.getBodyDefinition(), this.dbName));
+                this.fileWriter.appendLines(List.of(
+                        "-- Type body structure for " + type.getName(), line3, body));
+            }
+            this.processedIncr();
+        }
     }
 
     /**
@@ -286,6 +320,11 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                 JulLog.info("查询耗时: {}ms", (end1 - start1));
                 long start2 = System.currentTimeMillis();
                 List<String> inserts = ShellOracleDataUtil.toInsertSql(columns, records, true);
+                if (StringUtil.isNotBlank(this.dbName)) {
+                    inserts = inserts.stream()
+                            .map(insert -> ShellOracleUtil.removeSchema(insert, this.dbName))
+                            .toList();
+                }
                 this.fileWriter.appendLines(inserts);
                 long end2 = System.currentTimeMillis();
                 JulLog.info("写入耗时: {}ms", (end2 - start2));

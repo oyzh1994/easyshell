@@ -350,6 +350,9 @@ public class ShellOracleDataUtil {
                 return timestampLiteral(date);
             }
         }
+        if (value instanceof CharSequence sequence) {
+            return quote(sequence.toString());
+        }
         return DBUtil.wrapData(value, DBDialect.ORACLE);
     }
 
@@ -397,7 +400,7 @@ public class ShellOracleDataUtil {
     }
 
     private static String quote(String value) {
-        return "'" + value.replace("'", "''") + "'";
+        return DBUtil.wrapString(value, DBDialect.ORACLE);
     }
 
     private static String timestampTzLiteral(OffsetDateTime value) {

@@ -629,6 +629,14 @@ public class ShellOracleHelper {
         }
     }
 
+    public static String getTypeDefinition(Connection connection, String schema, String typeName) throws SQLException {
+        return getMetadataDefinition(connection, schema, "TYPE", typeName);
+    }
+
+    public static String getTypeBodyDefinition(Connection connection, String schema, String typeName) throws SQLException {
+        return getMetadataDefinition(connection, schema, "TYPE BODY", typeName);
+    }
+
     private static String getMetadataDefinition(Connection connection, String schema, String objectType, String objectName) throws SQLException {
         String sql = "SELECT DBMS_METADATA.GET_DDL(?, ?, ?) FROM DUAL";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.test.oracle;
 
 import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataRunSqlFileHandler;
 import cn.oyzh.easyshell.data.oracle.file.ShellOracleDataImportHelper;
+import cn.oyzh.easyshell.data.oracle.file.ShellOracleXmlTypeFileWriter;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.ShellOracleHelper;
@@ -29,6 +30,7 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import oracle.sql.INTERVALDS;
@@ -36,11 +38,15 @@ import oracle.sql.INTERVALYM;
 import oracle.sql.ROWID;
 
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -154,6 +160,27 @@ public class OracleProtocolTest {
     }
 
     @Test
+    public void unescapesEscapedJsonValuesOnImport() throws Exception {
+        DBDataImportConfig config = new DBDataImportConfig();
+        OracleColumn json = column("C_JSON", "JSON", "DEMO", "T");
+        assertEquals("JSON('{\"id\":10,\"ok\":true}')",
+                ShellOracleDataImportHelper.parameterized(json,
+                        "{\\\"id\\\":10,\\\"ok\\\":true}", config));
+    }
+
+    @Test
+    public void quotesRawStringValuesOnImport() throws Exception {
+        DBDataImportConfig config = new DBDataImportConfig();
+        OracleColumn varchar = column("C_VARCHAR2", "VARCHAR2", "DEMO", "T");
+        assertEquals("'a''b'",
+                ShellOracleDataImportHelper.parameterized(varchar, "a'b", config));
+        assertEquals("''''",
+                ShellOracleDataImportHelper.parameterized(varchar, "'", config));
+        assertEquals("'''abc'''",
+                ShellOracleDataImportHelper.parameterized(varchar, "'abc'", config));
+    }
+
+    @Test
     public void excludesNonWritableColumnsFromImportSql() throws Exception {
         OracleColumn id = column("ID", "NUMBER", "DEMO", "T");
         OracleColumn virtual = column("C_VIRTUAL", "NUMBER", "DEMO", "T");
@@ -170,6 +197,33 @@ public class OracleProtocolTest {
         assertTrue(sql.contains("\"ID\""));
         assertFalse(sql.contains("C_VIRTUAL"));
         assertFalse(sql.contains("C_BFILE"));
+    }
+
+    @Test
+    public void escapesXmlTypeValuesInXmlExport() throws Exception {
+        OracleColumn xml = column("C_XML", "XMLTYPE", "DEMO", "T");
+        OracleColumn name = column("NAME", "VARCHAR2", "DEMO", "T");
+        OracleColumns columns = new OracleColumns(List.of(xml, name));
+        Path file = Files.createTempFile("oracle-xml-export-", ".xml");
+        try {
+            DBDataExportConfig config = new DBDataExportConfig();
+            try (ShellOracleXmlTypeFileWriter writer =
+                         new ShellOracleXmlTypeFileWriter(file.toString(), config, columns)) {
+                writer.writeHeader();
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("C_XML", "<root>\n  <item id=\"1\">值</item>\n</root>\n");
+                row.put("NAME", "a & b");
+                writer.writeRecord(row);
+                writer.writeTrial();
+            }
+            String content = Files.readString(file);
+            assertTrue(content.contains("&lt;root&gt;"));
+            assertTrue(content.contains("&lt;item id=&quot;1&quot;&gt;值&lt;/item&gt;"));
+            assertTrue(content.contains("a &amp; b"));
+            assertFalse(content.contains("\\n"));
+        } finally {
+            Files.deleteIfExists(file);
+        }
     }
 
     @Test

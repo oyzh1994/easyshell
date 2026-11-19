@@ -3,11 +3,13 @@ package cn.oyzh.easyshell.data.oracle.handler;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
+import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleSelectRecordParam;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
+import cn.oyzh.easyshell.oracle.type.OracleTypeDefinition;
 import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.easyshell.util.oracle.ShellOracleUtil;
 import cn.oyzh.fx.db.DBDialect;
@@ -77,6 +79,18 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         try {
+            if (!this.targetClient.existSchema(this.targetDatabase)) {
+                String container = this.targetClient.selectCurrentContainer();
+                this.message("Target schema \"" + this.targetDatabase + "\" does not exist in the current connection"
+                        + (StringUtil.isBlank(container) ? "" : " (container: " + container + ")")
+                        + ". Please check the connection Service Name (PDB) and reconnect before transporting.");
+                return;
+            }
+            // 目标用户可能已被删除重建，丢弃缓存会话，避免 ORA-23362/ORA-01129
+            this.targetClient.resetSchemaConnection(this.targetDatabase);
+            if (this.needTransportTypes() && !this.transportTypes()) {
+                return;
+            }
             if (CollectionUtil.isNotEmpty(this.tables)) {
                 // 全部表
                 List<OracleTable> allTables = new ArrayList<>();
@@ -114,6 +128,10 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
             }
             if (CollectionUtil.isNotEmpty(this.sequences)) {
                 for (DBDataTransportObject sequence : this.sequences) {
+                    if (isSystemGeneratedSequence(sequence.getName())) {
+                        this.message("Skip System Sequence " + sequence.getName());
+                        continue;
+                    }
                     this.transportSequence(sequence.getName());
                 }
             }
@@ -127,6 +145,77 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         } finally {
             this.message("Transport Finished");
         }
+    }
+
+    private boolean needTransportTypes() throws Exception {
+        if (CollectionUtil.isEmpty(this.tables)) {
+            return CollectionUtil.isNotEmpty(this.views)
+                    || CollectionUtil.isNotEmpty(this.functions)
+                    || CollectionUtil.isNotEmpty(this.procedures)
+                    || CollectionUtil.isNotEmpty(this.triggers);
+        }
+        for (DBDataTransportObject table : this.tables) {
+            try {
+                List<OracleColumn> columns = this.sourceClient.selectColumns(
+                        new OracleSelectColumnParam(this.sourceDatabase, table.getName()));
+                for (OracleColumn column : columns) {
+                    if (column.isObjectType() || column.isCollectionType()) {
+                        return true;
+                    }
+                }
+            } catch (Exception ex) {
+                this.exception(ex);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 传输用户自定义类型；类型必须先于依赖它的表、视图和存储程序创建。
+     *
+     * @throws Exception 异常
+     */
+    private boolean transportTypes() throws Exception {
+        List<OracleTypeDefinition> types = this.sourceClient.selectTypes(this.sourceDatabase);
+        if (CollectionUtil.isEmpty(types)) {
+            return true;
+        }
+        if (!this.targetClient.hasCreateTypePrivilege()) {
+            this.message("Target schema \"" + this.targetDatabase + "\" needs the CREATE TYPE privilege."
+                    + " Please ask a DBA to run: GRANT CREATE TYPE TO \"" + this.targetDatabase + "\";");
+            return false;
+        }
+        for (OracleTypeDefinition type : types) {
+            this.checkInterrupt();
+            this.dropTargetType(type.getName());
+            String createDefinition = ShellOracleUtil.removeSchema(
+                    type.getCreateDefinition(), this.sourceDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Type " + type.getName());
+            if (StringUtil.isNotBlank(type.getBodyDefinition())) {
+                String bodyDefinition = ShellOracleUtil.removeSchema(
+                        type.getBodyDefinition(), this.sourceDatabase);
+                this.targetClient.executeSqlSimple(this.targetDatabase, bodyDefinition);
+                this.message("Create Type Body " + type.getName());
+            }
+            this.processedIncr();
+        }
+        return true;
+    }
+
+    private void dropTargetType(String typeName) throws Exception {
+        if (this.targetClient.existObject(this.targetDatabase, typeName, "TYPE")) {
+            this.targetClient.executeSqlSimple(this.targetDatabase,
+                    "DROP TYPE " + DBUtil.wrap(typeName, DBDialect.ORACLE) + " FORCE");
+            this.message("Drop Type " + typeName);
+        } else {
+            this.message("Skip Drop Type " + typeName);
+        }
+        this.processedIncr();
+    }
+
+    private static boolean isSystemGeneratedSequence(String sequenceName) {
+        return sequenceName != null && sequenceName.startsWith("ISEQ$$_");
     }
 
     /**
@@ -169,6 +258,9 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                             break;
                         }
                         List<String> list = ShellOracleDataUtil.toInsertSql(columns, records, true);
+                        list = list.stream()
+                                .map(sql -> ShellOracleUtil.removeSchema(sql, this.sourceDatabase))
+                                .toList();
                         this.addInsert(list);
                         start += this.selectLimit;
                         // 更新状态

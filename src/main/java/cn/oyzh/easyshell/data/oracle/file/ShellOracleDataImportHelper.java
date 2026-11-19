@@ -4,12 +4,14 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.util.oracle.OracleComplexValueUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.text.ParseException;
@@ -48,7 +50,9 @@ public class ShellOracleDataImportHelper {
             return null;
         }
         if (column.isObjectType() || column.isCollectionType()) {
-            return OracleComplexValueUtil.toSqlLiteral(column, value);
+            String json = value instanceof CharSequence sequence
+                    ? DBDataUtil.normalizeJson(sequence.toString()) : JSONUtil.toJson(value);
+            return OracleComplexValueUtil.toSqlLiteral(column, json);
         }
         if (column.supportBoolean()) {
             if (value instanceof Boolean bool) {
@@ -67,23 +71,26 @@ public class ShellOracleDataImportHelper {
         }
         String type = column.getType() == null ? "" : column.getType().toUpperCase();
         if (isIntervalYm(type)) {
-            return "INTERVAL " + DBUtil.wrapData(value, DBDialect.ORACLE) + " YEAR TO MONTH";
+            return "INTERVAL " + DBUtil.wrapString(value.toString(), DBDialect.ORACLE) + " YEAR TO MONTH";
         }
         if (isIntervalDs(type)) {
-            return "INTERVAL " + DBUtil.wrapData(value, DBDialect.ORACLE) + " DAY TO SECOND(6)";
+            return "INTERVAL " + DBUtil.wrapString(value.toString(), DBDialect.ORACLE) + " DAY TO SECOND(6)";
         }
         if (isRowId(type)) {
-            return DBUtil.wrapData(value, DBDialect.ORACLE);
+            return DBUtil.wrapString(value.toString(), DBDialect.ORACLE);
         }
         if (isXmlType(type)) {
-            return "XMLTYPE(" + DBUtil.wrapData(value, DBDialect.ORACLE) + ")";
+            String xml = value instanceof CharSequence sequence
+                    ? TextUtil.unescape(sequence.toString()) : value.toString();
+            return "XMLTYPE(" + DBUtil.wrapString(xml, DBDialect.ORACLE) + ")";
         }
         if (isVector(type)) {
-            return "TO_VECTOR(" + DBUtil.wrapData(value, DBDialect.ORACLE) + ")";
+            return "TO_VECTOR(" + DBUtil.wrapString(value.toString(), DBDialect.ORACLE) + ")";
         }
         if (column.supportJson()) {
-            String json = value instanceof CharSequence sequence ? sequence.toString() : JSONUtil.toJson(value);
-            return "JSON(" + DBUtil.wrapData(json, DBDialect.ORACLE) + ")";
+            String json = value instanceof CharSequence sequence
+                    ? DBDataUtil.normalizeJson(sequence.toString()) : JSONUtil.toJson(value);
+            return "JSON(" + DBUtil.wrapString(json, DBDialect.ORACLE) + ")";
         }
         if (column.isDateType()) {
             if (value instanceof CharSequence date) {
@@ -123,6 +130,12 @@ public class ShellOracleDataImportHelper {
             byte[] bytes = value instanceof byte[] array ? array
                     : HexUtil.decodeHexStr(value.toString().replaceFirst("^(?i)0x", ""));
             return "HEXTORAW('" + HexUtil.encodeHexStr(bytes, false) + "')";
+        }
+        if (column.supportString()) {
+            return DBUtil.wrapString(TextUtil.unescape(value.toString()), DBDialect.ORACLE);
+        }
+        if (value instanceof CharSequence sequence) {
+            return DBUtil.wrapString(sequence.toString(), DBDialect.ORACLE);
         }
         return DBUtil.wrapData(value, DBDialect.ORACLE);
     }

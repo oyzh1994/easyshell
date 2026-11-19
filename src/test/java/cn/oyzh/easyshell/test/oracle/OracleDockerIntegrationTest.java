@@ -350,8 +350,10 @@ public class OracleDockerIntegrationTest {
             try (Connection connection = open(url, schema, password);
                  Statement statement = connection.createStatement()) {
                 statement.execute("CREATE TABLE \"" + schema + "\".\"" + sourceTable
-                        + "\" (\"ID\" NUMBER PRIMARY KEY, \"NAME\" VARCHAR2(50))");
-                statement.execute("INSERT INTO \"" + schema + "\".\"" + sourceTable + "\" VALUES (1, 'a')");
+                        + "\" (\"ID\" NUMBER PRIMARY KEY, \"NAME\" VARCHAR2(50),"
+                        + " \"V_NAME\" VARCHAR2(50) GENERATED ALWAYS AS (UPPER(\"NAME\")) VIRTUAL)");
+                statement.execute("INSERT INTO \"" + schema + "\".\"" + sourceTable
+                        + "\" (\"ID\", \"NAME\") VALUES (1, 'a')");
                 statement.execute("CREATE TRIGGER \"" + schema + "\".\"BAD_TRG\" BEFORE INSERT ON \""
                         + schema + "\".\"" + sourceTable + "\" FOR EACH ROW BEGIN INSERT INTO \""
                         + schema + "\".\"MISSING_TABLE\" VALUES (1); END;");
@@ -523,6 +525,77 @@ public class OracleDockerIntegrationTest {
                 client.close();
             }
             dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void recreatesStaleTargetSchemaSessionAfterUserRecreated() throws Exception {
+        Assume.assumeTrue(mode.equals("23c"));
+        String schema = "E2E_STALE_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "Stale2026";
+        String sequenceName = "STALE_SEQ";
+        createTemporarySchema(schema, password);
+        ShellOracleClient targetClient = openShellClient(systemUser, systemPassword);
+        try {
+            targetClient.executeSqlSimple(schema, "CREATE TABLE \"STALE_PROBE\" (\"ID\" NUMBER)");
+
+            dropTemporarySchema(schema);
+            createTemporarySchema(schema, password);
+
+            boolean staleSessionFailed = false;
+            try {
+                targetClient.executeSqlSimple(schema, "CREATE SEQUENCE \"" + sequenceName + "\" START WITH 1");
+            } catch (Exception ex) {
+                staleSessionFailed = true;
+            }
+            assertTrue("cached schema connection should be stale after user recreation", staleSessionFailed);
+            assertFalse(targetClient.existObject(schema, sequenceName, "SEQUENCE"));
+
+            targetClient.resetSchemaConnection(schema);
+            targetClient.executeSqlSimple(schema, "CREATE SEQUENCE \"" + sequenceName + "\" START WITH 1");
+            assertTrue(targetClient.existObject(schema, sequenceName, "SEQUENCE"));
+        } finally {
+            targetClient.close();
+            dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void transportsUserDefinedTypesBeforeTables() throws Exception {
+        Assume.assumeTrue(mode.equals("23c"));
+        String targetSchema = "E2E_TPT_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String tableName = "ALL_TYPE_TEST_OBJ";
+        createTemporarySchema(targetSchema, "Tpt2026");
+        ShellOracleClient sourceClient = openShellClient(user, password);
+        ShellOracleClient targetClient = openShellClient(systemUser, systemPassword);
+        try {
+            ShellOracleDataTransportHandler handler = new ShellOracleDataTransportHandler();
+            handler.setSourceClient(sourceClient);
+            handler.setTargetClient(targetClient);
+            handler.setSourceDatabase("DEMO");
+            handler.setTargetDatabase(targetSchema);
+            handler.setDataType(0);
+            DBDataTransportObject table = new DBDataTransportObject();
+            table.setName(tableName);
+            handler.setTables(List.of(table));
+            List<String> messages = new ArrayList<>();
+            handler.setMessageHandler(messages::add);
+            handler.doTransport();
+
+            assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
+            assertTrue(targetClient.existObject(targetSchema, "T_ADDR", "TYPE"));
+            assertTrue(targetClient.existObject(targetSchema, tableName, "TABLE"));
+            OracleSelectRecordParam param = new OracleSelectRecordParam();
+            param.setSchema(targetSchema);
+            param.setTableName(tableName);
+            param.setReadonly(true);
+            param.setStart(0L);
+            param.setLimit(100L);
+            assertFalse(targetClient.selectRecords(param).isEmpty());
+        } finally {
+            sourceClient.close();
+            targetClient.close();
+            dropTemporarySchema(targetSchema);
         }
     }
 
@@ -1297,6 +1370,10 @@ public class OracleDockerIntegrationTest {
             dumpHandler.doDump();
 
             String content = Files.readString(dumpFile);
+            if (mode.equals("23c")) {
+                assertTrue(content.contains("-- Type structure for T_ADDR"));
+                assertFalse(content.contains("\"DEMO\".\"T_ADDR\"("));
+            }
             assertTrue(content.contains("-- View structure for V_USERS"));
             assertTrue(content.contains("-- Procedure structure for ADD_USER"));
             assertFalse(content.contains("ISEQ$$_"));
@@ -1319,6 +1396,10 @@ public class OracleDockerIntegrationTest {
             runHandler.runFile();
 
             assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
+            if (mode.equals("23c")) {
+                assertTrue(targetClient.selectTypes(targetSchema).stream()
+                        .anyMatch(type -> "T_ADDR".equals(type.getName())));
+            }
             assertTrue(targetClient.selectViews(targetSchema).stream().anyMatch(view -> "V_USERS".equals(view.getName())));
             assertTrue(targetClient.selectProcedures(targetSchema).stream()
                     .anyMatch(procedure -> "ADD_USER".equals(procedure.getName())));

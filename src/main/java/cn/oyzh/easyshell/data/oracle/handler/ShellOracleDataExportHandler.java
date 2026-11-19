@@ -24,6 +24,7 @@ import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -214,7 +215,12 @@ public class ShellOracleDataExportHandler extends DBDataExportHandler {
     private void writeRecord(ShellOracleTypeFileWriter writer, ShellOracleDataExportTable table, OracleColumns columns, List<OracleRecord> records) throws Exception {
         List<Map<String, Object>> objects = new ArrayList<>();
         for (OracleRecord object : records) {
-            objects.add(object.toMap());
+            Map<String, Object> row = object.toMap();
+            Map<String, Object> filtered = new LinkedHashMap<>();
+            for (OracleColumn column : columns) {
+                filtered.put(column.getName(), row.get(column.getName()));
+            }
+            objects.add(filtered);
         }
         // 规整化值
         Connection connection = this.dbClient.getConnManager().connection(this.getName());

@@ -48,6 +48,7 @@ import cn.oyzh.easyshell.oracle.table.OracleSelectTableParam;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
 import cn.oyzh.easyshell.oracle.trigger.OracleSelectTriggerParam;
 import cn.oyzh.easyshell.oracle.trigger.OracleTrigger;
+import cn.oyzh.easyshell.oracle.type.OracleTypeDefinition;
 import cn.oyzh.easyshell.oracle.view.OracleAlertViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleSelectViewParam;
@@ -821,6 +822,135 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询模式下的用户自定义类型，并按依赖顺序排列。
+     *
+     * @param schema 模式名称
+     * @return 类型定义列表
+     */
+    public List<OracleTypeDefinition> selectTypes(String schema) {
+        try {
+            Connection connection = this.getConnManager().connection(schema);
+            List<OracleTypeDefinition> list = new ArrayList<>();
+            String sql = """
+                    SELECT TYPE_NAME, TYPECODE
+                    FROM ALL_TYPES
+                    WHERE OWNER = ?
+                      AND PREDEFINED = 'NO'
+                      AND TYPECODE IN ('OBJECT', 'COLLECTION')
+                    ORDER BY TYPE_NAME
+                    """;
+            this.printSql(sql);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, schema);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        OracleTypeDefinition type = new OracleTypeDefinition();
+                        type.setName(resultSet.getString("TYPE_NAME"));
+                        type.setTypeCode(resultSet.getString("TYPECODE"));
+                        list.add(type);
+                    }
+                }
+            }
+            if (list.isEmpty()) {
+                return list;
+            }
+            Map<String, OracleTypeDefinition> typeMap = new LinkedHashMap<>();
+            for (OracleTypeDefinition type : list) {
+                typeMap.put(type.getName().toUpperCase(), type);
+            }
+            this.collectTypeDependencies(connection, schema, typeMap, """
+                    SELECT TYPE_NAME, ATTR_TYPE_NAME AS REFERENCED_NAME
+                    FROM ALL_TYPE_ATTRS
+                    WHERE OWNER = ? AND ATTR_TYPE_OWNER = ?
+                    """);
+            this.collectTypeDependencies(connection, schema, typeMap, """
+                    SELECT TYPE_NAME, ELEM_TYPE_NAME AS REFERENCED_NAME
+                    FROM ALL_COLL_TYPES
+                    WHERE OWNER = ? AND ELEM_TYPE_OWNER = ?
+                    """);
+            this.collectTypeDependencies(connection, schema, typeMap, """
+                    SELECT TYPE_NAME, SUPERTYPE_NAME AS REFERENCED_NAME
+                    FROM ALL_TYPES
+                    WHERE OWNER = ? AND SUPERTYPE_OWNER = ?
+                    """);
+            Set<String> typeBodies = new HashSet<>();
+            String bodySql = "SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OWNER = ? AND OBJECT_TYPE = 'TYPE BODY'";
+            try (PreparedStatement statement = connection.prepareStatement(bodySql)) {
+                statement.setString(1, schema);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        typeBodies.add(resultSet.getString(1).toUpperCase());
+                    }
+                }
+            }
+            for (OracleTypeDefinition type : list) {
+                type.setCreateDefinition(ShellOracleHelper.getTypeDefinition(connection, schema, type.getName()));
+                if (typeBodies.contains(type.getName().toUpperCase())) {
+                    type.setBodyDefinition(ShellOracleHelper.getTypeBodyDefinition(connection, schema, type.getName()));
+                }
+            }
+            return sortTypes(list);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    private void collectTypeDependencies(Connection connection, String schema,
+                                         Map<String, OracleTypeDefinition> typeMap, String sql) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, schema);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    OracleTypeDefinition type = typeMap.get(resultSet.getString(1).toUpperCase());
+                    String referenced = resultSet.getString(2);
+                    if (type == null || StringUtil.isBlank(referenced)) {
+                        continue;
+                    }
+                    String dependency = referenced.toUpperCase();
+                    if (typeMap.containsKey(dependency) && !type.getDependencies().contains(dependency)) {
+                        type.getDependencies().add(dependency);
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<OracleTypeDefinition> sortTypes(List<OracleTypeDefinition> types) {
+        Map<String, OracleTypeDefinition> typeMap = new LinkedHashMap<>();
+        for (OracleTypeDefinition type : types) {
+            typeMap.put(type.getName().toUpperCase(), type);
+        }
+        List<OracleTypeDefinition> result = new ArrayList<>(types.size());
+        Set<String> visited = new HashSet<>();
+        Set<String> visiting = new HashSet<>();
+        for (OracleTypeDefinition type : types) {
+            sortType(type, typeMap, visited, visiting, result);
+        }
+        return result;
+    }
+
+    private static void sortType(OracleTypeDefinition type, Map<String, OracleTypeDefinition> typeMap,
+                                 Set<String> visited, Set<String> visiting, List<OracleTypeDefinition> result) {
+        String name = type.getName().toUpperCase();
+        if (visited.contains(name) || visiting.contains(name)) {
+            return;
+        }
+        visiting.add(name);
+        for (String dependency : type.getDependencies()) {
+            OracleTypeDefinition referenced = typeMap.get(dependency);
+            if (referenced != null) {
+                sortType(referenced, typeMap, visited, visiting, result);
+            }
+        }
+        visiting.remove(name);
+        if (visited.add(name)) {
+            result.add(type);
         }
     }
 
@@ -3370,6 +3500,67 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 移除指定模式的缓存连接。模式被删除重建、会话失效或权限变化后需要重新建立连接。
+     *
+     * @param schema 模式名称
+     */
+    public void resetSchemaConnection(String schema) {
+        this.getConnManager().removeConnection(schema);
+    }
+
+    /**
+     * 移除服务连接。连接用户被删除重建或会话失效后需要重新建立连接。
+     */
+    public void resetServerConnection() {
+        this.getConnManager().removeServerConnection();
+    }
+
+    /**
+     * 查询当前会话所在容器名称；非CDB环境或旧版本返回服务名。
+     *
+     * @return 容器或服务名
+     */
+    public String selectCurrentContainer() {
+        String container = this.selectUserEnv("CON_NAME");
+        if (StringUtil.isNotBlank(container)) {
+            return container;
+        }
+        return this.selectUserEnv("SERVICE_NAME");
+    }
+
+    private String selectUserEnv(String name) {
+        try {
+            String sql = "SELECT SYS_CONTEXT('USERENV', '" + name + "') FROM DUAL";
+            Connection connection = this.getConnManager().connection();
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                return resultSet.next() ? resultSet.getString(1) : "";
+            }
+        } catch (Exception ignored) {
+            return "";
+        }
+    }
+
+    /**
+     * 判断当前会话是否具备创建类型的能力。
+     *
+     * @return 结果
+     */
+    public boolean hasCreateTypePrivilege() {
+        try {
+            String sql = "SELECT COUNT(*) FROM SESSION_PRIVS"
+                    + " WHERE PRIVILEGE IN ('CREATE TYPE', 'CREATE ANY TYPE')";
+            Connection connection = this.getConnManager().connection();
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                return resultSet.next() && resultSet.getInt(1) > 0;
+            }
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    /**
      * 创建模式
      *
      * @param schema 模式
@@ -3380,7 +3571,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String password = oraclePassword(schema.getPassword());
             String[] sqlList = {
                     "CREATE USER " + user + " IDENTIFIED BY " + password,
-                    "GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER TO " + user,
+                    "GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER, CREATE TYPE TO " + user,
                     "GRANT UNLIMITED TABLESPACE TO " + user
             };
             for (String sql : sqlList) {
@@ -4408,23 +4599,29 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 param.setSchema(schema);
                 param.setTableName(newTableName);
                 OracleColumns columns = new OracleColumns(this.selectColumns(param));
-                StringBuilder builder = new StringBuilder();
-                for (OracleColumn column : columns) {
-                    builder.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE))
-                            .append(" ,");
-                }
-                StringUtil.deleteLast(builder, ",");
+                // 虚拟列、BFILE、ANYDATA等不可直接写入的列不参与数据复制
+                List<OracleColumn> copyColumns = columns.stream()
+                        .filter(OracleColumn::isDmlWritable)
+                        .toList();
+                if (!copyColumns.isEmpty()) {
+                    StringBuilder builder = new StringBuilder();
+                    for (OracleColumn column : copyColumns) {
+                        builder.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE))
+                                .append(" ,");
+                    }
+                    StringUtil.deleteLast(builder, ",");
 
-                // 处理数据
-                String sql2 = "INSERT INTO " + DBUtil.wrap(schema, newTableName, this.dialect())
-                        + "(" + builder + ")"
-                        + " SELECT " + builder + " FROM " + DBUtil.wrap(schema, tableName, this.dialect());
-                connection.setAutoCommit(false);
-                Statement statement = connection.createStatement();
-                this.printSql(sql2);
-                statement.executeUpdate(sql2);
-                connection.commit();
-                IOUtil.close(statement);
+                    // 处理数据
+                    String sql2 = "INSERT INTO " + DBUtil.wrap(schema, newTableName, this.dialect())
+                            + "(" + builder + ")"
+                            + " SELECT " + builder + " FROM " + DBUtil.wrap(schema, tableName, this.dialect());
+                    connection.setAutoCommit(false);
+                    Statement statement = connection.createStatement();
+                    this.printSql(sql2);
+                    statement.executeUpdate(sql2);
+                    connection.commit();
+                    IOUtil.close(statement);
+                }
             }
             // 数据复制完成后再创建检查、外键和触发器，避免复制数据时触发源表上的业务触发器
             this.alertTable(alertTableParam);

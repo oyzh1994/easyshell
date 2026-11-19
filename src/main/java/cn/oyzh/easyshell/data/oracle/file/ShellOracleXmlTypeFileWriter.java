@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.data.oracle.file;
 
 import cn.oyzh.common.file.LineFileWriter;
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
+import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 
 import java.io.FileNotFoundException;
@@ -95,6 +97,56 @@ public class ShellOracleXmlTypeFileWriter extends ShellOracleTypeFileWriter {
             builder.append("  </RECORD>");
         }
         this.writer.writeLine(builder.toString());
+    }
+
+    @Override
+    public Object parameterized(OracleColumn column, Object value, DBDataExportConfig config) {
+        if (column == null) {
+            return value;
+        }
+        if (value == null) {
+            return null;
+        }
+        value = ShellOracleDataUtil.valueStandardization(value);
+        if (column.isObjectType() || column.isCollectionType()) {
+            String json = value instanceof CharSequence sequence
+                    ? sequence.toString() : JSONUtil.toJson(value);
+            return xmlEscape(json);
+        }
+        if (column.supportJson()) {
+            String json = value instanceof CharSequence sequence
+                    ? sequence.toString() : JSONUtil.toJson(value);
+            return xmlEscape(json);
+        }
+        if (column.supportString()) {
+            return xmlEscape(value.toString());
+        }
+        return super.parameterized(column, value, config);
+    }
+
+    private static String xmlEscape(String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
+        StringBuilder builder = new StringBuilder(value.length() + 16);
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            switch (c) {
+                case '&' -> builder.append("&amp;");
+                case '<' -> builder.append("&lt;");
+                case '>' -> builder.append("&gt;");
+                case '"' -> builder.append("&quot;");
+                case '\'' -> builder.append("&apos;");
+                default -> {
+                    if (c < 0x20 && c != '\n' && c != '\r' && c != '\t') {
+                        builder.append(' ');
+                    } else {
+                        builder.append(c);
+                    }
+                }
+            }
+        }
+        return builder.toString();
     }
 
     @Override
