@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
 import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleFunction;
+import cn.oyzh.easyshell.oracle.foreignKey.OracleForeignKey;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
 import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
@@ -136,6 +137,46 @@ public class OracleDockerIntegrationTest {
         try (Connection ignored = open("jdbc:oracle:thin:@" + descriptor, user, password)) {
         }
         assertInvalidServiceRejected();
+    }
+
+    @Test
+    public void refreshesExternalTableMetadata() throws Exception {
+        ShellConnect shellConnect = new ShellConnect();
+        shellConnect.setType(ShellPrototype.ORACLE);
+        shellConnect.setHost(host + ":" + port);
+        shellConnect.setDatabase(mode.equals("11g") ? "XE" : "FREEPDB1");
+        shellConnect.setUser(user);
+        shellConnect.setPassword(password);
+        shellConnect.setConnectTimeOut(10);
+
+        ShellOracleClient client = new ShellOracleClient(shellConnect);
+        String tableName = "EASYSHELL_EXTERNAL_TABLE";
+        try {
+            try {
+                client.start(10000);
+            } catch (Exception ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+            if (client.selectTablesSimple("DEMO").stream()
+                    .anyMatch(table -> tableName.equals(table.getName()))) {
+                client.dropTable("DEMO", tableName);
+            }
+            try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+                statement.executeUpdate("CREATE TABLE \"DEMO\".\"" + tableName
+                        + "\" (\"ID\" NUMBER(10) PRIMARY KEY)");
+            }
+            assertTrue(client.selectTablesSimple("DEMO").stream()
+                    .anyMatch(table -> tableName.equals(table.getName())));
+            assertEquals(client.tableSize("DEMO"), client.selectTablesSimple("DEMO").size());
+        } finally {
+            if (client.selectTablesSimple("DEMO").stream()
+                    .anyMatch(table -> tableName.equals(table.getName()))) {
+                client.dropTable("DEMO", tableName);
+            }
+            client.close();
+        }
     }
 
     private static void assertObjects(Connection connection) throws SQLException {
@@ -297,6 +338,7 @@ public class OracleDockerIntegrationTest {
             assertFunctionSecurityRoundTrip(client);
             assertPipelinedMetadataFallback(client);
             assertViewCreateAndAlertExecution(client);
+            assertForeignKeyPolicyRoundTrip(client);
             assertMetadataReloadStability(client);
 
             OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
@@ -304,6 +346,10 @@ public class OracleDockerIntegrationTest {
             columnParam.setTableName("USERS");
             List<OracleColumn> columns = client.selectColumns(columnParam);
             assertTrue(columns.stream().anyMatch(column -> "ID".equals(column.getName())));
+            assertTrue(client.selectForeignKeys("DEMO", "ORDERS").stream()
+                    .anyMatch(foreignKey -> "ORDERS_USER_FK".equals(foreignKey.getName())
+                            && "RESTRICT".equals(foreignKey.getUpdatePolicy())
+                            && "RESTRICT".equals(foreignKey.getDeletePolicy())));
 
             List<OracleColumn> viewColumns = client.viewColumns("DEMO", "V_ORDERS");
             OracleColumn viewId = viewColumns.stream()
@@ -358,7 +404,7 @@ public class OracleDockerIntegrationTest {
     }
 
     private static void assertTableDesignRoundTrip(ShellOracleClient client) throws Exception {
-        String tableName = "t1";
+        String tableName = "e2e_table_design";
         OracleTable table = new OracleTable();
         table.setSchema("DEMO");
         table.setName(tableName);
@@ -405,11 +451,13 @@ public class OracleDockerIntegrationTest {
                     createdId.getAutoIncrementType());
 
             try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
-                statement.executeUpdate("INSERT INTO \"DEMO\".\"t1\" (\"a\") VALUES ('smoke')");
+                statement.executeUpdate("INSERT INTO \"DEMO\".\"" + tableName
+                        + "\" (\"a\") VALUES ('smoke')");
             }
             try (Statement statement = client.getConnManager().connection("DEMO").createStatement();
                  ResultSet resultSet = statement.executeQuery(
-                         "SELECT \"id\" FROM \"DEMO\".\"t1\" WHERE \"a\" = 'smoke'")) {
+                         "SELECT \"id\" FROM \"DEMO\".\"" + tableName
+                                 + "\" WHERE \"a\" = 'smoke'")) {
                 assertTrue(resultSet.next());
                 assertTrue(resultSet.getLong(1) > 0);
                 assertFalse(resultSet.next());
@@ -448,7 +496,8 @@ public class OracleDockerIntegrationTest {
         } finally {
             try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
                 try {
-                    statement.executeUpdate("ALTER TABLE \"DEMO\".\"t1\" DROP CONSTRAINT \"T1_CHECK_SMOKE\"");
+                    statement.executeUpdate("ALTER TABLE \"DEMO\".\"" + tableName
+                            + "\" DROP CONSTRAINT \"T1_CHECK_SMOKE\"");
                 } catch (SQLException ignored) {
                 }
             }
@@ -457,6 +506,111 @@ public class OracleDockerIntegrationTest {
                 client.dropTable("DEMO", tableName);
             }
             dropGeneratedAutoIncrementObjects(client, tableName);
+        }
+    }
+
+    private static void assertForeignKeyPolicyRoundTrip(ShellOracleClient client) throws Exception {
+        String parentName = "E2E_FK_PARENT";
+        String childName = "E2E_FK_CHILD";
+        String constraintName = "E2E_FK_CHILD_PARENT_FK";
+
+        dropForeignKeyTables(client, parentName, childName);
+        try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+            statement.executeUpdate("CREATE TABLE \"DEMO\".\"" + parentName
+                    + "\" (\"ID\" NUMBER(10) PRIMARY KEY)");
+        }
+
+        OracleTable childTable = new OracleTable();
+        childTable.setSchema("DEMO");
+        childTable.setName(childName);
+
+        OracleColumn parentId = new OracleColumn("parent_id");
+        parentId.setSchema("DEMO");
+        parentId.setTableName(childName);
+        parentId.setType("NUMBER");
+        parentId.setSize(10);
+        parentId.setPrimaryKey(true);
+        parentId.setNullable(false);
+
+        OracleForeignKey foreignKey = new OracleForeignKey();
+        foreignKey.setName(constraintName);
+        foreignKey.setColumns(List.of("parent_id"));
+        foreignKey.setReferencedDatabase("DEMO");
+        foreignKey.setReferencedTable(parentName);
+        foreignKey.setReferencedColumns(List.of("ID"));
+        foreignKey.setDeletePolicy("RESTRICT");
+        foreignKey.setUpdatePolicy("RESTRICT");
+
+        OracleCreateTableParam createParam = new OracleCreateTableParam();
+        createParam.setTable(childTable);
+        createParam.setColumns(new OracleColumns(List.of(parentId)));
+        createParam.setForeignKeys(new DBObjects<>(List.of(foreignKey)));
+        createParam.setChecks(new DBObjects<>());
+        createParam.setIndexes(new DBObjects<>());
+        createParam.setTriggers(new DBObjects<>());
+
+        try {
+            client.createTable(createParam);
+            assertForeignKeyPolicies(client, childName, "RESTRICT", "RESTRICT");
+
+            OracleForeignKey loaded = client.selectForeignKeys("DEMO", childName).stream()
+                    .filter(item -> constraintName.equals(item.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            loaded.setDeletePolicy("CASCADE");
+            alertForeignKeyPolicy(client, childTable, loaded);
+            assertForeignKeyPolicies(client, childName, "CASCADE", "RESTRICT");
+
+            loaded = client.selectForeignKeys("DEMO", childName).stream()
+                    .filter(item -> constraintName.equals(item.getName()))
+                    .findFirst()
+                    .orElseThrow();
+            loaded.setDeletePolicy("RESTRICT");
+            loaded.setUpdatePolicy("RESTRICT");
+            alertForeignKeyPolicy(client, childTable, loaded);
+            assertForeignKeyPolicies(client, childName, "RESTRICT", "RESTRICT");
+        } finally {
+            dropForeignKeyTables(client, parentName, childName);
+        }
+    }
+
+    private static void alertForeignKeyPolicy(ShellOracleClient client, OracleTable table,
+                                              OracleForeignKey foreignKey) throws Exception {
+        OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
+        columnParam.setSchema(table.getSchema());
+        columnParam.setTableName(table.getName());
+
+        OracleAlertTableParam alertParam = new OracleAlertTableParam();
+        alertParam.setTable(table);
+        alertParam.setColumns(new OracleColumns(client.selectColumns(columnParam)));
+        alertParam.setForeignKeys(new DBObjects<>(List.of(foreignKey)));
+        alertParam.setChecks(new DBObjects<>());
+        alertParam.setIndexes(new DBObjects<>());
+        alertParam.setTriggers(new DBObjects<>());
+        client.alertTable(alertParam);
+    }
+
+    private static void assertForeignKeyPolicies(ShellOracleClient client, String tableName,
+                                                 String deletePolicy, String updatePolicy) {
+        OracleForeignKey foreignKey = client.selectForeignKeys("DEMO", tableName).stream()
+                .filter(item -> "E2E_FK_CHILD_PARENT_FK".equals(item.getName()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals(deletePolicy, foreignKey.getDeletePolicy());
+        assertEquals(updatePolicy, foreignKey.getUpdatePolicy());
+    }
+
+    private static void dropForeignKeyTables(ShellOracleClient client, String parentName,
+                                             String childName) throws Exception {
+        try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+            try {
+                statement.executeUpdate("DROP TABLE \"DEMO\".\"" + childName + "\" CASCADE CONSTRAINTS");
+            } catch (SQLException ignored) {
+            }
+            try {
+                statement.executeUpdate("DROP TABLE \"DEMO\".\"" + parentName + "\" CASCADE CONSTRAINTS");
+            } catch (SQLException ignored) {
+            }
         }
     }
 

@@ -49,6 +49,9 @@ public class OracleShowTablesTerminalCommandHandler extends OracleTerminalComman
                     .map(OracleTable::getName)
                     .collect(Collectors.joining(terminal.lineEndingText()));
             result.setResult(output);
+            if (terminal.getDbItem() != null && terminal.getDbItem().getTableTypeChild() != null) {
+                terminal.getDbItem().getTableTypeChild().refreshChild();
+            }
         } catch (Exception ex) {
             result.setException(ex);
         }

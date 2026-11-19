@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.query.oracle.ShellOracleQueryUtil;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.terminal.ShellTerminalHistoryHandler;
+import cn.oyzh.easyshell.trees.oracle.schema.ShellOracleSchemaTreeItem;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.font.FontManager;
@@ -99,6 +100,16 @@ public class OracleTerminalPane extends TerminalPane {
      * 数据库名称
      */
     private String schema;
+
+    private ShellOracleSchemaTreeItem dbItem;
+
+    public ShellOracleSchemaTreeItem getDbItem() {
+        return dbItem;
+    }
+
+    public void setDbItem(ShellOracleSchemaTreeItem dbItem) {
+        this.dbItem = dbItem;
+    }
 
     /**
      * 获取数据库名称

@@ -100,7 +100,6 @@ public class OracleForeignKeyControl extends OracleForeignKey {
      */
     public ShellOracleFieldTextFiled getColumnControl() {
         try {
-            //List<OracleColumn> columnList = CacheHelper.get("oracle:columnList");
             if (this.columnList == null) {
                 this.columnList = new ArrayList<>();
             }
@@ -124,7 +123,6 @@ public class OracleForeignKeyControl extends OracleForeignKey {
     public ShellOracleSchemaComboBox getReferencedDatabaseControl() {
         try {
             ShellOracleSchemaComboBox comboBox = new ShellOracleSchemaComboBox();
-            //comboBox.init(CacheHelper.get("oracle:dbClient"));
             comboBox.init(this.dbClient);
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setReferencedDatabase(newValue));
             comboBox.selectFirstIfNull(this.getReferencedDatabase());
@@ -145,7 +143,6 @@ public class OracleForeignKeyControl extends OracleForeignKey {
     public ShellOracleTableComboBox getReferencedTableControl() {
         try {
             ShellOracleTableComboBox comboBox = new ShellOracleTableComboBox();
-            //ShellOracleClient dbClient = CacheHelper.get("oracle:dbClient");
             comboBox.init(this.getReferencedDatabase(), this.dbClient);
             comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setReferencedTable(newValue));
             comboBox.selectFirstIfNull(this.getReferencedTable());

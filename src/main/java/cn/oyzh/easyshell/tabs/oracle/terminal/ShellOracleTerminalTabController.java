@@ -34,6 +34,7 @@ public class ShellOracleTerminalTabController extends RichTabController {
      */
     public void init(ShellOracleSchemaTreeItem dbItem) {
         this.dbItem = dbItem;
+        this.terminal.setDbItem(dbItem);
         this.terminal.init(dbItem.client(), dbItem.schema());
     }
 

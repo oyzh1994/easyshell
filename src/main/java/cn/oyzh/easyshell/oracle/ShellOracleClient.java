@@ -2545,7 +2545,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         AC.DELETE_RULE,
-                        NULL AS "UPDATE_RULE",
+                        'NO ACTION' AS "UPDATE_RULE",
                         ACR.OWNER AS "PKTABLE_CAT",
                         AC.CONSTRAINT_NAME AS "FK_NAME",
                         ACR.TABLE_NAME AS "PKTABLE_NAME",
