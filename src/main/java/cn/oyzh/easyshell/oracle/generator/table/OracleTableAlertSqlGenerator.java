@@ -168,7 +168,7 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
 
         // 修改字段
         for (OracleColumn column : param.getColumns()) {
-            if (OracleColumns.isChanged(column)) {
+            if (OracleColumns.isChanged(column) && this.hasDefinitionChanged(column)) {
                 StringUtil.clear(builder);
                 builder.append("ALTER TABLE ")
                         .append(fullName)
@@ -199,6 +199,17 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
                 }
             }
         }
+    }
+
+    private boolean hasDefinitionChanged(OracleColumn column) {
+        return column.isNameChanged()
+                || column.isTypeChanged()
+                || column.isSizeChanged()
+                || column.isDigitsChanged()
+                || column.isDefaultValueChanged()
+                || column.isNullableChanged()
+                || column.isAutoIncrementChanged()
+                || column.isAutoIncrementTypeChanged();
     }
 
     /**
@@ -504,7 +515,9 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
                 builder.append(" NULL");
             }
         } else {
-            builder.append(" NOT NULL");
+            if (created || column.isNullableOriginal()) {
+                builder.append(" NOT NULL");
+            }
         }
     }
 

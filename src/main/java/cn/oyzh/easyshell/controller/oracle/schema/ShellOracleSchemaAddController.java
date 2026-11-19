@@ -50,8 +50,8 @@ public class ShellOracleSchemaAddController extends StageController {
     @FXML
     private void add() {
         try {
-            // 检查库名称
-            if (!this.name.validate()) {
+            // 检查表单
+            if (!this.name.validate() || !this.password.validate()) {
                 return;
             }
             // 检查字段是否存在

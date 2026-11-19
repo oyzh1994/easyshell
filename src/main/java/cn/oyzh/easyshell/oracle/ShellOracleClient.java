@@ -1290,6 +1290,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
                 Object def = resultSet.getObject("Default");
+                if (def instanceof CharSequence sequence) {
+                    def = sequence.toString().strip();
+                }
                 String key = resultSet.getString("Key");
                 String type = resultSet.getString("Type");
                 String field = resultSet.getString("Field");

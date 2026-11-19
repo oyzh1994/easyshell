@@ -19,7 +19,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <ClearableTextField require="true" fx:id="name" realHeight="30" flexWidth="100% - 180">
+    <ClearableTextField require="true" fx:id="name" tipText="%base.nameTip" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>
@@ -29,7 +29,7 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <PasswordTextField require="true" fx:id="password" realHeight="30" flexWidth="100% - 180">
+    <PasswordTextField require="true" fx:id="password" tipText="%base.passwordTip" realHeight="30" flexWidth="100% - 180">
         <VBox.margin>
             <Insets left="30" top="5"/>
         </VBox.margin>

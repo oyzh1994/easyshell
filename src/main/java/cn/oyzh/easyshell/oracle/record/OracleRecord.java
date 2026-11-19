@@ -200,7 +200,8 @@ public class OracleRecord extends DBObject implements DBRecord, ObjectCopier<Ora
             //}
             // TODO: 时间戳处理
             if (value != null && column.supportTimestamp()
-                    && StringUtil.equalsAnyIgnoreCase(value.toString(), "CURRENT_TIMESTAMP", "SYSDATE", "SYSTIMESTAMP")) {
+                    && StringUtil.equalsAnyIgnoreCase(value.toString().strip(),
+                    "CURRENT_TIMESTAMP", "SYSDATE", "SYSTIMESTAMP")) {
                 continue;
             }
             recordData.put(property.getColumn(), value);

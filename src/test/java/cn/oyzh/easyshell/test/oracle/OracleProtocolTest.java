@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.oracle.generator.table.OracleTableCreateSqlGenerator;
 import cn.oyzh.easyshell.oracle.generator.view.OracleViewCreateSqlGenerator;
 import cn.oyzh.easyshell.oracle.sequence.OracleCreateSequenceParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
+import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.table.OracleAlertTableParam;
 import cn.oyzh.easyshell.oracle.table.OracleCreateTableParam;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
@@ -19,7 +20,10 @@ import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
 import cn.oyzh.fx.db.DBConnConfig;
+import cn.oyzh.fx.db.DBColumnFieldManager;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBObjects;
+import cn.oyzh.fx.db.DBRecordData;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,6 +33,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -64,6 +69,25 @@ public class OracleProtocolTest {
         config.setUseSSL(true);
         assertEquals("jdbc:oracle:thin:@tcps://db.example.com:1521/FREEPDB1",
                 ShellOracleConnManager.buildConnectionString(config));
+    }
+
+    @Test
+    public void matchesOracleTypesWithPrecisionAndScale() {
+        assertTrue(DBColumnFieldManager.supportTimestamp(DBDialect.ORACLE, "TIMESTAMP(6)"));
+        assertTrue(DBColumnFieldManager.supportTimestamp(DBDialect.ORACLE, "TIMESTAMP(6) WITH TIME ZONE"));
+        assertTrue(DBColumnFieldManager.supportString(DBDialect.ORACLE, "VARCHAR2(100)"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "NUMBER(10,2)"));
+        assertNull(DBColumnFieldManager.exampleValue(DBDialect.ORACLE, "TIMESTAMP(6)"));
+    }
+
+    @Test
+    public void ignoresOracleTimestampDefaultExpressions() {
+        OracleColumn createdAt = column("CREATED_AT", "TIMESTAMP(6)", "DEMO", "USERS");
+        OracleRecord record = new OracleRecord(new OracleColumns(List.of(createdAt)));
+        record.putValue(createdAt, "SYSTIMESTAMP ");
+
+        DBRecordData data = record.getRecordData();
+        assertFalse(data.columns().contains("CREATED_AT"));
     }
 
     @Test
@@ -219,6 +243,47 @@ public class OracleProtocolTest {
         assertTrue(ddl.contains("DROP SEQUENCE \"APP\".\"USERS_ID_SEQ\""));
         assertTrue(ddl.contains("CREATE SEQUENCE \"APP\".\"USERS_USER_ID_SEQ\""));
         assertTrue(ddl.contains("CREATE OR REPLACE TRIGGER \"APP\".\"USERS_USER_ID_TRG\""));
+    }
+
+    @Test
+    public void skipsColumnModifyWhenOnlyCommentChanges() {
+        OracleTable table = new OracleTable();
+        table.setSchema("DEMO");
+        table.setName("USERS");
+
+        OracleColumn username = column("USERNAME", "VARCHAR2", "DEMO", "USERS");
+        username.setSize(100);
+        username.setNullable(false);
+        username.setComment("old comment");
+        username.setComment("new comment");
+
+        OracleAlertTableParam param = new OracleAlertTableParam();
+        param.setTable(table);
+        param.setColumns(new OracleColumns(List.of(username)));
+
+        String sql = OracleTableAlertSqlGenerator.generateSqlSingle(param);
+        assertFalse(sql.contains(" MODIFY ("));
+        assertTrue(sql.contains("COMMENT ON COLUMN"));
+    }
+
+    @Test
+    public void omitsUnchangedNotNullInColumnModify() {
+        OracleTable table = new OracleTable();
+        table.setSchema("DEMO");
+        table.setName("USERS");
+
+        OracleColumn username = column("USERNAME", "VARCHAR2", "DEMO", "USERS");
+        username.setSize(100);
+        username.setNullable(false);
+        username.setSize(128);
+
+        OracleAlertTableParam param = new OracleAlertTableParam();
+        param.setTable(table);
+        param.setColumns(new OracleColumns(List.of(username)));
+
+        String sql = OracleTableAlertSqlGenerator.generateSqlSingle(param);
+        assertTrue(sql.contains(" MODIFY ("));
+        assertFalse(sql.contains("NOT NULL"));
     }
 
     @Test

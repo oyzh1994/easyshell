@@ -190,6 +190,15 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     }
 
     /**
+     * 小数位是否变更
+     *
+     * @return 变更结果
+     */
+    public boolean isDigitsChanged() {
+        return super.checkOriginalData("digits", this.digits);
+    }
+
+    /**
      * 获取字段值列表
      *
      * @return 字段值列表
@@ -687,6 +696,15 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     public boolean isNullableOriginal() {
         Boolean original = (Boolean) super.getOriginalData("nullable");
         return original == null ? this.isNullable() : BooleanUtil.isTrue(original);
+    }
+
+    /**
+     * 是否可为空是否变更
+     *
+     * @return 变更结果
+     */
+    public boolean isNullableChanged() {
+        return super.checkOriginalData("nullable", this.nullable);
     }
 
     @Override

@@ -930,8 +930,13 @@ public class OracleDockerIntegrationTest {
 
     private static void assertFullDumpAndReplay(ShellOracleClient client) throws Exception {
         String schema = "DEMO";
+        String targetSchema = "E2E_RPL_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String targetPassword = "Replay2026";
+        ShellOracleClient targetClient = null;
         Path dumpFile = Files.createTempFile("easyshell-oracle-full-dump-", ".sql");
         try {
+            createTemporarySchema(targetSchema, targetPassword);
+            targetClient = openShellClient(targetSchema, targetPassword);
             ShellOracleDataDumpHandler dumpHandler = new ShellOracleDataDumpHandler(client, schema);
             dumpHandler.dumpFile(dumpFile.toFile());
             dumpHandler.setDumpType((byte) 1);
@@ -955,22 +960,63 @@ public class OracleDockerIntegrationTest {
                             + "(?:(?:NON)?EDITIONABLE\\s+)?PROCEDURE\\b.*")));
 
             List<String> messages = new ArrayList<>();
-            ShellOracleDataRunSqlFileHandler runHandler = new ShellOracleDataRunSqlFileHandler(client, schema);
+            ShellOracleDataRunSqlFileHandler runHandler = new ShellOracleDataRunSqlFileHandler(targetClient, targetSchema);
             runHandler.file(dumpFile.toFile());
             runHandler.setContinueWithErrors(false);
             runHandler.setMessageHandler(messages::add);
             runHandler.runFile();
 
             assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
-            assertTrue(client.selectViews(schema).stream().anyMatch(view -> "V_USERS".equals(view.getName())));
-            assertTrue(client.selectProcedures(schema).stream()
+            assertTrue(targetClient.selectViews(targetSchema).stream().anyMatch(view -> "V_USERS".equals(view.getName())));
+            assertTrue(targetClient.selectProcedures(targetSchema).stream()
                     .anyMatch(procedure -> "ADD_USER".equals(procedure.getName())));
-            assertTrue(client.selectForeignKeys(schema, "ORDERS").stream()
+            assertTrue(targetClient.selectForeignKeys(targetSchema, "ORDERS").stream()
                     .anyMatch(foreignKey -> "ORDERS_USER_FK".equals(foreignKey.getName())));
-            client.executeSqlSimple(schema, "UPDATE USERS SET EMAIL = EMAIL WHERE ROWNUM = 1");
+            targetClient.executeSqlSimple(targetSchema, "UPDATE USERS SET EMAIL = EMAIL WHERE ROWNUM = 1");
         } finally {
+            if (targetClient != null) {
+                targetClient.close();
+            }
+            dropTemporarySchema(targetSchema);
             Files.deleteIfExists(dumpFile);
         }
+    }
+
+    private static void createTemporarySchema(String schema, String password) throws Exception {
+        try (Connection connection = open(url, systemUser, systemPassword);
+             Statement statement = connection.createStatement()) {
+            statement.execute("CREATE USER \"" + schema + "\" IDENTIFIED BY \"" + password + "\""
+                    + " DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP QUOTA UNLIMITED ON USERS");
+            statement.execute("GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE,"
+                    + " CREATE PROCEDURE, CREATE TRIGGER TO \"" + schema + "\"");
+        }
+    }
+
+    private static void dropTemporarySchema(String schema) {
+        try (Connection connection = open(url, systemUser, systemPassword);
+             Statement statement = connection.createStatement()) {
+            statement.execute("DROP USER \"" + schema + "\" CASCADE");
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static ShellOracleClient openShellClient(String schema, String password) throws Exception {
+        ShellConnect connect = new ShellConnect();
+        connect.setType(ShellPrototype.ORACLE);
+        connect.setHost(host + ":" + port);
+        connect.setDatabase(mode.equals("11g") ? "XE" : "FREEPDB1");
+        connect.setUser(schema);
+        connect.setPassword(password);
+        connect.setConnectTimeOut(10);
+        ShellOracleClient client = new ShellOracleClient(connect);
+        try {
+            client.start(10000);
+        } catch (Exception ex) {
+            throw ex;
+        } catch (Throwable ex) {
+            throw new RuntimeException(ex);
+        }
+        return client;
     }
 
     private static void assertViewCreateAndAlertExecution(ShellOracleClient client) {
