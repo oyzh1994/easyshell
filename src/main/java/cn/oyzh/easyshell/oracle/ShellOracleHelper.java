@@ -594,9 +594,11 @@ public class ShellOracleHelper {
     public static String getTriggerDefinition(Connection connection, String schema, String triggerName) throws SQLException {
         try {
             String definition = getMetadataDefinition(connection, schema, "TRIGGER", triggerName);
-            return StringUtil.isBlank(definition) ? buildTriggerDefinition(connection, schema, triggerName) : definition;
+            return StringUtil.isBlank(definition)
+                    ? normalizeTriggerDefinition(buildTriggerDefinition(connection, schema, triggerName))
+                    : normalizeTriggerDefinition(definition);
         } catch (SQLException ex) {
-            return buildTriggerDefinition(connection, schema, triggerName);
+            return normalizeTriggerDefinition(buildTriggerDefinition(connection, schema, triggerName));
         }
     }
 
@@ -695,6 +697,34 @@ public class ShellOracleHelper {
                 return definition.append('\n').append(normalizeTriggerBody(body)).toString();
             }
         }
+    }
+
+    private static String normalizeTriggerDefinition(String definition) {
+        if (StringUtil.isBlank(definition)) {
+            return definition;
+        }
+        int whenIndex = indexOfKeyword(definition, "WHEN");
+        if (whenIndex < 0) {
+            return definition;
+        }
+        int conditionStart = whenIndex + "WHEN".length();
+        while (conditionStart < definition.length() && Character.isWhitespace(definition.charAt(conditionStart))) {
+            conditionStart++;
+        }
+        if (conditionStart < definition.length() && definition.charAt(conditionStart) == '(') {
+            return definition;
+        }
+        int beginIndex = indexOfKeyword(definition, "BEGIN", conditionStart);
+        if (beginIndex < conditionStart) {
+            return definition;
+        }
+        String condition = definition.substring(conditionStart, beginIndex).strip();
+        if (condition.isEmpty()) {
+            return definition;
+        }
+        return definition.substring(0, conditionStart)
+                + "(" + condition + ") "
+                + definition.substring(beginIndex);
     }
 
     private static String buildSequenceDefinition(Connection connection, String schema, String sequenceName) throws SQLException {
@@ -824,9 +854,13 @@ public class ShellOracleHelper {
     }
 
     private static int indexOfKeyword(String value, String keyword) {
+        return indexOfKeyword(value, keyword, 0);
+    }
+
+    private static int indexOfKeyword(String value, String keyword, int fromIndex) {
         Pattern pattern = Pattern.compile("\\b" + keyword + "\\b", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(value);
-        return matcher.find() ? matcher.start() : -1;
+        return matcher.find(fromIndex) ? matcher.start() : -1;
     }
 
     //    public static void parseJobExpr(String expr, OracleEvent event){

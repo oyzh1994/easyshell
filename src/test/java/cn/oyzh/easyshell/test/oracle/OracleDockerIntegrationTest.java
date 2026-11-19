@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.test.oracle;
 import cn.oyzh.common.db.SqlDatabase;
 import cn.oyzh.common.db.SqlUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
@@ -33,6 +34,7 @@ import cn.oyzh.easyshell.util.oracle.ShellOracleColumnUtil;
 import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.DBConnConfig;
 import cn.oyzh.fx.db.DBObjects;
+import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -335,6 +337,8 @@ public class OracleDockerIntegrationTest {
             assertTrue(sequence.getMaxVal().compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0);
             assertFalse(sequence.getCreateDefinition().isBlank());
             assertSequenceAlterExecution(client);
+            assertExecuteSqlSimpleTerminator(client);
+            assertDataTransportWithTerminators(client);
             assertProcedureRenameExecution(client);
             assertFunctionParameterRoundTrip(client);
             assertFunctionParameterCreationRoundTrip(client);
@@ -719,6 +723,121 @@ public class OracleDockerIntegrationTest {
             assertEquals(BigInteger.valueOf(5), altered.getIncrementBy());
         } finally {
             client.dropSequence(sequence);
+        }
+    }
+
+    private static void assertExecuteSqlSimpleTerminator(ShellOracleClient client) {
+        String schema = "DEMO";
+        String name = "E2E_SQL_TERMINATOR_SEQ";
+        try {
+            if (client.selectSequencesSimple(schema).stream().anyMatch(sequence -> name.equals(sequence.getName()))) {
+                client.executeSqlSimple(schema, "DROP SEQUENCE \"" + name + "\";");
+            }
+            client.executeSqlSimple(schema, "CREATE SEQUENCE \"" + name + "\";");
+            assertTrue(client.selectSequencesSimple(schema).stream()
+                    .anyMatch(sequence -> name.equals(sequence.getName())));
+        } finally {
+            if (client.selectSequencesSimple(schema).stream().anyMatch(sequence -> name.equals(sequence.getName()))) {
+                client.executeSqlSimple(schema, "DROP SEQUENCE \"" + name + "\";");
+            }
+        }
+    }
+
+    private static void assertDataTransportWithTerminators(ShellOracleClient client) throws Exception {
+        String schema = "DEMO";
+        String targetSchema = "SYSTEM";
+        String tableName = "E2E_TRANSPORT_TABLE";
+        String sequenceName = "E2E_TRANSPORT_SEQ";
+        String triggerName = "E2E_TRANSPORT_TRG";
+        ShellConnect targetConnect = new ShellConnect();
+        targetConnect.setType(ShellPrototype.ORACLE);
+        targetConnect.setHost(host + ":" + port);
+        targetConnect.setDatabase(mode.equals("11g") ? "XE" : "FREEPDB1");
+        targetConnect.setUser(systemUser);
+        targetConnect.setPassword(systemPassword);
+        targetConnect.setConnectTimeOut(10);
+        ShellOracleClient targetClient = new ShellOracleClient(targetConnect);
+        try {
+            try {
+                targetClient.start(10000);
+            } catch (Exception ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
+            }
+            if (client.selectTablesSimple(schema).stream().anyMatch(table -> tableName.equals(table.getName()))) {
+                client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
+            }
+            if (client.selectSequencesSimple(schema).stream().anyMatch(sequence -> sequenceName.equals(sequence.getName()))) {
+                client.executeSqlSimple(schema, "DROP SEQUENCE \"" + sequenceName + "\";");
+            }
+            if (client.selectTriggersSimple(schema).stream().anyMatch(trigger -> triggerName.equals(trigger.getName()))) {
+                client.executeSqlSimple(schema, "DROP TRIGGER \"" + triggerName + "\";");
+            }
+            if (targetClient.selectTablesSimple(targetSchema).stream().anyMatch(table -> tableName.equals(table.getName()))) {
+                targetClient.executeSqlSimple(targetSchema, "DROP TABLE \"" + tableName + "\";");
+            }
+            if (targetClient.selectSequencesSimple(targetSchema).stream().anyMatch(sequence -> sequenceName.equals(sequence.getName()))) {
+                targetClient.executeSqlSimple(targetSchema, "DROP SEQUENCE \"" + sequenceName + "\";");
+            }
+            if (targetClient.selectTriggersSimple(targetSchema).stream().anyMatch(trigger -> triggerName.equals(trigger.getName()))) {
+                targetClient.executeSqlSimple(targetSchema, "DROP TRIGGER \"" + triggerName + "\";");
+            }
+            assertFalse(targetClient.existObject(targetSchema, tableName, "TABLE"));
+            assertFalse(targetClient.existObject(targetSchema, sequenceName, "SEQUENCE"));
+            assertFalse(targetClient.existObject(targetSchema, triggerName, "TRIGGER"));
+            client.executeSqlSimple(schema, "CREATE TABLE \"" + tableName + "\" (\"ID\" NUMBER PRIMARY KEY);");
+            client.executeSqlSimple(schema, "INSERT INTO \"" + tableName + "\" (\"ID\") VALUES (1);");
+            client.executeSqlSimple(schema, "CREATE SEQUENCE \"" + sequenceName + "\";");
+            client.executeSqlSimple(schema, "CREATE OR REPLACE TRIGGER \"" + triggerName
+                    + "\" BEFORE INSERT ON \"" + tableName + "\" FOR EACH ROW WHEN (NEW.\"ID\" IS NULL) BEGIN NULL; END;");
+
+            ShellOracleDataTransportHandler handler = new ShellOracleDataTransportHandler();
+            handler.setSourceClient(client);
+            handler.setTargetClient(targetClient);
+            handler.setSourceDatabase(schema);
+            handler.setTargetDatabase(targetSchema);
+            handler.setDataType(0);
+            DBDataTransportObject table = new DBDataTransportObject();
+            table.setName(tableName);
+            DBDataTransportObject sequence = new DBDataTransportObject();
+            sequence.setName(sequenceName);
+            DBDataTransportObject trigger = new DBDataTransportObject();
+            trigger.setName(triggerName);
+            handler.setTables(List.of(table));
+            handler.setSequences(List.of(sequence));
+            handler.setTriggers(List.of(trigger));
+            List<String> messages = new ArrayList<>();
+            handler.setMessageHandler(messages::add);
+            handler.doTransport();
+            assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
+            assertTrue(client.selectTablesSimple(schema).stream()
+                    .anyMatch(item -> tableName.equals(item.getName())));
+            assertTrue(client.selectSequencesSimple(schema).stream()
+                    .anyMatch(item -> sequenceName.equals(item.getName())));
+            assertTrue(targetClient.existObject(targetSchema, tableName, "TABLE"));
+            assertTrue(targetClient.existObject(targetSchema, sequenceName, "SEQUENCE"));
+            assertTrue(targetClient.existObject(targetSchema, triggerName, "TRIGGER"));
+        } finally {
+            if (client.selectTablesSimple(schema).stream().anyMatch(table -> tableName.equals(table.getName()))) {
+                client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
+            }
+            if (client.selectSequencesSimple(schema).stream().anyMatch(sequence -> sequenceName.equals(sequence.getName()))) {
+                client.executeSqlSimple(schema, "DROP SEQUENCE \"" + sequenceName + "\";");
+            }
+            if (client.selectTriggersSimple(schema).stream().anyMatch(trigger -> triggerName.equals(trigger.getName()))) {
+                client.executeSqlSimple(schema, "DROP TRIGGER \"" + triggerName + "\";");
+            }
+            if (targetClient.selectTablesSimple(targetSchema).stream().anyMatch(table -> tableName.equals(table.getName()))) {
+                targetClient.executeSqlSimple(targetSchema, "DROP TABLE \"" + tableName + "\";");
+            }
+            if (targetClient.selectSequencesSimple(targetSchema).stream().anyMatch(sequence -> sequenceName.equals(sequence.getName()))) {
+                targetClient.executeSqlSimple(targetSchema, "DROP SEQUENCE \"" + sequenceName + "\";");
+            }
+            if (targetClient.selectTriggersSimple(targetSchema).stream().anyMatch(trigger -> triggerName.equals(trigger.getName()))) {
+                targetClient.executeSqlSimple(targetSchema, "DROP TRIGGER \"" + triggerName + "\";");
+            }
+            targetClient.close();
         }
     }
 

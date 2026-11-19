@@ -139,10 +139,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         try {
             this.checkInterrupt();
             // 删除表
-            String dropTable = "DROP TABLE " + DBUtil.wrap(tableName, DBDialect.ORACLE) + ";";
-            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-            this.message("Drop Table " + tableName);
-            this.processedIncr();
+            this.dropTargetObject("TABLE", tableName, "Table");
 
             // 创建表
             String createDefinition = this.sourceClient.showCreateTable(this.sourceDatabase, tableName);
@@ -211,10 +208,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         try {
             this.checkInterrupt();
             // 删除视图
-            String dropTable = "DROP VIEW " + DBUtil.wrap(viewName, DBDialect.ORACLE) + ";";
-            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-            this.message("Drop View " + viewName);
-            this.processedIncr();
+            this.dropTargetObject("VIEW", viewName, "View");
 
             // 创建视图
             String createDefinition = this.sourceClient.showCreateView(this.sourceDatabase, viewName);
@@ -245,10 +239,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         try {
             this.checkInterrupt();
             // 删除函数
-            String dropTable = "DROP FUNCTION " + DBUtil.wrap(functionName, DBDialect.ORACLE) + ";";
-            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-            this.message("Drop Function " + functionName);
-            this.processedIncr();
+            this.dropTargetObject("FUNCTION", functionName, "Function");
 
             // 创建函数
             String createDefinition = this.sourceClient.showCreateFunction(this.sourceDatabase, functionName);
@@ -279,10 +270,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         try {
             this.checkInterrupt();
             // 删除过程
-            String dropTable = "DROP PROCEDURE " + DBUtil.wrap(procedureName, DBDialect.ORACLE) + ";";
-            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-            this.message("Drop Procedure " + procedureName);
-            this.processedIncr();
+            this.dropTargetObject("PROCEDURE", procedureName, "Procedure");
 
             // 创建过程
             String createDefinition = this.sourceClient.showCreateProcedure(this.sourceDatabase, procedureName);
@@ -313,10 +301,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         try {
             this.checkInterrupt();
             // 删除触发器
-            String dropTable = "DROP TRIGGER " + DBUtil.wrap(triggerName, DBDialect.ORACLE) + ";";
-            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-            this.message("Drop Trigger " + triggerName);
-            this.processedIncr();
+            this.dropTargetObject("TRIGGER", triggerName, "Trigger");
 
             // 创建触发器
             String createDefinition = this.sourceClient.showCreateTrigger(this.sourceDatabase, triggerName);
@@ -347,10 +332,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
         try {
             this.checkInterrupt();
             // 删除触发器
-            String dropTable = "DROP SEQUENCE " + DBUtil.wrap(sequenceName, DBDialect.ORACLE) + ";";
-            this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
-            this.message("Drop Sequence " + sequenceName);
-            this.processedIncr();
+            this.dropTargetObject("SEQUENCE", sequenceName, "Sequence");
 
             // 创建触发器
             String createDefinition = this.sourceClient.showCreateSequence(this.sourceDatabase, sequenceName);
@@ -369,6 +351,17 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                 throw ex;
             }
         }
+    }
+
+    private void dropTargetObject(String objectType, String objectName, String objectLabel) throws Exception {
+        if (this.targetClient.existObject(this.targetDatabase, objectName, objectType)) {
+            String dropSql = "DROP " + objectType + " " + DBUtil.wrap(objectName, DBDialect.ORACLE) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, dropSql);
+            this.message("Drop " + objectLabel + " " + objectName);
+        } else {
+            this.message("Skip Drop " + objectLabel + " " + objectName);
+        }
+        this.processedIncr();
     }
 
     @Override

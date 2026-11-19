@@ -2262,6 +2262,32 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 判断数据库对象是否存在
+     *
+     * @param schema     模式名称
+     * @param objectName 对象名称
+     * @param objectType 对象类型
+     * @return 存在返回true，否则返回false
+     */
+    public boolean existObject(String schema, String objectName, String objectType) {
+        boolean result;
+        try {
+            String sql = "SELECT COUNT(*) FROM ALL_OBJECTS WHERE OWNER = ? AND OBJECT_NAME = ? AND OBJECT_TYPE = ?";
+            PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, objectName);
+            statement.setString(3, objectType);
+            ResultSet resultSet = statement.executeQuery();
+            result = resultSet.next() && resultSet.getInt(1) > 0;
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+        return result;
+    }
+
+    /**
      * 创建视图
      *
      * @param param 参数
@@ -3255,11 +3281,12 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public void executeSqlSimple(String schema, String sql) {
         Connection connection = null;
         try {
-            this.printSql(sql);
+            String executableSql = this.stripStatementTerminator(sql);
+            this.printSql(executableSql);
             connection = this.getConnManager().connection(schema);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
-            statement.execute(sql);
+            statement.execute(executableSql);
             connection.commit();
             IOUtil.close(statement);
         } catch (Exception ex) {
@@ -3286,8 +3313,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             for (String sql : sqlList) {
-                this.printSql(sql);
-                statement.addBatch(sql);
+                String executableSql = this.stripStatementTerminator(sql);
+                this.printSql(executableSql);
+                statement.addBatch(executableSql);
             }
             int[] results = statement.executeBatch();
             connection.commit();
