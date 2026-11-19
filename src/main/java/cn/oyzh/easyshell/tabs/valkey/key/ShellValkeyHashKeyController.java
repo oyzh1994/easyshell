@@ -365,7 +365,7 @@ public class ShellValkeyHashKeyController extends ShellValkeyRowKeyController<Sh
             return;
         }
         ShellValkeyHashValue.ValkeyHashRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteField", row.getField()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteField(row.getField()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

@@ -217,7 +217,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteContainer", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -313,7 +313,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null || !container.isExited()) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("start1Container", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmStartContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -340,7 +340,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("stop1Container", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmStopContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -363,7 +363,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void killContainer() {
         ShellDockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("killContainer", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmKillContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -390,7 +390,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("restartContainer", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmRestartContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -417,7 +417,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
         if (container == null) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("pauseContainer", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmPauseContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {
@@ -440,7 +440,7 @@ public class ShellDockerContainerTableView extends FXTableView<ShellDockerContai
      */
     public void unpauseContainer() {
         ShellDockerContainer container = this.getSelectedItem();
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("unpauseContainer", container.getNames()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmUnpauseContainer(container.getNames()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {

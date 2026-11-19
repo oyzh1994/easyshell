@@ -127,7 +127,7 @@ public class ShellPostgresqlSequenceTreeItem extends ShellPostgresqlTreeItem<She
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteSequence", this.value.getName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteSequence(this.value.getName()), this.getWindow())) {
             return;
         }
         try {

@@ -139,7 +139,7 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
     public void delete() {
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> {
-                    if (MessageBox.confirm(ShellI18nHelper.confirm("deleteDatabase", this.dbName()), this.getWindow())) {
+                    if (MessageBox.confirm(ShellI18nHelper.confirmDeleteDatabase(this.dbName()), this.getWindow())) {
                         if (this.parent().dropDatabase(this.dbName())) {
                             ShellMongoEventUtil.databaseDropped(this);
                             super.remove();

@@ -706,10 +706,10 @@ public abstract class ShellFileTableView<C extends ShellFileClient<E>, E extends
         }
         if (files.size() == 1) {
             E file = files.getFirst();
-            if (file.isDirectory() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteDir", file.getFileName()), this.getWindow())) {
+            if (file.isDirectory() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteDir(file.getFileName()), this.getWindow())) {
                 return;
             }
-            if (!file.isDirectory() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteFile", file.getFileName()), this.getWindow())) {
+            if (!file.isDirectory() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteFile(file.getFileName()), this.getWindow())) {
                 return;
             }
         } else if (!MessageBox.confirm(ShellI18nHelper.fileTip2(), this.getWindow())) {

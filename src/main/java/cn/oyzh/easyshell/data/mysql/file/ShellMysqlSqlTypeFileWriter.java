@@ -5,6 +5,7 @@ import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
@@ -98,6 +99,7 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
         if (value == null) {
             return "NULL";
         }
+        value = ShellMysqlDataUtil.valueStandardization(column, value);
         if (column.supportGeometry()) {
             return "ST_GeomFromText('" + value + "')";
         }

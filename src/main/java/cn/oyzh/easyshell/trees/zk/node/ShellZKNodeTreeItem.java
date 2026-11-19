@@ -546,7 +546,7 @@ public class ShellZKNodeTreeItem extends ShellZKTreeItem<ShellZKNodeTreeItemValu
             return;
         }
         // 父节点
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("delete", this.decodeNodePath()), I18nHelper.areYouSure(), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDelete(this.decodeNodePath()), I18nHelper.areYouSure(), this.getWindow())) {
             return;
         }
         // 创建任务

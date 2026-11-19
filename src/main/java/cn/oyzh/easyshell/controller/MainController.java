@@ -92,7 +92,7 @@ public class MainController extends ParentStageController {
             JulLog.info("exit directly.");
             StageManager.exit();
         } else { // 总是询问
-            if (MessageBox.confirm(ShellI18nHelper.confirm("quit", this.project.getName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmQuit(this.project.getName()), this.getWindow())) {
                 JulLog.info("exit by confirm.");
                 StageManager.exit();
             } else {

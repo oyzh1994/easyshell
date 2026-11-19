@@ -380,7 +380,7 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteTable", this.tableName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteTable(this.tableName()), this.getWindow())) {
             return;
         }
         try {
@@ -398,7 +398,7 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
      * 清空表
      */
     private void clearTable() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("clearTable", this.tableName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmClearTable(this.tableName()), this.getWindow())) {
             return;
         }
         try {
@@ -414,7 +414,7 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
      * 清空表并重置自增
      */
     private void truncateTable() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("truncateTable", this.tableName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmTruncateTable(this.tableName()), this.getWindow())) {
             return;
         }
         try {

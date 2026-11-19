@@ -635,7 +635,7 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("delete", this.value().getName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmDelete(this.value().getName()), this.getWindow())) {
             // this.closeConnect(false);
             if (this.connectManager().delConnectItem(this)) {
                 ShellEventUtil.connectDeleted(this.value);

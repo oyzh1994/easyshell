@@ -620,7 +620,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
      */
     @FXML
     private void deleteRecord() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteDocument"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteDocument(), this.getWindow())) {
             return;
         }
         List<MongoRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());

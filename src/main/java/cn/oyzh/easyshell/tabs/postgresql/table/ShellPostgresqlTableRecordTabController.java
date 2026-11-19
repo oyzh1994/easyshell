@@ -535,7 +535,7 @@ public class ShellPostgresqlTableRecordTabController extends RichTabController {
         //     MessageBox.exception(ex, this.getWindow());
         // }
         List<PostgresqlRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteRecord"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteRecord(), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));

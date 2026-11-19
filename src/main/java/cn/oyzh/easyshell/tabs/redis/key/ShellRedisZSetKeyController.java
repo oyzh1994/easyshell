@@ -290,7 +290,7 @@ public class ShellRedisZSetKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteMember", row.getValue()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteMember(row.getValue()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

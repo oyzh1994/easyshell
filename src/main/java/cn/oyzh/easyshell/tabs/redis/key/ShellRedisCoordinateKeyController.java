@@ -336,7 +336,7 @@ public class ShellRedisCoordinateKeyController extends ShellRedisRowKeyControlle
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteCoordinate", row.getValue()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteCoordinate(row.getValue()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

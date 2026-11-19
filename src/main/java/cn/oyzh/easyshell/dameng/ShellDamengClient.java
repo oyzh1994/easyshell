@@ -62,6 +62,7 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.dameng.DamengExecuteResult;
 import cn.oyzh.easyshell.query.dameng.DamengExplainResult;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
@@ -1354,6 +1355,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     //                    if (column.supportGeometry()) {
                     //                        data = DamengHelper.getGeometryString(connection, data);
                     //                    }
+                    data = ShellDamengDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -2643,6 +2645,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                     //                    if (column.supportGeometry()) {
                     //                        data = DamengHelper.getGeometryString(connection, data);
                     //                    }
+                    data = ShellDamengDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -3699,6 +3702,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 for (DamengColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
+                    data = ShellDamengDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
             }

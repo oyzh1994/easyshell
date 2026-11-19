@@ -75,7 +75,7 @@ public class ShellSnippetTreeItem extends RichTreeItem<ShellSnippetTreeItemValue
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("delete", this.value().getName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmDelete(this.value().getName()), this.getWindow())) {
             if (this.snippetStore.delete(this.value)) {
                 this.getTreeView().deleteSnippet(this.value);
                 this.remove();

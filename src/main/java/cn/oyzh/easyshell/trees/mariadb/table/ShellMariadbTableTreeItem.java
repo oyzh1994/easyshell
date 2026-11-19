@@ -194,7 +194,7 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
      * 清空表数据并重置自增
      */
     private void truncateTable() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("truncateTable", this.tableName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmTruncateTable(this.tableName()), this.getWindow())) {
             try {
                 this.dbItem().truncateTable(this.tableName());
                 ShellMariadbEventUtil.tableTruncated(this, this.dbItem());
@@ -210,7 +210,7 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
      */
     private void clearTable() {
         try {
-            if (MessageBox.confirm(ShellI18nHelper.confirm("clearTable", this.tableName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmClearTable(this.tableName()), this.getWindow())) {
                 this.dbItem().clearTable(this.tableName());
                 ShellMariadbEventUtil.tableCleared(this, this.dbItem());
             }
@@ -222,7 +222,7 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteTable", this.tableName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmDeleteTable(this.tableName()), this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellMariadbEventUtil.tableDropped(this, this.dbItem());
                 this.parent().clearTableSize();

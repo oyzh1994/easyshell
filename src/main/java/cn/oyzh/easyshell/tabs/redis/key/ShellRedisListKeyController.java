@@ -272,7 +272,7 @@ public class ShellRedisListKeyController extends ShellRedisRowKeyController<Shel
             return;
         }
         ShellRedisKeyRow row = this.treeItem.currentRow();
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteElement", row.getValue()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteElement(row.getValue()), this.getWindow())) {
             return;
         }
         if (!this.treeItem.deleteRow()) {

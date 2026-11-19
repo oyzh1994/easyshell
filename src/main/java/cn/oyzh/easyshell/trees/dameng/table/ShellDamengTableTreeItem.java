@@ -192,7 +192,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
      * 截断表
      */
     private void truncateTable() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("truncateTable", this.tableName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmTruncateTable(this.tableName()), this.getWindow())) {
             try {
                 this.dbItem().truncateTable(this.tableName());
                 ShellDamengEventUtil.tableTruncated(this, this.dbItem());
@@ -208,7 +208,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
      */
     private void clearTable() {
         try {
-            if (MessageBox.confirm(ShellI18nHelper.confirm("clearTableData", this.tableName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmClearTableData(this.tableName()), this.getWindow())) {
                 this.dbItem().clearTable(this.tableName());
                 ShellDamengEventUtil.tableCleared(this, this.dbItem());
             }
@@ -220,7 +220,7 @@ public class ShellDamengTableTreeItem extends ShellDamengTreeItem<ShellDamengTab
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteTable", this.tableName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmDeleteTable(this.tableName()), this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellDamengEventUtil.tableDropped(this, this.dbItem());
                 this.parent().clearTableSize();

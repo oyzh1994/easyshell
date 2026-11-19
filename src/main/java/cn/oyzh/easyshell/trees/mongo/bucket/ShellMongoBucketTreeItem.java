@@ -106,7 +106,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
      * 清空集合
      */
     private void clearBucket() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("clearBucket", this.bucketName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmClearBucket(this.bucketName()), this.getWindow())) {
             this.dbItem().clearBucket(this.bucketName());
             this.parent().reloadChild();
         }
@@ -115,7 +115,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteBucket", this.bucketName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmDeleteBucket(this.bucketName()), this.getWindow())) {
                 this.dbItem().dropBucket(this.bucketName());
                 ShellMongoEventUtil.bucketDropped(this, this.dbItem());
                 this.parent().clearBucketsSize();

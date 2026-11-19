@@ -486,7 +486,7 @@ public class ShellMysqlViewRecordTabController extends RichTabController {
     @FXML
     private void deleteRecord() {
         List<MysqlRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteRecord"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteRecord(), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));

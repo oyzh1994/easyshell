@@ -129,7 +129,7 @@ public class ShellZKNodeACLTabController extends SubTabController {
             MessageBox.warn(this.i18nString("shell.zk.aclTip1"), this.getWindow());
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteACL", acl.idVal()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteAcl(acl.idVal()), this.getWindow())) {
             return;
         }
         try {

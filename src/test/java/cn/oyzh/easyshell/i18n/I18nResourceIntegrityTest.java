@@ -95,11 +95,6 @@ public class I18nResourceIntegrityTest {
         while (literalMatcher.find()) {
             keys.add(literalMatcher.group(1));
         }
-        Matcher confirmMatcher = Pattern.compile("ShellI18nHelper\\.confirm\\(\"([^\"]+)\"")
-                .matcher(sourceTree());
-        while (confirmMatcher.find()) {
-            keys.add("shell.confirm." + confirmMatcher.group(1));
-        }
         assertFalse(keys.isEmpty());
         for (String locale : LOCALES) {
             Properties properties = loadProperties("i18n_" + locale + ".properties");
@@ -108,6 +103,15 @@ public class I18nResourceIntegrityTest {
                     .collect(Collectors.toCollection(TreeSet::new));
             assertTrue(locale + " missing keys: " + missing, missing.isEmpty());
         }
+    }
+
+    @Test
+    public void shellI18nHelperUsesExplicitResourceKeys() throws IOException {
+        Path helperSource = projectDir().resolve("src/main/java/cn/oyzh/easyshell/util/ShellI18nHelper.java");
+        String source = Files.readString(helperSource, StandardCharsets.UTF_8);
+        Pattern dynamicKey = Pattern.compile("\\b(?:text|i18nString)\\(\\s*\"[^\"]*\"\\s*\\+");
+        assertFalse("ShellI18nHelper must use complete resource keys",
+                dynamicKey.matcher(source).find());
     }
 
     @Test
@@ -218,17 +222,6 @@ public class I18nResourceIntegrityTest {
             properties.load(stream);
         }
         return properties;
-    }
-
-    private String sourceTree() throws IOException {
-        Path sourceRoot = projectDir().resolve("src/main/java");
-        try (Stream<Path> files = Files.walk(sourceRoot)) {
-            StringBuilder source = new StringBuilder();
-            for (Path file : files.filter(path -> path.toString().endsWith(".java")).toList()) {
-                source.append(Files.readString(file, StandardCharsets.UTF_8)).append('\n');
-            }
-            return source.toString();
-        }
     }
 
     private Path projectDir() {

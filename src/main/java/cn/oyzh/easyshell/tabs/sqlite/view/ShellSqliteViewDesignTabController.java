@@ -117,7 +117,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         if (this.originalName == null) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmRefreshData(), this.getWindow())) {
             return;
         }
         try {

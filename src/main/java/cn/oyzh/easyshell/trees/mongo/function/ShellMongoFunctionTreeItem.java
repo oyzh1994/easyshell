@@ -102,7 +102,7 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteFunction", this.value.getName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteFunction(this.value.getName()), this.getWindow())) {
             return;
         }
         try {

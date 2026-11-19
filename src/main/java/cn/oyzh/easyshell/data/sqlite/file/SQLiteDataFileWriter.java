@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.generator.record.SQLiteRecordSqlGenerator;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.store.file.CsvFileWriter;
 import cn.oyzh.store.file.ExcelTypeFileWriter;
@@ -107,10 +108,11 @@ public class SQLiteDataFileWriter implements AutoCloseable {
             if (!this.firstSqlRecord) {
                 this.sqlWriter.writeLine("");
             }
+            Map<String, Object> normalized = ShellSqliteDataUtil.normalize(this.columns, record);
             this.sqlWriter.writeLine(SQLiteRecordSqlGenerator.insert(
                     this.tableName(), this.columns.stream()
                             .filter(column -> !column.isGenerated())
-                            .map(SQLiteColumn::getName).toList(), record));
+                            .map(SQLiteColumn::getName).toList(), normalized));
             this.firstSqlRecord = false;
             return;
         }
@@ -152,6 +154,7 @@ public class SQLiteDataFileWriter implements AutoCloseable {
     }
 
     private Object normalize(SQLiteColumn column, Object value) {
+        value = ShellSqliteDataUtil.valueStandardization(column, value);
         if (value == null) {
             return null;
         }

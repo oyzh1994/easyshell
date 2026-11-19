@@ -4,6 +4,7 @@ import cn.oyzh.common.date.DateUtil;
 import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
+import cn.oyzh.easyshell.util.mariadb.ShellMariadbDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileWriter;
 
@@ -35,6 +36,7 @@ public abstract class ShellMariadbTypeFileWriter extends DBDataTypeFileWriter {
         if (value == null) {
             return null;
         }
+        value = ShellMariadbDataUtil.valueStandardization(column, value);
         if (column.supportGeometry()) {
             return "ST_GeomFromText('" + value + "')";
         }

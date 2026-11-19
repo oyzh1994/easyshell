@@ -60,6 +60,7 @@ import cn.oyzh.easyshell.mariadb.view.MariadbSelectViewParam;
 import cn.oyzh.easyshell.mariadb.view.MariadbView;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbExecuteResult;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbExplainResult;
+import cn.oyzh.easyshell.util.mariadb.ShellMariadbDataUtil;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -1313,6 +1314,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                     if (column.supportGeometry()) {
                         data = ShellMariadbHelper.getGeometryString(connection, data);
                     }
+                    data = ShellMariadbDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -2593,6 +2595,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                     if (column.supportGeometry()) {
                         data = ShellMariadbHelper.getGeometryString(connection, data);
                     }
+                    data = ShellMariadbDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -3742,6 +3745,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                     if (column.supportGeometry()) {
                         data = ShellMariadbHelper.getGeometryString(connection, data);
                     }
+                    data = ShellMariadbDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
             }

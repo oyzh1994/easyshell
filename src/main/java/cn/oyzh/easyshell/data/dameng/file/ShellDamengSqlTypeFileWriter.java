@@ -123,7 +123,7 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
         if (value == null) {
             return "NULL";
         }
-        value = ShellDamengDataUtil.valueStandardization(value);
+        value = ShellDamengDataUtil.valueStandardization(column, value);
         //        if (column.supportGeometry()) {
         //            return "ST_GeomFromText('" + value + "')";
         //        }

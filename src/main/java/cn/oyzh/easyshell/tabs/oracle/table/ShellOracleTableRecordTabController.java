@@ -536,7 +536,7 @@ public class ShellOracleTableRecordTabController extends RichTabController {
         //     MessageBox.exception(ex, this.getWindow());
         // }
         List<OracleRecord> records = new ArrayList<>(this.recordTable.getSelectedItems());
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteRecord"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteRecord(), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> this.deleteRecords(records));

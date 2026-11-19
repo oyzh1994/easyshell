@@ -159,7 +159,7 @@ public class ShellDockerImageTableView extends FXTableView<ShellDockerImage> {
         if (image == null) {
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteImage", image.getRepository()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteImage(image.getRepository()), this.getWindow())) {
             return;
         }
         StageManager.showMask(this.getWindow(), () -> {

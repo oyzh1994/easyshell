@@ -857,7 +857,7 @@ public class ShellUpdateSSHConnectController extends StageController {
     @FXML
     private void deleteJump() {
         ShellJumpConfig config = this.jumpTableView.getSelectedItem();
-        if (MessageBox.confirm(ShellI18nHelper.confirm("deleteJumpHost", config.getName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmDeleteJumpHost(config.getName()), this.getWindow())) {
             this.jumpTableView.removeSelectedItem();
             this.jumpConfigStore.delete(config);
             this.jumpTableView.updateOrder();
@@ -924,7 +924,7 @@ public class ShellUpdateSSHConnectController extends StageController {
     @FXML
     private void deleteTunneling() {
         ShellTunnelingConfig config = this.tunnelingTableView.getSelectedItem();
-        if (MessageBox.confirm(ShellI18nHelper.confirm("deleteTunneling", config.getName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmDeleteTunneling(config.getName()), this.getWindow())) {
             this.tunnelingTableView.removeSelectedItem();
             this.tunnelingConfigStore.delete(config);
         }

@@ -168,7 +168,7 @@ public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMari
     public void delete() {
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> {
-                    if (MessageBox.confirm(ShellI18nHelper.confirm("deleteDatabase", this.dbName()), this.getWindow())) {
+                    if (MessageBox.confirm(ShellI18nHelper.confirmDeleteDatabase(this.dbName()), this.getWindow())) {
                         if (this.parent().dropDatabase(this.dbName())) {
                             ShellMariadbEventUtil.databaseDropped(this);
                             super.remove();

@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
 import cn.oyzh.easyshell.mariadb.record.MariadbRecord;
 import cn.oyzh.easyshell.mariadb.record.MariadbSelectRecordParam;
+import cn.oyzh.easyshell.util.mariadb.ShellMariadbDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
 
@@ -191,7 +192,9 @@ public class ShellMariadbDataExportHandler extends DBDataExportHandler {
     private void writeRecord(ShellMariadbTypeFileWriter writer, ShellMariadbDataExportTable table, MariadbColumns columns, List<MariadbRecord> records) throws Exception {
         List<Map<String, Object>> objects = new ArrayList<>();
         for (MariadbRecord object : records) {
-            objects.add(object.toMap());
+            Map<String, Object> row = object.toMap();
+            row.replaceAll((key, value) -> ShellMariadbDataUtil.valueStandardization(value));
+            objects.add(row);
         }
         writer.writeRecords(objects);
     }

@@ -37,7 +37,7 @@ public abstract class ShellDamengTypeFileWriter extends DBDataTypeFileWriter {
         if (value == null) {
             return null;
         }
-        value = ShellDamengDataUtil.valueStandardization(value);
+        value = ShellDamengDataUtil.valueStandardization(column, value);
         //        if (column.supportGeometry()) {
         //            return "ST_GeomFromText('" + value + "')";
         //        }

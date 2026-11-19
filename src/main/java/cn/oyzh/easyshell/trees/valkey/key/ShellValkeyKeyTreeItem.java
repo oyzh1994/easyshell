@@ -339,7 +339,7 @@ public abstract class ShellValkeyKeyTreeItem extends ShellValkeyTreeItem<ShellVa
     @Override
     public void delete() {
         try {
-            if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteKey", this.key()), this.getWindow())) {
+            if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteKey(this.key()), this.getWindow())) {
                 return;
             }
             // 删除此键

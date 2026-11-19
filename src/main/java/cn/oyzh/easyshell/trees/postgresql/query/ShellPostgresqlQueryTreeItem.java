@@ -92,7 +92,7 @@ public class ShellPostgresqlQueryTreeItem extends ShellPostgresqlTreeItem<ShellP
 
     @Override
     public void delete() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("delete", this.queryName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmDelete(this.queryName()), this.getWindow())) {
             if (ShellQueryStore.INSTANCE.delete(this.value)) {
                 ShellPostgresqlEventUtil.queryDeleted(this);
                 this.parent().clearQuerySize();

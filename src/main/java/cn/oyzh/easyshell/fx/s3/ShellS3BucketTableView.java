@@ -101,7 +101,7 @@ public class ShellS3BucketTableView extends FXTableView<ShellS3Bucket> {
      * @param force  强制
      */
     public void deleteBucket(ShellS3Bucket bucket, boolean force) {
-        if (bucket != null && MessageBox.confirm(ShellI18nHelper.confirm("deleteBucket", bucket.getName()), this.getWindow())) {
+        if (bucket != null && MessageBox.confirm(ShellI18nHelper.confirmDeleteBucket(bucket.getName()), this.getWindow())) {
             StageManager.showMask(this.getWindow(), () -> {
                 try {
                     this.client.deleteBucket(bucket, force);

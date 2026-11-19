@@ -63,6 +63,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExecuteResult;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExplainResult;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlDataUtil;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
@@ -1741,6 +1742,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 PostgresqlRecord record = new PostgresqlRecord(columns, param.isReadonly());
                 for (PostgresqlColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
+                    data = ShellPostgresqlDataUtil.valueStandardization(data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -3628,6 +3630,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                     //                    if (column.supportGeometry()) {
                     //                        data = PostgresqlHelper.getGeometryString(connection, data);
                     //                    }
+                    data = ShellPostgresqlDataUtil.valueStandardization(data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -4804,6 +4807,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 for (PostgresqlColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
+                    data = ShellPostgresqlDataUtil.valueStandardization(data);
                     record.putValue(column, data);
                 }
             }

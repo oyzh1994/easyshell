@@ -215,7 +215,7 @@ public class ShellMariadbViewDesignTabController extends RichTabController {
      */
     @FXML
     private void refresh() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmRefreshData(), this.getWindow())) {
             return;
         }
         try {

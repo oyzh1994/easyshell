@@ -234,7 +234,7 @@ public class ShellMariadbProcedureDesignTabController extends RichTabController 
      */
     @FXML
     private void refresh() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmRefreshData(), this.getWindow())) {
             return;
         }
         try {
@@ -372,7 +372,7 @@ public class ShellMariadbProcedureDesignTabController extends RichTabController 
             MariadbRoutineParam param = this.paramTable.getSelectedItem();
             if (param != null) {
                 // 非新增的数据进行提示
-                if (!param.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("delete", param.getName()), this.getWindow())) {
+                if (!param.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirmDelete(param.getName()), this.getWindow())) {
                     return;
                 }
                 this.paramTable.getItems().remove(param);

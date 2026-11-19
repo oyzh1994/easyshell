@@ -371,7 +371,7 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteView", this.viewName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteView(this.viewName()), this.getWindow())) {
             return;
         }
         try {

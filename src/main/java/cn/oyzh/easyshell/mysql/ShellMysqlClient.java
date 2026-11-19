@@ -60,6 +60,7 @@ import cn.oyzh.easyshell.mysql.view.MysqlSelectViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -1317,6 +1318,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     if (column.supportGeometry()) {
                         data = ShellMysqlHelper.getGeometryString(connection, data);
                     }
+                    data = ShellMysqlDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -2597,6 +2599,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     if (column.supportGeometry()) {
                         data = ShellMysqlHelper.getGeometryString(connection, data);
                     }
+                    data = ShellMysqlDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -3746,6 +3749,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                     if (column.supportGeometry()) {
                         data = ShellMysqlHelper.getGeometryString(connection, data);
                     }
+                    data = ShellMysqlDataUtil.valueStandardization(column, data);
                     record.putValue(column, data);
                 }
             }

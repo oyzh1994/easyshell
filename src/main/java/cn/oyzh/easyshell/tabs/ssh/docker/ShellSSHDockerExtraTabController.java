@@ -112,7 +112,7 @@ public class ShellSSHDockerExtraTabController extends SubTabController {
             MessageBox.warn(I18nHelper.operationNotSupport(), this.getWindow());
             return;
         }
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("restart"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmRestart(), this.getWindow())) {
             return;
         }
         ShellDockerExec exec = this.client().dockerExec();

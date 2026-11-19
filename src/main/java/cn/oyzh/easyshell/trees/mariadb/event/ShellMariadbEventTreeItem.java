@@ -132,7 +132,7 @@ public class ShellMariadbEventTreeItem extends ShellMariadbTreeItem<ShellMariadb
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteEvent", this.value.getName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteEvent(this.value.getName()), this.getWindow())) {
             return;
         }
         try {

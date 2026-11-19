@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.mysql.record.MysqlSelectRecordParam;
+import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.handler.DBDataExportHandler;
 
@@ -191,7 +192,9 @@ public class ShellMysqlDataExportHandler extends DBDataExportHandler {
     private void writeRecord(ShellMysqlTypeFileWriter writer, ShellMysqlDataExportTable table, MysqlColumns columns, List<MysqlRecord> records) throws Exception {
         List<Map<String, Object>> objects = new ArrayList<>();
         for (MysqlRecord object : records) {
-            objects.add(object.toMap());
+            Map<String, Object> row = object.toMap();
+            row.replaceAll((key, value) -> ShellMysqlDataUtil.valueStandardization(value));
+            objects.add(row);
         }
         writer.writeRecords(objects);
     }

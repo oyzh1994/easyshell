@@ -254,7 +254,7 @@ public class ShellPostgresqlTableDesignTabController extends ParentTabController
      */
     @FXML
     private void refresh() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("refreshData"), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmRefreshData(), this.getWindow())) {
             return;
         }
         try {
@@ -472,7 +472,7 @@ public class ShellPostgresqlTableDesignTabController extends ParentTabController
                 return;
             }
             // 确认操作
-            if (!column.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteField", column.getName()), this.getWindow())) {
+            if (!column.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteField(column.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -503,7 +503,7 @@ public class ShellPostgresqlTableDesignTabController extends ParentTabController
                 return;
             }
             // 确认操作
-            if (!index.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteIndex", index.getName()), this.getWindow())) {
+            if (!index.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteIndex(index.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -534,7 +534,7 @@ public class ShellPostgresqlTableDesignTabController extends ParentTabController
                 return;
             }
             // 确认操作
-            if (!foreignKey.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteForeignKey", foreignKey.getName()), this.getWindow())) {
+            if (!foreignKey.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteForeignKey(foreignKey.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -565,7 +565,7 @@ public class ShellPostgresqlTableDesignTabController extends ParentTabController
                 return;
             }
             // 确认操作
-            if (!trigger.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteTrigger", trigger.getName()), this.getWindow())) {
+            if (!trigger.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteTrigger(trigger.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据
@@ -596,7 +596,7 @@ public class ShellPostgresqlTableDesignTabController extends ParentTabController
                 return;
             }
             // 确认操作
-            if (!check.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirm("deleteCheck", check.getName()), this.getWindow())) {
+            if (!check.isCreated() && !MessageBox.confirm(ShellI18nHelper.confirmDeleteCheck(check.getName()), this.getWindow())) {
                 return;
             }
             // 从table移除数据

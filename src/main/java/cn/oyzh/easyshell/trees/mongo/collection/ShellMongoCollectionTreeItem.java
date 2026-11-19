@@ -129,7 +129,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
      * 清空集合
      */
     private void clearCollection() {
-        if (MessageBox.confirm(ShellI18nHelper.confirm("clearCollection", this.collectionName()), this.getWindow())) {
+        if (MessageBox.confirm(ShellI18nHelper.confirmClearCollection(this.collectionName()), this.getWindow())) {
             this.dbItem().clearCollection(this.collectionName());
             this.parent().reloadChild();
         }
@@ -138,7 +138,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
     @Override
     public void delete() {
         try {
-            if (MessageBox.confirm(ShellI18nHelper.confirm("deleteCollection", this.collectionName()), this.getWindow())) {
+            if (MessageBox.confirm(ShellI18nHelper.confirmDeleteCollection(this.collectionName()), this.getWindow())) {
                 this.dbItem().dropCollection(this.collectionName());
                 ShellMongoEventUtil.collectionDropped(this, this.dbItem());
                 this.parent().clearCollectionSize();

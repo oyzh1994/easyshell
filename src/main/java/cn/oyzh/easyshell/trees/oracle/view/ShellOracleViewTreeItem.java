@@ -166,7 +166,7 @@ public class ShellOracleViewTreeItem extends ShellOracleTreeItem<ShellOracleView
 
     @Override
     public void delete() {
-        if (!MessageBox.confirm(ShellI18nHelper.confirm("deleteView", this.value.getName()), this.getWindow())) {
+        if (!MessageBox.confirm(ShellI18nHelper.confirmDeleteView(this.value.getName()), this.getWindow())) {
             return;
         }
         try {

@@ -169,7 +169,7 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
     public void delete() {
         Task task = TaskBuilder.newBuilder()
                 .onStart(() -> {
-                    if (MessageBox.confirm(ShellI18nHelper.confirm("deleteSchema", this.schema()), this.getWindow())) {
+                    if (MessageBox.confirm(ShellI18nHelper.confirmDeleteSchema(this.schema()), this.getWindow())) {
                         if (this.parent().dropSchema(this.schema())) {
                             ShellOracleEventUtil.schemaDropped(this);
                             super.remove();

@@ -51,6 +51,7 @@ import cn.oyzh.easyshell.sqlite.view.SQLiteAlertViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteCreateViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteSelectViewParam;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBFeature;
@@ -1060,7 +1061,9 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                     while (resultSet.next()) {
                         Map<String, Object> record = new HashMap<>();
                         for (int index = 0; index < columns.size(); index++) {
-                            record.put(columns.get(index).getName(), resultSet.getObject(index + 1));
+                            SQLiteColumn column = columns.get(index);
+                            Object value = resultSet.getObject(index + 1);
+                            record.put(column.getName(), ShellSqliteDataUtil.valueStandardization(column, value));
                         }
                         records.add(record);
                     }
@@ -1108,7 +1111,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                     while (resultSet.next()) {
                         SQLiteRecord record = new SQLiteRecord(columns, param.isReadonly());
                         for (SQLiteColumn column : columns) {
-                            record.putValue(column, resultSet.getObject(column.getName()));
+                            Object value = resultSet.getObject(column.getName());
+                            record.putValue(column, ShellSqliteDataUtil.valueStandardization(column, value));
                         }
                         records.add(record);
                     }
@@ -1211,7 +1215,8 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
                     }
                     SQLiteRecord record = new SQLiteRecord(columns, param.isReadonly());
                     for (SQLiteColumn column : columns) {
-                        record.putValue(column, resultSet.getObject(column.getName()));
+                        Object data = resultSet.getObject(column.getName());
+                        record.putValue(column, ShellSqliteDataUtil.valueStandardization(column, data));
                     }
                     return record;
                 }
