@@ -112,14 +112,14 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                     this.transportProcedure(procedure.getName());
                 }
             }
-            if (CollectionUtil.isNotEmpty(this.triggers)) {
-                for (DBDataTransportObject trigger : this.triggers) {
-                    this.transportTrigger(trigger.getName());
-                }
-            }
             if (CollectionUtil.isNotEmpty(this.sequences)) {
                 for (DBDataTransportObject sequence : this.sequences) {
                     this.transportSequence(sequence.getName());
+                }
+            }
+            if (CollectionUtil.isNotEmpty(this.triggers)) {
+                for (DBDataTransportObject trigger : this.triggers) {
+                    this.transportTrigger(trigger.getName());
                 }
             }
         } catch (Exception ex) {

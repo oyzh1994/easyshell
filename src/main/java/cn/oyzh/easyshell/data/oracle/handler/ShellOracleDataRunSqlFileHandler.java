@@ -5,6 +5,7 @@ import cn.oyzh.common.db.SqlUtil;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
+import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.fx.db.data.handler.DBDataRunFileHandler;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class ShellOracleDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             for (String statement : statements) {
                 try {
                     this.checkInterrupt();
-                    if (StringUtil.startWithIgnoreCase(statement.stripLeading(), "INSERT ")) {
+                    if (StringUtil.startWithIgnoreCase(ShellOracleHelper.stripLeadingComments(statement), "INSERT ")) {
                         this.addInsert(statement);
                     } else {
                         this.doBatchInsert();
@@ -49,6 +50,10 @@ public class ShellOracleDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
                         this.processedIncr();
                     }
                 } catch (Exception ex) {
+                    if (ShellOracleHelper.isIgnorableDropError(statement, ex)) {
+                        this.processedIncr();
+                        continue;
+                    }
                     this.exception(ex);
                     this.processedDecr();
                     this.getInsertList().clear();

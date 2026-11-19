@@ -5,6 +5,7 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
+import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
@@ -65,7 +66,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                     this.handleDumpError(ex);
                 }
                 try {
-                    this.dumpView();
+                    this.dumpSequence();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
                 }
@@ -80,12 +81,12 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                     this.handleDumpError(ex);
                 }
                 try {
-                    this.dumpTrigger();
+                    this.dumpView();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
                 }
                 try {
-                    this.dumpSequence();
+                    this.dumpTrigger();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
                 }
@@ -196,7 +197,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
         String line1 = "-- ----------------------------";
         String line2 = "-- Table structure for " + table.getName();
         String line3 = "-- ----------------------------";
-        String dropTable = "DROP TABLE " + DBUtil.wrap(table.getName(), DBDialect.ORACLE) + ";";
+        String dropTable = ShellOracleHelper.buildDropIfExistsSql("TABLE", table.getName());
         String createDefinition = table.getCreateDefinition();
         createDefinition = sqlStatement(createDefinition);
         //        createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
@@ -301,7 +302,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                     String line1 = "-- ----------------------------";
                     String line2 = "-- View structure for " + view.getName();
                     String line3 = "-- ----------------------------";
-                    String dropTable = "DROP VIEW " + DBUtil.wrap(view.getName(), DBDialect.ORACLE) + ";";
+                    String dropTable = ShellOracleHelper.buildDropIfExistsSql("VIEW", view.getName());
                     String createDefinition = view.getCreateDefinition();
                     //                String createDefinition = this.dbClient.showCreateView(this.dbName, view.getName());
                     // TODO: 去除特定架构
@@ -335,7 +336,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                     String line1 = "-- ----------------------------";
                     String line2 = "-- Function structure for " + function.getName();
                     String line3 = "-- ----------------------------";
-                    String dropFunction = "DROP FUNCTION " + DBUtil.wrap(function.getName(), DBDialect.ORACLE) + ";";
+                    String dropFunction = ShellOracleHelper.buildDropIfExistsSql("FUNCTION", function.getName());
                     String createDefinition = function.getCreateDefinition();
                     // TODO: 去除特定架构
                     //                String createDefinition = this.dbClient.showCreateFunction(this.dbName, function.getName());
@@ -366,7 +367,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                     String line1 = "-- ----------------------------";
                     String line2 = "-- Procedure structure for " + procedure.getName();
                     String line3 = "-- ----------------------------";
-                    String dropProcedure = "DROP PROCEDURE " + DBUtil.wrap(procedure.getName(), DBDialect.ORACLE) + ";";
+                    String dropProcedure = ShellOracleHelper.buildDropIfExistsSql("PROCEDURE", procedure.getName());
                     String createDefinition = procedure.getCreateDefinition();
                     //                String createDefinition = this.dbClient.showCreateProcedure(this.dbName, procedure.getName());
                     // TODO: 去除特定架构
@@ -397,7 +398,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                     String line1 = "-- ----------------------------";
                     String line2 = "-- Trigger structure for " + trigger.getName();
                     String line3 = "-- ----------------------------";
-                    String dropTrigger = "DROP TRIGGER " + DBUtil.wrap(trigger.getName(), DBDialect.ORACLE) + ";";
+                    String dropTrigger = ShellOracleHelper.buildDropIfExistsSql("TRIGGER", trigger.getName());
                     String createDefinition = trigger.getCreateDefinition();
                     //                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
                     // TODO: 去除特定架构
@@ -420,20 +421,20 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
     protected void dumpSequence() throws Exception {
         List<OracleSequence> sequences = this.dbClient.selectSequences(this.dbName);
         if (CollectionUtil.isNotEmpty(sequences)) {
-            for (OracleSequence trigger : sequences) {
+            for (OracleSequence sequence : sequences) {
                 try {
                     this.checkInterrupt();
-                    this.message("Dumping Sequence " + trigger.getName());
+                    this.message("Dumping Sequence " + sequence.getName());
                     String line0 = "";
                     String line1 = "-- ----------------------------";
-                    String line2 = "-- Sequence structure for " + trigger.getName();
+                    String line2 = "-- Sequence structure for " + sequence.getName();
                     String line3 = "-- ----------------------------";
-                    String dropSequence = "DROP SEQUENCE " + DBUtil.wrap(trigger.getName(), DBDialect.ORACLE) + ";";
-                    String createDefinition = trigger.getCreateDefinition();
+                    String dropSequence = ShellOracleHelper.buildDropIfExistsSql("SEQUENCE", sequence.getName());
+                    String createDefinition = sequence.getCreateDefinition();
                     //                String createDefinition = this.dbClient.showCreateTrigger(this.dbName, trigger.getName());
                     // TODO: 去除特定架构
                     //                createDefinition = createDefinition.replaceFirst(DBUtil.wrap(trigger.getSchema(), this.dialect) + ".", "");
-                    createDefinition = sqlStatement(ShellOracleUtil.removeSchema(createDefinition, trigger.getSchema()));
+                    createDefinition = sqlStatement(ShellOracleUtil.removeSchema(createDefinition, sequence.getSchema()));
                     this.fileWriter.appendLines(List.of(line0, line1, line2, line3, dropSequence, createDefinition));
                     this.processedIncr();
                 } catch (Exception ex) {

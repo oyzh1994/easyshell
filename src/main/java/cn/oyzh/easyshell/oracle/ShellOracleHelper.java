@@ -35,6 +35,9 @@ public class ShellOracleHelper {
     private static final Pattern VIEW_READ_ONLY_PATTERN = Pattern.compile(
             "(?is)\\s+WITH\\s+READ\\s+ONLY\\s*;?\\s*$");
 
+    private static final Pattern OBJECT_NOT_EXISTS_PATTERN = Pattern.compile(
+            "ORA-(00942|02289|04043|04080)\\b", Pattern.CASE_INSENSITIVE);
+
     //    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
     //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";
     //        Statement statement = connection.createStatement();
@@ -699,7 +702,13 @@ public class ShellOracleHelper {
         }
     }
 
-    private static String normalizeTriggerDefinition(String definition) {
+    /**
+     * 规范触发器 WHEN 条件，Oracle 要求 WHEN 后的条件使用括号包裹。
+     *
+     * @param definition 触发器定义
+     * @return 规范后的触发器定义
+     */
+    public static String normalizeTriggerDefinition(String definition) {
         if (StringUtil.isBlank(definition)) {
             return definition;
         }
@@ -725,6 +734,96 @@ public class ShellOracleHelper {
         return definition.substring(0, conditionStart)
                 + "(" + condition + ") "
                 + definition.substring(beginIndex);
+    }
+
+    /**
+     * 构造可重复执行的 Oracle 删除语句。对象不存在时忽略，其他错误继续抛出。
+     *
+     * @param objectType 对象类型
+     * @param objectName 对象名称
+     * @return 删除语句块
+     */
+    public static String buildDropIfExistsSql(String objectType, String objectName) {
+        String dropSql = "DROP " + objectType + " " + DBUtil.wrap(objectName, DBDialect.ORACLE);
+        return """
+                BEGIN
+                    EXECUTE IMMEDIATE '%s';
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        IF SQLCODE NOT IN (-942, -2289, -4043, -4080) THEN
+                            RAISE;
+                        END IF;
+                END;
+                /
+                """.formatted(dropSql.replace("'", "''"));
+    }
+
+    /**
+     * 判断异常是否为 Oracle 对象不存在。
+     *
+     * @param throwable 异常
+     * @return 结果
+     */
+    public static boolean isObjectNotExists(Throwable throwable) {
+        Throwable cause = throwable;
+        while (cause != null) {
+            if (cause instanceof SQLException) {
+                int errorCode = ((SQLException) cause).getErrorCode();
+                if (errorCode == 942 || errorCode == 2289 || errorCode == 4043 || errorCode == 4080) {
+                    return true;
+                }
+            }
+            String message = cause.getMessage();
+            if (StringUtil.isNotBlank(message) && OBJECT_NOT_EXISTS_PATTERN.matcher(message).find()) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否为可忽略的删除对象不存在错误。
+     *
+     * @param sql SQL语句
+     * @param ex  异常
+     * @return 结果
+     */
+    public static boolean isIgnorableDropError(String sql, Throwable ex) {
+        return StringUtil.isNotBlank(sql)
+                && StringUtil.startWithIgnoreCase(stripLeadingComments(sql), "DROP ")
+                && isObjectNotExists(ex);
+    }
+
+    /**
+     * 去除SQL前导空白与注释。
+     *
+     * @param sql SQL语句
+     * @return 去除后的SQL
+     */
+    public static String stripLeadingComments(String sql) {
+        if (sql == null) {
+            return "";
+        }
+        String result = sql.stripLeading();
+        while (!result.isEmpty()) {
+            if (result.startsWith("/*")) {
+                int end = result.indexOf("*/", 2);
+                if (end < 0) {
+                    return result;
+                }
+                result = result.substring(end + 2).stripLeading();
+            } else if (result.startsWith("--")) {
+                int end = result.indexOf('\n');
+                if (end < 0) {
+                    return "";
+                }
+                result = result.substring(end + 1).stripLeading();
+            } else {
+                break;
+            }
+        }
+        return result;
     }
 
     private static String buildSequenceDefinition(Connection connection, String schema, String sequenceName) throws SQLException {

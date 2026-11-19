@@ -2357,14 +2357,26 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
 
     private String stripStatementTerminator(String sql) {
         String result = sql.strip();
-        String upper = result.toUpperCase(java.util.Locale.ROOT);
-        if (upper.startsWith("CREATE OR REPLACE TRIGGER") || upper.startsWith("CREATE TRIGGER")) {
+        while (result.endsWith("/")) {
+            result = result.substring(0, result.length() - 1).stripTrailing();
+        }
+        String executable = ShellOracleHelper.stripLeadingComments(result);
+        if (this.isPlSqlStatement(executable)) {
             return result;
         }
         while (result.endsWith(";")) {
             result = result.substring(0, result.length() - 1).stripTrailing();
         }
         return result;
+    }
+
+    private boolean isPlSqlStatement(String sql) {
+        String upper = sql.toUpperCase(java.util.Locale.ROOT);
+        return upper.startsWith("BEGIN")
+                || upper.startsWith("DECLARE")
+                || upper.matches("(?s)^CREATE\\s+(?:OR\\s+REPLACE\\s+)?"
+                + "(?:(?:NON)?EDITIONABLE\\s+)?"
+                + "(?:FUNCTION|PROCEDURE|TRIGGER|TYPE|PACKAGE(?:\\s+BODY)?)\\b.*");
     }
 
     private boolean supportsBequeath() {
@@ -3290,8 +3302,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             connection.commit();
             IOUtil.close(statement);
         } catch (Exception ex) {
-            JulLog.warn("sql:\n{}", sql);
-            ex.printStackTrace();
+            if (!ShellOracleHelper.isIgnorableDropError(sql, ex)) {
+                JulLog.warn("sql:\n{}", sql);
+                ex.printStackTrace();
+            }
             DBUtil.rollback(connection);
             throw new ShellException(ex);
         }

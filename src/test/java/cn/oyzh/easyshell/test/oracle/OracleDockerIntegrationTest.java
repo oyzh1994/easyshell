@@ -3,11 +3,14 @@ package cn.oyzh.easyshell.test.oracle;
 import cn.oyzh.common.db.SqlDatabase;
 import cn.oyzh.common.db.SqlUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataDumpHandler;
+import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataRunSqlFileHandler;
 import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
+import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.easyshell.oracle.check.OracleCheck;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
@@ -19,6 +22,7 @@ import cn.oyzh.easyshell.oracle.foreignKey.OracleForeignKey;
 import cn.oyzh.easyshell.oracle.record.OracleInsertRecordParam;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
+import cn.oyzh.easyshell.oracle.record.OracleSelectRecordParam;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
 import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
@@ -41,6 +45,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -338,6 +344,8 @@ public class OracleDockerIntegrationTest {
             assertFalse(sequence.getCreateDefinition().isBlank());
             assertSequenceAlterExecution(client);
             assertExecuteSqlSimpleTerminator(client);
+            assertDropIfExistsBlock(client);
+            assertDumpAndRunSqlFile(client);
             assertDataTransportWithTerminators(client);
             assertProcedureRenameExecution(client);
             assertFunctionParameterRoundTrip(client);
@@ -838,6 +846,84 @@ public class OracleDockerIntegrationTest {
                 targetClient.executeSqlSimple(targetSchema, "DROP TRIGGER \"" + triggerName + "\";");
             }
             targetClient.close();
+        }
+    }
+
+    private static void assertDropIfExistsBlock(ShellOracleClient client) {
+        String schema = "DEMO";
+        String name = "E2E_DROP_IF_EXISTS_SEQ";
+        String functionName = "E2E_COMMENTED_FUNC";
+        try {
+            client.executeSqlSimple(schema, "-- leading comment\n"
+                    + ShellOracleHelper.buildDropIfExistsSql("SEQUENCE", name));
+            client.executeSqlSimple(schema, "CREATE SEQUENCE \"" + name + "\"");
+            assertTrue(client.existObject(schema, name, "SEQUENCE"));
+            client.executeSqlSimple(schema, "/* leading block comment */\n"
+                    + ShellOracleHelper.buildDropIfExistsSql("SEQUENCE", name));
+            assertFalse(client.existObject(schema, name, "SEQUENCE"));
+
+            String functionSql = """
+                    -- leading comment
+                    CREATE OR REPLACE FUNCTION "E2E_COMMENTED_FUNC" RETURN NUMBER AS
+                    BEGIN
+                        RETURN 1;
+                    END;
+                    """;
+            client.executeSqlSimple(schema, functionSql);
+            assertTrue(client.existObject(schema, functionName, "FUNCTION"));
+        } finally {
+            if (client.existObject(schema, name, "SEQUENCE")) {
+                client.executeSqlSimple(schema, "DROP SEQUENCE \"" + name + "\";");
+            }
+            if (client.existObject(schema, functionName, "FUNCTION")) {
+                client.executeSqlSimple(schema, "DROP FUNCTION \"" + functionName + "\";");
+            }
+        }
+    }
+
+    private static void assertDumpAndRunSqlFile(ShellOracleClient client) throws Exception {
+        String schema = "DEMO";
+        String tableName = "E2E_DUMP_RUN_TABLE";
+        Path dumpFile = Files.createTempFile("easyshell-oracle-dump-", ".sql");
+        try {
+            if (client.existObject(schema, tableName, "TABLE")) {
+                client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
+            }
+            client.executeSqlSimple(schema, "CREATE TABLE \"" + tableName + "\" ("
+                    + "\"ID\" NUMBER(10) NOT NULL, \"NAME\" VARCHAR2(100), PRIMARY KEY (\"ID\"));");
+            client.executeSqlSimple(schema, "INSERT INTO \"" + tableName + "\" (\"ID\", \"NAME\") VALUES (1, 'one');");
+
+            ShellOracleDataDumpHandler dumpHandler = new ShellOracleDataDumpHandler(client, schema);
+            dumpHandler.dumpFile(dumpFile.toFile());
+            dumpHandler.setDumpType((byte) 2);
+            dumpHandler.setDataType((byte) 0);
+            dumpHandler.setTableName(tableName);
+            dumpHandler.setContinueWithErrors(false);
+            dumpHandler.doDump();
+
+            client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
+
+            List<String> messages = new ArrayList<>();
+            ShellOracleDataRunSqlFileHandler runHandler = new ShellOracleDataRunSqlFileHandler(client, schema);
+            runHandler.file(dumpFile.toFile());
+            runHandler.setContinueWithErrors(false);
+            runHandler.setMessageHandler(messages::add);
+            runHandler.runFile();
+
+            assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
+            assertTrue(client.existObject(schema, tableName, "TABLE"));
+            OracleSelectRecordParam param = new OracleSelectRecordParam();
+            param.setSchema(schema);
+            param.setTableName(tableName);
+            param.setReadonly(true);
+            param.setStart(0L);
+            param.setLimit(10L);
+            assertEquals(1, client.selectRecords(param).size());
+        } finally {
+            if (client.existObject(schema, tableName, "TABLE")) {
+                client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
+            }
+            Files.deleteIfExists(dumpFile);
         }
     }
 

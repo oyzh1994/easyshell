@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.test.oracle;
 
 import cn.oyzh.easyshell.data.oracle.handler.ShellOracleDataRunSqlFileHandler;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.oracle.ShellOracleConnManager;
 import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
@@ -23,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -288,6 +290,53 @@ public class OracleProtocolTest {
         assertEquals("BEGIN NULL; END;", ShellOracleHelper.normalizeTriggerBody("NULL"));
         assertEquals("BEGIN SELECT 1 INTO :NEW.\"ID\" FROM DUAL; END;",
                 ShellOracleHelper.normalizeTriggerBody("BEGIN SELECT 1 INTO :NEW.\"ID\" FROM DUAL; END;"));
+    }
+
+    @Test
+    public void normalizesTriggerWhenClauseWithParentheses() {
+        String trigger = """
+                CREATE OR REPLACE TRIGGER "APP"."USERS_ID_TRG"
+                BEFORE INSERT ON "APP"."USERS"
+                FOR EACH ROW WHEN NEW."ID" IS NULL
+                BEGIN
+                    SELECT USERS_ID_SEQ.NEXTVAL INTO :NEW."ID" FROM DUAL;
+                END;
+                """;
+        String normalized = ShellOracleHelper.normalizeTriggerDefinition(trigger);
+        assertTrue(normalized.contains("WHEN (NEW.\"ID\" IS NULL)"));
+
+        String parenthesized = trigger.replace("WHEN NEW.\"ID\" IS NULL", "WHEN (NEW.\"ID\" IS NULL)");
+        assertEquals(parenthesized, ShellOracleHelper.normalizeTriggerDefinition(parenthesized));
+    }
+
+    @Test
+    public void buildsRepeatableOracleDropBlocks() {
+        String ddl = ShellOracleHelper.buildDropIfExistsSql("TABLE", "USERS");
+        assertTrue(ddl.contains("EXECUTE IMMEDIATE 'DROP TABLE \"USERS\"'"));
+        assertTrue(ddl.contains("SQLCODE NOT IN (-942, -2289, -4043, -4080)"));
+        assertTrue(ddl.strip().endsWith("/"));
+    }
+
+    @Test
+    public void detectsOracleObjectNotFoundErrors() {
+        assertTrue(ShellOracleHelper.isObjectNotExists(
+                new ShellException(new SQLException("table or view does not exist", "42000", 942))));
+        assertTrue(ShellOracleHelper.isObjectNotExists(
+                new SQLException("sequence does not exist", "42000", 2289)));
+        assertTrue(ShellOracleHelper.isObjectNotExists(
+                new RuntimeException("ORA-04080: trigger 'MISSING' does not exist")));
+        assertFalse(ShellOracleHelper.isObjectNotExists(
+                new SQLException("unique constraint violated", "23000", 1)));
+        assertFalse(ShellOracleHelper.isObjectNotExists(
+                new RuntimeException("ORA-00001: unique constraint violated")));
+        assertTrue(ShellOracleHelper.isIgnorableDropError(
+                "DROP TABLE \"USERS\"", new SQLException("missing", "42000", 942)));
+        assertTrue(ShellOracleHelper.isIgnorableDropError(
+                "/* script */\n-- table\nDROP TABLE \"USERS\"", new SQLException("missing", "42000", 942)));
+        assertFalse(ShellOracleHelper.isIgnorableDropError(
+                "CREATE TABLE \"USERS\" (\"ID\" NUMBER)", new SQLException("missing", "42000", 942)));
+        assertEquals("DROP TABLE \"USERS\"",
+                ShellOracleHelper.stripLeadingComments("/* script */\n-- table\nDROP TABLE \"USERS\""));
     }
 
     @Test
