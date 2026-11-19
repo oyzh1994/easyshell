@@ -38,6 +38,9 @@ public class ShellOracleHelper {
     private static final Pattern OBJECT_NOT_EXISTS_PATTERN = Pattern.compile(
             "ORA-(00942|02289|04043|04080)\\b", Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern TRIGGER_ALTER_SUFFIX_PATTERN = Pattern.compile(
+            "(?is)\\s+ALTER\\s+TRIGGER\\s+.+?\\s+(?:ENABLE|DISABLE)\\s*;?\\s*$");
+
     //    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
     //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";
     //        Statement statement = connection.createStatement();
@@ -712,6 +715,7 @@ public class ShellOracleHelper {
         if (StringUtil.isBlank(definition)) {
             return definition;
         }
+        definition = TRIGGER_ALTER_SUFFIX_PATTERN.matcher(definition).replaceFirst("");
         int whenIndex = indexOfKeyword(definition, "WHEN");
         if (whenIndex < 0) {
             return definition;
@@ -744,13 +748,28 @@ public class ShellOracleHelper {
      * @return 删除语句块
      */
     public static String buildDropIfExistsSql(String objectType, String objectName) {
+        return buildDropIfExistsSql(objectType, objectName, "");
+    }
+
+    /**
+     * 构造可重复执行的 Oracle 删除语句。
+     *
+     * @param objectType 对象类型
+     * @param objectName 对象名称
+     * @param options    删除选项
+     * @return 删除语句块
+     */
+    public static String buildDropIfExistsSql(String objectType, String objectName, String options) {
         String dropSql = "DROP " + objectType + " " + DBUtil.wrap(objectName, DBDialect.ORACLE);
+        if (StringUtil.isNotBlank(options)) {
+            dropSql += " " + options.strip();
+        }
         return """
                 BEGIN
                     EXECUTE IMMEDIATE '%s';
                 EXCEPTION
                     WHEN OTHERS THEN
-                        IF SQLCODE NOT IN (-942, -2289, -4043, -4080) THEN
+                        IF SQLCODE NOT IN (-942, -2289, -4043, -4080, -32794) THEN
                             RAISE;
                         END IF;
                 END;
@@ -775,6 +794,27 @@ public class ShellOracleHelper {
             }
             String message = cause.getMessage();
             if (StringUtil.isNotBlank(message) && OBJECT_NOT_EXISTS_PATTERN.matcher(message).find()) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否为表空间不可用错误。
+     *
+     * @param throwable 异常
+     * @return 结果
+     */
+    public static boolean isTablespaceUnavailable(Throwable throwable) {
+        Throwable cause = throwable;
+        while (cause != null) {
+            if (cause instanceof SQLException && ((SQLException) cause).getErrorCode() == 1129) {
+                return true;
+            }
+            String message = cause.getMessage();
+            if (StringUtil.isNotBlank(message) && message.contains("ORA-01129")) {
                 return true;
             }
             cause = cause.getCause();
@@ -892,8 +932,24 @@ public class ShellOracleHelper {
             }
         }
         definitions.addAll(readTableConstraints(connection, schema, tableName));
+        definitions.addAll(readForeignKeyConstraints(connection, schema, tableName));
         String tableNameDefinition = DBUtil.wrap(schema, tableName, DBDialect.ORACLE);
-        return "CREATE TABLE " + tableNameDefinition + " (\n" + String.join(",\n", definitions) + "\n)";
+        String definition = "CREATE TABLE " + tableNameDefinition + " (\n" + String.join(",\n", definitions) + "\n)";
+        String tableSpace = readTableSpace(connection, schema, tableName);
+        return StringUtil.isBlank(tableSpace)
+                ? definition
+                : definition + "\nTABLESPACE " + DBUtil.wrap(tableSpace, DBDialect.ORACLE);
+    }
+
+    private static String readTableSpace(Connection connection, String schema, String tableName) throws SQLException {
+        String sql = "SELECT TABLESPACE_NAME FROM ALL_TABLES WHERE OWNER = ? AND TABLE_NAME = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? resultSet.getString(1) : null;
+            }
+        }
     }
 
     private static List<String> readTableConstraints(Connection connection, String schema, String tableName) throws SQLException {
@@ -935,6 +991,74 @@ public class ShellOracleHelper {
                     + " " + type + " (" + columnNames + ")");
         });
         return definitions;
+    }
+
+    private static List<String> readForeignKeyConstraints(Connection connection, String schema, String tableName) throws SQLException {
+        String sql = """
+                SELECT C.CONSTRAINT_NAME, CC.COLUMN_NAME, RC.TABLE_NAME, RCC.COLUMN_NAME, C.DELETE_RULE
+                FROM ALL_CONSTRAINTS C
+                JOIN ALL_CONS_COLUMNS CC
+                ON CC.OWNER = C.OWNER
+                AND CC.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+                AND CC.TABLE_NAME = C.TABLE_NAME
+                JOIN ALL_CONSTRAINTS RC
+                ON RC.OWNER = C.R_OWNER
+                AND RC.CONSTRAINT_NAME = C.R_CONSTRAINT_NAME
+                JOIN ALL_CONS_COLUMNS RCC
+                ON RCC.OWNER = RC.OWNER
+                AND RCC.CONSTRAINT_NAME = RC.CONSTRAINT_NAME
+                AND RCC.POSITION = CC.POSITION
+                WHERE C.OWNER = ?
+                AND C.TABLE_NAME = ?
+                AND C.CONSTRAINT_TYPE = 'R'
+                ORDER BY C.CONSTRAINT_NAME, CC.POSITION
+                """;
+        Map<String, ForeignKeyDefinition> constraints = new LinkedHashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String constraintName = resultSet.getString(1);
+                    String columnName = DBUtil.wrap(resultSet.getString(2), DBDialect.ORACLE);
+                    String referencedTable = DBUtil.wrap(resultSet.getString(3), DBDialect.ORACLE);
+                    String referencedColumn = DBUtil.wrap(resultSet.getString(4), DBDialect.ORACLE);
+                    String deleteRule = resultSet.getString(5);
+                    ForeignKeyDefinition definition = constraints.computeIfAbsent(
+                            constraintName, key -> new ForeignKeyDefinition(referencedTable, deleteRule));
+                    definition.columns.append(definition.columns.isEmpty() ? "" : ", ").append(columnName);
+                    definition.referencedColumns.append(
+                            definition.referencedColumns.isEmpty() ? "" : ", ").append(referencedColumn);
+                }
+            }
+        }
+        List<String> definitions = new ArrayList<>();
+        constraints.forEach((constraintName, foreignKey) -> {
+            StringBuilder definition = new StringBuilder("  CONSTRAINT ")
+                    .append(DBUtil.wrap(constraintName, DBDialect.ORACLE))
+                    .append(" FOREIGN KEY (").append(foreignKey.columns).append(")")
+                    .append(" REFERENCES ").append(foreignKey.referencedTable)
+                    .append(" (").append(foreignKey.referencedColumns).append(")");
+            if (StringUtil.equalsIgnoreCase("CASCADE", foreignKey.deleteRule)) {
+                definition.append(" ON DELETE CASCADE");
+            } else if (StringUtil.equalsIgnoreCase("SET NULL", foreignKey.deleteRule)) {
+                definition.append(" ON DELETE SET NULL");
+            }
+            definitions.add(definition.toString());
+        });
+        return definitions;
+    }
+
+    private static final class ForeignKeyDefinition {
+        private final String referencedTable;
+        private final String deleteRule;
+        private final StringBuilder columns = new StringBuilder();
+        private final StringBuilder referencedColumns = new StringBuilder();
+
+        private ForeignKeyDefinition(String referencedTable, String deleteRule) {
+            this.referencedTable = referencedTable;
+            this.deleteRule = deleteRule;
+        }
     }
 
     private static String columnType(String dataType, int dataLength, int precision, int scale) {

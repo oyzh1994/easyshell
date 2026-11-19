@@ -25,7 +25,12 @@ import cn.oyzh.fx.db.data.handler.DBDataDumpHandler;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Oracle数据转储处理器
@@ -197,7 +202,8 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
         String line1 = "-- ----------------------------";
         String line2 = "-- Table structure for " + table.getName();
         String line3 = "-- ----------------------------";
-        String dropTable = ShellOracleHelper.buildDropIfExistsSql("TABLE", table.getName());
+        String dropOptions = this.dumpType == 1 ? "CASCADE CONSTRAINTS" : "";
+        String dropTable = ShellOracleHelper.buildDropIfExistsSql("TABLE", table.getName(), dropOptions);
         String createDefinition = table.getCreateDefinition();
         createDefinition = sqlStatement(createDefinition);
         //        createDefinition = createDefinition.replaceAll("CREATE\\s+TABLE\\s+\"[^\"]+\"\\.", "CREATE TABLE ");
@@ -233,10 +239,12 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
             tableComment = tableComment.replace("$2", "''");
         }
         this.fileWriter.appendLine(tableComment);
+        Map<String, BigDecimal> identityMaxValues = Map.of();
         if (this.isDumpRecord()) {
             this.message("Dumping Records of Table " + table.getName());
-            this.dumpRecord(table, columns);
+            identityMaxValues = this.dumpRecord(table, columns);
         }
+        this.dumpIdentityRestart(table, createDefinition, columns, identityMaxValues);
         this.processedIncr();
     }
 
@@ -247,9 +255,13 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
      * @param columns 字段列表
      * @throws Exception 异常
      */
-    protected void dumpRecord(OracleTable table, OracleColumns columns) throws Exception {
+    protected Map<String, BigDecimal> dumpRecord(OracleTable table, OracleColumns columns) throws Exception {
         String tableName = table.getName();
         long start = 0;
+        List<OracleColumn> identityColumns = columns.stream()
+                .filter(OracleColumn::isIdentityAutoIncrementType)
+                .toList();
+        Map<String, BigDecimal> identityMaxValues = new HashMap<>();
         String line0 = "-- ----------------------------";
         String line1 = "-- Records of " + tableName;
         String line2 = "-- ----------------------------";
@@ -278,11 +290,75 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                 long end2 = System.currentTimeMillis();
                 JulLog.info("写入耗时: {}ms", (end2 - start2));
                 this.processed(records.size());
+                this.collectIdentityMaxValues(records, identityColumns, identityMaxValues);
             } catch (Exception ex) {
                 this.handleDumpError(ex);
             } finally {
                 start = nextStart;
             }
+        }
+        return identityMaxValues;
+    }
+
+    private void collectIdentityMaxValues(List<OracleRecord> records, List<OracleColumn> identityColumns,
+                                          Map<String, BigDecimal> maxValues) {
+        if (identityColumns.isEmpty()) {
+            return;
+        }
+        for (OracleRecord record : records) {
+            for (OracleColumn column : identityColumns) {
+                BigDecimal value = toDecimal(record.getValue(column.getName()));
+                if (value != null) {
+                    maxValues.merge(column.getName(), value, BigDecimal::max);
+                }
+            }
+        }
+    }
+
+    private void dumpIdentityRestart(OracleTable table, String tableDefinition, OracleColumns columns,
+                                     Map<String, BigDecimal> maxValues) throws IOException {
+        if (maxValues.isEmpty()) {
+            return;
+        }
+        for (OracleColumn column : columns) {
+            if (!column.isIdentityAutoIncrementType()) {
+                continue;
+            }
+            BigDecimal maxValue = maxValues.get(column.getName());
+            if (maxValue == null) {
+                continue;
+            }
+            String generation = identityGenerationClause(tableDefinition, column.getName());
+            String sql = "ALTER TABLE " + DBUtil.wrap(table.getName(), DBDialect.ORACLE)
+                    + " MODIFY (" + DBUtil.wrap(column.getName(), DBDialect.ORACLE)
+                    + " " + generation
+                    + " (START WITH " + maxValue.add(BigDecimal.ONE).toPlainString() + "));";
+            this.fileWriter.appendLine(sql);
+        }
+    }
+
+    private static String identityGenerationClause(String tableDefinition, String columnName) {
+        String quotedColumn = Pattern.quote(DBUtil.wrap(columnName, DBDialect.ORACLE));
+        Pattern pattern = Pattern.compile("(?is)" + quotedColumn
+                + ".{0,300}?(GENERATED\\s+(?:ALWAYS|BY\\s+DEFAULT(?:\\s+ON\\s+NULL)?)\\s+AS\\s+IDENTITY)");
+        Matcher matcher = pattern.matcher(tableDefinition == null ? "" : tableDefinition);
+        return matcher.find() ? matcher.group(1) : "GENERATED BY DEFAULT AS IDENTITY";
+    }
+
+    private static BigDecimal toDecimal(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof BigDecimal decimal) {
+            return decimal;
+        }
+        if (value instanceof Number number) {
+            return new BigDecimal(number.toString());
+        }
+        try {
+            return new BigDecimal(value.toString());
+        } catch (NumberFormatException ex) {
+            return null;
         }
     }
 
@@ -422,6 +498,9 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
         List<OracleSequence> sequences = this.dbClient.selectSequences(this.dbName);
         if (CollectionUtil.isNotEmpty(sequences)) {
             for (OracleSequence sequence : sequences) {
+                if (isSystemGeneratedSequence(sequence.getName())) {
+                    continue;
+                }
                 try {
                     this.checkInterrupt();
                     this.message("Dumping Sequence " + sequence.getName());
@@ -442,6 +521,10 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                 }
             }
         }
+    }
+
+    private static boolean isSystemGeneratedSequence(String sequenceName) {
+        return sequenceName != null && sequenceName.startsWith("ISEQ$$_");
     }
 
     private static String sqlStatement(String definition) {

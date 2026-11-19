@@ -307,14 +307,22 @@ public class OracleProtocolTest {
 
         String parenthesized = trigger.replace("WHEN NEW.\"ID\" IS NULL", "WHEN (NEW.\"ID\" IS NULL)");
         assertEquals(parenthesized, ShellOracleHelper.normalizeTriggerDefinition(parenthesized));
+
+        String metadataDefinition = trigger + "ALTER TRIGGER \"APP\".\"USERS_ID_TRG\" ENABLE";
+        String normalizedMetadata = ShellOracleHelper.normalizeTriggerDefinition(metadataDefinition);
+        assertTrue(normalizedMetadata.contains("WHEN (NEW.\"ID\" IS NULL)"));
+        assertFalse(normalizedMetadata.contains("ALTER TRIGGER"));
     }
 
     @Test
     public void buildsRepeatableOracleDropBlocks() {
         String ddl = ShellOracleHelper.buildDropIfExistsSql("TABLE", "USERS");
         assertTrue(ddl.contains("EXECUTE IMMEDIATE 'DROP TABLE \"USERS\"'"));
-        assertTrue(ddl.contains("SQLCODE NOT IN (-942, -2289, -4043, -4080)"));
+        assertTrue(ddl.contains("SQLCODE NOT IN (-942, -2289, -4043, -4080, -32794)"));
         assertTrue(ddl.strip().endsWith("/"));
+
+        String cascadeDdl = ShellOracleHelper.buildDropIfExistsSql("TABLE", "USERS", "CASCADE CONSTRAINTS");
+        assertTrue(cascadeDdl.contains("EXECUTE IMMEDIATE 'DROP TABLE \"USERS\" CASCADE CONSTRAINTS'"));
     }
 
     @Test
@@ -329,6 +337,10 @@ public class OracleProtocolTest {
                 new SQLException("unique constraint violated", "23000", 1)));
         assertFalse(ShellOracleHelper.isObjectNotExists(
                 new RuntimeException("ORA-00001: unique constraint violated")));
+        assertTrue(ShellOracleHelper.isTablespaceUnavailable(
+                new ShellException(new SQLException("tablespace unavailable", "42000", 1129))));
+        assertFalse(ShellOracleHelper.isTablespaceUnavailable(
+                new SQLException("table or view does not exist", "42000", 942)));
         assertTrue(ShellOracleHelper.isIgnorableDropError(
                 "DROP TABLE \"USERS\"", new SQLException("missing", "42000", 942)));
         assertTrue(ShellOracleHelper.isIgnorableDropError(

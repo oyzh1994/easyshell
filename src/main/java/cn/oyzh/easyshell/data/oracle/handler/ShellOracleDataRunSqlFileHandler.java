@@ -50,6 +50,13 @@ public class ShellOracleDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
                         this.processedIncr();
                     }
                 } catch (Exception ex) {
+                    if (ShellOracleHelper.isTablespaceUnavailable(ex)) {
+                        this.getInsertList().clear();
+                        String tablespaceInfo = this.dbClient.describeUserTablespaces(this.dbName);
+                        this.message("Run Sql File stopped: Oracle user default or temporary tablespace is unavailable"
+                                + (StringUtil.isBlank(tablespaceInfo) ? "" : ": " + tablespaceInfo));
+                        break;
+                    }
                     if (ShellOracleHelper.isIgnorableDropError(statement, ex)) {
                         this.processedIncr();
                         continue;

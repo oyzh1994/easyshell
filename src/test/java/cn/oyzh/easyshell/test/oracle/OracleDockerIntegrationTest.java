@@ -389,6 +389,7 @@ public class OracleDockerIntegrationTest {
 
             var expressionResult = client.executeSingleSql("DEMO", "SELECT ID + 1 AS NEXT_ID FROM USERS");
             assertEquals("DEMO", expressionResult.schema());
+            assertFullDumpAndReplay(client);
         } finally {
             client.close();
         }
@@ -923,6 +924,51 @@ public class OracleDockerIntegrationTest {
             if (client.existObject(schema, tableName, "TABLE")) {
                 client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
             }
+            Files.deleteIfExists(dumpFile);
+        }
+    }
+
+    private static void assertFullDumpAndReplay(ShellOracleClient client) throws Exception {
+        String schema = "DEMO";
+        Path dumpFile = Files.createTempFile("easyshell-oracle-full-dump-", ".sql");
+        try {
+            ShellOracleDataDumpHandler dumpHandler = new ShellOracleDataDumpHandler(client, schema);
+            dumpHandler.dumpFile(dumpFile.toFile());
+            dumpHandler.setDumpType((byte) 1);
+            dumpHandler.setDataType((byte) 0);
+            dumpHandler.setContinueWithErrors(false);
+            dumpHandler.doDump();
+
+            String content = Files.readString(dumpFile);
+            assertTrue(content.contains("-- View structure for V_USERS"));
+            assertTrue(content.contains("-- Procedure structure for ADD_USER"));
+            assertFalse(content.contains("ISEQ$$_"));
+            assertTrue(content.contains("TABLESPACE \"USERS\""));
+            List<String> dumpStatements = ShellOracleDataRunSqlFileHandler.splitOracleSql(content);
+            assertTrue(dumpStatements.stream()
+                    .map(ShellOracleHelper::stripLeadingComments)
+                    .anyMatch(sql -> sql.matches("(?is)^CREATE\\s+(?:OR\\s+REPLACE\\s+)?"
+                            + "(?:(?:FORCE|NOFORCE)\\s+)?(?:(?:NON)?EDITIONABLE\\s+)?VIEW\\b.*")));
+            assertTrue(dumpStatements.stream()
+                    .map(ShellOracleHelper::stripLeadingComments)
+                    .anyMatch(sql -> sql.matches("(?is)^CREATE\\s+(?:OR\\s+REPLACE\\s+)?"
+                            + "(?:(?:NON)?EDITIONABLE\\s+)?PROCEDURE\\b.*")));
+
+            List<String> messages = new ArrayList<>();
+            ShellOracleDataRunSqlFileHandler runHandler = new ShellOracleDataRunSqlFileHandler(client, schema);
+            runHandler.file(dumpFile.toFile());
+            runHandler.setContinueWithErrors(false);
+            runHandler.setMessageHandler(messages::add);
+            runHandler.runFile();
+
+            assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
+            assertTrue(client.selectViews(schema).stream().anyMatch(view -> "V_USERS".equals(view.getName())));
+            assertTrue(client.selectProcedures(schema).stream()
+                    .anyMatch(procedure -> "ADD_USER".equals(procedure.getName())));
+            assertTrue(client.selectForeignKeys(schema, "ORDERS").stream()
+                    .anyMatch(foreignKey -> "ORDERS_USER_FK".equals(foreignKey.getName())));
+            client.executeSqlSimple(schema, "UPDATE USERS SET EMAIL = EMAIL WHERE ROWNUM = 1");
+        } finally {
             Files.deleteIfExists(dumpFile);
         }
     }

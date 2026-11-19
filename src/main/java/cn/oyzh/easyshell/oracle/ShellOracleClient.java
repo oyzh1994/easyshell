@@ -2288,6 +2288,27 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 查询当前连接用户的默认表空间和临时表空间。
+     *
+     * @param schema 模式名称
+     * @return 表空间描述
+     */
+    public String describeUserTablespaces(String schema) {
+        String sql = "SELECT USERNAME, DEFAULT_TABLESPACE, TEMPORARY_TABLESPACE FROM USER_USERS";
+        try (PreparedStatement statement = this.getConnManager().connection(schema).prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getString(1)
+                        + " (default=" + resultSet.getString(2)
+                        + ", temporary=" + resultSet.getString(3) + ")";
+            }
+        } catch (Exception ex) {
+            JulLog.warn("query user tablespaces failed", ex);
+        }
+        return "";
+    }
+
+    /**
      * 创建视图
      *
      * @param param 参数
