@@ -563,13 +563,44 @@ public class OracleDockerIntegrationTest {
         createParam.setTable(childTable);
         createParam.setColumns(new OracleColumns(List.of(parentId)));
         createParam.setForeignKeys(new DBObjects<>(List.of(foreignKey)));
-        createParam.setChecks(new DBObjects<>());
+        OracleCheck childCheck = new OracleCheck();
+        childCheck.setName("E2E_FK_CHILD_PARENT_CHECK");
+        childCheck.setClause("\"parent_id\" > 0");
+        createParam.setChecks(new DBObjects<>(List.of(childCheck)));
         createParam.setIndexes(new DBObjects<>());
         createParam.setTriggers(new DBObjects<>());
 
         try {
             client.createTable(createParam);
             assertForeignKeyPolicies(client, childName, "NO ACTION", "NO ACTION");
+
+            String cloneName = childName + "_CLONE_TEST";
+            try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+                try {
+                    statement.executeUpdate("DROP TABLE \"DEMO\".\"" + cloneName + "\"");
+                } catch (SQLException ignored) {
+                }
+            }
+            try {
+                client.cloneTable("DEMO", childName, cloneName, false);
+                assertTrue(client.selectTablesSimple("DEMO").stream()
+                        .anyMatch(table -> cloneName.equals(table.getName())));
+                List<OracleForeignKey> clonedForeignKeys = client.selectForeignKeys("DEMO", cloneName);
+                assertEquals(1, clonedForeignKeys.size());
+                assertFalse(constraintName.equals(clonedForeignKeys.get(0).getName()));
+                assertEquals(parentName, clonedForeignKeys.get(0).getReferencedTable());
+                var clonedChecks = client.selectChecks("DEMO", cloneName);
+                assertEquals(1, clonedChecks.size());
+                assertFalse(childCheck.getName().equals(clonedChecks.get(0).getName()));
+                assertEquals("\"parent_id\" > 0", clonedChecks.get(0).getClause());
+            } finally {
+                try (Statement statement = client.getConnManager().connection("DEMO").createStatement()) {
+                    try {
+                        statement.executeUpdate("DROP TABLE \"DEMO\".\"" + cloneName + "\"");
+                    } catch (SQLException ignored) {
+                    }
+                }
+            }
 
             OracleForeignKey loaded = client.selectForeignKeys("DEMO", childName).stream()
                     .filter(item -> constraintName.equals(item.getName()))

@@ -4022,6 +4022,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      * @return 克隆表名称
      */
     public String cloneTable(String schema, String tableName, String newTableName, boolean includeRecord) {
+        String cloneSuffix = DBUtil.genCloneName();
         // 查询检查
         List<OracleCheck> checks = this.selectChecks(schema, tableName);
         // 查询触发器
@@ -4030,7 +4031,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         List<OracleForeignKey> foreignKeys = this.selectForeignKeys(schema, tableName);
         if (checks != null) {
             for (OracleCheck check : checks) {
-                check.setName(check.getName() + DBUtil.genCloneName());
+                check.setName(cloneConstraintName(check.getName(), cloneSuffix));
                 check.clearStatus();
                 check.clearOriginalData();
                 check.setCreated(true);
@@ -4038,7 +4039,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         }
         if (triggers != null) {
             for (OracleTrigger trigger : triggers) {
-                trigger.setName(trigger.getName() + DBUtil.genCloneName());
+                trigger.setName(cloneConstraintName(trigger.getName(), cloneSuffix));
                 trigger.clearStatus();
                 trigger.clearOriginalData();
                 trigger.setCreated(true);
@@ -4054,7 +4055,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         //         }
         if (foreignKeys != null) {
             for (OracleForeignKey foreignKey : foreignKeys) {
-                foreignKey.setName(foreignKey.getName() + DBUtil.genCloneName());
+                foreignKey.setName(cloneConstraintName(foreignKey.getName(), cloneSuffix));
                 foreignKey.clearStatus();
                 foreignKey.clearOriginalData();
                 foreignKey.setCreated(true);
@@ -4073,6 +4074,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             //            }
             String sql = this.showCreateTable(schema, tableName);
             sql = sql.replace(DBUtil.wrap(schema, tableName, DBDialect.ORACLE), DBUtil.wrap(schema, newTableName, DBDialect.ORACLE));
+            sql = renameTableConstraints(sql, cloneSuffix);
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
@@ -4084,9 +4086,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             // 克隆表结构的检查、外键、触发器
             OracleAlertTableParam alertTableParam = new OracleAlertTableParam();
             alertTableParam.setTable(table);
-            alertTableParam.setChecks(DBObjects.of(checks));
+            alertTableParam.setChecks(DBObjects.of(filterConstraintsAlreadyInTableSql(checks, sql)));
             alertTableParam.setTriggers(DBObjects.of(triggers));
-            alertTableParam.setForeignKeys(DBObjects.of(foreignKeys));
+            alertTableParam.setForeignKeys(DBObjects.of(filterConstraintsAlreadyInTableSql(foreignKeys, sql)));
             this.alertTable(alertTableParam);
 
             // 克隆数据
@@ -4119,6 +4121,93 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
         return newTableName;
+    }
+
+    /**
+     * 重命名建表语句中已命名的约束，避免克隆表复用源表约束名。
+     *
+     * @param sql         建表语句
+     * @param cloneSuffix 克隆名称后缀
+     * @return 重命名后的建表语句
+     */
+    private static String renameTableConstraints(String sql, String cloneSuffix) {
+        java.util.regex.Matcher matcher = Pattern
+                .compile("(\\bCONSTRAINT\\s+)(\"[^\"]+\"|[A-Za-z][A-Za-z0-9_$#]*)",
+                        Pattern.CASE_INSENSITIVE)
+                .matcher(sql);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            String oldName = matcher.group(2);
+            String unwrappedName = oldName.startsWith("\"") && oldName.endsWith("\"")
+                    ? oldName.substring(1, oldName.length() - 1)
+                    : oldName;
+            String replacement = matcher.group(1)
+                    + DBUtil.wrap(cloneConstraintName(unwrappedName, cloneSuffix), DBDialect.ORACLE);
+            matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+    /**
+     * 生成不超过 Oracle 11g 标识符长度限制的克隆对象名称。
+     *
+     * @param name   原始名称
+     * @param suffix 克隆后缀
+     * @return 克隆后的名称
+     */
+    private static String cloneConstraintName(String name, String suffix) {
+        String suffixPart = suffix.length() >= 30 ? suffix.substring(suffix.length() - 30) : suffix;
+        int prefixLength = 30 - suffixPart.length();
+        if (prefixLength <= 0) {
+            return suffixPart;
+        }
+        if (name == null || name.isEmpty()) {
+            return suffixPart;
+        }
+        if (name.length() <= prefixLength) {
+            return name + suffixPart;
+        }
+        String hash = Integer.toHexString(name.hashCode());
+        int hashLength = Math.min(hash.length(), Math.min(6, prefixLength));
+        int availablePrefixLength = prefixLength - hashLength - (hashLength > 0 ? 1 : 0);
+        if (availablePrefixLength < 0) {
+            availablePrefixLength = 0;
+        }
+        return name.substring(0, availablePrefixLength)
+                + (hashLength > 0 ? "_" + hash.substring(0, hashLength) : "")
+                + suffixPart;
+    }
+
+    /**
+     * 过滤建表语句中已经包含的检查、外键约束。
+     *
+     * @param constraints 约束列表
+     * @param tableSql    建表语句
+     * @param <T>         约束类型
+     * @return 需要通过 ALTER TABLE 创建的约束列表
+     */
+    private static <T extends DBName> List<T> filterConstraintsAlreadyInTableSql(
+            List<T> constraints, String tableSql) {
+        if (constraints == null || constraints.isEmpty()) {
+            return List.of();
+        }
+        List<T> result = new ArrayList<>();
+        for (T constraint : constraints) {
+            String constraintName = constraint.getName();
+            if (StringUtil.isBlank(constraintName)) {
+                result.add(constraint);
+                continue;
+            }
+            Pattern pattern = Pattern.compile(
+                    "\\bCONSTRAINT\\s+(?:\"" + Pattern.quote(constraintName) + "\"|"
+                            + Pattern.quote(constraintName) + "\\b)",
+                    Pattern.CASE_INSENSITIVE);
+            if (!pattern.matcher(tableSql).find()) {
+                result.add(constraint);
+            }
+        }
+        return result;
     }
 
     /**
