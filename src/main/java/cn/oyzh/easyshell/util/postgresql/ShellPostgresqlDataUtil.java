@@ -18,7 +18,11 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Ref;
+import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.sql.Struct;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -370,7 +374,7 @@ public class ShellPostgresqlDataUtil {
         }
         // PostgreSQL扩展类型，如json、jsonb、xml、interval、inet、几何类型等
         if (value instanceof PGobject pgObject) {
-            return pgObject.getValue();
+            return pgObject.isNull() ? null : pgObject.getValue();
         }
         // 数组类型，如text[]、integer[]等
         if (value instanceof Array array) {
@@ -379,7 +383,7 @@ public class ShellPostgresqlDataUtil {
         // 大文本
         if (value instanceof Clob clob) {
             try {
-                return clob.getSubString(1, (int) clob.length());
+                return clob.getSubString(1, Math.toIntExact(clob.length()));
             } catch (SQLException ex) {
                 throw new ShellException(ex);
             }
@@ -387,10 +391,21 @@ public class ShellPostgresqlDataUtil {
         // 大二进制
         if (value instanceof Blob blob) {
             try {
-                return blob.getBytes(1, (int) blob.length());
+                return blob.getBytes(1, Math.toIntExact(blob.length()));
             } catch (SQLException ex) {
                 throw new ShellException(ex);
             }
+        }
+        if (value instanceof SQLXML sqlXml) {
+            try {
+                return sqlXml.getString();
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        // 复合类型、引用和行标识按数据库驱动提供的文本表示处理
+        if (value instanceof Struct || value instanceof Ref || value instanceof RowId) {
+            return value.toString();
         }
         // UUID
         if (value instanceof UUID uuid) {

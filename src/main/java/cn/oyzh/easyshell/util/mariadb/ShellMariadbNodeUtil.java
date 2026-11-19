@@ -51,6 +51,7 @@ public class ShellMariadbNodeUtil {
     }
 
     public static void setNodeVal(Node node, Object val) {
+        val = ShellMariadbDataUtil.valueStandardization(val);
         DBNodeUtil.setNodeVal(node, val);
         //        if (node == null || val == null) {
         //            return;

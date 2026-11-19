@@ -25,6 +25,7 @@ public final class ShellSqliteNodeUtil {
     }
 
     public static void setNodeVal(Node node, Object value) {
+        value = ShellSqliteDataUtil.valueStandardization(value);
         DBNodeUtil.setNodeVal(node, value);
     }
 

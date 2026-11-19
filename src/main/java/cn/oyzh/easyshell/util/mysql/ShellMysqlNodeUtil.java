@@ -51,6 +51,7 @@ public class ShellMysqlNodeUtil {
     }
 
     public static void setNodeVal(Node node, Object val) {
+        val = ShellMysqlDataUtil.valueStandardization(val);
         DBNodeUtil.setNodeVal(node, val);
         //        if (node == null || val == null) {
         //            return;

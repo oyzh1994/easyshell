@@ -663,8 +663,192 @@ public class ShellI18nHelper {
         return args.length == 0 ? text : String.format(text, args);
     }
 
-    public static String confirm(String action, Object... args) {
-        return text("shell.confirm." + action, args);
+    public static String confirmDeleteJumpHost(Object name) {
+        return text("shell.confirm.deleteJumpHost", name);
+    }
+
+    public static String confirmDeleteTunneling(Object name) {
+        return text("shell.confirm.deleteTunneling", name);
+    }
+
+    public static String confirmDelete(Object name) {
+        return text("shell.confirm.delete", name);
+    }
+
+    public static String confirmRefreshData() {
+        return text("shell.confirm.refreshData");
+    }
+
+    public static String confirmDeleteRecord() {
+        return text("shell.confirm.deleteRecord");
+    }
+
+    public static String confirmDeleteField(Object name) {
+        return text("shell.confirm.deleteField", name);
+    }
+
+    public static String confirmDeleteIndex(Object name) {
+        return text("shell.confirm.deleteIndex", name);
+    }
+
+    public static String confirmDeleteForeignKey(Object name) {
+        return text("shell.confirm.deleteForeignKey", name);
+    }
+
+    public static String confirmDeleteTrigger(Object name) {
+        return text("shell.confirm.deleteTrigger", name);
+    }
+
+    public static String confirmDeleteCheck(Object name) {
+        return text("shell.confirm.deleteCheck", name);
+    }
+
+    public static String confirmDeleteFunction(Object name) {
+        return text("shell.confirm.deleteFunction", name);
+    }
+
+    public static String confirmDeleteProcedure(Object name) {
+        return text("shell.confirm.deleteProcedure", name);
+    }
+
+    public static String confirmDeleteView(Object name) {
+        return text("shell.confirm.deleteView", name);
+    }
+
+    public static String confirmDeleteEvent(Object name) {
+        return text("shell.confirm.deleteEvent", name);
+    }
+
+    public static String confirmDeleteTable(Object name) {
+        return text("shell.confirm.deleteTable", name);
+    }
+
+    public static String confirmClearTable(Object name) {
+        return text("shell.confirm.clearTable", name);
+    }
+
+    public static String confirmTruncateTable(Object name) {
+        return text("shell.confirm.truncateTable", name);
+    }
+
+    public static String confirmClearTableData(Object name) {
+        return text("shell.confirm.clearTableData", name);
+    }
+
+    public static String confirmDeleteDatabase(Object name) {
+        return text("shell.confirm.deleteDatabase", name);
+    }
+
+    public static String confirmDeleteSchema(Object name) {
+        return text("shell.confirm.deleteSchema", name);
+    }
+
+    public static String confirmDeleteSequence(Object name) {
+        return text("shell.confirm.deleteSequence", name);
+    }
+
+    public static String confirmDeleteCollection(Object name) {
+        return text("shell.confirm.deleteCollection", name);
+    }
+
+    public static String confirmClearCollection(Object name) {
+        return text("shell.confirm.clearCollection", name);
+    }
+
+    public static String confirmDeleteBucket(Object name) {
+        return text("shell.confirm.deleteBucket", name);
+    }
+
+    public static String confirmClearBucket(Object name) {
+        return text("shell.confirm.clearBucket", name);
+    }
+
+    public static String confirmDeleteUser(Object name) {
+        return text("shell.confirm.deleteUser", name);
+    }
+
+    public static String confirmDeleteDocument() {
+        return text("shell.confirm.deleteDocument");
+    }
+
+    public static String confirmDeleteMember(Object name) {
+        return text("shell.confirm.deleteMember", name);
+    }
+
+    public static String confirmDeleteElement(Object name) {
+        return text("shell.confirm.deleteElement", name);
+    }
+
+    public static String confirmDeleteCoordinate(Object name) {
+        return text("shell.confirm.deleteCoordinate", name);
+    }
+
+    public static String confirmDeleteMessage(Object name) {
+        return text("shell.confirm.deleteMessage", name);
+    }
+
+    public static String confirmDeleteKey(Object name) {
+        return text("shell.confirm.deleteKey", name);
+    }
+
+    public static String confirmDeleteAcl(Object name) {
+        return text("shell.confirm.deleteACL", name);
+    }
+
+    public static String confirmDeleteDir(Object name) {
+        return text("shell.confirm.deleteDir", name);
+    }
+
+    public static String confirmDeleteFile(Object name) {
+        return text("shell.confirm.deleteFile", name);
+    }
+
+    public static String confirmDeleteImage(Object name) {
+        return text("shell.confirm.deleteImage", name);
+    }
+
+    public static String confirmDeleteContainer(Object name) {
+        return text("shell.confirm.deleteContainer", name);
+    }
+
+    public static String confirmStartContainer(Object name) {
+        return text("shell.confirm.start1Container", name);
+    }
+
+    public static String confirmStopContainer(Object name) {
+        return text("shell.confirm.stop1Container", name);
+    }
+
+    public static String confirmKillContainer(Object name) {
+        return text("shell.confirm.killContainer", name);
+    }
+
+    public static String confirmRestartContainer(Object name) {
+        return text("shell.confirm.restartContainer", name);
+    }
+
+    public static String confirmPauseContainer(Object name) {
+        return text("shell.confirm.pauseContainer", name);
+    }
+
+    public static String confirmUnpauseContainer(Object name) {
+        return text("shell.confirm.unpauseContainer", name);
+    }
+
+    public static String confirmKillProcess(Object pid) {
+        return text("shell.confirm.killProcess", pid);
+    }
+
+    public static String confirmForceKillProcess(Object pid) {
+        return text("shell.confirm.forceKillProcess", pid);
+    }
+
+    public static String confirmQuit(Object name) {
+        return text("shell.confirm.quit", name);
+    }
+
+    public static String confirmRestart() {
+        return text("shell.confirm.restart");
     }
 
     public static String zkRequestStats() {

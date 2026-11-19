@@ -46,6 +46,7 @@ public class ShellMysqlRecordUtil {
      * @return 节点
      */
     public static Node getNode(MysqlRecordProperty property, Object object, MysqlColumn column) {
+        object = ShellMysqlDataUtil.valueStandardization(column, object);
         Node node;
         if (column.supportEnum()) {
             SelectTextFiled<String> textField = new SelectTextFiled<>();
@@ -160,6 +161,7 @@ public class ShellMysqlRecordUtil {
      * @return 值
      */
     public static String formatValue(Object object, MysqlColumn column) {
+        object = ShellMysqlDataUtil.valueStandardization(column, object);
         String val = null;
         String columnType = column.getType();
         if (StringUtil.isBlank(columnType)) {

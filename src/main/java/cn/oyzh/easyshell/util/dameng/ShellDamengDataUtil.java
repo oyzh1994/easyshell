@@ -8,9 +8,21 @@ import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
+import dm.jdbc.driver.DmdbArray;
+import dm.jdbc.driver.DmdbBFile;
 import dm.jdbc.driver.DmdbBlob;
 import dm.jdbc.driver.DmdbClob;
+import dm.jdbc.driver.DmdbIntervalDT;
+import dm.jdbc.driver.DmdbIntervalYM;
+import dm.jdbc.driver.DmdbNumeric;
+import dm.jdbc.driver.DmdbRowId;
+import dm.jdbc.driver.DmdbSQLXML;
+import dm.jdbc.driver.DmdbStruct;
 
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Ref;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -454,7 +466,7 @@ public class ShellDamengDataUtil {
             sql.append(" VALUES (");
             for (DamengColumn dbColumn : columnList) {
                 Object value = record.getValue(dbColumn.getName());
-                value = valueStandardization(value);
+                value = valueStandardization(dbColumn, value);
                 value = DBDataUtil.parameterizedForSql(dbColumn, value, DBDialect.DAMENG);
                 sql.append(value).append(", ");
             }
@@ -487,7 +499,7 @@ public class ShellDamengDataUtil {
                 continue;
             }
             Object value = record.getValue(column.getName());
-            value = valueStandardization(value);
+            value = valueStandardization(column, value);
             value = DBDataUtil.parameterizedForSql(column, value, DBDialect.DAMENG);
             builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
             builder.append(" = ");
@@ -511,6 +523,7 @@ public class ShellDamengDataUtil {
                 builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
                 builder.append(" = ");
                 Object value = record.getValue(column.getName());
+                value = valueStandardization(column, value);
                 value = DBDataUtil.parameterizedForSql(column, value, DBDialect.DAMENG);
                 builder.append(value);
             }
@@ -518,7 +531,8 @@ public class ShellDamengDataUtil {
         } else {
             builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.DAMENG));
             builder.append(" = ");
-            Object value = DBDataUtil.parameterizedForSql(primaryKey.getColumn(), primaryKey.getData(), DBDialect.DAMENG);
+            Object value = valueStandardization(primaryKey.getColumn(), primaryKey.getData());
+            value = DBDataUtil.parameterizedForSql(primaryKey.getColumn(), value, DBDialect.DAMENG);
             builder.append(value);
         }
         builder.append(";");
@@ -642,12 +656,84 @@ public class ShellDamengDataUtil {
      * @return 规整后的值
      */
     public static Object valueStandardization(Object value) {
+        if (value == null) {
+            return null;
+        }
         if (value instanceof DmdbClob clob) {
-            return clob.data;
+            return clob.data == null ? readClob(clob) : clob.data;
         }
         if (value instanceof DmdbBlob blob) {
-            return blob.data;
+            return blob.data == null ? readBlob(blob) : blob.data;
+        }
+        if (value instanceof DmdbIntervalYM || value instanceof DmdbIntervalDT) {
+            return value.toString();
+        }
+        if (value instanceof DmdbNumeric numeric) {
+            return numeric.toBigDecimal(false);
+        }
+        if (value instanceof DmdbBFile bFile) {
+            return bFile.getFullName();
+        }
+        if (value instanceof DmdbRowId rowId) {
+            return rowId.toString();
+        }
+        if (value instanceof DmdbSQLXML sqlXml) {
+            try {
+                return sqlXml.getString();
+            } catch (SQLException ex) {
+                return sqlXml;
+            }
+        }
+        if (value instanceof DmdbArray || value instanceof DmdbStruct || value instanceof Ref) {
+            return value.toString();
+        }
+        if (value instanceof Clob clob) {
+            return readClob(clob);
+        }
+        if (value instanceof Blob blob) {
+            return readBlob(blob);
+        }
+        if (value instanceof java.sql.SQLXML sqlXml) {
+            try {
+                return sqlXml.getString();
+            } catch (SQLException ex) {
+                return sqlXml;
+            }
+        }
+        if (value instanceof java.sql.Array || value instanceof java.sql.Struct || value instanceof java.sql.RowId) {
+            return value.toString();
         }
         return value;
+    }
+
+    /**
+     * 值规整化
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(DamengColumn column, Object value) {
+        value = valueStandardization(value);
+        if (column != null && column.supportBit() && value instanceof Boolean bool) {
+            return new byte[]{(byte) (bool ? 1 : 0)};
+        }
+        return value;
+    }
+
+    private static String readClob(Clob clob) {
+        try {
+            return clob.getSubString(1, Math.toIntExact(clob.length()));
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("Unable to read Dameng CLOB value", ex);
+        }
+    }
+
+    private static byte[] readBlob(Blob blob) {
+        try {
+            return blob.getBytes(1, Math.toIntExact(blob.length()));
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("Unable to read Dameng BLOB value", ex);
+        }
     }
 }

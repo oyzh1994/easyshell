@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.util.sqlite;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
@@ -12,6 +13,14 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Ref;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -268,6 +277,7 @@ public final class ShellSqliteDataUtil {
     }
 
     private static Object normalizeValue(SQLiteColumn column, Object value) {
+        value = valueStandardization(column, value);
         if (value == null || value instanceof byte[]) {
             return value;
         }
@@ -307,6 +317,7 @@ public final class ShellSqliteDataUtil {
     }
 
     public static String formatValue(Object value, SQLiteColumn column) {
+        value = valueStandardization(column, value);
         if (value == null) {
             return null;
         }
@@ -314,6 +325,54 @@ public final class ShellSqliteDataUtil {
             return SQLiteGeneratorUtil.literal(bytes);
         }
         return String.valueOf(value);
+    }
+
+    /**
+     * 值规整化
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(SQLiteColumn column, Object value) {
+        return valueStandardization(value);
+    }
+
+    /**
+     * 值规整化，处理SQLite JDBC返回的LOB、XML等标准JDBC扩展类型。
+     *
+     * @param value 值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(Object value) {
+        if (value == null || value instanceof byte[]) {
+            return value;
+        }
+        if (value instanceof Clob clob) {
+            try {
+                return clob.getSubString(1, Math.toIntExact(clob.length()));
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        if (value instanceof Blob blob) {
+            try {
+                return blob.getBytes(1, Math.toIntExact(blob.length()));
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        if (value instanceof SQLXML sqlXml) {
+            try {
+                return sqlXml.getString();
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        if (value instanceof Array || value instanceof Struct || value instanceof Ref || value instanceof RowId) {
+            return value.toString();
+        }
+        return value;
     }
 
     private static List<String> insertColumns(List<SQLiteColumn> columns, Map<String, Object> record) {

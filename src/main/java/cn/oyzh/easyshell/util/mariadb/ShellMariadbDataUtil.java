@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util.mariadb;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
 import cn.oyzh.easyshell.mariadb.record.MariadbRecord;
@@ -8,7 +9,16 @@ import cn.oyzh.easyshell.mariadb.record.MariadbRecordPrimaryKey;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
+import org.mariadb.jdbc.type.Geometry;
 
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Ref;
+import java.sql.RowId;
+import java.sql.SQLException;
+import java.sql.SQLXML;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -422,6 +432,7 @@ public class ShellMariadbDataUtil {
             sql.append(" VALUES (");
             for (MariadbColumn dbColumn : columnList) {
                 Object value = record.getValue(dbColumn.getName());
+                value = valueStandardization(dbColumn, value);
                 value = DBDataUtil.parameterizedForSql(dbColumn, value, DBDialect.MARIADB);
                 sql.append(value).append(", ");
             }
@@ -454,6 +465,7 @@ public class ShellMariadbDataUtil {
                 continue;
             }
             Object value = record.getValue(column.getName());
+            value = valueStandardization(column, value);
             value = DBDataUtil.parameterizedForSql(column, value, DBDialect.MARIADB);
             builder.append(DBUtil.wrap(column.getName(), DBDialect.MARIADB));
             builder.append(" = ");
@@ -481,6 +493,7 @@ public class ShellMariadbDataUtil {
                 builder.append(DBUtil.wrap(column.getName(), DBDialect.MARIADB));
                 builder.append(" = ");
                 Object value = record.getValue(column.getName());
+                value = valueStandardization(column, value);
                 value = DBDataUtil.parameterizedForSql(column, value, DBDialect.MARIADB);
                 builder.append(value);
             }
@@ -488,11 +501,67 @@ public class ShellMariadbDataUtil {
         } else {
             builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.MARIADB));
             builder.append(" = ");
-            Object value = DBDataUtil.parameterizedForSql(primaryKey.getColumn(), primaryKey.getData(), DBDialect.MARIADB);
+            Object value = valueStandardization(primaryKey.getColumn(), primaryKey.getData());
+            value = DBDataUtil.parameterizedForSql(primaryKey.getColumn(), value, DBDialect.MARIADB);
             builder.append(value);
         }
         builder.append(";");
         return builder.toString();
+    }
+
+    /**
+     * 值规整化
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(MariadbColumn column, Object value) {
+        value = valueStandardization(value);
+        if (column != null && column.supportBit() && value instanceof Boolean bool) {
+            return new byte[]{(byte) (bool ? 1 : 0)};
+        }
+        return value;
+    }
+
+    /**
+     * 值规整化，处理MariaDB驱动返回的LOB、XML、几何等扩展类型。
+     *
+     * @param value 值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Clob clob) {
+            try {
+                return clob.getSubString(1, Math.toIntExact(clob.length()));
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        if (value instanceof Blob blob) {
+            try {
+                return blob.getBytes(1, Math.toIntExact(blob.length()));
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        if (value instanceof SQLXML sqlXml) {
+            try {
+                return sqlXml.getString();
+            } catch (SQLException ex) {
+                throw new ShellException(ex);
+            }
+        }
+        if (value instanceof Geometry geometry) {
+            return geometry.toString();
+        }
+        if (value instanceof Array || value instanceof Struct || value instanceof Ref || value instanceof RowId) {
+            return value.toString();
+        }
+        return value;
     }
 
     //    /**

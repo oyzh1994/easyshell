@@ -39,6 +39,7 @@ public final class ShellSqliteRecordUtil {
      * @return 编辑节点
      */
     public static Node getNode(SQLiteRecordProperty property, Object value, SQLiteColumn column) {
+        value = ShellSqliteDataUtil.valueStandardization(column, value);
         Node node = DBNodeUtil.getNode(value, column);
         if (node instanceof FXTextField textField) {
             if (value == null) {

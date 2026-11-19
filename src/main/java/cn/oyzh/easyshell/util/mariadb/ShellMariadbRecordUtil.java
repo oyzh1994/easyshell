@@ -46,6 +46,7 @@ public class ShellMariadbRecordUtil {
      * @return 节点
      */
     public static Node getNode(MariadbRecordProperty property, Object object, MariadbColumn column) {
+        object = ShellMariadbDataUtil.valueStandardization(column, object);
         Node node;
         if (column.supportEnum()) {
             SelectTextFiled<String> textField = new SelectTextFiled<>();
@@ -160,6 +161,7 @@ public class ShellMariadbRecordUtil {
      * @return 值
      */
     public static String formatValue(Object object, MariadbColumn column) {
+        object = ShellMariadbDataUtil.valueStandardization(column, object);
         String val = null;
         String columnType = column.getType();
         if (StringUtil.isBlank(columnType)) {
