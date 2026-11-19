@@ -338,6 +338,188 @@ public class OracleDockerIntegrationTest {
         }
     }
 
+    @Test
+    public void clonesTableWithDataBeforeCreatingTriggers() throws Exception {
+        String schema = "E2E_CLONE_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "Clone2026";
+        String sourceTable = "SRC";
+        String cloneTable = "SRC_CLONE";
+        createTemporarySchema(schema, password);
+        ShellOracleClient client = null;
+        try {
+            try (Connection connection = open(url, schema, password);
+                 Statement statement = connection.createStatement()) {
+                statement.execute("CREATE TABLE \"" + schema + "\".\"" + sourceTable
+                        + "\" (\"ID\" NUMBER PRIMARY KEY, \"NAME\" VARCHAR2(50))");
+                statement.execute("INSERT INTO \"" + schema + "\".\"" + sourceTable + "\" VALUES (1, 'a')");
+                statement.execute("CREATE TRIGGER \"" + schema + "\".\"BAD_TRG\" BEFORE INSERT ON \""
+                        + schema + "\".\"" + sourceTable + "\" FOR EACH ROW BEGIN INSERT INTO \""
+                        + schema + "\".\"MISSING_TABLE\" VALUES (1); END;");
+            }
+
+            client = openShellClient(schema, password);
+            client.cloneTable(schema, sourceTable, cloneTable, true);
+            assertTrue(client.selectTablesSimple(schema).stream()
+                    .anyMatch(table -> cloneTable.equals(table.getName())));
+            try (Connection connection = open(url, schema, password);
+                 PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM \""
+                         + schema + "\".\"" + cloneTable + "\"");
+                 ResultSet resultSet = statement.executeQuery()) {
+                assertTrue(resultSet.next());
+                assertEquals(1, resultSet.getInt(1));
+            }
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+            dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void readsNativeJsonColumnInTemporarySchema() throws Exception {
+        Assume.assumeTrue(mode.equals("23c"));
+        String schema = "E2E_JSON_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "Json2026";
+        String tableName = "JSON_TEST";
+        createTemporarySchema(schema, password);
+        ShellOracleClient client = null;
+        try {
+            try (Connection connection = open(url, schema, password);
+                 Statement statement = connection.createStatement()) {
+                statement.execute("CREATE TABLE \"" + schema + "\".\"" + tableName
+                        + "\" (\"ID\" NUMBER, \"C_JSON\" JSON, \"C_VECTOR\" VECTOR, \"C_BOOLEAN\" BOOLEAN)");
+                statement.execute("INSERT INTO \"" + schema + "\".\"" + tableName
+                        + "\" VALUES (1, JSON('{\"a\":1}'), '[1.0,2.0,3.0]', true)");
+            }
+
+            client = openShellClient(schema, password);
+            OracleSelectRecordParam param = new OracleSelectRecordParam();
+            param.setSchema(schema);
+            param.setTableName(tableName);
+            param.setReadonly(true);
+            param.setStart(0L);
+            param.setLimit(10L);
+            List<OracleRecord> records = client.selectRecords(param);
+            assertEquals(1, records.size());
+            Object json = records.get(0).getValue("C_JSON");
+            assertTrue(json instanceof CharSequence);
+            assertTrue(json.toString().contains("\"a\""));
+            assertTrue(records.get(0).getValue("C_VECTOR") != null);
+            assertTrue(records.get(0).getValue("C_BOOLEAN") instanceof Boolean);
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+            dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void roundTripsObjectAndCollectionColumnsAsJson() throws Exception {
+        String schema = "E2E_OBJ_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "Obj2026";
+        String tableName = "OBJ_TEST";
+        createTemporarySchema(schema, password);
+        ShellOracleClient client = null;
+        try {
+            try (Connection connection = open(url, schema, password);
+                 Statement statement = connection.createStatement()) {
+                statement.execute("CREATE TYPE \"" + schema + "\".\"T_ADDR\" AS OBJECT"
+                        + " (\"STREET\" VARCHAR2(50), \"CITY\" VARCHAR2(50))");
+                statement.execute("CREATE TYPE \"" + schema + "\".\"T_NUM_ARRAY\" AS VARRAY(10) OF NUMBER");
+                statement.execute("CREATE TYPE \"" + schema + "\".\"T_TAG_LIST\" AS TABLE OF VARCHAR2(50)");
+                statement.execute("CREATE TABLE \"" + schema + "\".\"" + tableName + "\" (\"ID\" NUMBER,"
+                        + " \"C_OBJECT\" \"" + schema + "\".\"T_ADDR\","
+                        + " \"C_VARRAY\" \"" + schema + "\".\"T_NUM_ARRAY\","
+                        + " \"C_NESTED_TAB\" \"" + schema + "\".\"T_TAG_LIST\","
+                        + " \"C_ANYDATA\" ANYDATA)"
+                        + " NESTED TABLE \"C_NESTED_TAB\" STORE AS \"NESTED_TAG_STORE\"");
+            }
+
+            client = openShellClient(schema, password);
+            OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
+            columnParam.setSchema(schema);
+            columnParam.setTableName(tableName);
+            List<OracleColumn> columns = client.selectColumns(columnParam);
+            OracleColumn id = columns.stream().filter(column -> "ID".equals(column.getName()))
+                    .findFirst().orElseThrow();
+            OracleColumn object = columns.stream().filter(column -> "C_OBJECT".equals(column.getName()))
+                    .findFirst().orElseThrow();
+            OracleColumn varray = columns.stream().filter(column -> "C_VARRAY".equals(column.getName()))
+                    .findFirst().orElseThrow();
+            OracleColumn nestedTable = columns.stream().filter(column -> "C_NESTED_TAB".equals(column.getName()))
+                    .findFirst().orElseThrow();
+            OracleColumn anyData = columns.stream().filter(column -> "C_ANYDATA".equals(column.getName()))
+                    .findFirst().orElseThrow();
+            assertTrue(id.isDmlWritable());
+            assertTrue(object.isDmlWritable());
+            assertTrue(varray.isDmlWritable());
+            assertTrue(nestedTable.isDmlWritable());
+            assertFalse(anyData.isDmlWritable());
+            assertTrue(object.supportJson());
+            assertTrue(varray.supportJsonArray());
+            assertTrue(nestedTable.supportJsonArray());
+
+            OracleRecord record = new OracleRecord(columns);
+            record.putValue(id, 1);
+            record.putValue(object, "{\"STREET\":\"Main St\",\"CITY\":\"Shanghai\"}");
+            record.putValue(varray, "[1,2,3]");
+            record.putValue(nestedTable, "[\"tag1\",\"tag2\"]");
+            record.putValue(anyData, "ignored");
+            OracleInsertRecordParam insertParam = new OracleInsertRecordParam();
+            insertParam.setSchema(schema);
+            insertParam.setTableName(tableName);
+            insertParam.setRecord(record.getRecordData());
+            assertEquals(1, client.insertRecord(insertParam));
+
+            OracleSelectRecordParam selectParam = new OracleSelectRecordParam();
+            selectParam.setSchema(schema);
+            selectParam.setTableName(tableName);
+            selectParam.setColumns(columns);
+            selectParam.setReadonly(true);
+            List<OracleRecord> records = client.selectRecords(selectParam);
+            assertEquals(1, records.size());
+            Object objectValue = records.get(0).getValue("C_OBJECT");
+            assertTrue(objectValue instanceof java.util.Map);
+            assertEquals("Main St", ((java.util.Map<?, ?>) objectValue).get("STREET"));
+            assertEquals("Shanghai", ((java.util.Map<?, ?>) objectValue).get("CITY"));
+            Object arrayValue = records.get(0).getValue("C_VARRAY");
+            assertTrue(arrayValue instanceof List);
+            assertEquals(3, ((List<?>) arrayValue).size());
+            Object nestedValue = records.get(0).getValue("C_NESTED_TAB");
+            assertTrue(nestedValue instanceof List);
+            assertEquals(List.of("tag1", "tag2"), nestedValue);
+            assertNull(records.get(0).getValue("C_ANYDATA"));
+
+            OracleRecord emptyRecord = new OracleRecord(columns);
+            emptyRecord.putValue(id, 2);
+            emptyRecord.putValue(object, "");
+            emptyRecord.putValue(varray, "");
+            emptyRecord.putValue(nestedTable, "");
+            emptyRecord.putValue(anyData, "ignored");
+            OracleInsertRecordParam emptyParam = new OracleInsertRecordParam();
+            emptyParam.setSchema(schema);
+            emptyParam.setTableName(tableName);
+            emptyParam.setRecord(emptyRecord.getRecordData());
+            assertEquals(1, client.insertRecord(emptyParam));
+
+            List<OracleRecord> allRecords = client.selectRecords(selectParam);
+            assertEquals(2, allRecords.size());
+            OracleRecord emptyRow = allRecords.stream()
+                    .filter(row -> "2".equals(String.valueOf(row.getValue("ID"))))
+                    .findFirst().orElseThrow();
+            assertNull(emptyRow.getValue("C_OBJECT"));
+            assertNull(emptyRow.getValue("C_VARRAY"));
+            assertNull(emptyRow.getValue("C_NESTED_TAB"));
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+            dropTemporarySchema(schema);
+        }
+    }
+
     private static void assertObjects(Connection connection) throws SQLException {
         assertTrue(queryValues(connection, "SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OWNER = 'DEMO' AND OBJECT_TYPE = 'TABLE'").containsAll(List.of("USERS", "ORDERS")));
         assertTrue(queryValues(connection, "SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OWNER = 'DEMO' AND OBJECT_TYPE = 'VIEW'").contains("V_USERS"));
@@ -347,7 +529,8 @@ public class OracleDockerIntegrationTest {
         assertTrue(queryValues(connection, "SELECT TRIGGER_NAME FROM ALL_TRIGGERS WHERE OWNER = 'DEMO'").containsAll(List.of("USERS_UPDATED_AT_TRG")));
 
         List<String> autoIncrementObjects = queryValues(connection,
-                "SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OWNER = 'DEMO' AND OBJECT_NAME LIKE '%_ID_%'");
+                "SELECT OBJECT_NAME FROM ALL_OBJECTS WHERE OWNER = 'DEMO'"
+                        + " AND OBJECT_NAME IN ('USERS_ID_SEQ', 'USERS_ID_TRG', 'ORDERS_ID_SEQ', 'ORDERS_ID_TRG')");
         if (mode.equals("11g")) {
             assertTrue(autoIncrementObjects.containsAll(List.of("USERS_ID_SEQ", "USERS_ID_TRG", "ORDERS_ID_SEQ", "ORDERS_ID_TRG")));
         } else {
@@ -1151,7 +1334,7 @@ public class OracleDockerIntegrationTest {
             statement.execute("CREATE USER \"" + schema + "\" IDENTIFIED BY \"" + password + "\""
                     + " DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP QUOTA UNLIMITED ON USERS");
             statement.execute("GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE,"
-                    + " CREATE PROCEDURE, CREATE TRIGGER TO \"" + schema + "\"");
+                    + " CREATE PROCEDURE, CREATE TRIGGER, CREATE TYPE TO \"" + schema + "\"");
         }
     }
 

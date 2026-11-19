@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -435,6 +436,17 @@ public class ShellOracleHelper {
             dbColumn.setType(columnTypeName);
             dbColumn.setAutoIncrement(autoIncrement);
             dbColumn.setNullable(nullable == ResultSetMetaData.columnNullable);
+            if ("ANYDATA".equalsIgnoreCase(columnTypeName)) {
+                dbColumn.setTypeCode("ANYDATA");
+                dbColumn.setTypeOwner(schemaName);
+            } else if (!"XMLTYPE".equalsIgnoreCase(columnTypeName)
+                    && columnType == Types.STRUCT) {
+                dbColumn.setTypeCode("OBJECT");
+                dbColumn.setTypeOwner(schemaName);
+            } else if (columnType == Types.ARRAY) {
+                dbColumn.setTypeCode("COLLECTION");
+                dbColumn.setTypeOwner(schemaName);
+            }
 
             columns.add(dbColumn);
         }

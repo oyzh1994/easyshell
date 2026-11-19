@@ -63,6 +63,7 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.oracle.OracleExecuteResult;
 import cn.oyzh.easyshell.query.oracle.OracleExplainResult;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
+import cn.oyzh.easyshell.util.oracle.OracleComplexValueUtil;
 import cn.oyzh.fx.db.DBClient;
 import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBConnConfig;
@@ -343,7 +344,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         int size = 0;
         try {
             Connection connection = this.getConnManager().connection(schema);
-            String sql = "SELECT COUNT(*) FROM ALL_TABLES WHERE OWNER = ?";
+            String sql = "SELECT COUNT(*) FROM ALL_TABLES WHERE OWNER = ? AND NVL(NESTED, 'NO') = 'NO'";
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
@@ -1127,6 +1128,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         T.TABLE_NAME = C.TABLE_NAME 
                     WHERE 
                         T.OWNER = ?
+                    AND
+                        NVL(T.NESTED, 'NO') = 'NO'
                     """;
             this.printSql(sql);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -1209,6 +1212,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         C.DATA_TYPE AS "Type",
+                        C.DATA_TYPE_OWNER AS "TYPE_OWNER",
+                        T.TYPECODE AS "TYPE_CODE",
                         C.COLUMN_NAME AS "Field",
                         CC.COMMENTS AS "Comment",
                         C.COLUMN_ID AS "POSITION",
@@ -1231,6 +1236,12 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         C.TABLE_NAME = CC.TABLE_NAME
                     AND
                         C.COLUMN_NAME = CC.COLUMN_NAME
+                    LEFT JOIN
+                        ALL_TYPES T
+                    ON
+                        T.OWNER = C.DATA_TYPE_OWNER
+                    AND
+                        T.TYPE_NAME = C.DATA_TYPE
                     LEFT JOIN
                         ALL_CONS_COLUMNS CONS
                     ON
@@ -1274,6 +1285,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         resultSet.getInt("CHAR_LENGTH"), resultSet.getString("CHAR_USED")));
                 column.setDigits(dataScale);
                 column.setType(type);
+                column.setTypeOwner(resultSet.getString("TYPE_OWNER"));
+                column.setTypeCode(resultSet.getString("TYPE_CODE"));
                 column.setSchema(schema);
                 column.setComment(comment);
                 column.setDefaultValue(def);
@@ -1426,6 +1439,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 OracleRecord record = new OracleRecord(columns, param.isReadonly());
                 for (OracleColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
+                    if (column.isObjectType() || column.isCollectionType()) {
+                        data = OracleComplexValueUtil.toJsonValue(connection, data);
+                    }
                     record.putValue(column, data);
                 }
                 records.add(record);
@@ -1488,7 +1504,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     .map(Map.Entry::getKey)
                     .filter(column -> !recordData.isDefaultValueSequence(column.getName()))
                     .toList();
-            boolean directLobInsert = insertColumns.stream().anyMatch(this::isLobColumn);
+            boolean directLobInsert = insertColumns.stream()
+                    .anyMatch(column -> this.isLobColumn(column) || this.isComplexType(column));
             StringBuilder builder = new StringBuilder();
             builder.append("INSERT INTO ")
                     .append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.ORACLE))
@@ -1705,8 +1722,28 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
 
     private void bindInsertValue(PreparedStatement statement, DBColumn column, Object value, int index)
             throws SQLException {
+        this.bindValue(statement.getConnection(), statement, column, value, index);
+    }
+
+    private void bindValue(Connection connection, PreparedStatement statement, DBColumn column, Object value,
+                           int index) throws SQLException {
         if (value == null) {
-            statement.setNull(index, Types.NULL);
+            if (column instanceof OracleColumn oracleColumn
+                    && (oracleColumn.isObjectType() || oracleColumn.isCollectionType())) {
+                OracleComplexValueUtil.setNull(statement, index, oracleColumn);
+            } else {
+                statement.setNull(index, Types.NULL);
+            }
+        } else if (column == null) {
+            DBUtil.setVal(statement, value, index);
+        } else if (column instanceof OracleColumn oracleColumn
+                && (oracleColumn.isObjectType() || oracleColumn.isCollectionType())) {
+            Object jdbcValue = OracleComplexValueUtil.toJdbcValue(connection, oracleColumn, value);
+            if (jdbcValue == null) {
+                OracleComplexValueUtil.setNull(statement, index, oracleColumn);
+            } else {
+                statement.setObject(index, jdbcValue);
+            }
         } else if (this.isXmlTypeColumn(column) && value instanceof CharSequence sequence) {
             String text = sequence.toString();
             if (text.isEmpty()) {
@@ -1729,6 +1766,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
 
     private boolean isLobColumn(DBColumn column) {
         return column.supportText() || column.supportBinary();
+    }
+
+    private boolean isComplexType(DBColumn column) {
+        return column instanceof OracleColumn oracleColumn
+                && (oracleColumn.isObjectType() || oracleColumn.isCollectionType());
     }
 
     private boolean isLongColumn(DBColumn column) {
@@ -1854,27 +1896,30 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             String tableName = param.getTableName();
             DBRecordData recordData = param.getUpdateRecord();
+            List<Map.Entry<DBColumn, Object>> setEntries = new ArrayList<>(recordData.entries());
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
                     .append(DBUtil.wrap(schema, tableName, DBDialect.ORACLE))
                     .append(" SET ");
-            for (String column : recordData.columns()) {
-                builder.append(DBUtil.wrap(column, DBDialect.ORACLE)).append(" = ?,");
+            for (Map.Entry<DBColumn, Object> entry : setEntries) {
+                builder.append(DBUtil.wrap(entry.getKey().getName(), DBDialect.ORACLE)).append(" = ?,");
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.append(" WHERE ");
             Connection connection = this.getConnManager().connection(schema);
             if (param.getPrimaryKey() == null) {
                 DBRecordData originalRecordData = param.getRecord();
+                List<Map.Entry<DBColumn, Object>> whereEntries = new ArrayList<>(originalRecordData.entries());
                 // 参数
                 boolean first = true;
-                for (String column : originalRecordData.columns()) {
+                for (Map.Entry<DBColumn, Object> entry : whereEntries) {
                     if (first) {
                         first = false;
                     } else {
                         builder.append(" AND ");
                     }
-                    Object value = originalRecordData.value(column);
+                    String column = entry.getKey().getName();
+                    Object value = entry.getValue();
                     if (value == null) {
                         builder.append(DBUtil.wrap(column, DBDialect.ORACLE)).append(" IS NULL");
                     } else {
@@ -1884,35 +1929,34 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 int index = 1;
                 String sql = builder.toString();
                 this.printSql(sql);
-                PreparedStatement statement = connection.prepareStatement(sql);
-                // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
-                }
-                // 设置参数
-                for (String colName : originalRecordData.columns()) {
-                    Object value = originalRecordData.value(colName);
-                    if (value != null) {
-                        DBUtil.setVal(statement, value, index++);
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    // 设置值
+                    for (Map.Entry<DBColumn, Object> entry : setEntries) {
+                        this.bindValue(connection, statement, entry.getKey(), entry.getValue(), index++);
                     }
+                    // 设置参数
+                    for (Map.Entry<DBColumn, Object> entry : whereEntries) {
+                        if (entry.getValue() != null) {
+                            this.bindValue(connection, statement, entry.getKey(), entry.getValue(), index++);
+                        }
+                    }
+                    updateCount = DBUtil.executeUpdate(statement);
                 }
-                updateCount = DBUtil.executeUpdate(statement);
-                IOUtil.close(statement);
             } else {
                 OracleRecordPrimaryKey primaryKey = param.getPrimaryKey();
                 builder.append(DBUtil.wrap(primaryKey.getColumnName(), DBDialect.ORACLE)).append(" = ?");
                 String sql = builder.toString();
                 DBUtil.printInfo(sql, recordData);
-                PreparedStatement statement = connection.prepareStatement(sql);
-                int index = 1;
-                // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    int index = 1;
+                    // 设置值
+                    for (Map.Entry<DBColumn, Object> entry : setEntries) {
+                        this.bindValue(connection, statement, entry.getKey(), entry.getValue(), index++);
+                    }
+                    // 设置参数
+                    this.bindValue(connection, statement, primaryKey.getColumn(), primaryKey.originalData(), index);
+                    updateCount = DBUtil.executeUpdate(statement);
                 }
-                // 设置参数
-                DBUtil.setVal(statement, primaryKey.originalData(), index);
-                updateCount = DBUtil.executeUpdate(statement);
-                IOUtil.close(statement);
             }
             return updateCount;
         } catch (Exception ex) {
@@ -3527,6 +3571,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     public int insertBatch(String schema, List<String> sqlList, boolean parallel) {
         Connection connection = null;
         int result = 0;
+        boolean closeConnection = parallel;
         try {
             connection = parallel ? this.getConnManager().newConnection(schema) : this.getConnManager().connection(schema);
             connection.setAutoCommit(false);
@@ -3539,9 +3584,6 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             int[] results = statement.executeBatch();
             connection.commit();
             IOUtil.close(statement);
-            if (parallel) {
-                IOUtil.close(connection);
-            }
             for (int i : results) {
                 result += i;
             }
@@ -3550,6 +3592,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             DBUtil.rollback(connection);
             throw new ShellException(ex);
+        } finally {
+            if (closeConnection) {
+                IOUtil.close(connection);
+            }
         }
         return result;
     }
@@ -4152,6 +4198,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 for (OracleColumn column : columns) {
                     Object data = resultSet.getObject(column.getName());
+                    if (column.isObjectType() || column.isCollectionType()) {
+                        data = OracleComplexValueUtil.toJsonValue(connection, data);
+                    }
                     record.putValue(column, data);
                 }
             }
@@ -4336,7 +4385,6 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             alertTableParam.setChecks(DBObjects.of(filterConstraintsAlreadyInTableSql(checks, sql)));
             alertTableParam.setTriggers(DBObjects.of(triggers));
             alertTableParam.setForeignKeys(DBObjects.of(filterConstraintsAlreadyInTableSql(foreignKeys, sql)));
-            this.alertTable(alertTableParam);
 
             // 克隆数据
             if (includeRecord) {
@@ -4363,6 +4411,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 connection.commit();
                 IOUtil.close(statement);
             }
+            // 数据复制完成后再创建检查、外键和触发器，避免复制数据时触发源表上的业务触发器
+            this.alertTable(alertTableParam);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);

@@ -165,6 +165,14 @@ public class ShellOracleColumnUtil {
         xmlTypeField.supportText = true;
         xmlTypeField.supportString = true;
 
+        DBColumnField jsonField = new DBColumnField("JSON");
+        jsonField.supportJson = true;
+        jsonField.supportDefaultValue = true;
+
+        DBColumnField booleanField = new DBColumnField("BOOLEAN");
+        booleanField.supportBoolean = true;
+        booleanField.supportDefaultValue = true;
+
         // ===== 注册到列表 =====
 
         // 字符串
@@ -201,6 +209,8 @@ public class ShellOracleColumnUtil {
         putFiled(longField);
         putFiled(longRawField);
         putFiled(xmlTypeField);
+        putFiled(jsonField);
+        putFiled(booleanField);
 
         // 不常见
         putFiled(timestampWithTzField);

@@ -85,6 +85,8 @@ public class OracleProtocolTest {
         assertTrue(DBColumnFieldManager.supportDigits(DBDialect.ORACLE, "BINARY_DOUBLE"));
         assertFalse(DBColumnFieldManager.supportString(DBDialect.ORACLE, "BINARY_FLOAT"));
         assertFalse(DBColumnFieldManager.supportString(DBDialect.ORACLE, "BINARY_DOUBLE"));
+        assertTrue(DBColumnFieldManager.supportJson(DBDialect.ORACLE, "JSON"));
+        assertTrue(DBColumnFieldManager.supportBoolean(DBDialect.ORACLE, "BOOLEAN"));
         assertNull(DBColumnFieldManager.exampleValue(DBDialect.ORACLE, "TIMESTAMP(6)"));
     }
 
@@ -121,24 +123,39 @@ public class OracleProtocolTest {
         OracleColumn xml = column("C_XML", "XMLTYPE", "DEMO", "ALL_TYPE_TEST");
         // Oracle 11g在ALL_TAB_COLS中把XMLTYPE标记为虚拟列，但它仍然允许写入
         xml.setVirtual(true);
+        xml.setTypeOwner("SYS");
+        OracleColumn object = column("C_OBJECT", "T_ADDR", "DEMO", "ALL_TYPE_TEST_OBJ");
+        object.setTypeOwner("DEMO");
+        object.setTypeCode("OBJECT");
+        OracleColumn anyData = column("C_ANYDATA", "ANYDATA", "DEMO", "ALL_TYPE_TEST_OBJ");
+        anyData.setTypeOwner("SYS");
+        anyData.setTypeCode("ANYDATA");
 
-        OracleColumns columns = new OracleColumns(List.of(username, virtual, bfile, xml));
+        OracleColumns columns = new OracleColumns(List.of(username, virtual, bfile, xml, object, anyData));
         OracleRecord record = new OracleRecord(columns);
         record.putValue(username, "alice");
         record.putValue(virtual, "computed");
         record.putValue(bfile, "external.dat");
         record.putValue(xml, "<root/>");
+        record.putValue(object, "T_ADDR(1)");
+        record.putValue(anyData, "data");
 
         DBRecordData data = record.getRecordData();
         assertFalse(data.columns().contains("C_VIRTUAL"));
         assertFalse(data.columns().contains("C_BFILE"));
+        assertFalse(data.columns().contains("C_ANYDATA"));
         assertTrue(data.columns().contains("C_XML"));
+        assertTrue(data.columns().contains("C_OBJECT"));
+        assertTrue(object.supportJson());
+        assertFalse(anyData.isDmlWritable());
 
         String sql = ShellOracleDataUtil.toInsertSql(columns, record, true);
         assertFalse(sql.contains("\"C_VIRTUAL\""));
         assertFalse(sql.contains("\"C_BFILE\""));
+        assertFalse(sql.contains("\"C_ANYDATA\""));
         assertTrue(sql.contains("\"USERNAME\""));
         assertTrue(sql.contains("\"C_XML\""));
+        assertTrue(sql.contains("\"C_OBJECT\""));
     }
 
     @Test

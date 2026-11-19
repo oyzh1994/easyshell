@@ -49,6 +49,16 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     private StringProperty typeProperty;
 
     /**
+     * 字段类型所属模式，用户自定义对象/集合类型会有值
+     */
+    private String typeOwner;
+
+    /**
+     * 字段类型编码，OBJECT/COLLECTION/ANYDATA等
+     */
+    private String typeCode;
+
+    /**
      * 字段值
      */
     private StringProperty valueProperty;
@@ -771,6 +781,8 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
             this.setVirtual(column.virtual);
             this.setDigits(column.digits);
             this.setType(column.getType());
+            this.setTypeOwner(column.typeOwner);
+            this.setTypeCode(column.typeCode);
             this.setComment(column.comment);
             this.setValue(column.getValue());
             this.setNullable(column.nullable);
@@ -896,13 +908,111 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     }
 
     /**
+     * 是否对象类型
+     *
+     * @return 结果
+     */
+    public boolean isObjectType() {
+        return StringUtil.equalsIgnoreCase(this.typeCode, "OBJECT");
+    }
+
+    /**
+     * 是否集合类型
+     *
+     * @return 结果
+     */
+    public boolean isCollectionType() {
+        return StringUtil.equalsIgnoreCase(this.typeCode, "COLLECTION");
+    }
+
+    /**
+     * 是否ANYDATA类型
+     *
+     * @return 结果
+     */
+    public boolean isAnyDataType() {
+        return StringUtil.equalsIgnoreCase(this.typeCode, "ANYDATA")
+                || StringUtil.equalsIgnoreCase(this.getType(), "ANYDATA");
+    }
+
+    /**
+     * 是否支持JSON编辑
+     *
+     * @return 结果
+     */
+    @Override
+    public boolean supportJson() {
+        return DBColumn.super.supportJson() || this.isObjectType();
+    }
+
+    /**
+     * 是否支持JSON数组编辑
+     *
+     * @return 结果
+     */
+    @Override
+    public boolean supportJsonArray() {
+        return DBColumn.super.supportJsonArray() || this.isCollectionType();
+    }
+
+    /**
+     * 是否用户自定义对象/集合类型
+     *
+     * @return 结果
+     */
+    public boolean isComplexType() {
+        if (this.isXmlType()) {
+            return false;
+        }
+        return this.isAnyDataType() || this.isObjectType() || this.isCollectionType();
+    }
+
+    /**
      * 是否允许参与新增和修改
      *
      * @return 结果
      */
     public boolean isDmlWritable() {
         // Oracle 11g在ALL_TAB_COLS中把XMLTYPE标记为虚拟列，但它实际允许写入
-        return (!this.isVirtual() || this.isXmlType()) && !this.isBfile();
+        // Oracle 23c的嵌套表列同样会被标记为虚拟列
+        return (!this.isVirtual() || this.isXmlType() || this.isCollectionType())
+                && !this.isBfile() && !this.isAnyDataType();
+    }
+
+    /**
+     * 获取类型所属模式
+     *
+     * @return 模式
+     */
+    public String getTypeOwner() {
+        return typeOwner;
+    }
+
+    /**
+     * 设置类型所属模式
+     *
+     * @param typeOwner 模式
+     */
+    public void setTypeOwner(String typeOwner) {
+        this.typeOwner = typeOwner;
+    }
+
+    /**
+     * 获取类型编码
+     *
+     * @return 类型编码
+     */
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    /**
+     * 设置类型编码
+     *
+     * @param typeCode 类型编码
+     */
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
     }
 
     /**

@@ -32,6 +32,10 @@ public class ShellOracleConnManager extends DBConnManager {
         properties.setProperty("password", StringUtil.blankToDefault(password, config.getPassword()));
         properties.setProperty("oracle.net.CONNECT_TIMEOUT",
                 String.valueOf(Math.max(1, config.getConnectTimeout()) * 1000L));
+        // Oracle 23c原生JSON列在getObject()时需要显式指定默认类型
+        properties.setProperty("oracle.jdbc.jsonDefaultGetObjectType", "java.lang.String");
+        // Oracle 23c VECTOR列同样没有JDBC默认转换
+        properties.setProperty("oracle.jdbc.vectorDefaultGetObjectType", "String");
         if (config.isUseSSL()) {
             properties.setProperty("oracle.net.ssl_server_dn_match", "true");
         }

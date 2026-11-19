@@ -89,67 +89,59 @@ public class ShellOracleTablesTreeItem extends ShellOracleTreeItem<ShellOracleTa
     @Override
     public void loadChild() {
         if (!this.isLoading() && !this.isLoaded()) {
-            this.refreshChild();
+            this.setLoaded(true);
+            this.setLoading(true);
+            Task task = TaskBuilder.newBuilder()
+                    .onStart(() -> {
+                        List<OracleTable> tables = this.client().selectTablesSimple(this.schema());
+                        // 无数据直接更新列表
+                        if (this.isChildEmpty()) {
+                            List<TreeItem<?>> list = new ArrayList<>();
+                            for (OracleTable table : tables) {
+                                list.add(new ShellOracleTableTreeItem(table, this.getTreeView()));
+                            }
+                            this.setChild(list);
+                        } else {// 有数据则执行删除、新增、更新操作
+                            ObservableList children = this.richChildren();
+                            ObservableList<ShellOracleTableTreeItem> list = children;
+                            List<ShellOracleTableTreeItem> delList = new ArrayList<>();
+                            List<ShellOracleTableTreeItem> addList = new ArrayList<>();
+                            // 删除
+                            for (ShellOracleTableTreeItem item : list) {
+                                if (tables.parallelStream().noneMatch(f -> f.compare(item.value()))) {
+                                    delList.add(item);
+                                }
+                            }
+                            // 新增
+                            for (OracleTable table : tables) {
+                                if (list.parallelStream().noneMatch(item -> table.compare(item.value()))) {
+                                    addList.add(new ShellOracleTableTreeItem(table, this.getTreeView()));
+                                }
+                            }
+                            // 更新
+                            for (ShellOracleTableTreeItem item : list) {
+                                if (!addList.contains(item) && !delList.contains(item)) {
+                                    tables.parallelStream().filter(f -> f.compare(item.value())).findFirst().ifPresent(f -> item.value().copy(f));
+                                }
+                            }
+                            list.removeAll(delList);
+                            list.addAll(addList);
+                        }
+                    })
+                    .onSuccess(this::expend)
+                    .onError(ex -> {
+                        this.setLoaded(false);
+                        MessageBox.exception(ex, this.getWindow());
+                    })
+                    .onFinish(() -> {
+                        this.setLoading(false);
+                        this.doFilter();
+                        this.doSort();
+                    })
+                    .build();
+            // 执行业务
+            this.startWaiting(task);
         }
-    }
-
-    public void refreshChild() {
-        if (this.isLoading()) {
-            return;
-        }
-        this.clearTableSize();
-        this.setLoaded(true);
-        this.setLoading(true);
-        Task task = TaskBuilder.newBuilder()
-                .onStart(() -> {
-                    List<OracleTable> tables = this.client().selectTablesSimple(this.schema());
-                    // 无数据直接更新列表
-                    if (this.isChildEmpty()) {
-                        List<TreeItem<?>> list = new ArrayList<>();
-                        for (OracleTable table : tables) {
-                            list.add(new ShellOracleTableTreeItem(table, this.getTreeView()));
-                        }
-                        this.setChild(list);
-                    } else {// 有数据则执行删除、新增、更新操作
-                        ObservableList children = this.richChildren();
-                        ObservableList<ShellOracleTableTreeItem> list = children;
-                        List<ShellOracleTableTreeItem> delList = new ArrayList<>();
-                        List<ShellOracleTableTreeItem> addList = new ArrayList<>();
-                        // 删除
-                        for (ShellOracleTableTreeItem item : list) {
-                            if (tables.parallelStream().noneMatch(f -> f.compare(item.value()))) {
-                                delList.add(item);
-                            }
-                        }
-                        // 新增
-                        for (OracleTable table : tables) {
-                            if (list.parallelStream().noneMatch(item -> table.compare(item.value()))) {
-                                addList.add(new ShellOracleTableTreeItem(table, this.getTreeView()));
-                            }
-                        }
-                        // 更新
-                        for (ShellOracleTableTreeItem item : list) {
-                            if (!addList.contains(item) && !delList.contains(item)) {
-                                tables.parallelStream().filter(f -> f.compare(item.value())).findFirst().ifPresent(f -> item.value().copy(f));
-                            }
-                        }
-                        list.removeAll(delList);
-                        list.addAll(addList);
-                    }
-                })
-                .onSuccess(this::expend)
-                .onError(ex -> {
-                    this.setLoaded(false);
-                    MessageBox.exception(ex, this.getWindow());
-                })
-                .onFinish(() -> {
-                    this.setLoading(false);
-                    this.doFilter();
-                    this.doSort();
-                })
-                .build();
-        // 执行业务
-        this.startWaiting(task);
     }
 
     @Override
@@ -184,19 +176,12 @@ public class ShellOracleTablesTreeItem extends ShellOracleTreeItem<ShellOracleTa
      * @return 表数量
      */
     public int tableSize() {
-        int size = 0;
-        boolean available = false;
         try {
-            size = this.parent().tableSize();
-            available = true;
+            return this.parent().tableSize();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        if (available && this.isLoaded() && !this.isLoading()
-                && size != this.unfilteredChildrenSize()) {
-            this.refreshChild();
-        }
-        return size;
+        return 0;
     }
 
     /**
@@ -239,7 +224,7 @@ public class ShellOracleTablesTreeItem extends ShellOracleTreeItem<ShellOracleTa
         if (!this.isLoaded()) {
             this.loadChild();
         } else {
-            this.refreshChild();
+            super.onPrimaryDoubleClick();
         }
     }
 
