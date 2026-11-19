@@ -236,7 +236,7 @@ public class ShellFTPTabController extends ShellBaseTabController {
         });
         // 监听信息
         this.fileTable.itemList().addListener((ListChangeListener<ShellFTPFile>) c -> {
-            this.fileInfo.setText(this.fileTable.fileInfo());
+            this.fileInfo.text(this.fileTable.fileInfo());
         });
         // 绑定提示快捷键
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);

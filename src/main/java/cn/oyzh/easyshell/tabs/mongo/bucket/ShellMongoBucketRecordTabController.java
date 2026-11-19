@@ -570,7 +570,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
 //     * 文件列表监听器
 //     */
 //    private ListChangeListener<MongoBucketFile> fileListListener = (ListChangeListener<MongoBucketFile>) c -> {
-//        this.fileInfo.setText(this.fileTable.fileInfo());
+//        this.fileInfo.text(this.fileTable.fileInfo());
 //    };
 
     @Override
@@ -594,7 +594,7 @@ public class ShellMongoBucketRecordTabController extends RichTabController {
         });
         // 监听信息
         this.fileTable.itemList().addListener((ListChangeListener<MongoBucketFile>) c -> {
-            this.fileInfo.setText(this.fileTable.fileInfo());
+            this.fileInfo.text(this.fileTable.fileInfo());
         });
         // 绑定提示快捷键
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);

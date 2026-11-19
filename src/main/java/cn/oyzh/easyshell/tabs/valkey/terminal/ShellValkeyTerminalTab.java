@@ -38,7 +38,7 @@ public class ShellValkeyTerminalTab extends ShellValkeyBaseTab {
 
     @Override
     public void flushTitle() {
-        this.setText(I18nHelper.terminal() + "@" + this.dbName() + "(" + this.connectName() + ")");
+        this.text(I18nHelper.terminal() + "@" + this.dbName() + "(" + this.connectName() + ")");
     }
 
     /**

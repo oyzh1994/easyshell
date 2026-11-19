@@ -80,8 +80,8 @@ public class ShellValkeyHomeTabController extends RichTabController {
             }
             ShellValkeyInfoProp prop = new ShellValkeyInfoProp();
             prop.parse(this.client.info(null));
-            this.version.text(prop.getValkeyVersion());
             this.mode.text(prop.getValkeyMode());
+            this.version.text(prop.getValkeyVersion());
             try {
                 this.role.text(String.valueOf(this.client.role().getFirst()));
             } catch (Exception ex) {
@@ -93,8 +93,8 @@ public class ShellValkeyHomeTabController extends RichTabController {
             this.keyCount.text(keyCount == null ? "N/A" : String.valueOf(keyCount));
             this.usedMemory.text(prop.getUsedMemoryHuman());
             this.clients.text(String.valueOf(prop.getConnectedClients()));
-            this.uptime.text(ShellI18nHelper.uptimeDays(prop.getUptimeInSeconds() / 86400));
             this.commands.text(String.valueOf(prop.getTotalCommandsProcessed()));
+            this.uptime.text(ShellI18nHelper.uptimeDays(prop.getUptimeInSeconds() / 86400));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

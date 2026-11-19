@@ -36,7 +36,7 @@ public class ShellSqliteTableRecordTab extends ShellSqliteBaseTab {
 
     @Override
     public void flushTitle() {
-        this.setText(this.item().tableName() + "@" + this.item().dbName() + "(" + this.item().infoName() + ")");
+        this.text(this.item().tableName() + "@" + this.item().dbName() + "(" + this.item().infoName() + ")");
     }
 
     /**

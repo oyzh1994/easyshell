@@ -43,9 +43,9 @@ public class ShellMariadbTableDesignTab extends ShellMariadbBaseTab {
         }
         // 设置提示文本
         if (this.isUnsaved()) {
-            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

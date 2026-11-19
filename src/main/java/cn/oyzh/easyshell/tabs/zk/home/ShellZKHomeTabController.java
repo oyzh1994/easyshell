@@ -77,13 +77,13 @@ public class ShellZKHomeTabController extends RichTabController {
             List<ShellZKEnvNode> envNodes = this.client.srvrNodes();
             ShellZKServerInfo info = new ShellZKServerInfo();
             info.update(envNodes);
-            this.version.text(info.getVersion());
             this.mode.text(info.getMode());
             this.zxid.text(info.getZxid());
+            this.version.text(info.getVersion());
             this.nodeCount.text(info.getNodeCount());
-            this.connections.text(info.getConnections());
             this.latency.text(info.getLatencyInfo());
             this.command.text(info.getCommandInfo());
+            this.connections.text(info.getConnections());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

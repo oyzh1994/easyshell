@@ -415,7 +415,7 @@ public class ShellSSHEffTabController extends SubTabController implements ShellS
         // 监听信息
         this.fileTable.itemList().addListener((ListChangeListener<ShellSFTPFile>) c -> {
             if (this.showFile.isSelected()) {
-                this.fileInfo.setText(this.fileTable.fileInfo());
+                this.fileInfo.text(this.fileTable.fileInfo());
             }
         });
         // 绑定提示快捷键

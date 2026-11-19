@@ -37,7 +37,7 @@ public class ShellMysqlTerminalTab extends ShellMysqlBaseTab {
         if (this.client() != null) {
             title = title + "(" + this.client().connectName() + ")";
         }
-        this.setText(title);
+        this.text(title);
     }
 
     /**

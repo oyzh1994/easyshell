@@ -45,7 +45,7 @@ public class ShellValkeyHylogKeyController extends ShellValkeyKeyController<Shel
         // 刷新二进制处理
         this.flushBinary();
         // 统计值
-        this.count.setText(ShellI18nHelper.labelValue("base.count", this.treeItem.count()));
+        this.count.text(ShellI18nHelper.labelValue("base.count", this.treeItem.count()));
     }
 
     /**

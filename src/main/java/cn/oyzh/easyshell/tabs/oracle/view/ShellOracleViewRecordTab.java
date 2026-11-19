@@ -41,7 +41,7 @@ public class ShellOracleViewRecordTab extends ShellOracleBaseTab {
 
     @Override
     public void flushTitle() {
-        this.setText(this.item().viewName() + "@" + this.item().schema() + "(" + this.item().infoName() + ")");
+        this.text(this.item().viewName() + "@" + this.item().schema() + "(" + this.item().infoName() + ")");
     }
 
     /**

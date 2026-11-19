@@ -87,8 +87,8 @@ public class ShellMongoUserViewTabController extends RichTabController {
             }
             roleDb.roles().add(role.getRole());
         }
-        this.user.setText(user.getUser());
-        this.database.setText(user.getDb());
+        this.user.text(user.getUser());
+        this.database.text(user.getDb());
         this.roleTableView.setItem(dbs.values());
     }
 }

@@ -36,7 +36,7 @@ public class ShellZKNodeTab extends RichTab {
     public void flushTitle() {
         ShellZKNodeTreeItem item = this.item();
         if (item != null) {
-            this.setText(item.decodeNodePath() + "(" + item.connectName() + ")");
+            this.text(item.decodeNodePath() + "(" + item.connectName() + ")");
         }
     }
 

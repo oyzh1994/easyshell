@@ -38,7 +38,7 @@ public class ShellRedisKeyTab extends ShellRedisBaseTab {
     public void flushTitle() {
         ShellRedisKeyTreeItem item = this.item();
         if (item != null) {
-            this.setText(item.key() + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(item.key() + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

@@ -159,7 +159,7 @@ public class ShellRedisHashKeyController extends ShellRedisRowKeyController<Shel
         if (row == null) {
             this.hashField.clear();
         } else {
-            this.hashField.setText(row.getField());
+            this.hashField.text(row.getField());
             this.hashField.forgetHistory();
         }
     }

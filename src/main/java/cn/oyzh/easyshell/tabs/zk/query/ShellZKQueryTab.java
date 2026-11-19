@@ -50,9 +50,9 @@ public class ShellZKQueryTab extends RichTab {
         }
         String connectName = this.queriesItem == null ? "" : this.queriesItem.connect().getName();
         if (this.isUnsaved()) {
-            this.setText("* " + name + "(" + connectName + ")");
+            this.text("* " + name + "(" + connectName + ")");
         } else {
-            this.setText(name + "(" + connectName + ")");
+            this.text(name + "(" + connectName + ")");
         }
     }
 

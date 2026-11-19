@@ -60,7 +60,7 @@ public class ShellHttpEnvironmentTab extends RichTab {
      * @param name 名称
      */
     public void rename(String name) {
-        this.setText(name);
+        this.text(name);
         this.setTipText(name);
     }
 

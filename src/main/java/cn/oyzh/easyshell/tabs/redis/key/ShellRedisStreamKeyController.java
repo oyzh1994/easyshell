@@ -88,7 +88,7 @@ public class ShellRedisStreamKeyController extends ShellRedisRowKeyController<Sh
             this.streamID.clear();
             this.streamID.disable();
         } else {
-            this.streamID.setText(row.getId());
+            this.streamID.text(row.getId());
             this.streamID.enable();
             this.nodeData.enable();
         }

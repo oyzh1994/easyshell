@@ -568,7 +568,7 @@ public class ShellHttpRequestTabController extends RichTabController {
      */
     private void loadRequest() {
         this.method.setValue(StringUtil.blankToDefault(this.request.getMethod(), ShellHttpRequest.METHOD_GET));
-        this.requestUrl.setText(this.request.getUrl());
+        this.requestUrl.text(this.request.getUrl());
         this.paramsTable.setItems(FXCollections.observableArrayList(this.request.getParams()));
         this.bindParamsChange();
         this.syncInitialUrlAndParams();
@@ -581,7 +581,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.rawContentType.setValue(StringUtil.blankToDefault(
                 this.request.getBodyContentType(), "application/json"));
         boolean binary = ShellHttpRequest.BODY_BINARY.equalsIgnoreCase(this.request.getBodyType());
-        this.bodyFile.setText(binary
+        this.bodyFile.text(binary
                 ? StringUtil.blankToDefault(this.request.getBody(), "") : "");
         this.requestBody.text(binary ? "" : StringUtil.blankToDefault(this.request.getBody(), ""));
         this.preRequestScript.setFormatType(EditorFormatType.JAVASCRIPT);
@@ -590,17 +590,17 @@ public class ShellHttpRequestTabController extends RichTabController {
         this.testScript.text(this.requestScript.getTestScript());
         this.testResults.text("");
         this.authType.setValue(StringUtil.blankToDefault(this.request.getAuthType(), ShellHttpRequest.AUTH_NONE));
-        this.authUser.setText(StringUtil.blankToDefault(this.request.getAuthUser(), ""));
-        this.authPassword.setText(StringUtil.blankToDefault(this.request.getAuthPassword(), ""));
-        this.authToken.setText(StringUtil.blankToDefault(this.request.getAuthToken(), ""));
-        this.authKeyName.setText(StringUtil.blankToDefault(this.request.getAuthKeyName(), "X-API-Key"));
-        this.authKeyValue.setText(StringUtil.blankToDefault(this.request.getAuthKeyValue(), ""));
+        this.authUser.text(StringUtil.blankToDefault(this.request.getAuthUser(), ""));
+        this.authPassword.text(StringUtil.blankToDefault(this.request.getAuthPassword(), ""));
+        this.authToken.text(StringUtil.blankToDefault(this.request.getAuthToken(), ""));
+        this.authKeyName.text(StringUtil.blankToDefault(this.request.getAuthKeyName(), "X-API-Key"));
+        this.authKeyValue.text(StringUtil.blankToDefault(this.request.getAuthKeyValue(), ""));
         this.authKeyPlacement.setValue(StringUtil.blankToDefault(
                 this.request.getAuthKeyPlacement(), ShellHttpRequest.PLACEMENT_HEADER));
-        this.oauth2TokenUrl.setText(StringUtil.blankToDefault(this.request.getOauth2TokenUrl(), ""));
-        this.oauth2ClientId.setText(StringUtil.blankToDefault(this.request.getOauth2ClientId(), ""));
-        this.oauth2ClientSecret.setText(StringUtil.blankToDefault(this.request.getOauth2ClientSecret(), ""));
-        this.oauth2Scope.setText(StringUtil.blankToDefault(this.request.getOauth2Scope(), ""));
+        this.oauth2TokenUrl.text(StringUtil.blankToDefault(this.request.getOauth2TokenUrl(), ""));
+        this.oauth2ClientId.text(StringUtil.blankToDefault(this.request.getOauth2ClientId(), ""));
+        this.oauth2ClientSecret.text(StringUtil.blankToDefault(this.request.getOauth2ClientSecret(), ""));
+        this.oauth2Scope.text(StringUtil.blankToDefault(this.request.getOauth2Scope(), ""));
         ShellHttpSetting global = this.workspace.getSettings();
         this.requestHttpVersion.setValue(StringUtil.blankToDefault(
                 this.request.getHttpVersion(), global.getHttpVersion()));
@@ -608,7 +608,7 @@ public class ShellHttpRequestTabController extends RichTabController {
                 ? global.isFollowRedirects() : this.request.getFollowRedirects());
         this.requestNoCacheHeader.setSelected(this.request.getSendNoCacheHeader() == null
                 ? global.isSendNoCacheHeader() : this.request.getSendNoCacheHeader());
-        this.requestTimeout.setText(String.valueOf(this.request.getTimeoutSeconds() == null
+        this.requestTimeout.text(String.valueOf(this.request.getTimeoutSeconds() == null
                 ? global.getTimeoutSeconds() : this.request.getTimeoutSeconds()));
         this.responseStatus.text("-");
         this.responseTime.text("-");
@@ -896,7 +896,7 @@ public class ShellHttpRequestTabController extends RichTabController {
         String url = StringUtil.isBlank(query) ? base : ShellHttpUtil.appendQuery(base, query);
         this.syncingUrl = true;
         try {
-            this.requestUrl.setText(url);
+            this.requestUrl.text(url);
         } finally {
             this.syncingUrl = false;
         }

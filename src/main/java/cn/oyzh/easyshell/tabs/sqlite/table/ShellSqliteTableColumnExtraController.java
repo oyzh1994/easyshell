@@ -138,7 +138,7 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
                 this.autoIncrement.setSelected(false);
                 this.generatedStorage.setValue(StringUtil.blankToDefault(
                         this.column.getGeneratedStorage(), "VIRTUAL"));
-                this.generatedExpression.setText(StringUtil.blankToDefault(
+                this.generatedExpression.text(StringUtil.blankToDefault(
                         this.column.getGeneratedExpression(), ""));
             } else {
                 boolean supportDefaultValue = this.column.supportDefaultValue();
@@ -157,7 +157,7 @@ public class ShellSqliteTableColumnExtraController extends SubTabController {
                 }
                 this.generatedExpression.clear();
             }
-            this.check.setText(StringUtil.blankToDefault(this.column.getCheck(), ""));
+            this.check.text(StringUtil.blankToDefault(this.column.getCheck(), ""));
             this.setBoxVisible(this.collateBox, true);
             this.setBoxVisible(this.checkBox, true);
             this.collate.select(StringUtil.blankToDefault(this.column.getCollate(), ""));

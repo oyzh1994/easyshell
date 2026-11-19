@@ -33,7 +33,7 @@ public class ShellMongoUserViewTab extends ShellMongoBaseTab {
     @Override
     public void flushTitle() {
         String name = this.userName();
-        this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        this.text(name + "@" + this.dbName() + "(" + this.connectName() + ")");
     }
 
     /**

@@ -43,9 +43,9 @@ public class ShellSqliteTableDesignTab extends ShellSqliteBaseTab {
             name = I18nHelper.unnamedTable();
         }
         if (this.isUnsaved()) {
-            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

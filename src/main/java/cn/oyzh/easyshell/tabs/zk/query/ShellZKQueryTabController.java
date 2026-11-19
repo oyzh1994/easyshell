@@ -108,7 +108,7 @@ public class ShellZKQueryTabController extends RichTabController {
         this.queriesItem = queriesItem;
         this.zkClient = queriesItem.client();
         this.content.setClient(this.zkClient);
-        this.content.setText(query.getContent() == null ? "" : query.getContent());
+        this.content.text(query.getContent() == null ? "" : query.getContent());
         this.content.forgetHistory();
         // 监听内容变化
         this.content.addTextChangeListener((observable, oldValue, newValue) -> {

@@ -186,7 +186,7 @@ public class ShellS3FileTabController extends SubTabController {
         });
         // 监听信息
         this.fileTable.itemList().addListener((ListChangeListener<ShellS3File>) c -> {
-            this.fileInfo.setText(this.fileTable.fileInfo());
+            this.fileInfo.text(this.fileTable.fileInfo());
         });
         // 绑定提示快捷键
         this.filterFile.setTipKeyCombination(KeyboardUtil.search_keyCombination);

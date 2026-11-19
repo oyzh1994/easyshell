@@ -42,7 +42,7 @@ public class ShellOracleTerminalTab extends ShellOracleBaseTab {
         if (this.client() != null) {
             title = title + "(" + this.client().connectName() + ")";
         }
-        this.setText(title);
+        this.text(title);
     }
 
     /**

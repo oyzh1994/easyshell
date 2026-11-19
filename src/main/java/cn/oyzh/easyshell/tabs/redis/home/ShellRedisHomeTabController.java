@@ -90,11 +90,11 @@ public class ShellRedisHomeTabController extends RichTabController {
             Integer dbCount = this.client.databases();
             this.databases.text(dbCount == null ? "1" : String.valueOf(dbCount));
             Long keyCount = prop.keyCount();
-            this.keyCount.text(keyCount == null ? "N/A" : String.valueOf(keyCount));
             this.usedMemory.text(prop.getUsedMemoryHuman());
             this.clients.text(String.valueOf(prop.getConnectedClients()));
-            this.uptime.text(ShellI18nHelper.uptimeDays(prop.getUptimeInSeconds() / 86400));
             this.commands.text(String.valueOf(prop.getTotalCommandsProcessed()));
+            this.keyCount.text(keyCount == null ? "N/A" : String.valueOf(keyCount));
+            this.uptime.text(ShellI18nHelper.uptimeDays(prop.getUptimeInSeconds() / 86400));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

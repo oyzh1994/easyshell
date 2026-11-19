@@ -67,6 +67,6 @@ public class ShellSqliteTerminalTab extends ShellSqliteBaseTab {
         if (this.client() != null) {
             title = title + "(" + this.client().connectName() + ")";
         }
-        this.setText(title);
+        this.text(title);
     }
 }

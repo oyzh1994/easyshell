@@ -38,7 +38,7 @@ public class ShellValkeyKeyTab extends ShellValkeyBaseTab {
     public void flushTitle() {
         ShellValkeyKeyTreeItem item = this.item();
         if (item != null) {
-            this.setText(item.key() + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(item.key() + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

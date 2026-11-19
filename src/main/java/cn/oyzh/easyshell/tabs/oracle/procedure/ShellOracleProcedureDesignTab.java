@@ -42,9 +42,9 @@ public class ShellOracleProcedureDesignTab extends ShellOracleBaseTab {
         }
         // 设置提示文本
         if (this.isUnsaved()) {
-            this.setText("* " + name + "@" + this.schema() + "(" + this.connectName() + ")");
+            this.text("* " + name + "@" + this.schema() + "(" + this.connectName() + ")");
         } else {
-            this.setText(name + "@" + this.schema() + "(" + this.connectName() + ")");
+            this.text(name + "@" + this.schema() + "(" + this.connectName() + ")");
         }
     }
 

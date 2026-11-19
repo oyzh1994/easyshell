@@ -46,9 +46,9 @@ public class ShellSqliteFunctionDesignTab extends ShellSqliteBaseTab {
             name = I18nHelper.unnamedFunction();
         }
         if (this.isUnsaved()) {
-            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

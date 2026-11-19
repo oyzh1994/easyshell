@@ -50,9 +50,9 @@ public class ShellRedisQueryTab extends ShellRedisBaseTab {
             name = I18nHelper.newQuery();
         }
         if (this.isUnsaved()) {
-            this.setText("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(name + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

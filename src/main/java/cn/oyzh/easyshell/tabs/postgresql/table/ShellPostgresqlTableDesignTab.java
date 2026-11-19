@@ -44,9 +44,9 @@ public class ShellPostgresqlTableDesignTab extends ShellPostgresqlBaseTab {
         }
         // 设置提示文本
         if (this.isUnsaved()) {
-            this.setText("* " + this.schema() + "-" + name);
+            this.text("* " + this.schema() + "-" + name);
         } else {
-            this.setText(this.schema() + "-" + name);
+            this.text(this.schema() + "-" + name);
         }
     }
 

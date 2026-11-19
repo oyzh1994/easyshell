@@ -51,7 +51,7 @@ public class ShellRedisKeyExtraController extends SubTabController {
         this.flushTTL();
         this.treeItem.flushMemoryUsage();
 //        this.flushMemoryUsage();
-        this.loadTime.setText(ShellI18nHelper.queryTime(this.treeItem.loadTime()));
+        this.loadTime.text(ShellI18nHelper.queryTime(this.treeItem.loadTime()));
     }
 
     /**

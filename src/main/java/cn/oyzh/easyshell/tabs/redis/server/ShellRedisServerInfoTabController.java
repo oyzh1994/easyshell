@@ -71,19 +71,19 @@ public class ShellRedisServerInfoTabController extends SubTabController {
         FXTableView<ShellRedisInfoPropItem> tableView;
         if (tabOptional.isEmpty()) {
             FXTab fxTab = new FXTab();
-            fxTab.setText(group);
+            fxTab.text(group);
             fxTab.setId("prop-" + group);
             tableView = new FXTableView<>();
             tableView.setFlexWidth("100%");
             tableView.setFlexHeight("100%");
 
             FXTableColumn<ShellRedisInfoPropItem, String> name = new FXTableColumn<>();
-            name.setText(I18nHelper.name());
+            name.text(I18nHelper.name());
             name.setFlexWidth("30%");
             name.setCellValueFactory(new PropertyValueFactory<>("name"));
 
             FXTableColumn<ShellRedisInfoPropItem, String> value = new FXTableColumn<>();
-            value.setText(I18nHelper.value());
+            value.text(I18nHelper.value());
             value.setFlexWidth("70% - 12");
             value.setCellValueFactory(new PropertyValueFactory<>("value"));
 

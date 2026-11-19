@@ -36,7 +36,7 @@ public class ShellPostgresqlViewRecordTab extends ShellPostgresqlBaseTab {
 
     @Override
     public void flushTitle() {
-        this.setText(this.item().viewName() + "@" + this.item().schema() + "(" + this.item().infoName() + ")");
+        this.text(this.item().viewName() + "@" + this.item().schema() + "(" + this.item().infoName() + ")");
     }
 
     /**

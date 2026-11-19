@@ -40,9 +40,9 @@ public class ShellMongoQueryMainTab extends ShellMongoBaseTab {
         }
         // 设置提示文本
         if (this.controller().isUnsaved()) {
-            this.setText("* " + queryName + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text("* " + queryName + "@" + this.dbName() + "(" + this.connectName() + ")");
         } else {
-            this.setText(queryName + "@" + this.dbName() + "(" + this.connectName() + ")");
+            this.text(queryName + "@" + this.dbName() + "(" + this.connectName() + ")");
         }
     }
 

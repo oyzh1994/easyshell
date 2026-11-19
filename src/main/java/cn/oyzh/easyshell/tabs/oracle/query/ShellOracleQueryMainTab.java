@@ -50,9 +50,9 @@ public class ShellOracleQueryMainTab extends ShellOracleBaseTab {
         }
         // 设置提示文本
         if (this.controller().isUnsaved()) {
-            this.setText("* " + queryName + "@" + this.schema() + "(" + this.connectName() + ")");
+            this.text("* " + queryName + "@" + this.schema() + "(" + this.connectName() + ")");
         } else {
-            this.setText(queryName + "@" + this.schema() + "(" + this.connectName() + ")");
+            this.text(queryName + "@" + this.schema() + "(" + this.connectName() + ")");
         }
     }
 

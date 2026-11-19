@@ -38,7 +38,7 @@ public class ShellPostgresqlTableRecordTab extends ShellPostgresqlBaseTab {
     @Override
     public void flushTitle() {
         // 设置提示文本
-        this.setText(this.item().tableName() + "@" + this.item().schema() + "(" + this.item().infoName() + ")");
+        this.text(this.item().tableName() + "@" + this.item().schema() + "(" + this.item().infoName() + ")");
     }
 
     /**

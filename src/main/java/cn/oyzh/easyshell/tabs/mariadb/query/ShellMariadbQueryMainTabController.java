@@ -103,7 +103,7 @@ public class ShellMariadbQueryMainTabController extends RichTabController {
         this.query = query;
         this.dbItem = dbItem;
         this.showNode(0);
-        this.queryArea.setText(query.getContent());
+        this.queryArea.text(query.getContent());
         this.queryArea.forgetHistory();
         this.queryArea.setDialect(this.dbItem.dialect());
         this.queryArea.addTextChangeListener((observable, oldValue, newValue) -> {

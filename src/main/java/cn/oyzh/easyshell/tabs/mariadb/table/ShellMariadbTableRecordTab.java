@@ -38,7 +38,7 @@ public class ShellMariadbTableRecordTab extends ShellMariadbBaseTab {
     @Override
     public void flushTitle() {
         // 设置提示文本
-        this.setText(this.item().tableName() + "@" + this.item().dbName() + "(" + this.item().infoName() + ")");
+        this.text(this.item().tableName() + "@" + this.item().dbName() + "(" + this.item().infoName() + ")");
     }
 
     /**

@@ -60,9 +60,9 @@ public class ShellHomeTabController extends RichTabController {
     @Override
     public void initialize(URL url, ResourceBundle resource) {
         super.initialize(url, resource);
-        //        this.softInfo.setText(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
-        this.version.setText(ShellI18nHelper.versionInfo("v" + this.project.getVersion()));
-        this.update.setText(ShellI18nHelper.updateDateInfo(this.project.getUpdateDate()));
+        //        this.softInfo.text(I18nHelper.soft() + ": v" + this.project.getVersion() + " Powered by oyzh.");
+        this.version.text(ShellI18nHelper.versionInfo("v" + this.project.getVersion()));
+        this.update.text(ShellI18nHelper.updateDateInfo(this.project.getUpdateDate()));
         String jdkInfo = "";
         if (System.getProperty("java.vm.name") != null) {
             jdkInfo += System.getProperty("java.vm.name");
@@ -70,7 +70,7 @@ public class ShellHomeTabController extends RichTabController {
         if (System.getProperty("java.vm.version") != null) {
             jdkInfo += System.getProperty("java.vm.version");
         }
-        this.jdkInfo.setText(ShellI18nHelper.environmentInfo(jdkInfo));
+        this.jdkInfo.text(ShellI18nHelper.environmentInfo(jdkInfo));
         this.logo.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (this.easterEggManager == null && this.logo.getParent() instanceof Pane pane) {
                 this.easterEggManager = new ShellHomeEasterEggManager(this.logo, pane);

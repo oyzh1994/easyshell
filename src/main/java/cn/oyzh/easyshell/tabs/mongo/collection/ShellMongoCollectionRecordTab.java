@@ -38,7 +38,7 @@ public class ShellMongoCollectionRecordTab extends ShellMongoBaseTab {
     @Override
     public void flushTitle() {
         // 设置提示文本
-        this.setText(this.item().collectionName() + "@" + this.item().dbName() + "(" + this.item().connectName() + ")");
+        this.text(this.item().collectionName() + "@" + this.item().dbName() + "(" + this.item().connectName() + ")");
     }
 
     /**

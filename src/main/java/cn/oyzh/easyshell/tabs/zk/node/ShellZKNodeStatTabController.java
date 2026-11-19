@@ -26,7 +26,6 @@ import java.util.Set;
  */
 public class ShellZKNodeStatTabController extends SubTabController {
 
-
     /**
      * 右侧zk属性组件
      */
