@@ -10,7 +10,7 @@
 <!--     <FXVBox flexHeight="100%" flexWidth="100%"> -->
 <!--         <InfoLabel text="XQuartz"> -->
 <!--             <VBox.margin> -->
-<!--                 <Insets left="30" top="20"/> -->
+<!--                 <Insets left="30" top="15"/> -->
 <!--             </VBox.margin> -->
 <!--         </InfoLabel> -->
 <!--         <FXHyperlink text="https://www.xquartz.org/"> -->

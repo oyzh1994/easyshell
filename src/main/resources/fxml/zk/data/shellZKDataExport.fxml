@@ -199,7 +199,7 @@
     <!--     <FXVBox flexHeight="100% - 60" flexWidth="100%"> -->
     <!--         <InfoLabel text="%base.nodePath"> -->
     <!--             <VBox.margin> -->
-    <!--                 <Insets left="30" top="20"/> -->
+    <!--                 <Insets left="30" top="15"/> -->
     <!--             </VBox.margin> -->
     <!--         </InfoLabel> -->
     <!--         <FXText fx:id="nodePath"> -->

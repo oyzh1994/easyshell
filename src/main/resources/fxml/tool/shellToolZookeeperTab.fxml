@@ -15,7 +15,7 @@
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.userInfo">
             <VBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
         <FXHBox>
@@ -32,7 +32,7 @@
         </FXHBox>
         <InfoLabel text="%base.digestInfo">
             <VBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
         <FXHBox>
@@ -50,7 +50,7 @@
         <FXHBox flexWidth="100%" realHeight="50">
             <SubmitButton onAction="#genDigest" text="%base.generate">
                 <HBox.margin>
-                    <Insets left="30" top="20"/>
+                    <Insets left="30" top="15"/>
                 </HBox.margin>
             </SubmitButton>
         </FXHBox>

@@ -105,12 +105,12 @@
     <FXHBox flexWidth="100%" realHeight="50">
         <SaveButton onAction="#save">
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </SaveButton>
         <CloseButton>
             <HBox.margin>
-                <Insets left="15" top="20"/>
+                <Insets left="15" top="15"/>
             </HBox.margin>
         </CloseButton>
     </FXHBox>

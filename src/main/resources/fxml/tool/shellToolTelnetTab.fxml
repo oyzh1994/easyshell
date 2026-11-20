@@ -17,7 +17,7 @@
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.host">
             <VBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
         <FXHBox flexWidth="100%">
@@ -53,7 +53,7 @@
         </FXHBox>
         <InfoLabel text="%base.info">
             <VBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
         <ReadOnlyTextArea fx:id="telnetArea" flexWidth="100% - 180" flexHeight="100% - 310">
@@ -64,7 +64,7 @@
         <FXHBox flexWidth="100%" realHeight="50">
             <ExecuteButton onAction="#execTelnet" realHeight="30">
                 <HBox.margin>
-                    <Insets left="30" top="20"/>
+                    <Insets left="30" top="15"/>
                 </HBox.margin>
             </ExecuteButton>
         </FXHBox>

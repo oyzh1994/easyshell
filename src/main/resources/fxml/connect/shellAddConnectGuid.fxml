@@ -47,7 +47,7 @@
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
         <FXHBox flexHeight="100%" flexWidth="100%">
-            <LinuxSVGGlyph sizeStr="40,40" color="darkgreen">
+            <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
                 <HBox.margin>
                     <Insets left="30" top="20"/>
                 </HBox.margin>
@@ -339,7 +339,7 @@
     <FXHBox>
         <NextStepButton onAction="#toAdd" realHeight="30">
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </NextStepButton>
     </FXHBox>

@@ -30,7 +30,7 @@
             </ZookeeperSVGGlyph>
             <FXLabel enableFont="false" realHeight="25" fx:id="sourceInfoName" fontSize="15">
                 <HBox.margin>
-                    <Insets left="15" top="28"/>
+                    <Insets left="15" top="30"/>
                 </HBox.margin>
             </FXLabel>
         </FXHBox>
@@ -40,14 +40,14 @@
             </HBox.margin>
         </RightSideSVGGlyph>
         <FXHBox flexHeight="100%" flexWidth="50% - 20">
-            <ZookeeperSVGGlyph sizeStr="40,40" color="mediumturquoise">
+            <ZookeeperSVGGlyph sizeStr="40,40" color="yellowgreen">
                 <HBox.margin>
                     <Insets left="10" top="20"/>
                 </HBox.margin>
             </ZookeeperSVGGlyph>
             <FXLabel enableFont="false" realHeight="25" fx:id="targetInfoName" fontSize="15">
                 <HBox.margin>
-                    <Insets left="15" top="28"/>
+                    <Insets left="15" top="30"/>
                 </HBox.margin>
             </FXLabel>
         </FXHBox>

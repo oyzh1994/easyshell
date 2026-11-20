@@ -147,17 +147,17 @@
     <FXHBox>
         <TestButton onAction="#testConnect" >
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </TestButton>
         <SubmitButton onAction="#update">
             <HBox.margin>
-                <Insets left="15" top="20"/>
+                <Insets left="15" top="15"/>
             </HBox.margin>
         </SubmitButton>
         <CancelButton>
             <HBox.margin>
-                <Insets left="15" top="20"/>
+                <Insets left="15" top="15"/>
             </HBox.margin>
         </CancelButton>
     </FXHBox>

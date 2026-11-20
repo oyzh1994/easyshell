@@ -16,7 +16,7 @@
 <?import cn.oyzh.fx.plus.controls.button.IconButton?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController"
-        realWidth="800" realHeight="820">
+        realWidth="800" realHeight="740">
     <FXHeaderBar/>
     <InfoLabel text="%base.name">
         <VBox.margin>

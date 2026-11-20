@@ -80,7 +80,7 @@
     <FXHBox >
         <ImportButton tipText="%base.import" groupId="exec" onAction="#doImport" realHeight="30">
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </ImportButton>
     </FXHBox>

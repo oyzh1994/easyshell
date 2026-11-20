@@ -47,12 +47,12 @@
     <FXHBox flexWidth="100%">
         <ExecuteButton onAction="#run" groupId="run">
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </ExecuteButton>
         <CloseButton>
             <HBox.margin>
-                <Insets left="15" top="20"/>
+                <Insets left="15" top="15"/>
             </HBox.margin>
         </CloseButton>
     </FXHBox>

@@ -67,12 +67,12 @@
     <FXHBox flexWidth="100%">
         <GenerateButton onAction="#generate" text="%base.generate">
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </GenerateButton>
         <CancelButton>
             <HBox.margin>
-                <Insets left="15" top="20"/>
+                <Insets left="15" top="15"/>
             </HBox.margin>
         </CancelButton>
     </FXHBox>

@@ -19,7 +19,7 @@
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.host">
             <VBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
         <ClearableTextField fx:id="portScanHost" flexWidth="100% - 180" realHeight="30"
@@ -80,12 +80,12 @@
         <FXHBox flexWidth="100%" realHeight="50">
             <ExecuteButton fx:id="portScanStartBtn" onAction="#execPortScan" realHeight="30">
                 <HBox.margin>
-                    <Insets left="30" top="20"/>
+                    <Insets left="30" top="15"/>
                 </HBox.margin>
             </ExecuteButton>
             <StopButton fx:id="portScanStopBtn" onAction="#stopPortScan" realHeight="30" disable="true">
                 <HBox.margin>
-                    <Insets left="10" top="20"/>
+                    <Insets left="15" top="15"/>
                 </HBox.margin>
             </StopButton>
         </FXHBox>

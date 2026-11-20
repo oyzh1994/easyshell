@@ -14,7 +14,7 @@
     <FXVBox flexHeight="100%" flexWidth="100%">
         <InfoLabel text="%base.info">
             <VBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
         <ReadOnlyTextArea fx:id="cacheArea" flexWidth="100% - 180" flexHeight="100% - 150">
@@ -25,12 +25,12 @@
         <FXHBox flexWidth="100%" realHeight="50">
             <CalcButton onAction="#calcCache" realHeight="30">
                 <HBox.margin>
-                    <Insets left="30" top="20"/>
+                    <Insets left="30" top="15"/>
                 </HBox.margin>
             </CalcButton>
             <ClearButton onAction="#clearCache" prefHeight="30">
                 <HBox.margin>
-                    <Insets left="10" top="20"/>
+                    <Insets left="15" top="15"/>
                 </HBox.margin>
             </ClearButton>
         </FXHBox>

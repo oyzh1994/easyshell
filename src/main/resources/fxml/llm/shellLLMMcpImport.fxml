@@ -18,10 +18,9 @@
             <Insets left="30" top="10"/>
         </VBox.margin>
     </InfoLabel>
-    <JsonEditor fx:id="json" flexWidth="100% - 60"
-                flexHeight="100% - 150">
+    <JsonEditor fx:id="json" flexWidth="100% - 60" flexHeight="100% - 140">
         <VBox.margin>
-            <Insets left="30" top="8"/>
+            <Insets left="30" top="5"/>
         </VBox.margin>
     </JsonEditor>
     <FXHBox>

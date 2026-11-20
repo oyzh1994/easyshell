@@ -71,7 +71,7 @@
                 <LLMMcpServerEnabledTableColumn fx:id="enabledColumn" text="%base.status"/>
             </columns>
             <FXVBox.margin>
-                <Insets left="30" top="7"/>
+                <Insets left="30" top="5"/>
             </FXVBox.margin>
         </LLMMcpServerTableView>
     </FXVBox>

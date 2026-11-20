@@ -80,7 +80,7 @@
     <FXHBox>
         <ExportButton tipText="%base.export" groupId="exec" onAction="#doExport" realHeight="30">
             <HBox.margin>
-                <Insets left="30" top="20"/>
+                <Insets left="30" top="15"/>
             </HBox.margin>
         </ExportButton>
     </FXHBox>
