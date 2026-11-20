@@ -704,6 +704,10 @@ public class LLMView extends FXSplitPane {
         this.messageListView.replaceThinking(message, text);
     }
 
+    public void replaceAgentTrace(LLMMessage message, String text) {
+        this.messageListView.replaceAgentTrace(message, text);
+    }
+
     public void clearMessages() {
         this.messageListView.clearMessages();
         this.resetTaskStatus();

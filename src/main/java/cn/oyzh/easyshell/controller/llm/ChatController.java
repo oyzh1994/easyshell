@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
+import cn.oyzh.easyshell.llm.agent.LLMAgentEventType;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.LLMMessage;
@@ -21,6 +22,11 @@ import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.llm.agent.LLMAgentEvent;
+import cn.oyzh.easyshell.llm.agent.LLMAgentListener;
+import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
@@ -53,6 +59,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Future;
@@ -163,6 +170,8 @@ public class ChatController extends SubStageController {
 
         private volatile LLMMcpToolSession mcpSession;
 
+        private LLMAgentRuntime agentRuntime;
+
         private List<LLMMcpServer> mcpServers;
 
         private LLMProvider provider;
@@ -225,6 +234,7 @@ public class ChatController extends SubStageController {
                 ? internalTools.systemMessage(executionMode)
                 : internalTools.toolSystemMessage() + "\n\n"
                 + request.sessionTools.systemMessage(executionMode);
+        String localSystemMessage = systemMessage;
         if (request.mcpSession.hasClients()) {
             systemMessage += "\n\n" + request.mcpSession.getSystemMessage();
         }
@@ -234,17 +244,39 @@ public class ChatController extends SubStageController {
         if (request.streaming) {
             // 创建模型
             StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, request.thinkingLevel);
+            ChatModel agentModel = LLMUtil.createChatModel(provider, request.thinkingLevel);
             services.streamingChatModel(model);
             // 创建工具
             this.assistant = services.build();
+            request.agentRuntime = this.createAgentRuntime(agentModel, model, tools,
+                    request.mcpSession, localSystemMessage,
+                    internalTools.systemMessage(executionMode), executionMode, audit);
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider, request.thinkingLevel);
             services.chatModel(model);
             // 创建工具
             this.assistant = services.build();
+            request.agentRuntime = this.createAgentRuntime(model, null, tools,
+                    request.mcpSession, localSystemMessage,
+                    internalTools.systemMessage(executionMode), executionMode, audit);
         }
         return this.assistant;
+    }
+
+    private LLMAgentRuntime createAgentRuntime(ChatModel chatModel,
+                                               StreamingChatModel streamingChatModel,
+                                               List<LLMTools> tools,
+                                               LLMMcpToolSession mcpSession,
+                                               String localSystemMessage,
+                                               String internalSystemMessage,
+                                               LLMExecutionMode executionMode,
+                                               LLMToolAudit audit) {
+        String mcpSystemMessage = mcpSession == null ? "" : mcpSession.getSystemMessage();
+        return new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
+                localSystemMessage, internalSystemMessage, mcpSystemMessage,
+                LLMUtil.executionSystemMessage(executionMode),
+                LLMUtil.languageSystemMessage(), audit);
     }
 
     private ChatMemory buildChatMemory(LLMMessage currentMessage) {
@@ -416,6 +448,10 @@ public class ChatController extends SubStageController {
                 this.markStoppedPlaceholder(targetPlaceholder);
                 return;
             }
+            if (request.agentRuntime != null && message.getFile() == null) {
+                this.executeAgentRequest(request, message, targetPlaceholder);
+                return;
+            }
             if (streaming) {
                 AtomicBoolean firstResponse = new AtomicBoolean(true);
                 AtomicBoolean firstThinking = new AtomicBoolean(true);
@@ -484,6 +520,91 @@ public class ChatController extends SubStageController {
             this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
             this.finishRequest(request, true);
         }
+    }
+
+    private void executeAgentRequest(LLMRequest request,
+                                     LLMMessage message,
+                                     LLMMessage placeholder) {
+        AtomicBoolean firstResponse = new AtomicBoolean(true);
+        AtomicBoolean firstThinking = new AtomicBoolean(true);
+        LinkedHashMap<String, LLMAgentTrace> traces = new LinkedHashMap<>();
+        try {
+            this.view.replaceAgentTrace(placeholder, "");
+            ChatResponse response = request.agentRuntime.execute(
+                    message.getMessage(),
+                    request.chatMemory.messages(),
+                    new LLMAgentListener() {
+                        @Override
+                        public void onEvent(LLMAgentEvent event) {
+                            if (!isRequestActive(request) || event == null
+                                    || event.type() == LLMAgentEventType.COMPLETED) {
+                                return;
+                            }
+                            view.replaceMessage(placeholder, agentEventText(event));
+                        }
+
+                        @Override
+                        public void onPartialThinking(String text) {
+                            if (!isRequestActive(request) || StringUtil.isBlank(text)) {
+                                return;
+                            }
+                            if (firstThinking.getAndSet(false) && firstResponse.get()) {
+                                view.replaceMessage(placeholder, "");
+                            }
+                            view.appendThinking(placeholder, text);
+                        }
+
+                        @Override
+                        public void onPartialResponse(String text) {
+                            if (!isRequestActive(request) || text == null || text.isEmpty()) {
+                                return;
+                            }
+                            if (firstResponse.getAndSet(false)) {
+                                view.replaceMessage(placeholder, text);
+                            } else {
+                                view.appendMessage(placeholder, text);
+                            }
+                        }
+
+                        @Override
+                        public void onAgentTrace(LLMAgentTrace trace) {
+                            if (!isRequestActive(request) || trace == null) {
+                                return;
+                            }
+                            traces.put(trace.id(), trace);
+                            view.replaceAgentTrace(placeholder, LLMAgentTraceFormatter.format(traces.values()));
+                        }
+                    },
+                    request.cancelled::get);
+            if (!this.isRequestActive(request)) {
+                return;
+            }
+            if (firstResponse.get() && LLMResponseUtil.finalText(response) == null) {
+                this.view.replaceMessage(placeholder, "");
+            }
+            this.completeStreamingRequest(request, placeholder, response);
+        } catch (Exception ex) {
+            if (!this.isRequestActive(request)) {
+                return;
+            }
+            JulLog.error("llm agent error", ex);
+            this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+            this.finishRequest(request, true);
+        }
+    }
+
+    private String agentEventText(LLMAgentEvent event) {
+        return switch (event.type()) {
+            case PLANNING -> I18nResourceBundle.i18nString("shell.llm.agent.planning");
+            case STEP_STARTED -> String.format(
+                    I18nResourceBundle.i18nString("shell.llm.agent.step"),
+                    event.stepIndex() + 1, event.totalSteps(), event.objective());
+            case STEP_COMPLETED -> String.format(
+                    I18nResourceBundle.i18nString("shell.llm.agent.stepCompleted"),
+                    event.stepIndex() + 1, event.totalSteps());
+            case SYNTHESIZING -> I18nResourceBundle.i18nString("shell.llm.agent.synthesizing");
+            case COMPLETED -> ShellI18nHelper.thinkingPlaceholder();
+        };
     }
 
     private void completeStreamingRequest(LLMRequest request, LLMMessage placeholder, ChatResponse response) {

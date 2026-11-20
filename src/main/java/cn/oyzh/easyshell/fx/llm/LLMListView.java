@@ -19,6 +19,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.text.Font;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -85,11 +86,11 @@ public class LLMListView extends FXListView<LLMMessage> {
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
+        ScrollBar scrollBar = this.verticalScrollBar;
+        if (scrollBar == null) {
+            scrollBar = this.getVerticalScrollBar();
+        }
         if (this.autoScroll && !this.userScrolling) {
-            ScrollBar scrollBar = this.verticalScrollBar;
-            if (scrollBar == null) {
-                scrollBar = this.getVerticalScrollBar();
-            }
             // 内容不足一屏时不滚动，否则首条消息顶部会被裁掉
             if (this.canScroll(scrollBar) && scrollBar.getValue() < scrollBar.getMax()) {
                 scrollBar.setValue(scrollBar.getMax());
@@ -102,6 +103,7 @@ public class LLMListView extends FXListView<LLMMessage> {
     }
 
     public LLMMessage addUserMessage(String message, File file) {
+        this.scrollToBottom();
         LLMMessage result = LLMMessage.user(message, file);
         this.addMessage(result);
         return result;
@@ -183,8 +185,25 @@ public class LLMListView extends FXListView<LLMMessage> {
         }
     }
 
+    /**
+     * Replaces the composite-agent execution trace of an existing message.
+     *
+     * @param message target message
+     * @param text    formatted trace
+     */
+    public void replaceAgentTrace(LLMMessage message, String text) {
+        if (message == null) {
+            return;
+        }
+        this.pendingAgentTraces.offer(new AgentTraceUpdate(message, text));
+        if (this.agentTraceFlushScheduled.compareAndSet(false, true)) {
+            Platform.runLater(this::flushAgentTraceUpdates);
+        }
+    }
+
     public void clearMessages() {
         this.discardPendingAppends();
+        this.pendingAgentTraces.clear();
         this.clearItems();
         this.resetScrollState();
     }
@@ -196,6 +215,7 @@ public class LLMListView extends FXListView<LLMMessage> {
      */
     public void setMessages(List<LLMMessage> messages) {
         this.discardPendingAppends();
+        this.pendingAgentTraces.clear();
         this.setItem(CollectionUtil.isEmpty(messages) ? List.of() : List.copyOf(messages));
         this.resetScrollState();
         this.scrollToBottom();
@@ -204,11 +224,13 @@ public class LLMListView extends FXListView<LLMMessage> {
 
     public List<LLMMessage> getMessages() {
         this.flushPendingAppends();
+        this.flushAgentTraceUpdates();
         return List.copyOf(this.getItems());
     }
 
     public void flushMessageUpdates() {
         this.flushPendingAppends();
+        this.flushAgentTraceUpdates();
     }
 
     /**
@@ -234,7 +256,11 @@ public class LLMListView extends FXListView<LLMMessage> {
 
     private final ConcurrentLinkedQueue<MessageAppend> pendingAppends = new ConcurrentLinkedQueue<>();
 
+    private final ConcurrentLinkedQueue<AgentTraceUpdate> pendingAgentTraces = new ConcurrentLinkedQueue<>();
+
     private final AtomicBoolean appendFlushScheduled = new AtomicBoolean();
+
+    private final AtomicBoolean agentTraceFlushScheduled = new AtomicBoolean();
 
     private boolean scrollToBottomScheduled;
 
@@ -370,7 +396,31 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.pendingAppends.clear();
     }
 
+    private void flushAgentTraceUpdates() {
+        boolean shouldScroll = this.autoScroll && !this.userScrolling;
+        LinkedHashMap<LLMMessage, String> updates = new LinkedHashMap<>();
+        AgentTraceUpdate update;
+        while ((update = this.pendingAgentTraces.poll()) != null) {
+            updates.put(update.message(), update.text());
+        }
+        this.agentTraceFlushScheduled.set(false);
+        if (!this.pendingAgentTraces.isEmpty()
+                && this.agentTraceFlushScheduled.compareAndSet(false, true)) {
+            Platform.runLater(this::flushAgentTraceUpdates);
+        }
+        if (!updates.isEmpty()) {
+            updates.forEach((message, text) -> message.replaceAgentTrace(text));
+            this.notifyMessageUpdated();
+            if (shouldScroll) {
+                this.scheduleScrollToBottom();
+            }
+        }
+    }
+
     private record MessageAppend(LLMMessage message, String text, boolean thinking) {
+    }
+
+    private record AgentTraceUpdate(LLMMessage message, String text) {
     }
 
     private void installScrollBarListener() {
@@ -441,4 +491,5 @@ public class LLMListView extends FXListView<LLMMessage> {
         }
         return scrollBar.getValue() >= scrollBar.getMax() - range * BOTTOM_TOLERANCE;
     }
+
 }

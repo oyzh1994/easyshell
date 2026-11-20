@@ -3,19 +3,25 @@ package cn.oyzh.easyshell.fx.llm;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.gui.svg.glyph.RightSideSVGGlyph;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
-import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.stage.Screen;
 
 import java.io.File;
 
@@ -32,6 +38,18 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
     private final VBox bubbleStack = new VBox(4);
 
     private final LLMMessageView text = new LLMMessageView();
+
+    private final Button agentTraceButton = new Button();
+
+    private final RightSideSVGGlyph agentTraceArrow = new RightSideSVGGlyph("12");
+
+    private final LLMMessageView agentTraceText = new LLMMessageView();
+
+    private final ScrollPane agentTraceScroll = new ScrollPane();
+
+    private final VBox agentTracePopupRoot = new VBox();
+
+    private final Popup agentTracePopup = new Popup();
 
     /**
      * 当前绑定的消息
@@ -55,6 +73,13 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
      */
     private final ChangeListener<String> thinkingListener = (observable, oldValue, newValue) -> {
         this.refreshText();
+    };
+
+    /**
+     * Agent 轨迹变更监听
+     */
+    private final ChangeListener<String> agentTraceListener = (observable, oldValue, newValue) -> {
+        this.refreshAgentTrace();
     };
 
     public LLMMessageCell() {
@@ -85,6 +110,46 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.text.maxWidthProperty().bind(Bindings.max(40, this.bubble.maxWidthProperty().subtract(28)));
         this.text.maxWidthProperty().addListener((observable, oldValue, newValue) -> this.requestLayout());
 
+        this.agentTraceArrow.getStyleClass().add("llm-agent-trace-arrow");
+        Label agentTraceLabel = new Label(I18nResourceBundle.i18nString("shell.llm.agent.trace"));
+        agentTraceLabel.getStyleClass().add("llm-agent-trace-label");
+        HBox agentTraceHeader = new HBox(6, this.agentTraceArrow, agentTraceLabel);
+        agentTraceHeader.setAlignment(Pos.CENTER_LEFT);
+
+        this.agentTraceButton.setText(I18nResourceBundle.i18nString("shell.llm.agent.trace"));
+        this.agentTraceButton.setGraphic(agentTraceHeader);
+        this.agentTraceButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        this.agentTraceButton.setAlignment(Pos.CENTER_LEFT);
+        this.agentTraceButton.getStyleClass().addAll("llm-agent-trace-button", "llm-agent-trace-pane");
+        this.agentTraceButton.setMaxWidth(Double.MAX_VALUE);
+        this.agentTraceButton.setMinWidth(0);
+        this.agentTraceButton.maxWidthProperty().bind(
+                Bindings.max(40, this.bubble.maxWidthProperty().subtract(28)));
+        this.agentTraceButton.setVisible(false);
+        this.agentTraceButton.setManaged(false);
+        this.agentTraceButton.setOnAction(event -> this.toggleAgentTracePopup());
+
+        this.agentTraceText.getStyleClass().addAll("llm-agent-trace-text");
+        this.agentTraceText.setWrapText(true);
+        this.agentTraceText.setMinWidth(0);
+        this.agentTraceText.setMaxWidth(Double.MAX_VALUE);
+
+        this.agentTraceScroll.getStyleClass().add("llm-agent-trace-scroll");
+        this.agentTraceScroll.setContent(this.agentTraceText);
+        this.agentTraceScroll.setFitToWidth(true);
+        this.agentTraceScroll.setPannable(true);
+        this.agentTraceScroll.setMinWidth(0);
+        this.agentTraceScroll.setMaxWidth(Double.MAX_VALUE);
+
+        this.agentTracePopupRoot.getStyleClass().add("llm-agent-trace-popup-root");
+        this.agentTracePopupRoot.getChildren().add(this.agentTraceScroll);
+        this.agentTracePopupRoot.setPadding(new Insets(8));
+        this.agentTracePopup.getContent().add(this.agentTracePopupRoot);
+        this.agentTracePopup.setAutoHide(true);
+        this.agentTracePopup.setHideOnEscape(true);
+        this.agentTracePopup.showingProperty().addListener((observable, oldValue, newValue) ->
+                this.agentTraceArrow.setRotate(newValue ? 90 : 0));
+
         this.attachment.getStyleClass().add("llm-bubble-attachment");
         this.attachment.setWrapText(true);
         this.attachment.setMaxWidth(Double.MAX_VALUE);
@@ -94,7 +159,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.meta.getStyleClass().add("llm-meta");
         this.meta.setMaxWidth(Double.MAX_VALUE);
 
-        this.bubble.getChildren().addAll(this.text, this.attachment);
+        this.bubble.getChildren().addAll(this.text, this.agentTraceButton, this.attachment);
         this.bubbleStack.getChildren().addAll(this.bubble, this.meta);
         this.row.getChildren().add(this.bubbleStack);
         this.setGraphic(this.row);
@@ -111,6 +176,8 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
             if (!key.equals(this.appliedThemeKey)) {
                 this.appliedThemeKey = key;
                 this.text.changeTheme(style);
+                this.agentTraceText.changeTheme(style);
+                this.agentTraceArrow.setColor(style.getForegroundColor());
             }
         }
     }
@@ -121,10 +188,16 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         if (this.boundMessage != null && this.boundMessage != item) {
             this.boundMessage.messageProperty().removeListener(this.messageListener);
             this.boundMessage.thinkingProperty().removeListener(this.thinkingListener);
+            this.boundMessage.agentTraceProperty().removeListener(this.agentTraceListener);
             this.boundMessage = null;
+            this.hideAgentTracePopup();
         }
         if (empty || item == null) {
+            this.hideAgentTracePopup();
             this.text.setMessageNow("", EditorFormatType.RAW);
+            this.agentTraceText.setMessageNow("", EditorFormatType.RAW);
+            this.agentTraceButton.setManaged(false);
+            this.agentTraceButton.setVisible(false);
             this.setGraphic(null);
             return;
         }
@@ -152,8 +225,11 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         item.messageProperty().addListener(this.messageListener);
         item.thinkingProperty().removeListener(this.thinkingListener);
         item.thinkingProperty().addListener(this.thinkingListener);
+        item.agentTraceProperty().removeListener(this.agentTraceListener);
+        item.agentTraceProperty().addListener(this.agentTraceListener);
         this.boundMessage = item;
         this.text.setMessageNow(this.displayText(item), this.messageFormat(item));
+        this.refreshAgentTrace();
 
         File file = item.getFile();
         boolean hasFile = file != null;
@@ -192,6 +268,68 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         LLMMessage item = this.getItem();
         if (item != null) {
             this.text.setMessage(this.displayText(item), this.messageFormat(item));
+        }
+    }
+
+    private void refreshAgentTrace() {
+        LLMMessage item = this.getItem();
+        String trace = item == null ? "" : item.getAgentTrace();
+        boolean visible = item != null && !item.isUser() && trace != null && !trace.isBlank();
+        this.agentTraceButton.setManaged(visible);
+        this.agentTraceButton.setVisible(visible);
+        this.agentTraceText.setMessage(visible ? trace : "", EditorFormatType.LLM_CHAT);
+        if (!visible) {
+            this.hideAgentTracePopup();
+        }
+    }
+
+    private void toggleAgentTracePopup() {
+        if (this.agentTracePopup.isShowing()) {
+            this.hideAgentTracePopup();
+        } else {
+            this.showAgentTracePopup();
+        }
+    }
+
+    private void showAgentTracePopup() {
+        if (this.boundMessage == null || this.boundMessage.getAgentTrace().isBlank()
+                || this.getScene() == null) {
+            return;
+        }
+        this.agentTracePopupRoot.getStylesheets().setAll(this.getScene().getStylesheets());
+        double width = Math.min(720, Math.max(440, this.bubble.getWidth()));
+        double contentWidth = Math.max(360, width - 48);
+        this.agentTracePopupRoot.setPrefWidth(width);
+        this.agentTracePopupRoot.setMaxWidth(width);
+        this.agentTraceScroll.setPrefViewportWidth(contentWidth);
+        this.agentTraceText.setMaxWidth(contentWidth);
+        double contentHeight = Math.max(160,
+                Math.min(500, this.agentTraceText.prefHeight(contentWidth)));
+        this.agentTraceScroll.setPrefViewportHeight(contentHeight);
+
+        Bounds anchor = this.agentTraceButton.localToScreen(this.agentTraceButton.getBoundsInLocal());
+        if (anchor == null) {
+            return;
+        }
+        Rectangle2D anchorRectangle = new Rectangle2D(anchor.getMinX(), anchor.getMinY(),
+                anchor.getWidth(), anchor.getHeight());
+        Screen screen = Screen.getScreensForRectangle(anchorRectangle).stream()
+                .findFirst()
+                .orElse(Screen.getPrimary());
+        Rectangle2D visual = screen.getVisualBounds();
+        double popupHeight = Math.min(560, contentHeight + 24);
+        double x = Math.max(visual.getMinX(),
+                Math.min(anchor.getMinX(), visual.getMaxX() - width - 12));
+        double y = anchor.getMaxY();
+        if (y + popupHeight > visual.getMaxY()) {
+            y = Math.max(visual.getMinY(), anchor.getMinY() - popupHeight);
+        }
+        this.agentTracePopup.show(this.agentTraceButton, x, y);
+    }
+
+    private void hideAgentTracePopup() {
+        if (this.agentTracePopup.isShowing()) {
+            this.agentTracePopup.hide();
         }
     }
 

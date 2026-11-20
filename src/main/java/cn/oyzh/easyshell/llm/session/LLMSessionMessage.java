@@ -20,6 +20,8 @@ public class LLMSessionMessage {
 
     private String thinking;
 
+    private String agentTrace;
+
     private String filePath;
 
     private String model;
@@ -64,6 +66,14 @@ public class LLMSessionMessage {
 
     public void setThinking(String thinking) {
         this.thinking = thinking;
+    }
+
+    public String getAgentTrace() {
+        return agentTrace;
+    }
+
+    public void setAgentTrace(String agentTrace) {
+        this.agentTrace = agentTrace;
     }
 
     public String getFilePath() {

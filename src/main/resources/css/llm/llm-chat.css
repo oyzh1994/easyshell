@@ -99,6 +99,60 @@
     -fx-text-fill: -llm-error-text;
 }
 
+.llm-agent-trace-button {
+    -fx-background-color: -color-neutral-subtle;
+    -fx-border-color: -llm-border;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+
+.llm-agent-trace-button:hover,
+.llm-agent-trace-button:focused {
+    -fx-background-color: -color-neutral-muted;
+}
+
+.llm-agent-trace-arrow,
+.llm-agent-trace-label {
+    -fx-text-fill: -llm-muted;
+}
+
+.llm-agent-trace-arrow {
+    -fx-min-width: 12;
+}
+
+.llm-agent-trace-popup-root {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.10), 8, 0.08, 0, 2);
+}
+
+.llm-agent-trace-scroll,
+.llm-agent-trace-scroll > .viewport {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.llm-agent-trace-text,
+.llm-agent-trace-text.rich-text-area,
+.llm-agent-trace-text.code-area,
+.llm-agent-trace-text:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.llm-agent-trace-text {
+    -fx-opacity: 0.92;
+}
+
 .llm-message-text,
 .llm-message-text.rich-text-area,
 .llm-message-text.code-area {

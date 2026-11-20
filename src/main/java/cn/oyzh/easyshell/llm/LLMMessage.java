@@ -26,6 +26,8 @@ public class LLMMessage {
 
     private final StringProperty thinking = new SimpleStringProperty("");
 
+    private final StringProperty agentTrace = new SimpleStringProperty("");
+
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
 
     private final StringProperty model = new SimpleStringProperty("");
@@ -133,6 +135,22 @@ public class LLMMessage {
         if (thinking != null && !thinking.isEmpty()) {
             FXUtil.runWait(() -> this.thinking.set(this.thinking.get() + thinking));
         }
+    }
+
+    public String getAgentTrace() {
+        return this.agentTrace.get();
+    }
+
+    public void setAgentTrace(String trace) {
+        this.agentTrace.set(trace == null ? "" : trace);
+    }
+
+    public void replaceAgentTrace(String trace) {
+        FXUtil.runWait(() -> this.setAgentTrace(trace));
+    }
+
+    public StringProperty agentTraceProperty() {
+        return this.agentTrace;
     }
 
     public void appendMessage(String message) {
