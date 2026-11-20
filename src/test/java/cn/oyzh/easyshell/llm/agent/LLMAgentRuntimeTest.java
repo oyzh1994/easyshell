@@ -208,10 +208,9 @@ public class LLMAgentRuntimeTest {
                 ]}
                 """, false);
         SessionEchoTools sessionTools = new SessionEchoTools();
-        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
         LocalEchoTools localTools = new LocalEchoTools();
         LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
-                List.of(sessionTools, internalTools, localTools), null,
+                List.of(sessionTools, localTools), null,
                 "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 
@@ -225,6 +224,30 @@ public class LLMAgentRuntimeTest {
     }
 
     @Test
+    public void completeModeRoutesInternalWorkerWithoutSessionTools() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect app","steps":[
+                  {"agent":"internal","objective":"inspect application state"}
+                ]}
+                """, false);
+        SessionEchoTools sessionTools = new SessionEchoTools();
+        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
+        LocalEchoTools localTools = new LocalEchoTools();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(sessionTools, localTools, internalTools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
+                "execution rules", "language rules", null);
+
+        runtime.execute("inspect app", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        List<String> workerTools = model.requestTools.get(1);
+        assertTrue(workerTools.contains("echo_value"));
+        assertFalse(workerTools.contains("session_echo"));
+        assertFalse(workerTools.contains("local_echo"));
+    }
+
+    @Test
     public void staleInternalPlanIsCorrectedToSessionScope() throws Exception {
         ToolAwareChatModel model = new ToolAwareChatModel("""
                 {"objective":"inspect session","steps":[
@@ -232,10 +255,9 @@ public class LLMAgentRuntimeTest {
                 ]}
                 """, false);
         SessionEchoTools sessionTools = new SessionEchoTools();
-        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
         LocalEchoTools localTools = new LocalEchoTools();
         LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
-                List.of(sessionTools, internalTools, localTools), null,
+                List.of(sessionTools, localTools), null,
                 "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 

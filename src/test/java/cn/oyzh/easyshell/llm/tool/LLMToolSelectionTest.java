@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm.tool;
 
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.domain.ShellSetting;
 import org.junit.Test;
 
 import java.util.List;
@@ -56,6 +57,62 @@ public class LLMToolSelectionTest {
     }
 
     @Test
+    public void sessionOnlyModeDoesNotExposeLocalOrInternalTools() {
+        FakeTools session = new FakeTools(LLMToolScope.SESSION);
+        FakeTools local = new FakeTools(LLMToolScope.LOCAL_EXECUTION);
+
+        LLMToolSelection selection = new LLMToolSelection(
+                session, null, local, LLMExecutionMode.APPROVE,
+                LLMToolAccessMode.SESSION_ONLY);
+
+        assertEquals(List.of(session), selection.tools());
+        assertEquals(LLMToolAccessMode.SESSION_ONLY, selection.accessMode());
+        assertEquals("SESSION", selection.systemMessage());
+    }
+
+    @Test
+    public void completeModeCombinesCurrentSessionLocalAndInternalTools() {
+        FakeTools session = new FakeTools(LLMToolScope.SESSION);
+        FakeTools internal = new FakeTools(LLMToolScope.INTERNAL);
+        FakeTools local = new FakeTools(LLMToolScope.LOCAL_EXECUTION);
+
+        LLMToolSelection selection = new LLMToolSelection(
+                session, internal, local, LLMExecutionMode.APPROVE,
+                LLMToolAccessMode.COMPLETE);
+
+        assertEquals(List.of(session, local, internal), selection.tools());
+        assertTrue(selection.systemMessage().contains("SESSION"));
+        assertTrue(selection.systemMessage().contains("LOCAL_EXECUTION"));
+        assertTrue(selection.systemMessage().contains("INTERNAL"));
+    }
+
+    @Test
+    public void completeModeWithoutSessionUsesInternalAndLocalTools() {
+        FakeTools internal = new FakeTools(LLMToolScope.INTERNAL);
+        FakeTools local = new FakeTools(LLMToolScope.LOCAL_EXECUTION);
+
+        LLMToolSelection selection = new LLMToolSelection(
+                null, internal, local, LLMExecutionMode.APPROVE,
+                LLMToolAccessMode.COMPLETE);
+
+        assertEquals(List.of(internal, local), selection.tools());
+        assertFalse(selection.hasSession());
+    }
+
+    @Test
+    public void sessionOnlyModeWithoutSessionUsesInternalToolsOnly() {
+        FakeTools internal = new FakeTools(LLMToolScope.INTERNAL);
+        FakeTools local = new FakeTools(LLMToolScope.LOCAL_EXECUTION);
+
+        LLMToolSelection selection = new LLMToolSelection(
+                null, internal, local, LLMExecutionMode.APPROVE,
+                LLMToolAccessMode.SESSION_ONLY);
+
+        assertEquals(List.of(internal), selection.tools());
+        assertFalse(selection.hasSession());
+    }
+
+    @Test
     public void rejectsInternalAndSessionTogether() {
         try {
             new LLMToolSelection(
@@ -67,6 +124,20 @@ public class LLMToolSelectionTest {
         } catch (IllegalArgumentException ex) {
             assertTrue(ex.getMessage().contains("SESSION"));
         }
+    }
+
+    @Test
+    public void toolAccessModeIsPersistedAndInvalidValuesUseDefault() {
+        ShellSetting setting = new ShellSetting();
+        assertEquals(LLMToolAccessMode.SESSION_WITH_LOCAL.ordinal(),
+                setting.getLlmToolAccessMode());
+
+        setting.setLlmToolAccessMode(LLMToolAccessMode.COMPLETE.ordinal());
+        ShellSetting copy = new ShellSetting();
+        copy.copy(setting);
+        assertEquals(LLMToolAccessMode.COMPLETE.ordinal(), copy.getLlmToolAccessMode());
+        assertEquals(LLMToolAccessMode.SESSION_WITH_LOCAL,
+                LLMToolAccessMode.fromOrdinal(999));
     }
 
     private static final class FakeTools implements LLMTools {

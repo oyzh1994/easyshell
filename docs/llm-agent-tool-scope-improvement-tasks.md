@@ -375,38 +375,45 @@ local_get_server_version
 - 新增源码级全局唯一性测试和运行时重复名称测试。
 - 当前生产代码中的重复 `@Tool` 名称数量为 0。
 
-### [ ] T8. 增加工具策略设置
+### [x] T8. 增加工具策略设置
 
 在 LLM 设置中增加：
 
 ```text
 工具作用域：
-  (o) 当前会话优先
+  (o) 会话 + 本机
   ( ) 仅当前会话
-  ( ) 全部工具
-```
-
-可选增加：
-
-```text
-允许明确要求时跨作用域执行本机命令
-[x] 开启
+  ( ) 完整工具
 ```
 
 要求：
 
-- 默认选择“当前会话优先”。
+- 默认选择“会话 + 本机”。
+- “完整工具”只表示当前 SESSION + LOCAL_EXECUTION + INTERNAL。
+- “完整工具”绝不包含其他 Session Tab，也不支持跨 Session 操作。
+- 不使用“全部工具”这个名称。
+- MCP 不属于普通工具作用域，继续独立按启用状态注入。
 - 设置项持久化。
 - 切换后新请求立即生效。
 - 旧会话恢复时行为一致。
 
 验收标准：
 
-- 默认配置下 SSH 会话不会误用本机命令。
-- “仅当前会话”模式完全不暴露本机执行工具。
-- “全部工具”模式保留现有高级用户能力。
+- “会话 + 本机”只暴露当前 SESSION + LOCAL_EXECUTION。
+- “仅当前会话”不暴露 LOCAL_EXECUTION 或 INTERNAL。
+- “完整工具”只增加当前请求的 INTERNAL，不读取其他 Session。
+- 任意模式下都不会把 Redis 等其他 Tab 的工具注入当前 SSH Session。
 
-### [ ] T9. 补充审计信息
+完成记录：
+
+- 新增 `LLMToolAccessMode`，包含 `SESSION_WITH_LOCAL`、`SESSION_ONLY`、`COMPLETE`。
+- `ShellSetting` 持久化 `llmToolAccessMode`。
+- LLM 设置菜单新增“工具范围”。
+- `LLMToolSelection` 根据模式组合工具和提示词。
+- “完整工具”最多只组合当前 Session、LOCAL_EXECUTION、INTERNAL 三类普通工具。
+- MCP 仍由启用状态独立注入，不参与普通工具模式组合。
+
+### [x] T9. 补充审计信息
 
 工具审计记录建议增加：
 
@@ -422,6 +429,15 @@ local_get_server_version
 - 能判断一次调用属于本机、SSH、数据库还是 EasyShell 内部工具。
 - 能追溯被作用域策略拦截的调用。
 - 不记录敏感凭据。
+
+完成记录：
+
+- 审计记录增加 `toolScope`、`sessionTabType`、`connectionHost`、`connectionUser`。
+- 审计记录增加普通工具 `toolAccessMode`。
+- 审计记录增加 `blockedByScope=false`。
+- 新增 `recordBlocked`，用于记录执行前被作用域策略拒绝的调用，标记 `blockedByScope=true` 和 `blockReason`。
+- MCP 工具来源继续记录为独立 `MCP` 作用域。
+- 会话元数据只包含类型、主机和用户，不包含密码、密钥、令牌或 Cookie。
 
 ### [ ] T10. 增加回归测试
 

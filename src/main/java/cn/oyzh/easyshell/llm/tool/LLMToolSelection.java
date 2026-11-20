@@ -19,6 +19,8 @@ public final class LLMToolSelection {
 
     private final List<LLMTools> tools;
 
+    private final LLMToolAccessMode accessMode;
+
     private final boolean hasSession;
 
     private final String sessionSystemMessage;
@@ -31,14 +33,18 @@ public final class LLMToolSelection {
                             LLMTools internalTools,
                             LLMTools localExecutionTools,
                             LLMExecutionMode executionMode) {
-        if (localExecutionTools == null
-                || localExecutionTools.scope() != LLMToolScope.LOCAL_EXECUTION) {
-            throw new IllegalArgumentException("LOCAL_EXECUTION tools are required.");
-        }
-        if (sessionTools != null && internalTools != null) {
-            throw new IllegalArgumentException(
-                    "INTERNAL tools must not be combined with a SESSION.");
-        }
+        this(sessionTools, internalTools, localExecutionTools, executionMode,
+                LLMToolAccessMode.SESSION_WITH_LOCAL);
+    }
+
+    public LLMToolSelection(LLMTools sessionTools,
+                            LLMTools internalTools,
+                            LLMTools localExecutionTools,
+                            LLMExecutionMode executionMode,
+                            LLMToolAccessMode accessMode) {
+        this.accessMode = accessMode == null
+                ? LLMToolAccessMode.SESSION_WITH_LOCAL
+                : accessMode;
         if (sessionTools == null && internalTools == null) {
             throw new IllegalArgumentException(
                     "Either SESSION or INTERNAL tools are required.");
@@ -49,7 +55,22 @@ public final class LLMToolSelection {
         if (internalTools != null && internalTools.scope() != LLMToolScope.INTERNAL) {
             throw new IllegalArgumentException("Fallback tools must use INTERNAL scope.");
         }
-        List<LLMTools> selected = new ArrayList<>(2);
+        if (sessionTools != null && internalTools != null
+                && this.accessMode != LLMToolAccessMode.COMPLETE) {
+            throw new IllegalArgumentException(
+                    "SESSION and INTERNAL may only be combined in COMPLETE mode.");
+        }
+        if (localExecutionTools != null
+                && localExecutionTools.scope() != LLMToolScope.LOCAL_EXECUTION) {
+            throw new IllegalArgumentException("Local command tools must use LOCAL_EXECUTION scope.");
+        }
+        if (this.accessMode == LLMToolAccessMode.COMPLETE
+                && sessionTools != null && internalTools == null) {
+            throw new IllegalArgumentException(
+                    "COMPLETE mode requires INTERNAL tools when a SESSION is bound.");
+        }
+
+        List<LLMTools> selected = new ArrayList<>(3);
         if (sessionTools != null) {
             selected.add(sessionTools);
             this.sessionSystemMessage = value(sessionTools.systemMessage(executionMode));
@@ -59,17 +80,33 @@ public final class LLMToolSelection {
             this.sessionSystemMessage = "";
             this.hasSession = false;
         }
-        selected.add(localExecutionTools);
+        boolean includeLocal = this.accessMode != LLMToolAccessMode.SESSION_ONLY;
+        if (includeLocal) {
+            if (localExecutionTools == null) {
+                throw new IllegalArgumentException("LOCAL_EXECUTION tools are required.");
+            }
+            selected.add(localExecutionTools);
+        }
+        if (this.accessMode == LLMToolAccessMode.COMPLETE
+                && sessionTools != null) {
+            selected.add(internalTools);
+        }
         this.tools = List.copyOf(selected);
-        this.internalSystemMessage = internalTools == null
+        this.internalSystemMessage = internalTools == null || !selected.contains(internalTools)
                 ? ""
                 : value(internalTools.systemMessage(executionMode));
         this.localExecutionSystemMessage =
-                value(localExecutionTools.systemMessage(executionMode));
+                localExecutionTools == null || !selected.contains(localExecutionTools)
+                        ? ""
+                        : value(localExecutionTools.systemMessage(executionMode));
     }
 
     public List<LLMTools> tools() {
         return this.tools;
+    }
+
+    public LLMToolAccessMode accessMode() {
+        return this.accessMode;
     }
 
     public boolean hasSession() {

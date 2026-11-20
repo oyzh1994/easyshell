@@ -74,6 +74,14 @@ public final class LLMToolAudit {
 
     private final String sessionTabId;
 
+    private String sessionTabType;
+
+    private String connectionHost;
+
+    private String connectionUser;
+
+    private LLMToolAccessMode toolAccessMode;
+
     private final String provider;
 
     private final String model;
@@ -116,6 +124,28 @@ public final class LLMToolAudit {
             this.toolClasses.putAll(sources);
             sources.keySet().forEach(name -> this.toolScopes.put(name, LLMToolScope.MCP));
         }
+    }
+
+    /**
+     * Registers non-sensitive context for the bound session tab.
+     *
+     * @param tabType tab protocol or type
+     * @param host    target host
+     * @param user    target user
+     */
+    public void registerSessionContext(String tabType, String host, String user) {
+        this.sessionTabType = tabType;
+        this.connectionHost = host;
+        this.connectionUser = user;
+    }
+
+    /**
+     * Registers the ordinary tool access mode. MCP remains an independent scope.
+     *
+     * @param accessMode tool access mode
+     */
+    public void registerToolAccessMode(LLMToolAccessMode accessMode) {
+        this.toolAccessMode = accessMode;
     }
 
     /**
@@ -164,13 +194,18 @@ public final class LLMToolAudit {
         record.put("sessionId", firstNonBlank(this.sessionId,
                 invocationContext == null ? null : stringify(invocationContext.chatMemoryId())));
         record.put("sessionTabId", this.sessionTabId);
+        record.put("sessionTabType", this.sessionTabType);
+        record.put("connectionHost", this.connectionHost);
+        record.put("connectionUser", this.connectionUser);
         record.put("chatMemoryId", invocationContext == null ? null : stringify(invocationContext.chatMemoryId()));
         record.put("provider", this.provider);
         record.put("model", this.model);
         record.put("executionMode", this.executionMode == null ? null : this.executionMode.name());
+        record.put("toolAccessMode", this.toolAccessMode == null ? null : this.toolAccessMode.name());
         record.put("toolName", request.name());
         record.put("toolClass", this.toolClasses.get(request.name()));
         record.put("toolScope", this.toolScopes.get(request.name()));
+        record.put("blockedByScope", false);
         record.put("arguments", truncate(arguments.text));
         record.put("argumentsLength", arguments.text == null ? 0 : arguments.text.length());
         record.put("argumentsTruncated", arguments.text != null && arguments.text.length() > MAX_TEXT_LENGTH);
@@ -183,6 +218,38 @@ public final class LLMToolAudit {
         record.put("finishTime", execution.finishTime() == null ? null : execution.finishTime().toString());
         record.put("durationMs", execution.duration() == null ? null : execution.duration().toMillis());
         return record;
+    }
+
+    /**
+     * Records a tool invocation rejected by scope policy before execution.
+     *
+     * @param toolName tool name
+     * @param reason   rejection reason
+     */
+    public void recordBlocked(String toolName, String reason) {
+        Map<String, Object> record = new LinkedHashMap<>();
+        record.put("timestamp", OffsetDateTime.now().format(TIME_FORMATTER));
+        record.put("callId", UUID.randomUUID().toString());
+        record.put("sessionId", this.sessionId);
+        record.put("sessionTabId", this.sessionTabId);
+        record.put("sessionTabType", this.sessionTabType);
+        record.put("connectionHost", this.connectionHost);
+        record.put("connectionUser", this.connectionUser);
+        record.put("provider", this.provider);
+        record.put("model", this.model);
+        record.put("executionMode", this.executionMode == null ? null : this.executionMode.name());
+        record.put("toolAccessMode", this.toolAccessMode == null ? null : this.toolAccessMode.name());
+        record.put("toolName", toolName);
+        record.put("toolClass", this.toolClasses.get(toolName));
+        record.put("toolScope", this.toolScopes.get(toolName));
+        record.put("blockedByScope", true);
+        record.put("blockReason", reason);
+        record.put("failed", true);
+        try {
+            this.write(record);
+        } catch (Exception ex) {
+            JulLog.warn("llm blocked tool audit failed", ex);
+        }
     }
 
     private void write(Map<String, Object> record) throws Exception {

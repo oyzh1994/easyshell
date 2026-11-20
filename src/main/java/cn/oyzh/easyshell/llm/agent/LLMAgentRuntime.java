@@ -161,16 +161,22 @@ public final class LLMAgentRuntime {
     private PlanDecision createPlan(String task, String context) {
         String toolCatalog = this.toolCatalog();
         boolean hasSession = this.hasSession();
-        String availableGroups = hasSession
-                ? """
-                  - connection: tools from the currently bound tab plus local execution tools.
-                  - mcp: configured external MCP tools only.
-                  """
-                : """
-                  - internal: EasyShell internal tools plus local execution tools.
-                  - mcp: configured external MCP tools only.
-                  """;
-        String schema = hasSession ? "connection|mcp" : "internal|mcp";
+        StringBuilder groups = new StringBuilder();
+        StringBuilder schema = new StringBuilder();
+        if (hasSession) {
+            groups.append("- connection: tools from the currently bound tab plus local execution tools.\n");
+            schema.append("connection");
+        } else {
+            groups.append("- internal: EasyShell internal tools plus local execution tools.\n");
+            schema.append("internal");
+        }
+        if (hasSession && this.hasInternal()) {
+            groups.append("- internal: EasyShell internal tools only. Other sessions are excluded.\n");
+            schema.append("|internal");
+        }
+        groups.append("- mcp: configured external MCP tools only.\n");
+        schema.append("|mcp");
+        String availableGroups = groups.toString();
         String prompt = "Conversation context:\n" + context
                 + "\nAvailable agent groups and exact tool names:\n" + toolCatalog
                 + "\nUser task:\n" + task
@@ -227,7 +233,8 @@ public final class LLMAgentRuntime {
             }
             if (type == LLMAgentType.CONNECTION && !this.hasSession()) {
                 type = LLMAgentType.INTERNAL;
-            } else if (type == LLMAgentType.INTERNAL && this.hasSession()) {
+            } else if (type == LLMAgentType.INTERNAL
+                    && this.hasSession() && !this.hasInternal()) {
                 type = LLMAgentType.CONNECTION;
             }
             steps.add(new LLMAgentStep(index, type, step.objective(), step.reason()));
@@ -511,6 +518,11 @@ public final class LLMAgentRuntime {
             result.append("connection: ");
             result.append(String.join(", ", toolNames(
                     this.toolsFor(LLMAgentType.CONNECTION))));
+            if (this.hasInternal()) {
+                result.append("\ninternal: ");
+                result.append(String.join(", ", toolNames(
+                        this.toolsFor(LLMAgentType.INTERNAL))));
+            }
         } else {
             result.append("internal: ");
             result.append(String.join(", ", toolNames(
@@ -530,13 +542,16 @@ public final class LLMAgentRuntime {
         String domain = switch (type) {
             case CONNECTION -> joinSystemMessages(
                     this.sessionSystemMessage, this.localExecutionSystemMessage);
-            case INTERNAL -> joinSystemMessages(
-                    this.internalSystemMessage, this.localExecutionSystemMessage);
+            case INTERNAL -> this.hasSession()
+                    ? this.internalSystemMessage
+                    : joinSystemMessages(this.internalSystemMessage, this.localExecutionSystemMessage);
             case MCP -> this.mcpSystemMessage;
         };
         String tools = switch (type) {
             case CONNECTION -> "current session tools and local execution tools";
-            case INTERNAL -> "EasyShell internal tools and local execution tools";
+            case INTERNAL -> this.hasSession()
+                    ? "EasyShell internal tools"
+                    : "EasyShell internal tools and local execution tools";
             case MCP -> "external MCP server tools";
         };
         String result = "You are a focused EasyShell agent worker using " + tools + ". "
@@ -559,8 +574,11 @@ public final class LLMAgentRuntime {
                     ? this.toolsByScopes(LLMToolScope.SESSION, LLMToolScope.LOCAL_EXECUTION)
                     : List.of();
         }
+        if (!this.hasInternal()) {
+            return List.of();
+        }
         return this.hasSession()
-                ? List.of()
+                ? this.toolsByScopes(LLMToolScope.INTERNAL)
                 : this.toolsByScopes(LLMToolScope.INTERNAL, LLMToolScope.LOCAL_EXECUTION);
     }
 
@@ -573,6 +591,10 @@ public final class LLMAgentRuntime {
 
     private boolean hasSession() {
         return this.tools.stream().anyMatch(tool -> tool.scope() == LLMToolScope.SESSION);
+    }
+
+    private boolean hasInternal() {
+        return this.tools.stream().anyMatch(tool -> tool.scope() == LLMToolScope.INTERNAL);
     }
 
     private static String joinSystemMessages(String... messages) {

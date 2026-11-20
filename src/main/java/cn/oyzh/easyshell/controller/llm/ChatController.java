@@ -5,6 +5,7 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.controller.ShellMainController;
+import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
@@ -28,6 +29,7 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
+import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.tool.LLMToolSelection;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
@@ -35,6 +37,7 @@ import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
+import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.controller.SubStageController;
@@ -184,6 +187,8 @@ public class ChatController extends SubStageController {
 
         private LLMTools sessionTools;
 
+        private LLMToolAccessMode toolAccessMode;
+
         private LLMExecutionMode executionMode;
 
         private String model;
@@ -203,6 +208,7 @@ public class ChatController extends SubStageController {
         AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
         // 当前 Tab 是默认操作目标，Local Tab 同样属于 SESSION。
         ShellLLMTools internalTools = request.sessionTools == null
+                || request.toolAccessMode == LLMToolAccessMode.COMPLETE
                 ? new ShellLLMTools(this.tabPane)
                 : null;
         // 本机执行能力独立保留，不随 SESSION 消失。
@@ -217,7 +223,8 @@ public class ChatController extends SubStageController {
         createdTools.add(localExecutionTools);
         request.tools = createdTools;
         LLMToolSelection toolSelection = new LLMToolSelection(
-                request.sessionTools, internalTools, localExecutionTools, request.executionMode);
+                request.sessionTools, internalTools, localExecutionTools,
+                request.executionMode, request.toolAccessMode);
         List<LLMTools> tools = new ArrayList<>(toolSelection.tools());
         request.tools = tools;
         // MCP 工具，单个 Server 失败不会影响其他工具
@@ -241,6 +248,11 @@ public class ChatController extends SubStageController {
         LLMToolAudit audit = new LLMToolAudit(tools,
                 request.sessionId, request.sessionTabId,
                 provider.getName(), request.model, executionMode);
+        audit.registerToolAccessMode(request.toolAccessMode);
+        if (request.sessionTab != null) {
+            audit.registerSessionContext(request.sessionTab.getType(),
+                    request.sessionTab.getHost(), request.sessionTab.getUser());
+        }
         audit.registerToolSources(request.mcpSession.getToolSources());
         services.afterToolExecution(audit::record);
         String systemMessage = toolSelection.systemMessage();
@@ -350,6 +362,7 @@ public class ChatController extends SubStageController {
             request.sessionTab = this.view.getSelectedSession();
             request.thinkingLevel = this.view.getSelectedThinkingLevel();
             request.executionMode = this.view.getSelectedExecutionMode();
+            request.toolAccessMode = this.view.getSelectedToolAccessMode();
             request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
             request.sessionTabId = request.sessionTab == null ? null : request.sessionTab.getId();
             if (request.sessionTab != null && request.sessionTab.getToolsFunc() != null) {
@@ -797,6 +810,7 @@ public class ChatController extends SubStageController {
         sessionTab.setId(capability.getTabId());
         sessionTab.setName(capability.getTabName());
         sessionTab.setToolsFunc(capability.getToolsFunc());
+        this.copySessionContext(capability, sessionTab);
         this.view.getSessionTabComboBox().addItem(sessionTab);
     }
 
@@ -853,6 +867,7 @@ public class ChatController extends SubStageController {
                     sessionTab = new LLMSessionTab(capability.getTabId(), capability.getTabName());
                     sessionTab.setToolsFunc(capability.getToolsFunc());
                 }
+                this.copySessionContext(capability, sessionTab);
                 this.view.setBoundTab(sessionTab);
                 return sessionTab;
             }
@@ -891,6 +906,17 @@ public class ChatController extends SubStageController {
         }
         this.currentSession.setSessionTabId(tabId);
         this.saveCurrentSession();
+    }
+
+    private void copySessionContext(LLMTabCapability capability, LLMSessionTab sessionTab) {
+        ShellConnect connect = capability instanceof ShellConnectTab connectTab
+                ? connectTab.shellConnect()
+                : null;
+        sessionTab.setType(connect != null
+                ? connect.getType()
+                : capability.getClass().getSimpleName());
+        sessionTab.setHost(connect == null ? null : connect.getHost());
+        sessionTab.setUser(connect == null ? null : connect.getUser());
     }
 
     private boolean validateSessionForSend() {

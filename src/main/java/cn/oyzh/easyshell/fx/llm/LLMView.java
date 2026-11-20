@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.editor.incubator.Editor;
@@ -75,6 +76,8 @@ public class LLMView extends FXSplitPane {
     private static final double SELECTOR_WIDTH = 180;
 
     private static final String EXECUTION_MODE_TOOLTIP = "llm.executionMode.tooltip";
+
+    private static final String TOOL_ACCESS_MODE_TOOLTIP = "llm.toolAccessMode.tooltip";
 
     private final LLMListView messageListView = new LLMListView();
 
@@ -351,6 +354,7 @@ public class LLMView extends FXSplitPane {
                 this.buildProviderMenu(),
                 this.buildThinkingMenu(),
                 this.buildExecutionModeMenu(),
+                this.buildToolAccessModeMenu(),
                 this.buildStreamingMenu(),
                 this.buildTimeoutMenu(),
                 this.buildMessageLimitMenu()
@@ -415,6 +419,44 @@ public class LLMView extends FXSplitPane {
         return menu;
     }
 
+    private Menu buildToolAccessModeMenu() {
+        LLMToolAccessMode selected = this.getSelectedToolAccessMode();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.toolAccessMode"));
+        ToggleGroup group = new ToggleGroup();
+        for (LLMToolAccessMode mode : LLMToolAccessMode.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getToolAccessModeName(mode));
+            item.setToggleGroup(group);
+            item.setSelected(mode == selected);
+            item.setOnAction(event -> this.setToolAccessMode(mode));
+            item.getProperties().put(TOOL_ACCESS_MODE_TOOLTIP,
+                    this.getToolAccessModeDescription(mode));
+            menu.getItems().add(item);
+        }
+        menu.setOnShown(event -> FXUtil.runLater(() -> {
+            for (MenuItem item : menu.getItems()) {
+                this.installToolAccessModeTooltip(item);
+            }
+        }));
+        return menu;
+    }
+
+    private void installToolAccessModeTooltip(MenuItem item) {
+        Node node = item.getStyleableNode();
+        Object text = item.getProperties().get(TOOL_ACCESS_MODE_TOOLTIP);
+        if (node == null || !(text instanceof String tooltipText) || tooltipText.isBlank()) {
+            return;
+        }
+        if (node.getProperties().containsKey(TOOL_ACCESS_MODE_TOOLTIP)) {
+            return;
+        }
+        Tooltip tooltip = new Tooltip(tooltipText);
+        tooltip.setWrapText(true);
+        tooltip.setMaxWidth(380);
+        tooltip.setShowDelay(Duration.millis(250));
+        Tooltip.install(node, tooltip);
+        node.getProperties().put(TOOL_ACCESS_MODE_TOOLTIP, tooltip);
+    }
+
     private void installMenuItemTooltip(MenuItem item) {
         Node node = item.getStyleableNode();
         Object text = item.getProperties().get(EXECUTION_MODE_TOOLTIP);
@@ -445,6 +487,28 @@ public class LLMView extends FXSplitPane {
             case SUGGEST -> I18nResourceBundle.i18nString("shell.llm.executionMode.suggest.desc");
             case APPROVE -> I18nResourceBundle.i18nString("shell.llm.executionMode.approve.desc");
             case UNRESTRICTED -> I18nResourceBundle.i18nString("shell.llm.executionMode.unrestricted.desc");
+        };
+    }
+
+    private String getToolAccessModeName(LLMToolAccessMode mode) {
+        return switch (mode) {
+            case SESSION_WITH_LOCAL ->
+                    I18nResourceBundle.i18nString("shell.llm.toolAccessMode.sessionLocal");
+            case SESSION_ONLY ->
+                    I18nResourceBundle.i18nString("shell.llm.toolAccessMode.sessionOnly");
+            case COMPLETE ->
+                    I18nResourceBundle.i18nString("shell.llm.toolAccessMode.complete");
+        };
+    }
+
+    private String getToolAccessModeDescription(LLMToolAccessMode mode) {
+        return switch (mode) {
+            case SESSION_WITH_LOCAL ->
+                    I18nResourceBundle.i18nString("shell.llm.toolAccessMode.sessionLocal.desc");
+            case SESSION_ONLY ->
+                    I18nResourceBundle.i18nString("shell.llm.toolAccessMode.sessionOnly.desc");
+            case COMPLETE ->
+                    I18nResourceBundle.i18nString("shell.llm.toolAccessMode.complete.desc");
         };
     }
 
@@ -918,6 +982,27 @@ public class LLMView extends FXSplitPane {
     public void setExecutionMode(LLMExecutionMode executionMode) {
         if (executionMode != null) {
             this.setting.setLlmExecutionMode(executionMode.ordinal());
+            this.settingStore.replace(this.setting);
+        }
+    }
+
+    /**
+     * 获取工具访问模式
+     *
+     * @return 工具访问模式
+     */
+    public LLMToolAccessMode getSelectedToolAccessMode() {
+        return LLMToolAccessMode.fromOrdinal(this.setting.getLlmToolAccessMode());
+    }
+
+    /**
+     * 设置工具访问模式，并持久化到设置
+     *
+     * @param accessMode 工具访问模式
+     */
+    public void setToolAccessMode(LLMToolAccessMode accessMode) {
+        if (accessMode != null) {
+            this.setting.setLlmToolAccessMode(accessMode.ordinal());
             this.settingStore.replace(this.setting);
         }
     }

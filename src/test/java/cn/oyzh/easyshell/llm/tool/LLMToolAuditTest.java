@@ -34,6 +34,8 @@ public class LLMToolAuditTest {
         RecordingTool tool = new RecordingTool();
         LLMToolAudit audit = new LLMToolAudit(file, List.of(tool), "session-1", "tab-1",
                 "provider-1", "model-1", LLMExecutionMode.APPROVE);
+        audit.registerSessionContext("ssh", "10.0.0.12", "root");
+        audit.registerToolAccessMode(LLMToolAccessMode.COMPLETE);
         Assistant assistant = AiServices.builder(Assistant.class)
                 .chatModel(new ForcedToolChatModel())
                 .tools(tool)
@@ -48,9 +50,14 @@ public class LLMToolAuditTest {
         assertEquals("SESSION", record.getString("toolScope"));
         assertEquals("session-1", record.getString("sessionId"));
         assertEquals("tab-1", record.getString("sessionTabId"));
+        assertEquals("ssh", record.getString("sessionTabType"));
+        assertEquals("10.0.0.12", record.getString("connectionHost"));
+        assertEquals("root", record.getString("connectionUser"));
         assertEquals("provider-1", record.getString("provider"));
         assertEquals("model-1", record.getString("model"));
         assertEquals("APPROVE", record.getString("executionMode"));
+        assertEquals("COMPLETE", record.getString("toolAccessMode"));
+        assertFalse(record.getBooleanValue("blockedByScope"));
         assertEquals("recorded: hello", record.getString("result"));
         assertFalse(record.getBooleanValue("failed"));
         assertTrue(record.getBooleanValue("argumentsRedacted"));
@@ -110,6 +117,26 @@ public class LLMToolAuditTest {
 
         JSONObject record = readSingleRecord(file);
         assertEquals("LOCAL_EXECUTION", record.getString("toolScope"));
+    }
+
+    @Test
+    public void recordsScopeBlockedInvocationWithoutExecutingTool() throws Exception {
+        Path file = Files.createTempFile("llm-tool-audit-", ".jsonl");
+        try (ShellLocalExecutionLLMTools tools = new ShellLocalExecutionLLMTools()) {
+            LLMToolAudit audit = new LLMToolAudit(file, List.of(tools),
+                    "session-1", "tab-1", "provider-1", "model-1", LLMExecutionMode.APPROVE);
+            audit.registerSessionContext("ssh", "10.0.0.12", "root");
+            audit.registerToolAccessMode(LLMToolAccessMode.SESSION_ONLY);
+
+            audit.recordBlocked("local_execute_command_direct",
+                    "SESSION_ONLY excludes local execution.");
+        }
+
+        JSONObject record = readSingleRecord(file);
+        assertTrue(record.getBooleanValue("blockedByScope"));
+        assertEquals("LOCAL_EXECUTION", record.getString("toolScope"));
+        assertEquals("SESSION_ONLY", record.getString("toolAccessMode"));
+        assertTrue(record.getString("blockReason").contains("excludes local execution"));
     }
 
     @Test

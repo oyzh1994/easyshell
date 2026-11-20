@@ -7,6 +7,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.fx.plus.domain.AppSetting;
@@ -90,6 +91,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Integer llmExecutionMode = LLMExecutionMode.APPROVE.ordinal();
+
+    /**
+     * LLM工具访问模式
+     */
+    @Column
+    private Integer llmToolAccessMode = LLMToolAccessMode.SESSION_WITH_LOCAL.ordinal();
 
     /**
      * LLM请求超时时间（分钟），0表示无限制
@@ -545,6 +552,27 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 获取LLM工具访问模式
+     *
+     * @return 工具访问模式序号
+     */
+    public int getLlmToolAccessMode() {
+        return LLMToolAccessMode.fromOrdinal(
+                this.llmToolAccessMode == null
+                        ? LLMToolAccessMode.SESSION_WITH_LOCAL.ordinal()
+                        : this.llmToolAccessMode).ordinal();
+    }
+
+    /**
+     * 设置LLM工具访问模式
+     *
+     * @param llmToolAccessMode 工具访问模式序号
+     */
+    public void setLlmToolAccessMode(int llmToolAccessMode) {
+        this.llmToolAccessMode = LLMToolAccessMode.fromOrdinal(llmToolAccessMode).ordinal();
+    }
+
+    /**
      * 获取LLM请求超时时间（分钟）
      *
      * @return 超时时间，0表示无限制
@@ -583,6 +611,7 @@ public class ShellSetting extends AppSetting {
             this.llmMaxMessages = setting.llmMaxMessages;
             this.llmThinkingLevel = setting.llmThinkingLevel;
             this.llmExecutionMode = setting.llmExecutionMode;
+            this.llmToolAccessMode = setting.llmToolAccessMode;
             this.llmTimeoutMinutes = setting.llmTimeoutMinutes;
             // 终端
             this.termBeep = setting.termBeep;
