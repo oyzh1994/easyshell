@@ -40,6 +40,9 @@ public class ShellLLMMcpImportController extends StageController {
         }
         try {
             List<LLMMcpServer> servers = LLMMcpJsonConfigParser.parse(this.json.getText());
+            for (LLMMcpServer server : servers) {
+                server.setEnabled(false);
+            }
             LLMMcpServerUtil.ImportResult result = LLMMcpServerUtil.importServers(servers);
             if (result.failed() > 0) {
                 MessageBox.warn(String.format(

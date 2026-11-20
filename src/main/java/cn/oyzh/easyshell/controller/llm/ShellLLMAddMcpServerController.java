@@ -84,7 +84,7 @@ public class ShellLLMAddMcpServerController extends StageController {
 
     @FXML
     private void add() {
-        LLMMcpServer server = this.readServer(new LLMMcpServer());
+        LLMMcpServer server = this.readServer(new LLMMcpServer(), true);
         if (server == null) {
             return;
         }
@@ -106,7 +106,7 @@ public class ShellLLMAddMcpServerController extends StageController {
         if (this.testing) {
             return;
         }
-        LLMMcpServer server = this.readServer(new LLMMcpServer());
+        LLMMcpServer server = this.readServer(new LLMMcpServer(), false);
         if (server == null) {
             return;
         }
@@ -137,8 +137,8 @@ public class ShellLLMAddMcpServerController extends StageController {
         });
     }
 
-    private LLMMcpServer readServer(LLMMcpServer server) {
-        if (!this.name.validate()) {
+    private LLMMcpServer readServer(LLMMcpServer server, boolean validateName) {
+        if (validateName && !this.name.validate()) {
             return null;
         }
         LLMMcpTransport selectedTransport = this.transport.getSelectedItem();

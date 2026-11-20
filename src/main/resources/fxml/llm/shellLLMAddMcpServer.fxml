@@ -130,7 +130,7 @@
                 <Insets left="15" top="15"/>
             </HBox.margin>
         </CancelButton>
-        <IconButton text="%base.test" styleClass="primary" onAction="#test">
+        <IconButton text="%base.test" prefHeight="30" onAction="#test">
             <graphic>
                 <TestSVGGlyph fx:id="testGlyph"/>
             </graphic>
@@ -140,7 +140,7 @@
         </IconButton>
         <FXLabel fx:id="testResult" maxWidth="520" visible="false" managed="false">
             <HBox.margin>
-                <Insets left="10" top="15"/>
+                <Insets left="10" top="24"/>
             </HBox.margin>
         </FXLabel>
     </FXHBox>

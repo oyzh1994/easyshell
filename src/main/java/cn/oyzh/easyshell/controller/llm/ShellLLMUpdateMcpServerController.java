@@ -86,7 +86,7 @@ public class ShellLLMUpdateMcpServerController extends StageController {
 
     @FXML
     private void update() {
-        LLMMcpServer server = this.readServer(this.server);
+        LLMMcpServer server = this.readServer(this.server, true);
         if (server == null) {
             return;
         }
@@ -108,7 +108,7 @@ public class ShellLLMUpdateMcpServerController extends StageController {
         if (this.testing) {
             return;
         }
-        LLMMcpServer server = this.readServer(new LLMMcpServer());
+        LLMMcpServer server = this.readServer(new LLMMcpServer(), false);
         if (server == null) {
             return;
         }
@@ -139,8 +139,8 @@ public class ShellLLMUpdateMcpServerController extends StageController {
         });
     }
 
-    private LLMMcpServer readServer(LLMMcpServer server) {
-        if (server == null || !this.name.validate()) {
+    private LLMMcpServer readServer(LLMMcpServer server, boolean validateName) {
+        if (server == null || validateName && !this.name.validate()) {
             return null;
         }
         LLMMcpTransport selectedTransport = this.transport.getSelectedItem();

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.llm.mcp;
 
+import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -188,7 +189,7 @@ public class LLMMcpServer implements Serializable {
     }
 
     public boolean isEnabled() {
-        return this.enabled == null || this.enabled;
+        return BooleanUtil.isTrue(this.enabled);
     }
 
     public void setEnabled(boolean enabled) {
