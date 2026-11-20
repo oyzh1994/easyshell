@@ -96,6 +96,10 @@ public class ShellLLMToolsTest {
             assertFalse(internalNames.contains("local_execute_command_in_directory_direct"));
             assertTrue(localNames.contains("local_execute_command_direct"));
             assertTrue(localNames.contains("local_execute_command_in_directory_direct"));
+            assertTrue(localNames.contains("local_get_public_ip"));
+            String localMessage = local.systemMessage(LLMExecutionMode.APPROVE);
+            assertTrue(localMessage.contains("local_get_public_ip"));
+            assertTrue(localMessage.contains("不得猜测"));
         }
     }
 

@@ -9,6 +9,8 @@ import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.resourcesastools.DefaultMcpResourcesAsToolsPresenter;
+import dev.langchain4j.mcp.resourcesastools.McpResourcesAsToolsPresenter;
+import dev.langchain4j.service.tool.ToolExecutor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * 一次 LLM 请求使用的 MCP 客户端集合。
@@ -165,32 +168,44 @@ public final class LLMMcpToolSession implements AutoCloseable {
                         + "/" + specification.name());
             }
         }
-        toolNames.add(RESOURCE_LIST_TOOL);
-        toolNames.add(RESOURCE_GET_TOOL);
-        toolSources.put(RESOURCE_LIST_TOOL, "MCP:resources");
-        toolSources.put(RESOURCE_GET_TOOL, "MCP:resources");
+        List<McpClient> resourceClients = servers.stream()
+                .filter(ServerState::supportsResources)
+                .map(ServerState::client)
+                .toList();
+        if (!resourceClients.isEmpty()) {
+            toolNames.add(RESOURCE_LIST_TOOL);
+            toolNames.add(RESOURCE_GET_TOOL);
+            toolSources.put(RESOURCE_LIST_TOOL, "MCP:resources");
+            toolSources.put(RESOURCE_GET_TOOL, "MCP:resources");
+        }
 
         BiPredicate<McpClient, ToolSpecification> filter = (client, specification) -> {
             ServerState server = serverByKey.get(client.key());
             return server != null && server.accepts(specification.name());
         };
-        DefaultMcpResourcesAsToolsPresenter resourcesPresenter =
-                DefaultMcpResourcesAsToolsPresenter.builder()
-                        .nameOfListResourcesTool(RESOURCE_LIST_TOOL)
-                        .nameOfGetResourceTool(RESOURCE_GET_TOOL)
-                        .descriptionOfListResourcesTool(
-                                "List resources exposed by the configured MCP servers.")
-                        .descriptionOfGetResourceTool(
-                                "Read an MCP resource by server key and resource URI.")
-                        .build();
-        McpToolProvider provider = McpToolProvider.builder()
+        McpToolProvider.Builder providerBuilder = McpToolProvider.builder()
                 .mcpClients(servers.stream().map(ServerState::client).toList())
                 .filter(filter)
                 .toolNameMapper((client, specification) ->
                         mapToolName(aliases.get(client.key()), specification.name()))
-                .resourcesAsToolsPresenter(resourcesPresenter)
-                .failIfOneServerFails(false)
-                .build();
+                .failIfOneServerFails(false);
+        if (!resourceClients.isEmpty()) {
+            DefaultMcpResourcesAsToolsPresenter resourcesDelegate =
+                    DefaultMcpResourcesAsToolsPresenter.builder()
+                            .nameOfListResourcesTool(RESOURCE_LIST_TOOL)
+                            .nameOfGetResourceTool(RESOURCE_GET_TOOL)
+                            .descriptionOfListResourcesTool(
+                                    "List resources exposed by resource-capable MCP servers.")
+                            .descriptionOfGetResourceTool(
+                                    "Read an MCP resource by server key and resource URI. "
+                                            + "This does not replace ordinary MCP tools.")
+                            .build();
+            McpResourcesAsToolsPresenter resourcesPresenter =
+                    new ScopedResourcesAsToolsPresenter(resourcesDelegate,
+                            resourceClients.stream().map(McpClient::key).collect(Collectors.toSet()));
+            providerBuilder.resourcesAsToolsPresenter(resourcesPresenter);
+        }
+        McpToolProvider provider = providerBuilder.build();
         String systemMessage = buildSystemMessage(servers, aliases, errors);
         return new LLMMcpToolSession(servers, errors, provider, toolNames, toolSources, systemMessage);
     }
@@ -201,7 +216,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
             client = LLMMcpClientFactory.createClient(configuration);
             List<ToolSpecification> tools = client.listTools();
             ServerState server = new ServerState(configuration, client, tools,
-                    LLMMcpConfigParser.parseToolNames(configuration.getToolNamesText()));
+                    LLMMcpConfigParser.parseToolNames(configuration.getToolNamesText()),
+                    supportsResources(client));
             return new ConnectionResult(configuration, server, tools.size(), null);
         } catch (Exception ex) {
             IOUtil.closeQuietly(client);
@@ -220,6 +236,17 @@ public final class LLMMcpToolSession implements AutoCloseable {
         }
     }
 
+    private static boolean supportsResources(McpClient client) {
+        try {
+            client.listResources();
+            client.listResourceTemplates();
+            return true;
+        } catch (Exception ex) {
+            JulLog.debug("mcp resources are not supported by client " + client.key(), ex);
+            return false;
+        }
+    }
+
     private static String buildSystemMessage(List<ServerState> servers,
                                              Map<String, String> aliases,
                                              List<String> errors) {
@@ -227,7 +254,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
                 .append("## Model Context Protocol (MCP)\n")
                 .append("MCP tools are available through the current request. ")
                 .append("Use only the exact tool names listed below. ")
-                .append("The server key is required when reading MCP resources.\n");
+                .append("MCP Resources are optional and do not replace ordinary MCP tools. ")
+                .append("Ordinary MCP tools likewise cannot replace Resources.\n");
         for (ServerState server : servers) {
             String key = server.client().key();
             String prefix = aliases.get(key);
@@ -255,8 +283,23 @@ public final class LLMMcpToolSession implements AutoCloseable {
                 JulLog.warn("read mcp server instructions failed: " + key, ex);
             }
         }
-        message.append("\nResource helpers: ").append(RESOURCE_LIST_TOOL)
-                .append(", ").append(RESOURCE_GET_TOOL).append('\n');
+        List<ServerState> resourceServers = servers.stream()
+                .filter(ServerState::supportsResources)
+                .toList();
+        if (resourceServers.isEmpty()) {
+            message.append("\nResources: unavailable. Do not call ")
+                    .append(RESOURCE_LIST_TOOL).append(" or ")
+                    .append(RESOURCE_GET_TOOL)
+                    .append(" because no connected MCP server supports Resources.\n");
+        } else {
+            message.append("\nResource-capable servers: ");
+            message.append(String.join(", ", resourceServers.stream()
+                    .map(server -> serverName(server.configuration()))
+                    .toList()));
+            message.append("\nResource helpers: ").append(RESOURCE_LIST_TOOL)
+                    .append(", ").append(RESOURCE_GET_TOOL)
+                    .append(". Use them only for Resources; use ordinary tools for regular operations.\n");
+        }
         if (!errors.isEmpty()) {
             message.append("\nUnavailable MCP servers (do not call tools from these):\n");
             for (String error : errors) {
@@ -396,7 +439,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
     private record ServerState(LLMMcpServer configuration,
                                McpClient client,
                                List<ToolSpecification> tools,
-                               Set<String> allowedTools) {
+                               Set<String> allowedTools,
+                               boolean supportsResources) {
 
         private boolean accepts(String toolName) {
             return CollectionUtil.isEmpty(this.allowedTools) || this.allowedTools.contains(toolName);
@@ -407,6 +451,41 @@ public final class LLMMcpToolSession implements AutoCloseable {
                                     ServerState server,
                                     int toolCount,
                                     String error) {
+    }
+
+    private record ScopedResourcesAsToolsPresenter(
+            McpResourcesAsToolsPresenter delegate,
+            Set<String> resourceClientKeys) implements McpResourcesAsToolsPresenter {
+
+        private ScopedResourcesAsToolsPresenter {
+            resourceClientKeys = Set.copyOf(resourceClientKeys);
+        }
+
+        @Override
+        public ToolSpecification createListResourcesSpecification() {
+            return this.delegate.createListResourcesSpecification();
+        }
+
+        @Override
+        public ToolExecutor createListResourcesExecutor(List<McpClient> mcpClients) {
+            return this.delegate.createListResourcesExecutor(this.resourceClients(mcpClients));
+        }
+
+        @Override
+        public ToolSpecification createGetResourceSpecification() {
+            return this.delegate.createGetResourceSpecification();
+        }
+
+        @Override
+        public ToolExecutor createGetResourceExecutor(List<McpClient> mcpClients) {
+            return this.delegate.createGetResourceExecutor(this.resourceClients(mcpClients));
+        }
+
+        private List<McpClient> resourceClients(List<McpClient> clients) {
+            return clients.stream()
+                    .filter(client -> this.resourceClientKeys.contains(client.key()))
+                    .toList();
+        }
     }
 
     public record Progress(int completed,

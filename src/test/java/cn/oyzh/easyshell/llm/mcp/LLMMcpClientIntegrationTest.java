@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,6 +49,9 @@ public class LLMMcpClientIntegrationTest {
 
         try (LLMMcpToolSession session = LLMMcpToolSession.connect(List.of(server))) {
             assertTrue(session.hasClients());
+            assertTrue(session.getToolNames().contains(LLMMcpToolSession.RESOURCE_LIST_TOOL));
+            assertTrue(session.getToolNames().contains(LLMMcpToolSession.RESOURCE_GET_TOOL));
+            assertTrue(session.getSystemMessage().contains("Resource helpers"));
             String echoTool = session.getToolNames().stream()
                     .filter(name -> !name.startsWith("mcp_resources_"))
                     .findFirst()
@@ -58,6 +62,42 @@ public class LLMMcpClientIntegrationTest {
                     .build();
 
             assertEquals("done", assistant.chat("run"));
+        }
+    }
+
+    @Test
+    public void omitsResourceHelpersWhenNoServerSupportsResources() throws Exception {
+        LLMMcpServer server = fixtureServer(false);
+
+        try (LLMMcpToolSession session = LLMMcpToolSession.connect(List.of(server))) {
+            assertTrue(session.hasClients());
+            assertTrue(session.getToolNames().stream().anyMatch(name -> name.contains("echo")));
+            assertTrue(!session.getToolNames().contains(LLMMcpToolSession.RESOURCE_LIST_TOOL));
+            assertTrue(!session.getToolNames().contains(LLMMcpToolSession.RESOURCE_GET_TOOL));
+            assertTrue(session.getSystemMessage().contains("Resources: unavailable"));
+            assertTrue(session.getSystemMessage().contains("do not replace ordinary MCP tools"));
+        }
+    }
+
+    @Test
+    public void resourceHelpersUseOnlyResourceCapableServers() throws Exception {
+        LLMMcpServer resources = fixtureServer();
+        resources.setName("resources");
+        LLMMcpServer toolsOnly = fixtureServer(false);
+        toolsOnly.setName("tools-only");
+        AtomicReference<String> resourceResult = new AtomicReference<>();
+
+        try (LLMMcpToolSession session = LLMMcpToolSession.connect(
+                List.of(toolsOnly, resources))) {
+            assertTrue(session.getToolNames().contains(LLMMcpToolSession.RESOURCE_LIST_TOOL));
+            assertTrue(session.getSystemMessage().contains("Resource-capable servers: resources"));
+            Assistant assistant = AiServices.builder(Assistant.class)
+                    .chatModel(new ResourceListModel(resourceResult))
+                    .toolProvider(session.getToolProvider())
+                    .build();
+
+            assertEquals("done", assistant.chat("list resources"));
+            assertEquals("[]", resourceResult.get());
         }
     }
 
@@ -118,6 +158,10 @@ public class LLMMcpClientIntegrationTest {
     }
 
     private static LLMMcpServer fixtureServer() {
+        return fixtureServer(true);
+    }
+
+    private static LLMMcpServer fixtureServer(boolean resources) {
         Path script = Path.of("src/test/resources/llm/mcp-test-server.py").toAbsolutePath();
         Assume.assumeTrue(Files.isRegularFile(script));
         Assume.assumeTrue(commandAvailable("python3"));
@@ -126,6 +170,9 @@ public class LLMMcpClientIntegrationTest {
         server.setTransport(LLMMcpTransport.STDIO);
         server.setCommandText("python3 \"" + script + "\"");
         server.setTimeoutSeconds(10);
+        if (!resources) {
+            server.setEnvironmentText("EASY_SHELL_MCP_FIXTURE_RESOURCES=0");
+        }
         return server;
     }
 
@@ -159,6 +206,31 @@ public class LLMMcpClientIntegrationTest {
                     .id("call-1")
                     .name(this.toolName)
                     .arguments("{\"text\":\"hello\"}")
+                    .build();
+            return ChatResponse.builder()
+                    .aiMessage(AiMessage.from(toolRequest))
+                    .build();
+        }
+    }
+
+    private record ResourceListModel(AtomicReference<String> result) implements ChatModel {
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            List<ToolExecutionResultMessage> results = request.messages().stream()
+                    .filter(ToolExecutionResultMessage.class::isInstance)
+                    .map(ToolExecutionResultMessage.class::cast)
+                    .toList();
+            if (!results.isEmpty()) {
+                this.result.set(results.getLast().text());
+                return ChatResponse.builder()
+                        .aiMessage(AiMessage.from("done"))
+                        .build();
+            }
+            ToolExecutionRequest toolRequest = ToolExecutionRequest.builder()
+                    .id("resource-list-1")
+                    .name(LLMMcpToolSession.RESOURCE_LIST_TOOL)
+                    .arguments("{}")
                     .build();
             return ChatResponse.builder()
                     .aiMessage(AiMessage.from(toolRequest))

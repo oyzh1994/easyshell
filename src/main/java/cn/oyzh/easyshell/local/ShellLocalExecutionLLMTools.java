@@ -19,12 +19,38 @@ public class ShellLocalExecutionLLMTools implements LLMTools {
 
     private final ShellLocalCommandExecutor executor;
 
+    private final LocalPublicIpResolver publicIpResolver;
+
     public ShellLocalExecutionLLMTools() {
         this(new ShellLocalCommandExecutor());
     }
 
     public ShellLocalExecutionLLMTools(ShellLocalCommandExecutor executor) {
+        this(executor, new LocalPublicIpResolver());
+    }
+
+    ShellLocalExecutionLLMTools(ShellLocalCommandExecutor executor,
+                                LocalPublicIpResolver publicIpResolver) {
         this.executor = executor;
+        this.publicIpResolver = publicIpResolver;
+    }
+
+    @Tool(name = "local_get_public_ip",
+            value = "Get the current public egress IP of the machine running EasyShell "
+                    + "by querying external IP echo services. This never returns a LAN, loopback, "
+                    + "link-local, or reserved address.")
+    public String getPublicIp() {
+        LocalPublicIpResolver.Resolution resolution = this.publicIpResolver.resolve();
+        if (resolution.ip() != null) {
+            return "publicIp: " + resolution.ip()
+                    + "\nsource: " + resolution.source()
+                    + "\nnote: The result is the public egress address observed by an external service. "
+                    + "VPN, proxy, or carrier NAT can differ from the physical location.";
+        }
+        String errors = resolution.errors().isEmpty()
+                ? "no endpoint configured"
+                : String.join("; ", resolution.errors());
+        return "Unable to determine the current public IP. " + errors;
     }
 
     @Tool(name = "local_execute_command_direct",

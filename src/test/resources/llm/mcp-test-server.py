@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import json
+import os
 import sys
+
+SUPPORTS_RESOURCES = os.getenv("EASY_SHELL_MCP_FIXTURE_RESOURCES", "1") != "0"
 
 
 def respond(message_id, result=None, error=None):
@@ -23,9 +26,12 @@ for line in sys.stdin:
         continue
     if method == "initialize":
         params = request.get("params") or {}
+        capabilities = {"tools": {"listChanged": False}}
+        if SUPPORTS_RESOURCES:
+            capabilities["resources"] = {}
         respond(message_id, {
             "protocolVersion": params.get("protocolVersion", "2025-06-18"),
-            "capabilities": {"tools": {"listChanged": False}, "resources": {}},
+            "capabilities": capabilities,
             "serverInfo": {"name": "easy-shell-mcp-fixture", "version": "1.0"},
             "instructions": "Use echo to return text."
         })
@@ -49,7 +55,7 @@ for line in sys.stdin:
             "content": [{"type": "text", "text": "echo:" + str(text)}],
             "isError": False
         })
-    elif method in ("resources/list", "resources/templates/list", "prompts/list"):
+    elif SUPPORTS_RESOURCES and method in ("resources/list", "resources/templates/list", "prompts/list"):
         key = "resources" if method.startswith("resources/") else "prompts"
         if method == "resources/templates/list":
             key = "resourceTemplates"
