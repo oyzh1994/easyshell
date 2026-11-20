@@ -121,7 +121,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "get_server_version", value = "Get remote file server version or protocol information when the protocol exposes a server version")
+    @Tool(name = "file_get_server_version", value = "Get remote file server version or protocol information when the protocol exposes a server version")
     public String getServerVersion() {
         try {
             ShellConnect connect = this.client.getShellConnect();

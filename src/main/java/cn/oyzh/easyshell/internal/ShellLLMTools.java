@@ -19,9 +19,9 @@ import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
+import cn.oyzh.easyshell.llm.tool.LLMToolScope;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
-import cn.oyzh.easyshell.local.ShellLocalCommandExecutor;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -89,14 +89,10 @@ public class ShellLLMTools implements LLMTools {
 
     private ShellTabPane tabPane;
 
-    private final ShellLocalCommandExecutor localCommandExecutor;
-
     public ShellLLMTools() {
-        this.localCommandExecutor = new ShellLocalCommandExecutor();
     }
 
     public ShellLLMTools(ShellTabPane tabPane) {
-        this();
         this.tabPane = tabPane;
     }
 
@@ -1262,30 +1258,6 @@ public class ShellLLMTools implements LLMTools {
         return result.toString();
     }
 
-    @Tool(name = "execute_local_command_direct",
-            value = "Directly execute a command on the local machine running EasyShell")
-    public String executeLocalCommand(
-            @P(name = "command", value = "The command to execute") String command) {
-        return this.executeLocalCommand(command, null, ShellLocalCommandExecutor.DEFAULT_TIMEOUT_SECONDS);
-    }
-
-    @Tool(name = "execute_local_command_in_directory_direct",
-            value = "Directly execute a command in a specific local working directory")
-    public String executeLocalCommandInDirectory(
-            @P(name = "workingDirectory", value = "Absolute or relative local working directory") String workingDirectory,
-            @P(name = "command", value = "The command to execute") String command,
-            @P(name = "timeoutSeconds", value = "Timeout in seconds, maximum 600") long timeoutSeconds) {
-        return this.executeLocalCommand(command, workingDirectory, timeoutSeconds);
-    }
-
-    private String executeLocalCommand(String command, String workingDirectory, long timeoutSeconds) {
-        try {
-            return this.localCommandExecutor.execute(command, workingDirectory, timeoutSeconds).format();
-        } catch (Exception exception) {
-            return this.failure("Execute local command", exception);
-        }
-    }
-
     @Tool(name = "get_xserver_status", value = "Get built-in X server status and non-sensitive X11 settings")
     public String getXServerStatus() {
         try {
@@ -1340,8 +1312,8 @@ public class ShellLLMTools implements LLMTools {
     }
 
     @Override
-    public void close() {
-        this.localCommandExecutor.close();
+    public LLMToolScope scope() {
+        return LLMToolScope.INTERNAL;
     }
 
     public String toolSystemMessage() {

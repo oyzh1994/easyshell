@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm.agent;
 
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.tool.LLMToolScope;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
@@ -20,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -128,7 +130,7 @@ public class LLMAgentRuntimeTest {
         StringBuilder streamed = new StringBuilder();
         LLMAgentRuntime runtime = new LLMAgentRuntime(model,
                 new StreamingModel(), List.of(), null,
-                "connection tools", "internal tools", "mcp tools",
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 
         ChatResponse response = runtime.execute("stream task", List.of(),
@@ -153,32 +155,39 @@ public class LLMAgentRuntimeTest {
         Map<String, LLMAgentTrace> traces = new LinkedHashMap<>();
         LLMAgentRuntime runtime = new LLMAgentRuntime(chatModel,
                 new StreamingWorkerModel(), List.of(), null,
-                "connection tools", "internal tools", "mcp tools",
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
+        AtomicReference<String> runningConclusion = new AtomicReference<>("");
 
         ChatResponse response = runtime.execute("query rows", List.of(),
                 new LLMAgentListener() {
                     @Override
                     public void onAgentTrace(LLMAgentTrace trace) {
                         traces.put(trace.id(), trace);
+                        if ("worker-0".equals(trace.id())
+                                && trace.status() == LLMAgentTrace.Status.RUNNING) {
+                            runningConclusion.set(trace.conclusion());
+                        }
                     }
                 }, () -> false);
 
         assertEquals("streamed worker result", response.aiMessage().text());
         assertEquals("stream thinking", traces.get("worker-0").thinking());
         assertEquals("streamed worker result", traces.get("worker-0").conclusion());
+        assertEquals("streamed worker result", runningConclusion.get());
     }
 
     @Test
-    public void internalWorkerDoesNotReceiveConnectionTools() throws Exception {
+    public void internalWorkerInNoSessionModeReceivesInternalTools() throws Exception {
         ToolAwareChatModel model = new ToolAwareChatModel("""
                 {"objective":"inspect app","steps":[
                   {"agent":"internal","objective":"inspect application state"}
                 ]}
                 """, false);
+        EchoTools tools = new EchoTools(LLMToolScope.INTERNAL);
         LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
-                List.of(new EchoTools()), null,
-                "connection tools", "internal tools", "mcp tools",
+                List.of(tools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 
         ChatResponse response = runtime.execute("inspect app", List.of(),
@@ -187,7 +196,78 @@ public class LLMAgentRuntimeTest {
 
         assertEquals("worker: inspect app", response.aiMessage().text());
         assertEquals(2, model.requestTools.size());
-        assertTrue(model.requestTools.stream().allMatch(List::isEmpty));
+        assertTrue(model.requestTools.get(0).isEmpty());
+        assertTrue(model.requestTools.get(1).contains("echo_value"));
+    }
+
+    @Test
+    public void sessionWorkerReceivesSessionAndLocalToolsWithoutInternalTools() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect session","steps":[
+                  {"agent":"connection","objective":"inspect current session"}
+                ]}
+                """, false);
+        SessionEchoTools sessionTools = new SessionEchoTools();
+        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
+        LocalEchoTools localTools = new LocalEchoTools();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(sessionTools, internalTools, localTools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
+                "execution rules", "language rules", null);
+
+        runtime.execute("inspect session", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        List<String> workerTools = model.requestTools.get(1);
+        assertTrue(workerTools.contains("session_echo"));
+        assertTrue(workerTools.contains("local_echo"));
+        assertFalse(workerTools.contains("echo_value"));
+    }
+
+    @Test
+    public void staleInternalPlanIsCorrectedToSessionScope() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect session","steps":[
+                  {"agent":"internal","objective":"inspect current session"}
+                ]}
+                """, false);
+        SessionEchoTools sessionTools = new SessionEchoTools();
+        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
+        LocalEchoTools localTools = new LocalEchoTools();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(sessionTools, internalTools, localTools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
+                "execution rules", "language rules", null);
+
+        runtime.execute("inspect session", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        List<String> workerTools = model.requestTools.get(1);
+        assertTrue(workerTools.contains("session_echo"));
+        assertTrue(workerTools.contains("local_echo"));
+        assertFalse(workerTools.contains("echo_value"));
+    }
+
+    @Test
+    public void internalWorkerWithoutSessionReceivesInternalAndLocalTools() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect app","steps":[
+                  {"agent":"internal","objective":"inspect application state"}
+                ]}
+                """, false);
+        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
+        LocalEchoTools localTools = new LocalEchoTools();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(internalTools, localTools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
+                "execution rules", "language rules", null);
+
+        runtime.execute("inspect app", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        List<String> workerTools = model.requestTools.get(1);
+        assertTrue(workerTools.contains("echo_value"));
+        assertTrue(workerTools.contains("local_echo"));
     }
 
     @Test
@@ -200,7 +280,7 @@ public class LLMAgentRuntimeTest {
         EchoTools tools = new EchoTools();
         LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
                 List.of(tools), null,
-                "connection tools", "internal tools", "mcp tools",
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 
         ChatResponse response = runtime.execute("call echo", List.of(),
@@ -223,7 +303,7 @@ public class LLMAgentRuntimeTest {
         Map<String, LLMAgentTrace> traces = new LinkedHashMap<>();
         LLMAgentRuntime runtime = new LLMAgentRuntime(chatModel,
                 new StreamingToolChatModel(), List.of(tools), null,
-                "connection tools", "internal tools", "mcp tools",
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 
         ChatResponse response = runtime.execute("call echo", List.of(),
@@ -250,7 +330,7 @@ public class LLMAgentRuntimeTest {
         AtomicBoolean cancelled = new AtomicBoolean();
         LLMAgentRuntime runtime = new LLMAgentRuntime(model,
                 new CancellingStreamingModel(cancelled), List.of(), null,
-                "connection tools", "internal tools", "mcp tools",
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
 
         try {
@@ -352,7 +432,7 @@ public class LLMAgentRuntimeTest {
 
     private static LLMAgentRuntime runtime(ChatModel model) {
         return new LLMAgentRuntime(model, null, List.of(), null,
-                "connection tools", "internal tools", "mcp tools",
+                "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
     }
 
@@ -432,6 +512,7 @@ public class LLMAgentRuntimeTest {
         @Override
         public void doChat(ChatRequest request, StreamingChatResponseHandler handler) {
             handler.onPartialThinking(new PartialThinking("stream thinking"));
+            handler.onPartialResponse("streamed worker result");
             handler.onCompleteResponse(ChatResponse.builder()
                     .aiMessage(AiMessage.builder()
                             .text("streamed worker result")
@@ -538,6 +619,16 @@ public class LLMAgentRuntimeTest {
 
         private int calls;
 
+        private final LLMToolScope scope;
+
+        private EchoTools() {
+            this(LLMToolScope.SESSION);
+        }
+
+        private EchoTools(LLMToolScope scope) {
+            this.scope = scope;
+        }
+
         @Tool(name = "echo_value", value = "Echo a value")
         public String echo(@P("value to echo") String value) {
             this.calls++;
@@ -545,8 +636,44 @@ public class LLMAgentRuntimeTest {
         }
 
         @Override
+        public LLMToolScope scope() {
+            return this.scope;
+        }
+
+        @Override
         public String systemMessage(LLMExecutionMode executionMode) {
             return "Echo tools";
+        }
+    }
+
+    private static final class SessionEchoTools implements LLMTools {
+
+        @Tool(name = "session_echo", value = "Echo a session value")
+        public String echo() {
+            return "session";
+        }
+
+        @Override
+        public String systemMessage(LLMExecutionMode executionMode) {
+            return "Session tools";
+        }
+    }
+
+    private static final class LocalEchoTools implements LLMTools {
+
+        @Tool(name = "local_echo", value = "Echo a local value")
+        public String echo() {
+            return "local";
+        }
+
+        @Override
+        public LLMToolScope scope() {
+            return LLMToolScope.LOCAL_EXECUTION;
+        }
+
+        @Override
+        public String systemMessage(LLMExecutionMode executionMode) {
+            return "Local tools";
         }
     }
 }

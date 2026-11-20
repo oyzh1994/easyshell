@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.llm.agent;
 import cn.oyzh.i18n.I18nResourceBundle;
 
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Formats agent execution traces for the chat message component.
@@ -33,23 +34,25 @@ public final class LLMAgentTraceFormatter {
             if (!result.isEmpty()) {
                 result.append("\n\n---\n\n");
             }
-            result.append("### ").append(title(trace)).append('\n')
+            result.append("### ").append(title(trace))
+                    .append(" · ").append(status(trace.status())).append('\n')
                     .append("- **").append(text("shell.llm.agent.trace.agent")).append(":** ")
                     .append(trace.agent()).append('\n')
                     .append("- **").append(text("shell.llm.agent.trace.objective")).append(":** ")
                     .append(trace.objective()).append('\n')
-                    .append("- **").append(text("shell.llm.agent.trace.status")).append(":** ")
-                    .append(status(trace.status())).append('\n')
                     .append("- **").append(text("shell.llm.agent.trace.duration")).append(":** ")
-                    .append(trace.durationMillis()).append(" ms\n\n")
-                    .append("**").append(text("shell.llm.thinkingLabel")).append("**\n\n");
+                    .append(formatDuration(trace.durationMillis())).append('\n');
             String thinking = limit(trace.thinking(), MAX_THINKING_LENGTH);
-            result.append(thinking.isBlank()
-                    ? text("shell.llm.agent.trace.noThinking")
-                    : thinking);
+            if (!thinking.isBlank()) {
+                result.append("\n\n**").append(text("shell.llm.thinkingLabel"))
+                        .append("**\n\n").append(thinking);
+            } else if (trace.status() != LLMAgentTrace.Status.RUNNING) {
+                result.append("\n\n**").append(text("shell.llm.thinkingLabel"))
+                        .append("**\n\n").append(text("shell.llm.agent.trace.noThinking"));
+            }
             String conclusion = limit(trace.conclusion(), MAX_CONCLUSION_LENGTH);
             if (!conclusion.isBlank()) {
-                result.append("\n\n**").append(text("shell.llm.answerLabel"))
+                result.append("\n\n**").append(text("shell.llm.agent.trace.result"))
                         .append("**\n\n").append(conclusion);
             }
             if (!trace.error().isBlank()) {
@@ -83,6 +86,19 @@ public final class LLMAgentTraceFormatter {
 
     private static String text(String key) {
         return I18nResourceBundle.i18nString(key);
+    }
+
+    private static String formatDuration(long millis) {
+        long value = Math.max(0, millis);
+        if (value < 1_000) {
+            return value + " ms";
+        }
+        if (value < 60_000) {
+            return String.format(Locale.ROOT, "%.1f s", value / 1_000.0);
+        }
+        long totalSeconds = value / 1_000;
+        return String.format(Locale.ROOT, "%02d:%02d",
+                totalSeconds / 60, totalSeconds % 60);
     }
 
     private static String limit(String value, int maxLength) {

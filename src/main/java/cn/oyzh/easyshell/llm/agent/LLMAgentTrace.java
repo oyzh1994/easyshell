@@ -44,6 +44,12 @@ public record LLMAgentTrace(String id,
                 this.status, this.startedAt, this.finishedAt);
     }
 
+    public LLMAgentTrace withConclusion(String value) {
+        return new LLMAgentTrace(this.id, this.type, this.stepIndex, this.totalSteps,
+                this.agent, this.objective, this.thinking, value, this.error,
+                this.status, this.startedAt, this.finishedAt);
+    }
+
     public LLMAgentTrace withError(String value) {
         return new LLMAgentTrace(this.id, this.type, this.stepIndex, this.totalSteps,
                 this.agent, this.objective, this.thinking, this.conclusion, value,

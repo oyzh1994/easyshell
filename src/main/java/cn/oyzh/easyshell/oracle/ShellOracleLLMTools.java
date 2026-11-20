@@ -22,7 +22,7 @@ public class ShellOracleLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "get_server_version", value = "Get the Oracle database server version")
+    @Tool(name = "oracle_get_server_version", value = "Get the Oracle database server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Database client is unavailable.";
@@ -35,7 +35,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql", value = "Execute SQL on the bound Oracle connection")
+    @Tool(name = "oracle_execute_sql", value = "Execute SQL on the bound Oracle connection")
     public String executeSql(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -55,7 +55,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql_default_schema", value = "Execute SQL on the bound Oracle connection")
+    @Tool(name = "oracle_execute_sql_default_schema", value = "Execute SQL on the bound Oracle connection")
     public String executeSql(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -71,7 +71,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql_raw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "oracle_execute_sql_raw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -88,7 +88,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql_raw_default_schema", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "oracle_execute_sql_raw_default_schema", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -104,7 +104,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_schemas", value = "List Oracle schemas on the bound connection")
+    @Tool(name = "oracle_list_schemas", value = "List Oracle schemas on the bound connection")
     public String listSchemas(
             @P(name = "filter", value = "Optional case-insensitive schema name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -122,7 +122,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_tables", value = "List tables in a Oracle schema")
+    @Tool(name = "oracle_list_tables", value = "List tables in a Oracle schema")
     public String listTables(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "filter", value = "Optional case-insensitive table name filter") String filter,
@@ -144,7 +144,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_views", value = "List views in a Oracle schema")
+    @Tool(name = "oracle_list_views", value = "List views in a Oracle schema")
     public String listViews(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "filter", value = "Optional case-insensitive view name filter") String filter,
@@ -166,7 +166,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "show_create_table", value = "Get the CREATE TABLE statement for a Oracle table")
+    @Tool(name = "oracle_show_create_table", value = "Get the CREATE TABLE statement for a Oracle table")
     public String showCreateTable(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "table", value = "Table name") String table) {
@@ -184,7 +184,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "show_create_view", value = "Get the CREATE VIEW statement for a Oracle view")
+    @Tool(name = "oracle_show_create_view", value = "Get the CREATE VIEW statement for a Oracle view")
     public String showCreateView(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "view", value = "View name") String view) {
@@ -202,7 +202,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_indexes", value = "List indexes for a Oracle table")
+    @Tool(name = "oracle_list_indexes", value = "List indexes for a Oracle table")
     public String listIndexes(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "table", value = "Table name") String table) {
@@ -231,7 +231,7 @@ public class ShellOracleLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "explain_sql", value = "Explain a Oracle SQL statement without executing its data changes")
+    @Tool(name = "oracle_explain_sql", value = "Explain a Oracle SQL statement without executing its data changes")
     public String explainSql(
             @P(name = "schema", value = "Oracle schema name") String schema,
             @P(name = "sql", value = "SQL statement to explain") String sql) {

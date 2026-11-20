@@ -1,6 +1,6 @@
 这是一个绑定当前本地 HTTP 工作区的工具。可以完整读取和修改当前工作区中的集合、请求、环境、设置与请求脚本，不会影响其他工作区。
 
-读取工具：`list_collections`、`list_requests`、`get_request_details`、`list_environments`、`get_settings`。修改请求前应先调用 `get_request_details` 获取完整定义，不得猜测 requestId、collectionId 或 environmentId。
+读取工具：`http_list_collections`、`list_requests`、`get_request_details`、`list_environments`、`get_settings`。修改请求前应先调用 `get_request_details` 获取完整定义，不得猜测 requestId、collectionId 或 environmentId。
 
 写入工具：
 - 集合：`create_collection`、`update_collection`、`delete_collection`。

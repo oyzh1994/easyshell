@@ -5,9 +5,13 @@ import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -41,6 +45,7 @@ public final class LLMToolNameStrategy {
      */
     public static Function<ToolExecutionRequest, ToolExecutionResultMessage> create(Collection<?> tools,
                                                                                      Collection<String> additionalNames) {
+        validateUnique(tools, additionalNames);
         Set<String> names = new LinkedHashSet<>();
         for (Object tool : tools) {
             for (ToolSpecification specification : ToolSpecifications.toolSpecificationsFrom(tool)) {
@@ -51,6 +56,44 @@ public final class LLMToolNameStrategy {
             names.addAll(additionalNames);
         }
         return request -> result(request, names);
+    }
+
+    /**
+     * Rejects duplicate tool names before the AI service is created.
+     *
+     * @param tools           local tool objects
+     * @param additionalNames provider-supplied tool names
+     */
+    public static void validateUnique(Collection<?> tools, Collection<String> additionalNames) {
+        Map<String, List<String>> sources = new LinkedHashMap<>();
+        if (tools != null) {
+            for (Object tool : tools) {
+                if (tool == null) {
+                    continue;
+                }
+                String source = tool.getClass().getName();
+                for (ToolSpecification specification : ToolSpecifications.toolSpecificationsFrom(tool)) {
+                    sources.computeIfAbsent(specification.name(),
+                            ignored -> new ArrayList<>()).add(source);
+                }
+            }
+        }
+        if (additionalNames != null) {
+            for (String name : additionalNames) {
+                if (name != null && !name.isBlank()) {
+                    sources.computeIfAbsent(name,
+                            ignored -> new ArrayList<>()).add("provider");
+                }
+            }
+        }
+        List<String> duplicateNames = sources.entrySet().stream()
+                .filter(entry -> entry.getValue().size() > 1)
+                .map(entry -> entry.getKey() + " <- " + String.join(", ", entry.getValue()))
+                .toList();
+        if (!duplicateNames.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Duplicate LLM tool names: " + String.join("; ", duplicateNames));
+        }
     }
 
     static ToolExecutionResultMessage result(ToolExecutionRequest request, Collection<String> toolNames) {

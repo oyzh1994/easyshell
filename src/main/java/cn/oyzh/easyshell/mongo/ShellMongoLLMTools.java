@@ -85,7 +85,7 @@ public class ShellMongoLLMTools implements LLMTools {
         return LLMUtil.readLlmText("mongo_example.txt");
     }
 
-    @Tool(name = "list_databases", value = "List MongoDB databases on the bound connection")
+    @Tool(name = "mongo_list_databases", value = "List MongoDB databases on the bound connection")
     public String listDatabases(
             @P(name = "filter", value = "Optional case-insensitive database name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -99,7 +99,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_collections", value = "List collections in a MongoDB database")
+    @Tool(name = "mongo_list_collections", value = "List collections in a MongoDB database")
     public String listCollections(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "filter", value = "Optional case-insensitive collection name filter") String filter,
@@ -195,7 +195,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "get_server_version", value = "Get the MongoDB server version")
+    @Tool(name = "mongo_get_server_version", value = "Get the MongoDB server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Database client is unavailable.";

@@ -68,6 +68,8 @@ public final class LLMToolAudit {
 
     private final Map<String, String> toolClasses;
 
+    private final Map<String, LLMToolScope> toolScopes;
+
     private final String sessionId;
 
     private final String sessionTabId;
@@ -96,6 +98,7 @@ public final class LLMToolAudit {
                         LLMExecutionMode executionMode) {
         this.auditFile = auditFile == null ? defaultAuditFile() : auditFile;
         this.toolClasses = resolveToolClasses(tools);
+        this.toolScopes = resolveToolScopes(tools);
         this.sessionId = sessionId;
         this.sessionTabId = sessionTabId;
         this.provider = provider;
@@ -111,6 +114,7 @@ public final class LLMToolAudit {
     public void registerToolSources(Map<String, String> sources) {
         if (sources != null) {
             this.toolClasses.putAll(sources);
+            sources.keySet().forEach(name -> this.toolScopes.put(name, LLMToolScope.MCP));
         }
     }
 
@@ -166,6 +170,7 @@ public final class LLMToolAudit {
         record.put("executionMode", this.executionMode == null ? null : this.executionMode.name());
         record.put("toolName", request.name());
         record.put("toolClass", this.toolClasses.get(request.name()));
+        record.put("toolScope", this.toolScopes.get(request.name()));
         record.put("arguments", truncate(arguments.text));
         record.put("argumentsLength", arguments.text == null ? 0 : arguments.text.length());
         record.put("argumentsTruncated", arguments.text != null && arguments.text.length() > MAX_TEXT_LENGTH);
@@ -327,6 +332,29 @@ public final class LLMToolAudit {
                 }
             } catch (Exception ex) {
                 JulLog.warn("resolve llm tool class failed: " + tool.getClass().getName(), ex);
+            }
+        }
+        return result;
+    }
+
+    private static Map<String, LLMToolScope> resolveToolScopes(Collection<?> tools) {
+        Map<String, LLMToolScope> result = new LinkedHashMap<>();
+        if (tools == null) {
+            return result;
+        }
+        for (Object tool : tools) {
+            if (tool == null) {
+                continue;
+            }
+            LLMToolScope scope = tool instanceof LLMTools llmTools
+                    ? llmTools.scope()
+                    : LLMToolScope.SESSION;
+            try {
+                for (ToolSpecification specification : ToolSpecifications.toolSpecificationsFrom(tool)) {
+                    result.put(specification.name(), scope);
+                }
+            } catch (Exception ex) {
+                JulLog.warn("resolve llm tool scope failed: " + tool.getClass().getName(), ex);
             }
         }
         return result;

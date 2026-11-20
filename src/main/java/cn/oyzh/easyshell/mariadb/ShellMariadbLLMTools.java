@@ -22,7 +22,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "get_server_version", value = "Get the MariaDB database server version")
+    @Tool(name = "mariadb_get_server_version", value = "Get the MariaDB database server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Database client is unavailable.";
@@ -35,7 +35,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql", value = "Execute SQL on the bound MariaDB connection")
+    @Tool(name = "mariadb_execute_sql", value = "Execute SQL on the bound MariaDB connection")
     public String executeSql(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -55,7 +55,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql_default_database", value = "Execute SQL on the bound MariaDB connection")
+    @Tool(name = "mariadb_execute_sql_default_database", value = "Execute SQL on the bound MariaDB connection")
     public String executeSql(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -71,7 +71,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql_raw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "mariadb_execute_sql_raw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -88,7 +88,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "execute_sql_raw_default_database", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "mariadb_execute_sql_raw_default_database", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -104,7 +104,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_databases", value = "List MariaDB databases on the bound connection")
+    @Tool(name = "mariadb_list_databases", value = "List MariaDB databases on the bound connection")
     public String listDatabases(
             @P(name = "filter", value = "Optional case-insensitive database name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -118,7 +118,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_tables", value = "List tables in a MariaDB database")
+    @Tool(name = "mariadb_list_tables", value = "List tables in a MariaDB database")
     public String listTables(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "filter", value = "Optional case-insensitive table name filter") String filter,
@@ -140,7 +140,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_views", value = "List views in a MariaDB database")
+    @Tool(name = "mariadb_list_views", value = "List views in a MariaDB database")
     public String listViews(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "filter", value = "Optional case-insensitive view name filter") String filter,
@@ -162,7 +162,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "show_create_table", value = "Get the CREATE TABLE statement for a MariaDB table")
+    @Tool(name = "mariadb_show_create_table", value = "Get the CREATE TABLE statement for a MariaDB table")
     public String showCreateTable(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "table", value = "Table name") String table) {
@@ -180,7 +180,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "show_create_view", value = "Get the CREATE VIEW statement for a MariaDB view")
+    @Tool(name = "mariadb_show_create_view", value = "Get the CREATE VIEW statement for a MariaDB view")
     public String showCreateView(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "view", value = "View name") String view) {
@@ -198,7 +198,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_indexes", value = "List indexes for a MariaDB table")
+    @Tool(name = "mariadb_list_indexes", value = "List indexes for a MariaDB table")
     public String listIndexes(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "table", value = "Table name") String table) {
@@ -227,7 +227,7 @@ public class ShellMariadbLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "explain_sql", value = "Explain a MariaDB SQL statement without executing its data changes")
+    @Tool(name = "mariadb_explain_sql", value = "Explain a MariaDB SQL statement without executing its data changes")
     public String explainSql(
             @P(name = "database", value = "MariaDB database name") String database,
             @P(name = "sql", value = "SQL statement to explain") String sql) {

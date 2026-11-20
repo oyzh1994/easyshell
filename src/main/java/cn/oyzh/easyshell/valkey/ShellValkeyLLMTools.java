@@ -36,13 +36,13 @@ public class ShellValkeyLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "execute_command", value = "Execute a Valkey command on the bound connection")
+    @Tool(name = "valkey_execute_command", value = "Execute a Valkey command on the bound connection")
     public String executeCommand(
             @P(name = "command", value = "Valkey command") String command) {
         return this.executeCommand(command, this.dbIndex);
     }
 
-    @Tool(name = "execute_command_in_database", value = "Execute a Valkey command on a selected database")
+    @Tool(name = "valkey_execute_command_in_database", value = "Execute a Valkey command on a selected database")
     public String executeCommand(
             @P(name = "command", value = "Valkey command") String command,
             @P(name = "dbIndex", value = "Valkey database index") int dbIndex) {
@@ -82,7 +82,7 @@ public class ShellValkeyLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "get_server_info", value = "Get Valkey server information for one INFO section, such as server, clients, memory, stats, or keyspace")
+    @Tool(name = "valkey_get_server_info", value = "Get Valkey server information for one INFO section, such as server, clients, memory, stats, or keyspace")
     public String getServerInfo(
             @P(name = "section", value = "Optional INFO section; empty returns the default section") String section) {
         if (this.client == null) {
@@ -96,7 +96,7 @@ public class ShellValkeyLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "get_server_version", value = "Get the Valkey server version")
+    @Tool(name = "valkey_get_server_version", value = "Get the Valkey server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Valkey client is unavailable.";
@@ -108,7 +108,7 @@ public class ShellValkeyLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_databases", value = "List configured Valkey database indexes without selecting them")
+    @Tool(name = "valkey_list_databases", value = "List configured Valkey database indexes without selecting them")
     public String listDatabases() {
         if (this.client == null) {
             return "Valkey client is unavailable.";
@@ -125,7 +125,7 @@ public class ShellValkeyLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "get_database_info", value = "Get read-only statistics for one Valkey database")
+    @Tool(name = "valkey_get_database_info", value = "Get read-only statistics for one Valkey database")
     public String getDatabaseInfo(
             @P(name = "dbIndex", value = "Valkey database index") int dbIndex) {
         if (this.client == null) {
@@ -141,7 +141,7 @@ public class ShellValkeyLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "get_key_info", value = "Get read-only metadata for one Valkey key: type, TTL, memory usage, encoding, reference count, and idle time")
+    @Tool(name = "valkey_get_key_info", value = "Get read-only metadata for one Valkey key: type, TTL, memory usage, encoding, reference count, and idle time")
     public String getKeyInfo(
             @P(name = "dbIndex", value = "Valkey database index") int dbIndex,
             @P(name = "key", value = "Valkey key") String key) {
@@ -171,7 +171,7 @@ public class ShellValkeyLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "list_commands", value = "List Valkey commands supported by the connected server")
+    @Tool(name = "valkey_list_commands", value = "List Valkey commands supported by the connected server")
     public String listCommands(
             @P(name = "filter", value = "Optional case-insensitive command name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {

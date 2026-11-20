@@ -4,7 +4,10 @@ import cn.oyzh.common.dto.Project;
 import cn.oyzh.easyshell.ShellConst;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.tool.LLMToolScope;
+import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import cn.oyzh.easyshell.local.ShellLocalLLMTools;
+import cn.oyzh.easyshell.ssh.ShellSSHLLMTools;
 import dev.langchain4j.agent.tool.Tool;
 import org.junit.Test;
 
@@ -47,7 +50,7 @@ public class ShellLLMToolsTest {
         assertTrue(capabilities.contains("llmFeatures"));
         assertTrue(systemMessage.contains("EasyShell"));
         assertTrue(systemMessage.contains("start_x_server"));
-        assertTrue(systemMessage.contains("execute_local_command_direct"));
+        assertFalse(systemMessage.contains("local_execute_command_direct"));
     }
 
     @Test
@@ -71,11 +74,28 @@ public class ShellLLMToolsTest {
 
     @Test
     public void executesLocalCommandsDirectly() {
-        try (ShellLLMTools tools = new ShellLLMTools()) {
-            String result = tools.executeLocalCommand("echo hello");
+        try (ShellLocalExecutionLLMTools tools = new ShellLocalExecutionLLMTools()) {
+            String result = tools.executeCommand("echo hello");
 
             assertTrue(result.contains("exitCode: 0"));
             assertTrue(result.contains("hello"));
+        }
+    }
+
+    @Test
+    public void builtInExecutionScopesAreSeparated() {
+        try (ShellLLMTools internal = new ShellLLMTools();
+             ShellLocalExecutionLLMTools local = new ShellLocalExecutionLLMTools()) {
+            assertEquals(LLMToolScope.INTERNAL, internal.scope());
+            assertEquals(LLMToolScope.LOCAL_EXECUTION, local.scope());
+            assertEquals(LLMToolScope.SESSION, new ShellLocalLLMTools().scope());
+            assertEquals(LLMToolScope.SESSION, new ShellSSHLLMTools().scope());
+            Set<String> internalNames = toolNames(ShellLLMTools.class);
+            Set<String> localNames = toolNames(ShellLocalExecutionLLMTools.class);
+            assertFalse(internalNames.contains("local_execute_command_direct"));
+            assertFalse(internalNames.contains("local_execute_command_in_directory_direct"));
+            assertTrue(localNames.contains("local_execute_command_direct"));
+            assertTrue(localNames.contains("local_execute_command_in_directory_direct"));
         }
     }
 
@@ -156,8 +176,8 @@ public class ShellLLMToolsTest {
         assertTrue(names.contains("list_zk_favorites"));
         assertTrue(names.contains("list_llm_providers"));
         assertTrue(names.contains("list_llm_sessions"));
-        assertTrue(names.contains("execute_local_command_direct"));
-        assertTrue(names.contains("execute_local_command_in_directory_direct"));
+        assertFalse(names.contains("local_execute_command_direct"));
+        assertFalse(names.contains("local_execute_command_in_directory_direct"));
         assertFalse(names.contains("delete_connection"));
         assertFalse(names.contains("delete_group"));
         assertFalse(names.contains("delete_snippet"));
@@ -180,5 +200,22 @@ public class ShellLLMToolsTest {
                 assertTrue(names.add(tool.name()));
             }
         }
+        for (Method method : ShellLocalExecutionLLMTools.class.getMethods()) {
+            Tool tool = method.getAnnotation(Tool.class);
+            if (tool != null) {
+                assertTrue(names.add(tool.name()));
+            }
+        }
+    }
+
+    private static Set<String> toolNames(Class<?> type) {
+        Set<String> names = new HashSet<>();
+        for (Method method : type.getMethods()) {
+            Tool tool = method.getAnnotation(Tool.class);
+            if (tool != null) {
+                names.add(tool.name());
+            }
+        }
+        return names;
     }
 }

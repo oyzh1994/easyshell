@@ -6,6 +6,6 @@
 3. 只有需要 db.getCollection(...) 链式调用、多个 Shell 语句组合，或 run_command 无法表达的 Shell 能力时，才使用 execute_script。
 
 只读辅助工具：
-- `list_databases`、`list_collections`、`list_buckets`、`list_functions`、`list_users` 用于了解当前连接的结构和用户角色，不返回密码。
-- `get_server_version`、`ping_database` 用于确认服务状态。
+- `mongo_list_databases`、`mongo_list_collections`、`list_buckets`、`list_functions`、`list_users` 用于了解当前连接的结构和用户角色，不返回密码。
+- `mongo_get_server_version`、`ping_database` 用于确认服务状态。
 - `count_collection` 使用 count 命令统计文档数量，不修改数据。

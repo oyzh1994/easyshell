@@ -84,7 +84,7 @@ public class ShellHttpLLMTools implements LLMTools {
         this.workspaceChangeListener = workspaceChangeListener;
     }
 
-    @Tool(name = "list_collections", value = "List saved HTTP request collections in the bound HTTP workspace")
+    @Tool(name = "http_list_collections", value = "List saved HTTP request collections in the bound HTTP workspace")
     public String listCollections(
             @P(name = "filter", value = "Optional case-insensitive collection id or name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {

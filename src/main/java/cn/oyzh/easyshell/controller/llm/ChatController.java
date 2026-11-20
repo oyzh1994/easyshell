@@ -29,8 +29,10 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
+import cn.oyzh.easyshell.llm.tool.LLMToolSelection;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
+import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
@@ -199,14 +201,25 @@ public class ChatController extends SubStageController {
         LLMProvider provider = request.provider;
         // 服务
         AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
-        List<LLMTools> tools = new ArrayList<>();
-        request.tools = tools;
-        // 内置工具
-        ShellLLMTools internalTools = new ShellLLMTools(this.tabPane);
-        tools.add(internalTools);
+        // 当前 Tab 是默认操作目标，Local Tab 同样属于 SESSION。
+        ShellLLMTools internalTools = request.sessionTools == null
+                ? new ShellLLMTools(this.tabPane)
+                : null;
+        // 本机执行能力独立保留，不随 SESSION 消失。
+        ShellLocalExecutionLLMTools localExecutionTools = new ShellLocalExecutionLLMTools();
+        List<LLMTools> createdTools = new ArrayList<>(2);
         if (request.sessionTools != null) {
-            tools.add(request.sessionTools);
+            createdTools.add(request.sessionTools);
         }
+        if (internalTools != null) {
+            createdTools.add(internalTools);
+        }
+        createdTools.add(localExecutionTools);
+        request.tools = createdTools;
+        LLMToolSelection toolSelection = new LLMToolSelection(
+                request.sessionTools, internalTools, localExecutionTools, request.executionMode);
+        List<LLMTools> tools = new ArrayList<>(toolSelection.tools());
+        request.tools = tools;
         // MCP 工具，单个 Server 失败不会影响其他工具
         request.mcpSession = LLMMcpToolSession.connect(
                 request.mcpServers, progress -> this.updateMcpProgress(request, progress));
@@ -230,13 +243,9 @@ public class ChatController extends SubStageController {
                 provider.getName(), request.model, executionMode);
         audit.registerToolSources(request.mcpSession.getToolSources());
         services.afterToolExecution(audit::record);
-        String systemMessage = request.sessionTools == null
-                ? internalTools.systemMessage(executionMode)
-                : internalTools.toolSystemMessage() + "\n\n"
-                + request.sessionTools.systemMessage(executionMode);
-        String localSystemMessage = systemMessage;
+        String systemMessage = toolSelection.systemMessage();
         if (request.mcpSession.hasClients()) {
-            systemMessage += "\n\n" + request.mcpSession.getSystemMessage();
+            systemMessage = joinSystemMessages(systemMessage, request.mcpSession.getSystemMessage());
         }
         services.systemMessage(systemMessage);
         // 使用当前会话历史初始化内存，当前消息由大模型服务负责追加
@@ -249,8 +258,9 @@ public class ChatController extends SubStageController {
             // 创建工具
             this.assistant = services.build();
             request.agentRuntime = this.createAgentRuntime(agentModel, model, tools,
-                    request.mcpSession, localSystemMessage,
-                    internalTools.systemMessage(executionMode), executionMode, audit);
+                    request.mcpSession, toolSelection.sessionSystemMessage(),
+                    toolSelection.internalSystemMessage(),
+                    toolSelection.localExecutionSystemMessage(), executionMode, audit);
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider, request.thinkingLevel);
@@ -258,8 +268,9 @@ public class ChatController extends SubStageController {
             // 创建工具
             this.assistant = services.build();
             request.agentRuntime = this.createAgentRuntime(model, null, tools,
-                    request.mcpSession, localSystemMessage,
-                    internalTools.systemMessage(executionMode), executionMode, audit);
+                    request.mcpSession, toolSelection.sessionSystemMessage(),
+                    toolSelection.internalSystemMessage(),
+                    toolSelection.localExecutionSystemMessage(), executionMode, audit);
         }
         return this.assistant;
     }
@@ -268,15 +279,30 @@ public class ChatController extends SubStageController {
                                                StreamingChatModel streamingChatModel,
                                                List<LLMTools> tools,
                                                LLMMcpToolSession mcpSession,
-                                               String localSystemMessage,
+                                               String sessionSystemMessage,
                                                String internalSystemMessage,
+                                               String localExecutionSystemMessage,
                                                LLMExecutionMode executionMode,
                                                LLMToolAudit audit) {
         String mcpSystemMessage = mcpSession == null ? "" : mcpSession.getSystemMessage();
         return new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
-                localSystemMessage, internalSystemMessage, mcpSystemMessage,
+                sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage, mcpSystemMessage,
                 LLMUtil.executionSystemMessage(executionMode),
                 LLMUtil.languageSystemMessage(), audit);
+    }
+
+    private static String joinSystemMessages(String... messages) {
+        StringBuilder result = new StringBuilder();
+        for (String message : messages) {
+            if (message == null || message.isBlank()) {
+                continue;
+            }
+            if (!result.isEmpty()) {
+                result.append("\n\n");
+            }
+            result.append(message);
+        }
+        return result.toString();
     }
 
     private ChatMemory buildChatMemory(LLMMessage currentMessage) {

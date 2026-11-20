@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm.tool;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import com.alibaba.fastjson2.JSONObject;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
@@ -44,6 +45,7 @@ public class LLMToolAuditTest {
         JSONObject record = readSingleRecord(file);
         assertEquals("record", record.getString("toolName"));
         assertEquals(RecordingTool.class.getName(), record.getString("toolClass"));
+        assertEquals("SESSION", record.getString("toolScope"));
         assertEquals("session-1", record.getString("sessionId"));
         assertEquals("tab-1", record.getString("sessionTabId"));
         assertEquals("provider-1", record.getString("provider"));
@@ -94,6 +96,20 @@ public class LLMToolAuditTest {
         JSONObject record = readSingleRecord(file);
         assertTrue(record.getBooleanValue("failed"));
         assertEquals("permission denied", record.getString("result"));
+    }
+
+    @Test
+    public void recordsLocalExecutionScope() throws Exception {
+        Path file = Files.createTempFile("llm-tool-audit-", ".jsonl");
+        try (ShellLocalExecutionLLMTools tools = new ShellLocalExecutionLLMTools()) {
+            LLMToolAudit audit = new LLMToolAudit(file, List.of(tools), null, null,
+                    null, null, null);
+            audit.record(execution("local_execute_command_direct",
+                    "{\"command\":\"pwd\"}", success("ok")));
+        }
+
+        JSONObject record = readSingleRecord(file);
+        assertEquals("LOCAL_EXECUTION", record.getString("toolScope"));
     }
 
     @Test

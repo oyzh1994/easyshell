@@ -42,7 +42,7 @@ public class ShellLocalLLMTools implements LLMTools {
         return result.toString();
     }
 
-    @Tool(name = "get_server_version", value = "Get the local operating system and Java runtime versions")
+    @Tool(name = "local_get_server_version", value = "Get the local operating system and Java runtime versions")
     public String getServerVersion() {
         return "osName: " + System.getProperty("os.name")
                 + "\nosVersion: " + System.getProperty("os.version")

@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dameng.ShellDamengLLMTools;
 import cn.oyzh.easyshell.file.ShellFileLLMTools;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import cn.oyzh.easyshell.local.ShellLocalLLMTools;
 import cn.oyzh.easyshell.mariadb.ShellMariadbLLMTools;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -78,7 +79,7 @@ public class LLMToolsLiveRegressionTest {
                 .filter(spec -> spec.name().equals("run_command"))
                 .findFirst().orElseThrow().toJson();
         String zkSchema = zkSpecs.stream()
-                .filter(spec -> spec.name().equals("execute_command"))
+                .filter(spec -> spec.name().equals("zk_execute_command"))
                 .findFirst().orElseThrow().toJson();
         assertTrue(mongoSchema, mongoSchema.contains("\"database\""));
         assertTrue(mongoSchema, mongoSchema.contains("\"script\""));
@@ -91,12 +92,12 @@ public class LLMToolsLiveRegressionTest {
         Set<String> mongoNames = Set.copyOf(mongoSpecs.stream().map(ToolSpecification::name).toList());
         Set<String> zkNames = Set.copyOf(zkSpecs.stream().map(ToolSpecification::name).toList());
         assertTrue(mongoNames.containsAll(Set.of(
-                "execute_script", "run_command", "mongo_examples", "list_databases", "list_collections",
-                "list_buckets", "list_functions", "list_users", "get_server_version", "ping_database",
+                "execute_script", "run_command", "mongo_examples", "mongo_list_databases", "mongo_list_collections",
+                "list_buckets", "list_functions", "list_users", "mongo_get_server_version", "ping_database",
                 "count_collection")));
         assertTrue(zkNames.containsAll(Set.of(
-                "execute_command", "get_node_data", "list_children", "check_node_exists",
-                "get_node_stat", "get_node_acl", "get_all_children_count", "get_server_version")));
+                "zk_execute_command", "get_node_data", "list_children", "check_node_exists",
+                "get_node_stat", "get_node_acl", "get_all_children_count", "zk_get_server_version")));
     }
 
     @Test
@@ -120,8 +121,8 @@ public class LLMToolsLiveRegressionTest {
             Set<String> names = ToolSpecifications.toolSpecificationsFrom(tool).stream()
                     .map(ToolSpecification::name)
                     .collect(java.util.stream.Collectors.toSet());
-            assertTrue(tool.getClass().getSimpleName() + " missing get_server_version",
-                    names.contains("get_server_version"));
+            assertTrue(tool.getClass().getSimpleName() + " missing scoped server version tool",
+                    names.stream().anyMatch(name -> name.endsWith("_get_server_version")));
         }
     }
 
@@ -141,6 +142,7 @@ public class LLMToolsLiveRegressionTest {
                 new ShellSSHLLMTools(),
                 new ShellFileLLMTools<>(),
                 new ShellLocalLLMTools(),
+                new ShellLocalExecutionLLMTools(),
                 new cn.oyzh.easyshell.http.ShellHttpLLMTools(),
                 new cn.oyzh.easyshell.internal.ShellLLMTools()
         );
@@ -188,7 +190,8 @@ public class LLMToolsLiveRegressionTest {
             Set<String> names = Set.copyOf(ToolSpecifications.toolSpecificationsFrom(tool).stream()
                     .map(ToolSpecification::name)
                     .toList());
-            assertTrue(tool.getClass().getSimpleName(), names.contains("execute_sql_raw"));
+            assertTrue(tool.getClass().getSimpleName(),
+                    names.stream().anyMatch(name -> name.endsWith("_execute_sql_raw")));
         }
     }
 

@@ -1,9 +1,9 @@
 这是一个 Valkey 命令行工具，只能操作当前绑定的 Valkey 连接。使用 Valkey 原生命令语法执行当前服务端支持的命令，参数需要正确引用和转义。多次工具调用共享同一命令会话，因此 MULTI、WATCH、SELECT 等连接状态命令可以连续执行。不得连接或操作其他 Valkey 实例。
 
 只读辅助工具：
-- `get_server_info` 读取 INFO，`get_server_version` 读取版本。
-- `list_databases` 列出数据库索引，`get_database_info` 返回指定库的键数量。
-- `get_key_info` 返回键类型、TTL、内存占用、编码、引用计数和空闲时间。
-- `list_commands` 返回服务端支持的命令列表。
+- `valkey_get_server_info` 读取 INFO，`valkey_get_server_version` 读取版本。
+- `valkey_list_databases` 列出数据库索引，`valkey_get_database_info` 返回指定库的键数量。
+- `valkey_get_key_info` 返回键类型、TTL、内存占用、编码、引用计数和空闲时间。
+- `valkey_list_commands` 返回服务端支持的命令列表。
 
-只读辅助工具不会修改键或服务端配置；写命令仍通过 `execute_command` 执行，并受连接只读设置约束。
+只读辅助工具不会修改键或服务端配置；写命令仍通过 `valkey_execute_command` 执行，并受连接只读设置约束。
