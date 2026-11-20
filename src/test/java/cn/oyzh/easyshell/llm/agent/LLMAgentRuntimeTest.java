@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm.agent;
 
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.tool.LLMToolScope;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
 import dev.langchain4j.agent.tool.P;
@@ -340,6 +341,35 @@ public class LLMAgentRuntimeTest {
         assertTrue(plannerRequest.contains("local: local_echo"));
         assertTrue(plannerRequest.contains("mcp available: no"));
         assertTrue(plannerRequest.contains("Never use one scope as a fallback"));
+    }
+
+    @Test
+    public void plannerAndWorkerReceiveTheSameBoundSessionContext() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect session","steps":[
+                  {"agent":"connection","objective":"inspect current session"}
+                ]}
+                """, false);
+        LLMSessionContext context = new LLMSessionContext(
+                "tab-1", "server-a", "ssh", "10.0.0.12", 22, "root");
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(new SessionEchoTools()), null,
+                "session tools", "internal tools", "local execution tools",
+                context, "mcp tools", "execution rules", "language rules", null);
+
+        runtime.execute("inspect session", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        String plannerRequest = model.requestTexts.get(0);
+        String workerRequest = model.requestTexts.get(1);
+        assertTrue(plannerRequest.contains("host: 10.0.0.12"));
+        assertTrue(plannerRequest.contains("user: root"));
+        assertTrue(plannerRequest.contains("defaultTarget: the currently bound ssh session"));
+        assertTrue(workerRequest.contains("host: 10.0.0.12"));
+        assertTrue(workerRequest.contains("user: root"));
+        assertTrue(workerRequest.contains("defaultTarget: the currently bound ssh session"));
+        assertFalse(plannerRequest.toLowerCase().contains("password"));
+        assertFalse(workerRequest.toLowerCase().contains("password"));
     }
 
     @Test

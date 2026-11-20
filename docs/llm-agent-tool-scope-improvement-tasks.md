@@ -244,7 +244,7 @@ MCP:
   - 无 SESSION 时只提供 `internal` 和 `mcp`。
 - Planner 返回过期分组时会自动纠正为当前可用分组。
 
-### [ ] T4. 注入当前连接上下文
+### [x] T4. 注入当前连接上下文
 
 为 Planner 和 Worker 增加结构化作用域信息：
 
@@ -269,7 +269,19 @@ MCP:
 - “安装 Docker”的任务计划明确绑定当前 SSH 会话。
 - Planner 的 `connection` 分组不再含糊地包含本机执行工具。
 
+完成记录：
+
+- 新增 `LLMSessionContext`，保存当前绑定 Session 的 id、名称、类型、主机、端口、用户和默认目标。
+- Session 元数据来自当前 `LLMTabCapability` 关联的真实 `ShellConnect`，不包含密码、私钥、令牌或 Cookie。
+- 普通助手系统提示会包含同一份绑定 Session 上下文。
+- Planner 任务提示会包含绑定 Session 上下文和默认目标。
+- connection、internal、local、mcp Worker 均会收到同一份绑定 Session 上下文。
+- 最终汇总 Agent 同样会收到该上下文，避免最终答案偏离当前目标。
+- Prompt 明确要求“当前服务器、这个连接、这个 Tab”等表达按绑定上下文解析，禁止通过时区、语言、DNS、公网 IP 或历史对话推断目标。
+
 ### [ ] T5. 增加运行时调用拦截
+
+> 暂不处理：当前工具选择路径已不会发生该场景。
 
 即使模型选择了错误工具，也应在执行前拦截。
 

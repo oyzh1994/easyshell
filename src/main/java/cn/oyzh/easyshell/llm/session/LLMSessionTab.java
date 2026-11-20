@@ -27,6 +27,8 @@ public class LLMSessionTab {
 
     private String host;
 
+    private Integer port;
+
     private String user;
 
     /**
@@ -92,6 +94,14 @@ public class LLMSessionTab {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 
     public String getUser() {

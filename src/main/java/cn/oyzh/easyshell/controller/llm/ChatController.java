@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMResponseUtil;
 import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
 import cn.oyzh.easyshell.llm.session.LLMSession;
+import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
@@ -225,6 +226,7 @@ public class ChatController extends SubStageController {
         LLMToolSelection toolSelection = new LLMToolSelection(
                 request.sessionTools, internalTools, localExecutionTools,
                 request.executionMode, request.toolAccessMode);
+        LLMSessionContext sessionContext = LLMSessionContext.from(request.sessionTab);
         List<LLMTools> tools = new ArrayList<>(toolSelection.tools());
         request.tools = tools;
         // MCP 工具，单个 Server 失败不会影响其他工具
@@ -255,7 +257,9 @@ public class ChatController extends SubStageController {
         }
         audit.registerToolSources(request.mcpSession.getToolSources());
         services.afterToolExecution(audit::record);
-        String systemMessage = toolSelection.systemMessage();
+        String systemMessage = joinSystemMessages(
+                sessionContext == null ? "" : sessionContext.promptText(),
+                toolSelection.systemMessage());
         if (request.mcpSession.hasClients()) {
             systemMessage = joinSystemMessages(systemMessage, request.mcpSession.getSystemMessage());
         }
@@ -272,7 +276,8 @@ public class ChatController extends SubStageController {
             request.agentRuntime = this.createAgentRuntime(agentModel, model, tools,
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
-                    toolSelection.localExecutionSystemMessage(), executionMode, audit);
+                    toolSelection.localExecutionSystemMessage(), sessionContext,
+                    executionMode, audit);
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider, request.thinkingLevel);
@@ -282,7 +287,8 @@ public class ChatController extends SubStageController {
             request.agentRuntime = this.createAgentRuntime(model, null, tools,
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
-                    toolSelection.localExecutionSystemMessage(), executionMode, audit);
+                    toolSelection.localExecutionSystemMessage(), sessionContext,
+                    executionMode, audit);
         }
         return this.assistant;
     }
@@ -294,11 +300,13 @@ public class ChatController extends SubStageController {
                                                String sessionSystemMessage,
                                                String internalSystemMessage,
                                                String localExecutionSystemMessage,
+                                               LLMSessionContext sessionContext,
                                                LLMExecutionMode executionMode,
                                                LLMToolAudit audit) {
         String mcpSystemMessage = mcpSession == null ? "" : mcpSession.getSystemMessage();
         return new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
-                sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage, mcpSystemMessage,
+                sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
+                sessionContext, mcpSystemMessage,
                 LLMUtil.executionSystemMessage(executionMode),
                 LLMUtil.languageSystemMessage(), audit);
     }
@@ -915,7 +923,9 @@ public class ChatController extends SubStageController {
         sessionTab.setType(connect != null
                 ? connect.getType()
                 : capability.getClass().getSimpleName());
-        sessionTab.setHost(connect == null ? null : connect.getHost());
+        sessionTab.setHost(connect == null ? null : connect.hostIp());
+        int port = connect == null ? -1 : connect.hostPort();
+        sessionTab.setPort(port <= 0 ? null : port);
         sessionTab.setUser(connect == null ? null : connect.getUser());
     }
 
