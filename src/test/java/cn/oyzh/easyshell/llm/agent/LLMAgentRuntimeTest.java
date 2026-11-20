@@ -201,7 +201,7 @@ public class LLMAgentRuntimeTest {
     }
 
     @Test
-    public void sessionWorkerReceivesSessionAndLocalToolsWithoutInternalTools() throws Exception {
+    public void sessionWorkerReceivesOnlySessionTools() throws Exception {
         ToolAwareChatModel model = new ToolAwareChatModel("""
                 {"objective":"inspect session","steps":[
                   {"agent":"connection","objective":"inspect current session"}
@@ -219,7 +219,7 @@ public class LLMAgentRuntimeTest {
 
         List<String> workerTools = model.requestTools.get(1);
         assertTrue(workerTools.contains("session_echo"));
-        assertTrue(workerTools.contains("local_echo"));
+        assertFalse(workerTools.contains("local_echo"));
         assertFalse(workerTools.contains("echo_value"));
     }
 
@@ -266,12 +266,12 @@ public class LLMAgentRuntimeTest {
 
         List<String> workerTools = model.requestTools.get(1);
         assertTrue(workerTools.contains("session_echo"));
-        assertTrue(workerTools.contains("local_echo"));
+        assertFalse(workerTools.contains("local_echo"));
         assertFalse(workerTools.contains("echo_value"));
     }
 
     @Test
-    public void internalWorkerWithoutSessionReceivesInternalAndLocalTools() throws Exception {
+    public void internalWorkerWithoutSessionReceivesOnlyInternalTools() throws Exception {
         ToolAwareChatModel model = new ToolAwareChatModel("""
                 {"objective":"inspect app","steps":[
                   {"agent":"internal","objective":"inspect application state"}
@@ -289,7 +289,57 @@ public class LLMAgentRuntimeTest {
 
         List<String> workerTools = model.requestTools.get(1);
         assertTrue(workerTools.contains("echo_value"));
+        assertFalse(workerTools.contains("local_echo"));
+    }
+
+    @Test
+    public void localWorkerReceivesOnlyLocalExecutionTools() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect local machine","steps":[
+                  {"agent":"local","objective":"inspect the machine running EasyShell"}
+                ]}
+                """, false);
+        SessionEchoTools sessionTools = new SessionEchoTools();
+        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
+        LocalEchoTools localTools = new LocalEchoTools();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(sessionTools, internalTools, localTools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
+                "execution rules", "language rules", null);
+
+        runtime.execute("inspect local machine", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        List<String> workerTools = model.requestTools.get(1);
         assertTrue(workerTools.contains("local_echo"));
+        assertFalse(workerTools.contains("session_echo"));
+        assertFalse(workerTools.contains("echo_value"));
+    }
+
+    @Test
+    public void plannerCatalogSeparatesSessionInternalLocalAndMcp() throws Exception {
+        ToolAwareChatModel model = new ToolAwareChatModel("""
+                {"objective":"inspect session","steps":[
+                  {"agent":"connection","objective":"inspect current session"}
+                ]}
+                """, false);
+        SessionEchoTools sessionTools = new SessionEchoTools();
+        EchoTools internalTools = new EchoTools(LLMToolScope.INTERNAL);
+        LocalEchoTools localTools = new LocalEchoTools();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(sessionTools, internalTools, localTools), null,
+                "session tools", "internal tools", "local execution tools", "mcp tools",
+                "execution rules", "language rules", null);
+
+        runtime.execute("inspect session", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        String plannerRequest = model.requestTexts.getFirst();
+        assertTrue(plannerRequest.contains("connection: session_echo"));
+        assertTrue(plannerRequest.contains("internal: echo_value"));
+        assertTrue(plannerRequest.contains("local: local_echo"));
+        assertTrue(plannerRequest.contains("mcp available: no"));
+        assertTrue(plannerRequest.contains("Never use one scope as a fallback"));
     }
 
     @Test
@@ -593,6 +643,8 @@ public class LLMAgentRuntimeTest {
 
         private final List<List<String>> requestTools = new ArrayList<>();
 
+        private final List<String> requestTexts = new ArrayList<>();
+
         private ToolAwareChatModel(String plan, boolean executeTool) {
             this.plan = plan;
             this.executeTool = executeTool;
@@ -600,6 +652,9 @@ public class LLMAgentRuntimeTest {
 
         @Override
         public ChatResponse doChat(ChatRequest request) {
+            this.requestTexts.add(request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n")));
             this.requestTools.add(request.toolSpecifications() == null
                     ? List.of()
                     : request.toolSpecifications().stream()

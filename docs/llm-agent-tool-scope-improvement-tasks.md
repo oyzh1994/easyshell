@@ -301,7 +301,7 @@ MCP:
 - SSH Tab 中误调用本机命令不会执行任何本地进程。
 - 模型收到纠正结果后能够重新选择 SSH 工具。
 
-### [ ] T6. 调整 Agent Planner 的工具目录
+### [x] T6. 调整 Agent Planner 的工具目录
 
 当前 `toolCatalog` 应改成按作用域分组，而不是把所有 `localTools` 都列在 `connection` 下。
 
@@ -330,8 +330,9 @@ mcp:
 Planner 规则至少包含：
 
 - 服务器变更默认使用 `SESSION`。
-- EasyShell 自身诊断只在没有 SESSION 时使用 `INTERNAL`。
-- 本机命令使用 `LOCAL_EXECUTION`。
+- EasyShell 自身诊断在 `INTERNAL` 可用时使用 `INTERNAL`。
+- 本机命令使用独立的 `LOCAL_EXECUTION` 分组。
+- MCP 使用独立分组，仅在已启用且连接成功时出现。
 - 不同作用域工具不可互相替代。
 
 验收标准：
@@ -339,6 +340,17 @@ Planner 规则至少包含：
 - “安装 Docker”不会规划成本机内部任务。
 - “查看 EasyShell 版本”不会选择 SSH 命令。
 - “查看当前 Redis 版本”选择 Redis 服务器工具。
+
+完成记录：
+
+- `LLMAgentType` 新增 `LOCAL`，Planner 支持 `connection|internal|local|mcp`。
+- `toolCatalog` 按实际作用域分别输出工具，不再把 LOCAL_EXECUTION 混入 connection 或 internal。
+- `connection` Worker 只收到当前 SESSION 工具。
+- `internal` Worker 只收到 EasyShell INTERNAL 工具。
+- `local` Worker 只收到 LOCAL_EXECUTION 工具。
+- MCP 仅在实际有已连接客户端时加入 Planner 分组。
+- Planner 系统提示增加强制规则：不得用一个作用域替代另一个作用域，服务器操作默认使用当前 SESSION。
+- 过期的 Planner 分组会按当前实际可用作用域纠正。
 
 ### [x] T7. 统一工具命名
 
