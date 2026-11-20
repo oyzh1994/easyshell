@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.controller.llm;
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpJsonConfigParser;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
-import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpServerUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonEditor;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -33,8 +33,6 @@ public class ShellLLMMcpImportController extends StageController {
     @FXML
     private JsonEditor json;
 
-    private final LLMMcpServerStore serverStore = LLMMcpServerStore.INSTANCE;
-
     @FXML
     private void importConfig() {
         if (this.json.isEmpty()) {
@@ -42,7 +40,7 @@ public class ShellLLMMcpImportController extends StageController {
         }
         try {
             List<LLMMcpServer> servers = LLMMcpJsonConfigParser.parse(this.json.getText());
-            LLMMcpServerStore.ImportResult result = this.serverStore.importServers(servers);
+            LLMMcpServerUtil.ImportResult result = LLMMcpServerUtil.importServers(servers);
             if (result.failed() > 0) {
                 MessageBox.warn(String.format(
                         I18nResourceBundle.i18nString("shell.llm.mcp.importPartial"),
