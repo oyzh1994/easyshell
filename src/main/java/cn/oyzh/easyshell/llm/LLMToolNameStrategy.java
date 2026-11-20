@@ -29,11 +29,26 @@ public final class LLMToolNameStrategy {
      * @return hallucinated tool name strategy
      */
     public static Function<ToolExecutionRequest, ToolExecutionResultMessage> create(Collection<?> tools) {
+        return create(tools, Set.of());
+    }
+
+    /**
+     * Creates a strategy containing local and provider-supplied tool names.
+     *
+     * @param tools tool objects
+     * @param additionalNames provider-supplied tool names
+     * @return hallucinated tool name strategy
+     */
+    public static Function<ToolExecutionRequest, ToolExecutionResultMessage> create(Collection<?> tools,
+                                                                                     Collection<String> additionalNames) {
         Set<String> names = new LinkedHashSet<>();
         for (Object tool : tools) {
             for (ToolSpecification specification : ToolSpecifications.toolSpecificationsFrom(tool)) {
                 names.add(specification.name());
             }
+        }
+        if (additionalNames != null) {
+            names.addAll(additionalNames);
         }
         return request -> result(request, names);
     }

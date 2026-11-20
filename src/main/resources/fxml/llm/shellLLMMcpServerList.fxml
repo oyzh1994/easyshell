@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.llm.LLMMcpServerEnabledTableColumn?>
+<?import cn.oyzh.easyshell.fx.llm.LLMMcpServerTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMMcpServerListController"
+        realWidth="980" realHeight="560">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <FXHBox realHeight="30">
+            <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#add">
+                <FXHBox.margin>
+                    <Insets left="30" top="7"/>
+                </FXHBox.margin>
+            </AddSVGGlyph>
+            <JSONSVGGlyph tipText="%base.import"
+                          onMousePrimaryClicked="#importConfig">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </JSONSVGGlyph>
+            <EditSVGGlyph tipText="%base.edit" onMousePrimaryClicked="#update">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </EditSVGGlyph>
+            <DeleteSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#delete">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
+            <TestSVGGlyph fx:id="testGlyph" tipText="%base.test" onMousePrimaryClicked="#test">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </TestSVGGlyph>
+            <FXLabel fx:id="testResult" maxWidth="520" visible="false" managed="false">
+                <FXHBox.margin>
+                    <Insets left="12" top="7"/>
+                </FXHBox.margin>
+            </FXLabel>
+            <FXVBox.margin>
+                <Insets top="10"/>
+            </FXVBox.margin>
+        </FXHBox>
+        <LLMMcpServerTableView fx:id="serverTableView" flexWidth="100% - 50" flexHeight="100% - 60">
+            <columns>
+                <FXTableColumn prefWidth="170" valueName="name" text="%base.name"/>
+                <FXTableColumn prefWidth="130" valueName="transportName" text="%base.transport"/>
+                <FXTableColumn flexWidth="100% - 605" valueName="endpointText" text="%shell.llm.mcp.endpoint"/>
+                <FXTableColumn prefWidth="190" valueName="toolFilterText" text="%shell.llm.mcp.toolFilterShort"/>
+                <LLMMcpServerEnabledTableColumn prefWidth="100" text="%base.status"/>
+            </columns>
+            <FXVBox.margin>
+                <Insets left="30" top="7"/>
+            </FXVBox.margin>
+        </LLMMcpServerTableView>
+    </FXVBox>
+</FXVBox>

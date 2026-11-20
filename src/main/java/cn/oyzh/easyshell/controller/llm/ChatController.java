@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
+import cn.oyzh.easyshell.llm.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMResponseUtil;
@@ -32,6 +33,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.Content;
@@ -83,6 +85,11 @@ public class ChatController extends SubStageController {
     private void llm() {
         ShellViewFactory.llmProviders(this.getWindow());
         this.view.refreshProviders();
+    }
+
+    @FXML
+    private void mcp() {
+        ShellViewFactory.llmMcpServers(this.getWindow());
     }
 
     /**
@@ -151,70 +158,84 @@ public class ChatController extends SubStageController {
         private volatile LLMMessage placeholder;
 
         private volatile List<LLMTools> tools;
+
+        private volatile LLMMcpToolSession mcpSession;
+
+        private LLMProvider provider;
+
+        private LLMThinkingLevel thinkingLevel;
+
+        private LLMSessionTab sessionTab;
+
+        private LLMTools sessionTools;
+
+        private LLMExecutionMode executionMode;
+
+        private String model;
+
+        private boolean streaming;
+
+        private ChatMemory chatMemory;
+
+        private String sessionId;
+
+        private String sessionTabId;
     }
 
-    private LLMAssistant initAssistant(LLMMessage currentMessage, LLMRequest request) {
-        // 供应商为空
-        boolean providerEmpty = this.view.getProviderComboBox().isItemEmpty();
-        if (providerEmpty) {
-            ShellViewFactory.llmProviders(this.getWindow());
-            this.view.refreshProviders();
-            return null;
-        }
-        // 供应商未选择
-        LLMProvider provider = this.view.getSelectedProvider();
-        if (provider == null) {
-            MessageBox.warn(I18nHelper.pleaseSelectProvider(), this.getWindow());
-            return null;
-        }
-        // 思考等级
-        LLMThinkingLevel thinkingLevel = this.view.getSelectedThinkingLevel();
+    private LLMAssistant initAssistant(LLMRequest request) {
+        LLMProvider provider = request.provider;
         // 服务
         AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
-        // 会话
-        LLMSessionTab sessionTab = this.view.getSelectedSession();
-        // 会话工具
-        LLMTools sessionTools = null;
-        if (sessionTab != null && sessionTab.getToolsFunc() != null) {
-            sessionTools = sessionTab.getToolsFunc().get();
-        }
-        //
         List<LLMTools> tools = new ArrayList<>();
+        request.tools = tools;
         // 内置工具
         ShellLLMTools internalTools = new ShellLLMTools(this.tabPane);
         tools.add(internalTools);
-        if (sessionTools != null) {
-            tools.add(sessionTools);
+        if (request.sessionTools != null) {
+            tools.add(request.sessionTools);
         }
-        request.tools = tools;
-        // 执行模式
-        LLMExecutionMode executionMode = this.view.getSelectedExecutionMode();
+        // MCP 工具，单个 Server 失败不会影响其他工具
+        request.mcpSession = LLMMcpToolSession.connectEnabled();
+        if (request.mcpSession.hasClients()) {
+            services.toolProvider(request.mcpSession.getToolProvider());
+        }
+        if (!request.mcpSession.getErrors().isEmpty()) {
+            String error = String.format(I18nResourceBundle.i18nString("shell.llm.mcp.testFail"),
+                    String.join("; ", request.mcpSession.getErrors()));
+            this.view.addErrorMessage(error, request.sessionTabId);
+        }
+        LLMExecutionMode executionMode = request.executionMode;
         // 工具相关配置
         services.tools(tools.toArray());
         services.maxToolCallingRoundTrips(100);
         services.toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
-        services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(tools));
+        services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(
+                tools, request.mcpSession.getToolNames()));
         // 工具调用审计
         LLMToolAudit audit = new LLMToolAudit(tools,
-                this.currentSession == null ? null : this.currentSession.getUid(),
-                sessionTab == null ? null : sessionTab.getId(),
-                provider.getName(), this.view.getSelectedModel(), executionMode);
+                request.sessionId, request.sessionTabId,
+                provider.getName(), request.model, executionMode);
+        audit.registerToolSources(request.mcpSession.getToolSources());
         services.afterToolExecution(audit::record);
-        String systemMessage = sessionTools == null
+        String systemMessage = request.sessionTools == null
                 ? internalTools.systemMessage(executionMode)
-                : internalTools.toolSystemMessage() + "\n\n" + sessionTools.systemMessage(executionMode);
+                : internalTools.toolSystemMessage() + "\n\n"
+                + request.sessionTools.systemMessage(executionMode);
+        if (request.mcpSession.hasClients()) {
+            systemMessage += "\n\n" + request.mcpSession.getSystemMessage();
+        }
         services.systemMessage(systemMessage);
         // 使用当前会话历史初始化内存，当前消息由大模型服务负责追加
-        services.chatMemory(this.buildChatMemory(currentMessage));
-        if (this.view.isStreamingEnabled()) {
+        services.chatMemory(request.chatMemory);
+        if (request.streaming) {
             // 创建模型
-            StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, thinkingLevel);
+            StreamingChatModel model = LLMUtil.crateStreamingChatModel(provider, request.thinkingLevel);
             services.streamingChatModel(model);
             // 创建工具
             this.assistant = services.build();
         } else {
             // 创建模型
-            ChatModel model = LLMUtil.createChatModel(provider, thinkingLevel);
+            ChatModel model = LLMUtil.createChatModel(provider, request.thinkingLevel);
             services.chatModel(model);
             // 创建工具
             this.assistant = services.build();
@@ -255,18 +276,65 @@ public class ChatController extends SubStageController {
             if (!this.validateSessionForSend()) {
                 return;
             }
-            LLMRequest request = new LLMRequest();
-            LLMAssistant assistant = this.initAssistant(message, request);
-            if (assistant == null) {
-                this.view.addErrorMessage(I18nHelper.initLLMFail(), message.getSessionTabId());
+            LLMProvider provider = this.validateProviderForSend();
+            if (provider == null) {
                 return;
             }
-            boolean streaming = this.view.isStreamingEnabled();
+            LLMRequest request = new LLMRequest();
+            request.provider = provider;
+            request.thinkingLevel = this.view.getSelectedThinkingLevel();
+            request.sessionTab = this.view.getSelectedSession();
+            request.executionMode = this.view.getSelectedExecutionMode();
+            request.model = this.view.getSelectedModel();
+            request.streaming = this.view.isStreamingEnabled();
+            request.chatMemory = this.buildChatMemory(message);
+            request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
+            request.sessionTabId = request.sessionTab == null ? null : request.sessionTab.getId();
+            if (request.sessionTab != null && request.sessionTab.getToolsFunc() != null) {
+                request.sessionTools = request.sessionTab.getToolsFunc().get();
+            }
             this.activeRequest = request;
             this.view.setBusy(true);
             // 异步执行
-            request.thread = ThreadUtil.startVirtual(() -> this.executeRequest(request, assistant, message, streaming));
+            request.thread = ThreadUtil.startVirtual(() -> this.prepareAndExecuteRequest(request, message));
         });
+    }
+
+    private LLMProvider validateProviderForSend() {
+        if (this.view.getProviderComboBox().isItemEmpty()) {
+            ShellViewFactory.llmProviders(this.getWindow());
+            this.view.refreshProviders();
+            return null;
+        }
+        LLMProvider provider = this.view.getSelectedProvider();
+        if (provider == null) {
+            MessageBox.warn(I18nHelper.pleaseSelectProvider(), this.getWindow());
+        }
+        return provider;
+    }
+
+    private void prepareAndExecuteRequest(LLMRequest request, LLMMessage message) {
+        request.thread = Thread.currentThread();
+        try {
+            if (!this.isRequestActive(request)) {
+                this.closeRequestResources(request);
+                return;
+            }
+            LLMAssistant assistant = this.initAssistant(request);
+            if (!this.isRequestActive(request)) {
+                this.closeRequestResources(request);
+                return;
+            }
+            this.executeRequest(request, assistant, message, request.streaming);
+        } catch (Exception ex) {
+            if (this.isRequestActive(request)) {
+                JulLog.error("llm init error", ex);
+                this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                this.finishRequest(request, true);
+            } else {
+                this.closeRequestResources(request);
+            }
+        }
     }
 
     private void executeRequest(LLMRequest request, LLMAssistant assistant, LLMMessage message, boolean streaming) {
@@ -431,21 +499,37 @@ public class ChatController extends SubStageController {
     }
 
     private void finishRequest(LLMRequest request, boolean save) {
-        if (request == null || !request.finished.compareAndSet(false, true)) {
+        if (request == null) {
             return;
         }
-        if (this.activeRequest == request) {
-            this.activeRequest = null;
-        }
-        if (request.tools != null) {
-            for (LLMTools tools : request.tools) {
-                tools.close();
+        if (request.finished.compareAndSet(false, true)) {
+            if (this.activeRequest == request) {
+                this.activeRequest = null;
             }
-            request.tools = null;
+            this.view.setBusy(false);
+            if (save) {
+                this.saveCurrentSession();
+            }
         }
-        this.view.setBusy(false);
-        if (save) {
-            this.saveCurrentSession();
+        this.closeRequestResources(request);
+    }
+
+    private synchronized void closeRequestResources(LLMRequest request) {
+        List<LLMTools> requestTools = request.tools;
+        request.tools = null;
+        if (requestTools != null) {
+            for (LLMTools tools : requestTools) {
+                try {
+                    tools.close();
+                } catch (Exception ex) {
+                    JulLog.warn("close llm tools failed", ex);
+                }
+            }
+        }
+        LLMMcpToolSession mcpSession = request.mcpSession;
+        request.mcpSession = null;
+        if (mcpSession != null) {
+            mcpSession.close();
         }
     }
 

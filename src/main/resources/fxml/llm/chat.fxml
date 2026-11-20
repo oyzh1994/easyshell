@@ -2,6 +2,7 @@
 <?import cn.oyzh.easyshell.fx.llm.LLMView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.MCPSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.LLMSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -21,6 +22,11 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </HistorySVGGlyph>
+        <MCPSVGGlyph tipText="%shell.llm.mcp.servers" onMousePrimaryClicked="#mcp">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </MCPSVGGlyph>
         <LLMSVGGlyph tipText="%base.llm" onMousePrimaryClicked="#llm">
             <HBox.margin>
                 <Insets left="10" top="10"/>

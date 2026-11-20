@@ -103,6 +103,17 @@ public final class LLMToolAudit {
     }
 
     /**
+     * 注册由工具提供器（例如 MCP）动态提供的工具来源。
+     *
+     * @param sources 工具名到来源的映射
+     */
+    public void registerToolSources(Map<String, String> sources) {
+        if (sources != null) {
+            this.toolClasses.putAll(sources);
+        }
+    }
+
+    /**
      * 获取默认审计日志文件
      *
      * @return 审计日志文件

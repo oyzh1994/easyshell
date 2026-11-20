@@ -42,6 +42,7 @@
         <curator-version>4.3.0</curator-version>
         <!-- <jediterm.version>3.73</jediterm.version> -->
         <langchain4j.version>1.23.0</langchain4j.version>
+        <langchain4j-mcp.version>1.23.0-beta33</langchain4j-mcp.version>
         <!-- <langchain4j-beta.version>1.23.0-beta33</langchain4j-beta.version> -->
         <jSerialComm.version>2.11.4</jSerialComm.version>
         <!-- <commons-net.version>3.13.0</commons-net.version> -->
@@ -373,6 +374,12 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-google-ai-gemini</artifactId>
             <version>${langchain4j.version}</version>
+        </dependency>
+        <!-- Model Context Protocol 客户端与工具提供器 -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-mcp</artifactId>
+            <version>${langchain4j-mcp.version}</version>
         </dependency>
         <!-- <dependency> -->
         <!--     <groupId>dev.langchain4j</groupId> -->

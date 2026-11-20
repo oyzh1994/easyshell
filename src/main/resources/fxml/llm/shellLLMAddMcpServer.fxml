@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
+<?import cn.oyzh.fx.plus.controls.button.IconButton?>
+<?import cn.oyzh.fx.plus.controls.button.FXButton?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController"
+        realWidth="800" realHeight="820">
+    <FXHeaderBar/>
+    <InfoLabel text="%base.name">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="name" require="true" tipText="%base.nameTip" realHeight="30"
+                        flexWidth="100% - 140" maxLen="1024">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.transport">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXComboBox fx:id="transport" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXComboBox>
+    <FXVBox fx:id="stdioBox" flexWidth="100%">
+        <InfoLabel text="%shell.llm.mcp.command">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXTextArea fx:id="command" realHeight="72" flexWidth="100% - 140"
+                    tipText="%shell.llm.mcp.commandTip" wrapText="true">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXTextArea>
+        <InfoLabel text="%shell.llm.mcp.workingDirectory">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ClearableTextField fx:id="workingDirectory" realHeight="30" flexWidth="100% - 140"
+                            tipText="%shell.llm.mcp.workingDirectoryTip">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ClearableTextField>
+        <InfoLabel text="%shell.llm.mcp.environment">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXTextArea fx:id="environment" realHeight="70" flexWidth="100% - 140"
+                    tipText="%shell.llm.mcp.environmentTip" wrapText="true">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXTextArea>
+    </FXVBox>
+    <FXVBox fx:id="remoteBox" flexWidth="100%">
+        <InfoLabel text="%shell.llm.mcp.url">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <ClearableTextField fx:id="url" require="true" realHeight="30" flexWidth="100% - 140"
+                            tipText="%shell.llm.mcp.urlTip">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </ClearableTextField>
+        <InfoLabel text="%shell.llm.mcp.headers">
+            <VBox.margin>
+                <Insets left="30" top="10"/>
+            </VBox.margin>
+        </InfoLabel>
+        <FXTextArea fx:id="headers" realHeight="78" flexWidth="100% - 140"
+                    tipText="%shell.llm.mcp.headersTip" wrapText="true">
+            <VBox.margin>
+                <Insets left="30" top="5"/>
+            </VBox.margin>
+        </FXTextArea>
+    </FXVBox>
+    <InfoLabel text="%shell.llm.mcp.toolFilter">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXTextArea fx:id="toolNames" realHeight="58" flexWidth="100% - 140"
+                tipText="%shell.llm.mcp.toolFilterTip" wrapText="true">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </FXTextArea>
+    <InfoLabel text="%shell.llm.mcp.timeout">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="timeout" require="true" realHeight="30" flexWidth="100% - 140">
+        <VBox.margin>
+            <Insets left="30" top="5"/>
+        </VBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%base.options">
+        <VBox.margin>
+            <Insets left="30" top="10"/>
+        </VBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <FXToggleSwitch fx:id="enabled" text="%base.enable">
+            <HBox.margin>
+                <Insets left="30" top="5"/>
+            </HBox.margin>
+        </FXToggleSwitch>
+    </FXHBox>
+    <FXHBox>
+        <SubmitButton onAction="#add">
+            <HBox.margin>
+                <Insets left="30" top="15"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </CancelButton>
+        <IconButton text="%base.test" styleClass="primary" onAction="#test">
+            <graphic>
+                <TestSVGGlyph fx:id="testGlyph"/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="15" top="15"/>
+            </HBox.margin>
+        </IconButton>
+        <FXLabel fx:id="testResult" maxWidth="520" visible="false" managed="false">
+            <HBox.margin>
+                <Insets left="10" top="15"/>
+            </HBox.margin>
+        </FXLabel>
+    </FXHBox>
+</FXVBox>

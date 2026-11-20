@@ -84,9 +84,13 @@ import cn.oyzh.easyshell.controller.key.ShellCopyIdKeyController;
 import cn.oyzh.easyshell.controller.key.ShellImportKeyController;
 import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddProviderController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMProviderListController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMMcpServerListController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMMcpImportController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMSessionListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateProviderController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateMcpServerController;
 import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
 import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
 import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;
@@ -107,6 +111,7 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.LLMMcpServer;
 import cn.oyzh.easyshell.popups.snippet.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.term.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
@@ -1869,6 +1874,53 @@ public class ShellViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex, owner);
         }
+    }
+
+    public static void llmMcpServers(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMMcpServerListController.class, owner);
+            adapter.showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+    }
+
+    public static StageAdapter addLLMMcpServer(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMAddMcpServerController.class, owner);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
+    }
+
+    public static StageAdapter importLLMMcpServers(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMMcpImportController.class, owner);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
+    }
+
+    public static StageAdapter updateLLMMcpServer(LLMMcpServer server, Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMUpdateMcpServerController.class, owner);
+            adapter.setProp("server", server);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
     }
 
     /**
