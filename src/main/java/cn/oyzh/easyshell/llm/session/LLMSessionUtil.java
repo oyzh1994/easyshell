@@ -50,6 +50,26 @@ public final class LLMSessionUtil {
     }
 
     /**
+     * Creates a detached snapshot safe to persist asynchronously.
+     *
+     * @param session source session
+     * @return detached session, or {@code null}
+     */
+    public static LLMSession snapshot(LLMSession session) {
+        if (session == null) {
+            return null;
+        }
+        LLMSession result = new LLMSession();
+        result.setUid(session.getUid());
+        result.setTitle(session.getTitle());
+        result.setMessages(session.getMessages());
+        result.setSessionTabId(session.getSessionTabId());
+        result.setCreateTime(session.getCreateTime());
+        result.setUpdateTime(session.getUpdateTime());
+        return result;
+    }
+
+    /**
      * 获取未命名会话标题
      *
      * @return 未命名会话标题

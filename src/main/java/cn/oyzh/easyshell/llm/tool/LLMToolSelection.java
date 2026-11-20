@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm.tool;
 
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.LLMUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,24 +127,10 @@ public final class LLMToolSelection {
     }
 
     public String systemMessage() {
-        return joinSystemMessages(
+        return LLMUtil.joinSystemMessages(
                 this.sessionSystemMessage,
                 this.internalSystemMessage,
                 this.localExecutionSystemMessage);
-    }
-
-    private static String joinSystemMessages(String... messages) {
-        StringBuilder result = new StringBuilder();
-        for (String message : messages) {
-            if (message == null || message.isBlank()) {
-                continue;
-            }
-            if (!result.isEmpty()) {
-                result.append("\n\n");
-            }
-            result.append(message);
-        }
-        return result.toString();
     }
 
     private static String value(String message) {

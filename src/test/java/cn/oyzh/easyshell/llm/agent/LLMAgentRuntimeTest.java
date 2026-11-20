@@ -421,6 +421,21 @@ public class LLMAgentRuntimeTest {
         assertEquals("streamed tool result", traces.get("worker-0").conclusion());
     }
 
+    @Test
+    public void workerUsesConfiguredMessageWindow() {
+        RoutingChatModel model = new RoutingChatModel("""
+                {"objective":"query","steps":[
+                  {"agent":"connection","objective":"query current connection"}
+                ]}
+                """);
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(), null,
+                "session tools", "internal tools", "local execution tools",
+                null, "mcp tools", "execution rules", "language rules", null, 7);
+
+        assertEquals(7, runtime.maxMessages());
+    }
+
     @Test(timeout = 3000)
     public void streamingSynthesisStopsWaitingAfterCancellation() throws Exception {
         RoutingChatModel model = new RoutingChatModel("""

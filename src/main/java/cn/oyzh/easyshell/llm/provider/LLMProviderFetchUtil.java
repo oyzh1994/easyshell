@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.llm.provider;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.easyshell.llm.LLMApiType;
 import cn.oyzh.easyshell.llm.LLMModelFetcher;
+import cn.oyzh.fx.plus.util.FXUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -41,12 +42,12 @@ public final class LLMProviderFetchUtil {
         TaskManager.startAsync(() -> {
             try {
                 List<String> models = LLMModelFetcher.fetch(baseUrl, apiKey, apiType);
-                onSuccess.accept(models);
+                FXUtil.runLater(() -> onSuccess.accept(models));
             } catch (Exception ex) {
-                onFailure.accept(ex);
+                FXUtil.runLater(() -> onFailure.accept(ex));
             } finally {
                 if (onComplete != null) {
-                    onComplete.run();
+                    FXUtil.runLater(onComplete);
                 }
             }
         });

@@ -16,7 +16,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -74,28 +73,24 @@ public class ShellLLMUpdateProviderController extends StageController {
         if (type == null) {
             return;
         }
-        String currentModel = this.model.getTextTrim();
         this.fetchModelButton.disable();
         LLMProviderFetchUtil.fetch(
                 this.baseUrl.getTextTrim(),
                 this.sk.getPassword(),
                 type,
-                models -> this.applyFetchedModels(models, currentModel),
+                this::applyFetchedModels,
                 this::showFetchModelsFailure,
                 () -> this.fetchModelButton.enable()
         );
     }
 
-    private void applyFetchedModels(List<String> models, String currentModel) {
+    private void applyFetchedModels(List<String> models) {
         if (models == null || models.isEmpty()) {
             MessageBox.warn(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsEmpty", "No models found"), this.getWindow());
             return;
         }
         this.model.setModels(models);
-        if (StringUtil.isBlank(currentModel)) {
-            this.model.selectItem(models.getFirst());
-        }
-        FXUtil.runWait( this.model::requestFocus);
+        this.model.requestFocus();
         MessageBox.okToast(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsSuccess", "Model list updated"), this.getWindow());
     }
 
@@ -124,17 +119,13 @@ public class ShellLLMUpdateProviderController extends StageController {
             String name = this.name.getTextTrim();
             String baseUrl = this.baseUrl.getTextTrim();
             String sk = this.sk.getPassword();
-            List<String> models = LLMProvider.parseModels(this.model.getTextTrim());
+            List<String> models = this.model.getModels();
             this.provider.setName(name);
             this.provider.setBaseUrl(baseUrl);
             this.provider.setSk(sk);
             this.provider.setApiType(type.ordinal());
             this.provider.setModels(models);
-            if (!models.isEmpty()) {
-                this.provider.setDefaultModel(models.getFirst());
-            } else {
-                this.provider.setDefaultModel(null);
-            }
+            this.provider.setDefaultModel(this.model.getEffectiveDefaultModel());
             if (this.providerStore.update(this.provider)) {
                 this.setProp("provider", this.provider);
                 MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
@@ -156,8 +147,7 @@ public class ShellLLMUpdateProviderController extends StageController {
         this.baseUrl.setText(this.provider.getBaseUrl());
         this.sk.setText(this.provider.getSk());
         this.apiType.setApiType(this.provider.getApiType());
-        this.model.setModels(this.provider.getModels());
-        this.model.setText(this.provider.getModelsText());
+        this.model.setModels(this.provider.getModels(), this.provider.getDefaultModel());
         LLMProviderTemplate template = LLMProviderTemplateManager.INSTANCE.findMatching(
                 this.baseUrl.getTextTrim(), this.apiType.getSelectedType());
         if (template != null) {

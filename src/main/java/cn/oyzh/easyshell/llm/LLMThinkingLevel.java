@@ -37,4 +37,11 @@ public enum LLMThinkingLevel {
      * 最大
      */
     MAX;
+
+    public static LLMThinkingLevel fromOrdinal(Integer ordinal) {
+        LLMThinkingLevel[] levels = values();
+        return ordinal == null || ordinal < 0 || ordinal >= levels.length
+                ? MEDIUM
+                : levels[ordinal];
+    }
 }

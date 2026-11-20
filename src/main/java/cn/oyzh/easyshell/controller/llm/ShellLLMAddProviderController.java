@@ -15,7 +15,6 @@ import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.information.MessageBox;
-import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
@@ -71,28 +70,24 @@ public class ShellLLMAddProviderController extends StageController {
         if (type == null) {
             return;
         }
-        String currentModel = this.model.getTextTrim();
         this.fetchModelButton.disable();
         LLMProviderFetchUtil.fetch(
                 this.baseUrl.getTextTrim(),
                 this.sk.getPassword(),
                 type,
-                models -> this.applyFetchedModels(models, currentModel),
+                this::applyFetchedModels,
                 this::showFetchModelsFailure,
                 () -> this.fetchModelButton.enable()
         );
     }
 
-    private void applyFetchedModels(List<String> models, String currentModel) {
+    private void applyFetchedModels(List<String> models) {
         if (models == null || models.isEmpty()) {
             MessageBox.warn(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsEmpty", "No models found"), this.getWindow());
             return;
         }
         this.model.setModels(models);
-        if (StringUtil.isBlank(currentModel)) {
-            this.model.selectItem(models.getFirst());
-        }
-        FXUtil.runWait(this.model::requestFocus);
+        this.model.requestFocus();
         MessageBox.okToast(I18nResourceBundle.i18nStringWithDefault("shell.llm.fetchModelsSuccess", "Model list updated"), this.getWindow());
     }
 
@@ -121,16 +116,14 @@ public class ShellLLMAddProviderController extends StageController {
             String name = this.name.getTextTrim();
             String baseUrl = this.baseUrl.getTextTrim();
             String sk = this.sk.getPassword();
-            List<String> models = LLMProvider.parseModels(this.model.getTextTrim());
+            List<String> models = this.model.getModels();
             LLMProvider provider = new LLMProvider();
             provider.setName(name);
             provider.setBaseUrl(baseUrl);
             provider.setSk(sk);
             provider.setApiType(type.ordinal());
             provider.setModels(models);
-            if (!models.isEmpty()) {
-                provider.setDefaultModel(models.getFirst());
-            }
+            provider.setDefaultModel(this.model.getEffectiveDefaultModel());
             if (this.providerStore.insert(provider)) {
                 this.setProp("provider", provider);
                 MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());

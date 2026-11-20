@@ -10,5 +10,12 @@ public enum LLMApiType {
     OPENAI,
     ANTHROPIC,
     GEMINI,
-    OLLAMA,
+    OLLAMA;
+
+    public static LLMApiType fromOrdinal(int ordinal) {
+        LLMApiType[] types = values();
+        return ordinal < 0 || ordinal >= types.length
+                ? OPENAI
+                : types[ordinal];
+    }
 }

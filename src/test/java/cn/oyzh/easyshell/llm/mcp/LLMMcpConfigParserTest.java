@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.llm.mcp;
 
+import dev.langchain4j.agent.tool.ToolSpecification;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -68,5 +70,56 @@ public class LLMMcpConfigParserTest {
         assertTrue(mapped.matches("[a-z0-9_-]+"));
         assertTrue(longName.length() <= 64);
         assertEquals(mapped, LLMMcpToolSession.mapToolName(firstPrefix, "read.file"));
+    }
+
+    @Test
+    public void disambiguatesToolNamesThatCollideAfterSanitization() {
+        String prefix = LLMMcpToolSession.toolPrefix(server("collision"), "collision-key");
+        Map<String, String> mappings = LLMMcpToolSession.resolveToolNameMappings(List.of(
+                tool("read file"),
+                tool("read_file"),
+                tool("read-file")), prefix);
+
+        assertEquals(3, mappings.size());
+        assertEquals(3, Set.copyOf(mappings.values()).size());
+        assertTrue(mappings.values().stream().allMatch(name -> name.length() <= 64));
+        assertTrue(mappings.values().stream()
+                .filter(name -> name.contains("read_file"))
+                .count() >= 2);
+    }
+
+    @Test
+    public void duplicateOriginalMcpToolNamesAreRejected() {
+        String prefix = LLMMcpToolSession.toolPrefix(server("duplicate"), "duplicate-key");
+        try {
+            LLMMcpToolSession.resolveToolNameMappings(List.of(
+                    tool("same_name"),
+                    tool("same_name")), prefix);
+            throw new AssertionError("Duplicate original MCP tool names must be rejected");
+        } catch (IllegalArgumentException ex) {
+            assertTrue(ex.getMessage().contains("same_name"));
+        }
+    }
+
+    @Test
+    public void invalidTransportOrdinalUsesStdioDefault() {
+        LLMMcpServer server = new LLMMcpServer();
+        server.setTransportType(999);
+
+        assertEquals(LLMMcpTransport.STDIO.ordinal(), server.getTransportType());
+        assertEquals(LLMMcpTransport.STDIO, server.getTransport());
+    }
+
+    private static LLMMcpServer server(String name) {
+        LLMMcpServer server = new LLMMcpServer();
+        server.setName(name);
+        return server;
+    }
+
+    private static ToolSpecification tool(String name) {
+        return ToolSpecification.builder()
+                .name(name)
+                .description(name)
+                .build();
     }
 }

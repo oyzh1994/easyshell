@@ -144,7 +144,7 @@ public class LLMProvider implements Serializable {
      */
     public String getDefaultModel() {
         if (this.defaultModel != null && !this.defaultModel.isBlank()) {
-            return this.defaultModel;
+            return this.defaultModel.trim();
         }
         List<String> models = this.getModels();
         return models.isEmpty() ? null : models.getFirst();
@@ -156,7 +156,9 @@ public class LLMProvider implements Serializable {
      * @param defaultModel 默认模型
      */
     public void setDefaultModel(String defaultModel) {
-        this.defaultModel = defaultModel;
+        this.defaultModel = defaultModel == null || defaultModel.isBlank()
+                ? null
+                : defaultModel.trim();
     }
 
     /**
@@ -227,11 +229,9 @@ public class LLMProvider implements Serializable {
      */
     @JSONField(serialize = false, deserialize = false)
     public String getApiTypeName() {
+        int apiType = this.getApiType();
         LLMApiType[] types = LLMApiType.values();
-        if (this.apiType >= 0 && this.apiType < types.length) {
-            return types[this.apiType].name();
-        }
-        return String.valueOf(this.apiType);
+        return types[apiType].name();
     }
 
     /**
@@ -284,11 +284,11 @@ public class LLMProvider implements Serializable {
     }
 
     public int getApiType() {
-        return apiType;
+        return LLMApiType.fromOrdinal(this.apiType).ordinal();
     }
 
     public void setApiType(int apiType) {
-        this.apiType = apiType;
+        this.apiType = LLMApiType.fromOrdinal(apiType).ordinal();
     }
 
     public boolean isActive() {

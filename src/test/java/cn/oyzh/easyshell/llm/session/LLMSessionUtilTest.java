@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class LLMSessionUtilTest {
@@ -83,5 +85,26 @@ public class LLMSessionUtilTest {
                 new LLMMessage(LLMMessageType.LLM, 1700000000000L))));
 
         assertEquals(2, session.getMessageCount());
+    }
+
+    @Test
+    public void snapshotIsDetachedFromMutableSession() {
+        LLMSession session = new LLMSession();
+        session.setUid("session-1");
+        session.setTitle("before");
+        session.setMessages("[]");
+        session.setSessionTabId("tab-1");
+
+        LLMSession snapshot = LLMSessionUtil.snapshot(session);
+        session.setTitle("after");
+        session.setMessages("[{\"message\":\"new\"}]");
+        session.setSessionTabId("tab-2");
+
+        assertNotSame(session, snapshot);
+        assertEquals("session-1", snapshot.getUid());
+        assertEquals("before", snapshot.getTitle());
+        assertEquals("[]", snapshot.getMessages());
+        assertEquals("tab-1", snapshot.getSessionTabId());
+        assertNull(LLMSessionUtil.snapshot(null));
     }
 }

@@ -58,6 +58,8 @@ public final class LLMAgentRuntime {
 
     private static final int MAX_TOTAL_RESULTS = 48 * 1024;
 
+    private static final int DEFAULT_MAX_MESSAGES = 30;
+
     private static final long CANCELLATION_POLL_MILLIS = 100;
 
     private final ChatModel chatModel;
@@ -84,6 +86,8 @@ public final class LLMAgentRuntime {
 
     private final LLMToolAudit audit;
 
+    private final int maxMessages;
+
     public LLMAgentRuntime(ChatModel chatModel,
                            StreamingChatModel streamingChatModel,
                            List<LLMTools> tools,
@@ -97,7 +101,8 @@ public final class LLMAgentRuntime {
                            LLMToolAudit audit) {
         this(chatModel, streamingChatModel, tools, mcpSession,
                 sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
-                null, mcpSystemMessage, executionSystemMessage, languageSystemMessage, audit);
+                null, mcpSystemMessage, executionSystemMessage, languageSystemMessage,
+                audit, DEFAULT_MAX_MESSAGES);
     }
 
     public LLMAgentRuntime(ChatModel chatModel,
@@ -112,6 +117,25 @@ public final class LLMAgentRuntime {
                            String executionSystemMessage,
                            String languageSystemMessage,
                            LLMToolAudit audit) {
+        this(chatModel, streamingChatModel, tools, mcpSession,
+                sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
+                sessionContext, mcpSystemMessage, executionSystemMessage, languageSystemMessage,
+                audit, DEFAULT_MAX_MESSAGES);
+    }
+
+    public LLMAgentRuntime(ChatModel chatModel,
+                           StreamingChatModel streamingChatModel,
+                           List<LLMTools> tools,
+                           LLMMcpToolSession mcpSession,
+                           String sessionSystemMessage,
+                           String internalSystemMessage,
+                           String localExecutionSystemMessage,
+                           LLMSessionContext sessionContext,
+                           String mcpSystemMessage,
+                           String executionSystemMessage,
+                           String languageSystemMessage,
+                           LLMToolAudit audit,
+                           int maxMessages) {
         this.chatModel = chatModel;
         this.streamingChatModel = streamingChatModel;
         this.tools = List.copyOf(tools == null ? List.of() : tools);
@@ -124,6 +148,7 @@ public final class LLMAgentRuntime {
         this.executionSystemMessage = value(executionSystemMessage);
         this.languageSystemMessage = value(languageSystemMessage);
         this.audit = audit;
+        this.maxMessages = Math.max(1, maxMessages);
     }
 
     public ChatResponse execute(String task,
@@ -309,7 +334,9 @@ public final class LLMAgentRuntime {
             } else {
                 AiServices<Worker> services = AiServices.builder(Worker.class)
                         .chatModel(this.chatModel)
-                        .chatMemory(MessageWindowChatMemory.builder().maxMessages(30).build())
+                        .chatMemory(MessageWindowChatMemory.builder()
+                                .maxMessages(this.maxMessages)
+                                .build())
                         .systemMessage(system)
                         .maxToolCallingRoundTrips(MAX_TOOL_ROUNDS)
                         .toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
@@ -359,7 +386,9 @@ public final class LLMAgentRuntime {
                                                BooleanSupplier cancelled) throws Exception {
         AiServices<StreamingWorker> services = AiServices.builder(StreamingWorker.class)
                 .streamingChatModel(this.streamingChatModel)
-                .chatMemory(MessageWindowChatMemory.builder().maxMessages(30).build())
+                .chatMemory(MessageWindowChatMemory.builder()
+                        .maxMessages(this.maxMessages)
+                        .build())
                 .systemMessage(system)
                 .maxToolCallingRoundTrips(MAX_TOOL_ROUNDS)
                 .toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
@@ -840,6 +869,10 @@ public final class LLMAgentRuntime {
                 JulLog.warn("llm agent response listener failed", ex);
             }
         }
+    }
+
+    int maxMessages() {
+        return this.maxMessages;
     }
 
     private static String failureMessage(Throwable throwable) {

@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
@@ -64,6 +65,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -171,6 +173,8 @@ public class LLMView extends FXSplitPane {
     private long taskStartedAt;
 
     private long lastTaskDuration;
+
+    private boolean updatingModels;
 
     public LLMView() {
         this.getStyleClass().add("llm-view");
@@ -357,7 +361,8 @@ public class LLMView extends FXSplitPane {
                 this.buildToolAccessModeMenu(),
                 this.buildStreamingMenu(),
                 this.buildTimeoutMenu(),
-                this.buildMessageLimitMenu()
+                this.buildMessageLimitMenu(),
+                this.buildMaxOutputTokensMenu()
         );
         menu.show(this.settingsButton, Side.TOP, 0, -4);
     }
@@ -568,8 +573,36 @@ public class LLMView extends FXSplitPane {
         return menu;
     }
 
+    /**
+     * LLM单次响应最大输出Token可选项
+     */
+    public static final List<Integer> LLM_MAX_OUTPUT_TOKEN_OPTIONS =
+            List.of(2048, 4096, 8192, 16384, 32768, 65536, 131072);
+
+    private Menu buildMaxOutputTokensMenu() {
+        int selected = this.setting.getLlmMaxOutputTokens();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.maxOutputTokens"));
+        ToggleGroup group = new ToggleGroup();
+        for (Integer limit : LLM_MAX_OUTPUT_TOKEN_OPTIONS) {
+            RadioMenuItem item = new RadioMenuItem(String.valueOf(limit));
+            item.setToggleGroup(group);
+            item.setSelected(limit == selected);
+            item.setOnAction(event -> this.setLlmMaxOutputTokens(limit));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
     private void initSelectors() {
-        this.providerComboBox.valueProperty().addListener((observable, oldValue, newValue) -> this.updateModels(newValue));
+        this.providerComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            this.syncProviderSetting(newValue);
+            this.updateModels(newValue);
+        });
+        this.modelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!this.updatingModels && StringUtil.isNotBlank(newValue)) {
+                this.persistModel(newValue);
+            }
+        });
         this.thinkingLevelComboBox.selectLevel(this.getSavedThinkingLevel());
         this.thinkingLevelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -592,17 +625,32 @@ public class LLMView extends FXSplitPane {
     }
 
     private void updateModels(LLMProvider provider) {
-        List<String> models = provider == null ? List.of() : provider.getModels();
-        String selected = this.modelComboBox.getValue();
-        this.modelComboBox.getItems().setAll(models);
-        if (selected != null && models.contains(selected)) {
-            this.modelComboBox.setValue(selected);
-        } else if (provider != null && models.contains(provider.getDefaultModel())) {
-            this.modelComboBox.getSelectionModel().select(provider.getDefaultModel());
-        } else if (!models.isEmpty()) {
-            this.modelComboBox.getSelectionModel().selectFirst();
-        } else {
-            this.modelComboBox.setValue(null);
+        List<String> models = new ArrayList<>(provider == null ? List.of() : provider.getModels());
+        if (provider != null && StringUtil.isNotBlank(provider.getDefaultModel())
+                && !models.contains(provider.getDefaultModel())) {
+            models.addFirst(provider.getDefaultModel());
+        }
+        models = List.copyOf(models);
+        String target = LLMUtil.selectModel(models,
+                this.modelComboBox.getValue(),
+                this.setting.getLlmModel(),
+                provider == null ? null : provider.getDefaultModel());
+        this.updatingModels = true;
+        try {
+            this.modelComboBox.getItems().setAll(models);
+            this.modelComboBox.setValue(target);
+        } finally {
+            this.updatingModels = false;
+        }
+        if (target != null) {
+            this.persistModel(target);
+        }
+    }
+
+    private void persistModel(String model) {
+        if (!Objects.equals(this.setting.getLlmModel(), model)) {
+            this.setting.setLlmModel(model);
+            this.settingStore.replace(this.setting);
         }
     }
 
@@ -1047,6 +1095,25 @@ public class LLMView extends FXSplitPane {
     }
 
     /**
+     * 获取单次响应最大输出Token数
+     *
+     * @return 最大输出Token数
+     */
+    public int getLlmMaxOutputTokens() {
+        return this.setting.getLlmMaxOutputTokens();
+    }
+
+    /**
+     * 设置单次响应最大输出Token数，并持久化到设置
+     *
+     * @param limit 最大输出Token数
+     */
+    public void setLlmMaxOutputTokens(int limit) {
+        this.setting.setLlmMaxOutputTokens(limit);
+        this.settingStore.replace(this.setting);
+    }
+
+    /**
      * 设置请求超时时间，并持久化到设置
      *
      * @param timeout 超时时间
@@ -1056,6 +1123,15 @@ public class LLMView extends FXSplitPane {
             this.setting.setLlmTimeoutMinutes(timeout.getMinutes());
             this.settingStore.replace(this.setting);
         }
+    }
+
+    /**
+     * 获取请求超时时间（分钟）
+     *
+     * @return 分钟数，0表示无限制
+     */
+    public int getLlmTimeoutMinutes() {
+        return this.setting.getLlmTimeoutMinutes();
     }
 
     /**

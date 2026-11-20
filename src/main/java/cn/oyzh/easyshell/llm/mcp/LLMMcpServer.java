@@ -108,11 +108,14 @@ public class LLMMcpServer implements Serializable {
     }
 
     public int getTransportType() {
-        return this.transportType == null ? LLMMcpTransport.STDIO.ordinal() : this.transportType;
+        return LLMMcpTransport.fromOrdinal(
+                this.transportType == null
+                        ? LLMMcpTransport.STDIO.ordinal()
+                        : this.transportType).ordinal();
     }
 
     public void setTransportType(int transportType) {
-        this.transportType = transportType;
+        this.transportType = LLMMcpTransport.fromOrdinal(transportType).ordinal();
     }
 
     @JSONField(serialize = false, deserialize = false)

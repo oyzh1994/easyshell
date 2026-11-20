@@ -7,6 +7,7 @@ import cn.oyzh.common.util.BooleanUtil;
 import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.LLMParameterUtil;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
@@ -75,6 +76,12 @@ public class ShellSetting extends AppSetting {
     private String llmProviderUid;
 
     /**
+     * LLM当前选择的模型
+     */
+    @Column
+    private String llmModel;
+
+    /**
      * LLM是否启用流式传输
      */
     @Column
@@ -84,7 +91,13 @@ public class ShellSetting extends AppSetting {
      * LLM消息上限
      */
     @Column
-    private Integer llmMaxMessages = 20;
+    private Integer llmMaxMessages = LLMParameterUtil.DEFAULT_MAX_MESSAGES;
+
+    /**
+     * LLM单次响应最大输出Token数
+     */
+    @Column
+    private Integer llmMaxOutputTokens = LLMParameterUtil.DEFAULT_MAX_OUTPUT_TOKENS;
 
     /**
      * LLM执行模式
@@ -464,7 +477,7 @@ public class ShellSetting extends AppSetting {
      * @return 思考强度序号
      */
     public int getLlmThinkingLevel() {
-        return this.llmThinkingLevel == null ? LLMThinkingLevel.MEDIUM.ordinal() : this.llmThinkingLevel;
+        return LLMThinkingLevel.fromOrdinal(this.llmThinkingLevel).ordinal();
     }
 
     /**
@@ -473,7 +486,25 @@ public class ShellSetting extends AppSetting {
      * @param llmThinkingLevel 思考强度序号
      */
     public void setLlmThinkingLevel(int llmThinkingLevel) {
-        this.llmThinkingLevel = llmThinkingLevel;
+        this.llmThinkingLevel = LLMThinkingLevel.fromOrdinal(llmThinkingLevel).ordinal();
+    }
+
+    /**
+     * 获取LLM当前选择的模型
+     *
+     * @return 模型名称
+     */
+    public String getLlmModel() {
+        return this.llmModel;
+    }
+
+    /**
+     * 设置LLM当前选择的模型
+     *
+     * @param llmModel 模型名称
+     */
+    public void setLlmModel(String llmModel) {
+        this.llmModel = llmModel == null ? null : llmModel.trim();
     }
 
     /**
@@ -518,7 +549,10 @@ public class ShellSetting extends AppSetting {
      * @return 消息上限
      */
     public int getLlmMaxMessages() {
-        return this.llmMaxMessages == null ? 20 : this.llmMaxMessages;
+        if (this.llmMaxMessages == null) {
+            return LLMParameterUtil.DEFAULT_MAX_MESSAGES;
+        }
+        return LLMParameterUtil.normalizeMaxMessages(this.llmMaxMessages);
     }
 
     /**
@@ -527,7 +561,28 @@ public class ShellSetting extends AppSetting {
      * @param llmMaxMessages 消息上限
      */
     public void setLlmMaxMessages(int llmMaxMessages) {
-        this.llmMaxMessages = llmMaxMessages;
+        this.llmMaxMessages = LLMParameterUtil.normalizeMaxMessages(llmMaxMessages);
+    }
+
+    /**
+     * 获取LLM单次响应最大输出Token数
+     *
+     * @return 最大输出Token数
+     */
+    public int getLlmMaxOutputTokens() {
+        return LLMParameterUtil.normalizeMaxOutputTokens(
+                this.llmMaxOutputTokens == null
+                        ? LLMParameterUtil.DEFAULT_MAX_OUTPUT_TOKENS
+                        : this.llmMaxOutputTokens);
+    }
+
+    /**
+     * 设置LLM单次响应最大输出Token数
+     *
+     * @param llmMaxOutputTokens 最大输出Token数
+     */
+    public void setLlmMaxOutputTokens(int llmMaxOutputTokens) {
+        this.llmMaxOutputTokens = LLMParameterUtil.normalizeMaxOutputTokens(llmMaxOutputTokens);
     }
 
     /**
@@ -608,7 +663,9 @@ public class ShellSetting extends AppSetting {
             // 大模型
             this.llmStreaming = setting.llmStreaming;
             this.llmProviderUid = setting.llmProviderUid;
+            this.llmModel = setting.llmModel;
             this.llmMaxMessages = setting.llmMaxMessages;
+            this.llmMaxOutputTokens = setting.llmMaxOutputTokens;
             this.llmThinkingLevel = setting.llmThinkingLevel;
             this.llmExecutionMode = setting.llmExecutionMode;
             this.llmToolAccessMode = setting.llmToolAccessMode;
