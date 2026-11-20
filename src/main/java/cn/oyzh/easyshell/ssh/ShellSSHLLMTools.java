@@ -49,6 +49,20 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
+    @Tool(name = "getServerVersion", value = "Get the remote server operating system and kernel version")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "SSH client is unavailable.";
+        }
+        try {
+            var server = this.client.serverExec();
+            return "osType: " + this.value(server.getOsType())
+                    + "\nuname: " + this.value(server.uname());
+        } catch (Exception ex) {
+            return this.failure("Get server version", ex);
+        }
+    }
+
     @Tool(name = "getServerSummary", value = "Get read-only remote server summary: OS, architecture, uptime, timezone, and locale")
     public String getServerSummary() {
         if (this.client == null) {

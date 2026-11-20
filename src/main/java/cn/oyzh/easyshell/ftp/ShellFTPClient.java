@@ -53,6 +53,17 @@ public class ShellFTPClient implements ShellFileClient<ShellFTPFile> {
      */
     private FTPClient client;
 
+    @Override
+    public String serverVersion() throws Exception {
+        if (this.client == null) {
+            throw new IllegalStateException("FTP client is unavailable.");
+        }
+        int replyCode = this.client.sendCommand("SYST");
+        String reply = this.client.getReplyString();
+        return "systemTypeReplyCode: " + replyCode
+                + "\nserverReply: " + (reply == null ? "" : reply.trim());
+    }
+
     /**
      * 连接
      */

@@ -77,6 +77,12 @@ public class ShellSFTPClient extends ShellBaseSSHClient implements ShellFileClie
      */
     private Supplier<Session> sessionSupplier;
 
+    @Override
+    public String serverVersion() {
+        var server = this.serverExec();
+        return "osType: " + server.getOsType() + "\nuname: " + server.uname();
+    }
+
     /**
      * 连接状态
      */

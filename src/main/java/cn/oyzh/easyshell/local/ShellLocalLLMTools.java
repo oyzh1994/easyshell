@@ -42,6 +42,14 @@ public class ShellLocalLLMTools implements LLMTools {
         return result.toString();
     }
 
+    @Tool(name = "getServerVersion", value = "Get the local operating system and Java runtime versions")
+    public String getServerVersion() {
+        return "osName: " + System.getProperty("os.name")
+                + "\nosVersion: " + System.getProperty("os.version")
+                + "\nosArch: " + System.getProperty("os.arch")
+                + "\njavaVersion: " + Runtime.version();
+    }
+
     @Tool(name = "executeLocalCommand", value = "Execute a command on the local machine")
     public String executeCommand(
             @P(name = "command", value = "The command to execute") String command) {

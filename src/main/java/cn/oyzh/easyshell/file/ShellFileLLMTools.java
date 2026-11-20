@@ -121,6 +121,24 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
+    @Tool(name = "getServerVersion", value = "Get remote file server version or protocol information when the protocol exposes a server version")
+    public String getServerVersion() {
+        try {
+            ShellConnect connect = this.client.getShellConnect();
+            StringBuilder result = new StringBuilder();
+            result.append("type: ").append(this.value(connect == null ? null : connect.getType())).append('\n');
+            result.append("host: ").append(this.value(connect == null ? null : connect.getHost())).append('\n');
+            String version = this.client.serverVersion();
+            result.append("serverVersion: ")
+                    .append(version == null || version.isBlank()
+                            ? "not exposed by this file protocol"
+                            : version);
+            return result.toString();
+        } catch (Exception ex) {
+            return this.failure("Get server version", null, ex);
+        }
+    }
+
     @Tool(name = "resolveRemotePath", value = "Resolve a relative or absolute remote path against the bound connection")
     public String resolveRemotePath(
             @P(name = "path", value = "Remote path to resolve; empty resolves to the remote root") String path) {

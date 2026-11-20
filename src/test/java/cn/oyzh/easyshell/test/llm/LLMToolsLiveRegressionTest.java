@@ -2,16 +2,21 @@ package cn.oyzh.easyshell.test.llm;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.dameng.ShellDamengLLMTools;
+import cn.oyzh.easyshell.file.ShellFileLLMTools;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.local.ShellLocalLLMTools;
 import cn.oyzh.easyshell.mariadb.ShellMariadbLLMTools;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.ShellMongoLLMTools;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mysql.ShellMysqlLLMTools;
+import cn.oyzh.easyshell.oracle.ShellOracleLLMTools;
+import cn.oyzh.easyshell.postgresql.ShellPostgresqlLLMTools;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.redis.ShellRedisLLMTools;
 import cn.oyzh.easyshell.sqlite.ShellSqliteLLMTools;
 import cn.oyzh.easyshell.ssh.ShellSSHLLMTools;
+import cn.oyzh.easyshell.valkey.ShellValkeyLLMTools;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.easyshell.zk.ShellZKLLMTools;
 import dev.langchain4j.agent.tool.ToolSpecification;
@@ -90,7 +95,32 @@ public class LLMToolsLiveRegressionTest {
                 "listBuckets", "listFunctions", "listUsers", "getServerVersion", "pingDatabase", "countCollection")));
         assertTrue(zkNames.containsAll(Set.of(
                 "executeCommand", "getNodeData", "listChildren", "checkNodeExists",
-                "getNodeStat", "getNodeAcl", "getAllChildrenCount")));
+                "getNodeStat", "getNodeAcl", "getAllChildrenCount", "getServerVersion")));
+    }
+
+    @Test
+    public void connectionToolsExposeServerVersion() {
+        List<Object> tools = List.of(
+                new ShellMongoLLMTools(),
+                new ShellZKLLMTools(),
+                new ShellRedisLLMTools(),
+                new ShellValkeyLLMTools(),
+                new ShellMysqlLLMTools(),
+                new ShellMariadbLLMTools(),
+                new ShellPostgresqlLLMTools(),
+                new ShellOracleLLMTools(),
+                new ShellDamengLLMTools(),
+                new ShellSqliteLLMTools(),
+                new ShellSSHLLMTools(),
+                new ShellFileLLMTools<>(),
+                new ShellLocalLLMTools()
+        );
+        for (Object tool : tools) {
+            Set<String> names = ToolSpecifications.toolSpecificationsFrom(tool).stream()
+                    .map(ToolSpecification::name)
+                    .collect(java.util.stream.Collectors.toSet());
+            assertTrue(tool.getClass().getSimpleName() + " missing getServerVersion", names.contains("getServerVersion"));
+        }
     }
 
     @Test

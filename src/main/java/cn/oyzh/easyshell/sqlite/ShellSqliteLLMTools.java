@@ -24,6 +24,19 @@ public class ShellSqliteLLMTools implements LLMTools {
         this.client = client;
     }
 
+    @Tool(name = "getServerVersion", value = "Get the SQLite engine version")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        try {
+            return LLMDBToolsUtil.formatServerVersion(
+                    this.client.getConnManager().connection().getMetaData());
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
     @Tool(name = "executeSql", value = "Execute SQL on the bound SQLite database file")
     public String executeSql(@P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {

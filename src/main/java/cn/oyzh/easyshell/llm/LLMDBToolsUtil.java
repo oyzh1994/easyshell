@@ -17,6 +17,7 @@ import cn.oyzh.fx.db.query.DBQueryResults;
 import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -45,6 +46,23 @@ public final class LLMDBToolsUtil {
     private static final int MAX_SERIALIZED_CHARS = 64 * 1024;
 
     private LLMDBToolsUtil() {
+    }
+
+    /**
+     * Formats database server version metadata for LLM tool responses.
+     *
+     * @param metadata JDBC database metadata
+     * @return server version information
+     * @throws SQLException metadata read failure
+     */
+    public static String formatServerVersion(DatabaseMetaData metadata) throws SQLException {
+        if (metadata == null) {
+            return "Server version metadata is unavailable.";
+        }
+        return "productName: " + metadata.getDatabaseProductName()
+                + "\nproductVersion: " + metadata.getDatabaseProductVersion()
+                + "\nmajorVersion: " + metadata.getDatabaseMajorVersion()
+                + "\nminorVersion: " + metadata.getDatabaseMinorVersion();
     }
 
     public static String formatList(String label, Collection<String> values, String filter, int maxResults) {

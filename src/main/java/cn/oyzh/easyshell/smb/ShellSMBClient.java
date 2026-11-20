@@ -76,6 +76,16 @@ public class ShellSMBClient implements ShellFileClient<ShellSMBFile> {
      */
     private SMBClient smbClient;
 
+    @Override
+    public String serverVersion() {
+        if (this.smbSession == null) {
+            throw new IllegalStateException("SMB session is unavailable.");
+        }
+        var connection = this.smbSession.getConnection();
+        return "remoteHostname: " + connection.getRemoteHostname()
+                + "\nnegotiatedProtocol: " + connection.getNegotiatedProtocol();
+    }
+
     /**
      * 连接
      */

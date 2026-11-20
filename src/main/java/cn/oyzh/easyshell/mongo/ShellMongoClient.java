@@ -112,6 +112,11 @@ import java.util.function.Function;
  */
 public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
 
+    @Override
+    public String serverVersion() {
+        return this.selectVersion();
+    }
+
     /**
      * 连接信息
      */

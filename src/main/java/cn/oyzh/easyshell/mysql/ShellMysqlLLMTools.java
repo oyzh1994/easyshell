@@ -22,6 +22,19 @@ public class ShellMysqlLLMTools implements LLMTools {
         this.client = client;
     }
 
+    @Tool(name = "getServerVersion", value = "Get the MySQL database server version")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        try {
+            return LLMDBToolsUtil.formatServerVersion(
+                    this.client.getConnManager().connection().getMetaData());
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
     @Tool(name = "executeSql", value = "Execute SQL on the bound MySQL connection")
     public String executeSql(
             @P(name = "database", value = "MySQL database name") String database,

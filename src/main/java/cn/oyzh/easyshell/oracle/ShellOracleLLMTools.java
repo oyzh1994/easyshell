@@ -22,6 +22,19 @@ public class ShellOracleLLMTools implements LLMTools {
         this.client = client;
     }
 
+    @Tool(name = "getServerVersion", value = "Get the Oracle database server version")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "Database client is unavailable.";
+        }
+        try {
+            return LLMDBToolsUtil.formatServerVersion(
+                    this.client.getConnManager().connection().getMetaData());
+        } catch (Exception ex) {
+            return "Execution failed: " + ex.getMessage();
+        }
+    }
+
     @Tool(name = "executeSql", value = "Execute SQL on the bound Oracle connection")
     public String executeSql(
             @P(name = "schema", value = "Oracle schema name") String schema,

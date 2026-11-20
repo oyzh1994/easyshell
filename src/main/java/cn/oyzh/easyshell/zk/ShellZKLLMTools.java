@@ -30,6 +30,22 @@ public class ShellZKLLMTools implements LLMTools {
         this.client = client;
     }
 
+    @Tool(name = "getServerVersion", value = "Get ZooKeeper server build and version information")
+    public String getServerVersion() {
+        if (this.client == null) {
+            return "ZooKeeper client is unavailable.";
+        }
+        try {
+            String result = this.client.srvr();
+            return result == null || result.isBlank()
+                    ? "Server version information is unavailable."
+                    : result;
+        } catch (Exception ex) {
+            return "Execution failed: " + (ex.getMessage() == null || ex.getMessage().isBlank()
+                    ? ex.getClass().getSimpleName() : ex.getMessage());
+        }
+    }
+
     @Tool("Execute a ZooKeeper command on the bound connection")
     public String executeCommand(
             @P(name = "command", value = "ZooKeeper command") String command) {

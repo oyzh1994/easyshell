@@ -27,6 +27,16 @@ import java.util.function.Function;
 public interface ShellFileClient<E extends ShellFile> extends ShellBaseClient {
 
     /**
+     * Returns server version information when exposed by the protocol.
+     *
+     * @return server version information, or null when unavailable
+     * @throws Exception query failure
+     */
+    default String serverVersion() throws Exception {
+        return null;
+    }
+
+    /**
      * 列举文件
      *
      * @param filePath 文件路径
