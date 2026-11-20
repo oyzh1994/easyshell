@@ -1,6 +1,8 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.provider;
 
 import cn.oyzh.common.thread.TaskManager;
+import cn.oyzh.easyshell.llm.LLMApiType;
+import cn.oyzh.easyshell.llm.LLMModelFetcher;
 
 import java.util.List;
 import java.util.function.Consumer;

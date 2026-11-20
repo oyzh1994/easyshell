@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.llm;
 import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.ResourceUtil;
+import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.anthropic.AnthropicStreamingChatModel;

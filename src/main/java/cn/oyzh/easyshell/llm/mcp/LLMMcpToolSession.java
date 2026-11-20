@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.mcp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;

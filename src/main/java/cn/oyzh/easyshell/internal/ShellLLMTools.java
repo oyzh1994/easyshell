@@ -15,7 +15,7 @@ import cn.oyzh.easyshell.domain.redis.ShellRedisCollect;
 import cn.oyzh.easyshell.domain.zk.ShellZKCollect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
-import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMSession;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMToolAudit;

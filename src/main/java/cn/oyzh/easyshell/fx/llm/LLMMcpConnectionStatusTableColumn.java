@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
-import cn.oyzh.easyshell.llm.LLMMcpConnectionState;
-import cn.oyzh.easyshell.llm.LLMMcpServer;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpConnectionState;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.fx.plus.controls.table.FXTableCell;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
 import javafx.beans.property.ReadOnlyObjectWrapper;

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.mcp;
 
 import cn.oyzh.i18n.I18nResourceBundle;
 

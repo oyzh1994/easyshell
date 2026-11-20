@@ -1,5 +1,6 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.provider;
 
+import cn.oyzh.easyshell.llm.LLMApiType;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;

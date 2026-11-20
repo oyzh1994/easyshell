@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
-import cn.oyzh.easyshell.llm.LLMProviderTemplate;
-import cn.oyzh.easyshell.llm.LLMProviderTemplateManager;
+import cn.oyzh.easyshell.llm.provider.LLMProviderTemplate;
+import cn.oyzh.easyshell.llm.provider.LLMProviderTemplateManager;
 import cn.oyzh.fx.gui.text.field.SelectTextFiled;
 import cn.oyzh.fx.plus.converter.SimpleStringConverter;
 import cn.oyzh.i18n.I18nResourceBundle;

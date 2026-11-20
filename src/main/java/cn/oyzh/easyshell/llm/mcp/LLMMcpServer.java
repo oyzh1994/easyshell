@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.mcp;
 
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;

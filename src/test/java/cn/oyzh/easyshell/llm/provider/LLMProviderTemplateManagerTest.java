@@ -1,5 +1,6 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.provider;
 
+import cn.oyzh.easyshell.llm.LLMApiType;
 import org.junit.Test;
 
 import java.util.HashSet;

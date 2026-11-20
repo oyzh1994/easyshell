@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.store.llm;
 
-import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 
 import java.util.List;

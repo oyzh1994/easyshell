@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.mcp;
 
 import cn.oyzh.common.dto.Project;
 import cn.oyzh.common.util.StringUtil;

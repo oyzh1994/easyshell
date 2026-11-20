@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.mcp;
 
 import com.alibaba.fastjson2.JSON;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;

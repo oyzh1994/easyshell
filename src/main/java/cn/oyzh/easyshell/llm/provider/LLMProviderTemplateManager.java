@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.provider;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.llm.LLMApiType;
 
 import java.util.LinkedHashMap;
 import java.util.List;

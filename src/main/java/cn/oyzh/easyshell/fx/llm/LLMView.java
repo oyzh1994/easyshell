@@ -8,7 +8,7 @@ import cn.oyzh.easyshell.llm.LLMAttachmentCache;
 import cn.oyzh.easyshell.llm.LLMDurationUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
-import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
 import cn.oyzh.easyshell.llm.LLMSessionTab;

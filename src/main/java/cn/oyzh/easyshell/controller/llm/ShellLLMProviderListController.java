@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.easyshell.fx.llm.LLMProviderTableView;
-import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.FXConst;

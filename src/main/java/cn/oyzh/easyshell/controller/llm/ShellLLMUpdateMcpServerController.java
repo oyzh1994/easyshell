@@ -2,9 +2,9 @@ package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.common.exception.ExceptionUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.easyshell.llm.LLMMcpClientFactory;
-import cn.oyzh.easyshell.llm.LLMMcpServer;
-import cn.oyzh.easyshell.llm.LLMMcpTransport;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpClientFactory;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpTransport;
 import cn.oyzh.easyshell.fx.llm.LLMMcpUiUtil;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph;

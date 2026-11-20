@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.mcp;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

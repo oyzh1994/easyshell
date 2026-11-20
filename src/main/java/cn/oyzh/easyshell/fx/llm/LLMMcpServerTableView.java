@@ -1,9 +1,8 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.llm.LLMMcpServer;
+import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
-import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.menu.FXMenuItem;

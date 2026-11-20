@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.fx.llm;
 
-import cn.oyzh.easyshell.llm.LLMProvider;
+import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.fx.plus.controls.table.FXTableCell;
 import cn.oyzh.fx.plus.controls.table.FXTableColumn;
