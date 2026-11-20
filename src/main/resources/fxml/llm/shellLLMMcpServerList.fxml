@@ -63,12 +63,12 @@
         </FXHBox>
         <LLMMcpServerTableView fx:id="serverTableView" flexWidth="100% - 50" flexHeight="100% - 60">
             <columns>
-                <FXTableColumn prefWidth="170" valueName="name" text="%base.name"/>
-                <FXTableColumn prefWidth="130" valueName="transportName" text="%base.transport"/>
-                <FXTableColumn flexWidth="100% - 725" valueName="endpointText" text="%shell.llm.mcp.endpoint"/>
+                <FXTableColumn prefWidth="140" valueName="name" text="%base.name"/>
+                <FXTableColumn prefWidth="110" valueName="transportName" text="%base.transport"/>
+                <FXTableColumn flexWidth="100% - 680" valueName="endpointText" text="%shell.llm.mcp.endpoint"/>
                 <FXTableColumn prefWidth="190" valueName="toolFilterText" text="%shell.llm.mcp.toolFilterShort"/>
-                <LLMMcpConnectionStatusTableColumn prefWidth="120" text="%shell.llm.mcp.connectionStatus"/>
-                <LLMMcpServerEnabledTableColumn fx:id="enabledColumn" prefWidth="100" text="%base.status"/>
+                <LLMMcpConnectionStatusTableColumn prefWidth="135" text="%shell.llm.mcp.connectionStatus"/>
+                <LLMMcpServerEnabledTableColumn fx:id="enabledColumn" text="%base.status"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="30" top="7"/>

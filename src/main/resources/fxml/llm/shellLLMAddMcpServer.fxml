@@ -6,7 +6,6 @@
 <?import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
-<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
 <?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
 <?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
@@ -14,9 +13,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch?>
 <?import cn.oyzh.fx.plus.controls.button.IconButton?>
-<?import cn.oyzh.fx.plus.controls.button.FXButton?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController"
         realWidth="800" realHeight="820">
@@ -122,18 +119,6 @@
             <Insets left="30" top="5"/>
         </VBox.margin>
     </ClearableTextField>
-    <InfoLabel text="%base.options">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHBox>
-        <FXToggleSwitch fx:id="enabled" text="%base.enable">
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXToggleSwitch>
-    </FXHBox>
     <FXHBox>
         <SubmitButton onAction="#add">
             <HBox.margin>

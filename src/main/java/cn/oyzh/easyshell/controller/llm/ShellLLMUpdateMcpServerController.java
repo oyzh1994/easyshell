@@ -15,7 +15,6 @@ import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.text.area.FXTextArea;
-import cn.oyzh.fx.plus.controls.toggle.FXToggleSwitch;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
@@ -72,9 +71,6 @@ public class ShellLLMUpdateMcpServerController extends StageController {
 
     @FXML
     private ClearableTextField timeout;
-
-    @FXML
-    private FXToggleSwitch enabled;
 
     @FXML
     private TestSVGGlyph testGlyph;
@@ -179,7 +175,6 @@ public class ShellLLMUpdateMcpServerController extends StageController {
         server.setHeadersText(this.headers.getText());
         server.setToolNamesText(this.toolNames.getText());
         server.setTimeoutSeconds(timeoutSeconds);
-        server.setEnabled(this.enabled.isSelected());
         try {
             LLMMcpClientFactory.validateConfiguration(server);
         } catch (Exception ex) {
@@ -203,7 +198,6 @@ public class ShellLLMUpdateMcpServerController extends StageController {
         this.headers.setText(this.server.getHeadersText());
         this.toolNames.setText(this.server.getToolNamesText());
         this.timeout.setText(String.valueOf(this.server.getTimeoutSeconds()));
-        this.enabled.setSelected(this.server.isEnabled());
         this.updateTransportFields();
         LLMMcpUiUtil.clearStatus(this.testResult);
         this.stage.switchOnTab();
