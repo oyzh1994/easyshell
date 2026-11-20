@@ -3,11 +3,14 @@ package cn.oyzh.easyshell.fx.llm;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.fx.plus.controls.list.FXListView;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -30,11 +33,14 @@ public class LLMListView extends FXListView<LLMMessage> {
 
     private Runnable messageUpdateHandler;
 
+    private final BooleanProperty thinkingVisible =
+            new SimpleBooleanProperty(ShellSettingStore.SETTING.isLlmShowThinking());
+
     public LLMListView() {
         this.getStyleClass().add("llm-message-list");
         this.setFocusTraversable(false);
         this.setPadding(Insets.EMPTY);
-        this.setCellFactory(list -> new LLMMessageCell());
+        this.setCellFactory(list -> new LLMMessageCell(this.thinkingVisible));
         this.setSkin(new LLMListViewSkin(this));
         Label placeholder = new Label(I18nResourceBundle.i18nString("shell.llm.chatPlaceholder"));
         placeholder.getStyleClass().add("llm-placeholder");
@@ -240,6 +246,19 @@ public class LLMListView extends FXListView<LLMMessage> {
      */
     public void setMessageUpdateHandler(Runnable messageUpdateHandler) {
         this.messageUpdateHandler = messageUpdateHandler;
+    }
+
+    /**
+     * Updates whether thinking sections are rendered in message cells.
+     *
+     * @param visible whether to show thinking
+     */
+    public void setThinkingVisible(boolean visible) {
+        if (this.thinkingVisible.get() != visible) {
+            this.thinkingVisible.set(visible);
+            this.refresh();
+            this.resetMessageCellSizes();
+        }
     }
 
     private void notifyMessageUpdated() {

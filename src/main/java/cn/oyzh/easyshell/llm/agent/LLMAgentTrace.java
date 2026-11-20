@@ -86,6 +86,8 @@ public record LLMAgentTrace(String id,
 
     public enum Type {
 
+        SINGLE,
+
         PLANNER,
 
         WORKER,

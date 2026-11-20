@@ -11,42 +11,44 @@ import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
+import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.LLMRequestTimeout;
+import cn.oyzh.easyshell.llm.LLMResponseUtil;
+import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
+import cn.oyzh.easyshell.llm.LLMTabCapability;
+import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.llm.LLMUtil;
+import cn.oyzh.easyshell.llm.agent.LLMAgentEvent;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEventType;
+import cn.oyzh.easyshell.llm.agent.LLMAgentListener;
+import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
-import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
-import cn.oyzh.easyshell.llm.LLMResponseUtil;
-import cn.oyzh.easyshell.llm.LLMRequestTimeout;
-import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
 import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
-import cn.oyzh.easyshell.llm.LLMTabCapability;
-import cn.oyzh.easyshell.llm.LLMThinkingLevel;
-import cn.oyzh.easyshell.llm.agent.LLMAgentEvent;
-import cn.oyzh.easyshell.llm.agent.LLMAgentListener;
-import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
-import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
-import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
-import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
+import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.tool.LLMToolSelection;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
-import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
-import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
+import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.controller.SubStageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import dev.langchain4j.data.message.AiMessage;
@@ -61,7 +63,6 @@ import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.memory.ChatMemoryService;
 import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -217,6 +218,8 @@ public class ChatController extends SubStageController {
 
         private LLMThinkingLevel thinkingLevel;
 
+        private LLMAgentMode agentMode;
+
         private LLMSessionTab sessionTab;
 
         private LLMTools sessionTools;
@@ -322,7 +325,7 @@ public class ChatController extends SubStageController {
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
                     toolSelection.localExecutionSystemMessage(), sessionContext,
-                    executionMode, audit, request.maxMessages);
+                    executionMode, audit, request.maxMessages, request.agentMode);
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider,
@@ -335,7 +338,7 @@ public class ChatController extends SubStageController {
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
                     toolSelection.localExecutionSystemMessage(), sessionContext,
-                    executionMode, audit, request.maxMessages);
+                    executionMode, audit, request.maxMessages, request.agentMode);
         }
         return this.assistant;
     }
@@ -350,13 +353,14 @@ public class ChatController extends SubStageController {
                                                LLMSessionContext sessionContext,
                                                LLMExecutionMode executionMode,
                                                LLMToolAudit audit,
-                                               int maxMessages) {
+                                               int maxMessages,
+                                               LLMAgentMode agentMode) {
         String mcpSystemMessage = mcpSession == null ? "" : mcpSession.getSystemMessage();
         return new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
                 sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
                 sessionContext, mcpSystemMessage,
                 LLMUtil.executionSystemMessage(executionMode),
-                LLMUtil.languageSystemMessage(), audit, maxMessages);
+                LLMUtil.languageSystemMessage(), audit, maxMessages, agentMode);
     }
 
     private static String joinSystemMessages(String... messages) {
@@ -410,6 +414,7 @@ public class ChatController extends SubStageController {
             request.chatMemory = this.buildChatMemory(message);
             request.sessionTab = this.view.getSelectedSession();
             request.thinkingLevel = this.view.getSelectedThinkingLevel();
+            request.agentMode = this.view.getSelectedAgentMode();
             request.executionMode = this.view.getSelectedExecutionMode();
             request.toolAccessMode = this.view.getSelectedToolAccessMode();
             request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
@@ -552,6 +557,7 @@ public class ChatController extends SubStageController {
                                 return;
                             }
                             if (firstThinking.getAndSet(false)
+                                    && view.isShowThinking()
                                     && Objects.equals(targetPlaceholder.getMessage(), ShellI18nHelper.thinkingPlaceholder())) {
                                 this.view.replaceMessage(targetPlaceholder, "");
                             }
@@ -639,7 +645,9 @@ public class ChatController extends SubStageController {
                             if (!isRequestActive(request) || StringUtil.isBlank(text)) {
                                 return;
                             }
-                            if (firstThinking.getAndSet(false) && firstResponse.get()) {
+                            if (firstThinking.getAndSet(false)
+                                    && firstResponse.get()
+                                    && view.isShowThinking()) {
                                 view.replaceMessage(placeholder, "");
                             }
                             view.appendThinking(placeholder, text);
@@ -1007,41 +1015,39 @@ public class ChatController extends SubStageController {
     }
 
     private void saveCurrentSession() {
-        if (!Platform.isFxApplicationThread()) {
-            Platform.runLater(this::saveCurrentSession);
-            return;
-        }
-        // 请求进行中仅更新界面，避免持久化未完成的 LLM 消息
-        if (this.activeRequest != null) {
-            return;
-        }
-        LLMSession session = this.currentSession;
-        if (session == null) {
-            return;
-        }
-        LLMSessionTab selectedTab = this.view.getSelectedSession();
-        if (selectedTab != null && selectedTab.getId() != null && !Objects.equals(session.getSessionTabId(), selectedTab.getId())) {
-            session.setSessionTabId(selectedTab.getId());
-        }
-        List<LLMMessage> messages = this.view.getMessages();
-        session.setMessages(LLMSessionUtil.toJson(messages));
-        session.touch();
-        boolean empty = messages.isEmpty();
-        LLMSession snapshot = LLMSessionUtil.snapshot(session);
-        long saveVersion = this.sessionSaveVersion.incrementAndGet();
-        TaskManager.cancel(this.sessionSaveTask);
-        this.sessionSaveTask = TaskManager.startAsync(() -> {
-            synchronized (this.sessionSaveLock) {
-                if (saveVersion != this.sessionSaveVersion.get()) {
-                    return;
-                }
-                if (empty && !this.sessionStore.exist(snapshot.getUid())) {
-                    return;
-                }
-                if (!this.sessionStore.save(snapshot)) {
-                    JulLog.error("save llm session fail: " + snapshot.getUid());
-                }
+        FXUtil.runLater(() -> {
+            // 请求进行中仅更新界面，避免持久化未完成的 LLM 消息
+            if (this.activeRequest != null) {
+                return;
             }
+            LLMSession session = this.currentSession;
+            if (session == null) {
+                return;
+            }
+            LLMSessionTab selectedTab = this.view.getSelectedSession();
+            if (selectedTab != null && selectedTab.getId() != null && !Objects.equals(session.getSessionTabId(), selectedTab.getId())) {
+                session.setSessionTabId(selectedTab.getId());
+            }
+            List<LLMMessage> messages = this.view.getMessages();
+            session.setMessages(LLMSessionUtil.toJson(messages));
+            session.touch();
+            boolean empty = messages.isEmpty();
+            LLMSession snapshot = LLMSessionUtil.snapshot(session);
+            long saveVersion = this.sessionSaveVersion.incrementAndGet();
+            TaskManager.cancel(this.sessionSaveTask);
+            this.sessionSaveTask = TaskManager.startAsync(() -> {
+                synchronized (this.sessionSaveLock) {
+                    if (saveVersion != this.sessionSaveVersion.get()) {
+                        return;
+                    }
+                    if (empty && !this.sessionStore.exist(snapshot.getUid())) {
+                        return;
+                    }
+                    if (!this.sessionStore.save(snapshot)) {
+                        JulLog.error("save llm session fail: " + snapshot.getUid());
+                    }
+                }
+            });
         });
     }
 

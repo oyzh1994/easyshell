@@ -496,7 +496,7 @@ local_get_server_version
 - Session 测试覆盖异步保存使用的不可变快照。
 - 第 7、8 项依赖 T5 的运行时拦截；按用户要求 T5 暂不处理，因此本轮不实现、不伪造这两项测试，待 T5 恢复时补齐。
 - `mvn -Dtest='*LLM*Test,I18nResourceIntegrityTest#easyShellLocalesHaveSameKeysAndNoEmptyValues+placeholdersAreConsistentAcrossLocales+onlySupportedLocalesRemainInRuntimeResources' test`
-  通过 146 项，0 失败，2 项外部环境测试跳过。
+  通过 152 项，0 失败，2 项外部环境测试跳过。
 
 ## 5. 建议处理顺序
 
@@ -538,6 +538,8 @@ local_get_server_version
 - 最大输出 Token 此前固定为 8192；现增加设置、持久化、菜单入口、边界归一化和请求快照。
 - 请求超时、消息窗口和最大输出 Token 在发送时一起形成请求快照，避免请求执行期间修改设置导致同一请求参数不一致。
 - 思考强度按供应商转换为合法参数；Anthropic 思考预算始终小于输出 Token 上限，无法容纳思考预算时不会发送非法配置。
+- 新增独立于思考强度的“思考过程显示”设置。关闭时模型仍按原思考强度运行并继续生成/保存思考数据，仅在 UI 隐藏普通消息思考与 Agent 轨迹中的思考段，执行目标、耗时、结果和错误继续显示。
+- 新增单 Agent / 多 Agent 模式设置，默认多 Agent。单 Agent 跳过 Planner、分步 Worker 编排和最终汇总 Agent，直接使用当前请求选择的普通工具与独立 MCP 工具执行，降低简单任务的模型调用和 Token 消耗；多 Agent 保持原有规划、作用域隔离和汇总验证流程。
 - Agent Worker 不再硬编码 30 条消息，改为使用 LLM 消息窗口设置。
 - 多组工具提示词合并时去除重复的语言和执行规则，避免 SESSION、LOCAL_EXECUTION、INTERNAL 组合导致提示词重复膨胀。
 - MCP 工具名按 Server 预先生成映射，清洗碰撞时稳定加哈希消歧；原始重复名称和跨 Server 最终名称冲突会在注册前拒绝。

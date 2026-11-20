@@ -1,12 +1,14 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -39,6 +41,8 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
      */
     private LLMMessage boundMessage;
 
+    private final BooleanProperty thinkingVisible;
+
     /**
      * 已应用到消息编辑器的主题标识
      */
@@ -66,7 +70,8 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.refreshText();
     };
 
-    public LLMMessageCell() {
+    public LLMMessageCell(BooleanProperty thinkingVisible) {
+        this.thinkingVisible = thinkingVisible;
         this.getStyleClass().add("llm-message-cell");
         this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         this.setPadding(Insets.EMPTY);
@@ -234,6 +239,9 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
     private void refreshAgentTrace() {
         LLMMessage item = this.getItem();
         String trace = item == null ? "" : item.getAgentTrace();
+        if (!this.thinkingVisible.get()) {
+            trace = LLMAgentTraceFormatter.hideThinking(trace);
+        }
         boolean visible = item != null && !item.isUser() && trace != null && !trace.isBlank();
         this.agentTraceText.setManaged(visible);
         this.agentTraceText.setVisible(visible);
@@ -250,7 +258,8 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         String thinking = item.getThinking();
         String message = item.getMessage();
         String agentTrace = item.getAgentTrace();
-        boolean hasThinking = thinking != null && !thinking.isBlank()
+        boolean hasThinking = this.thinkingVisible.get()
+                && thinking != null && !thinking.isBlank()
                 && (agentTrace == null || agentTrace.isBlank());
         boolean hasMessage = message != null && !message.isBlank();
         if (!hasThinking) {

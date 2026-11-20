@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
+import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMUtil;
@@ -357,6 +358,8 @@ public class LLMView extends FXSplitPane {
         menu.getItems().addAll(
                 this.buildProviderMenu(),
                 this.buildThinkingMenu(),
+                this.buildThinkingProcessMenu(),
+                this.buildAgentModeMenu(),
                 this.buildExecutionModeMenu(),
                 this.buildToolAccessModeMenu(),
                 this.buildStreamingMenu(),
@@ -402,6 +405,45 @@ public class LLMView extends FXSplitPane {
             menu.getItems().add(item);
         }
         return menu;
+    }
+
+    private Menu buildThinkingProcessMenu() {
+        boolean visible = this.setting.isLlmShowThinking();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.thinkingProcess"));
+        ToggleGroup group = new ToggleGroup();
+        RadioMenuItem showItem = new RadioMenuItem(
+                I18nResourceBundle.i18nString("shell.llm.thinkingProcess.show"));
+        showItem.setToggleGroup(group);
+        showItem.setSelected(visible);
+        showItem.setOnAction(event -> this.setShowThinking(true));
+        RadioMenuItem hideItem = new RadioMenuItem(
+                I18nResourceBundle.i18nString("shell.llm.thinkingProcess.hide"));
+        hideItem.setToggleGroup(group);
+        hideItem.setSelected(!visible);
+        hideItem.setOnAction(event -> this.setShowThinking(false));
+        menu.getItems().addAll(showItem, hideItem);
+        return menu;
+    }
+
+    private Menu buildAgentModeMenu() {
+        LLMAgentMode selected = this.getSelectedAgentMode();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.agentMode"));
+        ToggleGroup group = new ToggleGroup();
+        for (LLMAgentMode mode : LLMAgentMode.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getAgentModeName(mode));
+            item.setToggleGroup(group);
+            item.setSelected(mode == selected);
+            item.setOnAction(event -> this.setAgentMode(mode));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private String getAgentModeName(LLMAgentMode mode) {
+        return switch (mode) {
+            case MULTI -> I18nResourceBundle.i18nString("shell.llm.agentMode.multi");
+            case SINGLE -> I18nResourceBundle.i18nString("shell.llm.agentMode.single");
+        };
     }
 
     private Menu buildExecutionModeMenu() {
@@ -1063,6 +1105,47 @@ public class LLMView extends FXSplitPane {
     public void setThinkingLevel(LLMThinkingLevel level) {
         if (level != null) {
             this.thinkingLevelComboBox.selectLevel(level);
+        }
+    }
+
+    /**
+     * 是否显示模型思考过程
+     *
+     * @return 是否显示
+     */
+    public boolean isShowThinking() {
+        return this.setting.isLlmShowThinking();
+    }
+
+    /**
+     * 设置是否显示模型思考过程，不影响模型实际思考等级
+     *
+     * @param show 是否显示
+     */
+    public void setShowThinking(boolean show) {
+        this.setting.setLlmShowThinking(show);
+        this.settingStore.replace(this.setting);
+        this.messageListView.setThinkingVisible(show);
+    }
+
+    /**
+     * 获取Agent模式
+     *
+     * @return Agent模式
+     */
+    public LLMAgentMode getSelectedAgentMode() {
+        return LLMAgentMode.fromOrdinal(this.setting.getLlmAgentMode());
+    }
+
+    /**
+     * 设置Agent模式并持久化
+     *
+     * @param mode Agent模式
+     */
+    public void setAgentMode(LLMAgentMode mode) {
+        if (mode != null) {
+            this.setting.setLlmAgentMode(mode.ordinal());
+            this.settingStore.replace(this.setting);
         }
     }
 

@@ -47,10 +47,64 @@ public class LLMListViewAgentTraceInlineTest {
             assertFalse("agent thinking must not be duplicated in the answer",
                     answer.getText().contains("aggregate thinking"));
 
+            runFxAndWait(() -> context.listView().setThinkingVisible(false));
+            waitForPulse();
+            LLMMessageView hiddenTrace = findTraceView(context.listView(), 0);
+            assertFalse(hiddenTrace.getText().contains("step thinking"));
+            assertTrue(hiddenTrace.getText().contains("step result"));
+            LLMMessageView hiddenAnswer = findStyledView(
+                    context.listView(), 0, "llm-bubble-text-assistant");
+            assertFalse(hiddenAnswer.getText().contains("aggregate thinking"));
+
+            runFxAndWait(() -> context.listView().setThinkingVisible(true));
+            waitForPulse();
+            assertTrue(findTraceView(context.listView(), 0).getText().contains("step thinking"));
+
             runFxAndWait(() -> message.setAgentTrace(message.getAgentTrace()
                     + "\n\n### streamed step\n\nstreamed result"));
             waitForPulse();
             assertTrue(findTraceView(context.listView(), 0).getText().contains("streamed result"));
+        } finally {
+            TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    @Test
+    public void normalThinkingCanBeHiddenWithoutHidingAnswer() {
+        startToolkit();
+        AtomicReference<TestContext> contextRef = new AtomicReference<>();
+        runFxAndWait(() -> {
+            LLMListView listView = new LLMListView();
+            LLMMessage message = LLMMessage.llm("visible answer");
+            message.setThinking("private reasoning");
+            listView.addMessage(message);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(new StackPane(listView), 560, 320));
+            stage.show();
+            contextRef.set(new TestContext(stage, null, listView));
+        });
+        try {
+            waitForPulse();
+            TestContext context = contextRef.get();
+            LLMMessageView answer = findStyledView(
+                    context.listView(), 0, "llm-bubble-text-assistant");
+            assertTrue(answer.getText().contains("private reasoning"));
+            assertTrue(answer.getText().contains("visible answer"));
+
+            runFxAndWait(() -> context.listView().setThinkingVisible(false));
+            waitForPulse();
+            LLMMessageView hidden = findStyledView(
+                    context.listView(), 0, "llm-bubble-text-assistant");
+            assertFalse(hidden.getText().contains("private reasoning"));
+            assertTrue(hidden.getText().contains("visible answer"));
+
+            runFxAndWait(() -> context.listView().setThinkingVisible(true));
+            waitForPulse();
+            assertTrue(findStyledView(context.listView(), 0, "llm-bubble-text-assistant")
+                    .getText().contains("private reasoning"));
         } finally {
             TestContext context = contextRef.get();
             if (context != null) {

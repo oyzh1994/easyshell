@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.store.jdbc.Column;
 import dev.langchain4j.model.anthropic.AnthropicChatRequestParameters;
@@ -14,8 +15,10 @@ import java.util.List;
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class LLMUtilSettingsTest {
 
@@ -146,6 +149,37 @@ public class LLMUtilSettingsTest {
         Field outputTokens = ShellSetting.class.getDeclaredField("llmMaxOutputTokens");
         assertNotNull(model.getAnnotation(Column.class));
         assertNotNull(outputTokens.getAnnotation(Column.class));
+    }
+
+    @Test
+    public void thinkingVisibilityIsIndependentAndPersistent() throws Exception {
+        ShellSetting setting = new ShellSetting();
+        assertTrue(setting.isLlmShowThinking());
+
+        setting.setLlmThinkingLevel(LLMThinkingLevel.HIGH.ordinal());
+        setting.setLlmShowThinking(false);
+        ShellSetting copy = new ShellSetting();
+        copy.copy(setting);
+
+        assertFalse(copy.isLlmShowThinking());
+        assertEquals(LLMThinkingLevel.HIGH.ordinal(), copy.getLlmThinkingLevel());
+        Field field = ShellSetting.class.getDeclaredField("llmShowThinking");
+        assertNotNull(field.getAnnotation(Column.class));
+    }
+
+    @Test
+    public void agentModeDefaultsToMultiAndPersistsSingle() throws Exception {
+        ShellSetting setting = new ShellSetting();
+        assertEquals(LLMAgentMode.MULTI.ordinal(), setting.getLlmAgentMode());
+        assertEquals(LLMAgentMode.MULTI, LLMAgentMode.fromOrdinal(999));
+
+        setting.setLlmAgentMode(LLMAgentMode.SINGLE.ordinal());
+        ShellSetting copy = new ShellSetting();
+        copy.copy(setting);
+
+        assertEquals(LLMAgentMode.SINGLE.ordinal(), copy.getLlmAgentMode());
+        Field field = ShellSetting.class.getDeclaredField("llmAgentMode");
+        assertNotNull(field.getAnnotation(Column.class));
     }
 
     private static LLMProvider provider(LLMApiType type, String defaultModel) {

@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.llm.tool.LLMTools;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.model.chat.ChatModel;
@@ -436,6 +437,68 @@ public class LLMAgentRuntimeTest {
         assertEquals(7, runtime.maxMessages());
     }
 
+    @Test
+    public void singleModeSkipsPlannerAndUsesAllSelectedToolScopes() throws Exception {
+        SingleCallChatModel model = new SingleCallChatModel();
+        List<LLMAgentEventType> events = new ArrayList<>();
+        Map<String, LLMAgentTrace> traces = new LinkedHashMap<>();
+        LLMSessionContext context = new LLMSessionContext(
+                "tab-1", "server-a", "ssh", "10.0.0.12", 22, "root");
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(new SessionEchoTools(), new EchoTools(LLMToolScope.INTERNAL),
+                        new LocalEchoTools()), null,
+                "session tools", "internal tools", "local execution tools",
+                context, "mcp tools", "execution rules", "language rules",
+                null, 7, LLMAgentMode.SINGLE);
+
+        ChatResponse response = runtime.execute("simple task", List.of(),
+                new LLMAgentListener() {
+                    @Override
+                    public void onEvent(LLMAgentEvent event) {
+                        events.add(event.type());
+                    }
+
+                    @Override
+                    public void onAgentTrace(LLMAgentTrace trace) {
+                        traces.put(trace.id(), trace);
+                    }
+                }, () -> false);
+
+        assertEquals("single direct result", response.aiMessage().text());
+        assertEquals(1, model.calls);
+        assertTrue(model.requestTools.containsAll(List.of(
+                "session_echo", "echo_value", "local_echo")));
+        assertFalse(model.requestText.contains("Create the minimum executable plan"));
+        assertFalse(model.requestText.contains("Worker results:"));
+        assertEquals(List.of(
+                LLMAgentEventType.STEP_STARTED,
+                LLMAgentEventType.STEP_COMPLETED,
+                LLMAgentEventType.COMPLETED), events);
+        assertEquals(LLMAgentTrace.Type.SINGLE, traces.get("single").type());
+        assertEquals("single thinking", traces.get("single").thinking());
+        assertEquals("single direct result", traces.get("single").conclusion());
+    }
+
+    @Test
+    public void singleModeStreamsWithoutCallingPlannerOrVerifier() throws Exception {
+        RoutingChatModel chatModel = new RoutingChatModel("""
+                {"objective":"unused","steps":[]}
+                """);
+        LLMAgentRuntime runtime = new LLMAgentRuntime(chatModel,
+                new StreamingWorkerModel(), List.of(), null,
+                "session tools", "internal tools", "local execution tools",
+                null, "mcp tools", "execution rules", "language rules",
+                null, 7, LLMAgentMode.SINGLE);
+
+        ChatResponse response = runtime.execute("simple stream", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("streamed worker result", response.aiMessage().text());
+        assertEquals(0, chatModel.workerCalls);
+        assertFalse(chatModel.synthesisCalled);
+    }
+
     @Test(timeout = 3000)
     public void streamingSynthesisStopsWaitingAfterCancellation() throws Exception {
         RoutingChatModel model = new RoutingChatModel("""
@@ -545,6 +608,22 @@ public class LLMAgentRuntimeTest {
         assertTrue(trace.contains("worker conclusion"));
         assertTrue(trace.contains("verifier thinking"));
         assertTrue(trace.contains("final answer"));
+    }
+
+    @Test
+    public void traceFormatterCanHideThinkingWithoutHidingResults() {
+        LLMAgentTrace worker = LLMAgentTrace.running("worker-0",
+                        LLMAgentTrace.Type.WORKER, 0, 1, "connection", "query")
+                .withThinking("private reasoning")
+                .complete("visible result");
+
+        String formatted = LLMAgentTraceFormatter.format(List.of(worker));
+        String hidden = LLMAgentTraceFormatter.hideThinking(formatted);
+
+        assertTrue(formatted.contains("private reasoning"));
+        assertFalse(hidden.contains("private reasoning"));
+        assertTrue(hidden.contains("visible result"));
+        assertFalse(hidden.contains("easyshell-thinking"));
     }
 
     private static LLMAgentRuntime runtime(ChatModel model) {
@@ -734,6 +813,29 @@ public class LLMAgentRuntimeTest {
                         "worker: " + RoutingChatModel.taskFromPrompt(prompt));
             }
             return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class SingleCallChatModel implements ChatModel {
+
+        private int calls;
+
+        private List<String> requestTools = List.of();
+
+        private String requestText = "";
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            this.calls++;
+            this.requestTools = request.toolSpecifications() == null
+                    ? List.of()
+                    : request.toolSpecifications().stream()
+                    .map(ToolSpecification::name)
+                    .toList();
+            this.requestText = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            return RoutingChatModel.response("single direct result", "single thinking");
         }
     }
 

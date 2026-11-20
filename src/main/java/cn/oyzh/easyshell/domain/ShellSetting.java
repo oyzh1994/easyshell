@@ -8,6 +8,7 @@ import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMParameterUtil;
+import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
@@ -68,6 +69,18 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Integer llmThinkingLevel = LLMThinkingLevel.MEDIUM.ordinal();
+
+    /**
+     * 是否在界面显示模型思考过程
+     */
+    @Column
+    private Boolean llmShowThinking = true;
+
+    /**
+     * LLM Agent模式：单Agent或多Agent
+     */
+    @Column
+    private Integer llmAgentMode = LLMAgentMode.MULTI.ordinal();
 
     /**
      * LLM当前使用的供应商id
@@ -490,6 +503,42 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 是否显示模型思考过程
+     *
+     * @return 是否显示
+     */
+    public boolean isLlmShowThinking() {
+        return this.llmShowThinking == null || this.llmShowThinking;
+    }
+
+    /**
+     * 设置是否显示模型思考过程
+     *
+     * @param llmShowThinking 是否显示
+     */
+    public void setLlmShowThinking(boolean llmShowThinking) {
+        this.llmShowThinking = llmShowThinking;
+    }
+
+    /**
+     * 获取LLM Agent模式
+     *
+     * @return Agent模式序号
+     */
+    public int getLlmAgentMode() {
+        return LLMAgentMode.fromOrdinal(this.llmAgentMode).ordinal();
+    }
+
+    /**
+     * 设置LLM Agent模式
+     *
+     * @param llmAgentMode Agent模式序号
+     */
+    public void setLlmAgentMode(int llmAgentMode) {
+        this.llmAgentMode = LLMAgentMode.fromOrdinal(llmAgentMode).ordinal();
+    }
+
+    /**
      * 获取LLM当前选择的模型
      *
      * @return 模型名称
@@ -667,6 +716,8 @@ public class ShellSetting extends AppSetting {
             this.llmMaxMessages = setting.llmMaxMessages;
             this.llmMaxOutputTokens = setting.llmMaxOutputTokens;
             this.llmThinkingLevel = setting.llmThinkingLevel;
+            this.llmShowThinking = setting.llmShowThinking;
+            this.llmAgentMode = setting.llmAgentMode;
             this.llmExecutionMode = setting.llmExecutionMode;
             this.llmToolAccessMode = setting.llmToolAccessMode;
             this.llmTimeoutMinutes = setting.llmTimeoutMinutes;

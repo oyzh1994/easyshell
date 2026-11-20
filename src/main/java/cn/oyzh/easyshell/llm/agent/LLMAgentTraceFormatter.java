@@ -66,8 +66,56 @@ public final class LLMAgentTraceFormatter {
         return result.toString();
     }
 
+    /**
+     * Removes thinking sections from a formatted trace while keeping execution
+     * headers, durations, results, and errors visible.
+     *
+     * @param trace formatted trace
+     * @return trace without thinking sections
+     */
+    public static String hideThinking(String trace) {
+        if (trace == null || trace.isBlank()) {
+            return "";
+        }
+        String result = removeThinkingSections(trace);
+        return result.replaceAll("\\R{3,}", "\n\n").strip();
+    }
+
+    private static String removeThinkingSections(String trace) {
+        String separator = "\n\n---\n\n";
+        String thinkingHeader = "**" + text("shell.llm.thinkingLabel") + "**";
+        String resultHeader = "**" + text("shell.llm.agent.trace.result") + "**";
+        String errorHeader = "**" + text("shell.llm.agent.trace.error") + "**";
+        StringBuilder output = new StringBuilder();
+        for (String block : trace.split(java.util.regex.Pattern.quote(separator), -1)) {
+            if (!output.isEmpty()) {
+                output.append(separator);
+            }
+            StringBuilder filtered = new StringBuilder();
+            boolean skip = false;
+            for (String line : block.lines().toList()) {
+                if (line.equals(thinkingHeader)) {
+                    skip = true;
+                    continue;
+                }
+                if (skip && (line.equals(resultHeader) || line.equals(errorHeader))) {
+                    skip = false;
+                }
+                if (!skip) {
+                    if (!filtered.isEmpty()) {
+                        filtered.append('\n');
+                    }
+                    filtered.append(line);
+                }
+            }
+            output.append(filtered.toString().strip());
+        }
+        return output.toString();
+    }
+
     private static String title(LLMAgentTrace trace) {
         return switch (trace.type()) {
+            case SINGLE -> text("shell.llm.agent.trace.single");
             case PLANNER -> text("shell.llm.agent.trace.planner");
             case WORKER -> String.format(text("shell.llm.agent.trace.worker"),
                     trace.stepIndex() + 1);
