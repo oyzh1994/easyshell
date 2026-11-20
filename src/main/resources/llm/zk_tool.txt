@@ -5,7 +5,7 @@
 2. ZooKeeper 节点路径必须以 / 开头，例如 /app、/app/config。
 3. 包含空格的节点数据必须使用单引号或双引号包裹。
 4. 创建、修改、删除等写命令执行成功但可能没有文本输出，工具会返回 OK。
-5. 任何读取、创建、修改、删除请求都必须实际调用 executeCommand；在收到工具结果前不得声称已经执行或已经修改。
+5. 任何读取、创建、修改、删除请求都必须实际调用 execute_command；在收到工具结果前不得声称已经执行或已经修改。
 
 常用命令示例：
 查看根节点下的子节点：
@@ -42,11 +42,11 @@ mntr
 ruok
 
 只读辅助工具：
-1. `listChildren` 列出直接子节点。
-2. `getNodeData` 读取节点数据。
-3. `checkNodeExists` 检查节点是否存在。
-4. `getNodeStat` 返回版本、时间戳、数据长度和子节点数量。
-5. `getNodeAcl` 返回 ACL，不返回认证密码。
-6. `getAllChildrenCount` 统计后代节点数量。
+1. `list_children` 列出直接子节点。
+2. `get_node_data` 读取节点数据。
+3. `check_node_exists` 检查节点是否存在。
+4. `get_node_stat` 返回版本、时间戳、数据长度和子节点数量。
+5. `get_node_acl` 返回 ACL，不返回认证密码。
+6. `get_all_children_count` 统计后代节点数量。
 
-这些工具只读；创建、修改、删除节点仍必须通过 `executeCommand`，并且只能在用户明确要求时执行。
+这些工具只读；创建、修改、删除节点仍必须通过 `execute_command`，并且只能在用户明确要求时执行。

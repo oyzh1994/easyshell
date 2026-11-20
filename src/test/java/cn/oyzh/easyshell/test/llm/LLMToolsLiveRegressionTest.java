@@ -72,13 +72,13 @@ public class LLMToolsLiveRegressionTest {
         mongoSpecs.forEach(spec -> System.out.println("Mongo tool spec: " + spec.toJson()));
         zkSpecs.forEach(spec -> System.out.println("ZooKeeper tool spec: " + spec.toJson()));
         String mongoSchema = mongoSpecs.stream()
-                .filter(spec -> spec.name().equals("executeScript"))
+                .filter(spec -> spec.name().equals("execute_script"))
                 .findFirst().orElseThrow().toJson();
         String mongoRunCommandSchema = mongoSpecs.stream()
-                .filter(spec -> spec.name().equals("runCommand"))
+                .filter(spec -> spec.name().equals("run_command"))
                 .findFirst().orElseThrow().toJson();
         String zkSchema = zkSpecs.stream()
-                .filter(spec -> spec.name().equals("executeCommand"))
+                .filter(spec -> spec.name().equals("execute_command"))
                 .findFirst().orElseThrow().toJson();
         assertTrue(mongoSchema, mongoSchema.contains("\"database\""));
         assertTrue(mongoSchema, mongoSchema.contains("\"script\""));
@@ -91,11 +91,12 @@ public class LLMToolsLiveRegressionTest {
         Set<String> mongoNames = Set.copyOf(mongoSpecs.stream().map(ToolSpecification::name).toList());
         Set<String> zkNames = Set.copyOf(zkSpecs.stream().map(ToolSpecification::name).toList());
         assertTrue(mongoNames.containsAll(Set.of(
-                "executeScript", "runCommand", "mongoExamples", "listDatabases", "listCollections",
-                "listBuckets", "listFunctions", "listUsers", "getServerVersion", "pingDatabase", "countCollection")));
+                "execute_script", "run_command", "mongo_examples", "list_databases", "list_collections",
+                "list_buckets", "list_functions", "list_users", "get_server_version", "ping_database",
+                "count_collection")));
         assertTrue(zkNames.containsAll(Set.of(
-                "executeCommand", "getNodeData", "listChildren", "checkNodeExists",
-                "getNodeStat", "getNodeAcl", "getAllChildrenCount", "getServerVersion")));
+                "execute_command", "get_node_data", "list_children", "check_node_exists",
+                "get_node_stat", "get_node_acl", "get_all_children_count", "get_server_version")));
     }
 
     @Test
@@ -119,7 +120,35 @@ public class LLMToolsLiveRegressionTest {
             Set<String> names = ToolSpecifications.toolSpecificationsFrom(tool).stream()
                     .map(ToolSpecification::name)
                     .collect(java.util.stream.Collectors.toSet());
-            assertTrue(tool.getClass().getSimpleName() + " missing getServerVersion", names.contains("getServerVersion"));
+            assertTrue(tool.getClass().getSimpleName() + " missing get_server_version",
+                    names.contains("get_server_version"));
+        }
+    }
+
+    @Test
+    public void allLlmToolNamesUseSnakeCase() {
+        List<Object> tools = List.of(
+                new ShellMongoLLMTools(),
+                new ShellZKLLMTools(),
+                new ShellRedisLLMTools(),
+                new ShellValkeyLLMTools(),
+                new ShellMysqlLLMTools(),
+                new ShellMariadbLLMTools(),
+                new ShellPostgresqlLLMTools(),
+                new ShellOracleLLMTools(),
+                new ShellDamengLLMTools(),
+                new ShellSqliteLLMTools(),
+                new ShellSSHLLMTools(),
+                new ShellFileLLMTools<>(),
+                new ShellLocalLLMTools(),
+                new cn.oyzh.easyshell.http.ShellHttpLLMTools(),
+                new cn.oyzh.easyshell.internal.ShellLLMTools()
+        );
+        for (Object tool : tools) {
+            for (ToolSpecification specification : ToolSpecifications.toolSpecificationsFrom(tool)) {
+                assertTrue(tool.getClass().getSimpleName() + ": " + specification.name(),
+                        specification.name().matches("[a-z][a-z0-9_]*"));
+            }
         }
     }
 
@@ -159,7 +188,7 @@ public class LLMToolsLiveRegressionTest {
             Set<String> names = Set.copyOf(ToolSpecifications.toolSpecificationsFrom(tool).stream()
                     .map(ToolSpecification::name)
                     .toList());
-            assertTrue(tool.getClass().getSimpleName(), names.contains("executeSqlRaw"));
+            assertTrue(tool.getClass().getSimpleName(), names.contains("execute_sql_raw"));
         }
     }
 

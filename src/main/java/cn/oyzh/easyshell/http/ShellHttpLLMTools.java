@@ -84,7 +84,7 @@ public class ShellHttpLLMTools implements LLMTools {
         this.workspaceChangeListener = workspaceChangeListener;
     }
 
-    @Tool(name = "listCollections", value = "List saved HTTP request collections in the bound HTTP workspace")
+    @Tool(name = "list_collections", value = "List saved HTTP request collections in the bound HTTP workspace")
     public String listCollections(
             @P(name = "filter", value = "Optional case-insensitive collection id or name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -108,7 +108,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return formatList("collection", values, maxResults);
     }
 
-    @Tool(name = "listRequests", value = "List saved HTTP requests in the bound HTTP workspace")
+    @Tool(name = "list_requests", value = "List saved HTTP requests in the bound HTTP workspace")
     public String listRequests(
             @P(name = "collectionId", value = "Optional collection id; empty means all collections") String collectionId,
             @P(name = "filter", value = "Optional case-insensitive request id, name, method, URL, or collection filter") String filter,
@@ -149,7 +149,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return formatList("request", values, maxResults);
     }
 
-    @Tool(name = "getRequestDetails", value = "Get one complete saved HTTP request definition, including parameters, headers, body, authentication, transport settings, and request scripts")
+    @Tool(name = "get_request_details", value = "Get one complete saved HTTP request definition, including parameters, headers, body, authentication, transport settings, and request scripts")
     public String getRequestDetails(
             @P(name = "requestId", value = "Saved HTTP request id") String requestId) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -166,7 +166,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return pretty(this.requestJson(request));
     }
 
-    @Tool(name = "listEnvironments", value = "List all HTTP environments with their complete variable values and active state")
+    @Tool(name = "list_environments", value = "List all HTTP environments with their complete variable values and active state")
     public String listEnvironments() {
         ShellHttpWorkspace workspace = this.workspace();
         if (workspace == null) {
@@ -182,7 +182,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return pretty(values);
     }
 
-    @Tool(name = "createCollection", value = "Create a new HTTP request collection in the bound workspace")
+    @Tool(name = "create_collection", value = "Create a new HTTP request collection in the bound workspace")
     public String createCollection(
             @P(name = "name", value = "Collection name") String name) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -203,7 +203,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return "Created collection: id=" + collection.getId() + " | name=" + collection.getName();
     }
 
-    @Tool(name = "updateCollection", value = "Update a collection. Supports name in collectionJson; omitted fields stay unchanged")
+    @Tool(name = "update_collection", value = "Update a collection. Supports name in collectionJson; omitted fields stay unchanged")
     public String updateCollection(
             @P(name = "collectionId", value = "Collection id") String collectionId,
             @P(name = "collectionJson", value = "JSON object, for example {\"name\":\"Users\"}") String collectionJson) {
@@ -237,7 +237,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "deleteCollection", value = "Delete a collection together with all of its requests and request scripts")
+    @Tool(name = "delete_collection", value = "Delete a collection together with all of its requests and request scripts")
     public String deleteCollection(
             @P(name = "collectionId", value = "Collection id") String collectionId) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -262,7 +262,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return "Deleted collection: id=" + collection.getId() + " | requests=" + collection.requestCount();
     }
 
-    @Tool(name = "createRequest", value = "Create a saved HTTP request in a collection. requestJson supports name, method, url, params, headers, formBody, bodyType, bodyContentType, body, authType, authUser, authPassword, authToken, authKeyName, authKeyValue, authKeyPlacement, oauth2TokenUrl, oauth2ClientId, oauth2ClientSecret, oauth2Scope, httpVersion, followRedirects, sendNoCacheHeader, timeoutSeconds, preRequestScript, testScript")
+    @Tool(name = "create_request", value = "Create a saved HTTP request in a collection. requestJson supports name, method, url, params, headers, formBody, bodyType, bodyContentType, body, authType, authUser, authPassword, authToken, authKeyName, authKeyValue, authKeyPlacement, oauth2TokenUrl, oauth2ClientId, oauth2ClientSecret, oauth2Scope, httpVersion, followRedirects, sendNoCacheHeader, timeoutSeconds, preRequestScript, testScript")
     public String createRequest(
             @P(name = "collectionId", value = "Target collection id") String collectionId,
             @P(name = "requestJson", value = "JSON object containing the request fields. name is required") String requestJson) {
@@ -305,7 +305,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "updateRequest", value = "Partially update a saved HTTP request. Only fields present in requestJson are changed; arrays replace the whole list; null clears nullable fields. Supports name, collectionId, method, url, params, headers, formBody, bodyType, bodyContentType, body, authType, authUser, authPassword, authToken, authKeyName, authKeyValue, authKeyPlacement, oauth2TokenUrl, oauth2ClientId, oauth2ClientSecret, oauth2Scope, httpVersion, followRedirects, sendNoCacheHeader, timeoutSeconds, preRequestScript, testScript")
+    @Tool(name = "update_request", value = "Partially update a saved HTTP request. Only fields present in requestJson are changed; arrays replace the whole list; null clears nullable fields. Supports name, collectionId, method, url, params, headers, formBody, bodyType, bodyContentType, body, authType, authUser, authPassword, authToken, authKeyName, authKeyValue, authKeyPlacement, oauth2TokenUrl, oauth2ClientId, oauth2ClientSecret, oauth2Scope, httpVersion, followRedirects, sendNoCacheHeader, timeoutSeconds, preRequestScript, testScript")
     public String updateRequest(
             @P(name = "requestId", value = "Saved HTTP request id") String requestId,
             @P(name = "requestJson", value = "JSON object containing fields to update") String requestJson) {
@@ -357,7 +357,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "deleteRequest", value = "Delete a saved HTTP request and its request scripts")
+    @Tool(name = "delete_request", value = "Delete a saved HTTP request and its request scripts")
     public String deleteRequest(
             @P(name = "requestId", value = "Saved HTTP request id") String requestId) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -380,7 +380,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return "Deleted request: id=" + request.getId() + " | name=" + request.getName();
     }
 
-    @Tool(name = "createEnvironment", value = "Create an HTTP environment. environmentJson supports name and values; values is a JSON array of {key,value,enabled,description} objects")
+    @Tool(name = "create_environment", value = "Create an HTTP environment. environmentJson supports name and values; values is a JSON array of {key,value,enabled,description} objects")
     public String createEnvironment(
             @P(name = "environmentJson", value = "JSON object containing name and values") String environmentJson) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -406,7 +406,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "updateEnvironment", value = "Partially update an HTTP environment. Supports name and values; values replaces the complete variable list")
+    @Tool(name = "update_environment", value = "Partially update an HTTP environment. Supports name and values; values replaces the complete variable list")
     public String updateEnvironment(
             @P(name = "environmentId", value = "Environment id") String environmentId,
             @P(name = "environmentJson", value = "JSON object containing fields to update") String environmentJson) {
@@ -439,7 +439,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "deleteEnvironment", value = "Delete an HTTP environment. If it is active, the workspace is switched to no environment")
+    @Tool(name = "delete_environment", value = "Delete an HTTP environment. If it is active, the workspace is switched to no environment")
     public String deleteEnvironment(
             @P(name = "environmentId", value = "Environment id") String environmentId) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -463,7 +463,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return "Deleted environment: id=" + environment.getId() + " | name=" + environment.getName();
     }
 
-    @Tool(name = "setActiveEnvironment", value = "Select the active HTTP environment. Pass an empty environmentId to clear the active environment")
+    @Tool(name = "set_active_environment", value = "Select the active HTTP environment. Pass an empty environmentId to clear the active environment")
     public String setActiveEnvironment(
             @P(name = "environmentId", value = "Environment id, or empty to clear") String environmentId) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -485,7 +485,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return "Active environment: " + (environment == null ? "(none)" : environment.getName());
     }
 
-    @Tool(name = "getSettings", value = "Get all HTTP workspace settings, including timeout, HTTP version, redirects, SSL verification, JSON formatting, no-cache header, maximum response size, and active environment")
+    @Tool(name = "get_settings", value = "Get all HTTP workspace settings, including timeout, HTTP version, redirects, SSL verification, JSON formatting, no-cache header, maximum response size, and active environment")
     public String getSettings() {
         ShellHttpWorkspace workspace = this.workspace();
         if (workspace == null) {
@@ -494,7 +494,7 @@ public class ShellHttpLLMTools implements LLMTools {
         return pretty(this.settingsJson());
     }
 
-    @Tool(name = "updateSettings", value = "Partially update HTTP workspace settings. Supports timeoutSeconds, httpVersion, followRedirects, verifySsl, prettyJson, sendNoCacheHeader, maxResponseSizeMb, activeEnvironmentId")
+    @Tool(name = "update_settings", value = "Partially update HTTP workspace settings. Supports timeoutSeconds, httpVersion, followRedirects, verifySsl, prettyJson, sendNoCacheHeader, maxResponseSizeMb, activeEnvironmentId")
     public String updateSettings(
             @P(name = "settingsJson", value = "JSON object containing settings to update") String settingsJson) {
         ShellHttpWorkspace workspace = this.workspace();
@@ -558,7 +558,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeRequest", value = "Execute one saved HTTP request in the bound workspace and return the actual status, headers, and response body")
+    @Tool(name = "execute_request", value = "Execute one saved HTTP request in the bound workspace and return the actual status, headers, and response body")
     public String executeRequest(
             @P(name = "requestId", value = "Saved HTTP request id") String requestId) {
         if (this.client == null) {
@@ -587,7 +587,7 @@ public class ShellHttpLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeHttpRequest", value = "Send a temporary HTTP or HTTPS request without saving it. Any request headers may be supplied, including authentication headers")
+    @Tool(name = "execute_http_request", value = "Send a temporary HTTP or HTTPS request without saving it. Any request headers may be supplied, including authentication headers")
     public String executeHttpRequest(
             @P(name = "method", value = "HTTP method: GET, POST, PUT, PATCH, DELETE, HEAD, or OPTIONS") String method,
             @P(name = "url", value = "HTTP or HTTPS URL. Workspace environment variables may be used") String url,

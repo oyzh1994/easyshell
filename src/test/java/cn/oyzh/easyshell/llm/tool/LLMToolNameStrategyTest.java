@@ -12,11 +12,11 @@ import static org.junit.Assert.assertTrue;
 public class LLMToolNameStrategyTest {
 
     @Test
-    public void suggestsCamelCaseToolForSnakeCaseAlias() {
-        assertEquals("execCommand",
-                LLMToolNameStrategy.suggest(List.of("getConnectionInfo", "execCommand"), "exec_command"));
-        assertEquals("executeCommand",
-                LLMToolNameStrategy.suggest(List.of("execCommand", "executeCommand"), "execute_command"));
+    public void suggestsSnakeCaseToolForSnakeCaseAlias() {
+        assertEquals("execute_command",
+                LLMToolNameStrategy.suggest(List.of("get_connection_info", "execute_command"), "execute_command"));
+        assertEquals("list_files",
+                LLMToolNameStrategy.suggest(List.of("list_file", "list_files"), "list_files"));
     }
 
     @Test
@@ -28,17 +28,17 @@ public class LLMToolNameStrategyTest {
                 .build();
 
         ToolExecutionResultMessage result = LLMToolNameStrategy.result(
-                request, List.of("getConnectionInfo", "execCommand"));
+                request, List.of("get_connection_info", "execute_command"));
 
         assertEquals("call-1", result.id());
         assertEquals("exec_command", result.toolName());
         assertEquals(Boolean.TRUE, result.isError());
-        assertTrue(result.text().contains("Did you mean 'execCommand'?"));
+        assertTrue(result.text().contains("Did you mean 'execute_command'?"));
     }
 
     @Test
     public void doesNotSuggestAnUnrelatedTool() {
         assertEquals(null,
-                LLMToolNameStrategy.suggest(List.of("getConnectionInfo", "execCommand"), "delete_everything"));
+                LLMToolNameStrategy.suggest(List.of("get_connection_info", "execute_command"), "delete_everything"));
     }
 }

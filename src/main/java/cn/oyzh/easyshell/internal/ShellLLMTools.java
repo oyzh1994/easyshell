@@ -104,7 +104,7 @@ public class ShellLLMTools implements LLMTools {
         this.tabPane = tabPane;
     }
 
-    @Tool(name = "getProjectInfo", value = "Get EasyShell project metadata")
+    @Tool(name = "get_project_info", value = "Get EasyShell project metadata")
     public String getProjectInfo() {
         try {
             Project project = Project.load();
@@ -127,7 +127,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getProjectVersion", value = "Get the EasyShell application version")
+    @Tool(name = "get_project_version", value = "Get the EasyShell application version")
     public String getProjectVersion() {
         try {
             Project project = Project.load();
@@ -137,7 +137,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getJdkVersion", value = "Get the Java runtime and JDK version used by EasyShell")
+    @Tool(name = "get_jdk_version", value = "Get the Java runtime and JDK version used by EasyShell")
     public String getJdkVersion() {
         try {
             Runtime.Version runtimeVersion = Runtime.version();
@@ -155,7 +155,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getRuntimeInfo", value = "Get process, operating system, memory, locale, and timezone information")
+    @Tool(name = "get_runtime_info", value = "Get process, operating system, memory, locale, and timezone information")
     public String getRuntimeInfo() {
         try {
             Runtime runtime = Runtime.getRuntime();
@@ -183,7 +183,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getProjectPaths", value = "Get EasyShell data, cache, key cache, node cache, log paths, and LLM tool audit file path")
+    @Tool(name = "get_project_paths", value = "Get EasyShell data, cache, key cache, node cache, log paths, and LLM tool audit file path")
     public String getProjectPaths() {
         try {
             Path databasePath = Path.of(ShellConst.getStorePath(), "db");
@@ -201,7 +201,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getStoredDataSummary", value = "Get counts of locally stored EasyShell data without exposing record contents")
+    @Tool(name = "get_stored_data_summary", value = "Get counts of locally stored EasyShell data without exposing record contents")
     public String getStoredDataSummary() {
         StringBuilder result = new StringBuilder();
         this.appendCount(result, "keys", () -> ShellKeyStore.INSTANCE.selectList().size());
@@ -225,17 +225,17 @@ public class ShellLLMTools implements LLMTools {
         return result.toString();
     }
 
-    @Tool(name = "getApplicationCapabilities", value = "List EasyShell connection protocols and supported feature areas")
+    @Tool(name = "get_application_capabilities", value = "List EasyShell connection protocols and supported feature areas")
     public String getApplicationCapabilities() {
         return LLMUtil.readLlmText("internal_capabilities.txt");
     }
 
-    @Tool(name = "listSupportedProtocols", value = "List all supported connection protocols and their feature categories")
+    @Tool(name = "list_supported_protocols", value = "List all supported connection protocols and their feature categories")
     public String listSupportedProtocols() {
         return LLMUtil.readLlmText("internal_protocols.txt");
     }
 
-    @Tool(name = "listSavedConnections", value = "List saved EasyShell connections without passwords, keys, tokens, or certificates")
+    @Tool(name = "list_saved_connections", value = "List saved EasyShell connections without passwords, keys, tokens, or certificates")
     public String listSavedConnections(
             @P(name = "filter", value = "Optional case-insensitive text filter for name, type, host, or remark") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -270,7 +270,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listOpenConnections", value = "List connection tabs currently open in EasyShell with live connection state")
+    @Tool(name = "list_open_connections", value = "List connection tabs currently open in EasyShell with live connection state")
     public String listOpenConnections(
             @P(name = "filter", value = "Optional case-insensitive text filter for tab title, name, type, or host") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -303,7 +303,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listGroups", value = "List saved connection groups and their connection counts")
+    @Tool(name = "list_groups", value = "List saved connection groups and their connection counts")
     public String listGroups(
             @P(name = "filter", value = "Optional case-insensitive group name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 500 and capped at 1000") int maxResults) {
@@ -338,7 +338,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listSnippets", value = "List saved terminal snippets without returning their full content")
+    @Tool(name = "list_snippets", value = "List saved terminal snippets without returning their full content")
     public String listSnippets(
             @P(name = "filter", value = "Optional case-insensitive snippet name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -368,7 +368,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listSavedKeys", value = "List saved SSH key metadata without exposing private keys, public keys, or passwords")
+    @Tool(name = "list_saved_keys", value = "List saved SSH key metadata without exposing private keys, public keys, or passwords")
     public String listSavedKeys(
             @P(name = "filter", value = "Optional case-insensitive key name or type filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -400,7 +400,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listQueries", value = "List saved query metadata without returning SQL content")
+    @Tool(name = "list_queries", value = "List saved query metadata without returning SQL content")
     public String listQueries(
             @P(name = "filter", value = "Optional case-insensitive query name, connection name, or database filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -437,7 +437,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listFileFavorites", value = "List saved file or directory favorites without changing remote files or project data")
+    @Tool(name = "list_file_favorites", value = "List saved file or directory favorites without changing remote files or project data")
     public String listFileFavorites(
             @P(name = "filter", value = "Optional case-insensitive path or connection name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -471,7 +471,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listRedisFavorites", value = "List saved Redis key favorites without reading or changing the keys")
+    @Tool(name = "list_redis_favorites", value = "List saved Redis key favorites without reading or changing the keys")
     public String listRedisFavorites(
             @P(name = "filter", value = "Optional case-insensitive key or connection name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -504,7 +504,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listZkFavorites", value = "List saved ZooKeeper node favorites without reading or changing node data")
+    @Tool(name = "list_zk_favorites", value = "List saved ZooKeeper node favorites without reading or changing node data")
     public String listZkFavorites(
             @P(name = "filter", value = "Optional case-insensitive path or connection name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -535,7 +535,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getSnippet", value = "Read one saved terminal snippet by id. This is read-only and truncates long content.")
+    @Tool(name = "get_snippet", value = "Read one saved terminal snippet by id. This is read-only and truncates long content.")
     public String getSnippet(
             @P(name = "snippetId", value = "Snippet id returned by listSnippets") String snippetId,
             @P(name = "maxChars", value = "Maximum content characters, default 65536 and capped at 262144") int maxChars) {
@@ -555,7 +555,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getQuery", value = "Read one saved query by id without changing it. This is read-only and truncates long content.")
+    @Tool(name = "get_query", value = "Read one saved query by id without changing it. This is read-only and truncates long content.")
     public String getQuery(
             @P(name = "queryId", value = "Query id returned by listQueries") String queryId,
             @P(name = "maxChars", value = "Maximum content characters, default 65536 and capped at 262144") int maxChars) {
@@ -580,7 +580,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listLlmProviders", value = "List configured LLM providers without exposing API keys")
+    @Tool(name = "list_llm_providers", value = "List configured LLM providers without exposing API keys")
     public String listLlmProviders(
             @P(name = "filter", value = "Optional case-insensitive provider name, base URL, API type, or model filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 100 and capped at 1000") int maxResults) {
@@ -618,7 +618,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listLlmSessions", value = "List saved LLM session metadata without exposing message content")
+    @Tool(name = "list_llm_sessions", value = "List saved LLM session metadata without exposing message content")
     public String listLlmSessions(
             @P(name = "filter", value = "Optional case-insensitive session title filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -652,7 +652,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getConnectionDetails", value = "Get non-sensitive details for one saved EasyShell connection")
+    @Tool(name = "get_connection_details", value = "Get non-sensitive details for one saved EasyShell connection")
     public String getConnectionDetails(
             @P(name = "connectionId", value = "Connection id returned by listSavedConnections") String connectionId) {
         try {
@@ -722,7 +722,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "createConnection",
+    @Tool(name = "create_connection",
             value = "Create and persist a new EasyShell connection without connecting to it. Existing connections are never modified or deleted.")
     public String createConnection(
             @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, rsh, mosh, rdp, vnc, mysql, mariadb, dameng, oracle, sqlite, mongodb, redis, valkey, or zookeeper") String type,
@@ -809,7 +809,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "renameConnection", value = "Rename one saved EasyShell connection without changing any other field")
+    @Tool(name = "rename_connection", value = "Rename one saved EasyShell connection without changing any other field")
     public String renameConnection(
             @P(name = "connectionId", value = "Connection id returned by listSavedConnections") String connectionId,
             @P(name = "newName", value = "New non-empty connection name") String newName) {
@@ -833,7 +833,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "updateConnectionGroup", value = "Move one saved EasyShell connection to another existing group, or to the root when groupId is empty")
+    @Tool(name = "update_connection_group", value = "Move one saved EasyShell connection to another existing group, or to the root when groupId is empty")
     public String updateConnectionGroup(
             @P(name = "connectionId", value = "Connection id returned by listSavedConnections") String connectionId,
             @P(name = "groupId", value = "Target group id returned by listGroups, or empty for the root group") String groupId) {
@@ -854,7 +854,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "updateConnectionRemark", value = "Update the remark of one saved EasyShell connection without changing credentials or connection settings")
+    @Tool(name = "update_connection_remark", value = "Update the remark of one saved EasyShell connection without changing credentials or connection settings")
     public String updateConnectionRemark(
             @P(name = "connectionId", value = "Connection id returned by listSavedConnections") String connectionId,
             @P(name = "remark", value = "New remark; empty clears the remark") String remark) {
@@ -874,7 +874,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "createGroup", value = "Create and persist a new EasyShell connection group without modifying or deleting existing groups")
+    @Tool(name = "create_group", value = "Create and persist a new EasyShell connection group without modifying or deleting existing groups")
     public String createGroup(
             @P(name = "name", value = "New group name") String name,
             @P(name = "parentGroupId", value = "Optional parent group id; empty creates a root-level group", required = false) String parentGroupId) {
@@ -907,7 +907,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "renameGroup", value = "Rename one existing EasyShell connection group without changing its hierarchy or connections")
+    @Tool(name = "rename_group", value = "Rename one existing EasyShell connection group without changing its hierarchy or connections")
     public String renameGroup(
             @P(name = "groupId", value = "Group id returned by listGroups") String groupId,
             @P(name = "newName", value = "New non-empty group name") String newName) {
@@ -935,7 +935,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "createSnippet", value = "Create and persist a new terminal snippet; existing snippets are not modified or deleted")
+    @Tool(name = "create_snippet", value = "Create and persist a new terminal snippet; existing snippets are not modified or deleted")
     public String createSnippet(
             @P(name = "name", value = "Snippet name") String name,
             @P(name = "content", value = "Snippet command content") String content) {
@@ -961,7 +961,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "createQuery", value = "Create and persist a new saved query for an existing connection; existing queries are not modified or deleted")
+    @Tool(name = "create_query", value = "Create and persist a new saved query for an existing connection; existing queries are not modified or deleted")
     public String createQuery(
             @P(name = "connectionId", value = "Connection id returned by listSavedConnections") String connectionId,
             @P(name = "name", value = "Query name") String name,
@@ -1002,7 +1002,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getDatabaseSupportInfo", value = "Get supported database and NoSQL types plus bundled client driver versions")
+    @Tool(name = "get_database_support_info", value = "Get supported database and NoSQL types plus bundled client driver versions")
     public String getDatabaseSupportInfo() {
         StringBuilder result = new StringBuilder();
         result.append("localStore: SQLite\n");
@@ -1023,7 +1023,7 @@ public class ShellLLMTools implements LLMTools {
         return result.toString();
     }
 
-    @Tool(name = "getOpenDatabaseVersions", value = "Get database or NoSQL server versions for currently open connected tabs")
+    @Tool(name = "get_open_database_versions", value = "Get database or NoSQL server versions for currently open connected tabs")
     public String getOpenDatabaseVersions(
             @P(name = "filter", value = "Optional case-insensitive connection name or type filter") String filter) {
         try {
@@ -1046,7 +1046,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getApplicationSettingsSummary", value = "Get non-sensitive EasyShell application settings")
+    @Tool(name = "get_application_settings_summary", value = "Get non-sensitive EasyShell application settings")
     public String getApplicationSettingsSummary() {
         try {
             ShellSetting setting = ShellSettingStore.SETTING;
@@ -1095,7 +1095,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listThemes", value = "List available application themes")
+    @Tool(name = "list_themes", value = "List available application themes")
     public String listThemes(
             @P(name = "filter", value = "Optional case-insensitive theme name or description filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -1123,7 +1123,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getCurrentTheme", value = "Get the currently applied application theme and colors")
+    @Tool(name = "get_current_theme", value = "Get the currently applied application theme and colors")
     public String getCurrentTheme() {
         try {
             return this.themeSummary(ThemeManager.currentTheme());
@@ -1132,7 +1132,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "setTheme", value = "Change and persist the application theme")
+    @Tool(name = "set_theme", value = "Change and persist the application theme")
     public String setTheme(
             @P(name = "themeName", value = "Exact theme name returned by listThemes") String themeName) {
         try {
@@ -1150,7 +1150,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "toggleTheme", value = "Switch between the current theme and its light or dark counterpart")
+    @Tool(name = "toggle_theme", value = "Switch between the current theme and its light or dark counterpart")
     public String toggleTheme() {
         try {
             ThemeStyle current = ThemeManager.currentTheme();
@@ -1165,7 +1165,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listFonts", value = "List system fonts available to JavaFX")
+    @Tool(name = "list_fonts", value = "List system fonts available to JavaFX")
     public String listFonts(
             @P(name = "filter", value = "Optional case-insensitive font family filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -1189,7 +1189,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getCurrentFont", value = "Get current application, editor, and terminal font settings")
+    @Tool(name = "get_current_font", value = "Get current application, editor, and terminal font settings")
     public String getCurrentFont() {
         try {
             ShellSetting setting = ShellSettingStore.SETTING;
@@ -1209,7 +1209,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "setApplicationFont", value = "Change and persist the main application font")
+    @Tool(name = "set_application_font", value = "Change and persist the main application font")
     public String setApplicationFont(
             @P(name = "fontFamily", value = "Exact font family returned by listFonts") String fontFamily,
             @P(name = "fontSize", value = "Font size from 8 to 72") int fontSize,
@@ -1243,7 +1243,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getDependencyVersions", value = "Get JavaFX, LangChain4j, database driver, and other bundled dependency versions")
+    @Tool(name = "get_dependency_versions", value = "Get JavaFX, LangChain4j, database driver, and other bundled dependency versions")
     public String getDependencyVersions() {
         Map<String, String> versions = new LinkedHashMap<>();
         versions.put("javaFx", this.packageVersion("javafx.application.Application"));
@@ -1262,14 +1262,14 @@ public class ShellLLMTools implements LLMTools {
         return result.toString();
     }
 
-    @Tool(name = "executeLocalCommandDirect",
+    @Tool(name = "execute_local_command_direct",
             value = "Directly execute a command on the local machine running EasyShell")
     public String executeLocalCommand(
             @P(name = "command", value = "The command to execute") String command) {
         return this.executeLocalCommand(command, null, ShellLocalCommandExecutor.DEFAULT_TIMEOUT_SECONDS);
     }
 
-    @Tool(name = "executeLocalCommandInDirectoryDirect",
+    @Tool(name = "execute_local_command_in_directory_direct",
             value = "Directly execute a command in a specific local working directory")
     public String executeLocalCommandInDirectory(
             @P(name = "workingDirectory", value = "Absolute or relative local working directory") String workingDirectory,
@@ -1286,7 +1286,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getXServerStatus", value = "Get built-in X server status and non-sensitive X11 settings")
+    @Tool(name = "get_xserver_status", value = "Get built-in X server status and non-sensitive X11 settings")
     public String getXServerStatus() {
         try {
             int statusCode = ShellX11Manager.xServerStatus();
@@ -1312,7 +1312,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "startXServer", value = "Start EasyShell's built-in X server")
+    @Tool(name = "start_xserver", value = "Start EasyShell's built-in X server")
     public String startXServer() {
         try {
             ShellX11Manager.startXServer_built_in();
@@ -1322,7 +1322,7 @@ public class ShellLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "stopXServer", value = "Stop EasyShell's built-in X server")
+    @Tool(name = "stop_xserver", value = "Stop EasyShell's built-in X server")
     public String stopXServer() {
         try {
             ShellX11Manager.stopXServer_built_in();

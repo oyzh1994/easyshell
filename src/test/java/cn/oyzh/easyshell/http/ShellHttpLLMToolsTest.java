@@ -317,9 +317,9 @@ public class ShellHttpLLMToolsTest {
                 .contains("Collection not found"));
 
         String message = this.tools.systemMessage(LLMExecutionMode.APPROVE);
-        assertTrue(message.contains("createRequest"));
-        assertTrue(message.contains("updateSettings"));
-        assertTrue(message.contains("deleteCollection"));
+        assertTrue(message.contains("create_request"));
+        assertTrue(message.contains("update_settings"));
+        assertTrue(message.contains("delete_collection"));
         assertTrue(message.contains("HTTP"));
     }
 }

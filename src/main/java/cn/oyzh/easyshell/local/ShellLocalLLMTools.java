@@ -26,7 +26,7 @@ public class ShellLocalLLMTools implements LLMTools {
         this.executor = executor;
     }
 
-    @Tool(name = "getLocalEnvironment", value = "Get read-only information about the local shell environment used by EasyShell")
+    @Tool(name = "get_local_environment", value = "Get read-only information about the local shell environment used by EasyShell")
     public String getLocalEnvironment() {
         if (this.executor == null) {
             return "Local command executor is unavailable.";
@@ -42,7 +42,7 @@ public class ShellLocalLLMTools implements LLMTools {
         return result.toString();
     }
 
-    @Tool(name = "getServerVersion", value = "Get the local operating system and Java runtime versions")
+    @Tool(name = "get_server_version", value = "Get the local operating system and Java runtime versions")
     public String getServerVersion() {
         return "osName: " + System.getProperty("os.name")
                 + "\nosVersion: " + System.getProperty("os.version")
@@ -50,13 +50,13 @@ public class ShellLocalLLMTools implements LLMTools {
                 + "\njavaVersion: " + Runtime.version();
     }
 
-    @Tool(name = "executeLocalCommand", value = "Execute a command on the local machine")
+    @Tool(name = "execute_local_command", value = "Execute a command on the local machine")
     public String executeCommand(
             @P(name = "command", value = "The command to execute") String command) {
         return this.execute(command, null, ShellLocalCommandExecutor.DEFAULT_TIMEOUT_SECONDS);
     }
 
-    @Tool(name = "executeLocalCommandInDirectory",
+    @Tool(name = "execute_local_command_in_directory",
             value = "Execute a command on the local machine in a specific working directory")
     public String executeCommandInDirectory(
             @P(name = "workingDirectory", value = "Absolute or relative working directory") String workingDirectory,

@@ -49,7 +49,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "listFiles", value = "List files and directories at a remote path")
+    @Tool(name = "list_files", value = "List files and directories at a remote path")
     public String listFiles(
             @P(name = "path", value = "Absolute remote directory path") String path) {
         try {
@@ -78,7 +78,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "getFileInfo", value = "Get metadata for a remote file or directory")
+    @Tool(name = "get_file_info", value = "Get metadata for a remote file or directory")
     public String getFileInfo(
             @P(name = "path", value = "Absolute remote file or directory path") String path) {
         try {
@@ -93,7 +93,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "checkRemotePathExists", value = "Check whether a remote path exists")
+    @Tool(name = "check_remote_path_exists", value = "Check whether a remote path exists")
     public String exists(
             @P(name = "path", value = "Absolute remote path") String path) {
         try {
@@ -104,7 +104,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "getRemoteConnectionInfo", value = "Get read-only metadata for the bound file connection and its current working directory")
+    @Tool(name = "get_remote_connection_info", value = "Get read-only metadata for the bound file connection and its current working directory")
     public String getRemoteConnectionInfo() {
         try {
             ShellConnect connect = this.client.getShellConnect();
@@ -121,7 +121,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "getServerVersion", value = "Get remote file server version or protocol information when the protocol exposes a server version")
+    @Tool(name = "get_server_version", value = "Get remote file server version or protocol information when the protocol exposes a server version")
     public String getServerVersion() {
         try {
             ShellConnect connect = this.client.getShellConnect();
@@ -139,7 +139,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "resolveRemotePath", value = "Resolve a relative or absolute remote path against the bound connection")
+    @Tool(name = "resolve_remote_path", value = "Resolve a relative or absolute remote path against the bound connection")
     public String resolveRemotePath(
             @P(name = "path", value = "Remote path to resolve; empty resolves to the remote root") String path) {
         try {
@@ -150,7 +150,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "createRemoteFile", value = "Create an empty remote file")
+    @Tool(name = "create_remote_file", value = "Create an empty remote file")
     public String createFile(
             @P(name = "path", value = "Absolute remote file path") String path) {
         try {
@@ -162,7 +162,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "createRemoteDirectory", value = "Create one remote directory")
+    @Tool(name = "create_remote_directory", value = "Create one remote directory")
     public String createDirectory(
             @P(name = "path", value = "Absolute remote directory path") String path) {
         try {
@@ -177,7 +177,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "createRemoteDirectoryRecursive", value = "Create all missing remote directories in a path")
+    @Tool(name = "create_remote_directory_recursive", value = "Create all missing remote directories in a path")
     public String createDirectoryRecursive(
             @P(name = "path", value = "Absolute remote directory path") String path) {
         try {
@@ -192,7 +192,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "renameRemoteFileOrDirectory", value = "Rename a remote file or directory within the same parent directory")
+    @Tool(name = "rename_remote_file_or_directory", value = "Rename a remote file or directory within the same parent directory")
     public String rename(
             @P(name = "path", value = "Absolute current remote path") String path,
             @P(name = "newName", value = "New name without path separators") String newName) {
@@ -216,7 +216,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "deleteRemoteFile", value = "Delete one remote file")
+    @Tool(name = "delete_remote_file", value = "Delete one remote file")
     public String deleteFile(
             @P(name = "path", value = "Absolute remote file path") String path) {
         try {
@@ -235,7 +235,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "deleteRemoteDirectory", value = "Delete one remote directory using the connection protocol's non-recursive semantics")
+    @Tool(name = "delete_remote_directory", value = "Delete one remote directory using the connection protocol's non-recursive semantics")
     public String deleteDirectory(
             @P(name = "path", value = "Absolute remote directory path") String path) {
         try {
@@ -254,7 +254,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "deleteRemoteDirectoryRecursive", value = "Recursively delete a remote directory and all contents")
+    @Tool(name = "delete_remote_directory_recursive", value = "Recursively delete a remote directory and all contents")
     public String deleteDirectoryRecursive(
             @P(name = "path", value = "Absolute remote directory path") String path) {
         try {
@@ -273,7 +273,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "readRemoteTextFile", value = "Read up to 64 KiB of text from a remote file")
+    @Tool(name = "read_remote_text_file", value = "Read up to 64 KiB of text from a remote file")
     public String readTextFile(
             @P(name = "path", value = "Absolute remote file path") String path,
             @P(name = "maxBytes", value = "Maximum bytes to return, up to 65536") int maxBytes) {
@@ -304,7 +304,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "writeRemoteTextFile", value = "Create or overwrite a remote text file")
+    @Tool(name = "write_remote_text_file", value = "Create or overwrite a remote text file")
     public String writeTextFile(
             @P(name = "path", value = "Absolute remote file path") String path,
             @P(name = "content", value = "Complete text content to write") String content) {
@@ -330,7 +330,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "setRemoteFilePermissions", value = "Set Unix-style permissions on a remote file or directory")
+    @Tool(name = "set_remote_file_permissions", value = "Set Unix-style permissions on a remote file or directory")
     public String setPermissions(
             @P(name = "path", value = "Absolute remote path") String path,
             @P(name = "permissions", value = "Permissions such as rwxr-xr-x or 755") String permissions) {
@@ -347,7 +347,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "uploadLocalFile", value = "Upload one local file to the bound remote connection")
+    @Tool(name = "upload_local_file", value = "Upload one local file to the bound remote connection")
     public String uploadLocalFile(
             @P(name = "localPath", value = "Absolute local file path") String localPath,
             @P(name = "remotePath", value = "Absolute remote file path") String remotePath) {
@@ -363,7 +363,7 @@ public class ShellFileLLMTools<E extends ShellFile> implements LLMTools {
         }
     }
 
-    @Tool(name = "downloadRemoteFile", value = "Download one remote file to a local path")
+    @Tool(name = "download_remote_file", value = "Download one remote file to a local path")
     public String downloadRemoteFile(
             @P(name = "remotePath", value = "Absolute remote file path") String remotePath,
             @P(name = "localPath", value = "Absolute local file path") String localPath) {

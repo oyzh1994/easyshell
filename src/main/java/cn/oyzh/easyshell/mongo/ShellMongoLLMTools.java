@@ -27,7 +27,7 @@ public class ShellMongoLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "runCommand", value = "Run a standard MongoDB database command encoded as a strict JSON object")
+    @Tool(name = "run_command", value = "Run a standard MongoDB database command encoded as a strict JSON object")
     public String runCommand(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "command", value = "MongoDB command as a strict JSON object") String command) {
@@ -58,7 +58,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute a MongoDB shell script on the bound connection")
+    @Tool(name = "execute_script", value = "Execute a MongoDB shell script on the bound connection")
     public String executeScript(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "script", value = "MongoDB shell script") String script) {
@@ -80,12 +80,12 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "mongoExamples", value = "Return MongoDB runCommand and shell syntax examples")
+    @Tool(name = "mongo_examples", value = "Return MongoDB runCommand and shell syntax examples")
     public String example() {
         return LLMUtil.readLlmText("mongo_example.txt");
     }
 
-    @Tool(name = "listDatabases", value = "List MongoDB databases on the bound connection")
+    @Tool(name = "list_databases", value = "List MongoDB databases on the bound connection")
     public String listDatabases(
             @P(name = "filter", value = "Optional case-insensitive database name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -99,7 +99,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listCollections", value = "List collections in a MongoDB database")
+    @Tool(name = "list_collections", value = "List collections in a MongoDB database")
     public String listCollections(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "filter", value = "Optional case-insensitive collection name filter") String filter,
@@ -121,7 +121,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listBuckets", value = "List GridFS buckets in a MongoDB database")
+    @Tool(name = "list_buckets", value = "List GridFS buckets in a MongoDB database")
     public String listBuckets(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "filter", value = "Optional case-insensitive bucket name filter") String filter,
@@ -143,7 +143,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listFunctions", value = "List stored JavaScript functions in a MongoDB database")
+    @Tool(name = "list_functions", value = "List stored JavaScript functions in a MongoDB database")
     public String listFunctions(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "filter", value = "Optional case-insensitive function name filter") String filter,
@@ -165,7 +165,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listUsers", value = "List MongoDB users and roles without exposing passwords")
+    @Tool(name = "list_users", value = "List MongoDB users and roles without exposing passwords")
     public String listUsers(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -195,7 +195,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getServerVersion", value = "Get the MongoDB server version")
+    @Tool(name = "get_server_version", value = "Get the MongoDB server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Database client is unavailable.";
@@ -207,7 +207,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "pingDatabase", value = "Check whether a MongoDB database responds to ping")
+    @Tool(name = "ping_database", value = "Check whether a MongoDB database responds to ping")
     public String pingDatabase(
             @P(name = "database", value = "MongoDB database name") String database) {
         if (this.client == null) {
@@ -223,7 +223,7 @@ public class ShellMongoLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "countCollection", value = "Count documents in a MongoDB collection using a read-only count command")
+    @Tool(name = "count_collection", value = "Count documents in a MongoDB collection using a read-only count command")
     public String countCollection(
             @P(name = "database", value = "MongoDB database name") String database,
             @P(name = "collection", value = "Collection name") String collection) {

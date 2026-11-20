@@ -30,7 +30,7 @@ public class ShellZKLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "getServerVersion", value = "Get ZooKeeper server build and version information")
+    @Tool(name = "get_server_version", value = "Get ZooKeeper server build and version information")
     public String getServerVersion() {
         if (this.client == null) {
             return "ZooKeeper client is unavailable.";
@@ -46,7 +46,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool("Execute a ZooKeeper command on the bound connection")
+    @Tool(name = "execute_command", value = "Execute a ZooKeeper command on the bound connection")
     public String executeCommand(
             @P(name = "command", value = "ZooKeeper command") String command) {
         if (this.client == null) {
@@ -89,7 +89,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getNodeData", value = "Read data from one ZooKeeper node")
+    @Tool(name = "get_node_data", value = "Read data from one ZooKeeper node")
     public String getNodeData(
             @P(name = "path", value = "ZooKeeper node path, for example /app/config") String path) {
         if (this.client == null) {
@@ -107,7 +107,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listChildren", value = "List direct children of one ZooKeeper node")
+    @Tool(name = "list_children", value = "List direct children of one ZooKeeper node")
     public String listChildren(
             @P(name = "path", value = "ZooKeeper node path") String path,
             @P(name = "filter", value = "Optional case-insensitive child name filter") String filter,
@@ -126,7 +126,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "checkNodeExists", value = "Check whether a ZooKeeper node exists")
+    @Tool(name = "check_node_exists", value = "Check whether a ZooKeeper node exists")
     public String checkNodeExists(
             @P(name = "path", value = "ZooKeeper node path") String path) {
         if (this.client == null) {
@@ -143,7 +143,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getNodeStat", value = "Get ZooKeeper node metadata such as version, timestamps, data length, and child count")
+    @Tool(name = "get_node_stat", value = "Get ZooKeeper node metadata such as version, timestamps, data length, and child count")
     public String getNodeStat(
             @P(name = "path", value = "ZooKeeper node path") String path) {
         if (this.client == null) {
@@ -175,7 +175,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getNodeAcl", value = "Get the ACL entries of one ZooKeeper node")
+    @Tool(name = "get_node_acl", value = "Get the ACL entries of one ZooKeeper node")
     public String getNodeAcl(
             @P(name = "path", value = "ZooKeeper node path") String path) {
         if (this.client == null) {
@@ -203,7 +203,7 @@ public class ShellZKLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getAllChildrenCount", value = "Count all descendants below one ZooKeeper node")
+    @Tool(name = "get_all_children_count", value = "Count all descendants below one ZooKeeper node")
     public String getAllChildrenCount(
             @P(name = "path", value = "ZooKeeper node path") String path) {
         if (this.client == null) {

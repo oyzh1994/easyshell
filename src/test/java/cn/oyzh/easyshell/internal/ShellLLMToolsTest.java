@@ -46,8 +46,8 @@ public class ShellLLMToolsTest {
         assertTrue(capabilities.contains("terminalProtocols"));
         assertTrue(capabilities.contains("llmFeatures"));
         assertTrue(systemMessage.contains("EasyShell"));
-        assertTrue(systemMessage.contains("startXServer"));
-        assertTrue(systemMessage.contains("executeLocalCommandDirect"));
+        assertTrue(systemMessage.contains("start_x_server"));
+        assertTrue(systemMessage.contains("execute_local_command_direct"));
     }
 
     @Test
@@ -146,23 +146,23 @@ public class ShellLLMToolsTest {
             }
         }
         assertEquals(toolCount, names.size());
-        assertTrue(names.contains("getProjectVersion"));
-        assertTrue(names.contains("getJdkVersion"));
-        assertTrue(names.contains("getStoredDataSummary"));
-        assertTrue(names.contains("getSnippet"));
-        assertTrue(names.contains("getQuery"));
-        assertTrue(names.contains("listFileFavorites"));
-        assertTrue(names.contains("listRedisFavorites"));
-        assertTrue(names.contains("listZkFavorites"));
-        assertTrue(names.contains("listLlmProviders"));
-        assertTrue(names.contains("listLlmSessions"));
-        assertTrue(names.contains("executeLocalCommandDirect"));
-        assertTrue(names.contains("executeLocalCommandInDirectoryDirect"));
-        assertFalse(names.contains("deleteConnection"));
-        assertFalse(names.contains("deleteGroup"));
-        assertFalse(names.contains("deleteSnippet"));
-        assertFalse(names.contains("deleteQuery"));
-        assertFalse(names.contains("updateConnectionCredentials"));
+        assertTrue(names.contains("get_project_version"));
+        assertTrue(names.contains("get_jdk_version"));
+        assertTrue(names.contains("get_stored_data_summary"));
+        assertTrue(names.contains("get_snippet"));
+        assertTrue(names.contains("get_query"));
+        assertTrue(names.contains("list_file_favorites"));
+        assertTrue(names.contains("list_redis_favorites"));
+        assertTrue(names.contains("list_zk_favorites"));
+        assertTrue(names.contains("list_llm_providers"));
+        assertTrue(names.contains("list_llm_sessions"));
+        assertTrue(names.contains("execute_local_command_direct"));
+        assertTrue(names.contains("execute_local_command_in_directory_direct"));
+        assertFalse(names.contains("delete_connection"));
+        assertFalse(names.contains("delete_group"));
+        assertFalse(names.contains("delete_snippet"));
+        assertFalse(names.contains("delete_query"));
+        assertFalse(names.contains("update_connection_credentials"));
     }
 
     @Test

@@ -22,7 +22,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "getServerVersion", value = "Get the MySQL database server version")
+    @Tool(name = "get_server_version", value = "Get the MySQL database server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Database client is unavailable.";
@@ -35,7 +35,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSql", value = "Execute SQL on the bound MySQL connection")
+    @Tool(name = "execute_sql", value = "Execute SQL on the bound MySQL connection")
     public String executeSql(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -55,7 +55,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlDefaultDatabase", value = "Execute SQL on the bound MySQL connection")
+    @Tool(name = "execute_sql_default_database", value = "Execute SQL on the bound MySQL connection")
     public String executeSql(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -71,7 +71,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlRaw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "execute_sql_raw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -88,7 +88,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlRawDefaultDatabase", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "execute_sql_raw_default_database", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -104,7 +104,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listDatabases", value = "List MySQL databases on the bound connection")
+    @Tool(name = "list_databases", value = "List MySQL databases on the bound connection")
     public String listDatabases(
             @P(name = "filter", value = "Optional case-insensitive database name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -118,7 +118,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listTables", value = "List tables in a MySQL database")
+    @Tool(name = "list_tables", value = "List tables in a MySQL database")
     public String listTables(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "filter", value = "Optional case-insensitive table name filter") String filter,
@@ -140,7 +140,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listViews", value = "List views in a MySQL database")
+    @Tool(name = "list_views", value = "List views in a MySQL database")
     public String listViews(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "filter", value = "Optional case-insensitive view name filter") String filter,
@@ -162,7 +162,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "showCreateTable", value = "Get the CREATE TABLE statement for a MySQL table")
+    @Tool(name = "show_create_table", value = "Get the CREATE TABLE statement for a MySQL table")
     public String showCreateTable(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "table", value = "Table name") String table) {
@@ -180,7 +180,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "showCreateView", value = "Get the CREATE VIEW statement for a MySQL view")
+    @Tool(name = "show_create_view", value = "Get the CREATE VIEW statement for a MySQL view")
     public String showCreateView(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "view", value = "View name") String view) {
@@ -198,7 +198,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listIndexes", value = "List indexes for a MySQL table")
+    @Tool(name = "list_indexes", value = "List indexes for a MySQL table")
     public String listIndexes(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "table", value = "Table name") String table) {
@@ -227,7 +227,7 @@ public class ShellMysqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "explainSql", value = "Explain a MySQL SQL statement without executing its data changes")
+    @Tool(name = "explain_sql", value = "Explain a MySQL SQL statement without executing its data changes")
     public String explainSql(
             @P(name = "database", value = "MySQL database name") String database,
             @P(name = "sql", value = "SQL statement to explain") String sql) {

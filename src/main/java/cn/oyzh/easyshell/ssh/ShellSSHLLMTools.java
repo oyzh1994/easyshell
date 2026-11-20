@@ -18,13 +18,13 @@ public class ShellSSHLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool("执行ssh命令")
+    @Tool(name = "execute_command", value = "执行ssh命令")
     public String execCommand(
             @P(name = "command", value = "命令") String command) {
         return this.client.exec(command);
     }
 
-    @Tool(name = "getConnectionInfo", value = "Get current SSH connection metadata, logged-in user, remote OS, and working directory")
+    @Tool(name = "get_connection_info", value = "Get current SSH connection metadata, logged-in user, remote OS, and working directory")
     public String getConnectionInfo() {
         if (this.client == null) {
             return "SSH client is unavailable.";
@@ -49,7 +49,7 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getServerVersion", value = "Get the remote server operating system and kernel version")
+    @Tool(name = "get_server_version", value = "Get the remote server operating system and kernel version")
     public String getServerVersion() {
         if (this.client == null) {
             return "SSH client is unavailable.";
@@ -63,7 +63,7 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getServerSummary", value = "Get read-only remote server summary: OS, architecture, uptime, timezone, and locale")
+    @Tool(name = "get_server_summary", value = "Get read-only remote server summary: OS, architecture, uptime, timezone, and locale")
     public String getServerSummary() {
         if (this.client == null) {
             return "SSH client is unavailable.";
@@ -83,17 +83,17 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getCpuInfo", value = "Get read-only remote CPU information")
+    @Tool(name = "get_cpu_info", value = "Get read-only remote CPU information")
     public String getCpuInfo() {
         return this.safe(() -> this.client.sshExec().cpu_info(), "Get CPU info");
     }
 
-    @Tool(name = "getMemoryInfo", value = "Get read-only remote memory information")
+    @Tool(name = "get_memory_info", value = "Get read-only remote memory information")
     public String getMemoryInfo() {
         return this.safe(() -> this.client.sshExec().memory_info(), "Get memory info");
     }
 
-    @Tool(name = "getDiskInfo", value = "Get read-only remote disk usage information")
+    @Tool(name = "get_disk_info", value = "Get read-only remote disk usage information")
     public String getDiskInfo() {
         if (this.client == null) {
             return "SSH client is unavailable.";
@@ -115,17 +115,17 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getNetworkInfo", value = "Get read-only remote network interface information")
+    @Tool(name = "get_network_info", value = "Get read-only remote network interface information")
     public String getNetworkInfo() {
         return this.safe(() -> this.client.sshExec().network_interface_info(), "Get network info");
     }
 
-    @Tool(name = "getGpuInfo", value = "Get read-only remote GPU information")
+    @Tool(name = "get_gpu_info", value = "Get read-only remote GPU information")
     public String getGpuInfo() {
         return this.safe(() -> this.client.sshExec().gpu_info(), "Get GPU info");
     }
 
-    @Tool(name = "listProcesses", value = "List remote processes sorted by CPU usage")
+    @Tool(name = "list_processes", value = "List remote processes sorted by CPU usage")
     public String listProcesses(
             @P(name = "maxResults", value = "Maximum processes, default 100 and capped at 1000") int maxResults) {
         if (this.client == null) {
@@ -155,7 +155,7 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listDockerContainers", value = "List Docker containers on the remote server")
+    @Tool(name = "list_docker_containers", value = "List Docker containers on the remote server")
     public String listDockerContainers(
             @P(name = "includeStopped", value = "Whether to include stopped containers") boolean includeStopped) {
         if (this.client == null) {
@@ -170,7 +170,7 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listDockerImages", value = "List Docker images on the remote server")
+    @Tool(name = "list_docker_images", value = "List Docker images on the remote server")
     public String listDockerImages() {
         if (this.client == null) {
             return "SSH client is unavailable.";
@@ -183,7 +183,7 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getDockerInfo", value = "Get read-only Docker daemon information")
+    @Tool(name = "get_docker_info", value = "Get read-only Docker daemon information")
     public String getDockerInfo() {
         if (this.client == null) {
             return "SSH client is unavailable.";
@@ -195,7 +195,7 @@ public class ShellSSHLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "getDockerVersion", value = "Get read-only Docker version information")
+    @Tool(name = "get_docker_version", value = "Get read-only Docker version information")
     public String getDockerVersion() {
         if (this.client == null) {
             return "SSH client is unavailable.";

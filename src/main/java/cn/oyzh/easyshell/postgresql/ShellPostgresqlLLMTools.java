@@ -22,7 +22,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         this.client = client;
     }
 
-    @Tool(name = "getServerVersion", value = "Get the PostgreSQL database server version")
+    @Tool(name = "get_server_version", value = "Get the PostgreSQL database server version")
     public String getServerVersion() {
         if (this.client == null) {
             return "Database client is unavailable.";
@@ -35,7 +35,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSql", value = "Execute SQL on the bound Postgresql connection")
+    @Tool(name = "execute_sql", value = "Execute SQL on the bound Postgresql connection")
     public String executeSql(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -55,7 +55,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlDefaultSchema", value = "Execute SQL on the bound Postgresql connection")
+    @Tool(name = "execute_sql_default_schema", value = "Execute SQL on the bound Postgresql connection")
     public String executeSql(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -71,7 +71,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlRaw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "execute_sql_raw", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "sql", value = "SQL statement") String sql) {
@@ -88,7 +88,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "executeSqlRawDefaultSchema", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
+    @Tool(name = "execute_sql_raw_default_schema", value = "Execute SQL and return a safely serialized JSON representation of JDBC result sets")
     public String executeSqlRaw(
             @P(name = "sql", value = "SQL statement") String sql) {
         if (this.client == null) {
@@ -104,7 +104,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listSchemas", value = "List Postgresql schemas on the bound connection")
+    @Tool(name = "list_schemas", value = "List Postgresql schemas on the bound connection")
     public String listSchemas(
             @P(name = "filter", value = "Optional case-insensitive schema name filter") String filter,
             @P(name = "maxResults", value = "Maximum results, default 200 and capped at 1000") int maxResults) {
@@ -122,7 +122,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listTables", value = "List tables in a Postgresql schema")
+    @Tool(name = "list_tables", value = "List tables in a Postgresql schema")
     public String listTables(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "filter", value = "Optional case-insensitive table name filter") String filter,
@@ -144,7 +144,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listViews", value = "List views in a Postgresql schema")
+    @Tool(name = "list_views", value = "List views in a Postgresql schema")
     public String listViews(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "filter", value = "Optional case-insensitive view name filter") String filter,
@@ -166,7 +166,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "showCreateTable", value = "Get the CREATE TABLE statement for a Postgresql table")
+    @Tool(name = "show_create_table", value = "Get the CREATE TABLE statement for a Postgresql table")
     public String showCreateTable(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "table", value = "Table name") String table) {
@@ -184,7 +184,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "showCreateView", value = "Get the CREATE VIEW statement for a Postgresql view")
+    @Tool(name = "show_create_view", value = "Get the CREATE VIEW statement for a Postgresql view")
     public String showCreateView(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "view", value = "View name") String view) {
@@ -202,7 +202,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "listIndexes", value = "List indexes for a Postgresql table")
+    @Tool(name = "list_indexes", value = "List indexes for a Postgresql table")
     public String listIndexes(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "table", value = "Table name") String table) {
@@ -231,7 +231,7 @@ public class ShellPostgresqlLLMTools implements LLMTools {
         }
     }
 
-    @Tool(name = "explainSql", value = "Explain a Postgresql SQL statement without executing its data changes")
+    @Tool(name = "explain_sql", value = "Explain a Postgresql SQL statement without executing its data changes")
     public String explainSql(
             @P(name = "schema", value = "Postgresql schema name") String schema,
             @P(name = "sql", value = "SQL statement to explain") String sql) {
