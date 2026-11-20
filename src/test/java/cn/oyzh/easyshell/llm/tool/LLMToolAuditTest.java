@@ -1,6 +1,7 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.tool;
 
 import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import com.alibaba.fastjson2.JSONObject;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;

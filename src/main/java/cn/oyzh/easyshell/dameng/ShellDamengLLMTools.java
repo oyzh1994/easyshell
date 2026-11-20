@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.dameng;
 import cn.oyzh.fx.db.DBRawQueryResults;
 import cn.oyzh.easyshell.llm.LLMDBToolsUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
-import cn.oyzh.easyshell.llm.LLMTools;
+import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;

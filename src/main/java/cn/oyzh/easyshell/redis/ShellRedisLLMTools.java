@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.redis;
 import cn.oyzh.easyshell.exception.ShellReadonlyOperationException;
 import cn.oyzh.easyshell.llm.LLMDBToolsUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
-import cn.oyzh.easyshell.llm.LLMTools;
+import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.terminal.redis2.RedisCommandDescriptor;
 import cn.oyzh.easyshell.terminal.redis2.RedisCommandExecutor;

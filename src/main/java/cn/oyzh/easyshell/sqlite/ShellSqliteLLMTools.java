@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.sqlite;
 
 import cn.oyzh.easyshell.llm.LLMDBToolsUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
-import cn.oyzh.easyshell.llm.LLMTools;
+import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.fx.db.DBRawQueryResults;
 import dev.langchain4j.agent.tool.P;

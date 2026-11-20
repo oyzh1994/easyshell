@@ -1,9 +1,10 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.tool;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.log.JulUtil;
 import cn.oyzh.easyshell.ShellConst;
+import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;

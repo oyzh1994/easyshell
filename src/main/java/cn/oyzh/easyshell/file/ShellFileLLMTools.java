@@ -2,7 +2,7 @@ package cn.oyzh.easyshell.file;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
-import cn.oyzh.easyshell.llm.LLMTools;
+import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;

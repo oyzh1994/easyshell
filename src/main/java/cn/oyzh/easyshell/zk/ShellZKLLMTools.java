@@ -3,7 +3,7 @@ package cn.oyzh.easyshell.zk;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.llm.LLMDBToolsUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
-import cn.oyzh.easyshell.llm.LLMTools;
+import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.terminal.zk2.ZKCommandDescriptor;
 import cn.oyzh.easyshell.terminal.zk2.ZKCommandExecutor;
