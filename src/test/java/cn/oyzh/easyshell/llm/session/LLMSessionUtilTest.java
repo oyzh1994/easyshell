@@ -1,5 +1,7 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.session;
 
+import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.LLMMessageType;
 import org.junit.After;
 import org.junit.Test;
 

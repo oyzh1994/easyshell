@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.easyshell.llm.LLMSession;
+import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.menu.FXMenuItem;

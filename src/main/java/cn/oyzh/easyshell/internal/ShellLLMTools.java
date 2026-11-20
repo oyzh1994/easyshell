@@ -16,7 +16,7 @@ import cn.oyzh.easyshell.domain.zk.ShellZKCollect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
-import cn.oyzh.easyshell.llm.LLMSession;
+import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMToolAudit;
 import cn.oyzh.easyshell.llm.LLMTools;

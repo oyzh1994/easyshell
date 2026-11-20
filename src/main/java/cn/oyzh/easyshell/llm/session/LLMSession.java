@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.session;
 
 import cn.oyzh.common.date.DateHelper;
 import cn.oyzh.store.jdbc.Column;

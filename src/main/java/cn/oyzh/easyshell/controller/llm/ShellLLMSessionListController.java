@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.easyshell.fx.llm.LLMSessionTableView;
-import cn.oyzh.easyshell.llm.LLMSession;
-import cn.oyzh.easyshell.llm.LLMSessionUtil;
+import cn.oyzh.easyshell.llm.session.LLMSession;
+import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;

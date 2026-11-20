@@ -1,4 +1,6 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.session;
+
+import cn.oyzh.easyshell.llm.LLMMessageType;
 
 /**
  * LLM会话消息持久化对象

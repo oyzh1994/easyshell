@@ -11,7 +11,7 @@ import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
-import cn.oyzh.easyshell.llm.LLMSessionTab;
+import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;

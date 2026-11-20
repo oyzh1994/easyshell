@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.store.llm;
 
-import cn.oyzh.easyshell.llm.LLMSession;
+import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.store.jdbc.JdbcStandardStore;
 import cn.oyzh.store.jdbc.param.OrderByParam;
 import cn.oyzh.store.jdbc.param.SelectParam;

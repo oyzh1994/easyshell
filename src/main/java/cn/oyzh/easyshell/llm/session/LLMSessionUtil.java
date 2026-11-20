@@ -1,8 +1,9 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.session;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
+import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.i18n.I18nResourceBundle;
 import com.alibaba.fastjson2.JSON;
 

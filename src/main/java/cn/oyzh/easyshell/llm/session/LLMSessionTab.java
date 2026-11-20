@@ -1,4 +1,6 @@
-package cn.oyzh.easyshell.llm;
+package cn.oyzh.easyshell.llm.session;
+
+import cn.oyzh.easyshell.llm.LLMTools;
 
 import java.util.Objects;
 import java.util.function.Supplier;

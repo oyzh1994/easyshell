@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.test.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
-import cn.oyzh.easyshell.llm.LLMSessionTab;
+import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.Themes;

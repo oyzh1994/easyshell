@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.llm.LLMSessionTab;
+import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.scene.control.ListCell;
