@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -94,6 +95,25 @@ public class LLMMcpClientIntegrationTest {
 
         try (McpClient client = LLMMcpClientFactory.createClient(server)) {
             assertTrue(client.listTools().stream().anyMatch(tool -> tool.name().equals("echo")));
+        }
+    }
+
+    @Test
+    public void reportsConnectionProgressForAllServers() {
+        LLMMcpServer first = fixtureServer();
+        LLMMcpServer second = fixtureServer();
+        second.setName("fixture-2");
+        CopyOnWriteArrayList<LLMMcpToolSession.Progress> progress = new CopyOnWriteArrayList<>();
+
+        try (LLMMcpToolSession session = LLMMcpToolSession.connect(
+                List.of(first, second), progress::add)) {
+            assertTrue(session.hasClients());
+            assertEquals(3, progress.size());
+            assertEquals(0, progress.getFirst().completed());
+            assertEquals(2, progress.getFirst().total());
+            assertEquals(2, progress.getLast().completed());
+            assertEquals(2, progress.getLast().totalTools());
+            assertTrue(progress.getLast().error() == null);
         }
     }
 

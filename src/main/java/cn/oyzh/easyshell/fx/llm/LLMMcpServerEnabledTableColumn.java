@@ -12,6 +12,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
 
+import java.util.function.BiConsumer;
+
 /**
  * MCP Server 启用状态列。
  *
@@ -19,6 +21,10 @@ import javafx.util.Callback;
  * @since 2026-11-20
  */
 public class LLMMcpServerEnabledTableColumn extends FXTableColumn<LLMMcpServer, LLMMcpServer> {
+
+    private BiConsumer<LLMMcpServer, Boolean> enabledAction;
+
+    private boolean allDisabled;
 
     public LLMMcpServerEnabledTableColumn() {
         this.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue()));
@@ -30,7 +36,15 @@ public class LLMMcpServerEnabledTableColumn extends FXTableColumn<LLMMcpServer, 
         return column -> new EnabledCell();
     }
 
-    private static final class EnabledCell extends FXTableCell<LLMMcpServer, LLMMcpServer> {
+    public void setEnabledAction(BiConsumer<LLMMcpServer, Boolean> enabledAction) {
+        this.enabledAction = enabledAction;
+    }
+
+    public void setAllDisabled(boolean allDisabled) {
+        this.allDisabled = allDisabled;
+    }
+
+    private final class EnabledCell extends FXTableCell<LLMMcpServer, LLMMcpServer> {
 
         private final FXToggleSwitch toggleSwitch = new FXToggleSwitch();
 
@@ -43,6 +57,10 @@ public class LLMMcpServerEnabledTableColumn extends FXTableColumn<LLMMcpServer, 
             this.toggleSwitch.setText(null);
             this.toggleSwitch.selectedChanged((observable, oldValue, newValue) -> {
                 if (this.updating || this.server == null) {
+                    return;
+                }
+                if (LLMMcpServerEnabledTableColumn.this.enabledAction != null) {
+                    LLMMcpServerEnabledTableColumn.this.enabledAction.accept(this.server, newValue);
                     return;
                 }
                 if (!LLMMcpServerStore.INSTANCE.setEnabled(this.server, newValue)) {
@@ -69,7 +87,9 @@ public class LLMMcpServerEnabledTableColumn extends FXTableColumn<LLMMcpServer, 
             }
             this.server = item;
             this.updating = true;
-            this.toggleSwitch.setSelected(item.isEnabled());
+            this.toggleSwitch.setSelected(item.isEnabled() || item.isEnabling());
+            this.toggleSwitch.setDisable(
+                    LLMMcpServerEnabledTableColumn.this.allDisabled || item.isEnabling() || item.isChecking());
             this.updating = false;
             super.setGraphic(this.toggleSwitch);
         }

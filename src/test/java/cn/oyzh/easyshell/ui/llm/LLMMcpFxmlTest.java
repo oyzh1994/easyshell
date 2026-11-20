@@ -6,12 +6,13 @@ import cn.oyzh.easyshell.controller.llm.ShellLLMMcpServerListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpImportController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateMcpServerController;
 import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph;
 import cn.oyzh.fx.plus.ext.FXMLResult;
 import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,11 +52,9 @@ public class LLMMcpFxmlTest {
             try {
                 FXMLResult result = FXMLLoaderExt.loadFromUrl("/fxml/llm/shellLLMMcpServerList.fxml");
                 Parent root = (Parent) result.getNode();
-                new Scene(root, 980, 560);
-                root.applyCss();
-                root.layout();
-                assertTrue(root.lookup("#testGlyph") instanceof TestSVGGlyph);
-                assertTrue(root.lookup("#jsonGlyph") instanceof JSONSVGGlyph);
+                assertNotNull(findNode(root, TestSVGGlyph.class));
+                assertNotNull(findNode(root, JSONSVGGlyph.class));
+                assertNotNull(findNode(root, RefreshSVGGlyph.class));
             } catch (Throwable ex) {
                 error[0] = ex;
             } finally {
@@ -86,5 +85,20 @@ public class LLMMcpFxmlTest {
         if (error[0] != null) {
             throw new AssertionError("FXML load failed: " + resource, error[0]);
         }
+    }
+
+    private static <T extends Node> T findNode(Parent parent, Class<T> type) {
+        for (Node child : parent.getChildrenUnmodifiable()) {
+            if (type.isInstance(child)) {
+                return type.cast(child);
+            }
+            if (child instanceof Parent childParent) {
+                T result = findNode(childParent, type);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.llm;
 
+import cn.oyzh.common.dto.Project;
+import cn.oyzh.common.util.StringUtil;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
@@ -22,7 +24,7 @@ import java.util.Map;
  */
 public final class LLMMcpClientFactory {
 
-    private static final String CLIENT_NAME = "EasyShell";
+    private static final String CLIENT_NAME = Project.load().getName();
 
     private LLMMcpClientFactory() {
     }
@@ -40,14 +42,14 @@ public final class LLMMcpClientFactory {
                     .key(clientKey(server))
                     .clientName(CLIENT_NAME)
                     .clientVersion(clientVersion())
-                    .initializationTimeout(timeout)
-                    .toolExecutionTimeout(timeout)
-                    .resourcesTimeout(timeout)
-                    .promptsTimeout(timeout)
                     .pingTimeout(timeout)
+                    .promptsTimeout(timeout)
+                    .resourcesTimeout(timeout)
+                    .toolExecutionTimeout(timeout)
+                    .initializationTimeout(timeout)
                     .cacheToolList(true)
-                    .cacheResourceList(true)
                     .cachePromptList(true)
+                    .cacheResourceList(true)
                     .build();
         } catch (RuntimeException ex) {
             closeQuietly(transport);
@@ -168,10 +170,10 @@ public final class LLMMcpClientFactory {
     }
 
     static String clientKey(LLMMcpServer server) {
-        if (server.getUid() != null && !server.getUid().isBlank()) {
+        if (StringUtil.isNotBlank(server.getUid())) {
             return server.getUid();
         }
-        if (server.getName() != null && !server.getName().isBlank()) {
+        if (StringUtil.isNotBlank(server.getName())) {
             return server.getName().trim();
         }
         return "mcp-server";

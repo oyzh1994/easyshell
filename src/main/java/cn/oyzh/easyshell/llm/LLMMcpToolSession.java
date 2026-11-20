@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.IOUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.mcp.McpToolProvider;
@@ -14,7 +17,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 
 /**
  * 一次 LLM 请求使用的 MCP 客户端集合。
@@ -66,8 +75,12 @@ public final class LLMMcpToolSession implements AutoCloseable {
     }
 
     public static LLMMcpToolSession connectEnabled() {
+        return connectEnabled(null);
+    }
+
+    public static LLMMcpToolSession connectEnabled(Consumer<Progress> progress) {
         try {
-            return connect(LLMMcpServerStore.INSTANCE.selectEnabled());
+            return connect(LLMMcpServerStore.INSTANCE.selectEnabled(), progress);
         } catch (Exception ex) {
             JulLog.warn("load mcp server configuration failed", ex);
             return new LLMMcpToolSession(List.of(),
@@ -77,26 +90,58 @@ public final class LLMMcpToolSession implements AutoCloseable {
     }
 
     public static LLMMcpToolSession connect(Collection<LLMMcpServer> configurations) {
+        return connect(configurations, null);
+    }
+
+    public static LLMMcpToolSession connect(Collection<LLMMcpServer> configurations,
+                                            Consumer<Progress> progress) {
+        List<LLMMcpServer> enabled = configurations == null
+                ? List.of()
+                : configurations.stream()
+                .filter(configuration -> configuration != null && configuration.isEnabled())
+                .toList();
+        if (enabled.isEmpty()) {
+            return new LLMMcpToolSession(List.of(), List.of(), null, Set.of(), Map.of(), "");
+        }
+        notifyProgress(progress, new Progress(0, enabled.size(), null, 0, 0, null));
+
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+        CompletionService<ConnectionResult> completion = new ExecutorCompletionService<>(executor);
+        List<Future<ConnectionResult>> futures = new ArrayList<>();
+        for (LLMMcpServer configuration : enabled) {
+            futures.add(completion.submit(() -> connectOne(configuration)));
+        }
+
         List<ServerState> servers = new ArrayList<>();
         List<String> errors = new ArrayList<>();
-        if (configurations != null) {
-            for (LLMMcpServer configuration : configurations) {
-                if (configuration == null || !configuration.isEnabled()) {
-                    continue;
-                }
-                McpClient client = null;
-                try {
-                    client = LLMMcpClientFactory.createClient(configuration);
-                    List<ToolSpecification> tools = client.listTools();
-                    servers.add(new ServerState(configuration, client, tools,
-                            LLMMcpConfigParser.parseToolNames(configuration.getToolNamesText())));
-                } catch (Exception ex) {
-                    closeQuietly(client);
-                    String message = serverName(configuration) + ": " + errorMessage(ex);
+        int completed = 0;
+        int totalTools = 0;
+        try {
+            for (int index = 0; index < enabled.size(); index++) {
+                ConnectionResult result = completion.take().get();
+                completed++;
+                if (result.error() != null) {
+                    String message = serverName(result.configuration()) + ": " + result.error();
                     errors.add(message);
-                    JulLog.warn("connect mcp server failed: " + message, ex);
+                    JulLog.warn("connect mcp server failed: " + message);
+                } else {
+                    servers.add(result.server());
+                    totalTools += result.toolCount();
                 }
+                notifyProgress(progress, new Progress(completed, enabled.size(),
+                        serverName(result.configuration()), result.toolCount(), totalTools, result.error()));
             }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            futures.forEach(future -> future.cancel(true));
+            servers.forEach(server -> IOUtil.closeQuietly(server.client()));
+            throw new RuntimeException("MCP connection cancelled", ex);
+        } catch (Exception ex) {
+            futures.forEach(future -> future.cancel(true));
+            servers.forEach(server -> IOUtil.closeQuietly(server.client()));
+            throw new RuntimeException("MCP connection failed", ex);
+        } finally {
+            executor.shutdownNow();
         }
         if (servers.isEmpty()) {
             return new LLMMcpToolSession(List.of(), errors, null, Set.of(), Map.of(), "");
@@ -148,6 +193,31 @@ public final class LLMMcpToolSession implements AutoCloseable {
                 .build();
         String systemMessage = buildSystemMessage(servers, aliases, errors);
         return new LLMMcpToolSession(servers, errors, provider, toolNames, toolSources, systemMessage);
+    }
+
+    private static ConnectionResult connectOne(LLMMcpServer configuration) {
+        McpClient client = null;
+        try {
+            client = LLMMcpClientFactory.createClient(configuration);
+            List<ToolSpecification> tools = client.listTools();
+            ServerState server = new ServerState(configuration, client, tools,
+                    LLMMcpConfigParser.parseToolNames(configuration.getToolNamesText()));
+            return new ConnectionResult(configuration, server, tools.size(), null);
+        } catch (Exception ex) {
+            IOUtil.closeQuietly(client);
+            return new ConnectionResult(configuration, null, 0, errorMessage(ex));
+        }
+    }
+
+    private static void notifyProgress(Consumer<Progress> progress, Progress value) {
+        if (progress == null) {
+            return;
+        }
+        try {
+            progress.accept(value);
+        } catch (Exception ex) {
+            JulLog.warn("notify mcp connection progress failed", ex);
+        }
     }
 
     private static String buildSystemMessage(List<ServerState> servers,
@@ -227,7 +297,7 @@ public final class LLMMcpToolSession implements AutoCloseable {
         }
         this.closed = true;
         for (McpClient client : this.clients) {
-            closeQuietly(client);
+            IOUtil.closeQuietly(client);
         }
     }
 
@@ -289,14 +359,13 @@ public final class LLMMcpToolSession implements AutoCloseable {
     }
 
     private static String serverName(LLMMcpServer server) {
-        if (server == null) {
-            return "MCP server";
-        }
-        if (server.getName() != null && !server.getName().isBlank()) {
-            return server.getName().trim();
-        }
-        if (server.getEndpointText() != null && !server.getEndpointText().isBlank()) {
-            return server.getEndpointText();
+        if (server != null) {
+            if (StringUtil.isNotBlank(server.getName())) {
+                return server.getName().trim();
+            }
+            if (StringUtil.isNotBlank(server.getEndpointText())) {
+                return server.getEndpointText();
+            }
         }
         return "MCP server";
     }
@@ -324,24 +393,27 @@ public final class LLMMcpToolSession implements AutoCloseable {
                 .orElse("    ");
     }
 
-    private static void closeQuietly(McpClient client) {
-        if (client == null) {
-            return;
-        }
-        try {
-            client.close();
-        } catch (Exception ex) {
-            JulLog.warn("close mcp client failed", ex);
-        }
-    }
-
     private record ServerState(LLMMcpServer configuration,
                                McpClient client,
                                List<ToolSpecification> tools,
                                Set<String> allowedTools) {
 
         private boolean accepts(String toolName) {
-            return this.allowedTools.isEmpty() || this.allowedTools.contains(toolName);
+            return CollectionUtil.isEmpty(this.allowedTools) || this.allowedTools.contains(toolName);
         }
+    }
+
+    private record ConnectionResult(LLMMcpServer configuration,
+                                    ServerState server,
+                                    int toolCount,
+                                    String error) {
+    }
+
+    public record Progress(int completed,
+                           int total,
+                           String serverName,
+                           int toolCount,
+                           int totalTools,
+                           String error) {
     }
 }

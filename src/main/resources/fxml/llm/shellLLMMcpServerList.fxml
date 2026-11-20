@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.llm.LLMMcpServerEnabledTableColumn?>
+<?import cn.oyzh.easyshell.fx.llm.LLMMcpConnectionStatusTableColumn?>
 <?import cn.oyzh.easyshell.fx.llm.LLMMcpServerTableView?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.JSONSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -44,9 +46,15 @@
                     <Insets left="5" top="7"/>
                 </FXHBox.margin>
             </TestSVGGlyph>
+            <RefreshSVGGlyph fx:id="refreshGlyph" tipText="%shell.llm.mcp.refreshAll"
+                             onMousePrimaryClicked="#refreshAll">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
             <FXLabel fx:id="testResult" maxWidth="520" visible="false" managed="false">
                 <FXHBox.margin>
-                    <Insets left="12" top="7"/>
+                    <Insets left="10" top="5"/>
                 </FXHBox.margin>
             </FXLabel>
             <FXVBox.margin>
@@ -57,9 +65,10 @@
             <columns>
                 <FXTableColumn prefWidth="170" valueName="name" text="%base.name"/>
                 <FXTableColumn prefWidth="130" valueName="transportName" text="%base.transport"/>
-                <FXTableColumn flexWidth="100% - 605" valueName="endpointText" text="%shell.llm.mcp.endpoint"/>
+                <FXTableColumn flexWidth="100% - 725" valueName="endpointText" text="%shell.llm.mcp.endpoint"/>
                 <FXTableColumn prefWidth="190" valueName="toolFilterText" text="%shell.llm.mcp.toolFilterShort"/>
-                <LLMMcpServerEnabledTableColumn prefWidth="100" text="%base.status"/>
+                <LLMMcpConnectionStatusTableColumn prefWidth="120" text="%shell.llm.mcp.connectionStatus"/>
+                <LLMMcpServerEnabledTableColumn fx:id="enabledColumn" prefWidth="100" text="%base.status"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="30" top="7"/>

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
+import cn.oyzh.easyshell.llm.LLMMcpServer;
 import cn.oyzh.easyshell.llm.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMProvider;
@@ -25,6 +26,7 @@ import cn.oyzh.easyshell.llm.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.LLMTools;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
+import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.controller.SubStageController;
@@ -161,6 +163,8 @@ public class ChatController extends SubStageController {
 
         private volatile LLMMcpToolSession mcpSession;
 
+        private List<LLMMcpServer> mcpServers;
+
         private LLMProvider provider;
 
         private LLMThinkingLevel thinkingLevel;
@@ -195,7 +199,8 @@ public class ChatController extends SubStageController {
             tools.add(request.sessionTools);
         }
         // MCP 工具，单个 Server 失败不会影响其他工具
-        request.mcpSession = LLMMcpToolSession.connectEnabled();
+        request.mcpSession = LLMMcpToolSession.connect(
+                request.mcpServers, progress -> this.updateMcpProgress(request, progress));
         if (request.mcpSession.hasClients()) {
             services.toolProvider(request.mcpSession.getToolProvider());
         }
@@ -209,8 +214,7 @@ public class ChatController extends SubStageController {
         services.tools(tools.toArray());
         services.maxToolCallingRoundTrips(100);
         services.toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
-        services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(
-                tools, request.mcpSession.getToolNames()));
+        services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(tools, request.mcpSession.getToolNames()));
         // 工具调用审计
         LLMToolAudit audit = new LLMToolAudit(tools,
                 request.sessionId, request.sessionTabId,
@@ -282,12 +286,12 @@ public class ChatController extends SubStageController {
             }
             LLMRequest request = new LLMRequest();
             request.provider = provider;
-            request.thinkingLevel = this.view.getSelectedThinkingLevel();
-            request.sessionTab = this.view.getSelectedSession();
-            request.executionMode = this.view.getSelectedExecutionMode();
             request.model = this.view.getSelectedModel();
             request.streaming = this.view.isStreamingEnabled();
             request.chatMemory = this.buildChatMemory(message);
+            request.sessionTab = this.view.getSelectedSession();
+            request.thinkingLevel = this.view.getSelectedThinkingLevel();
+            request.executionMode = this.view.getSelectedExecutionMode();
             request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
             request.sessionTabId = request.sessionTab == null ? null : request.sessionTab.getId();
             if (request.sessionTab != null && request.sessionTab.getToolsFunc() != null) {
@@ -295,9 +299,42 @@ public class ChatController extends SubStageController {
             }
             this.activeRequest = request;
             this.view.setBusy(true);
+            request.mcpServers = this.loadEnabledMcpServers();
+            if (!request.mcpServers.isEmpty()) {
+                request.placeholder = this.view.addAssistantMessage(String.format(
+                        I18nResourceBundle.i18nString("shell.llm.mcp.progress.start"),
+                        request.mcpServers.size()), request.sessionTabId);
+            }
             // 异步执行
             request.thread = ThreadUtil.startVirtual(() -> this.prepareAndExecuteRequest(request, message));
         });
+    }
+
+    private List<LLMMcpServer> loadEnabledMcpServers() {
+        try {
+            return LLMMcpServerStore.INSTANCE.selectEnabled();
+        } catch (Exception ex) {
+            JulLog.warn("load enabled mcp servers failed", ex);
+            return List.of();
+        }
+    }
+
+    private void updateMcpProgress(LLMRequest request, LLMMcpToolSession.Progress progress) {
+        if (!this.isRequestActive(request) || request.placeholder == null) {
+            return;
+        }
+        String text;
+        if (progress.completed() == 0) {
+            text = String.format(I18nResourceBundle.i18nString("shell.llm.mcp.progress.start"),
+                    progress.total());
+        } else if (progress.error() != null) {
+            text = String.format(I18nResourceBundle.i18nString("shell.llm.mcp.progress.failed"),
+                    progress.serverName(), progress.error());
+        } else {
+            text = String.format(I18nResourceBundle.i18nString("shell.llm.mcp.progress.connected"),
+                    progress.completed(), progress.total(), progress.totalTools());
+        }
+        this.view.replaceMessage(request.placeholder, text);
     }
 
     private LLMProvider validateProviderForSend() {
@@ -329,6 +366,7 @@ public class ChatController extends SubStageController {
         } catch (Exception ex) {
             if (this.isRequestActive(request)) {
                 JulLog.error("llm init error", ex);
+                this.clearPlaceholder(request);
                 this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                 this.finishRequest(request, true);
             } else {
@@ -351,6 +389,7 @@ public class ChatController extends SubStageController {
                     return;
                 }
                 JulLog.error("llm file content error", ex);
+                this.clearPlaceholder(request);
                 this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                 this.finishRequest(request, true);
                 return;
@@ -359,14 +398,22 @@ public class ChatController extends SubStageController {
                 return;
             }
             if (contents.isEmpty()) {
+                this.clearPlaceholder(request);
                 this.view.addErrorMessage(I18nHelper.invalidFile(), message.getSessionTabId());
                 this.finishRequest(request, true);
                 return;
             }
-            LLMMessage placeholder = this.view.addAssistantMessage(ShellI18nHelper.thinkingPlaceholder(), message.getSessionTabId());
-            request.placeholder = placeholder;
+            LLMMessage placeholder = request.placeholder;
+            if (placeholder == null) {
+                placeholder = this.view.addAssistantMessage(
+                        ShellI18nHelper.thinkingPlaceholder(), message.getSessionTabId());
+            } else {
+                this.view.replaceMessage(placeholder, ShellI18nHelper.thinkingPlaceholder());
+            }
+            LLMMessage targetPlaceholder = placeholder;
+            request.placeholder = targetPlaceholder;
             if (!this.isRequestActive(request)) {
-                this.markStoppedPlaceholder(placeholder);
+                this.markStoppedPlaceholder(targetPlaceholder);
                 return;
             }
             if (streaming) {
@@ -378,19 +425,19 @@ public class ChatController extends SubStageController {
                                 return;
                             }
                             if (firstThinking.getAndSet(false)
-                                    && Objects.equals(placeholder.getMessage(), ShellI18nHelper.thinkingPlaceholder())) {
-                                this.view.replaceMessage(placeholder, "");
+                                    && Objects.equals(targetPlaceholder.getMessage(), ShellI18nHelper.thinkingPlaceholder())) {
+                                this.view.replaceMessage(targetPlaceholder, "");
                             }
-                            this.view.appendThinking(placeholder, token.text());
+                            this.view.appendThinking(targetPlaceholder, token.text());
                         })
                         .onPartialResponse(token -> {
                             if (!this.isRequestActive(request)) {
                                 return;
                             }
                             if (firstResponse.getAndSet(false)) {
-                                this.view.replaceMessage(placeholder, token);
+                                this.view.replaceMessage(targetPlaceholder, token);
                             } else {
-                                this.view.appendMessage(placeholder, token);
+                                this.view.appendMessage(targetPlaceholder, token);
                             }
                         })
                         .onError(ex -> {
@@ -401,7 +448,7 @@ public class ChatController extends SubStageController {
                             this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                             this.finishRequest(request, true);
                         })
-                        .onCompleteResponse(response -> this.completeStreamingRequest(request, placeholder, response))
+                        .onCompleteResponse(response -> this.completeStreamingRequest(request, targetPlaceholder, response))
                         .start();
             } else {
                 try {
@@ -495,6 +542,17 @@ public class ChatController extends SubStageController {
         String text = message.getMessage();
         if (text == null || text.isBlank() || Objects.equals(text, ShellI18nHelper.thinkingPlaceholder())) {
             this.view.replaceMessage(message, I18nHelper.stopped());
+        }
+    }
+
+    private void clearPlaceholder(LLMRequest request) {
+        if (request == null) {
+            return;
+        }
+        LLMMessage placeholder = request.placeholder;
+        request.placeholder = null;
+        if (placeholder != null) {
+            this.view.replaceMessage(placeholder, "");
         }
     }
 

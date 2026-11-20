@@ -75,6 +75,21 @@ public class LLMMcpServer implements Serializable {
     @Column
     private Boolean enabled = true;
 
+    @JSONField(serialize = false, deserialize = false)
+    private transient LLMMcpConnectionState connectionState = LLMMcpConnectionState.UNKNOWN;
+
+    @JSONField(serialize = false, deserialize = false)
+    private transient String connectionMessage;
+
+    @JSONField(serialize = false, deserialize = false)
+    private transient int toolCount;
+
+    @JSONField(serialize = false, deserialize = false)
+    private transient boolean enabling;
+
+    @JSONField(serialize = false, deserialize = false)
+    private transient boolean checking;
+
     public String getUid() {
         return uid;
     }
@@ -178,6 +193,53 @@ public class LLMMcpServer implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public LLMMcpConnectionState getConnectionState() {
+        return this.connectionState == null ? LLMMcpConnectionState.UNKNOWN : this.connectionState;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public void setConnectionState(LLMMcpConnectionState connectionState, int toolCount, String connectionMessage) {
+        this.connectionState = connectionState == null ? LLMMcpConnectionState.UNKNOWN : connectionState;
+        this.toolCount = toolCount;
+        this.connectionMessage = connectionMessage;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public void setConnectionState(LLMMcpConnectionState connectionState) {
+        this.setConnectionState(connectionState, 0, null);
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getConnectionStatusText() {
+        return this.getConnectionState().getDisplayText(this.toolCount);
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getConnectionMessage() {
+        return this.connectionMessage;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isEnabling() {
+        return this.enabling;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public void setEnabling(boolean enabling) {
+        this.enabling = enabling;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isChecking() {
+        return this.checking;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public void setChecking(boolean checking) {
+        this.checking = checking;
     }
 
     /**
