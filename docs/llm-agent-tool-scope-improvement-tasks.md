@@ -496,7 +496,7 @@ local_get_server_version
 - Session 测试覆盖异步保存使用的不可变快照。
 - 第 7、8 项依赖 T5 的运行时拦截；按用户要求 T5 暂不处理，因此本轮不实现、不伪造这两项测试，待 T5 恢复时补齐。
 - `mvn -Dtest='*LLM*Test,I18nResourceIntegrityTest#easyShellLocalesHaveSameKeysAndNoEmptyValues+placeholdersAreConsistentAcrossLocales+onlySupportedLocalesRemainInRuntimeResources' test`
-  通过 164 项，0 失败，2 项外部环境测试跳过。
+  通过 168 项，0 失败，2 项外部环境测试跳过。
 
 ## 5. 建议处理顺序
 
@@ -544,6 +544,7 @@ local_get_server_version
 - Agent 最大并发支持固定值 `2/4/8/12/20`、`0`（物理核心，默认）和 `-1`（无上限，实际上限为当前计划的步骤数）。物理核心数按操作系统探测，无法探测时回退到 JVM 可用处理器数。
 - Agent 最大步骤数与并发数独立配置，默认 10，支持 `6/10/15/20/30`。Planner、并行、DAG 和动态主从统一使用该上限，因此提高并发档位后可以规划超过 6 个 Agent 步骤。
 - Agent 失败策略支持继续执行（默认）、快速失败、失败重试一次。DAG 中依赖失败步骤的下游步骤会标记为跳过；并发轨迹按开始时间稳定排序，并使用线程安全的 Trace 集合。
+- LLM 模型调用增加连接异常专用重试：普通聊天和 Agent 的同步/流式调用在检测到连接重置、连接中止、断管、异常 EOF、`NoHttpResponseException` 等连接提前断开时，最多自动重试 3 次，采用 250ms、500ms、1000ms 退避；同时识别 Winsock 10052/10053/10054、中英文本地化错误消息及常见 HTTP/2 `GOAWAY`/`REFUSED_STREAM` 变体。认证失败、超时、主动取消、TLS 配置错误等业务或配置异常不重试。通用异常识别由 `base-common` 的 `NetworkUtil` 统一提供。
 - Agent Worker 不再硬编码 30 条消息，改为使用 LLM 消息窗口设置。
 - 多组工具提示词合并时去除重复的语言和执行规则，避免 SESSION、LOCAL_EXECUTION、INTERNAL 组合导致提示词重复膨胀。
 - MCP 工具名按 Server 预先生成映射，清洗碰撞时稳定加哈希消歧；原始重复名称和跨 Server 最终名称冲突会在注册前拒绝。

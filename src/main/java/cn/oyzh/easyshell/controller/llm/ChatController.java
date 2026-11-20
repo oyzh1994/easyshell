@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -12,6 +13,7 @@ import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.LLMNetworkRetry;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMResponseUtil;
 import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
@@ -572,43 +574,12 @@ public class ChatController extends SubStageController {
                 return;
             }
             if (streaming) {
-                AtomicBoolean firstResponse = new AtomicBoolean(true);
-                AtomicBoolean firstThinking = new AtomicBoolean(true);
-                assistant.chatStream(contents)
-                        .onPartialThinking(token -> {
-                            if (!this.isRequestActive(request) || StringUtil.isBlank(token.text())) {
-                                return;
-                            }
-                            if (firstThinking.getAndSet(false)
-                                    && view.isShowThinking()
-                                    && Objects.equals(targetPlaceholder.getMessage(), ShellI18nHelper.thinkingPlaceholder())) {
-                                this.view.replaceMessage(targetPlaceholder, "");
-                            }
-                            this.view.appendThinking(targetPlaceholder, token.text());
-                        })
-                        .onPartialResponse(token -> {
-                            if (!this.isRequestActive(request)) {
-                                return;
-                            }
-                            if (firstResponse.getAndSet(false)) {
-                                this.view.replaceMessage(targetPlaceholder, token);
-                            } else {
-                                this.view.appendMessage(targetPlaceholder, token);
-                            }
-                        })
-                        .onError(ex -> {
-                            if (!this.isRequestActive(request)) {
-                                return;
-                            }
-                            JulLog.error("llm error", ex);
-                            this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
-                            this.finishRequest(request, true);
-                        })
-                        .onCompleteResponse(response -> this.completeStreamingRequest(request, targetPlaceholder, response))
-                        .start();
+                this.startAssistantStream(request, assistant, contents,
+                        targetPlaceholder, message, 0);
             } else {
                 try {
-                    ChatResponse response = assistant.chatResponse(contents);
+                    ChatResponse response = LLMNetworkRetry.execute("llm chat",
+                            () -> assistant.chatResponse(contents));
                     if (!this.isRequestActive(request)) {
                         return;
                     }
@@ -640,6 +611,68 @@ public class ChatController extends SubStageController {
             this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
             this.finishRequest(request, true);
         }
+    }
+
+    private void startAssistantStream(LLMRequest request,
+                                      LLMAssistant assistant,
+                                      List<Content> contents,
+                                      LLMMessage placeholder,
+                                      LLMMessage message,
+                                      int retry) {
+        AtomicBoolean firstResponse = new AtomicBoolean(true);
+        AtomicBoolean firstThinking = new AtomicBoolean(true);
+        assistant.chatStream(contents)
+                .onPartialThinking(token -> {
+                    if (!this.isRequestActive(request) || StringUtil.isBlank(token.text())) {
+                        return;
+                    }
+                    if (firstThinking.getAndSet(false)
+                            && view.isShowThinking()
+                            && Objects.equals(placeholder.getMessage(), ShellI18nHelper.thinkingPlaceholder())) {
+                        this.view.replaceMessage(placeholder, "");
+                    }
+                    this.view.appendThinking(placeholder, token.text());
+                })
+                .onPartialResponse(token -> {
+                    if (!this.isRequestActive(request)) {
+                        return;
+                    }
+                    if (firstResponse.getAndSet(false)) {
+                        this.view.replaceMessage(placeholder, token);
+                    } else {
+                        this.view.appendMessage(placeholder, token);
+                    }
+                })
+                .onError(ex -> {
+                    if (!this.isRequestActive(request)) {
+                        return;
+                    }
+                    if (retry < LLMNetworkRetry.MAX_RETRIES
+                            && NetworkUtil.isConnectionReset(ex)) {
+                        int nextRetry = retry + 1;
+                        JulLog.warn("llm connection reset, retrying {}/{}",
+                                nextRetry, LLMNetworkRetry.MAX_RETRIES);
+                        this.view.replaceThinking(placeholder, "");
+                        this.view.replaceMessage(placeholder, ShellI18nHelper.thinkingPlaceholder());
+                        try {
+                            Thread.sleep(LLMNetworkRetry.retryDelayMillis(nextRetry));
+                        } catch (InterruptedException interrupted) {
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+                        if (this.isRequestActive(request)) {
+                            this.startAssistantStream(request, assistant, contents,
+                                    placeholder, message, nextRetry);
+                        }
+                        return;
+                    }
+                    JulLog.error("llm error", ex);
+                    this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                    this.finishRequest(request, true);
+                })
+                .onCompleteResponse(response ->
+                        this.completeStreamingRequest(request, placeholder, response))
+                .start();
     }
 
     private void executeAgentRequest(LLMRequest request,

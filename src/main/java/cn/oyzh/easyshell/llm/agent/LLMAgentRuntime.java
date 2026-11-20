@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.llm.agent;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.llm.LLMNetworkRetry;
 import cn.oyzh.easyshell.llm.LLMResponseUtil;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
@@ -16,7 +16,6 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -31,7 +30,6 @@ import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -39,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -584,6 +583,11 @@ public final class LLMAgentRuntime {
         return new IllegalStateException(error);
     }
 
+    private ChatResponse callChat(String operation,
+                                  Callable<ChatResponse> call) throws Exception {
+        return LLMNetworkRetry.execute(operation, call);
+    }
+
     private ChatResponse executeDynamicSupervisor(String task,
                                                  List<ChatMessage> history,
                                                  LLMAgentListener listener,
@@ -680,7 +684,8 @@ public final class LLMAgentRuntime {
                     .chatModel(this.chatModel)
                     .systemMessage(system)
                     .build();
-            ChatResponse response = planner.plan(prompt);
+            ChatResponse response = this.callChat("agent planner",
+                    () -> planner.plan(prompt));
             String text = LLMResponseUtil.finalText(response);
             String thinking = LLMResponseUtil.finalThinking(response);
             if (text == null || text.isBlank()) {
@@ -767,7 +772,9 @@ public final class LLMAgentRuntime {
                         .maxToolCallingRoundTrips(MAX_TOOL_ROUNDS)
                         .toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
                 this.configureAllTools(services);
-                response = services.build().work(prompt);
+                Worker worker = services.build();
+                response = this.callChat("single agent",
+                        () -> worker.work(prompt));
             }
             ensureActive(cancelled);
             String output = LLMResponseUtil.finalText(response);
@@ -880,7 +887,8 @@ public final class LLMAgentRuntime {
                     .chatModel(this.chatModel)
                     .systemMessage(system)
                     .build();
-            ChatResponse response = planner.plan(prompt);
+            ChatResponse response = this.callChat("dynamic agent supervisor",
+                    () -> planner.plan(prompt));
             String answer = LLMResponseUtil.finalText(response);
             String thinking = LLMResponseUtil.finalThinking(response);
             LLMAgentPlan plan = parsePlan(answer, task, this.maxSteps);
@@ -974,7 +982,8 @@ public final class LLMAgentRuntime {
                         .toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
                 this.configureTools(services, step.type());
                 Worker worker = services.build();
-                response = worker.work(prompt);
+                response = this.callChat("agent worker",
+                        () -> worker.work(prompt));
             }
             ensureActive(cancelled);
             String output = LLMResponseUtil.finalText(response);
@@ -1027,6 +1036,19 @@ public final class LLMAgentRuntime {
                                                BooleanSupplier cancelled,
                                                Consumer<AiServices<StreamingWorker>> toolConfigurer)
             throws Exception {
+        return LLMNetworkRetry.execute("agent worker",
+                () -> this.executeStreamingAgentAttempt(system, prompt, trace,
+                        listener, cancelled, toolConfigurer),
+                (retry, error) -> resetTraceForRetry(trace, listener));
+    }
+
+    private ChatResponse executeStreamingAgentAttempt(String system,
+                                                      String prompt,
+                                                      AtomicReference<LLMAgentTrace> trace,
+                                                      LLMAgentListener listener,
+                                                      BooleanSupplier cancelled,
+                                                      Consumer<AiServices<StreamingWorker>> toolConfigurer)
+            throws Exception {
         AiServices<StreamingWorker> services = AiServices.builder(StreamingWorker.class)
                 .streamingChatModel(this.streamingChatModel)
                 .chatMemory(MessageWindowChatMemory.builder()
@@ -1071,6 +1093,19 @@ public final class LLMAgentRuntime {
             throw new IllegalStateException("Agent worker completed without a response.");
         }
         return response.get();
+    }
+
+    private static void resetTraceForRetry(AtomicReference<LLMAgentTrace> trace,
+                                           LLMAgentListener listener) {
+        LLMAgentTrace previous = trace.get();
+        if (previous == null) {
+            return;
+        }
+        LLMAgentTrace reset = LLMAgentTrace.running(previous.id(), previous.type(),
+                previous.stepIndex(), previous.totalSteps(), previous.agent(),
+                previous.objective(), previous.orchestrationMode());
+        trace.set(reset);
+        notifyTrace(listener, reset);
     }
 
     private static void appendTraceThinking(AtomicReference<LLMAgentTrace> trace,
@@ -1157,7 +1192,8 @@ public final class LLMAgentRuntime {
                         text -> appendTraceThinking(trace, listener, text),
                         text -> appendTraceConclusion(trace, listener, text));
             } else {
-                response = this.chatModel.chat(request);
+                response = this.callChat("agent verifier",
+                        () -> this.chatModel.chat(request));
                 notifyThinking(listener, LLMResponseUtil.finalThinking(response));
                 notifyResponse(listener, LLMResponseUtil.finalText(response));
             }

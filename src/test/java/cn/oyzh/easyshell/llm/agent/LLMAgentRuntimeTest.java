@@ -18,6 +18,7 @@ import dev.langchain4j.model.chat.response.PartialThinking;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import org.junit.Test;
 
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -502,6 +503,23 @@ public class LLMAgentRuntimeTest {
     }
 
     @Test
+    public void singleModeRetriesConnectionReset() throws Exception {
+        ResettingStreamingModel streamingModel = new ResettingStreamingModel();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(
+                new RoutingChatModel("unused"), streamingModel, List.of(), null,
+                "session tools", "internal tools", "local execution tools",
+                null, "mcp tools", "execution rules", "language rules",
+                null, 20, LLMAgentMode.SINGLE);
+
+        ChatResponse response = runtime.execute("retry stream", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("recovered response", response.aiMessage().text());
+        assertEquals(2, streamingModel.attempts.get());
+    }
+
+    @Test
     public void parallelOrchestrationRunsDifferentScopesConcurrently() throws Exception {
         ConcurrentPlanChatModel model = new ConcurrentPlanChatModel("""
                 {"objective":"parallel","steps":[
@@ -962,6 +980,23 @@ public class LLMAgentRuntimeTest {
         @Override
         public void doChat(ChatRequest request, StreamingChatResponseHandler handler) {
             this.cancelled.set(true);
+        }
+    }
+
+    private static final class ResettingStreamingModel implements StreamingChatModel {
+
+        private final AtomicInteger attempts = new AtomicInteger();
+
+        @Override
+        public void doChat(ChatRequest request, StreamingChatResponseHandler handler) {
+            if (this.attempts.incrementAndGet() == 1) {
+                handler.onError(new SocketException("Connection reset"));
+                return;
+            }
+            handler.onPartialResponse("recovered response");
+            handler.onCompleteResponse(ChatResponse.builder()
+                    .aiMessage(AiMessage.from("recovered response"))
+                    .build());
         }
     }
 
