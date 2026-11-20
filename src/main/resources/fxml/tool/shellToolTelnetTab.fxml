@@ -56,7 +56,7 @@
                 <Insets left="30" top="15"/>
             </VBox.margin>
         </InfoLabel>
-        <ReadOnlyTextArea fx:id="telnetArea" flexWidth="100% - 180" flexHeight="100% - 310">
+        <ReadOnlyTextArea fx:id="telnetArea" flexWidth="100% - 180" flexHeight="100% - 305">
             <VBox.margin>
                 <Insets left="30" top="5"/>
             </VBox.margin>

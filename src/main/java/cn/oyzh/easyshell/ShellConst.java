@@ -90,6 +90,15 @@ public class ShellConst {
      * @return 键缓存路径
      */
     public static String getKeyCachePath() {
+        return getCachePath() + "key_cache" + File.separator;
+    }
+
+    /**
+     * 获取键缓存路径
+     *
+     * @return 键缓存路径
+     */
+    public static String getKeyCachePath_old() {
         return getStorePath() + "key_cache" + File.separator;
     }
 
@@ -99,6 +108,15 @@ public class ShellConst {
      * @return 节点缓存路径
      */
     public static String getNodeCachePath() {
+        return getCachePath() + "node_cache" + File.separator;
+    }
+
+    /**
+     * 获取节点缓存路径
+     *
+     * @return 节点缓存路径
+     */
+    public static String getNodeCachePath_old() {
         return getStorePath() + "node_cache" + File.separator;
     }
 }

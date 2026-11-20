@@ -43,6 +43,10 @@ public class ShellToolCacheTabController extends SubStageController {
                 };
                 LongAdder fileSize = new LongAdder();
                 LongAdder fileCount = new LongAdder();
+                File keyCache = new File(ShellConst.getKeyCachePath_old());
+                FileUtil.calcDir(keyCache, fileCount, fileSize, callback, null);
+                File nodeCache = new File(ShellConst.getNodeCachePath_old());
+                FileUtil.calcDir(nodeCache, fileCount, fileSize, callback, null);
                 File cacheDir = new File(ShellConst.getCachePath());
                 FileUtil.calcDir(cacheDir, fileCount, fileSize, callback, null);
                 File logsDir = new File(JulUtil.getLogsDir());
@@ -90,6 +94,10 @@ public class ShellToolCacheTabController extends SubStageController {
                 };
                 LongAdder fileSize = new LongAdder();
                 LongAdder fileCount = new LongAdder();
+                File keyCache = new File(ShellConst.getKeyCachePath_old());
+                FileUtil.clearDir(keyCache, fileCount, fileSize, callback, null);
+                File nodeCache = new File(ShellConst.getNodeCachePath_old());
+                FileUtil.clearDir(nodeCache, fileCount, fileSize, callback, null);
                 File cacheDir = new File(ShellConst.getCachePath());
                 FileUtil.clearDir(cacheDir, fileCount, fileSize, callback, null);
                 File logsDir = new File(JulUtil.getLogsDir());
