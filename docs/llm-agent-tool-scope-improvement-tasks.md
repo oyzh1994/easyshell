@@ -496,7 +496,7 @@ local_get_server_version
 - Session 测试覆盖异步保存使用的不可变快照。
 - 第 7、8 项依赖 T5 的运行时拦截；按用户要求 T5 暂不处理，因此本轮不实现、不伪造这两项测试，待 T5 恢复时补齐。
 - `mvn -Dtest='*LLM*Test,I18nResourceIntegrityTest#easyShellLocalesHaveSameKeysAndNoEmptyValues+placeholdersAreConsistentAcrossLocales+onlySupportedLocalesRemainInRuntimeResources' test`
-  通过 152 项，0 失败，2 项外部环境测试跳过。
+  通过 164 项，0 失败，2 项外部环境测试跳过。
 
 ## 5. 建议处理顺序
 
@@ -540,6 +540,10 @@ local_get_server_version
 - 思考强度按供应商转换为合法参数；Anthropic 思考预算始终小于输出 Token 上限，无法容纳思考预算时不会发送非法配置。
 - 新增独立于思考强度的“思考过程显示”设置。关闭时模型仍按原思考强度运行并继续生成/保存思考数据，仅在 UI 隐藏普通消息思考与 Agent 轨迹中的思考段，执行目标、耗时、结果和错误继续显示。
 - 新增单 Agent / 多 Agent 模式设置，默认多 Agent。单 Agent 跳过 Planner、分步 Worker 编排和最终汇总 Agent，直接使用当前请求选择的普通工具与独立 MCP 工具执行，降低简单任务的模型调用和 Token 消耗；多 Agent 保持原有规划、作用域隔离和汇总验证流程。
+- 新增独立的 Agent 编排配置：默认“串行主从”，并提供并行、DAG、动态主从。并行模式按最大并发数调度独立 Worker；DAG 模式按步骤依赖调度；动态主从模式在每一步完成后重新询问 Supervisor 下一步。同一工具作用域最多保留一个运行中的 Worker，避免共享工具实例并发调用。
+- Agent 最大并发支持固定值 `2/4/8/12/20`、`0`（物理核心，默认）和 `-1`（无上限，实际上限为当前计划的步骤数）。物理核心数按操作系统探测，无法探测时回退到 JVM 可用处理器数。
+- Agent 最大步骤数与并发数独立配置，默认 10，支持 `6/10/15/20/30`。Planner、并行、DAG 和动态主从统一使用该上限，因此提高并发档位后可以规划超过 6 个 Agent 步骤。
+- Agent 失败策略支持继续执行（默认）、快速失败、失败重试一次。DAG 中依赖失败步骤的下游步骤会标记为跳过；并发轨迹按开始时间稳定排序，并使用线程安全的 Trace 集合。
 - Agent Worker 不再硬编码 30 条消息，改为使用 LLM 消息窗口设置。
 - 多组工具提示词合并时去除重复的语言和执行规则，避免 SESSION、LOCAL_EXECUTION、INTERNAL 组合导致提示词重复膨胀。
 - MCP 工具名按 Server 预先生成映射，清洗碰撞时稳定加哈希消歧；原始重复名称和跨 Server 最终名称冲突会在注册前拒绝。

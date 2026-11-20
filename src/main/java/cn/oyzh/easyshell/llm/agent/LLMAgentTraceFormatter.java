@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.llm.agent;
 import cn.oyzh.i18n.I18nResourceBundle;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -26,18 +28,27 @@ public final class LLMAgentTraceFormatter {
         if (traces == null || traces.isEmpty()) {
             return "";
         }
+        List<LLMAgentTrace> ordered = traces.stream()
+                .filter(java.util.Objects::nonNull)
+                .sorted(Comparator.comparingLong(LLMAgentTrace::startedAt)
+                        .thenComparingInt(trace -> typeOrder(trace.type()))
+                        .thenComparingInt(LLMAgentTrace::stepIndex))
+                .toList();
         StringBuilder result = new StringBuilder();
-        for (LLMAgentTrace trace : traces) {
-            if (trace == null) {
-                continue;
-            }
+        for (LLMAgentTrace trace : ordered) {
             if (!result.isEmpty()) {
                 result.append("\n\n---\n\n");
             }
             result.append("### ").append(title(trace))
                     .append(" · ").append(status(trace.status())).append('\n')
                     .append("- **").append(text("shell.llm.agent.trace.agent")).append(":** ")
-                    .append(trace.agent()).append('\n')
+                    .append(trace.agent()).append('\n');
+            if (trace.type() != LLMAgentTrace.Type.SINGLE) {
+                result.append("- **").append(text("shell.llm.agent.trace.orchestration"))
+                        .append(":** ").append(trace.orchestrationMode().getDisplayName())
+                        .append('\n');
+            }
+            result
                     .append("- **").append(text("shell.llm.agent.trace.objective")).append(":** ")
                     .append(trace.objective()).append('\n')
                     .append("- **").append(text("shell.llm.agent.trace.duration")).append(":** ")
@@ -64,6 +75,15 @@ public final class LLMAgentTraceFormatter {
             }
         }
         return result.toString();
+    }
+
+    private static int typeOrder(LLMAgentTrace.Type type) {
+        return switch (type) {
+            case PLANNER -> 0;
+            case SINGLE -> 1;
+            case WORKER -> 2;
+            case VERIFIER -> 3;
+        };
     }
 
     /**

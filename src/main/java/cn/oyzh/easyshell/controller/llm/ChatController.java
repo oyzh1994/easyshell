@@ -20,8 +20,10 @@ import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEvent;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEventType;
+import cn.oyzh.easyshell.llm.agent.LLMAgentFailurePolicy;
 import cn.oyzh.easyshell.llm.agent.LLMAgentListener;
 import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
@@ -68,9 +70,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -220,6 +222,14 @@ public class ChatController extends SubStageController {
 
         private LLMAgentMode agentMode;
 
+        private LLMAgentOrchestrationMode orchestrationMode;
+
+        private int agentMaxConcurrency;
+
+        private int agentMaxSteps;
+
+        private LLMAgentFailurePolicy agentFailurePolicy;
+
         private LLMSessionTab sessionTab;
 
         private LLMTools sessionTools;
@@ -325,7 +335,9 @@ public class ChatController extends SubStageController {
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
                     toolSelection.localExecutionSystemMessage(), sessionContext,
-                    executionMode, audit, request.maxMessages, request.agentMode);
+                    executionMode, audit, request.maxMessages, request.agentMode,
+                    request.orchestrationMode, request.agentMaxConcurrency,
+                    request.agentMaxSteps, request.agentFailurePolicy);
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider,
@@ -338,7 +350,9 @@ public class ChatController extends SubStageController {
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
                     toolSelection.localExecutionSystemMessage(), sessionContext,
-                    executionMode, audit, request.maxMessages, request.agentMode);
+                    executionMode, audit, request.maxMessages, request.agentMode,
+                    request.orchestrationMode, request.agentMaxConcurrency,
+                    request.agentMaxSteps, request.agentFailurePolicy);
         }
         return this.assistant;
     }
@@ -354,13 +368,18 @@ public class ChatController extends SubStageController {
                                                LLMExecutionMode executionMode,
                                                LLMToolAudit audit,
                                                int maxMessages,
-                                               LLMAgentMode agentMode) {
+                                               LLMAgentMode agentMode,
+                                               LLMAgentOrchestrationMode orchestrationMode,
+                                               int agentMaxConcurrency,
+                                               int agentMaxSteps,
+                                               LLMAgentFailurePolicy agentFailurePolicy) {
         String mcpSystemMessage = mcpSession == null ? "" : mcpSession.getSystemMessage();
         return new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
                 sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
                 sessionContext, mcpSystemMessage,
                 LLMUtil.executionSystemMessage(executionMode),
-                LLMUtil.languageSystemMessage(), audit, maxMessages, agentMode);
+                LLMUtil.languageSystemMessage(), audit, maxMessages, agentMode,
+                orchestrationMode, agentMaxConcurrency, agentMaxSteps, agentFailurePolicy);
     }
 
     private static String joinSystemMessages(String... messages) {
@@ -415,6 +434,10 @@ public class ChatController extends SubStageController {
             request.sessionTab = this.view.getSelectedSession();
             request.thinkingLevel = this.view.getSelectedThinkingLevel();
             request.agentMode = this.view.getSelectedAgentMode();
+            request.orchestrationMode = this.view.getSelectedOrchestrationMode();
+            request.agentMaxConcurrency = this.view.getSelectedAgentMaxConcurrency();
+            request.agentMaxSteps = this.view.getSelectedAgentMaxSteps();
+            request.agentFailurePolicy = this.view.getSelectedAgentFailurePolicy();
             request.executionMode = this.view.getSelectedExecutionMode();
             request.toolAccessMode = this.view.getSelectedToolAccessMode();
             request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
@@ -624,7 +647,7 @@ public class ChatController extends SubStageController {
                                      LLMMessage placeholder) {
         AtomicBoolean firstResponse = new AtomicBoolean(true);
         AtomicBoolean firstThinking = new AtomicBoolean(true);
-        LinkedHashMap<String, LLMAgentTrace> traces = new LinkedHashMap<>();
+        ConcurrentHashMap<String, LLMAgentTrace> traces = new ConcurrentHashMap<>();
         try {
             this.view.replaceAgentTrace(placeholder, "");
             ChatResponse response = request.agentRuntime.execute(
@@ -670,8 +693,11 @@ public class ChatController extends SubStageController {
                             if (!isRequestActive(request) || trace == null) {
                                 return;
                             }
-                            traces.put(trace.id(), trace);
-                            view.replaceAgentTrace(placeholder, LLMAgentTraceFormatter.format(traces.values()));
+                            synchronized (traces) {
+                                traces.put(trace.id(), trace);
+                                view.replaceAgentTrace(placeholder,
+                                        LLMAgentTraceFormatter.format(traces.values()));
+                            }
                         }
                     },
                     request.cancelled::get);

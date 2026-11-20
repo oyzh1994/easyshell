@@ -11,7 +11,11 @@ import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
+import cn.oyzh.easyshell.llm.agent.LLMAgentConcurrency;
+import cn.oyzh.easyshell.llm.agent.LLMAgentFailurePolicy;
 import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentStepLimit;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMUtil;
@@ -360,6 +364,10 @@ public class LLMView extends FXSplitPane {
                 this.buildThinkingMenu(),
                 this.buildThinkingProcessMenu(),
                 this.buildAgentModeMenu(),
+                this.buildAgentOrchestrationMenu(),
+                this.buildAgentConcurrencyMenu(),
+                this.buildAgentMaxStepsMenu(),
+                this.buildAgentFailurePolicyMenu(),
                 this.buildExecutionModeMenu(),
                 this.buildToolAccessModeMenu(),
                 this.buildStreamingMenu(),
@@ -444,6 +452,93 @@ public class LLMView extends FXSplitPane {
             case MULTI -> I18nResourceBundle.i18nString("shell.llm.agentMode.multi");
             case SINGLE -> I18nResourceBundle.i18nString("shell.llm.agentMode.single");
         };
+    }
+
+    private Menu buildAgentOrchestrationMenu() {
+        LLMAgentOrchestrationMode selected = this.getSelectedOrchestrationMode();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.agent.orchestration"));
+        menu.setDisable(!this.isMultiAgentConfigurationEnabled());
+        ToggleGroup group = new ToggleGroup();
+        for (LLMAgentOrchestrationMode mode : LLMAgentOrchestrationMode.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getOrchestrationModeName(mode));
+            item.setToggleGroup(group);
+            item.setSelected(mode == selected);
+            item.setOnAction(event -> this.setOrchestrationMode(mode));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private String getOrchestrationModeName(LLMAgentOrchestrationMode mode) {
+        return mode.getDisplayName();
+    }
+
+    private Menu buildAgentConcurrencyMenu() {
+        int selected = this.setting.getLlmAgentMaxConcurrency();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.agent.maxConcurrency"));
+        menu.setDisable(!this.isMultiAgentConfigurationEnabled());
+        ToggleGroup group = new ToggleGroup();
+        for (Integer value : LLMAgentConcurrency.FIXED_OPTIONS) {
+            RadioMenuItem item = new RadioMenuItem(String.valueOf(value));
+            item.setToggleGroup(group);
+            item.setSelected(value == selected);
+            item.setOnAction(event -> this.setAgentMaxConcurrency(value));
+            menu.getItems().add(item);
+        }
+        RadioMenuItem physical = new RadioMenuItem(
+                I18nResourceBundle.i18nString("shell.llm.agent.maxConcurrency.physical"));
+        physical.setToggleGroup(group);
+        physical.setSelected(selected == LLMAgentConcurrency.PHYSICAL_CORES);
+        physical.setOnAction(event -> this.setAgentMaxConcurrency(LLMAgentConcurrency.PHYSICAL_CORES));
+        RadioMenuItem unlimited = new RadioMenuItem(
+                I18nResourceBundle.i18nString("shell.llm.agent.maxConcurrency.unlimited"));
+        unlimited.setToggleGroup(group);
+        unlimited.setSelected(selected == LLMAgentConcurrency.UNLIMITED);
+        unlimited.setOnAction(event -> this.setAgentMaxConcurrency(LLMAgentConcurrency.UNLIMITED));
+        menu.getItems().addAll(physical, unlimited);
+        return menu;
+    }
+
+    private Menu buildAgentFailurePolicyMenu() {
+        LLMAgentFailurePolicy selected = this.getSelectedAgentFailurePolicy();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.agent.failurePolicy"));
+        menu.setDisable(!this.isMultiAgentConfigurationEnabled());
+        ToggleGroup group = new ToggleGroup();
+        for (LLMAgentFailurePolicy policy : LLMAgentFailurePolicy.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getFailurePolicyName(policy));
+            item.setToggleGroup(group);
+            item.setSelected(policy == selected);
+            item.setOnAction(event -> this.setAgentFailurePolicy(policy));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private Menu buildAgentMaxStepsMenu() {
+        int selected = this.setting.getLlmAgentMaxSteps();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.agent.maxSteps"));
+        menu.setDisable(!this.isMultiAgentConfigurationEnabled());
+        ToggleGroup group = new ToggleGroup();
+        for (Integer value : LLMAgentStepLimit.OPTIONS) {
+            RadioMenuItem item = new RadioMenuItem(String.valueOf(value));
+            item.setToggleGroup(group);
+            item.setSelected(value == selected);
+            item.setOnAction(event -> this.setAgentMaxSteps(value));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private String getFailurePolicyName(LLMAgentFailurePolicy policy) {
+        return switch (policy) {
+            case CONTINUE -> I18nResourceBundle.i18nString("shell.llm.agent.failurePolicy.continue");
+            case FAIL_FAST -> I18nResourceBundle.i18nString("shell.llm.agent.failurePolicy.failFast");
+            case RETRY -> I18nResourceBundle.i18nString("shell.llm.agent.failurePolicy.retry");
+        };
+    }
+
+    private boolean isMultiAgentConfigurationEnabled() {
+        return this.getSelectedAgentMode() == LLMAgentMode.MULTI;
     }
 
     private Menu buildExecutionModeMenu() {
@@ -1145,6 +1240,47 @@ public class LLMView extends FXSplitPane {
     public void setAgentMode(LLMAgentMode mode) {
         if (mode != null) {
             this.setting.setLlmAgentMode(mode.ordinal());
+            this.settingStore.replace(this.setting);
+        }
+    }
+
+    public LLMAgentOrchestrationMode getSelectedOrchestrationMode() {
+        return LLMAgentOrchestrationMode.fromOrdinal(
+                this.setting.getLlmAgentOrchestrationMode());
+    }
+
+    public void setOrchestrationMode(LLMAgentOrchestrationMode mode) {
+        if (mode != null) {
+            this.setting.setLlmAgentOrchestrationMode(mode.ordinal());
+            this.settingStore.replace(this.setting);
+        }
+    }
+
+    public int getSelectedAgentMaxConcurrency() {
+        return this.setting.getLlmAgentMaxConcurrency();
+    }
+
+    public void setAgentMaxConcurrency(int concurrency) {
+        this.setting.setLlmAgentMaxConcurrency(concurrency);
+        this.settingStore.replace(this.setting);
+    }
+
+    public int getSelectedAgentMaxSteps() {
+        return this.setting.getLlmAgentMaxSteps();
+    }
+
+    public void setAgentMaxSteps(int maxSteps) {
+        this.setting.setLlmAgentMaxSteps(maxSteps);
+        this.settingStore.replace(this.setting);
+    }
+
+    public LLMAgentFailurePolicy getSelectedAgentFailurePolicy() {
+        return LLMAgentFailurePolicy.fromOrdinal(this.setting.getLlmAgentFailurePolicy());
+    }
+
+    public void setAgentFailurePolicy(LLMAgentFailurePolicy policy) {
+        if (policy != null) {
+            this.setting.setLlmAgentFailurePolicy(policy.ordinal());
             this.settingStore.replace(this.setting);
         }
     }

@@ -1,7 +1,11 @@
 package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.easyshell.domain.ShellSetting;
+import cn.oyzh.easyshell.llm.agent.LLMAgentConcurrency;
+import cn.oyzh.easyshell.llm.agent.LLMAgentFailurePolicy;
 import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentStepLimit;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.store.jdbc.Column;
 import dev.langchain4j.model.anthropic.AnthropicChatRequestParameters;
@@ -180,6 +184,55 @@ public class LLMUtilSettingsTest {
         assertEquals(LLMAgentMode.SINGLE.ordinal(), copy.getLlmAgentMode());
         Field field = ShellSetting.class.getDeclaredField("llmAgentMode");
         assertNotNull(field.getAnnotation(Column.class));
+    }
+
+    @Test
+    public void agentOrchestrationDefaultsAndPersists() throws Exception {
+        ShellSetting setting = new ShellSetting();
+        assertEquals(LLMAgentOrchestrationMode.SEQUENTIAL.ordinal(),
+                setting.getLlmAgentOrchestrationMode());
+        assertEquals(LLMAgentConcurrency.PHYSICAL_CORES,
+                setting.getLlmAgentMaxConcurrency());
+        assertEquals(10, setting.getLlmAgentMaxSteps());
+        assertEquals(LLMAgentFailurePolicy.CONTINUE.ordinal(),
+                setting.getLlmAgentFailurePolicy());
+
+        setting.setLlmAgentOrchestrationMode(LLMAgentOrchestrationMode.DAG.ordinal());
+        setting.setLlmAgentMaxConcurrency(8);
+        setting.setLlmAgentMaxSteps(20);
+        setting.setLlmAgentFailurePolicy(LLMAgentFailurePolicy.RETRY.ordinal());
+        ShellSetting copy = new ShellSetting();
+        copy.copy(setting);
+
+        assertEquals(LLMAgentOrchestrationMode.DAG.ordinal(),
+                copy.getLlmAgentOrchestrationMode());
+        assertEquals(8, copy.getLlmAgentMaxConcurrency());
+        assertEquals(20, copy.getLlmAgentMaxSteps());
+        assertEquals(LLMAgentFailurePolicy.RETRY.ordinal(),
+                copy.getLlmAgentFailurePolicy());
+        assertNotNull(ShellSetting.class.getDeclaredField("llmAgentOrchestrationMode")
+                .getAnnotation(Column.class));
+        assertNotNull(ShellSetting.class.getDeclaredField("llmAgentMaxConcurrency")
+                .getAnnotation(Column.class));
+        assertNotNull(ShellSetting.class.getDeclaredField("llmAgentFailurePolicy")
+                .getAnnotation(Column.class));
+        assertNotNull(ShellSetting.class.getDeclaredField("llmAgentMaxSteps")
+                .getAnnotation(Column.class));
+    }
+
+    @Test
+    public void agentConcurrencyResolvesFixedPhysicalAndUnlimitedValues() {
+        assertEquals(2, LLMAgentConcurrency.resolve(2, 6));
+        assertEquals(3, LLMAgentConcurrency.resolve(4, 3));
+        assertEquals(6, LLMAgentConcurrency.resolve(LLMAgentConcurrency.UNLIMITED, 6));
+        int physical = LLMAgentConcurrency.resolve(LLMAgentConcurrency.PHYSICAL_CORES, 64);
+        assertTrue(physical > 0);
+        assertEquals(LLMAgentConcurrency.PHYSICAL_CORES,
+                LLMAgentConcurrency.normalize(99));
+        assertEquals(LLMAgentConcurrency.UNLIMITED,
+                LLMAgentConcurrency.normalize(-1));
+        assertEquals(LLMAgentStepLimit.DEFAULT, LLMAgentStepLimit.normalize(99));
+        assertEquals(20, LLMAgentStepLimit.normalize(20));
     }
 
     private static LLMProvider provider(LLMApiType type, String defaultModel) {

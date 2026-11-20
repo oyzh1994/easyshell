@@ -8,7 +8,11 @@ import cn.oyzh.common.util.ResourceUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMParameterUtil;
+import cn.oyzh.easyshell.llm.agent.LLMAgentConcurrency;
+import cn.oyzh.easyshell.llm.agent.LLMAgentFailurePolicy;
 import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentStepLimit;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
@@ -81,6 +85,30 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Integer llmAgentMode = LLMAgentMode.MULTI.ordinal();
+
+    /**
+     * LLM Agent编排策略
+     */
+    @Column
+    private Integer llmAgentOrchestrationMode = LLMAgentOrchestrationMode.SEQUENTIAL.ordinal();
+
+    /**
+     * LLM Agent最大并发数，0表示物理核心，-1表示无上限
+     */
+    @Column
+    private Integer llmAgentMaxConcurrency = LLMAgentConcurrency.PHYSICAL_CORES;
+
+    /**
+     * LLM Agent最大计划步骤数
+     */
+    @Column
+    private Integer llmAgentMaxSteps = LLMAgentStepLimit.DEFAULT;
+
+    /**
+     * LLM Agent失败策略
+     */
+    @Column
+    private Integer llmAgentFailurePolicy = LLMAgentFailurePolicy.CONTINUE.ordinal();
 
     /**
      * LLM当前使用的供应商id
@@ -539,6 +567,84 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 获取LLM Agent编排策略
+     *
+     * @return 编排策略序号
+     */
+    public int getLlmAgentOrchestrationMode() {
+        return LLMAgentOrchestrationMode.fromOrdinal(this.llmAgentOrchestrationMode).ordinal();
+    }
+
+    /**
+     * 设置LLM Agent编排策略
+     *
+     * @param mode 编排策略序号
+     */
+    public void setLlmAgentOrchestrationMode(int mode) {
+        this.llmAgentOrchestrationMode =
+                LLMAgentOrchestrationMode.fromOrdinal(mode).ordinal();
+    }
+
+    /**
+     * 获取LLM Agent最大并发数
+     *
+     * @return 最大并发数，0表示物理核心，-1表示无上限
+     */
+    public int getLlmAgentMaxConcurrency() {
+        return LLMAgentConcurrency.normalize(
+                this.llmAgentMaxConcurrency == null
+                        ? LLMAgentConcurrency.PHYSICAL_CORES
+                        : this.llmAgentMaxConcurrency);
+    }
+
+    /**
+     * 设置LLM Agent最大并发数
+     *
+     * @param maxConcurrency 最大并发数，0表示物理核心，-1表示无上限
+     */
+    public void setLlmAgentMaxConcurrency(int maxConcurrency) {
+        this.llmAgentMaxConcurrency = LLMAgentConcurrency.normalize(maxConcurrency);
+    }
+
+    /**
+     * 获取LLM Agent最大计划步骤数
+     *
+     * @return 最大步骤数
+     */
+    public int getLlmAgentMaxSteps() {
+        return LLMAgentStepLimit.normalize(
+                this.llmAgentMaxSteps == null ? LLMAgentStepLimit.DEFAULT : this.llmAgentMaxSteps);
+    }
+
+    /**
+     * 设置LLM Agent最大计划步骤数
+     *
+     * @param maxSteps 最大步骤数
+     */
+    public void setLlmAgentMaxSteps(int maxSteps) {
+        this.llmAgentMaxSteps = LLMAgentStepLimit.normalize(maxSteps);
+    }
+
+    /**
+     * 获取LLM Agent失败策略
+     *
+     * @return 失败策略序号
+     */
+    public int getLlmAgentFailurePolicy() {
+        return LLMAgentFailurePolicy.fromOrdinal(this.llmAgentFailurePolicy).ordinal();
+    }
+
+    /**
+     * 设置LLM Agent失败策略
+     *
+     * @param failurePolicy 失败策略序号
+     */
+    public void setLlmAgentFailurePolicy(int failurePolicy) {
+        this.llmAgentFailurePolicy =
+                LLMAgentFailurePolicy.fromOrdinal(failurePolicy).ordinal();
+    }
+
+    /**
      * 获取LLM当前选择的模型
      *
      * @return 模型名称
@@ -718,6 +824,10 @@ public class ShellSetting extends AppSetting {
             this.llmThinkingLevel = setting.llmThinkingLevel;
             this.llmShowThinking = setting.llmShowThinking;
             this.llmAgentMode = setting.llmAgentMode;
+            this.llmAgentOrchestrationMode = setting.llmAgentOrchestrationMode;
+            this.llmAgentMaxConcurrency = setting.llmAgentMaxConcurrency;
+            this.llmAgentMaxSteps = setting.llmAgentMaxSteps;
+            this.llmAgentFailurePolicy = setting.llmAgentFailurePolicy;
             this.llmExecutionMode = setting.llmExecutionMode;
             this.llmToolAccessMode = setting.llmToolAccessMode;
             this.llmTimeoutMinutes = setting.llmTimeoutMinutes;

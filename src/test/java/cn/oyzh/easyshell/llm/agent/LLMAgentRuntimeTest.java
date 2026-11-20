@@ -23,7 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -499,6 +501,196 @@ public class LLMAgentRuntimeTest {
         assertFalse(chatModel.synthesisCalled);
     }
 
+    @Test
+    public void parallelOrchestrationRunsDifferentScopesConcurrently() throws Exception {
+        ConcurrentPlanChatModel model = new ConcurrentPlanChatModel("""
+                {"objective":"parallel","steps":[
+                  {"id":"a","agent":"connection","objective":"query A","dependsOn":[]},
+                  {"id":"b","agent":"local","objective":"query B","dependsOn":[]}
+                ]}
+                """, 120);
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools(), new LocalEchoTools()),
+                LLMAgentOrchestrationMode.PARALLEL, 2,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        ChatResponse response = runtime.execute("parallel task", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("parallel final", response.aiMessage().text());
+        assertEquals(2, model.workerCalls.get());
+        assertEquals(2, model.maxActive.get());
+    }
+
+    @Test
+    public void parallelOrchestrationSerializesSharedToolScope() throws Exception {
+        ConcurrentPlanChatModel model = new ConcurrentPlanChatModel("""
+                {"objective":"parallel","steps":[
+                  {"id":"a","agent":"connection","objective":"query A","dependsOn":[]},
+                  {"id":"b","agent":"connection","objective":"query B","dependsOn":[]}
+                ]}
+                """, 80);
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools()),
+                LLMAgentOrchestrationMode.PARALLEL, 2,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        runtime.execute("parallel task", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        assertEquals(2, model.workerCalls.get());
+        assertEquals(1, model.maxActive.get());
+    }
+
+    @Test
+    public void parallelOrchestrationHonorsConfiguredConcurrencyLimit() throws Exception {
+        ConcurrentPlanChatModel model = new ConcurrentPlanChatModel("""
+                {"objective":"parallel","steps":[
+                  {"id":"a","agent":"connection","objective":"query A","dependsOn":[]},
+                  {"id":"b","agent":"local","objective":"query B","dependsOn":[]},
+                  {"id":"c","agent":"internal","objective":"query C","dependsOn":[]}
+                ]}
+                """, 60);
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools(), new LocalEchoTools(),
+                        new EchoTools(LLMToolScope.INTERNAL)),
+                LLMAgentOrchestrationMode.PARALLEL, 2,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        runtime.execute("parallel task", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        assertEquals(3, model.workerCalls.get());
+        assertEquals(2, model.maxActive.get());
+    }
+
+    @Test
+    public void dagOrchestrationWaitsForDependencies() throws Exception {
+        ConcurrentPlanChatModel model = new ConcurrentPlanChatModel("""
+                {"objective":"dag","steps":[
+                  {"id":"a","agent":"connection","objective":"query A","dependsOn":[]},
+                  {"id":"b","agent":"local","objective":"query B","dependsOn":["a"]}
+                ]}
+                """, 40);
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools(), new LocalEchoTools()),
+                LLMAgentOrchestrationMode.DAG, 2,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        runtime.execute("dag task", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        String dependentPrompt = model.prompts.stream()
+                .filter(text -> text.contains("query B"))
+                .filter(text -> text.contains("Current step"))
+                .findFirst().orElseThrow();
+        assertTrue(dependentPrompt.contains("query A"));
+        assertEquals(1, model.maxActive.get());
+    }
+
+    @Test
+    public void dagSkipsDependentStepWhenContinuePolicyIsUsed() throws Exception {
+        DagDependencyFailureModel model = new DagDependencyFailureModel();
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools(), new LocalEchoTools()),
+                LLMAgentOrchestrationMode.DAG, 2,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        ChatResponse response = runtime.execute("dag failure", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("dag failure final", response.aiMessage().text());
+        assertEquals(1, model.workerCalls.get());
+    }
+
+    @Test
+    public void dynamicSupervisorReplansAfterEachStep() throws Exception {
+        DynamicSupervisorModel model = new DynamicSupervisorModel();
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools()),
+                LLMAgentOrchestrationMode.DYNAMIC_SUPERVISOR, 0,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        ChatResponse response = runtime.execute("dynamic task", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("dynamic worker result", response.aiMessage().text());
+        assertEquals(2, model.plannerCalls.get());
+        assertEquals(1, model.workerCalls.get());
+        assertTrue(model.prompts.stream()
+                .filter(text -> text.contains("Current objective:"))
+                .anyMatch(text -> text.contains("dynamic worker result")));
+    }
+
+    @Test
+    public void retryPolicyRetriesFailedWorkerOnce() throws Exception {
+        RetryPlanChatModel model = new RetryPlanChatModel();
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools()),
+                LLMAgentOrchestrationMode.SEQUENTIAL, 2,
+                LLMAgentFailurePolicy.RETRY);
+
+        ChatResponse response = runtime.execute("retry task", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("retry succeeded", response.aiMessage().text());
+        assertEquals(2, model.workerCalls.get());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void failFastStopsAfterFailedWorker() throws Exception {
+        FailFastPlanChatModel model = new FailFastPlanChatModel();
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools(), new LocalEchoTools()),
+                LLMAgentOrchestrationMode.SEQUENTIAL, 2,
+                LLMAgentFailurePolicy.FAIL_FAST);
+
+        try {
+            runtime.execute("fail task", List.of(), new LLMAgentListener() {
+            }, () -> false);
+        } finally {
+            assertEquals(1, model.workerCalls.get());
+        }
+    }
+
+    @Test
+    public void continuePolicyRunsIndependentStepsAfterFailure() throws Exception {
+        ContinueFailurePlanChatModel model = new ContinueFailurePlanChatModel();
+        LLMAgentRuntime runtime = orchestrationRuntime(model,
+                List.of(new SessionEchoTools(), new LocalEchoTools()),
+                LLMAgentOrchestrationMode.SEQUENTIAL, 2,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        ChatResponse response = runtime.execute("continue task", List.of(),
+                new LLMAgentListener() {
+                }, () -> false);
+
+        assertEquals("continued final", response.aiMessage().text());
+        assertEquals(2, model.workerCalls.get());
+    }
+
+    @Test
+    public void configuredMaximumStepsAllowsPlansBeyondSixSteps() throws Exception {
+        ConfiguredStepLimitChatModel model = new ConfiguredStepLimitChatModel();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(model, null,
+                List.of(new SessionEchoTools()), null,
+                "session tools", "internal tools", "local execution tools",
+                null, "mcp tools", "execution rules", "language rules",
+                null, 20, LLMAgentMode.MULTI,
+                LLMAgentOrchestrationMode.SEQUENTIAL, 2, 20,
+                LLMAgentFailurePolicy.CONTINUE);
+
+        runtime.execute("many steps", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        assertEquals(8, model.workerCalls.get());
+        assertTrue(model.plannerPrompt.contains("Maximum 20 steps"));
+    }
+
     @Test(timeout = 3000)
     public void streamingSynthesisStopsWaitingAfterCancellation() throws Exception {
         RoutingChatModel model = new RoutingChatModel("""
@@ -593,7 +785,8 @@ public class LLMAgentRuntimeTest {
                 .withThinking("planner thinking")
                 .complete("plan");
         LLMAgentTrace worker = LLMAgentTrace.running("worker-0",
-                        LLMAgentTrace.Type.WORKER, 0, 1, "connection", "query")
+                        LLMAgentTrace.Type.WORKER, 0, 1, "connection", "query",
+                        LLMAgentOrchestrationMode.PARALLEL)
                 .withThinking("worker thinking")
                 .complete("worker conclusion");
         LLMAgentTrace verifier = LLMAgentTrace.running("verifier",
@@ -606,6 +799,7 @@ public class LLMAgentRuntimeTest {
         assertTrue(trace.contains("planner thinking"));
         assertTrue(trace.contains("worker thinking"));
         assertTrue(trace.contains("worker conclusion"));
+        assertTrue(trace.contains(LLMAgentOrchestrationMode.PARALLEL.getDisplayName()));
         assertTrue(trace.contains("verifier thinking"));
         assertTrue(trace.contains("final answer"));
     }
@@ -630,6 +824,18 @@ public class LLMAgentRuntimeTest {
         return new LLMAgentRuntime(model, null, List.of(), null,
                 "session tools", "internal tools", "local execution tools", "mcp tools",
                 "execution rules", "language rules", null);
+    }
+
+    private static LLMAgentRuntime orchestrationRuntime(ChatModel model,
+                                                        List<LLMTools> tools,
+                                                        LLMAgentOrchestrationMode mode,
+                                                        int maxConcurrency,
+                                                        LLMAgentFailurePolicy failurePolicy) {
+        return new LLMAgentRuntime(model, null, tools, null,
+                "session tools", "internal tools", "local execution tools",
+                null, "mcp tools", "execution rules", "language rules",
+                null, 20, LLMAgentMode.MULTI, mode, maxConcurrency,
+                LLMAgentStepLimit.DEFAULT, failurePolicy);
     }
 
     private static final class RoutingChatModel implements ChatModel {
@@ -836,6 +1042,229 @@ public class LLMAgentRuntimeTest {
                     .map(Object::toString)
                     .collect(java.util.stream.Collectors.joining("\n"));
             return RoutingChatModel.response("single direct result", "single thinking");
+        }
+    }
+
+    private static final class ConcurrentPlanChatModel implements ChatModel {
+
+        private final String plan;
+
+        private final long workerDelayMillis;
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        private final AtomicInteger active = new AtomicInteger();
+
+        private final AtomicInteger maxActive = new AtomicInteger();
+
+        private final List<String> prompts = new CopyOnWriteArrayList<>();
+
+        private ConcurrentPlanChatModel(String plan, long workerDelayMillis) {
+            this.plan = plan;
+            this.workerDelayMillis = workerDelayMillis;
+        }
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            this.prompts.add(prompt);
+            if (prompt.contains("Create the minimum executable plan")) {
+                return RoutingChatModel.response(this.plan);
+            }
+            if (prompt.contains("Worker results:")) {
+                return RoutingChatModel.response("parallel final");
+            }
+            if (prompt.contains("Current step ")) {
+                this.workerCalls.incrementAndGet();
+                int current = this.active.incrementAndGet();
+                this.maxActive.accumulateAndGet(current, Math::max);
+                try {
+                    Thread.sleep(this.workerDelayMillis);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    this.active.decrementAndGet();
+                }
+                return RoutingChatModel.response("worker result");
+            }
+            return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class DynamicSupervisorModel implements ChatModel {
+
+        private final AtomicInteger plannerCalls = new AtomicInteger();
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        private final List<String> prompts = new CopyOnWriteArrayList<>();
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            this.prompts.add(prompt);
+            if (prompt.contains("Current objective:") && prompt.contains("Completed step results:")) {
+                this.plannerCalls.incrementAndGet();
+                if (prompt.contains("Completed step results:\n(none)")) {
+                    return RoutingChatModel.response("""
+                            {"done":false,"objective":"dynamic task","agent":"connection",
+                             "stepObjective":"run dynamic worker","reason":"execute"}
+                            """);
+                }
+                return RoutingChatModel.response(
+                        "{\"done\":true,\"objective\":\"dynamic task\"}");
+            }
+            if (prompt.contains("Current step ")) {
+                this.workerCalls.incrementAndGet();
+                return RoutingChatModel.response("dynamic worker result");
+            }
+            return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class RetryPlanChatModel implements ChatModel {
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            if (prompt.contains("Create the minimum executable plan")) {
+                return RoutingChatModel.response("""
+                        {"objective":"retry","steps":[
+                          {"id":"a","agent":"connection","objective":"retry worker"}
+                        ]}
+                        """);
+            }
+            if (prompt.contains("Current step ")) {
+                int call = this.workerCalls.incrementAndGet();
+                return RoutingChatModel.response(call == 1 ? "" : "retry succeeded");
+            }
+            return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class FailFastPlanChatModel implements ChatModel {
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            if (prompt.contains("Create the minimum executable plan")) {
+                return RoutingChatModel.response("""
+                        {"objective":"fail","steps":[
+                          {"id":"a","agent":"connection","objective":"fail worker"},
+                          {"id":"b","agent":"local","objective":"must not run"}
+                        ]}
+                        """);
+            }
+            if (prompt.contains("Current step ")) {
+                this.workerCalls.incrementAndGet();
+                return RoutingChatModel.response("");
+            }
+            return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class ContinueFailurePlanChatModel implements ChatModel {
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            if (prompt.contains("Create the minimum executable plan")) {
+                return RoutingChatModel.response("""
+                        {"objective":"continue","steps":[
+                          {"id":"a","agent":"connection","objective":"failed worker"},
+                          {"id":"b","agent":"local","objective":"independent worker"}
+                        ]}
+                        """);
+            }
+            if (prompt.contains("Current step ")) {
+                int call = this.workerCalls.incrementAndGet();
+                return RoutingChatModel.response(call == 1 ? "" : "independent result");
+            }
+            if (prompt.contains("Worker results:")) {
+                return RoutingChatModel.response("continued final");
+            }
+            return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class DagDependencyFailureModel implements ChatModel {
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            if (prompt.contains("Create the minimum executable plan")) {
+                return RoutingChatModel.response("""
+                        {"objective":"dag failure","steps":[
+                          {"id":"a","agent":"connection","objective":"failed dependency","dependsOn":[]},
+                          {"id":"b","agent":"local","objective":"blocked dependent","dependsOn":["a"]}
+                        ]}
+                        """);
+            }
+            if (prompt.contains("Current step ")) {
+                this.workerCalls.incrementAndGet();
+                return RoutingChatModel.response("");
+            }
+            if (prompt.contains("Worker results:")) {
+                return RoutingChatModel.response("dag failure final");
+            }
+            return RoutingChatModel.response("unexpected");
+        }
+    }
+
+    private static final class ConfiguredStepLimitChatModel implements ChatModel {
+
+        private final AtomicInteger workerCalls = new AtomicInteger();
+
+        private String plannerPrompt = "";
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            String prompt = request.messages().stream()
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            if (prompt.contains("Create the minimum executable plan")) {
+                this.plannerPrompt = prompt;
+                return RoutingChatModel.response("""
+                        {"objective":"many","steps":[
+                          {"id":"a","agent":"connection","objective":"step A"},
+                          {"id":"b","agent":"connection","objective":"step B"},
+                          {"id":"c","agent":"connection","objective":"step C"},
+                          {"id":"d","agent":"connection","objective":"step D"},
+                          {"id":"e","agent":"connection","objective":"step E"},
+                          {"id":"f","agent":"connection","objective":"step F"},
+                          {"id":"g","agent":"connection","objective":"step G"},
+                          {"id":"h","agent":"connection","objective":"step H"}
+                        ]}
+                        """);
+            }
+            if (prompt.contains("Current step ")) {
+                this.workerCalls.incrementAndGet();
+                return RoutingChatModel.response("worker result");
+            }
+            if (prompt.contains("Worker results:")) {
+                return RoutingChatModel.response("many steps final");
+            }
+            return RoutingChatModel.response("unexpected");
         }
     }
 
