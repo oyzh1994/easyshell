@@ -22,5 +22,7 @@ public class LLMModelContextWindowUtilTest {
                         512 * 1024,
                         1024 * 1024)));
         assertEquals("1M", LLMModelContextWindowUtil.label(1024 * 1024));
+        assertEquals("256K", LLMModelContextWindowUtil.formatTokens(256 * 1024));
+        assertEquals("12.5K", LLMModelContextWindowUtil.formatTokens(12_800));
     }
 }

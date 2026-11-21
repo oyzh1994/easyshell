@@ -3,7 +3,6 @@ package cn.oyzh.easyshell.llm;
 import cn.oyzh.easyshell.llm.capability.LLMModelCapability;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -51,7 +50,7 @@ public final class LLMContextBudgetUtil {
         if (messages != null) {
             for (LLMMessage message : messages) {
                 if (message != null && !message.isError()) {
-                    result += estimateText(message.getMessage());
+                    result += LLMTokenEstimator.estimate(message);
                 }
             }
         }
@@ -59,22 +58,11 @@ public final class LLMContextBudgetUtil {
     }
 
     static long estimateText(String text) {
-        if (text == null || text.isEmpty()) {
-            return 0;
-        }
-        long codePoints = text.codePointCount(0, text.length());
-        long utf8Bytes = text.getBytes(StandardCharsets.UTF_8).length;
-        return Math.max(codePoints, (utf8Bytes + 3L) / 4L);
+        return LLMTokenEstimator.estimateText(text);
     }
 
     private static long estimateFile(File file) {
-        if (file == null || !file.isFile()) {
-            return 0;
-        }
-        LLMFileContentType type = LLMFileContentUtil.contentType(file);
-        return type == LLMFileContentType.TEXT
-                ? Math.max(0, (file.length() + 3L) / 4L)
-                : 0;
+        return LLMTokenEstimator.estimateFile(file);
     }
 
     /**

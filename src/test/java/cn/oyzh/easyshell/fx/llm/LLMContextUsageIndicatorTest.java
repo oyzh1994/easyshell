@@ -26,10 +26,10 @@ public class LLMContextUsageIndicatorTest {
         runFxAndWait(() -> {
             LLMContextUsageIndicator indicator = new LLMContextUsageIndicator();
             indicator.update(new LLMTokenUsageStats(
-                            12_800, 1_200, 14_000,
-                            25_600, 2_400, 28_000,
+                            13_107, 1_024, 14_131,
+                            26_214, 2_048, 28_262,
                             true, 4_000),
-                    new LLMModelContextWindowUtil.ContextWindow(128_000, false));
+                    new LLMModelContextWindowUtil.ContextWindow(128 * 1024, false));
             indicatorRef.set(indicator);
         });
         runFxAndWait(() -> {
@@ -38,9 +38,9 @@ public class LLMContextUsageIndicatorTest {
             String tooltip = indicator.tooltipText();
             assertTrue(tooltip.contains("10%"));
             assertTrue(tooltip.contains("12.8K"));
-            assertTrue(tooltip.contains("128.0K"));
-            assertTrue(tooltip.contains("14.0K"));
-            assertTrue(tooltip.contains("28.0K"));
+            assertTrue(tooltip.contains("128K"));
+            assertTrue(tooltip.contains("13.8K"));
+            assertTrue(tooltip.contains("27.6K"));
             assertTrue(tooltip.contains("00:04"));
         });
     }
@@ -61,7 +61,7 @@ public class LLMContextUsageIndicatorTest {
         runFxAndWait(() -> {
             LLMContextUsageIndicator indicator = indicatorRef.get();
             assertEquals(-1, indicator.ratio(), 0.001);
-            assertTrue(indicator.tooltipText().contains("8.0K"));
+            assertTrue(indicator.tooltipText().contains("7.8K"));
             assertFalse(indicator.tooltipText().contains("%"));
         });
     }
@@ -137,6 +137,29 @@ public class LLMContextUsageIndicatorTest {
             LLMContextUsageIndicator indicator = indicatorRef.get();
             assertEquals(0, indicator.ratio(), 0.001);
             assertTrue("progress arc must be hidden below 1%", !indicator.isProgressVisible());
+        });
+    }
+
+    @Test
+    public void usageBelowOnePercentStillShowsSmallProgressDot() {
+        startToolkit();
+        AtomicReference<LLMContextUsageIndicator> indicatorRef = new AtomicReference<>();
+        runFxAndWait(() -> {
+            LLMContextUsageIndicator indicator = new LLMContextUsageIndicator();
+            indicator.update(new LLMTokenUsageStats(
+                            100, 20, 120,
+                            100, 20, 120,
+                            true, 1_000),
+                    new LLMModelContextWindowUtil.ContextWindow(
+                            LLMModelContextWindowUtil.DEFAULT_TOKENS, false));
+            indicatorRef.set(indicator);
+        });
+        runFxAndWait(() -> {
+            LLMContextUsageIndicator indicator = indicatorRef.get();
+            assertTrue(indicator.ratio() > 0);
+            assertTrue(indicator.ratio() < 0.01);
+            assertTrue(indicator.isProgressVisible());
+            assertTrue(indicator.tooltipText().contains("256K"));
         });
     }
 

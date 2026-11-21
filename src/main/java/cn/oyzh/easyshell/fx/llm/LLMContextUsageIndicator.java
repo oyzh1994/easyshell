@@ -22,8 +22,6 @@ public final class LLMContextUsageIndicator extends StackPane {
 
     private static final double RADIUS = 10;
 
-    private static final double MIN_VISIBLE_RATIO = 0.01;
-
     private final Circle track = new Circle(SIZE / 2, SIZE / 2, RADIUS);
 
     private final Arc progress = new Arc(SIZE / 2, SIZE / 2, RADIUS, RADIUS, 90, 0);
@@ -70,7 +68,7 @@ public final class LLMContextUsageIndicator extends StackPane {
                 : contextWindow;
         double ratio = this.ratio();
         boolean known = ratio >= 0;
-        this.progress.setVisible(known && ratio >= MIN_VISIBLE_RATIO);
+        this.progress.setVisible(known && ratio > 0);
         this.progress.setLength(known ? -360 * ratio : 0);
         this.getStyleClass().removeAll(
                 "llm-context-usage-unknown",
@@ -114,14 +112,14 @@ public final class LLMContextUsageIndicator extends StackPane {
         if (used >= 0 && this.contextWindow.known()) {
             text.append(String.format(i18n("shell.llm.contextUsage.usage"),
                     Math.round(this.ratio() * 100),
-                    LLMTokenUsageStats.formatTokens(used),
-                    LLMTokenUsageStats.formatTokens(this.contextWindow.tokens())));
+                    LLMModelContextWindowUtil.formatTokens(used),
+                    LLMModelContextWindowUtil.formatTokens(this.contextWindow.tokens())));
             if (this.contextWindow.estimated()) {
                 text.append(" · ").append(i18n("shell.llm.contextUsage.estimated"));
             }
         } else if (used >= 0) {
             text.append(String.format(i18n("shell.llm.contextUsage.used"),
-                    LLMTokenUsageStats.formatTokens(used)));
+                    LLMModelContextWindowUtil.formatTokens(used)));
             text.append('\n').append(i18n("shell.llm.contextUsage.capacityUnknown"));
         } else {
             text.append(i18n("shell.llm.contextUsage.unknown"));
@@ -129,16 +127,17 @@ public final class LLMContextUsageIndicator extends StackPane {
         if (this.stats.hasLastUsage()) {
             text.append('\n').append(String.format(
                     i18n("shell.llm.contextUsage.lastRequest"),
-                    LLMTokenUsageStats.formatTokens(this.stats.lastInputTokens()),
-                    LLMTokenUsageStats.formatTokens(this.stats.lastOutputTokens()),
-                    LLMTokenUsageStats.formatTokens(this.stats.lastTotalTokens())));
+                    LLMModelContextWindowUtil.formatTokens(this.stats.lastInputTokens()),
+                    LLMModelContextWindowUtil.formatTokens(this.stats.lastOutputTokens()),
+                    LLMModelContextWindowUtil.formatTokens(this.stats.lastTotalTokens())));
         }
         if (this.stats.hasSessionUsage()) {
             String key = this.stats.cumulativeUsageComplete()
                     ? "shell.llm.contextUsage.sessionTotal"
                     : "shell.llm.contextUsage.sessionTotalPartial";
             text.append('\n').append(String.format(i18n(key),
-                    LLMTokenUsageStats.formatTokens(this.stats.sessionTotalTokens())));
+                    LLMModelContextWindowUtil.formatTokens(
+                            this.stats.sessionTotalTokens())));
         }
         if (this.stats.lastDurationMillis() >= 0) {
             text.append('\n').append(String.format(

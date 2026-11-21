@@ -3,6 +3,8 @@ package cn.oyzh.easyshell.llm.agent;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.easyshell.llm.LLMNetworkRetry;
 import cn.oyzh.easyshell.llm.LLMResponseUtil;
+import cn.oyzh.easyshell.llm.LLMParameterUtil;
+import cn.oyzh.easyshell.llm.LLMTokenAwareChatMemory;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionContext;
@@ -22,7 +24,6 @@ import dev.langchain4j.agent.tool.ToolSpecifications;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
@@ -107,6 +108,8 @@ public final class LLMAgentRuntime {
     private volatile LLMToolRuntimePolicy toolPolicy;
 
     private final int maxMessages;
+
+    private int historyTokenBudget = LLMParameterUtil.DEFAULT_HISTORY_TOKEN_BUDGET;
 
     private final LLMAgentMode agentMode;
 
@@ -261,6 +264,10 @@ public final class LLMAgentRuntime {
 
     public void setToolPolicy(LLMToolRuntimePolicy toolPolicy) {
         this.toolPolicy = toolPolicy;
+    }
+
+    public void setContextTokenBudget(int historyTokenBudget) {
+        this.historyTokenBudget = Math.max(1, historyTokenBudget);
     }
 
     public ChatResponse execute(String task,
@@ -791,8 +798,9 @@ public final class LLMAgentRuntime {
             } else {
                 AiServices<Worker> services = AiServices.builder(Worker.class)
                         .chatModel(this.chatModel)
-                        .chatMemory(MessageWindowChatMemory.builder()
+                        .chatMemory(LLMTokenAwareChatMemory.builder()
                                 .maxMessages(this.maxMessages)
+                                .maxTokens(this.historyTokenBudget)
                                 .build())
                         .systemMessage(system)
                         .maxToolCallingRoundTrips(MAX_TOOL_ROUNDS)
@@ -1001,8 +1009,9 @@ public final class LLMAgentRuntime {
             } else {
                 AiServices<Worker> services = AiServices.builder(Worker.class)
                         .chatModel(this.chatModel)
-                        .chatMemory(MessageWindowChatMemory.builder()
+                        .chatMemory(LLMTokenAwareChatMemory.builder()
                                 .maxMessages(this.maxMessages)
+                                .maxTokens(this.historyTokenBudget)
                                 .build())
                         .systemMessage(system)
                         .maxToolCallingRoundTrips(MAX_TOOL_ROUNDS)
@@ -1078,8 +1087,9 @@ public final class LLMAgentRuntime {
             throws Exception {
         AiServices<StreamingWorker> services = AiServices.builder(StreamingWorker.class)
                 .streamingChatModel(this.streamingChatModel)
-                .chatMemory(MessageWindowChatMemory.builder()
+                .chatMemory(LLMTokenAwareChatMemory.builder()
                         .maxMessages(this.maxMessages)
+                        .maxTokens(this.historyTokenBudget)
                         .build())
                 .systemMessage(system)
                 .maxToolCallingRoundTrips(MAX_TOOL_ROUNDS)

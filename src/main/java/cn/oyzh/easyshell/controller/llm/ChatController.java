@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.llm.LLMContextBudgetUtil;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
 import cn.oyzh.easyshell.llm.LLMFileContentType;
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.LLMParameterUtil;
 import cn.oyzh.easyshell.llm.LLMNetworkRetry;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMResponseUtil;
@@ -23,6 +24,7 @@ import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMTokenUsageStats;
 import cn.oyzh.easyshell.llm.LLMTokenUsageTracker;
+import cn.oyzh.easyshell.llm.LLMTokenAwareChatMemory;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEvent;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEventType;
@@ -74,7 +76,6 @@ import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.Content;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
@@ -285,6 +286,8 @@ public class ChatController extends SubStageController {
 
         private int maxMessages;
 
+        private int contextTokenBudget;
+
         private int timeoutMinutes;
 
         private boolean streaming;
@@ -451,6 +454,7 @@ public class ChatController extends SubStageController {
                     request.orchestrationMode, request.agentMaxConcurrency,
                     request.agentMaxSteps, request.agentFailurePolicy);
             request.agentRuntime.setToolPolicy(request.toolPolicy);
+            request.agentRuntime.setContextTokenBudget(request.contextTokenBudget);
         } else {
             // 创建模型
             ChatModel model = request.usageTracker.wrap(LLMUtil.createChatModel(provider,
@@ -469,6 +473,7 @@ public class ChatController extends SubStageController {
                     request.orchestrationMode, request.agentMaxConcurrency,
                     request.agentMaxSteps, request.agentFailurePolicy);
             request.agentRuntime.setToolPolicy(request.toolPolicy);
+            request.agentRuntime.setContextTokenBudget(request.contextTokenBudget);
         }
         return this.assistant;
     }
@@ -507,11 +512,13 @@ public class ChatController extends SubStageController {
         return LLMUtil.joinSystemMessages(messages);
     }
 
-    private ChatMemory buildChatMemory(LLMMessage currentMessage) {
+    private ChatMemory buildChatMemory(LLMMessage currentMessage,
+                                       LLMRequest request) {
         String memoryId = this.currentSession == null ? ChatMemoryService.DEFAULT : this.currentSession.getUid();
-        MessageWindowChatMemory memory = MessageWindowChatMemory.builder()
+        LLMTokenAwareChatMemory memory = LLMTokenAwareChatMemory.builder()
                 .id(memoryId)
                 .maxMessages(this.view.getLlmMaxMessages())
+                .maxTokens(request.contextTokenBudget)
                 .build();
         List<ChatMessage> history = new ArrayList<>();
         for (LLMMessage item : this.view.getMessages()) {
@@ -552,10 +559,13 @@ public class ChatController extends SubStageController {
             request.capabilities = LLMModelCapabilityResolver.resolve(
                     provider, request.model);
             request.maxOutputTokens = this.view.getLlmMaxOutputTokens();
+            request.contextTokenBudget = LLMParameterUtil.historyTokenBudget(
+                    request.capabilities.getContextWindowTokens(),
+                    request.maxOutputTokens);
             request.maxMessages = this.view.getLlmMaxMessages();
             request.timeoutMinutes = this.view.getLlmTimeoutMinutes();
             request.streaming = this.view.isStreamingEnabled();
-            request.chatMemory = this.buildChatMemory(message);
+            request.chatMemory = this.buildChatMemory(message, request);
             request.sessionTab = this.view.getSelectedSession();
             request.thinkingLevel = request.capabilities.isThinking()
                     ? this.view.getSelectedThinkingLevel()

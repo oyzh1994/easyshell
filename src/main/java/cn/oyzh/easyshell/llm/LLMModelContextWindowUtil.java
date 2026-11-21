@@ -41,11 +41,33 @@ public final class LLMModelContextWindowUtil {
      * @return compact label
      */
     public static String label(int tokens) {
-        if (tokens >= 1024 * 1024) {
-            return String.format(Locale.ROOT, "%.0fM",
-                    tokens / (1024.0 * 1024.0));
+        return formatTokens(tokens);
+    }
+
+    /**
+     * Formats token counts using binary units so a 256K context displays as 256K.
+     *
+     * @param tokens token count
+     * @return compact binary-unit label
+     */
+    public static String formatTokens(long tokens) {
+        if (tokens < 0) {
+            return "?";
         }
-        return String.format(Locale.ROOT, "%dK", tokens / 1024);
+        if (tokens >= 1024L * 1024) {
+            return compact(tokens / (1024.0 * 1024.0)) + "M";
+        }
+        if (tokens >= 1024L) {
+            return compact(tokens / 1024.0) + "K";
+        }
+        return Long.toString(tokens);
+    }
+
+    private static String compact(double value) {
+        String formatted = String.format(Locale.ROOT, "%.1f", value);
+        return formatted.endsWith(".0")
+                ? formatted.substring(0, formatted.length() - 2)
+                : formatted;
     }
 
     /**
