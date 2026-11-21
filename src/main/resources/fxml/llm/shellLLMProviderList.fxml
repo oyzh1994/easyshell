@@ -39,7 +39,7 @@
                 <FXTableColumn prefWidth="170" valueName="name" text="%base.name"/>
                 <FXTableColumn prefWidth="110" valueName="apiTypeName" text="%base.type"/>
                 <FXTableColumn flexWidth="100% - 555" valueName="baseUrl" text="%base.url"/>
-                <FXTableColumn prefWidth="160" valueName="modelsText" text="%base.model"/>
+                <FXTableColumn prefWidth="160" valueName="defaultModel" text="%base.model"/>
                 <LLMProviderActiveTableColumn prefWidth="100" text="%base.status"/>
             </columns>
             <FXVBox.margin>
