@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.llm.mcp;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
-import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import dev.langchain4j.agent.tool.ToolSpecification;
@@ -48,6 +47,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
 
     private final List<McpClient> clients;
 
+    private final List<LLMMcpConnectionManager.ConnectionLease> leases;
+
     private final List<ServerState> servers;
 
     private final McpToolProvider toolProvider;
@@ -75,6 +76,7 @@ public final class LLMMcpToolSession implements AutoCloseable {
         this.toolSources = Map.copyOf(toolSources);
         this.systemMessage = systemMessage;
         this.clients = servers.stream().map(ServerState::client).toList();
+        this.leases = servers.stream().map(ServerState::lease).toList();
     }
 
     public static LLMMcpToolSession connectEnabled() {
@@ -96,6 +98,13 @@ public final class LLMMcpToolSession implements AutoCloseable {
         return connect(configurations, null);
     }
 
+    /**
+     * 关闭全部 MCP 连接缓存。
+     */
+    public static void closeAllConnections() {
+        LLMMcpConnectionManager.getInstance().closeAll();
+    }
+
     public static LLMMcpToolSession connect(Collection<LLMMcpServer> configurations,
                                             Consumer<Progress> progress) {
         List<LLMMcpServer> enabled = configurations == null
@@ -103,6 +112,11 @@ public final class LLMMcpToolSession implements AutoCloseable {
                 : configurations.stream()
                 .filter(configuration -> configuration != null && configuration.isEnabled())
                 .toList();
+        LLMMcpConnectionManager connectionManager =
+                LLMMcpConnectionManager.getInstance();
+        connectionManager.retainOnly(enabled.stream()
+                .map(LLMMcpClientFactory::clientKey)
+                .collect(Collectors.toSet()));
         if (enabled.isEmpty()) {
             return new LLMMcpToolSession(List.of(), List.of(), null, Set.of(), Map.of(), "");
         }
@@ -112,7 +126,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
         CompletionService<ConnectionResult> completion = new ExecutorCompletionService<>(executor);
         List<Future<ConnectionResult>> futures = new ArrayList<>();
         for (LLMMcpServer configuration : enabled) {
-            futures.add(completion.submit(() -> connectOne(configuration)));
+            futures.add(completion.submit(() ->
+                    connectOne(connectionManager, configuration)));
         }
 
         List<ServerState> servers = new ArrayList<>();
@@ -137,11 +152,11 @@ public final class LLMMcpToolSession implements AutoCloseable {
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             futures.forEach(future -> future.cancel(true));
-            servers.forEach(server -> IOUtil.closeQuietly(server.client()));
+            servers.forEach(server -> server.lease().close());
             throw new RuntimeException("MCP connection cancelled", ex);
         } catch (Exception ex) {
             futures.forEach(future -> future.cancel(true));
-            servers.forEach(server -> IOUtil.closeQuietly(server.client()));
+            servers.forEach(server -> server.lease().close());
             throw new RuntimeException("MCP connection failed", ex);
         } finally {
             executor.shutdownNow();
@@ -163,7 +178,7 @@ public final class LLMMcpToolSession implements AutoCloseable {
                     String error = serverName(server.configuration())
                             + ": duplicate MCP client key: " + key;
                     errors.add(error);
-                    IOUtil.closeQuietly(server.client());
+                    server.lease().close();
                     continue;
                 }
                 String prefix = toolPrefix(server.configuration(), key);
@@ -177,7 +192,7 @@ public final class LLMMcpToolSession implements AutoCloseable {
                     String error = serverName(server.configuration())
                             + ": " + errorMessage(ex);
                     errors.add(error);
-                    IOUtil.closeQuietly(server.client());
+                    server.lease().close();
                     continue;
                 }
                 serverByKey.put(key, server);
@@ -198,6 +213,7 @@ public final class LLMMcpToolSession implements AutoCloseable {
                 }
             }
             if (availableServers.isEmpty()) {
+                servers.forEach(server -> server.lease().close());
                 return new LLMMcpToolSession(List.of(), errors, null,
                         Set.of(), Map.of(), "");
             }
@@ -250,22 +266,25 @@ public final class LLMMcpToolSession implements AutoCloseable {
             return new LLMMcpToolSession(availableServers, errors, provider,
                     toolNames, toolSources, systemMessage);
         } catch (Exception ex) {
-            servers.forEach(server -> IOUtil.closeQuietly(server.client()));
+            servers.forEach(server -> server.lease().close());
             throw ex;
         }
     }
 
-    private static ConnectionResult connectOne(LLMMcpServer configuration) {
-        McpClient client = null;
+    private static ConnectionResult connectOne(LLMMcpConnectionManager connectionManager,
+                                               LLMMcpServer configuration) {
+        LLMMcpConnectionManager.ConnectionLease lease = null;
         try {
-            client = LLMMcpClientFactory.createClient(configuration);
-            List<ToolSpecification> tools = client.listTools();
-            ServerState server = new ServerState(configuration, client, tools,
-                    LLMMcpConfigParser.parseToolNames(configuration.getToolNamesText()),
-                    supportsResources(client));
-            return new ConnectionResult(configuration, server, tools.size(), null);
+            lease = connectionManager.acquire(configuration);
+            ServerState server = new ServerState(configuration, lease.client(),
+                    lease.tools(), lease.allowedTools(), lease.supportsResources(),
+                    lease);
+            return new ConnectionResult(configuration, server,
+                    lease.tools().size(), null);
         } catch (Exception ex) {
-            IOUtil.closeQuietly(client);
+            if (lease != null) {
+                lease.close();
+            }
             return new ConnectionResult(configuration, null, 0, errorMessage(ex));
         }
     }
@@ -278,17 +297,6 @@ public final class LLMMcpToolSession implements AutoCloseable {
             progress.accept(value);
         } catch (Exception ex) {
             JulLog.warn("notify mcp connection progress failed", ex);
-        }
-    }
-
-    private static boolean supportsResources(McpClient client) {
-        try {
-            client.listResources();
-            client.listResourceTemplates();
-            return true;
-        } catch (Exception ex) {
-            JulLog.debug("mcp resources are not supported by client " + client.key(), ex);
-            return false;
         }
     }
 
@@ -386,8 +394,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
             return;
         }
         this.closed = true;
-        for (McpClient client : this.clients) {
-            IOUtil.closeQuietly(client);
+        for (LLMMcpConnectionManager.ConnectionLease lease : this.leases) {
+            lease.close();
         }
     }
 
@@ -543,7 +551,8 @@ public final class LLMMcpToolSession implements AutoCloseable {
                                McpClient client,
                                List<ToolSpecification> tools,
                                Set<String> allowedTools,
-                               boolean supportsResources) {
+                               boolean supportsResources,
+                               LLMMcpConnectionManager.ConnectionLease lease) {
 
         private boolean accepts(String toolName) {
             return CollectionUtil.isEmpty(this.allowedTools) || this.allowedTools.contains(toolName);

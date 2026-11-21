@@ -967,6 +967,12 @@ public class ChatController extends SubStageController {
         }
     }
 
+    @Override
+    public void destroy() {
+        LLMMcpToolSession.closeAllConnections();
+        super.destroy();
+    }
+
     /**
      * 初始化
      */

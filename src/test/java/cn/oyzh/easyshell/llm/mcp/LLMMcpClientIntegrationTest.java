@@ -11,6 +11,7 @@ import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.ToolExecutionResult;
+import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Test;
 
@@ -24,6 +25,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LLMMcpClientIntegrationTest {
+
+    @AfterClass
+    public static void closeConnectionCache() {
+        LLMMcpToolSession.closeAllConnections();
+    }
 
     @Test
     public void initializesListsAndExecutesToolsOverStdio() throws Exception {
@@ -154,6 +160,101 @@ public class LLMMcpClientIntegrationTest {
             assertEquals(2, progress.getLast().completed());
             assertEquals(2, progress.getLast().totalTools());
             assertTrue(progress.getLast().error() == null);
+        }
+    }
+
+    @Test
+    public void reusesConnectionAcrossShortLivedSessions() throws Exception {
+        LLMMcpServer server = fixtureServer();
+        LLMMcpConnectionManager manager = LLMMcpConnectionManager.getInstance();
+        manager.closeAll();
+        LLMMcpToolSession first = null;
+        LLMMcpToolSession second = null;
+        try {
+            first = LLMMcpToolSession.connect(List.of(server));
+            assertTrue(first.hasClients());
+            assertEquals(1, manager.cacheSize());
+
+            long hits = manager.cacheHits();
+            second = LLMMcpToolSession.connect(List.of(server));
+            assertTrue(second.hasClients());
+            assertEquals(1, manager.cacheSize());
+            assertTrue(manager.cacheHits() > hits);
+
+            String echoTool = second.getToolNames().stream()
+                    .filter(name -> !name.startsWith("mcp_resources_"))
+                    .findFirst()
+                    .orElseThrow();
+            Assistant assistant = AiServices.builder(Assistant.class)
+                    .chatModel(new ForcedMcpToolModel(echoTool))
+                    .toolProvider(second.getToolProvider())
+                    .build();
+
+            first.close();
+            first = null;
+            assertEquals("done", assistant.chat("run while another request released the lease"));
+            assertEquals(1, manager.cacheSize());
+        } finally {
+            if (first != null) {
+                first.close();
+            }
+            if (second != null) {
+                second.close();
+            }
+            manager.closeAll();
+        }
+    }
+
+    @Test
+    public void refreshesConnectionWhenServerConfigurationChanges() throws Exception {
+        LLMMcpServer server = fixtureServer();
+        LLMMcpConnectionManager manager = LLMMcpConnectionManager.getInstance();
+        manager.closeAll();
+        LLMMcpToolSession first = null;
+        LLMMcpToolSession second = null;
+        try {
+            first = LLMMcpToolSession.connect(List.of(server));
+            assertTrue(first.getToolNames().contains(LLMMcpToolSession.RESOURCE_LIST_TOOL));
+
+            server.setEnvironmentText("EASY_SHELL_MCP_FIXTURE_RESOURCES=0");
+            second = LLMMcpToolSession.connect(List.of(server));
+            assertTrue(!second.getToolNames().contains(LLMMcpToolSession.RESOURCE_LIST_TOOL));
+            assertEquals(1, manager.cacheSize());
+        } finally {
+            if (first != null) {
+                first.close();
+            }
+            if (second != null) {
+                second.close();
+            }
+            manager.closeAll();
+        }
+    }
+
+    @Test
+    public void evictsCachedConnectionWhenServersAreDisabled() throws Exception {
+        LLMMcpConnectionManager manager = LLMMcpConnectionManager.getInstance();
+        manager.closeAll();
+        LLMMcpToolSession session = null;
+        LLMMcpToolSession empty = null;
+        try {
+            session = LLMMcpToolSession.connect(List.of(fixtureServer()));
+            assertTrue(session.hasClients());
+            assertEquals(1, manager.cacheSize());
+            session.close();
+            session = null;
+
+            empty = LLMMcpToolSession.connect(List.of());
+            assertTrue(!empty.hasClients());
+            assertEquals(0, manager.cacheSize());
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+            if (empty != null) {
+                empty.close();
+            }
+            manager.closeAll();
         }
     }
 
