@@ -5,6 +5,7 @@ import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlDataUtil;
 import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBRecord;
 import cn.oyzh.fx.db.DBRecordData;
@@ -115,6 +116,7 @@ public class PostgresqlRecord extends DBObject implements DBRecord, ObjectCopier
      * @return 数据属性
      */
     public PostgresqlRecordProperty putValue(PostgresqlColumn column, Object value) {
+        value = ShellPostgresqlDataUtil.valueStandardization(column, value);
         PostgresqlRecordProperty property = (PostgresqlRecordProperty) this.getProperty(column.getName());
         if (property == null) {
             property = new PostgresqlRecordProperty(this, column, value, this.readonly);
@@ -186,6 +188,9 @@ public class PostgresqlRecord extends DBObject implements DBRecord, ObjectCopier
     public DBRecordData getRecordData() {
         DBRecordData recordData = new DBRecordData();
         for (PostgresqlColumn column : this.getColumns()) {
+            if (column.isGenerated()) {
+                continue;
+            }
             PostgresqlRecordProperty property = (PostgresqlRecordProperty) this.getProperty(column.getName());
             if (property == null) {
                 continue;

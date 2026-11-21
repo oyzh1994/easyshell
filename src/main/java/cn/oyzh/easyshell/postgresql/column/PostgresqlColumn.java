@@ -114,6 +114,11 @@ public class PostgresqlColumn extends DBObject implements DBColumn, ObjectCopier
     private String autoIncrementType;
 
     /**
+     * 是否为生成列
+     */
+    private boolean generated;
+
+    /**
      * 名称
      */
     private String name;
@@ -323,6 +328,25 @@ public class PostgresqlColumn extends DBObject implements DBColumn, ObjectCopier
     @Override
     public boolean isAutoIncrement() {
         return BooleanUtil.isTrue(this.autoIncrement);
+    }
+
+    /**
+     * 设置是否为生成列
+     *
+     * @param generated 是否为生成列
+     */
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
+    }
+
+    /**
+     * 是否为生成列
+     *
+     * @return 结果
+     */
+    @Override
+    public boolean isGenerated() {
+        return this.generated;
     }
 
     /**
@@ -846,6 +870,7 @@ public class PostgresqlColumn extends DBObject implements DBColumn, ObjectCopier
             this.setDefaultValue(column.defaultValue);
             this.setPrimaryKey(column.isPrimaryKey());
             this.setAutoIncrement(column.autoIncrement);
+            this.setGenerated(column.generated);
             this.setPrimaryKeySize(column.primaryKeySize);
             this.setAutoIncrementType(column.autoIncrementType);
             this.setUpdateOnCurrentTimestamp(column.updateOnCurrentTimestamp);

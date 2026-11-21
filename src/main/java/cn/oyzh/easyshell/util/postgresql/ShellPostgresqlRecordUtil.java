@@ -36,7 +36,7 @@ import java.util.List;
 public class ShellPostgresqlRecordUtil {
 
     public static Node getNode(PostgresqlRecordProperty property, Object object, PostgresqlColumn column) {
-        object = ShellPostgresqlDataUtil.valueStandardization(object);
+        object = ShellPostgresqlDataUtil.valueStandardization(column, object);
         Node node = DBNodeUtil.getNode(object, column);
         //        if (column.supportJson()) {
         //            JsonTextFiled textField = new JsonTextFiled();
@@ -110,7 +110,7 @@ public class ShellPostgresqlRecordUtil {
     }
 
     public static String formatValue(Object object, PostgresqlColumn column) {
-        object = ShellPostgresqlDataUtil.valueStandardization(object);
+        object = ShellPostgresqlDataUtil.valueStandardization(column, object);
         String val = null;
         String columnType = column.getType();
         if (StringUtil.isBlank(columnType)) {

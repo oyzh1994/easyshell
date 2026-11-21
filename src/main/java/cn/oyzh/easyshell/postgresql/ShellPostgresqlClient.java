@@ -1464,6 +1464,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                             AND A.ATTNUM = ANY(I.INDKEY::SMALLINT[])
                         ) THEN 'PRI' ELSE '' END AS "Key",
                         A.ATTIDENTITY AS "IDENTITY",
+                        A.ATTGENERATED AS "GENERATED",
                         PG_CATALOG.PG_GET_SERIAL_SEQUENCE(
                             PG_CATALOG.QUOTE_IDENT(N.NSPNAME) || '.' || PG_CATALOG.QUOTE_IDENT(C.RELNAME),
                             A.ATTNAME
@@ -1504,6 +1505,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 boolean notNull = resultSet.getBoolean("NotNull");
                 String comment = resultSet.getString("Comment");
                 String identity = resultSet.getString("IDENTITY");
+                String generated = resultSet.getString("GENERATED");
                 String serialSequence = resultSet.getString("SERIAL_SEQUENCE");
                 // 自动递增
                 boolean nextValDefault = this.isNextValDefault(def == null ? null : def.toString());
@@ -1524,6 +1526,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 column.setTableName(tableName);
                 column.setNullable(!notNull);
                 column.setAutoIncrement(autoIncrement);
+                column.setGenerated(StringUtil.isNotBlank(generated));
                 if (StringUtil.equalsIgnoreCase(identity, "a")) {
                     column.setAutoIncrementType("GENERATED ALWAYS");
                 } else if (serialType != null) {
@@ -1836,7 +1839,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 builder.append(" VALUES(");
                 for (String column : insertColumns) {
                     DBColumn dbColumn = recordData.column(column);
-                    builder.append(this.valuePlaceholder(dbColumn)).append(",");
+                    builder.append(ShellPostgresqlClient.valuePlaceholder(dbColumn)).append(",");
                 }
                 StringUtil.deleteLast(builder);
                 builder.append(")");
@@ -1854,7 +1857,8 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             PreparedStatement statement = connection.prepareStatement(sql);
             int index = 1;
             for (String column : insertColumns) {
-                DBUtil.setVal(statement, recordData.value(column), index++);
+                DBColumn dbColumn = recordData.column(column);
+                this.setParameter(statement, dbColumn, recordData.value(column), index++);
             }
             int count;
             Object newId = null;
@@ -1905,10 +1909,13 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      * @return 结果
      */
     private boolean skipInsertColumn(DBRecordData recordData, String columnName) {
+        DBColumn column = recordData.column(columnName);
+        if (column != null && column.isGenerated()) {
+            return true;
+        }
         if (recordData.isDefaultValueSequence(columnName)) {
             return true;
         }
-        DBColumn column = recordData.column(columnName);
         if (column != null && column.isAutoIncrement()) {
             Object value = recordData.value(columnName);
             if (value == null) {
@@ -1961,7 +1968,8 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 int index = 1;
                 // 设置参数
                 for (String colName : recordData.notNullColumns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBColumn dbColumn = recordData.column(colName);
+                    this.setParameter(statement, dbColumn, recordData.value(colName), index++);
                 }
                 updateCount = DBUtil.executeUpdate(statement);
             } else {
@@ -1994,14 +2002,24 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             String tableName = param.getTableName();
             DBRecordData recordData = param.getUpdateRecord();
+            List<String> updateColumns = new ArrayList<>();
+            for (String column : recordData.columns()) {
+                DBColumn dbColumn = recordData.column(column);
+                if (dbColumn == null || !dbColumn.isGenerated()) {
+                    updateColumns.add(column);
+                }
+            }
+            if (updateColumns.isEmpty()) {
+                return 0;
+            }
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
                     .append(DBUtil.wrap(schema, tableName, DBDialect.POSTGRESQL))
                     .append(" SET ");
-            for (String column : recordData.columns()) {
+            for (String column : updateColumns) {
                 DBColumn dbColumn = recordData.column(column);
                 builder.append(DBUtil.wrap(column, DBDialect.POSTGRESQL))
-                        .append(" = ").append(this.valuePlaceholder(dbColumn)).append(",");
+                        .append(" = ").append(ShellPostgresqlClient.valuePlaceholder(dbColumn)).append(",");
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.append(" WHERE ");
@@ -2022,7 +2040,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                     } else {
                         DBColumn dbColumn = originalRecordData.column(column);
                         builder.append(DBUtil.wrap(column, DBDialect.POSTGRESQL))
-                                .append(" = ").append(this.valuePlaceholder(dbColumn));
+                                .append(" = ").append(ShellPostgresqlClient.valuePlaceholder(dbColumn));
                     }
                 }
                 int index = 1;
@@ -2030,14 +2048,16 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 this.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                for (String colName : updateColumns) {
+                    DBColumn dbColumn = recordData.column(colName);
+                    this.setParameter(statement, dbColumn, recordData.value(colName), index++);
                 }
                 // 设置参数
                 for (String colName : originalRecordData.columns()) {
                     Object value = originalRecordData.value(colName);
                     if (value != null) {
-                        DBUtil.setVal(statement, value, index++);
+                        DBColumn dbColumn = originalRecordData.column(colName);
+                        this.setParameter(statement, dbColumn, value, index++);
                     }
                 }
                 updateCount = DBUtil.executeUpdate(statement);
@@ -2050,8 +2070,9 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 int index = 1;
                 // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                for (String colName : updateColumns) {
+                    DBColumn dbColumn = recordData.column(colName);
+                    this.setParameter(statement, dbColumn, recordData.value(colName), index++);
                 }
                 // 设置参数
                 DBUtil.setVal(statement, primaryKey.originalData(), index);
@@ -2066,12 +2087,14 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
-     * 获取参数占位符，PostgreSQL的部分类型需要显式类型转换
+     * 获取参数占位符。
+     * 所有 PostgreSQL 参数都显式转换为列类型，避免 jsonpath、范围类型、枚举、
+     * 域类型等被 JDBC 驱动当作 character varying 处理。
      *
      * @param column 字段
      * @return 占位符
      */
-    private String valuePlaceholder(DBColumn column) {
+    static String valuePlaceholder(DBColumn column) {
         if (column == null) {
             return "?";
         }
@@ -2079,13 +2102,32 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
         if (StringUtil.isBlank(type)) {
             return "?";
         }
-        if (column.supportJson()
-                || StringUtil.equalsAnyIgnoreCase(type, "UUID", "XML", "INET", "CIDR", "MACADDR",
-                "INTERVAL", "TSVECTOR", "TSQUERY", "POINT", "LINE", "LSEG", "BOX", "PATH", "POLYGON", "CIRCLE")
-                || type.endsWith("[]")) {
-            return "?::" + type;
+        if (column.getSize() != null
+                && !StringUtil.contains(type, "(")
+                && StringUtil.equalsAnyIgnoreCase(type, "BIT", "BIT VARYING", "VARBIT")) {
+            return "?::" + type + "(" + column.getSize() + ")";
         }
-        return "?";
+        return "?::" + type;
+    }
+
+    /**
+     * 设置 PostgreSQL 查询参数，JSON/JSONB 必须传递 JSON 文本。
+     * PostgreSQL JDBC 驱动会把 Map 类型的 setObject 参数解释为 hstore。
+     *
+     * @param statement 预处理语句
+     * @param column    字段
+     * @param value     值
+     * @param index     参数索引
+     * @throws SQLException 异常
+     */
+    private void setParameter(PreparedStatement statement, DBColumn column, Object value, int index) throws SQLException {
+        if (column != null && column.supportBit() && value != null) {
+            statement.setString(index, ShellPostgresqlDataUtil.toBitText(column, value));
+        } else if (column != null && column.supportJson() && value != null) {
+            statement.setString(index, ShellPostgresqlDataUtil.toJsonText(value));
+        } else {
+            DBUtil.setVal(statement, value, index);
+        }
     }
 
     /**

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.util.postgresql;
 
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.fx.db.util.DBNodeUtil;
+import cn.oyzh.fx.gui.text.field.BitTextField;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.DigitalTextField;
@@ -23,6 +24,9 @@ import java.util.List;
 public class ShellPostgresqlNodeUtil {
 
     public static Object getNodeVal(Node node) throws Exception {
+        if (node instanceof BitTextField textField) {
+            return textField.getText();
+        }
         return DBNodeUtil.getNodeVal(node);
 //        Object val = null;
 //        if (node instanceof TimeTextField node1) {

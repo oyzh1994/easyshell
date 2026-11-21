@@ -47,7 +47,7 @@ public class PostgresqlRecordProperty extends DBRecordProperty {
 
     @Override
     public Object get() {
-        if (this.readonly || !this.isChanged() || this.node == null) {
+        if (this.isReadonly() || !this.isChanged() || this.node == null) {
             return super.get();
         }
         if (this.setToNullFlag) {
@@ -70,7 +70,7 @@ public class PostgresqlRecordProperty extends DBRecordProperty {
 
     @Override
     public Object getValue() {
-        if (this.readonly) {
+        if (this.isReadonly()) {
             return ShellPostgresqlRecordUtil.formatValue(super.getValue(), this.getColumn());
         }
         if (this.node == null) {
@@ -79,6 +79,11 @@ public class PostgresqlRecordProperty extends DBRecordProperty {
             TableViewUtil.selectRowOnMouseClicked(this.node);
         }
         return this.node;
+    }
+
+    @Override
+    public boolean isReadonly() {
+        return super.isReadonly() || (this.column != null && this.column.isGenerated());
     }
 
     @Override

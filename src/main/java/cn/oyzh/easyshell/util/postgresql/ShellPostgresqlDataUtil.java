@@ -10,8 +10,10 @@ import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecordPrimaryKey;
+import cn.oyzh.fx.db.DBColumn;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
+import com.alibaba.fastjson2.JSON;
 import org.postgresql.util.PGobject;
 
 import java.nio.charset.StandardCharsets;
@@ -253,16 +255,7 @@ public class ShellPostgresqlDataUtil {
         }
         // 位串类型，使用B'...'字面量
         if (column.supportBit()) {
-            if (value instanceof Boolean bool) {
-                return "B'" + (bool ? "1" : "0") + "'";
-            }
-            if (value instanceof byte[] bytes) {
-                if (bytes.length == 0) {
-                    return "NULL";
-                }
-                return "B'" + TextUtil.byteToBitStr(bytes) + "'";
-            }
-            String str = value.toString();
+            String str = toBitText(column, value);
             if (StringUtil.startWithAnyIgnoreCase(str, "B'", "X'")) {
                 return str;
             }
@@ -272,8 +265,11 @@ public class ShellPostgresqlDataUtil {
         if (column.isDateType() || column.isTimeType() || column.supportTimestamp()) {
             return parameterizedForDateTime(column, value);
         }
+        if (column.supportJson()) {
+            return quote(toJsonText(value));
+        }
         // JSON、JSONB、XML、UUID、网络地址等按字符串处理
-        if (column.supportJson() || column.supportText() || column.supportString()) {
+        if (column.supportText() || column.supportString()) {
             return quote(value);
         }
         // 数值类型
@@ -281,6 +277,58 @@ public class ShellPostgresqlDataUtil {
             return value;
         }
         return quote(value);
+    }
+
+    /**
+     * 将 JSON 值转换为 PostgreSQL 参数需要的 JSON 文本。
+     * 直接向 JDBC 传递 Map 会被 PostgreSQL 驱动当作 hstore 处理。
+     *
+     * @param value JSON 值
+     * @return JSON 文本
+     */
+    public static String toJsonText(Object value) {
+        value = valueStandardization(value);
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof CharSequence sequence) {
+            return sequence.toString();
+        }
+        return JSON.toJSONString(value);
+    }
+
+    /**
+     * 将位串值转换为 PostgreSQL 参数需要的 0/1 文本。
+     *
+     * @param column 字段
+     * @param value  位串值
+     * @return 位串文本
+     */
+    public static String toBitText(DBColumn column, Object value) {
+        value = valueStandardization(value);
+        if (value == null) {
+            return null;
+        }
+        String bits;
+        if (value instanceof Boolean bool) {
+            bits = bool ? "1" : "0";
+        } else if (value instanceof byte[] bytes) {
+            bits = TextUtil.byteToBitStr(bytes);
+        } else {
+            bits = value.toString().trim();
+            if (bits.length() >= 3 && bits.charAt(1) == '\'' && bits.endsWith("'")) {
+                bits = bits.substring(2, bits.length() - 1);
+            }
+        }
+        if (column != null
+                && column.getSize() != null
+                && bits != null
+                && bits.length() > column.getSize()
+                && (value instanceof byte[]
+                || StringUtil.equalsAnyIgnoreCase(column.getType(), "BIT", "BIT WITHOUT LENGTH"))) {
+            return bits.substring(bits.length() - column.getSize());
+        }
+        return bits;
     }
 
     /**
@@ -409,6 +457,21 @@ public class ShellPostgresqlDataUtil {
         // UUID
         if (value instanceof UUID uuid) {
             return uuid.toString();
+        }
+        return value;
+    }
+
+    /**
+     * 值规整化
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 规整后的值
+     */
+    public static Object valueStandardization(PostgresqlColumn column, Object value) {
+        value = valueStandardization(value);
+        if (column != null && column.supportBit() && value instanceof Boolean bool) {
+            return new byte[]{(byte) (bool ? 1 : 0)};
         }
         return value;
     }

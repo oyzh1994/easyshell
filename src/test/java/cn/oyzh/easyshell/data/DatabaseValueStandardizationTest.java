@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.util.mariadb.ShellMariadbColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlDataUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlDataUtil;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
 import cn.oyzh.fx.db.DBColumnFieldManager;
 import cn.oyzh.fx.db.DBDialect;
@@ -34,6 +35,7 @@ public class DatabaseValueStandardizationTest {
     static {
         DBColumnFieldManager.registerInitializer(DBDialect.MYSQL, ShellMysqlColumnUtil::init);
         DBColumnFieldManager.registerInitializer(DBDialect.MARIADB, ShellMariadbColumnUtil::init);
+        DBColumnFieldManager.registerInitializer(DBDialect.POSTGRESQL, ShellPostgresqlColumnUtil::init);
     }
 
     @Test
@@ -91,6 +93,14 @@ public class DatabaseValueStandardizationTest {
 
         UUID uuid = UUID.randomUUID();
         assertEquals(uuid.toString(), ShellPostgresqlDataUtil.valueStandardization(uuid));
+
+        cn.oyzh.easyshell.postgresql.column.PostgresqlColumn bitColumn =
+                new cn.oyzh.easyshell.postgresql.column.PostgresqlColumn();
+        bitColumn.setType("BIT");
+        assertArrayEquals(new byte[]{1},
+                (byte[]) ShellPostgresqlDataUtil.valueStandardization(bitColumn, true));
+        assertArrayEquals(new byte[]{0},
+                (byte[]) ShellPostgresqlDataUtil.valueStandardization(bitColumn, false));
     }
 
     @Test
