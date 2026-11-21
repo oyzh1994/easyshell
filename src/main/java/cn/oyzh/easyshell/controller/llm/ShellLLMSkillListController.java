@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.store.llm.LLMSkillStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
 import cn.oyzh.fx.plus.chooser.FileExtensionFilter;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -25,6 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +48,12 @@ public class ShellLLMSkillListController extends StageController {
     @FXML
     private RefreshSVGGlyph refreshGlyph;
 
+    @FXML
+    private ClearableTextField searchField;
+
     private final LLMSkillStore skillStore = LLMSkillStore.INSTANCE;
+
+    private List<LLMSkill> allItems = new ArrayList<>();
 
     private boolean checking;
 
@@ -54,7 +61,8 @@ public class ShellLLMSkillListController extends StageController {
     private void add() {
         StageAdapter adapter = ShellViewFactory.addLLMSkill(this.getWindow());
         if (adapter != null && adapter.getProp("skill") instanceof LLMSkill skill) {
-            this.skillTableView.addItem(skill);
+            this.allItems.add(skill);
+            this.applyFilter();
         }
     }
 
@@ -66,7 +74,7 @@ public class ShellLLMSkillListController extends StageController {
         }
         StageAdapter adapter = ShellViewFactory.updateLLMSkill(skill, this.getWindow());
         if (adapter != null) {
-            this.skillTableView.refresh();
+            this.applyFilter();
         }
     }
 
@@ -86,7 +94,8 @@ public class ShellLLMSkillListController extends StageController {
             return;
         }
         LLMSkillManager.INSTANCE.deleteFiles(skill.getUid());
-        this.skillTableView.removeItem(skill);
+        this.allItems.remove(skill);
+        this.applyFilter();
         MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
     }
 
@@ -124,7 +133,7 @@ public class ShellLLMSkillListController extends StageController {
         if (this.checking) {
             return;
         }
-        List<LLMSkill> skills = this.skillTableView.getItems();
+        List<LLMSkill> skills = this.allItems;
         if (skills == null || skills.isEmpty()) {
             return;
         }
@@ -155,16 +164,33 @@ public class ShellLLMSkillListController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.searchField.textProperty().addListener(
+                (observable, oldValue, newValue) -> this.applyFilter());
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.skillTableView.setAddAction(this::add);
         this.skillTableView.setEditAction(this::update);
         this.skillTableView.setDeleteAction(this::delete);
         this.skillTableView.setExportAction(this::export);
-        this.skillTableView.setItem(this.skillStore.selectList());
+        this.allItems = new ArrayList<>(this.skillStore.selectList());
+        this.applyFilter();
         this.checkAll();
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    private void applyFilter() {
+        this.skillTableView.setItem(LLMListSearchUtil.filter(
+                this.allItems,
+                this.searchField == null ? null : this.searchField.getText(),
+                LLMSkill::getName,
+                LLMSkill::getFilePath,
+                LLMSkill::getHash));
     }
 
     @Override

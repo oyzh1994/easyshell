@@ -3,6 +3,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.RestoreSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
@@ -16,9 +17,16 @@
     <FXHeaderBar/>
     <FXVBox flexWidth="100%" flexHeight="100% - 30">
         <FXHBox realHeight="30">
+            <ClearableTextField fx:id="searchField" focusTraversable="false"
+                                realHeight="24" prefWidth="220"
+                                tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="30"/>
+                </FXHBox.margin>
+            </ClearableTextField>
             <RestoreSVGGlyph tipText="%base.restore" onMousePrimaryClicked="#restore">
                 <FXHBox.margin>
-                    <Insets left="30" top="7"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </RestoreSVGGlyph>
             <EditSVGGlyph tipText="%base.edit" onMousePrimaryClicked="#update">

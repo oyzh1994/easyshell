@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -64,7 +65,12 @@ public class ShellLLMMcpServerListController extends StageController {
     @FXML
     private FXLabel testResult;
 
+    @FXML
+    private ClearableTextField searchField;
+
     private final LLMMcpServerStore serverStore = LLMMcpServerStore.INSTANCE;
+
+    private List<LLMMcpServer> allItems = new ArrayList<>();
 
     private boolean testing;
 
@@ -78,7 +84,8 @@ public class ShellLLMMcpServerListController extends StageController {
         }
         LLMMcpServer server = adapter.getProp("server");
         if (server != null) {
-            this.serverTableView.addItem(server);
+            this.allItems.add(server);
+            this.applyFilter();
             LLMMcpUiUtil.clearStatus(this.testResult);
             if (server.isEnabled()) {
                 this.changeEnabled(server, true);
@@ -92,7 +99,8 @@ public class ShellLLMMcpServerListController extends StageController {
         if (adapter == null || !Boolean.TRUE.equals(adapter.getProp("imported"))) {
             return;
         }
-        this.serverTableView.setItem(this.serverStore.selectList());
+        this.allItems = new ArrayList<>(this.serverStore.selectList());
+        this.applyFilter();
         LLMMcpUiUtil.clearStatus(this.testResult);
     }
 
@@ -105,7 +113,7 @@ public class ShellLLMMcpServerListController extends StageController {
         StageAdapter adapter = ShellViewFactory.updateLLMMcpServer(server, this.getWindow());
         if (adapter != null) {
             server.setConnectionState(LLMMcpConnectionState.UNKNOWN);
-            this.serverTableView.refreshRow(server);
+            this.applyFilter();
             LLMMcpUiUtil.clearStatus(this.testResult);
         }
     }
@@ -120,7 +128,8 @@ public class ShellLLMMcpServerListController extends StageController {
                 I18nResourceBundle.i18nString("shell.llm.mcp.deleteConfirm"), server.getName());
         if (MessageBox.confirm(message, this.getWindow())) {
             if (this.serverStore.delete(server)) {
-                this.serverTableView.removeItem(server);
+                this.allItems.remove(server);
+                this.applyFilter();
                 LLMMcpUiUtil.clearStatus(this.testResult);
                 MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             } else {
@@ -183,7 +192,7 @@ public class ShellLLMMcpServerListController extends StageController {
         if (this.refreshing) {
             return;
         }
-        List<LLMMcpServer> servers = this.serverTableView.getItems().stream()
+        List<LLMMcpServer> servers = this.allItems.stream()
                 .filter(LLMMcpServer::isEnabled)
                 .toList();
         if (servers.isEmpty()) {
@@ -193,7 +202,7 @@ public class ShellLLMMcpServerListController extends StageController {
         this.refreshGlyph.setDisable(true);
         this.refreshGlyph.startWaiting();
         this.enabledColumn.setAllDisabled(true);
-        for (LLMMcpServer server : this.serverTableView.getItems()) {
+        for (LLMMcpServer server : this.allItems) {
             if (server.isEnabled()) {
                 server.setChecking(true);
                 server.setConnectionState(LLMMcpConnectionState.CHECKING);
@@ -245,7 +254,7 @@ public class ShellLLMMcpServerListController extends StageController {
             executor.shutdownNow();
             FXUtil.runLater(() -> {
                 this.refreshing = false;
-                for (LLMMcpServer server : this.serverTableView.getItems()) {
+                for (LLMMcpServer server : this.allItems) {
                     if (server.isEnabled()) {
                         server.setChecking(false);
                     }
@@ -324,6 +333,13 @@ public class ShellLLMMcpServerListController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.searchField.textProperty().addListener(
+                (observable, oldValue, newValue) -> this.applyFilter());
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.serverTableView.setAddAction(this::add);
@@ -331,11 +347,22 @@ public class ShellLLMMcpServerListController extends StageController {
         this.serverTableView.setEditAction(this::update);
         this.serverTableView.setDeleteAction(this::delete);
         this.enabledColumn.setEnabledAction(this::changeEnabled);
-        this.serverTableView.setItem(this.serverStore.selectList());
+        this.allItems = new ArrayList<>(this.serverStore.selectList());
+        this.applyFilter();
         LLMMcpUiUtil.clearStatus(this.testResult);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
         this.refreshAll();
+    }
+
+    private void applyFilter() {
+        this.serverTableView.setItem(LLMListSearchUtil.filter(
+                this.allItems,
+                this.searchField == null ? null : this.searchField.getText(),
+                LLMMcpServer::getName,
+                LLMMcpServer::getTransportName,
+                LLMMcpServer::getEndpointText,
+                LLMMcpServer::getToolFilterText));
     }
 
     @Override

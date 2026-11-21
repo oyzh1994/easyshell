@@ -3,6 +3,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -14,9 +15,16 @@
     <FXHeaderBar/>
     <FXVBox flexWidth="100%" flexHeight="100% - 30">
         <FXHBox realHeight="30">
+            <ClearableTextField fx:id="searchField" focusTraversable="false"
+                                realHeight="24" prefWidth="220"
+                                tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="30"/>
+                </FXHBox.margin>
+            </ClearableTextField>
             <AddSVGGlyph onMousePrimaryClicked="#add">
                 <FXHBox.margin>
-                    <Insets left="30" top="7"/>
+                    <Insets left="10" top="7"/>
                 </FXHBox.margin>
             </AddSVGGlyph>
             <EditSVGGlyph onMousePrimaryClicked="#update">

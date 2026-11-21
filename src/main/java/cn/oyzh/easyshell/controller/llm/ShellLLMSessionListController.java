@@ -10,11 +10,15 @@ import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableRow;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LLM会话历史
@@ -32,7 +36,12 @@ public class ShellLLMSessionListController extends StageController {
     @FXML
     private LLMSessionTableView sessionTableView;
 
+    @FXML
+    private ClearableTextField searchField;
+
     private final LLMSessionStore sessionStore = LLMSessionStore.INSTANCE;
+
+    private List<LLMSession> allItems = new ArrayList<>();
 
     @FXML
     private void restore() {
@@ -61,7 +70,7 @@ public class ShellLLMSessionListController extends StageController {
         }
         session.setTitle(title);
         if (this.sessionStore.save(session)) {
-            this.sessionTableView.refresh();
+            this.applyFilter();
         } else {
             MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
         }
@@ -77,11 +86,19 @@ public class ShellLLMSessionListController extends StageController {
                 + LLMSessionUtil.getDisplayTitle(session) + " ?";
         if (MessageBox.confirm(message, this.getWindow())) {
             if (this.sessionStore.delete(session)) {
-                this.sessionTableView.removeItem(session);
+                this.allItems.remove(session);
+                this.applyFilter();
             } else {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             }
         }
+    }
+
+    @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.searchField.textProperty().addListener(
+                (observable, oldValue, newValue) -> this.applyFilter());
     }
 
     @Override
@@ -90,10 +107,18 @@ public class ShellLLMSessionListController extends StageController {
         this.sessionTableView.setEditAction(this::update);
         this.sessionTableView.setDeleteAction(this::delete);
         this.sessionTableView.setRestoreAction(this::restore);
-        this.sessionTableView.setItem(this.sessionStore.loadRecent());
+        this.allItems = new ArrayList<>(this.sessionStore.loadRecent());
+        this.applyFilter();
         this.initRowActions();
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    private void applyFilter() {
+        this.sessionTableView.setItem(LLMListSearchUtil.filter(
+                this.allItems,
+                this.searchField == null ? null : this.searchField.getText(),
+                LLMSessionUtil::getDisplayTitle));
     }
 
     private void initRowActions() {

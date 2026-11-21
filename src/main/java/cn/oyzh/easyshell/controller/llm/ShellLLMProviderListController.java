@@ -13,9 +13,13 @@ import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LLM provider list.
@@ -33,7 +37,12 @@ public class ShellLLMProviderListController extends StageController {
     @FXML
     private LLMProviderTableView providerTableView;
 
+    @FXML
+    private ClearableTextField searchField;
+
     private final LLMProviderStore providerStore = LLMProviderStore.INSTANCE;
+
+    private List<LLMProvider> allItems = new ArrayList<>();
 
     @FXML
     private void add() {
@@ -43,7 +52,8 @@ public class ShellLLMProviderListController extends StageController {
         }
         LLMProvider provider = adapter.getProp("provider");
         if (provider != null) {
-            this.providerTableView.addItem(provider);
+            this.allItems.add(provider);
+            this.applyFilter();
         }
     }
 
@@ -59,7 +69,7 @@ public class ShellLLMProviderListController extends StageController {
         }
         LLMProvider updated = adapter.getProp("provider");
         if (updated != null) {
-            this.providerTableView.refresh();
+            this.applyFilter();
         }
     }
 
@@ -73,7 +83,8 @@ public class ShellLLMProviderListController extends StageController {
         if (MessageBox.confirm(message, this.getWindow())) {
             if (this.providerStore.delete(provider)) {
                 LLMModelCapabilityStore.INSTANCE.deleteByProvider(provider.getUid());
-                this.providerTableView.removeItem(provider);
+                this.allItems.remove(provider);
+                this.applyFilter();
                 MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             } else {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
@@ -82,14 +93,33 @@ public class ShellLLMProviderListController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.searchField.textProperty().addListener(
+                (observable, oldValue, newValue) -> this.applyFilter());
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.providerTableView.setAddAction(this::add);
         this.providerTableView.setEditAction(this::update);
         this.providerTableView.setDeleteAction(this::delete);
-        this.providerTableView.setItem(this.providerStore.selectList());
+        this.allItems = new ArrayList<>(this.providerStore.selectList());
+        this.applyFilter();
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    private void applyFilter() {
+        this.providerTableView.setItem(LLMListSearchUtil.filter(
+                this.allItems,
+                this.searchField == null ? null : this.searchField.getText(),
+                LLMProvider::getName,
+                LLMProvider::getApiTypeName,
+                LLMProvider::getBaseUrl,
+                LLMProvider::getDefaultModel,
+                LLMProvider::getModelsText));
     }
 
     @Override

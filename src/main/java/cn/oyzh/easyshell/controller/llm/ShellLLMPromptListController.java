@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMPromptStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -18,6 +19,8 @@ import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,9 +39,14 @@ public class ShellLLMPromptListController extends StageController {
     @FXML
     private LLMPromptTableView promptTableView;
 
+    @FXML
+    private ClearableTextField searchField;
+
     private final LLMPromptStore promptStore = LLMPromptStore.INSTANCE;
 
     private final ShellSettingStore settingStore = ShellSettingStore.INSTANCE;
+
+    private List<LLMPrompt> allItems = new ArrayList<>();
 
     @FXML
     private void add() {
@@ -48,7 +56,8 @@ public class ShellLLMPromptListController extends StageController {
         }
         LLMPrompt prompt = adapter.getProp("prompt");
         if (prompt != null) {
-            this.promptTableView.addItem(prompt);
+            this.allItems.add(prompt);
+            this.applyFilter();
         }
     }
 
@@ -60,7 +69,7 @@ public class ShellLLMPromptListController extends StageController {
         }
         StageAdapter adapter = ShellViewFactory.updateLLMPrompt(prompt, this.getWindow());
         if (adapter != null) {
-            this.promptTableView.refresh();
+            this.applyFilter();
         }
     }
 
@@ -80,7 +89,8 @@ public class ShellLLMPromptListController extends StageController {
             MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
             return;
         }
-        this.promptTableView.removeItem(prompt);
+        this.allItems.remove(prompt);
+        this.applyFilter();
         ShellSetting setting = ShellSettingStore.SETTING;
         if (Objects.equals(setting.getLlmPromptUid(), prompt.getUid())) {
             setting.setLlmPromptUid(null);
@@ -90,14 +100,30 @@ public class ShellLLMPromptListController extends StageController {
     }
 
     @Override
+    protected void bindListeners() {
+        super.bindListeners();
+        this.searchField.textProperty().addListener(
+                (observable, oldValue, newValue) -> this.applyFilter());
+    }
+
+    @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
         this.promptTableView.setAddAction(this::add);
         this.promptTableView.setEditAction(this::update);
         this.promptTableView.setDeleteAction(this::delete);
-        this.promptTableView.setItem(this.promptStore.selectList());
+        this.allItems = new ArrayList<>(this.promptStore.selectList());
+        this.applyFilter();
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
+    }
+
+    private void applyFilter() {
+        this.promptTableView.setItem(LLMListSearchUtil.filter(
+                this.allItems,
+                this.searchField == null ? null : this.searchField.getText(),
+                LLMPrompt::getName,
+                LLMPrompt::getContent));
     }
 
     @Override
