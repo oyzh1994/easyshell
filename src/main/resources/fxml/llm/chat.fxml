@@ -4,6 +4,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.MCPSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.LLMSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.PromptSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
@@ -22,6 +23,11 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </HistorySVGGlyph>
+        <PromptSVGGlyph tipText="%shell.llm.prompts" onMousePrimaryClicked="#prompt">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </PromptSVGGlyph>
         <MCPSVGGlyph tipText="%shell.llm.mcp.servers" onMousePrimaryClicked="#mcp">
             <HBox.margin>
                 <Insets left="10" top="10"/>

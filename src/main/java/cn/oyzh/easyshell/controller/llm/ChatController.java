@@ -32,6 +32,8 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
+import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
+import cn.oyzh.easyshell.llm.prompt.LLMPromptUtil;
 import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
@@ -43,6 +45,7 @@ import cn.oyzh.easyshell.llm.tool.LLMToolSelection;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
+import cn.oyzh.easyshell.store.llm.LLMPromptStore;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
 import cn.oyzh.easyshell.tabs.ShellConnectTab;
 import cn.oyzh.easyshell.tabs.ShellTabPane;
@@ -117,6 +120,11 @@ public class ChatController extends SubStageController {
     @FXML
     private void mcp() {
         ShellViewFactory.llmMcpServers(this.getWindow());
+    }
+
+    @FXML
+    private void prompt() {
+        ShellViewFactory.llmPrompts(this.getWindow());
     }
 
     /**
@@ -218,6 +226,8 @@ public class ChatController extends SubStageController {
 
         private List<LLMMcpServer> mcpServers;
 
+        private LLMPrompt prompt;
+
         private LLMProvider provider;
 
         private LLMThinkingLevel thinkingLevel;
@@ -282,6 +292,7 @@ public class ChatController extends SubStageController {
         LLMToolSelection toolSelection = new LLMToolSelection(
                 request.sessionTools, internalTools, localExecutionTools,
                 request.executionMode, request.toolAccessMode);
+        String promptSystemMessage = LLMPromptUtil.systemMessage(request.prompt);
         LLMSessionContext sessionContext = LLMSessionContext.from(request.sessionTab);
         List<LLMTools> tools = new ArrayList<>(toolSelection.tools());
         request.tools = tools;
@@ -314,6 +325,7 @@ public class ChatController extends SubStageController {
         audit.registerToolSources(request.mcpSession.getToolSources());
         services.afterToolExecution(audit::record);
         String systemMessage = joinSystemMessages(
+                promptSystemMessage,
                 sessionContext == null ? "" : sessionContext.promptText(),
                 toolSelection.systemMessage());
         if (request.mcpSession.hasClients()) {
@@ -336,7 +348,8 @@ public class ChatController extends SubStageController {
             request.agentRuntime = this.createAgentRuntime(agentModel, model, tools,
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
-                    toolSelection.localExecutionSystemMessage(), sessionContext,
+                    toolSelection.localExecutionSystemMessage(), promptSystemMessage,
+                    sessionContext,
                     executionMode, audit, request.maxMessages, request.agentMode,
                     request.orchestrationMode, request.agentMaxConcurrency,
                     request.agentMaxSteps, request.agentFailurePolicy);
@@ -351,7 +364,8 @@ public class ChatController extends SubStageController {
             request.agentRuntime = this.createAgentRuntime(model, null, tools,
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
-                    toolSelection.localExecutionSystemMessage(), sessionContext,
+                    toolSelection.localExecutionSystemMessage(), promptSystemMessage,
+                    sessionContext,
                     executionMode, audit, request.maxMessages, request.agentMode,
                     request.orchestrationMode, request.agentMaxConcurrency,
                     request.agentMaxSteps, request.agentFailurePolicy);
@@ -366,6 +380,7 @@ public class ChatController extends SubStageController {
                                                String sessionSystemMessage,
                                                String internalSystemMessage,
                                                String localExecutionSystemMessage,
+                                               String promptSystemMessage,
                                                LLMSessionContext sessionContext,
                                                LLMExecutionMode executionMode,
                                                LLMToolAudit audit,
@@ -376,12 +391,14 @@ public class ChatController extends SubStageController {
                                                int agentMaxSteps,
                                                LLMAgentFailurePolicy agentFailurePolicy) {
         String mcpSystemMessage = mcpSession == null ? "" : mcpSession.getSystemMessage();
-        return new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
+        LLMAgentRuntime runtime = new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
                 sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
                 sessionContext, mcpSystemMessage,
                 LLMUtil.executionSystemMessage(executionMode),
                 LLMUtil.languageSystemMessage(), audit, maxMessages, agentMode,
                 orchestrationMode, agentMaxConcurrency, agentMaxSteps, agentFailurePolicy);
+        runtime.setPromptSystemMessage(promptSystemMessage);
+        return runtime;
     }
 
     private static String joinSystemMessages(String... messages) {
@@ -442,6 +459,7 @@ public class ChatController extends SubStageController {
             request.agentFailurePolicy = this.view.getSelectedAgentFailurePolicy();
             request.executionMode = this.view.getSelectedExecutionMode();
             request.toolAccessMode = this.view.getSelectedToolAccessMode();
+            request.prompt = this.loadSelectedPrompt();
             request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
             request.sessionTabId = request.sessionTab == null ? null : request.sessionTab.getId();
             if (request.sessionTab != null && request.sessionTab.getToolsFunc() != null) {
@@ -466,6 +484,15 @@ public class ChatController extends SubStageController {
         } catch (Exception ex) {
             JulLog.warn("load enabled mcp servers failed", ex);
             return List.of();
+        }
+    }
+
+    private LLMPrompt loadSelectedPrompt() {
+        try {
+            return LLMPromptStore.INSTANCE.selectByUid(this.view.getSelectedPromptUid());
+        } catch (Exception ex) {
+            JulLog.warn("load selected llm prompt failed", ex);
+            return null;
         }
     }
 

@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.llm.LLMDurationUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
+import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMSendHandler;
 import cn.oyzh.easyshell.llm.agent.LLMAgentConcurrency;
@@ -22,6 +23,7 @@ import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
+import cn.oyzh.easyshell.store.llm.LLMPromptStore;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
@@ -361,6 +363,7 @@ public class LLMView extends FXSplitPane {
         ContextMenu menu = new ContextMenu();
         menu.getItems().addAll(
                 this.buildProviderMenu(),
+                this.buildPromptMenu(),
                 this.buildThinkingMenu(),
                 this.buildThinkingProcessMenu(),
                 this.buildAgentModeMenu(),
@@ -397,6 +400,46 @@ public class LLMView extends FXSplitPane {
                 this.refreshProviders();
             });
             menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private Menu buildPromptMenu() {
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.prompt"));
+        ToggleGroup group = new ToggleGroup();
+        String selectedUid = this.setting.getLlmPromptUid();
+        List<LLMPrompt> prompts;
+        try {
+            prompts = LLMPromptStore.INSTANCE.selectList();
+        } catch (Exception ex) {
+            JulLog.warn("load llm prompts failed", ex);
+            prompts = List.of();
+        }
+
+        RadioMenuItem noneItem = new RadioMenuItem(I18nHelper.none());
+        noneItem.setToggleGroup(group);
+        noneItem.setSelected(selectedUid == null);
+        noneItem.setOnAction(event -> this.setPromptUid(null));
+        menu.getItems().add(noneItem);
+
+        boolean selectedFound = false;
+        if (prompts != null) {
+            for (LLMPrompt prompt : prompts) {
+                if (prompt == null || StringUtil.isBlank(prompt.getUid())
+                        || StringUtil.isBlank(prompt.getName())) {
+                    continue;
+                }
+                RadioMenuItem item = new RadioMenuItem(prompt.getName());
+                item.setToggleGroup(group);
+                boolean selected = Objects.equals(selectedUid, prompt.getUid());
+                item.setSelected(selected);
+                selectedFound = selectedFound || selected;
+                item.setOnAction(event -> this.setPromptUid(prompt.getUid()));
+                menu.getItems().add(item);
+            }
+        }
+        if (!selectedFound) {
+            noneItem.setSelected(true);
         }
         return menu;
     }
@@ -1144,6 +1187,15 @@ public class LLMView extends FXSplitPane {
 
     public String getSelectedModel() {
         return modelComboBox.getValue();
+    }
+
+    public String getSelectedPromptUid() {
+        return this.setting.getLlmPromptUid();
+    }
+
+    public void setPromptUid(String promptUid) {
+        this.setting.setLlmPromptUid(promptUid);
+        this.settingStore.replace(this.setting);
     }
 
     public LLMThinkingLevel getSelectedThinkingLevel() {

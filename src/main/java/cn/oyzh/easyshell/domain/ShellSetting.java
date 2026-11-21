@@ -123,6 +123,12 @@ public class ShellSetting extends AppSetting {
     private String llmModel;
 
     /**
+     * LLM当前选择的用户提示词id
+     */
+    @Column
+    private String llmPromptUid;
+
+    /**
      * LLM是否启用流式传输
      */
     @Column
@@ -663,6 +669,26 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 获取LLM当前选择的用户提示词id
+     *
+     * @return 提示词id
+     */
+    public String getLlmPromptUid() {
+        return this.llmPromptUid;
+    }
+
+    /**
+     * 设置LLM当前选择的用户提示词id
+     *
+     * @param llmPromptUid 提示词id
+     */
+    public void setLlmPromptUid(String llmPromptUid) {
+        this.llmPromptUid = llmPromptUid == null || llmPromptUid.isBlank()
+                ? null
+                : llmPromptUid.trim();
+    }
+
+    /**
      * 获取LLM当前使用的供应商id
      *
      * @return 供应商id
@@ -819,6 +845,7 @@ public class ShellSetting extends AppSetting {
             this.llmStreaming = setting.llmStreaming;
             this.llmProviderUid = setting.llmProviderUid;
             this.llmModel = setting.llmModel;
+            this.llmPromptUid = setting.llmPromptUid;
             this.llmMaxMessages = setting.llmMaxMessages;
             this.llmMaxOutputTokens = setting.llmMaxOutputTokens;
             this.llmThinkingLevel = setting.llmThinkingLevel;

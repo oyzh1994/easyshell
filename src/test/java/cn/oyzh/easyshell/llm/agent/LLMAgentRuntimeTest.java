@@ -9,6 +9,7 @@ import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
@@ -520,6 +521,22 @@ public class LLMAgentRuntimeTest {
     }
 
     @Test
+    public void singleModeIncludesHighestPriorityPrompt() throws Exception {
+        CapturingSystemChatModel chatModel = new CapturingSystemChatModel();
+        LLMAgentRuntime runtime = new LLMAgentRuntime(
+                chatModel, null, List.of(), null,
+                "session tools", "internal tools", "local execution tools",
+                null, "mcp tools", "execution rules", "language rules",
+                null, 20, LLMAgentMode.SINGLE);
+        runtime.setPromptSystemMessage("HIGH PRIORITY PROMPT");
+
+        runtime.execute("prompt test", List.of(), new LLMAgentListener() {
+        }, () -> false);
+
+        assertTrue(chatModel.systemMessage.contains("HIGH PRIORITY PROMPT"));
+    }
+
+    @Test
     public void parallelOrchestrationRunsDifferentScopesConcurrently() throws Exception {
         ConcurrentPlanChatModel model = new ConcurrentPlanChatModel("""
                 {"objective":"parallel","steps":[
@@ -997,6 +1014,21 @@ public class LLMAgentRuntimeTest {
             handler.onCompleteResponse(ChatResponse.builder()
                     .aiMessage(AiMessage.from("recovered response"))
                     .build());
+        }
+    }
+
+    private static final class CapturingSystemChatModel implements ChatModel {
+
+        private String systemMessage = "";
+
+        @Override
+        public ChatResponse doChat(ChatRequest request) {
+            this.systemMessage = request.messages().stream()
+                    .filter(SystemMessage.class::isInstance)
+                    .map(SystemMessage.class::cast)
+                    .map(SystemMessage::text)
+                    .collect(java.util.stream.Collectors.joining("\n"));
+            return RoutingChatModel.response("prompt captured");
         }
     }
 
