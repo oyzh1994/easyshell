@@ -8,8 +8,12 @@ import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +52,32 @@ public class LLMMcpServerTableView extends FXTableView<LLMMcpServer> {
 
     public void setDeleteAction(Runnable deleteAction) {
         this.deleteAction = deleteAction;
+    }
+
+    /**
+     * Refresh only the cells bound to the specified server.
+     *
+     * @param server server row
+     */
+    public void refreshRow(LLMMcpServer server) {
+        if (server == null) {
+            return;
+        }
+        FXUtil.runLater(() -> {
+            for (Node node : this.lookupAll(".table-row-cell")) {
+                if (!(node instanceof TableRow<?> row) || row.getItem() != server) {
+                    continue;
+                }
+                for (Node cellNode : row.getChildrenUnmodifiable()) {
+                    if (cellNode instanceof TableCell<?, ?> cell && cell.getIndex() >= 0) {
+                        int index = cell.getIndex();
+                        cell.updateIndex(-1);
+                        cell.updateIndex(index);
+                    }
+                }
+                return;
+            }
+        });
     }
 
     @Override

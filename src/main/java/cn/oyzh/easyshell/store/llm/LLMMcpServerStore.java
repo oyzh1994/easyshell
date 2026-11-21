@@ -23,8 +23,13 @@ public class LLMMcpServerStore extends JdbcStandardStore<LLMMcpServer> {
         if (server == null || server.getUid() == null) {
             return false;
         }
+        boolean previous = server.isEnabled();
         server.setEnabled(enabled);
-        return super.update(server);
+        if (super.update(server)) {
+            return true;
+        }
+        server.setEnabled(previous);
+        return false;
     }
 
     @Override

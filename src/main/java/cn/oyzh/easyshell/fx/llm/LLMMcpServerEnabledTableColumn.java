@@ -70,7 +70,9 @@ public class LLMMcpServerEnabledTableColumn extends FXTableColumn<LLMMcpServer, 
                     return;
                 }
                 TableView<LLMMcpServer> tableView = this.getTableView();
-                if (tableView != null) {
+                if (tableView instanceof LLMMcpServerTableView serverTableView) {
+                    serverTableView.refreshRow(this.server);
+                } else if (tableView != null) {
                     tableView.refresh();
                 }
             });
@@ -86,12 +88,17 @@ public class LLMMcpServerEnabledTableColumn extends FXTableColumn<LLMMcpServer, 
                 return;
             }
             this.server = item;
+            boolean selected = item.isEnabled() || item.isEnabling();
             this.updating = true;
-            this.toggleSwitch.setSelected(item.isEnabled() || item.isEnabling());
+            if (this.toggleSwitch.isSelected() != selected) {
+                this.toggleSwitch.setSelected(selected);
+            }
             this.toggleSwitch.setDisable(
                     LLMMcpServerEnabledTableColumn.this.allDisabled || item.isEnabling() || item.isChecking());
             this.updating = false;
-            super.setGraphic(this.toggleSwitch);
+            if (super.getGraphic() != this.toggleSwitch) {
+                super.setGraphic(this.toggleSwitch);
+            }
         }
     }
 }

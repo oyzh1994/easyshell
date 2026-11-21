@@ -105,7 +105,7 @@ public class ShellLLMMcpServerListController extends StageController {
         StageAdapter adapter = ShellViewFactory.updateLLMMcpServer(server, this.getWindow());
         if (adapter != null) {
             server.setConnectionState(LLMMcpConnectionState.UNKNOWN);
-            this.serverTableView.refresh();
+            this.serverTableView.refreshRow(server);
             LLMMcpUiUtil.clearStatus(this.testResult);
         }
     }
@@ -143,7 +143,7 @@ public class ShellLLMMcpServerListController extends StageController {
         this.testGlyph.startWaiting();
         server.setChecking(true);
         server.setConnectionState(LLMMcpConnectionState.CHECKING);
-        this.serverTableView.refresh();
+        this.serverTableView.refreshRow(server);
         LLMMcpUiUtil.showStatus(this.testResult,
                 I18nResourceBundle.i18nString("shell.llm.mcp.testing"),
                 null);
@@ -152,7 +152,7 @@ public class ShellLLMMcpServerListController extends StageController {
                 int toolCount = client.listTools().size();
                 FXUtil.runLater(() -> {
                     server.setConnectionState(LLMMcpConnectionState.CONNECTED, toolCount, null);
-                    this.serverTableView.refresh();
+                    this.serverTableView.refreshRow(server);
                     LLMMcpUiUtil.showStatus(this.testResult,
                             String.format(I18nResourceBundle.i18nString("shell.llm.mcp.testSuccess"), toolCount),
                             null);
@@ -161,7 +161,7 @@ public class ShellLLMMcpServerListController extends StageController {
                 String detail = ExceptionUtil.getMessage(ex);
                 FXUtil.runLater(() -> {
                     server.setConnectionState(LLMMcpConnectionState.FAILED, 0, detail);
-                    this.serverTableView.refresh();
+                    this.serverTableView.refreshRow(server);
                     LLMMcpUiUtil.showStatus(this.testResult,
                             String.format(I18nResourceBundle.i18nString("shell.llm.mcp.testFail"), detail),
                             detail);
@@ -172,7 +172,7 @@ public class ShellLLMMcpServerListController extends StageController {
                     server.setChecking(false);
                     this.testGlyph.stopWaiting();
                     this.testGlyph.setDisable(false);
-                    this.serverTableView.refresh();
+                    this.serverTableView.refreshRow(server);
                 });
             }
         });
@@ -193,11 +193,13 @@ public class ShellLLMMcpServerListController extends StageController {
         this.refreshGlyph.setDisable(true);
         this.refreshGlyph.startWaiting();
         this.enabledColumn.setAllDisabled(true);
-        for (LLMMcpServer server : servers) {
-            server.setChecking(true);
-            server.setConnectionState(LLMMcpConnectionState.CHECKING);
+        for (LLMMcpServer server : this.serverTableView.getItems()) {
+            if (server.isEnabled()) {
+                server.setChecking(true);
+                server.setConnectionState(LLMMcpConnectionState.CHECKING);
+            }
+            this.serverTableView.refreshRow(server);
         }
-        this.serverTableView.refresh();
         LLMMcpUiUtil.showStatus(this.testResult,
                 String.format(I18nResourceBundle.i18nString("shell.llm.mcp.progress.start"),
                         servers.size()),
@@ -226,7 +228,7 @@ public class ShellLLMMcpServerListController extends StageController {
                                     ? LLMMcpConnectionState.CONNECTED
                                     : LLMMcpConnectionState.FAILED,
                             result.toolCount(), result.error());
-                    this.serverTableView.refresh();
+                    this.serverTableView.refreshRow(result.server());
                     LLMMcpUiUtil.showStatus(this.testResult,
                             String.format(I18nResourceBundle.i18nString("shell.llm.mcp.refreshSummary"),
                                     currentConnected, servers.size()),
@@ -243,13 +245,15 @@ public class ShellLLMMcpServerListController extends StageController {
             executor.shutdownNow();
             FXUtil.runLater(() -> {
                 this.refreshing = false;
-                for (LLMMcpServer server : servers) {
-                    server.setChecking(false);
+                for (LLMMcpServer server : this.serverTableView.getItems()) {
+                    if (server.isEnabled()) {
+                        server.setChecking(false);
+                    }
+                    this.serverTableView.refreshRow(server);
                 }
                 this.enabledColumn.setAllDisabled(false);
                 this.refreshGlyph.stopWaiting();
                 this.refreshGlyph.setDisable(false);
-                this.serverTableView.refresh();
             });
         }
     }
@@ -273,7 +277,7 @@ public class ShellLLMMcpServerListController extends StageController {
                 server.setConnectionState(LLMMcpConnectionState.FAILED, 0, I18nHelper.operationFail());
                 LLMMcpUiUtil.showStatus(this.testResult, I18nHelper.operationFail(), null);
             }
-            this.serverTableView.refresh();
+            this.serverTableView.refreshRow(server);
             return;
         }
         if (server.isEnabling()) {
@@ -283,13 +287,13 @@ public class ShellLLMMcpServerListController extends StageController {
         if (!this.serverStore.setEnabled(server, true)) {
             server.setEnabled(wasEnabled);
             LLMMcpUiUtil.showStatus(this.testResult, I18nHelper.operationFail(), null);
-            this.serverTableView.refresh();
+            this.serverTableView.refreshRow(server);
             return;
         }
         server.setEnabled(true);
         server.setEnabling(true);
         server.setConnectionState(LLMMcpConnectionState.CHECKING);
-        this.serverTableView.refresh();
+        this.serverTableView.refreshRow(server);
         LLMMcpUiUtil.showStatus(this.testResult,
                 I18nResourceBundle.i18nString("shell.llm.mcp.testing"), null);
         ThreadUtil.startVirtual(() -> {
@@ -302,7 +306,7 @@ public class ShellLLMMcpServerListController extends StageController {
                     LLMMcpUiUtil.showStatus(this.testResult,
                             String.format(I18nResourceBundle.i18nString("shell.llm.mcp.testSuccess"), toolCount),
                             null);
-                    this.serverTableView.refresh();
+                    this.serverTableView.refreshRow(server);
                 });
             } catch (Exception ex) {
                 String detail = ExceptionUtil.getMessage(ex);
@@ -310,7 +314,7 @@ public class ShellLLMMcpServerListController extends StageController {
                     server.setEnabling(false);
                     server.setEnabled(true);
                     server.setConnectionState(LLMMcpConnectionState.FAILED, 0, detail);
-                    this.serverTableView.refresh();
+                    this.serverTableView.refreshRow(server);
                     LLMMcpUiUtil.showStatus(this.testResult,
                             String.format(I18nResourceBundle.i18nString("shell.llm.mcp.testFail"), detail),
                             detail);
