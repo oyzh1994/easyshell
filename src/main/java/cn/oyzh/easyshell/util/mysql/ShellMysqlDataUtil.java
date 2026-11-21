@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecordPrimaryKey;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
+import com.alibaba.fastjson2.JSON;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -527,6 +528,10 @@ public class ShellMysqlDataUtil {
      * @return 规整后的值
      */
     public static Object valueStandardization(MysqlColumn column, Object value) {
+        if (column != null && column.supportJson()
+                && value != null && !(value instanceof CharSequence)) {
+            value = JSON.toJSONString(value);
+        }
         return valueStandardization(value);
     }
 

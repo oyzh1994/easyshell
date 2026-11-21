@@ -1399,7 +1399,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
             for (String colName : columnNames) {
-                DBUtil.setVal(statement, param.getRecord().value(colName), index++);
+                DBUtil.setVal(statement, valueForBinding(param.getRecord(), colName), index++);
             }
             int count = statement.executeUpdate();
             MysqlRecordPrimaryKey primaryKey = param.getPrimaryKey();
@@ -1456,7 +1456,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 int index = 1;
                 // 设置参数
                 for (String colName : recordData.notNullColumns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, valueForBinding(recordData, colName), index++);
                 }
                 updateCount = DBUtil.executeUpdate(statement);
             } else {
@@ -1524,11 +1524,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 // 设置值
                 for (String colName : updateColumns) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, valueForBinding(recordData, colName), index++);
                 }
                 // 设置参数
                 for (String colName : originalColumns) {
-                    DBUtil.setVal(statement, originalRecordData.value(colName), index++);
+                    DBUtil.setVal(statement, valueForBinding(originalRecordData, colName), index++);
                 }
                 updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
@@ -1543,7 +1543,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 int index = 1;
                 // 设置值
                 for (String colName : updateColumns) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, valueForBinding(recordData, colName), index++);
                 }
                 // 设置参数
                 DBUtil.setVal(statement, primaryKey.originalData(), index);
@@ -1555,6 +1555,22 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 获取可直接绑定到 JDBC 参数的值。
+     *
+     * @param recordData 记录数据
+     * @param columnName 字段名称
+     * @return JDBC 参数值
+     */
+    private static Object valueForBinding(DBRecordData recordData, String columnName) {
+        var column = recordData.column(columnName);
+        if (column instanceof MysqlColumn mysqlColumn) {
+            return ShellMysqlDataUtil.valueStandardization(mysqlColumn,
+                    recordData.value(columnName));
+        }
+        return recordData.value(columnName);
     }
 
     /**

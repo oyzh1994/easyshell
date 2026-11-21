@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlUpdateRecordParam;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
+import com.alibaba.fastjson2.JSON;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
@@ -182,6 +183,34 @@ public class MysqlComplexDataIntegrationTest {
         MysqlRecord updated = loadSingle(sourceClient, SOURCE_DB, TABLE, id);
         assertExpectedValues(updatedValues, updated);
         assertGeneratedValues(updated, "beta-value", "beta-value");
+    }
+
+    @Test
+    public void updatesJsonEditorObjectThroughClientEntry() {
+        MysqlRecord inserted = insertSeed(sourceClient, SOURCE_DB, TABLE);
+        long id = ((Number) inserted.getValue("id")).longValue();
+        MysqlRecord record = loadSingle(sourceClient, SOURCE_DB, TABLE, id);
+
+        MysqlColumn jsonColumn = record.getColumns().column("c_json");
+        Object edited = JSON.parseObject(
+                "{\"id\":10,\"name\":\"row10 中文 😀\",\"nested\":{\"items\":[10,\"x\"],"
+                        + "\"slash\":\"C:\\\\tmp\",\"quoted\":\"a\\\"b\"}}");
+        record.putValue(jsonColumn, edited);
+        record.getProperty("c_json").setChanged(true);
+
+        MysqlRecordPrimaryKey primaryKey = new MysqlRecordPrimaryKey();
+        primaryKey.init(record.getColumns().column("id"), record);
+        MysqlUpdateRecordParam updateParam = new MysqlUpdateRecordParam();
+        updateParam.setDbName(SOURCE_DB);
+        updateParam.setTableName(TABLE);
+        updateParam.setRecord(record.getOriginalRecordData());
+        updateParam.setUpdateRecord(record.getChangedRecordData());
+        updateParam.setPrimaryKey(primaryKey);
+        assertEquals(1, sourceClient.updateRecord(updateParam));
+
+        MysqlRecord updated = loadSingle(sourceClient, SOURCE_DB, TABLE, id);
+        assertEquals(JSONUtil.parseObject(edited.toString()),
+                JSONUtil.parseObject(updated.getValue("c_json").toString()));
     }
 
     @Test
