@@ -143,11 +143,11 @@ public class ShellSqliteClientTest {
                         + "date_value DATE, time_value TIME, datetime_value DATETIME, "
                         + "boolean_value BOOLEAN, json_value JSON);"));
         SQLiteExecuteResult typedResult = client.executeSingleSql("SELECT * FROM jdbc_types");
-        assertEquals("TEXT", typedResult.getColumns().column("text_value").getType());
+        assertEquals("VARCHAR", typedResult.getColumns().column("text_value").getType());
         assertEquals(Integer.valueOf(20), typedResult.getColumns().column("text_value").getSize());
-        assertEquals("INTEGER", typedResult.getColumns().column("integer_value").getType());
-        assertEquals("REAL", typedResult.getColumns().column("real_value").getType());
-        assertEquals("NUMERIC", typedResult.getColumns().column("numeric_value").getType());
+        assertEquals("BIGINT", typedResult.getColumns().column("integer_value").getType());
+        assertEquals("DOUBLE", typedResult.getColumns().column("real_value").getType());
+        assertEquals("DECIMAL", typedResult.getColumns().column("numeric_value").getType());
         assertEquals("BLOB", typedResult.getColumns().column("blob_value").getType());
         assertEquals("DATE", typedResult.getColumns().column("date_value").getType());
         assertEquals("TIME", typedResult.getColumns().column("time_value").getType());

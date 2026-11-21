@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Struct;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -288,6 +289,13 @@ public final class ShellSqliteDataUtil {
         if (value == null) {
             return null;
         }
+        if (ShellSqliteColumnUtil.isBlobType(column.getType())
+                && value instanceof CharSequence text) {
+            byte[] bytes = parseBlobLiteral(text.toString());
+            if (bytes != null) {
+                return bytes;
+            }
+        }
         String text = String.valueOf(value);
         if (text.isEmpty()) {
             return "";
@@ -314,6 +322,28 @@ public final class ShellSqliteDataUtil {
             }
         }
         return value;
+    }
+
+    private static byte[] parseBlobLiteral(String value) {
+        String text = value.trim();
+        String hex = null;
+        if (text.length() >= 3
+                && (text.startsWith("X'") || text.startsWith("x'"))
+                && text.endsWith("'")) {
+            hex = text.substring(2, text.length() - 1);
+        } else if (text.length() > 2
+                && (text.startsWith("0x") || text.startsWith("0X"))) {
+            hex = text.substring(2);
+        }
+        if (hex == null || (hex.length() & 1) != 0
+                || !hex.matches("[0-9a-fA-F]*")) {
+            return null;
+        }
+        try {
+            return HexFormat.of().parseHex(hex);
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 
     public static String formatValue(Object value, SQLiteColumn column) {

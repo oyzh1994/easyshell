@@ -54,6 +54,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -848,7 +849,11 @@ public class ShellSqliteArchitectureTest {
     @Test
     public void testFxmlResourcesAreWellFormed() throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        try {
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        } catch (ParserConfigurationException ignored) {
+            // Oracle JAXP in the runtime classpath does not expose this Xerces feature.
+        }
         factory.setExpandEntityReferences(false);
         for (String resource : FXML_RESOURCES) {
             try (InputStream input = ShellSqliteArchitectureTest.class.getResourceAsStream(resource)) {

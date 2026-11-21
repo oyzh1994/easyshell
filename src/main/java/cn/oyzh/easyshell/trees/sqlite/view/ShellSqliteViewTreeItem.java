@@ -133,7 +133,8 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
      * @return 视图列信息
      */
     public SQLiteColumns viewColumns() {
-        this.value.setColumns(new SQLiteColumns(this.client().selectColumns(this.viewName())));
+        this.value.setColumns(new SQLiteColumns(
+                this.client().viewColumns(this.dbName(), this.viewName())));
         return this.value.getColumns();
     }
 

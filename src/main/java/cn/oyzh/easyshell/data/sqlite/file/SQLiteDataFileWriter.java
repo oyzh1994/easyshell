@@ -68,8 +68,7 @@ public class SQLiteDataFileWriter implements AutoCloseable {
             case "csv", "txt" -> {
                 this.delegate = null;
                 this.sqlWriter = null;
-                this.csvWriter = new CsvFileWriter(filePath, config,
-                        "txt".equals(this.fileType) ? config.getFieldSeparator() : ",");
+                this.csvWriter = new CsvFileWriter(filePath, config, config.getFieldSeparator());
             }
             case "json" -> {
                 this.delegate = new JsonTypeFileWriter(config, fileColumns);

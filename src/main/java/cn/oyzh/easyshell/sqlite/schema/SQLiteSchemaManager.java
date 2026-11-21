@@ -170,7 +170,7 @@ public class SQLiteSchemaManager {
                     .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), sourceName))
                     .findFirst()
                     .orElse(null);
-            if (sourceColumn == null || sourceColumn.isGenerated()) {
+            if (sourceColumn == null) {
                 continue;
             }
             copyTargetColumns.add(SQLiteGeneratorUtil.quote(column.getName()));

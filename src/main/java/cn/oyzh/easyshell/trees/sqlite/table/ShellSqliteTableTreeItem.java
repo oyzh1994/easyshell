@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.sqlite.ShellSqliteEventUtil;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
+import cn.oyzh.easyshell.sqlite.column.SQLiteSelectColumnParam;
 import cn.oyzh.easyshell.sqlite.record.SQLiteDeleteRecordParam;
 import cn.oyzh.easyshell.sqlite.record.SQLiteInsertRecordParam;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
@@ -140,7 +141,8 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
      */
     public SQLiteColumns columns() {
         // 表结构可能被设计器、终端或 SQL 修改，字段列表必须实时读取，避免记录页继续显示旧字段
-        this.columns = new SQLiteColumns(this.client().selectColumns(this.tableName()));
+        this.columns = new SQLiteColumns(this.client().selectColumns(
+                new SQLiteSelectColumnParam(this.dbName(), this.tableName())));
         return this.columns;
     }
 

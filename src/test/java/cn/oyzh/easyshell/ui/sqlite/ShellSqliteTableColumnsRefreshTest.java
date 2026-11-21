@@ -3,8 +3,12 @@ package cn.oyzh.easyshell.ui.sqlite;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
+import cn.oyzh.easyshell.sqlite.record.SQLiteRecordProperty;
 import cn.oyzh.easyshell.trees.sqlite.ShellSqliteTreeView;
 import cn.oyzh.easyshell.trees.sqlite.table.ShellSqliteTableTreeItem;
+import cn.oyzh.fx.db.listener.DBStatusListener;
+import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import javafx.application.Platform;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
@@ -74,6 +79,66 @@ public class ShellSqliteTableColumnsRefreshTest {
             assertTrue("Table columns refresh test timed out", done.await(20, TimeUnit.SECONDS));
             if (error.get() != null) {
                 throw new AssertionError("Table columns refresh test failed", error.get());
+            }
+        } finally {
+            client.close();
+            Files.deleteIfExists(file);
+        }
+    }
+
+    @Test
+    public void tableRecordEditTriggersChangeListener() throws Throwable {
+        Path file = Files.createTempFile("easyshell-sqlite-record-change-", ".db");
+        Files.delete(file);
+        ShellSqliteClient client = this.client(file);
+        client.start();
+        try {
+            client.executeSqlSimple("CREATE TABLE item (id INTEGER PRIMARY KEY, name TEXT)");
+            client.executeSqlSimple("INSERT INTO item(id, name) VALUES (1, 'before')");
+
+            AtomicReference<Throwable> error = new AtomicReference<>();
+            CountDownLatch done = new CountDownLatch(1);
+            Platform.runLater(() -> {
+                DBStatusListener listener = null;
+                try {
+                    ShellSqliteTreeView treeView = new ShellSqliteTreeView();
+                    treeView.setClient(client);
+                    treeView.root().loadChild();
+                    ShellSqliteTableTreeItem item = treeView.findTableItem("item");
+                    assertNotNull(item);
+
+                    SQLiteRecord record = item.recordPage(
+                            0L, 10L, null, item.columns()).dataList().getFirst();
+                    SQLiteRecordProperty property =
+                            (SQLiteRecordProperty) record.getProperty("name");
+                    assertEquals("main", property.getColumn().getDbName());
+
+                    AtomicBoolean changed = new AtomicBoolean();
+                    listener = new DBStatusListener("main:item") {
+                        @Override
+                        public void changed(javafx.beans.value.ObservableValue<?> observable,
+                                            Object oldValue, Object newValue) {
+                            changed.set(true);
+                        }
+                    };
+                    FXTextField textField = (FXTextField) property.getValue();
+                    textField.setValue("after");
+
+                    assertTrue("editing a table cell must enable the apply action", changed.get());
+                    assertTrue(record.isChanged());
+                    assertEquals("after", property.get());
+                } catch (Throwable ex) {
+                    error.set(ex);
+                } finally {
+                    if (listener != null) {
+                        listener.destroy();
+                    }
+                    done.countDown();
+                }
+            });
+            assertTrue("Table record change test timed out", done.await(20, TimeUnit.SECONDS));
+            if (error.get() != null) {
+                throw new AssertionError("Table record change test failed", error.get());
             }
         } finally {
             client.close();

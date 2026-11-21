@@ -42,7 +42,8 @@ public class ShellSqliteUtilTest {
         assertEquals("DATE", ShellSqliteColumnUtil.normalizeJdbcType(Types.DATE));
         assertEquals("TIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIME));
         assertEquals("DATETIME", ShellSqliteColumnUtil.normalizeJdbcType(Types.TIMESTAMP));
-        assertEquals("JSON", ShellSqliteColumnUtil.normalizeJdbcType(Types.OTHER));
+        assertEquals("JSON", ShellSqliteColumnUtil.normalizeJdbcType("JSON"));
+        assertEquals("ANY", ShellSqliteColumnUtil.normalizeJdbcType(Types.OTHER));
         assertEquals("ANY", ShellSqliteColumnUtil.normalizeJdbcType(Types.NULL));
 
         assertEquals(Integer.valueOf(20), ShellSqliteColumnUtil.normalizeJdbcSize("VARCHAR(20)"));
