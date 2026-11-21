@@ -652,6 +652,7 @@ public class ChatController extends SubStageController {
                     }
                     String thinking = LLMResponseUtil.finalThinking(response);
                     String finalText = LLMResponseUtil.finalText(response);
+                    placeholder.finishThinking();
                     this.view.replaceThinking(placeholder, thinking == null ? "" : thinking);
                     this.view.replaceMessage(placeholder, finalText == null ? "" : finalText);
                     if (finalText == null) {
@@ -666,6 +667,7 @@ public class ChatController extends SubStageController {
                         return;
                     }
                     JulLog.error("llm error", ex);
+                    placeholder.finishThinking();
                     this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
                     this.finishRequest(request, true);
                 }
@@ -705,6 +707,7 @@ public class ChatController extends SubStageController {
                         return;
                     }
                     if (firstResponse.getAndSet(false)) {
+                        placeholder.finishThinking();
                         this.view.replaceMessage(placeholder, token);
                     } else {
                         this.view.appendMessage(placeholder, token);
@@ -785,6 +788,7 @@ public class ChatController extends SubStageController {
                                 return;
                             }
                             if (firstResponse.getAndSet(false)) {
+                                placeholder.finishThinking();
                                 view.replaceMessage(placeholder, text);
                             } else {
                                 view.appendMessage(placeholder, text);
@@ -816,6 +820,7 @@ public class ChatController extends SubStageController {
                 return;
             }
             JulLog.error("llm agent error", ex);
+            placeholder.finishThinking();
             this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
             this.finishRequest(request, true);
         }
@@ -840,6 +845,7 @@ public class ChatController extends SubStageController {
             if (!this.isRequestActive(request)) {
                 return;
             }
+            placeholder.finishThinking();
             this.view.flushMessageUpdates();
             String finalText = LLMResponseUtil.finalText(response);
             String mergedThinking = LLMResponseUtil.mergeThinking(
@@ -887,6 +893,7 @@ public class ChatController extends SubStageController {
         if (message == null) {
             return;
         }
+        message.finishThinking();
         this.view.flushMessageUpdates();
         String text = message.getMessage();
         if (text == null || text.isBlank() || Objects.equals(text, ShellI18nHelper.thinkingPlaceholder())) {

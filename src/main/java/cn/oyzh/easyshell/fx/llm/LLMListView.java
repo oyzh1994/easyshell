@@ -388,6 +388,21 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.scheduleMessageLayoutRefresh();
     }
 
+    /**
+     * 折叠状态改变后重新测量消息单元格。
+     */
+    void refreshMessageLayoutForFold(LLMMessageCell cell) {
+        if (this.getSkin() instanceof LLMListViewSkin skin) {
+            skin.refreshCellLayout(cell);
+        } else if (cell != null) {
+            cell.requestLayout();
+        }
+        this.requestLayout();
+        if (this.autoScroll && !this.userScrolling) {
+            this.scheduleScrollToBottom();
+        }
+    }
+
     private void flushPendingAppends() {
         boolean shouldScroll = this.autoScroll && !this.userScrolling;
         boolean updated = false;

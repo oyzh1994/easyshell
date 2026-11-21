@@ -4,8 +4,10 @@ import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.editor.incubator.EditorFold;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -19,6 +21,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class LLMMessageCell extends ListCell<LLMMessage> {
 
@@ -67,6 +71,12 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.refreshText();
     };
 
+    /**
+     * 思考链折叠状态变更监听
+     */
+    private final ChangeListener<Boolean> thinkingCollapsedListener =
+            (observable, oldValue, newValue) -> this.refreshText();
+
     public LLMMessageCell(BooleanProperty thinkingVisible) {
         this.thinkingVisible = thinkingVisible;
         this.getStyleClass().add("llm-message-cell");
@@ -95,6 +105,21 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.text.measurementWidthProperty().bind(this.text.maxWidthProperty());
         this.text.maxWidthProperty().bind(Bindings.max(40, this.bubble.maxWidthProperty().subtract(28)));
         this.text.maxWidthProperty().addListener((observable, oldValue, newValue) -> this.requestLayout());
+        this.text.setFoldChangeHandler(folds -> {
+            Map<String, Boolean> states = new HashMap<>();
+            for (EditorFold fold : folds) {
+                states.put(fold.id(), fold.collapsed());
+            }
+            if (this.boundMessage != null) {
+                this.boundMessage.setThinkingFoldStates(states);
+            }
+            FXUtil.runLater(() -> {
+                this.requestLayout();
+                if (this.getListView() instanceof LLMListView listView) {
+                    listView.refreshMessageLayoutForFold(this);
+                }
+            });
+        });
 
         this.attachment.getStyleClass().add("llm-bubble-attachment");
         this.attachment.setWrapText(true);
@@ -133,9 +158,14 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
             this.boundMessage.messageProperty().removeListener(this.messageListener);
             this.boundMessage.thinkingProperty().removeListener(this.thinkingListener);
             this.boundMessage.agentTraceProperty().removeListener(this.agentTraceListener);
+            this.boundMessage.thinkingCollapsedProperty()
+                    .removeListener(this.thinkingCollapsedListener);
             this.boundMessage = null;
+            this.text.resetFoldState();
         }
         if (empty || item == null) {
+            this.text.resetFoldState();
+            this.text.setFoldStates(Map.of());
             this.text.setMessageNow("", EditorFormatType.RAW);
             this.text.setManaged(false);
             this.text.setVisible(false);
@@ -168,8 +198,12 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         item.thinkingProperty().addListener(this.thinkingListener);
         item.agentTraceProperty().removeListener(this.agentTraceListener);
         item.agentTraceProperty().addListener(this.agentTraceListener);
+        item.thinkingCollapsedProperty().removeListener(this.thinkingCollapsedListener);
+        item.thinkingCollapsedProperty().addListener(this.thinkingCollapsedListener);
         this.boundMessage = item;
-        this.text.setMessageNow(this.displayText(item), this.messageFormat(item));
+        this.text.setFoldStates(item.getThinkingFoldStates());
+        this.text.setMessageNow(this.displayText(item), this.messageFormat(item),
+                item.isThinkingCollapsed());
         this.updateTextVisibility(this.text.getText());
 
         File file = item.getFile();
@@ -209,7 +243,9 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         LLMMessage item = this.getItem();
         if (item != null) {
             String displayText = this.displayText(item);
-            this.text.setMessage(displayText, this.messageFormat(item));
+            this.text.setFoldStates(item.getThinkingFoldStates());
+            this.text.setMessage(displayText, this.messageFormat(item),
+                    item.isThinkingCollapsed());
             this.updateTextVisibility(displayText);
         } else {
             this.updateTextVisibility("");

@@ -2,10 +2,16 @@ package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -107,6 +113,107 @@ public class LLMListViewAgentTraceInlineTest {
             waitForPulse();
             assertTrue(findStyledView(context.listView(), 0, "llm-bubble-text-assistant")
                     .getText().contains("private reasoning"));
+        } finally {
+            TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    @Test
+    public void finishedThinkingCollapsesAndCanBeExpandedInline() {
+        startToolkit();
+        AtomicReference<TestContext> contextRef = new AtomicReference<>();
+        runFxAndWait(() -> {
+            LLMListView listView = new LLMListView();
+            LLMMessage message = LLMMessage.llm("visible answer");
+            message.setThinking("private reasoning");
+            listView.addMessage(message);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(new StackPane(listView), 560, 320));
+            stage.show();
+            contextRef.set(new TestContext(stage, null, listView));
+        });
+        try {
+            waitForPulse();
+            LLMListView listView = contextRef.get().listView();
+            LLMMessage message = listView.getItems().getFirst();
+            runFxAndWait(message::finishThinking);
+            waitForPulse();
+
+            LLMMessageView collapsed = findStyledView(
+                    listView, 0, "llm-bubble-text-assistant");
+            assertFalse(collapsed.getText().contains("private reasoning"));
+            assertTrue(collapsed.getText().contains("visible answer"));
+            assertTrue(collapsed.getFolds().getFirst().collapsed());
+            double collapsedHeight = collapsed.getHeight();
+            HBox header = runFx(() -> (HBox) collapsed.lookup(".editor-fold-header"));
+            assertTrue("fold header not found, folds=" + collapsed.getFolds()
+                    + ", text=" + collapsed.getText()
+                    + ", content=" + runFx(() -> ((cn.oyzh.fx.editor.incubator.EditorSkin)
+                    collapsed.getSkin()).getVFlow().getCell(0).getContent().getClass()), header != null);
+            Label title = (Label) header.lookup(".editor-fold-title");
+            assertTrue(title != null);
+            assertTrue(ShellI18nHelper.thinkingLabel().equals(title.getText()));
+
+            runFxAndWait(() -> Event.fireEvent(header, new MouseEvent(
+                    MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0,
+                    MouseButton.PRIMARY, 1,
+                    false, false, false, false, true, false, false,
+                    true, false, true, null)));
+            assertFalse("fold header handler did not toggle the fold",
+                    collapsed.getFolds().getFirst().collapsed());
+            for (int i = 0; i < 4; i++) {
+                waitForPulse();
+            }
+
+            LLMMessageView expanded = findStyledView(
+                    listView, 0, "llm-bubble-text-assistant");
+            assertSame("fold toggle recreated the message editor", collapsed, expanded);
+            assertTrue("expanded fold did not render thinking, folds=" + expanded.getFolds()
+                    + ", text=" + expanded.getText(),
+                    expanded.getText().contains("private reasoning"));
+            assertTrue(expanded.getText().contains("visible answer"));
+            assertFalse(expanded.getText().contains("**回答**"));
+            assertFalse(expanded.getFolds().getFirst().collapsed());
+            assertTrue("editor height did not expand: collapsed=" + collapsedHeight
+                            + ", expanded=" + expanded.getHeight()
+                            + ", pref=" + expanded.prefHeight(expanded.getWidth()),
+                    expanded.getHeight() > collapsedHeight);
+        } finally {
+            TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    @Test
+    public void finishedAgentThinkingCollapsesWhileResultsRemainVisible() {
+        startToolkit();
+        AtomicReference<TestContext> contextRef = new AtomicReference<>();
+        runFxAndWait(() -> contextRef.set(createContext()));
+        try {
+            waitForPulse();
+            TestContext context = contextRef.get();
+            LLMMessage message = context.listView().getItems().getFirst();
+            runFxAndWait(message::finishThinking);
+            waitForPulse();
+
+            LLMMessageView content = findStyledView(
+                    context.listView(), 0, "llm-bubble-text-assistant");
+            assertFalse(content.getText().contains("step thinking"));
+            assertTrue(content.getText().contains("step result"));
+            assertTrue(content.getText().contains("final answer"));
+            assertFalse(content.getText().contains("**结果**"));
+            assertTrue(content.getFolds().getFirst().collapsed());
+            assertTrue("fold header not found, text=" + content.getText(),
+                    runFx(() -> content.lookup(".editor-fold-header") != null));
+            assertTrue(runFx(() -> content.lookupAll(".editor-block-heading").stream()
+                    .anyMatch(node -> node instanceof Label label
+                            && I18nResourceBundle.i18nString("shell.llm.agent.trace.result")
+                            .equals(label.getText()))));
         } finally {
             TestContext context = contextRef.get();
             if (context != null) {

@@ -139,6 +139,7 @@ public final class LLMSessionUtil {
             item.setTime(message.getTime());
             item.setMessage(message.getMessage());
             item.setThinking(message.getThinking());
+            item.setThinkingCollapsed(message.isThinkingCollapsed());
             item.setAgentTrace(message.getAgentTrace());
             item.setModel(message.getModel());
             item.setSessionTabId(message.getSessionTabId());
@@ -177,6 +178,10 @@ public final class LLMSessionUtil {
                 }
                 message.setMessage(item.getMessage());
                 message.setThinking(item.getThinking());
+                message.setThinkingCollapsed(item.getThinkingCollapsed() != null
+                        ? item.getThinkingCollapsed()
+                        : StringUtil.isNotBlank(item.getThinking())
+                        || StringUtil.isNotBlank(item.getAgentTrace()));
                 message.setAgentTrace(item.getAgentTrace());
                 message.setModel(item.getModel());
                 message.setSessionTabId(item.getSessionTabId());

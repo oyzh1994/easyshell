@@ -27,6 +27,17 @@ public final class LLMListViewSkin extends ListViewSkin<LLMMessage> {
         }
     }
 
+    /**
+     * 重新测量指定单元格。
+     *
+     * @param cell 单元格
+     */
+    public void refreshCellLayout(ListCell<LLMMessage> cell) {
+        if (this.messageFlow != null) {
+            this.messageFlow.refreshCellLayout(cell);
+        }
+    }
+
     public ScrollBar getVerticalScrollBar() {
         return this.messageFlow == null ? null : this.messageFlow.getVerticalScrollBar();
     }

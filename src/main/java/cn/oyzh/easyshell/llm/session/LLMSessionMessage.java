@@ -20,6 +20,8 @@ public class LLMSessionMessage {
 
     private String thinking;
 
+    private Boolean thinkingCollapsed;
+
     private String agentTrace;
 
     private String filePath;
@@ -66,6 +68,14 @@ public class LLMSessionMessage {
 
     public void setThinking(String thinking) {
         this.thinking = thinking;
+    }
+
+    public Boolean getThinkingCollapsed() {
+        return thinkingCollapsed;
+    }
+
+    public void setThinkingCollapsed(Boolean thinkingCollapsed) {
+        this.thinkingCollapsed = thinkingCollapsed;
     }
 
     public String getAgentTrace() {

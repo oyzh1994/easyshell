@@ -40,6 +40,7 @@ public class LLMSessionUtilTest {
         answer.setMessageId("llm-1");
         answer.setMessage("附件内容很少");
         answer.setThinking("先检查附件内容。");
+        answer.setThinkingCollapsed(true);
         answer.setAgentTrace("### Worker 1\n\n检查完成。");
         answer.setModel("test-model");
 
@@ -54,6 +55,7 @@ public class LLMSessionUtilTest {
         assertEquals(LLMMessageType.LLM, messages.get(1).getType());
         assertEquals(1700000000000L, messages.get(1).getTime());
         assertEquals("先检查附件内容。", messages.get(1).getThinking());
+        assertTrue(messages.get(1).isThinkingCollapsed());
         assertEquals("### Worker 1\n\n检查完成。", messages.get(1).getAgentTrace());
         assertEquals("test-model", messages.get(1).getModel());
     }

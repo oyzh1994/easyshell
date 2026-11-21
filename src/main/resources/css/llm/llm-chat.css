@@ -120,6 +120,50 @@
     -fx-padding: 0;
 }
 
+.editor-block-header,
+.editor-block-heading {
+    -fx-padding: 3 0 6 0;
+}
+
+.editor-block-heading {
+    -fx-text-fill: -llm-muted;
+    -fx-font-weight: bold;
+}
+
+.editor-block-heading-major {
+    -fx-padding: 6 0 4 0;
+    -fx-text-fill: -llm-text;
+    -fx-font-size: 1.04em;
+}
+
+.editor-block-heading-section {
+    -fx-opacity: 0.9;
+}
+
+.editor-fold-header {
+    -fx-opacity: 0.82;
+}
+
+.editor-fold-header:hover {
+    -fx-opacity: 1;
+}
+
+.editor-fold-arrow {
+    -fx-text-fill: -llm-accent;
+    -fx-font-size: 0.82em;
+}
+
+.editor-fold-title {
+    -fx-text-fill: -llm-muted;
+    -fx-font-weight: bold;
+}
+
+.editor-fold-hidden {
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
 .llm-message-text,
 .llm-message-text.rich-text-area,
 .llm-message-text.code-area {

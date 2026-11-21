@@ -2,7 +2,9 @@ package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.common.util.UUIDUtil;
 import cn.oyzh.fx.plus.util.FXUtil;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,6 +13,8 @@ import java.io.File;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LLMMessage {
 
@@ -25,6 +29,12 @@ public class LLMMessage {
     private final StringProperty message = new SimpleStringProperty("");
 
     private final StringProperty thinking = new SimpleStringProperty("");
+
+    private final BooleanProperty thinkingCollapsed = new SimpleBooleanProperty(false);
+
+    private transient boolean thinkingFinished;
+
+    private transient Map<String, Boolean> thinkingFoldStates = new HashMap<>();
 
     private final StringProperty agentTrace = new SimpleStringProperty("");
 
@@ -129,6 +139,53 @@ public class LLMMessage {
 
     public StringProperty thinkingProperty() {
         return thinking;
+    }
+
+    /**
+     * 思考链是否已折叠。
+     *
+     * @return 是否已折叠
+     */
+    public boolean isThinkingCollapsed() {
+        return this.thinkingCollapsed.get();
+    }
+
+    public void setThinkingCollapsed(boolean collapsed) {
+        this.thinkingCollapsed.set(collapsed);
+    }
+
+    public BooleanProperty thinkingCollapsedProperty() {
+        return this.thinkingCollapsed;
+    }
+
+    /**
+     * 将首次结束的思考链标记为折叠，后续用户展开操作不会被覆盖。
+     */
+    public synchronized void finishThinking() {
+        if (!this.thinkingFinished) {
+            this.thinkingFinished = true;
+            FXUtil.runLater(() -> this.thinkingCollapsed.set(true));
+        }
+    }
+
+    /**
+     * 获取思考链折叠状态。
+     *
+     * @return 折叠状态
+     */
+    public Map<String, Boolean> getThinkingFoldStates() {
+        return Map.copyOf(this.thinkingFoldStates);
+    }
+
+    /**
+     * 设置思考链折叠状态。
+     *
+     * @param states 折叠状态
+     */
+    public void setThinkingFoldStates(Map<String, Boolean> states) {
+        this.thinkingFoldStates = states == null
+                ? new HashMap<>()
+                : new HashMap<>(states);
     }
 
     public void appendThinking(String thinking) {

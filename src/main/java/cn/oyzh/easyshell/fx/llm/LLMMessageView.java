@@ -1,15 +1,21 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.editor.incubator.EditorFold;
+import cn.oyzh.fx.editor.incubator.EditorHeading;
 import cn.oyzh.fx.editor.incubator.EditorSkin;
 import cn.oyzh.fx.editor.incubator.EditorSyntaxAsyncStrategy;
 import cn.oyzh.fx.editor.incubator.EditorSyntaxDecorator;
 import cn.oyzh.fx.editor.incubator.EditorSyntaxStrategy;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
+import cn.oyzh.fx.plus.theme.ThemeManager;
+import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
 import cn.oyzh.i18n.I18nHelper;
+import cn.oyzh.i18n.I18nResourceBundle;
 import com.sun.jfx.incubator.scene.control.richtext.VFlow;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -19,12 +25,15 @@ import javafx.scene.Parent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Border;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * 只读消息视图，基于 {@link Editor}，支持选择、复制、语法高亮与表情符号。
@@ -37,6 +46,10 @@ import java.util.List;
  * @since 2026-11-06
  */
 public final class LLMMessageView extends Editor {
+
+    private static final Color THINKING_LIGHT_COLOR = Color.web("#6E7781");
+
+    private static final Color THINKING_DARK_COLOR = Color.web("#8B949E");
 
     /**
      * 默认高度
@@ -79,6 +92,11 @@ public final class LLMMessageView extends Editor {
     private EditorFormatType pendingFormat;
 
     /**
+     * 是否折叠已结束的思考链
+     */
+    private boolean pendingThinkingCollapsed;
+
+    /**
      * 内容更新是否已调度
      */
     private boolean updateScheduled;
@@ -87,6 +105,16 @@ public final class LLMMessageView extends Editor {
      * 高度修正是否已调度
      */
     private boolean refineScheduled;
+
+    /**
+     * 折叠状态变化处理器
+     */
+    private Consumer<List<EditorFold>> foldChangeHandler;
+
+    /**
+     * 外部提供的折叠状态
+     */
+    private Map<String, Boolean> foldStates = Map.of();
 
     public LLMMessageView() {
         this.getStyleClass().add("llm-message-text");
@@ -118,15 +146,27 @@ public final class LLMMessageView extends Editor {
      * @param formatType 内容格式
      */
     public void setMessage(String text, EditorFormatType formatType) {
+        this.setMessage(text, formatType, false);
+    }
+
+    /**
+     * 设置消息内容。
+     *
+     * @param text              消息内容
+     * @param formatType        内容格式
+     * @param thinkingCollapsed 是否折叠已结束的思考链
+     */
+    public void setMessage(String text, EditorFormatType formatType, boolean thinkingCollapsed) {
         this.pendingText = text == null ? "" : text;
         this.pendingFormat = formatType == null ? EditorFormatType.RAW : formatType;
+        this.pendingThinkingCollapsed = thinkingCollapsed;
         if (this.updateScheduled) {
             return;
         }
         this.updateScheduled = true;
         Platform.runLater(() -> {
             this.updateScheduled = false;
-            this.applyMessage();
+            this.applyMessage(true);
         });
     }
 
@@ -137,16 +177,29 @@ public final class LLMMessageView extends Editor {
      * @param formatType 内容格式
      */
     public void setMessageNow(String text, EditorFormatType formatType) {
+        this.setMessageNow(text, formatType, false);
+    }
+
+    /**
+     * 立即设置消息内容，用于单元格首次显示。
+     *
+     * @param text              消息内容
+     * @param formatType        内容格式
+     * @param thinkingCollapsed 是否折叠已结束的思考链
+     */
+    public void setMessageNow(String text, EditorFormatType formatType,
+                              boolean thinkingCollapsed) {
         this.pendingText = text == null ? "" : text;
         this.pendingFormat = formatType == null ? EditorFormatType.RAW : formatType;
+        this.pendingThinkingCollapsed = thinkingCollapsed;
         this.updateScheduled = false;
-        this.applyMessage();
+        this.applyMessage(false);
     }
 
     /**
      * 应用待更新消息
      */
-    private void applyMessage() {
+    private void applyMessage(boolean notifyFoldChanges) {
         String text = this.pendingText == null ? "" : this.pendingText;
         EditorFormatType formatType = this.pendingFormat == null ? EditorFormatType.RAW : this.pendingFormat;
         if (StringUtil.equals(text, this.getText())) {
@@ -156,16 +209,136 @@ public final class LLMMessageView extends Editor {
         } else {
             this.showData(text, formatType);
         }
+        this.applyThinkingFolds(text, this.pendingThinkingCollapsed, notifyFoldChanges);
         this.invalidateSize();
+    }
+
+    /**
+     * 设置折叠状态变化处理器。
+     *
+     * @param handler 处理器
+     */
+    public void setFoldChangeHandler(Consumer<List<EditorFold>> handler) {
+        this.foldChangeHandler = handler;
+    }
+
+    /**
+     * 设置外部折叠状态。
+     *
+     * @param states 折叠状态
+     */
+    public void setFoldStates(Map<String, Boolean> states) {
+        this.foldStates = states == null ? Map.of() : Map.copyOf(states);
+    }
+
+    /**
+     * 根据思考链标题计算可折叠段落。
+     *
+     * @param text      消息内容
+     * @param collapsed 是否折叠
+     */
+    private void applyThinkingFolds(String text, boolean collapsed, boolean notifyFoldChanges) {
+        // 流式思考期间保持普通富文本渲染，避免每个 token 都扫描全文。
+        // 思考结束后才建立折叠区块，并在这里按标识保留用户的展开选择。
+        if (!collapsed || text == null || text.isBlank()) {
+            this.updateBlocks(List.of(), List.of(), notifyFoldChanges);
+            return;
+        }
+        String thinkingHeader = "**" + ShellI18nHelper.thinkingLabel() + "**";
+        String resultHeader = "**" + I18nResourceBundle.i18nString(
+                "shell.llm.agent.trace.result") + "**";
+        String errorHeader = "**" + I18nResourceBundle.i18nString(
+                "shell.llm.agent.trace.error") + "**";
+        String answerHeader = "**" + ShellI18nHelper.answerLabel() + "**";
+        String[] lines = text.split("\\R", -1);
+        List<EditorHeading> headings = new ArrayList<>();
+        List<EditorFold> folds = new ArrayList<>();
+        int foldIndex = 0;
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].strip();
+            if (line.startsWith("### ") && line.length() > 4) {
+                headings.add(new EditorHeading(i, line.substring(4).strip(),
+                        "editor-block-heading-major"));
+            } else if (line.length() > 4 && line.startsWith("**") && line.endsWith("**")) {
+                headings.add(new EditorHeading(i,
+                        line.substring(2, line.length() - 2).strip(),
+                        "editor-block-heading-section"));
+            }
+        }
+        for (int start = 0; start < lines.length; start++) {
+            if (!thinkingHeader.equals(lines[start].strip())) {
+                continue;
+            }
+            int end = lines.length - 1;
+            for (int next = start + 1; next < lines.length; next++) {
+                String line = lines[next].strip();
+                if (resultHeader.equals(line) || errorHeader.equals(line)
+                        || answerHeader.equals(line) || "---".equals(line)
+                        || line.startsWith("### ")) {
+                    end = next - 1;
+                    break;
+                }
+            }
+            String id = "thinking-collapsed-" + foldIndex++;
+            boolean foldCollapsed = this.foldStates.getOrDefault(id, collapsed);
+            folds.add(new EditorFold(id, start, Math.max(start, end),
+                    ShellI18nHelper.thinkingLabel(), foldCollapsed, thinkingColor()));
+            start = end;
+        }
+        this.updateBlocks(headings, folds, notifyFoldChanges);
+    }
+
+    /**
+     * 获取思考链正文颜色。
+     *
+     * @return 思考链正文颜色
+     */
+    private static Color thinkingColor() {
+        return ThemeManager.isDarkMode() ? THINKING_DARK_COLOR : THINKING_LIGHT_COLOR;
+    }
+
+    @Override
+    public void changeTheme(ThemeStyle style) {
+        super.changeTheme(style);
+        if (this.pendingText != null) {
+            this.applyThinkingFolds(this.pendingText,
+                    this.pendingThinkingCollapsed, false);
+        }
+    }
+
+    /**
+     * 更新标题与折叠配置，并在可见范围变化时通知父列表重新测量单元格。
+     *
+     * @param headings 段落标题
+     * @param folds 折叠配置
+     */
+    private void updateBlocks(List<EditorHeading> headings,
+                              List<EditorFold> folds,
+                              boolean notifyFoldChanges) {
+        List<EditorFold> previous = this.getFolds();
+        this.setBlocks(headings, folds);
+        if (notifyFoldChanges && !previous.equals(this.getFolds())
+                && this.foldChangeHandler != null) {
+            this.foldChangeHandler.accept(this.getFolds());
+        }
     }
 
     /**
      * 重置测量结果
      */
-    private void invalidateSize() {
+    protected void invalidateSize() {
         this.measuredWidth = -1;
         this.measuredPrefWidth = -1;
         this.requestLayout();
+    }
+
+    @Override
+    public void toggleFold(String id) {
+        super.toggleFold(id);
+        this.invalidateSize();
+        if (this.foldChangeHandler != null) {
+            this.foldChangeHandler.accept(this.getFolds());
+        }
     }
 
     /**
@@ -186,6 +359,9 @@ public final class LLMMessageView extends Editor {
         double max = 0;
         int count = this.getParagraphCount();
         for (int i = 0; i < count; i++) {
+            if (this.isHiddenFoldBody(i)) {
+                continue;
+            }
             String line = this.getModel().getPlainText(i);
             if (line.isEmpty()) {
                 continue;
@@ -231,12 +407,27 @@ public final class LLMMessageView extends Editor {
         double total = 0;
         int count = this.getParagraphCount();
         for (int i = 0; i < count; i++) {
+            if (this.isHiddenFoldBody(i)) {
+                continue;
+            }
             String line = this.getModel().getPlainText(i);
             measurer.setText(line.isEmpty() ? " " : line);
             measurer.setWrappingWidth(contentWidth);
             total += this.snapSizeY(measurer.getLayoutBounds().getHeight());
         }
         return total + this.snapSizeY(2);
+    }
+
+    /**
+     * 判断段落是否属于已折叠正文。
+     *
+     * @param paragraphIndex 段落索引
+     * @return 是否隐藏
+     */
+    private boolean isHiddenFoldBody(int paragraphIndex) {
+        return this.getFolds().stream().anyMatch(fold -> fold.collapsed()
+                && paragraphIndex > fold.startParagraph()
+                && paragraphIndex <= fold.endParagraph());
     }
 
     /**
