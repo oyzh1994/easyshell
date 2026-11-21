@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 public class ShellPostgresqlUtil {
 
-    public static boolean ENABLE_PRINT_METADATA = true;
+//    public static boolean ENABLE_PRINT_METADATA = true;
 
     /**
      * INSERT目标表
@@ -208,51 +208,51 @@ public class ShellPostgresqlUtil {
                 || StringUtil.startWithIgnoreCase(dbName, "PG_TOAST_TEMP_");
     }
 
-    /**
-     * 打印元数据
-     *
-     * @param resultSet 结果集
-     * @throws SQLException 异常
-     */
-    public static void printMetaData(ResultSet resultSet) throws SQLException {
-        if (ENABLE_PRINT_METADATA) {
-            // 获取结果集元数据
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            // 获取列数
-            int columnCount = metaData.getColumnCount();
-            // 遍历结果集并输出列名
-            for (int i = 1; i <= columnCount; i++) {
-                // 获取列名
-                String columnName = metaData.getColumnName(i);
-                JulLog.info("Column Name: {}", columnName);
-            }
-            JulLog.info("printMetaData======================>");
-        }
-    }
+//    /**
+//     * 打印元数据
+//     *
+//     * @param resultSet 结果集
+//     * @throws SQLException 异常
+//     */
+//    public static void printMetaData(ResultSet resultSet) throws SQLException {
+//        if (ENABLE_PRINT_METADATA) {
+//            // 获取结果集元数据
+//            ResultSetMetaData metaData = resultSet.getMetaData();
+//            // 获取列数
+//            int columnCount = metaData.getColumnCount();
+//            // 遍历结果集并输出列名
+//            for (int i = 1; i <= columnCount; i++) {
+//                // 获取列名
+//                String columnName = metaData.getColumnName(i);
+//                JulLog.info("Column Name: {}", columnName);
+//            }
+//            JulLog.info("printMetaData======================>");
+//        }
+//    }
 
-    /**
-     * 包装名称，PostgreSQL使用双引号包裹标识符
-     *
-     * @param name    名称
-     * @param dialect 方言
-     * @return 结果
-     */
-    public static String wrap(String name, DBDialect dialect) {
-        if (name == null) {
-            return "";
-        }
-        StringBuilder builder = new StringBuilder();
-        if (dialect == DBDialect.POSTGRESQL) {
-            if (!name.startsWith("\"")) {
-                builder.append("\"");
-            }
-            builder.append(name);
-            if (!name.endsWith("\"")) {
-                builder.append("\"");
-            }
-        }
-        return builder.toString();
-    }
+//    /**
+//     * 包装名称，PostgreSQL使用双引号包裹标识符
+//     *
+//     * @param name    名称
+//     * @param dialect 方言
+//     * @return 结果
+//     */
+//    public static String wrap(String name, DBDialect dialect) {
+//        if (name == null) {
+//            return "";
+//        }
+//        StringBuilder builder = new StringBuilder();
+//        if (dialect == DBDialect.POSTGRESQL) {
+//            if (!name.startsWith("\"")) {
+//                builder.append("\"");
+//            }
+//            builder.append(name);
+//            if (!name.endsWith("\"")) {
+//                builder.append("\"");
+//            }
+//        }
+//        return builder.toString();
+//    }
 
     /**
      * 生成删除函数/过程的SQL，必须带输入参数签名，避免重载时名称不唯一。

@@ -10,6 +10,7 @@ import cn.oyzh.easyshell.postgresql.trigger.PostgresqlTrigger;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlSelectColumnParam;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlSelectRecordParam;
+import cn.oyzh.easyshell.postgresql.sequence.PostgresqlSequence;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
 import cn.oyzh.easyshell.data.postgresql.file.ShellPostgresqlDataImportHelper;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
@@ -82,6 +83,9 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         try {
+            // 类型和独立序列是表结构的依赖，必须先于表传输
+            this.transportCustomTypes();
+            this.transportSequences();
             if (CollectionUtil.isNotEmpty(this.tables)) {
                 // 全部表
                 List<PostgresqlTable> allTables = new ArrayList<>();
@@ -122,15 +126,36 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
                     this.transportTrigger(trigger.getName());
                 }
             }
-            if (CollectionUtil.isNotEmpty(this.sequences)) {
-                for (DBDataTransportObject sequence : this.sequences) {
-                    this.transportSequence(sequence.getName());
-                }
-            }
         } catch (Exception ex) {
             this.exception(ex);
         } finally {
             this.message("Transport Finished");
+        }
+    }
+
+    /**
+     * 传输自定义枚举、域和复合类型。
+     */
+    private void transportCustomTypes() {
+        List<String> definitions = this.sourceClient.selectCustomTypeDefinitions(this.sourceDatabase);
+        for (String definition : definitions) {
+            String sql = ShellPostgresqlUtil.replaceSchema(definition, this.sourceDatabase, this.targetDatabase);
+            this.targetClient.executeSqlSimple(this.targetDatabase, sql);
+        }
+        if (CollectionUtil.isNotEmpty(definitions)) {
+            this.message("Transport custom types");
+        }
+    }
+
+    /**
+     * 传输独立序列，作为表默认值的依赖。
+     */
+    private void transportSequences() throws Exception {
+        List<PostgresqlSequence> sourceSequences = this.sourceClient.selectSequences(this.sourceDatabase);
+        if (CollectionUtil.isNotEmpty(sourceSequences)) {
+            for (PostgresqlSequence sequence : sourceSequences) {
+                this.transportSequence(sequence.getName());
+            }
         }
     }
 
@@ -380,7 +405,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
         try {
             this.checkInterrupt();
             // 删除触发器
-            String dropTable = "DROP SEQUENCE IF EXISTS " + DBUtil.wrap(this.targetDatabase, sequenceName, DBDialect.POSTGRESQL) + ";";
+            String dropTable = "DROP SEQUENCE IF EXISTS " + DBUtil.wrap(this.targetDatabase, sequenceName, DBDialect.POSTGRESQL) + " CASCADE;";
             this.targetClient.executeSqlSimple(this.targetDatabase, dropTable);
             this.message("Drop Sequence " + sequenceName);
             this.processedIncr();
@@ -391,6 +416,13 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
             //            createDefinition = createDefinition.replaceFirst(DBUtil.wrap(this.sourceDatabase, this.dialect) + ".", "");
             createDefinition = ShellPostgresqlUtil.replaceSchema(createDefinition, this.sourceDatabase, this.targetDatabase);
             this.executeDefinition(createDefinition);
+            PostgresqlSequence sourceSequence = this.sourceClient.selectSequence(this.sourceDatabase, sequenceName);
+            if (sourceSequence != null && sourceSequence.getCurrentVal() != null) {
+                String sequence = DBUtil.wrap(this.targetDatabase, sequenceName, DBDialect.POSTGRESQL);
+                String sequenceLiteral = DBUtil.wrapData(sequence, DBDialect.POSTGRESQL).toString();
+                this.targetClient.executeSqlSimple(this.targetDatabase,
+                        "SELECT setval(" + sequenceLiteral + "::regclass, " + sourceSequence.getCurrentVal() + ", true);");
+            }
             this.message("Create Sequence " + sequenceName);
             this.processedIncr();
         } catch (Exception ex) {

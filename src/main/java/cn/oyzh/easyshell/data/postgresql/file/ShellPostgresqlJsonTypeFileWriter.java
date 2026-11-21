@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.postgresql.file;
 
 import cn.oyzh.common.file.LineFileWriter;
+import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
@@ -79,7 +80,7 @@ public class ShellPostgresqlJsonTypeFileWriter extends ShellPostgresqlTypeFileWr
         StringBuilder builder = new StringBuilder("  {\n");
         for (Map.Entry<String, Object> entry : object.entrySet()) {
             // 名称
-            builder.append("   \"").append(entry.getKey()).append("\" : ");
+            builder.append("   \"").append(TextUtil.escape(entry.getKey())).append("\" : ");
             // 值处理
             PostgresqlColumn column = this.columns.column(entry.getKey());
             Object val = this.parameterized(column, entry.getValue(), this.config);
@@ -92,7 +93,11 @@ public class ShellPostgresqlJsonTypeFileWriter extends ShellPostgresqlTypeFileWr
                     builder.append("true".equalsIgnoreCase(val.toString()) ? "true" : "false");
                 } else {// 其他类型
                     String text = val.toString();
-                    // PostgreSQL bytea的十六进制格式包含反斜杠，json中需要转义
+                    // JSON字段已在parameterized中完成转义，其他字符串在这里统一按JSON字符串转义
+                    if (column == null || !column.supportJson()) {
+                        text = TextUtil.escape(text);
+                    }
+                    // PostgreSQL bytea的十六进制格式包含反斜杠，JSON中需要再次转义
                     if (column != null && column.supportBinary()) {
                         text = text.replace("\\", "\\\\");
                     }

@@ -79,6 +79,16 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
                 this.views = this.dbClient.selectViews(this.dbName);
                 this.triggers = this.dbClient.selectTriggers(this.dbName);
                 try {
+                    this.dumpCustomType();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
+                try {
+                    this.dumpSequence();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
+                try {
                     this.dumpTable();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
@@ -100,11 +110,6 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
                 }
                 try {
                     this.dumpTrigger();
-                } catch (Exception ex) {
-                    this.handleDumpError(ex);
-                }
-                try {
-                    this.dumpSequence();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
                 }
@@ -206,6 +211,25 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
             //    this.dumpTable(t);
             //    this.processedIncr();
             //});
+        }
+    }
+
+    /**
+     * 转储自定义枚举、域和复合类型。
+     *
+     * @throws Exception 异常
+     */
+    protected void dumpCustomType() throws Exception {
+        List<String> definitions = this.dbClient.selectCustomTypeDefinitions(this.dbName);
+        if (CollectionUtil.isNotEmpty(definitions)) {
+            this.message("Dumping custom types");
+            this.fileWriter.appendLines(List.of(
+                    "",
+                    "-- ----------------------------",
+                    "-- Custom types",
+                    "-- ----------------------------"
+            ));
+            this.fileWriter.appendLines(definitions);
         }
     }
 
@@ -469,7 +493,7 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
                     String line1 = "-- ----------------------------";
                     String line2 = "-- Sequence structure for " + sequence.getName();
                     String line3 = "-- ----------------------------";
-                    String dropSequence = "DROP SEQUENCE IF EXISTS " + DBUtil.wrap(this.dbName, sequence.getName(), DBDialect.POSTGRESQL) + ";";
+                    String dropSequence = "DROP SEQUENCE IF EXISTS " + DBUtil.wrap(this.dbName, sequence.getName(), DBDialect.POSTGRESQL) + " CASCADE;";
                     String createDefinition = sequence.getCreateDefinition();
                     //                createDefinition = this.dbClient.showCreateSequence(this.dbName, sequence.getName());
                     createDefinition = this.sqlDefinition(createDefinition);

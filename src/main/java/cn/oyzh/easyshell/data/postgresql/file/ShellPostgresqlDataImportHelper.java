@@ -168,16 +168,21 @@ public class ShellPostgresqlDataImportHelper {
         String table = StringUtil.isBlank(columns.schema())
                 ? DBUtil.wrap(columns.tableName(), DBDialect.POSTGRESQL)
                 : DBUtil.wrap(columns.schema(), columns.tableName(), DBDialect.POSTGRESQL);
+        List<PostgresqlColumn> insertColumns = insertableColumns(columns);
         for (PostgresqlRecord record : records) {
+            if (insertColumns.isEmpty()) {
+                insertSql.add("INSERT INTO " + table + " DEFAULT VALUES;");
+                continue;
+            }
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.append(table);
             sql.append(" (");
-            for (PostgresqlColumn column : columns) {
+            for (PostgresqlColumn column : insertColumns) {
                 sql.append(DBUtil.wrap(column.getName(), DBDialect.POSTGRESQL)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(") VALUES (");
-            for (PostgresqlColumn column : columns) {
+            for (PostgresqlColumn column : insertColumns) {
                 Object val = record.getValue(column.getName());
                 val = DBUtil.unwrapData(val, DBDialect.POSTGRESQL);
                 val = parameterized(column, val, config);
@@ -281,8 +286,12 @@ public class ShellPostgresqlDataImportHelper {
         String table = StringUtil.isBlank(schema)
                 ? DBUtil.wrap(columns.tableName(), DBDialect.POSTGRESQL)
                 : DBUtil.wrap(schema, columns.tableName(), DBDialect.POSTGRESQL);
-        List<PostgresqlColumn> columnList = columns.sortOfPosition();
+        List<PostgresqlColumn> columnList = insertableColumns(columns);
         for (PostgresqlRecord record : records) {
+            if (columnList.isEmpty()) {
+                insertSql.add("INSERT INTO " + table + " DEFAULT VALUES;");
+                continue;
+            }
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.append(table);
             sql.append(" (");
@@ -299,6 +308,18 @@ public class ShellPostgresqlDataImportHelper {
             insertSql.add(sql.toString());
         }
         return insertSql;
+    }
+
+    /**
+     * 获取可插入字段，生成列由数据库计算。
+     *
+     * @param columns 字段列表
+     * @return 可插入字段
+     */
+    private static List<PostgresqlColumn> insertableColumns(PostgresqlColumns columns) {
+        return columns.sortOfPosition().stream()
+                .filter(column -> !column.isGenerated())
+                .toList();
     }
 
     /**

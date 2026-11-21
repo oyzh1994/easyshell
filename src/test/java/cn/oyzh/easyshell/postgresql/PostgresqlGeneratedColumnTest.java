@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlRecordProperty;
+import cn.oyzh.easyshell.data.postgresql.file.ShellPostgresqlDataImportHelper;
 import cn.oyzh.fx.db.DBRecordData;
 import org.junit.Test;
 
@@ -96,6 +97,24 @@ public class PostgresqlGeneratedColumnTest {
         bit.setSize(8);
 
         assertEquals("?::BIT(8)", ShellPostgresqlClient.valuePlaceholder(bit));
+    }
+
+    @Test
+    public void excludesGeneratedColumnsFromDumpInsertSql() {
+        PostgresqlColumn text = column("c_text", 1);
+        PostgresqlColumn upper = column("c_upper", 2);
+        upper.setGenerated(true);
+        PostgresqlColumns columns = new PostgresqlColumns(List.of(text, upper));
+        PostgresqlRecord record = new PostgresqlRecord(columns);
+        record.putValue(text, "demo");
+        record.putValue(upper, "DEMO");
+
+        List<String> sqlList = ShellPostgresqlDataImportHelper.toInsertSql(
+                columns, List.of(record), "demo4");
+
+        assertEquals(1, sqlList.size());
+        assertTrue(sqlList.get(0), sqlList.get(0).contains("\"c_text\""));
+        assertFalse(sqlList.get(0), sqlList.get(0).contains("\"c_upper\""));
     }
 
     private static PostgresqlColumn column(String name, int position) {

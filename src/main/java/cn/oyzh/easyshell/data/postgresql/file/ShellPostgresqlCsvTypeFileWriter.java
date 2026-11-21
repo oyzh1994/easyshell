@@ -42,7 +42,7 @@ public class ShellPostgresqlCsvTypeFileWriter extends ShellPostgresqlTypeFileWri
     public ShellPostgresqlCsvTypeFileWriter(String filePath, DBDataExportConfig config, PostgresqlColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = new CsvFileWriter(filePath, config);
+        this.writer = new CsvFileWriter(filePath, config, config.getFieldSeparator());
     }
 
     @Override

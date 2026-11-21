@@ -79,7 +79,9 @@ public class ShellPostgresqlSqlTypeFileWriter extends ShellPostgresqlTypeFileWri
     @Override
     public void writeRecord(Map<String, Object> object) throws Exception {
         String tableName = this.columns.tableName();
-        List<PostgresqlColumn> columnList = this.columns.sortOfPosition();
+        List<PostgresqlColumn> columnList = this.columns.sortOfPosition().stream()
+                .filter(column -> !column.isGenerated())
+                .toList();
         // PostgreSQL使用"schema"."table"定位表
         String table = StringUtil.isBlank(this.columns.schema())
                 ? DBUtil.wrap(tableName, DBDialect.POSTGRESQL)

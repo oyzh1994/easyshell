@@ -70,7 +70,7 @@ public class ShellPostgresqlXmlTypeFileWriter extends ShellPostgresqlTypeFileWri
                 if (val != null) {
                     builder.append(entry.getKey())
                             .append("=\"")
-                            .append(val)
+                            .append(this.escapeXml(val.toString()))
                             .append("\" ");
                 }
             }
@@ -85,7 +85,7 @@ public class ShellPostgresqlXmlTypeFileWriter extends ShellPostgresqlTypeFileWri
                 Object val = this.parameterized(column, entry.getValue(), this.config);
                 if (val != null) {
                     builder.append(">");
-                    builder.append(val);
+                    builder.append(this.escapeXml(val.toString()));
                     builder.append("</").append(entry.getKey()).append(">");
                 } else {
                     builder.append("/>");
@@ -95,6 +95,23 @@ public class ShellPostgresqlXmlTypeFileWriter extends ShellPostgresqlTypeFileWri
             builder.append("  </RECORD>");
         }
         this.writer.writeLine(builder.toString());
+    }
+
+    /**
+     * 转义XML文本和属性值。
+     *
+     * @param value 值
+     * @return 转义结果
+     */
+    private String escapeXml(String value) {
+        if (value == null) {
+            return null;
+        }
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
     }
 
     @Override

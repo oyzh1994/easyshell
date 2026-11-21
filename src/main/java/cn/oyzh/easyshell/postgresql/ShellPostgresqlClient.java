@@ -2131,6 +2131,189 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 查询自定义类型定义，供模式转储和迁移使用。
+     *
+     * @param schema 模式名称
+     * @return 类型删除和创建语句
+     */
+    public List<String> selectCustomTypeDefinitions(String schema) {
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT
+                        T.TYPNAME AS "NAME",
+                        T.TYPTYPE AS "TYPE",
+                        T.OID AS "TYPE_ID",
+                        T.TYPRELID AS "RELID",
+                        PG_CATALOG.FORMAT_TYPE(T.TYPBASETYPE, T.TYPTYPMOD) AS "BASE_TYPE",
+                        T.TYPNOTNULL AS "NOT_NULL",
+                        T.TYPDEFAULT AS "DEFAULT_VALUE",
+                        C.RELKIND AS "RELKIND"
+                    FROM
+                        PG_CATALOG.PG_TYPE T
+                    JOIN
+                        PG_CATALOG.PG_NAMESPACE N ON N.OID = T.TYPNAMESPACE
+                    LEFT JOIN
+                        PG_CATALOG.PG_CLASS C ON C.OID = T.TYPRELID
+                    WHERE
+                        N.NSPNAME = ?
+                    AND
+                        (
+                            T.TYPTYPE IN ('e', 'd')
+                            OR
+                            (T.TYPTYPE = 'c' AND C.RELKIND = 'c')
+                        )
+                    ORDER BY
+                        CASE T.TYPTYPE
+                            WHEN 'e' THEN 1
+                            WHEN 'd' THEN 2
+                            ELSE 3
+                        END,
+                        T.TYPNAME
+                    """;
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            ResultSet resultSet = statement.executeQuery();
+            List<PostgresqlTypeInfo> types = new ArrayList<>();
+            while (resultSet.next()) {
+                types.add(new PostgresqlTypeInfo(
+                        resultSet.getString("NAME"),
+                        resultSet.getString("TYPE"),
+                        resultSet.getLong("TYPE_ID"),
+                        resultSet.getLong("RELID"),
+                        resultSet.getString("BASE_TYPE"),
+                        resultSet.getBoolean("NOT_NULL"),
+                        resultSet.getString("DEFAULT_VALUE"),
+                        resultSet.getString("RELKIND")
+                ));
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+
+            List<String> definitions = new ArrayList<>();
+            for (int i = types.size() - 1; i >= 0; i--) {
+                PostgresqlTypeInfo type = types.get(i);
+                String keyword = StringUtil.equalsIgnoreCase(type.type(), "d") ? "DOMAIN" : "TYPE";
+                definitions.add("DROP " + keyword + " IF EXISTS "
+                        + DBUtil.wrap(schema, type.name(), DBDialect.POSTGRESQL) + " CASCADE;");
+            }
+            for (PostgresqlTypeInfo type : types) {
+                String fullName = DBUtil.wrap(schema, type.name(), DBDialect.POSTGRESQL);
+                StringBuilder builder = new StringBuilder("CREATE ");
+                if (StringUtil.equalsIgnoreCase(type.type(), "e")) {
+                    builder.append("TYPE ").append(fullName).append(" AS ENUM (");
+                    List<String> labels = this.selectEnumLabels(connection, type.typeId());
+                    for (String label : labels) {
+                        builder.append(this.quoteLiteral(label)).append(",");
+                    }
+                    StringUtil.deleteLast(builder, ",");
+                    builder.append(");");
+                } else if (StringUtil.equalsIgnoreCase(type.type(), "d")) {
+                    builder.append("DOMAIN ").append(fullName).append(" AS ").append(type.baseType());
+                    if (StringUtil.isNotBlank(type.defaultValue())) {
+                        builder.append(" DEFAULT ").append(type.defaultValue());
+                    }
+                    if (type.notNull()) {
+                        builder.append(" NOT NULL");
+                    }
+                    List<PostgresqlTypeConstraint> constraints = this.selectDomainConstraints(connection, type.typeId());
+                    for (PostgresqlTypeConstraint constraint : constraints) {
+                        builder.append(" CONSTRAINT ")
+                                .append(DBUtil.wrap(constraint.name(), DBDialect.POSTGRESQL))
+                                .append(" ").append(constraint.definition());
+                    }
+                    builder.append(";");
+                } else {
+                    builder.append("TYPE ").append(fullName).append(" AS (");
+                    List<PostgresqlTypeAttribute> attributes = this.selectCompositeAttributes(connection, type.relId());
+                    for (PostgresqlTypeAttribute attribute : attributes) {
+                        builder.append(DBUtil.wrap(attribute.name(), DBDialect.POSTGRESQL))
+                                .append(" ").append(attribute.type());
+                        if (attribute.notNull()) {
+                            builder.append(" NOT NULL");
+                        }
+                        builder.append(",");
+                    }
+                    StringUtil.deleteLast(builder, ",");
+                    builder.append(");");
+                }
+                definitions.add(builder.toString());
+            }
+            return definitions;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    private List<String> selectEnumLabels(Connection connection, long typeId) throws SQLException {
+        List<String> labels = new ArrayList<>();
+        PreparedStatement statement = connection.prepareStatement(
+                "SELECT ENUMLABEL FROM PG_CATALOG.PG_ENUM WHERE ENUMTYPID = ? ORDER BY ENUMSORTORDER");
+        statement.setLong(1, typeId);
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            labels.add(resultSet.getString(1));
+        }
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
+        return labels;
+    }
+
+    private List<PostgresqlTypeConstraint> selectDomainConstraints(Connection connection, long typeId) throws SQLException {
+        List<PostgresqlTypeConstraint> constraints = new ArrayList<>();
+        PreparedStatement statement = connection.prepareStatement("""
+                SELECT CONNAME, PG_GET_CONSTRAINTDEF(OID)
+                FROM PG_CATALOG.PG_CONSTRAINT
+                WHERE CONTYPID = ?
+                AND CONTYPE = 'c'
+                ORDER BY CONNAME
+                """);
+        statement.setLong(1, typeId);
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            constraints.add(new PostgresqlTypeConstraint(resultSet.getString(1), resultSet.getString(2)));
+        }
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
+        return constraints;
+    }
+
+    private List<PostgresqlTypeAttribute> selectCompositeAttributes(Connection connection, long typeId) throws SQLException {
+        List<PostgresqlTypeAttribute> attributes = new ArrayList<>();
+        PreparedStatement statement = connection.prepareStatement("""
+                SELECT
+                    A.ATTNAME,
+                    PG_CATALOG.FORMAT_TYPE(A.ATTTYPID, A.ATTTYPMOD),
+                    A.ATTNOTNULL
+                FROM PG_CATALOG.PG_ATTRIBUTE A
+                WHERE A.ATTRELID = ?
+                AND A.ATTNUM > 0
+                AND NOT A.ATTISDROPPED
+                ORDER BY A.ATTNUM
+                """);
+        statement.setLong(1, typeId);
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            attributes.add(new PostgresqlTypeAttribute(
+                    resultSet.getString(1), resultSet.getString(2), resultSet.getBoolean(3)));
+        }
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
+        return attributes;
+    }
+
+    private record PostgresqlTypeInfo(String name, String type, long typeId, long relId, String baseType,
+                                      boolean notNull, String defaultValue, String relKind) {
+    }
+
+    private record PostgresqlTypeConstraint(String name, String definition) {
+    }
+
+    private record PostgresqlTypeAttribute(String name, String type, boolean notNull) {
+    }
+
+    /**
      * 查询建表语句
      *
      * @param schema    模式名称
@@ -2151,6 +2334,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         PG_CATALOG.PG_GET_EXPR(AD.ADBIN, AD.ADRELID) AS "Default",
                         A.ATTNOTNULL AS "NotNull",
                         A.ATTIDENTITY AS "IDENTITY",
+                        A.ATTGENERATED AS "GENERATED",
                         PG_CATALOG.PG_GET_SERIAL_SEQUENCE(
                             PG_CATALOG.QUOTE_IDENT(N.NSPNAME) || '.' || PG_CATALOG.QUOTE_IDENT(C.RELNAME),
                             A.ATTNAME
@@ -2187,10 +2371,12 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 String defaultValue = resultSet.getString("Default");
                 boolean notNull = resultSet.getBoolean("NotNull");
                 String identity = resultSet.getString("IDENTITY");
+                String generated = resultSet.getString("GENERATED");
                 String serialSequence = resultSet.getString("SERIAL_SEQUENCE");
                 String comment = resultSet.getString("Comment");
                 // 旧式serial列由物理整型和nextval默认值组成，导出时还原为SERIAL伪类型
-                String serialType = StringUtil.isBlank(identity) && this.isNextValDefault(defaultValue)
+                boolean generatedColumn = StringUtil.isNotBlank(generated);
+                String serialType = !generatedColumn && StringUtil.isBlank(identity) && this.isNextValDefault(defaultValue)
                         && StringUtil.isNotBlank(serialSequence)
                         ? ShellPostgresqlColumnUtil.serialTypeFor(type)
                         : null;
@@ -2198,15 +2384,18 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 StringBuilder builder = new StringBuilder("  ");
                 builder.append(DBUtil.wrap(field, DBDialect.POSTGRESQL))
                         .append(" ").append(serial ? serialType : type);
-                if (StringUtil.isNotBlank(defaultValue) && !serial) {
+                if (generatedColumn) {
+                    builder.append(" GENERATED ALWAYS AS (").append(defaultValue).append(") ")
+                            .append(StringUtil.equalsIgnoreCase(generated, "v") ? "VIRTUAL" : "STORED");
+                } else if (StringUtil.isNotBlank(defaultValue) && !serial) {
                     builder.append(" DEFAULT ").append(defaultValue);
                 }
                 if (notNull) {
                     builder.append(" NOT NULL");
                 }
-                if (!serial && StringUtil.equalsIgnoreCase(identity, "a")) {
+                if (!generatedColumn && !serial && StringUtil.equalsIgnoreCase(identity, "a")) {
                     builder.append(" GENERATED ALWAYS AS IDENTITY");
-                } else if (!serial && StringUtil.equalsIgnoreCase(identity, "d")) {
+                } else if (!generatedColumn && !serial && StringUtil.equalsIgnoreCase(identity, "d")) {
                     builder.append(" GENERATED BY DEFAULT AS IDENTITY");
                 }
                 definitions.add(builder.toString());
