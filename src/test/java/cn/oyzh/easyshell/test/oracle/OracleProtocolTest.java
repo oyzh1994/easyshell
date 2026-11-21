@@ -266,17 +266,33 @@ public class OracleProtocolTest {
         OracleTypeMeta varcharMeta = new OracleTypeMeta(null, "VARCHAR2", null, List.of(), null);
         object.setTypeMeta(new OracleTypeMeta("DEMO", "T_ADDR", "OBJECT",
                 List.of(new OracleTypeMeta.Attribute("STREET", varcharMeta)), null));
+        OracleColumn collection = column("C_COLLECTION", "T_TAG_LIST", "DEMO", "ALL_TYPE_TEST_OBJ");
+        collection.setVirtual(true);
+        collection.setTypeOwner("DEMO");
+        collection.setTypeCode("COLLECTION");
+        collection.setTypeMeta(new OracleTypeMeta("DEMO", "T_TAG_LIST", "COLLECTION",
+                List.of(), varcharMeta));
         OracleColumn anyData = column("C_ANYDATA", "ANYDATA", "DEMO", "ALL_TYPE_TEST_OBJ");
         anyData.setTypeOwner("SYS");
         anyData.setTypeCode("ANYDATA");
 
-        OracleColumns columns = new OracleColumns(List.of(username, virtual, bfile, xml, object, anyData));
+        OracleColumns columns = new OracleColumns(List.of(username, virtual, bfile, xml, object, collection, anyData));
+        assertTrue(virtual.isVirtual());
+        assertTrue(virtual.isGenerated());
+        assertFalse(virtual.supportDefaultValue());
+        assertTrue(xml.isVirtual());
+        assertFalse(xml.isGenerated());
+        assertTrue(xml.isDmlWritable());
+        assertTrue(collection.isVirtual());
+        assertFalse(collection.isGenerated());
+        assertTrue(collection.isDmlWritable());
         OracleRecord record = new OracleRecord(columns);
         record.putValue(username, "alice");
         record.putValue(virtual, "computed");
         record.putValue(bfile, "external.dat");
         record.putValue(xml, "<root/>");
         record.putValue(object, "{\"STREET\":\"Main St\"}");
+        record.putValue(collection, "[\"one\",\"two\"]");
         record.putValue(anyData, "data");
 
         DBRecordData data = record.getRecordData();
@@ -285,6 +301,7 @@ public class OracleProtocolTest {
         assertFalse(data.columns().contains("C_ANYDATA"));
         assertTrue(data.columns().contains("C_XML"));
         assertTrue(data.columns().contains("C_OBJECT"));
+        assertTrue(data.columns().contains("C_COLLECTION"));
         assertTrue(object.supportJson());
         assertFalse(anyData.isDmlWritable());
 
@@ -295,6 +312,7 @@ public class OracleProtocolTest {
         assertTrue(sql.contains("\"USERNAME\""));
         assertTrue(sql.contains("\"C_XML\""));
         assertTrue(sql.contains("\"C_OBJECT\""));
+        assertTrue(sql.contains("\"C_COLLECTION\""));
     }
 
     @Test

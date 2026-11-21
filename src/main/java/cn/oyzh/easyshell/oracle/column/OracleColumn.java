@@ -878,10 +878,12 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     }
 
     /**
-     * 是否虚拟列
+     * 是否为Oracle元数据中的虚拟列。
+     * XMLTYPE和嵌套表可能被Oracle误标为虚拟列，规范化判断请使用{@link #isGenerated()}。
      *
      * @return 结果
      */
+    @Override
     public boolean isVirtual() {
         return virtual;
     }
@@ -893,6 +895,19 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
      */
     public void setVirtual(boolean virtual) {
         this.virtual = virtual;
+    }
+
+    /**
+     * 是否为真正的生成列。
+     * Oracle会把部分可写类型标记为虚拟列，因此需要排除XMLTYPE和集合类型。
+     *
+     * @return 结果
+     */
+    @Override
+    public boolean isGenerated() {
+        // Oracle 11g在ALL_TAB_COLS中把XMLTYPE标记为虚拟列，但它实际允许写入
+        // Oracle 23c的嵌套表列同样会被标记为虚拟列
+        return this.virtual && !this.isXmlType() && !this.isCollectionType();
     }
 
     /**
@@ -979,10 +994,7 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
      * @return 结果
      */
     public boolean isDmlWritable() {
-        // Oracle 11g在ALL_TAB_COLS中把XMLTYPE标记为虚拟列，但它实际允许写入
-        // Oracle 23c的嵌套表列同样会被标记为虚拟列
-        return (!this.isVirtual() || this.isXmlType() || this.isCollectionType())
-                && !this.isBfile() && !this.isAnyDataType();
+        return !this.isGenerated() && !this.isBfile() && !this.isAnyDataType();
     }
 
     /**
