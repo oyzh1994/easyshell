@@ -192,6 +192,42 @@ public class ShellMysqlHelper {
         return value;
     }
 
+    /**
+     * 还原 INFORMATION_SCHEMA.COLUMNS.GENERATION_EXPRESSION 中的 MySQL 转义。
+     *
+     * <p>该字段返回的是经过 MySQL 字符串转义的表达式文本，例如字符串常量
+     * {@code _utf8mb4'a\\'b'} 会返回为 {@code _utf8mb4\\'a\\\\\\'b\\'}。
+     * 生成 DDL 前必须按 MySQL 的转义规则还原，不能只替换单引号。</p>
+     *
+     * @param expression 转义后的生成列表达式
+     * @return 可直接用于 GENERATED ALWAYS AS 的表达式
+     */
+    public static String unescapeGenerationExpression(String expression) {
+        if (StringUtil.isBlank(expression) || expression.indexOf('\\') < 0) {
+            return expression;
+        }
+        StringBuilder builder = new StringBuilder(expression.length());
+        for (int i = 0; i < expression.length(); i++) {
+            char current = expression.charAt(i);
+            if (current != '\\' || i + 1 >= expression.length()) {
+                builder.append(current);
+                continue;
+            }
+            char next = expression.charAt(++i);
+            switch (next) {
+                case '0' -> builder.append('\0');
+                case 'b' -> builder.append('\b');
+                case 'n' -> builder.append('\n');
+                case 'r' -> builder.append('\r');
+                case 't' -> builder.append('\t');
+                case 'Z' -> builder.append((char) 26);
+                case '\\', '\'', '"' -> builder.append(next);
+                default -> builder.append(next);
+            }
+        }
+        return builder.toString();
+    }
+
 //    public static Long lastInsertId(Connection connection) throws Exception {
 //        String sql = "SELECT LAST_INSERT_ID();";
 //        Statement statement = connection.createStatement();

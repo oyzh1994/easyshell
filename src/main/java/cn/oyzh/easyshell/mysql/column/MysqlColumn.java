@@ -26,6 +26,10 @@ import java.util.Map;
  */
 public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<MysqlColumn> {
 
+    public static final String KIND_NORMAL = "NORMAL";
+
+    public static final String KIND_GENERATED = "GENERATED";
+
     /**
      * 库名称
      */
@@ -135,6 +139,11 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      * 生成列存储方式
      */
     private String generatedStorage;
+
+    /**
+     * 生成列表达式
+     */
+    private String generatedExpression;
 
     /**
      * 构造字段
@@ -284,6 +293,7 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      */
     public void setGenerated(boolean generated) {
         this.generated = generated;
+        super.putOriginalData("generated", generated);
     }
 
     /**
@@ -302,11 +312,70 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      */
     public void setGeneratedStorage(String generatedStorage) {
         this.generatedStorage = generatedStorage;
+        super.putOriginalData("generatedStorage", generatedStorage);
+    }
+
+    /**
+     * 生成列状态是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedChanged() {
+        return super.checkOriginalData("generated", this.generated);
+    }
+
+    /**
+     * 生成列存储方式是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedStorageChanged() {
+        return super.checkOriginalData("generatedStorage", this.generatedStorage);
+    }
+
+    /**
+     * 是否需要通过删除并新增字段来变更生成列定义。
+     *
+     * <p>MySQL 不允许直接修改 VIRTUAL 生成列与普通列之间的关系，
+     * 也不允许直接修改 VIRTUAL/STORED 存储方式，因此这类变更需要重建字段。</p>
+     *
+     * @return 结果
+     */
+    public boolean requiresGeneratedColumnRebuild() {
+        if (this.isCreated() || this.isDeleted()) {
+            return false;
+        }
+        return this.isGeneratedChanged()
+                || (this.isGenerated() && this.isGeneratedStorageChanged());
+    }
+
+    /**
+     * 获取生成列表达式
+     *
+     * @return 结果
+     */
+    public String getGeneratedExpression() {
+        return this.generatedExpression;
+    }
+
+    /**
+     * 设置生成列表达式
+     *
+     * @param generatedExpression 表达式
+     */
+    public void setGeneratedExpression(String generatedExpression) {
+        this.generatedExpression = generatedExpression;
+        if (StringUtil.isNotBlank(generatedExpression)) {
+            this.setGenerated(true);
+        }
+        super.putOriginalData("generatedExpression", generatedExpression);
     }
 
     @Override
     public boolean isVirtual() {
-        return this.isGenerated() && "VIRTUAL".equalsIgnoreCase(this.generatedStorage);
+        return this.isGenerated()
+                && "VIRTUAL".equalsIgnoreCase(
+                StringUtil.blankToDefault(this.generatedStorage, "VIRTUAL"));
     }
 
     /**
@@ -325,6 +394,31 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
      */
     public boolean isSetType() {
         return StringUtil.equalsIgnoreCase(this.getType(), "SET");
+    }
+
+    /**
+     * 清理普通列与生成列互斥的属性。
+     */
+    public void normalizeGeneratedAttributes() {
+        if (this.isGenerated()) {
+            this.setAutoIncrement(false);
+            this.setDefaultValue(null);
+            this.setUpdateOnCurrentTimestamp(false);
+            if (StringUtil.isBlank(this.generatedStorage)) {
+                this.setGeneratedStorage("VIRTUAL");
+            }
+        } else {
+            this.setGeneratedExpression(null);
+            this.setGeneratedStorage(null);
+        }
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return StringUtil.isBlank(this.getName())
+                || StringUtil.isBlank(this.getType())
+                || (this.isGenerated()
+                && StringUtil.isBlank(this.generatedExpression));
     }
 
     /**
@@ -843,6 +937,7 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
             this.setAutoIncrement(column.isAutoIncrement());
             this.setGenerated(column.isGenerated());
             this.setGeneratedStorage(column.getGeneratedStorage());
+            this.setGeneratedExpression(column.getGeneratedExpression());
             this.setPrimaryKeySize(column.getPrimaryKeySize());
             this.setUpdateOnCurrentTimestamp(column.isUpdateOnCurrentTimestamp());
         }

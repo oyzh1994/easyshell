@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
+<?import cn.oyzh.easyshell.fx.mysql.MysqlColumnKindComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox?>
 <?import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableColumnExtraController" realHeight="200">
+        fx:controller="cn.oyzh.easyshell.tabs.mysql.table.ShellMysqlTableColumnExtraController" realHeight="270">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="columnKindBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.column.kind">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <MysqlColumnKindComboBox fx:id="columnKind" realHeight="25" flexWidth="100% - 140">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </MysqlColumnKindComboBox>
+    </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="valueBox" managed="false" visible="false">
         <AccentLabel realHeight="25" realWidth="80" text="%base.value">
             <HBox.margin>
@@ -101,5 +116,30 @@
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </NumberTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="generatedExpressionBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.expression">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <ClearableTextField fx:id="generatedExpression" realHeight="25" flexWidth="100% - 140"
+                            styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </ClearableTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="generatedStorageBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.generatedStorage">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <FXComboBox fx:id="generatedStorage" realHeight="25" flexWidth="100% - 140">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </FXComboBox>
     </FXHBox>
 </FXVBox>

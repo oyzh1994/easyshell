@@ -1237,8 +1237,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             String dbName = param.getDbName();
             String tableName = param.getTableName();
             MysqlColumns columns = new MysqlColumns();
+            Connection connection = this.getConnManager().connection(dbName);
             String sql = "SHOW FULL COLUMNS FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
-            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             int position = 0;
@@ -1256,6 +1257,9 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 column.parseKey(key);
                 column.setType(type);
                 column.parseExtra(extra);
+                // 普通列没有生成列相关Extra，也要记录明确初始状态，供表设计判断类型切换。
+                column.setGenerated(column.isGenerated());
+                column.setGeneratedStorage(column.getGeneratedStorage());
                 column.parseCollation(collation);
 
                 column.setName(field);
@@ -1268,6 +1272,29 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            String generationSql = """
+                    SELECT COLUMN_NAME, GENERATION_EXPRESSION
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = ?
+                    AND TABLE_NAME = ?
+                    """;
+            PreparedStatement generationStatement = connection.prepareStatement(generationSql);
+            generationStatement.setString(1, dbName);
+            generationStatement.setString(2, tableName);
+            ResultSet generationResult = generationStatement.executeQuery();
+            while (generationResult.next()) {
+                MysqlColumn column = columns.column(generationResult.getString("COLUMN_NAME"));
+                if (column != null && column.isGenerated()) {
+                    String expression = generationResult.getString("GENERATION_EXPRESSION");
+                    if (StringUtil.isNotBlank(expression)) {
+                        column.setGeneratedExpression(
+                                ShellMysqlHelper.unescapeGenerationExpression(expression));
+                    }
+                }
+            }
+            IOUtil.close(generationResult);
+            IOUtil.close(generationStatement);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {

@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.tabs.mysql.table;
 
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.mysql.MysqlColumnKindComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCharsetComboBox;
 import cn.oyzh.easyshell.fx.mysql.ShellMysqlCollationComboBox;
 import cn.oyzh.easyshell.fx.mysql.table.ShellMysqlDefaultValueTextFiled;
@@ -7,14 +9,17 @@ import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.gui.tabs.SubTabController;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
+import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.information.MessageBox;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -134,6 +139,42 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
     private ShellMysqlCollationComboBox collation;
 
     /**
+     * 字段种类组件
+     */
+    @FXML
+    private FXHBox columnKindBox;
+
+    /**
+     * 字段种类
+     */
+    @FXML
+    private MysqlColumnKindComboBox columnKind;
+
+    /**
+     * 生成表达式组件
+     */
+    @FXML
+    private FXHBox generatedExpressionBox;
+
+    /**
+     * 生成表达式
+     */
+    @FXML
+    private ClearableTextField generatedExpression;
+
+    /**
+     * 生成列存储方式组件
+     */
+    @FXML
+    private FXHBox generatedStorageBox;
+
+    /**
+     * 生成列存储方式
+     */
+    @FXML
+    private FXComboBox<String> generatedStorage;
+
+    /**
      * 数据库字段
      */
     private MysqlColumn column;
@@ -144,12 +185,26 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
     private ShellMysqlClient dbClient;
 
     /**
+     * 字段类型变更监听
+     */
+    private final ChangeListener<String> typeListener =
+            (observable, oldValue, newValue) -> this.doInit();
+
+    /**
      * 应用
      */
     private void apply() {
         try {
-            if (this.ignoreChanged) {
+            if (this.ignoreChanged || this.column == null) {
                 return;
+            }
+            boolean generated = this.generatedKindSelected();
+            this.column.setGenerated(generated);
+            this.column.normalizeGeneratedAttributes();
+            if (generated) {
+                this.column.setGeneratedExpression(this.generatedExpression.getTextTrim());
+                this.column.setGeneratedStorage(StringUtil.blankToDefault(
+                        this.generatedStorage.getValue(), "VIRTUAL"));
             }
             // 值处理
             if (this.valueBox.isVisible()) {
@@ -184,6 +239,8 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
             if (this.currentTimestampBox.isVisible()) {
                 this.column.setUpdateOnCurrentTimestamp(this.currentTimestamp.isSelected());
             }
+            this.updateKindLayout(generated);
+            this.column.setChanged(true);
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
         }
@@ -221,6 +278,12 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         this.defaultValue.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
         // 键长度变化事件
         this.primaryKeySize.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
+        // 字段种类变更事件
+        this.columnKind.selectedItemChanged((observable, oldValue, newValue) -> this.onColumnKindChanged());
+        // 生成表达式变更事件
+        this.generatedExpression.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
+        // 生成列存储方式变更事件
+        this.generatedStorage.valueProperty().addListener((observable, oldValue, newValue) -> this.apply());
     }
 
     /**
@@ -232,26 +295,14 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
     public void init(MysqlColumn column, ShellMysqlClient dbClient) {
         // 移除旧的监听器
         if (this.column != null) {
-            this.column.typeProperty().removeListener(this::listenColumnTypeChanged);
-        }
-        if (column == null) {
-            return;
+            this.column.typeProperty().removeListener(this.typeListener);
         }
         this.column = column;
         this.dbClient = dbClient;
         this.doInit();
-        column.typeProperty().addListener(this::listenColumnTypeChanged);
-    }
-
-    /**
-     * 监听列类型变更
-     *
-     * @param observableValue 可观察值
-     * @param s 参数
-     * @param s1 参数
-     */
-    private void listenColumnTypeChanged(ObservableValue<? extends String> observableValue, String s, String s1) {
-        this.doInit();
+        if (column != null) {
+            column.typeProperty().addListener(this.typeListener);
+        }
     }
 
     /**
@@ -259,6 +310,36 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
      */
     public void doInit() {
         this.ignoreChanged = true;
+        if (this.column == null) {
+            this.columnKind.clearSelection();
+            this.generatedExpression.clear();
+            this.generatedStorage.clearSelection();
+            this.defaultValue.clear();
+            this.autoIncrement.setSelected(false);
+            this.currentTimestamp.setSelected(false);
+            this.valueBox.disappear();
+            this.defaultValueBox.disappear();
+            this.autoIncrementBox.disappear();
+            this.zeroFillBox.disappear();
+            this.unsignedBox.disappear();
+            this.charsetBox.disappear();
+            this.collationBox.disappear();
+            this.primaryKeySizeBox.disappear();
+            this.currentTimestampBox.disappear();
+            this.columnKindBox.disappear();
+            this.generatedExpressionBox.disappear();
+            this.generatedStorageBox.disappear();
+            this.ignoreChanged = false;
+            return;
+        }
+        boolean generated = this.column.isGenerated();
+        this.columnKind.select(generated ? MysqlColumn.KIND_GENERATED : MysqlColumn.KIND_NORMAL);
+        this.columnKindBox.display();
+        this.generatedStorage.setItem(List.of("VIRTUAL", "STORED"));
+        this.generatedExpression.text(StringUtil.blankToDefault(
+                this.column.getGeneratedExpression(), ""));
+        this.generatedStorage.setValue(StringUtil.blankToDefault(
+                this.column.getGeneratedStorage(), "VIRTUAL"));
         // 值
         if (this.column.supportValue()) {
             this.valueBox.display();
@@ -268,7 +349,7 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         }
 
         // 默认值
-        if (this.column.supportDefaultValue()) {
+        if (!generated && this.column.supportDefaultValue()) {
             this.defaultValueBox.display();
             this.defaultValue.init(this.column, this.column.getDefaultValueString());
         } else {
@@ -276,7 +357,7 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         }
 
         // 自动递增
-        if (this.column.supportAutoIncrement()) {
+        if (!generated && this.column.supportAutoIncrement()) {
             this.autoIncrementBox.display();
             this.autoIncrement.setSelected(this.column.isAutoIncrement());
         } else {
@@ -324,13 +405,76 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         }
 
         // 根据时间戳更新
-        if (this.column.supportTimestamp()) {
+        if (!generated && this.column.supportTimestamp()) {
             this.currentTimestampBox.display();
             this.currentTimestamp.setSelected(this.column.isUpdateOnCurrentTimestamp());
         } else {
             this.currentTimestampBox.disappear();
         }
+        this.updateKindLayout(generated);
         this.ignoreChanged = false;
+    }
+
+    /**
+     * 是否选择了生成列。
+     *
+     * @return 结果
+     */
+    private boolean generatedKindSelected() {
+        return MysqlColumn.KIND_GENERATED.equals(this.columnKind.getValue());
+    }
+
+    /**
+     * 更新字段种类对应布局。
+     *
+     * @param generated 是否生成列
+     */
+    private void updateKindLayout(boolean generated) {
+        if (generated) {
+            this.defaultValueBox.disappear();
+            this.autoIncrementBox.disappear();
+            this.currentTimestampBox.disappear();
+            this.generatedExpressionBox.display();
+            this.generatedStorageBox.display();
+        } else {
+            if (this.column.supportDefaultValue()) {
+                this.defaultValueBox.display();
+            }
+            if (this.column.supportAutoIncrement()) {
+                this.autoIncrementBox.display();
+            }
+            if (this.column.supportTimestamp()) {
+                this.currentTimestampBox.display();
+            }
+            this.generatedExpressionBox.disappear();
+            this.generatedStorageBox.disappear();
+        }
+    }
+
+    /**
+     * 字段种类变更。
+     */
+    private void onColumnKindChanged() {
+        if (this.ignoreChanged || this.column == null) {
+            return;
+        }
+        boolean generated = this.generatedKindSelected();
+        this.ignoreChanged = true;
+        try {
+            if (generated) {
+                this.generatedStorage.setValue("VIRTUAL");
+                this.defaultValue.clear();
+                this.autoIncrement.setSelected(false);
+                this.currentTimestamp.setSelected(false);
+            } else {
+                this.generatedExpression.clear();
+                this.generatedStorage.clearSelection();
+            }
+            this.updateKindLayout(generated);
+        } finally {
+            this.ignoreChanged = false;
+        }
+        this.apply();
     }
 
     @Override
@@ -344,5 +488,8 @@ public class ShellMysqlTableColumnExtraController extends SubTabController {
         this.autoIncrementBox.managedBindVisible();
         this.primaryKeySizeBox.managedBindVisible();
         this.currentTimestampBox.managedBindVisible();
+        this.columnKindBox.managedBindVisible();
+        this.generatedExpressionBox.managedBindVisible();
+        this.generatedStorageBox.managedBindVisible();
     }
 }

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mysql;
 
 import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataExportTable;
 import cn.oyzh.easyshell.data.mysql.dto.ShellMysqlDataImportFile;
 import cn.oyzh.easyshell.data.mysql.handler.ShellMysqlDataExportHandler;
@@ -304,6 +305,22 @@ public class MysqlComplexDataIntegrationTest {
 
     private static MysqlRecord insertSeed(ShellMysqlClient client, String database, String tableName) {
         List<MysqlColumn> columns = client.selectColumns(new MysqlSelectColumnParam(database, tableName));
+        MysqlColumn virtual = columns.stream()
+                .filter(column -> "c_virtual".equals(column.getName()))
+                .findFirst()
+                .orElseThrow();
+        MysqlColumn stored = columns.stream()
+                .filter(column -> "c_stored".equals(column.getName()))
+                .findFirst()
+                .orElseThrow();
+        assertTrue(virtual.isGenerated());
+        assertTrue(virtual.isVirtual());
+        assertTrue(StringUtil.containsIgnoreCase(
+                virtual.getGeneratedExpression(), "CONCAT"));
+        assertTrue(stored.isGenerated());
+        assertFalse(stored.isVirtual());
+        assertTrue(StringUtil.containsIgnoreCase(
+                stored.getGeneratedExpression(), "CONCAT"));
         MysqlRecord record = new MysqlRecord(columns);
         seedValues().forEach(record::putValue);
         for (String geometry : List.of("c_point", "c_linestring", "c_polygon", "c_multipoint",

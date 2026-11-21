@@ -191,7 +191,13 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
         for (MysqlColumn column : param.getColumns()) {
             // 修改或者新增字段
             if (MysqlColumns.isChanged(column) || MysqlColumns.isCreated(column)) {
-                if (column.isCreated()) {
+                if (column.requiresGeneratedColumnRebuild()) {
+                    builder.append(" DROP COLUMN ")
+                            .append(DBUtil.wrap(StringUtil.blankToDefault(
+                                    column.originalName(), column.getName()), DBDialect.MYSQL))
+                            .append(",\n ADD COLUMN ")
+                            .append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
+                } else if (column.isCreated()) {
                     builder.append(" ADD COLUMN ")
                             .append(DBUtil.wrap(column.getName(), DBDialect.MYSQL));
                 } else if (column.isNameChanged()) {
@@ -238,38 +244,82 @@ public class MysqlTableAlertSqlGenerator extends DBSqlGenerator {
                     }
                 }
 
-                // 默认值
-                if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
-                    builder.append(" DEFAULT ").append((column.getDefaultValueFix()));
-                }
-
-                // 可为null
-                if (column.isNullable()) {
-                    builder.append(" NULL");
+                if (column.isGenerated()) {
+                    // 生成列
+                    builder.append(" GENERATED ALWAYS AS (")
+                            .append(column.getGeneratedExpression())
+                            .append(") ")
+                            .append(StringUtil.blankToDefault(column.getGeneratedStorage(), "VIRTUAL"));
+                    if (!column.isNullable()) {
+                        builder.append(" NOT NULL");
+                    }
                 } else {
-                    builder.append(" NOT NULL");
-                }
+                    // 默认值
+                    if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
+                        builder.append(" DEFAULT ").append((column.getDefaultValueFix()));
+                    }
 
-                // 根据时间戳更新
-                if (column.supportTimestamp() && column.isUpdateOnCurrentTimestamp()) {
-                    builder.append(" ON UPDATE CURRENT_TIMESTAMP(0)");
-                }
+                    // 可为null
+                    if (column.isNullable()) {
+                        builder.append(" NULL");
+                    } else {
+                        builder.append(" NOT NULL");
+                    }
 
-                // 自动递增
-                if (column.supportAutoIncrement() && column.isAutoIncrement()) {
-                    builder.append(" AUTO_INCREMENT ");
+                    // 根据时间戳更新
+                    if (column.supportTimestamp() && column.isUpdateOnCurrentTimestamp()) {
+                        builder.append(" ON UPDATE CURRENT_TIMESTAMP(0)");
+                    }
+
+                    // 自动递增
+                    if (column.supportAutoIncrement() && column.isAutoIncrement()) {
+                        builder.append(" AUTO_INCREMENT ");
+                    }
                 }
 
                 // 注释
                 if (column.hasComment()) {
                     builder.append(" COMMENT ").append(DBUtil.wrapData(column.getComment(), DBDialect.MYSQL));
                 }
+                this.columnPositionHandle(builder, param, column);
                 builder.append(",\n");
                 this.changeFlag = true;
             }
         }
         // // 删除最后一个字符
         // StringUtil.deleteLast(builder, ",");
+    }
+
+    /**
+     * 保持字段原有位置。
+     *
+     * @param builder 语句
+     * @param param   参数
+     * @param column  字段
+     */
+    private void columnPositionHandle(StringBuilder builder, MysqlAlertTableParam param, MysqlColumn column) {
+        Integer position = column.getPosition();
+        if (position == null) {
+            return;
+        }
+        if (position == 0) {
+            builder.append(" FIRST");
+            return;
+        }
+        MysqlColumn previous = null;
+        for (MysqlColumn candidate : param.getColumns()) {
+            if (candidate == column || MysqlColumns.isDeleted(candidate)
+                    || candidate.getPosition() == null
+                    || candidate.getPosition() >= position) {
+                continue;
+            }
+            if (previous == null || candidate.getPosition() > previous.getPosition()) {
+                previous = candidate;
+            }
+        }
+        if (previous != null) {
+            builder.append(" AFTER ").append(DBUtil.wrap(previous.getName(), DBDialect.MYSQL));
+        }
     }
 
     /**
