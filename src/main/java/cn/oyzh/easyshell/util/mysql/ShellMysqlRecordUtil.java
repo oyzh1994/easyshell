@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util.mysql;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.fx.db.ShellDBSetTextFiled;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.record.MysqlRecordProperty;
 import cn.oyzh.fx.db.util.DBNodeUtil;
@@ -48,7 +49,12 @@ public class ShellMysqlRecordUtil {
     public static Node getNode(MysqlRecordProperty property, Object object, MysqlColumn column) {
         object = ShellMysqlDataUtil.valueStandardization(column, object);
         Node node;
-        if (column.supportEnum()) {
+        if (column.isSetType()) {
+            ShellDBSetTextFiled textField = new ShellDBSetTextFiled(column.getValueList());
+            textField.setValue(object);
+            textField.setBackground(ControlUtil.background(Color.valueOf("#E8E0F0")));
+            node = textField;
+        } else if (column.supportEnum()) {
             SelectTextFiled<String> textField = new SelectTextFiled<>();
             textField.setEditable(false);
             textField.setItemList(column.getValueList());
@@ -178,6 +184,8 @@ public class ShellMysqlRecordUtil {
             val = JsonTextFiled.format(object);
         } else if (column.supportBinary()) {
             val = BinaryTextFiled.format(object);
+        } else if (column.isSetType()) {
+            val = object == null ? null : object.toString();
         } else if (column.supportEnum()) {
             val = SelectTextFiled.format(object);
         } else if (column.supportInteger()) {

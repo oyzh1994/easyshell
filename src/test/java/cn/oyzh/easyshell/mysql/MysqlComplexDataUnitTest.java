@@ -5,13 +5,17 @@ import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.easyshell.mysql.column.MysqlColumns;
 import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
+import cn.oyzh.easyshell.util.db.ShellDBSetValueUtil;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -78,6 +82,31 @@ public class MysqlComplexDataUnitTest {
         assertTrue(sql, sql.contains("ST_GeomFromText('POINT(1 2)')"));
         assertTrue(sql, sql.contains("\\\\"));
         assertFalse(sql, sql.contains("c_virtual"));
+    }
+
+    @Test
+    public void distinguishesEnumAndSetSelectionValues() {
+        MysqlColumn enumColumn = column("c_enum", "ENUM('red','green','blue')", "complex_types");
+        MysqlColumn setColumn = column("c_set", "SET('red','green','blue')", "complex_types");
+
+        assertTrue(enumColumn.isEnumType());
+        assertFalse(enumColumn.isSetType());
+        assertFalse(setColumn.isEnumType());
+        assertTrue(setColumn.isSetType());
+        assertEquals(List.of("red", "blue"), ShellDBSetValueUtil.parseValues("red,blue"));
+        assertEquals("red,green,blue",
+                ShellDBSetValueUtil.joinValues(List.of("red", "green", "blue")));
+    }
+
+    @Test
+    public void setPopupUsesCheckBoxes() throws Exception {
+        String fxml = Files.readString(Path.of(
+                "src/main/resources/popups/db/shellDBSetPopup.fxml"));
+        String controller = Files.readString(Path.of(
+                "src/main/java/cn/oyzh/easyshell/popups/db/ShellDBSetPopupController.java"));
+        assertTrue(fxml.contains("fx:id=\"listView\""));
+        assertTrue(controller.contains("FXListView<FXCheckBox>"));
+        assertTrue(controller.contains("checkBox.isSelected()"));
     }
 
     private static MysqlColumn column(String name, String type, String tableName) {

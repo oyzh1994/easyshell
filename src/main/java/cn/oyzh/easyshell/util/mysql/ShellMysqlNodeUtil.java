@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.util.mysql;
 
+import cn.oyzh.easyshell.fx.db.ShellDBSetTextFiled;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
 import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.gui.text.field.ChooseFileTextField;
@@ -24,6 +25,9 @@ import java.util.List;
 public class ShellMysqlNodeUtil {
 
     public static Object getNodeVal(Node node) {
+        if (node instanceof ShellDBSetTextFiled textFiled) {
+            return textFiled.getValue();
+        }
         return DBNodeUtil.getNodeVal(node);
         //        Object val = null;
         //        if (node instanceof TimeTextField node1) {
@@ -52,6 +56,10 @@ public class ShellMysqlNodeUtil {
 
     public static void setNodeVal(Node node, Object val) {
         val = ShellMysqlDataUtil.valueStandardization(val);
+        if (node instanceof ShellDBSetTextFiled textFiled) {
+            textFiled.setValue(val);
+            return;
+        }
         DBNodeUtil.setNodeVal(node, val);
         //        if (node == null || val == null) {
         //            return;
@@ -79,7 +87,9 @@ public class ShellMysqlNodeUtil {
 
     public static Node generateNode(MysqlColumn column, boolean handlerDefaultValue) {
         Node node;
-        if (column.supportEnum()) {
+        if (column.isSetType()) {
+            node = new ShellDBSetTextFiled(column.getValueList());
+        } else if (column.supportEnum()) {
             SelectTextFiled<String> textFiled = new SelectTextFiled<>();
             textFiled.setItemList(column.getValueList());
             node = textFiled;
@@ -215,6 +225,8 @@ public class ShellMysqlNodeUtil {
         }
         if (node instanceof DigitalTextField field) {
             field.setValue(defaultValue);
+        } else if (node instanceof ShellDBSetTextFiled textFiled) {
+            textFiled.setValue(defaultValue);
         } else if (node instanceof ComboBox comboBox) {
             comboBox.getSelectionModel().select(defaultValue);
         } else if (node instanceof TextInputControl control) {
@@ -240,6 +252,8 @@ public class ShellMysqlNodeUtil {
         }
         if (node instanceof DigitalTextField field) {
             field.setValue(defaultValue);
+        } else if (node instanceof ShellDBSetTextFiled textFiled) {
+            textFiled.setValue(defaultValue);
         } else if (node instanceof ChooseFileTextField textField) {
             textField.setValue(defaultValue);
         } else if (node instanceof TextInputControl control) {

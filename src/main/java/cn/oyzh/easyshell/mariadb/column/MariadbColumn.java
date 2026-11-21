@@ -263,6 +263,24 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
     }
 
     /**
+     * 是否ENUM类型
+     *
+     * @return 结果
+     */
+    public boolean isEnumType() {
+        return StringUtil.equalsIgnoreCase(this.getType(), "ENUM");
+    }
+
+    /**
+     * 是否SET类型
+     *
+     * @return 结果
+     */
+    public boolean isSetType() {
+        return StringUtil.equalsIgnoreCase(this.getType(), "SET");
+    }
+
+    /**
      * 是否包含注释
      *
      * @return 结果
