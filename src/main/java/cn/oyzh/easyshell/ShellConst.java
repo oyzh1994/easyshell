@@ -63,6 +63,18 @@ public class ShellConst {
         return SystemUtil.userHome() + File.separator + ".easyshell_dev" + File.separator;
     }
 
+    /**
+     * 获取skills存储路径
+     *
+     * @return skills存储路径
+     */
+    public static String getSkillPath() {
+        if (SystemUtil.isProd()) {
+            return getStorePath() + "skills" + File.separator;
+        }
+        return getStorePath() + "skills" + File.separator;
+    }
+
 //    /**
 //     * 获取存储路径
 //     *
@@ -82,6 +94,15 @@ public class ShellConst {
      */
     public static String getCachePath() {
         return getStorePath() + "cache" + File.separator;
+    }
+
+    /**
+     * 获取skills释放缓存路径
+     *
+     * @return skills释放缓存路径
+     */
+    public static String getSkillCachePath() {
+        return getCachePath() + "skills" + File.separator;
     }
 
     /**

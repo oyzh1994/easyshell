@@ -120,9 +120,19 @@ public final class LLMToolAudit {
      * @param sources 工具名到来源的映射
      */
     public void registerToolSources(Map<String, String> sources) {
+        this.registerToolSources(sources, LLMToolScope.MCP);
+    }
+
+    /**
+     * 注册动态工具来源及作用域。
+     *
+     * @param sources 工具名到来源的映射
+     * @param scope   工具作用域
+     */
+    public void registerToolSources(Map<String, String> sources, LLMToolScope scope) {
         if (sources != null) {
             this.toolClasses.putAll(sources);
-            sources.keySet().forEach(name -> this.toolScopes.put(name, LLMToolScope.MCP));
+            sources.keySet().forEach(name -> this.toolScopes.put(name, scope));
         }
     }
 

@@ -26,5 +26,10 @@ public enum LLMToolScope {
     /**
      * Tools supplied by external MCP servers.
      */
-    MCP
+    MCP,
+
+    /**
+     * Tools supplied by mounted Agent Skills.
+     */
+    SKILL
 }

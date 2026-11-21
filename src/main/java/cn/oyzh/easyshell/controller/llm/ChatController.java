@@ -38,10 +38,12 @@ import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
+import cn.oyzh.easyshell.llm.skill.LLMSkillSession;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.tool.LLMToolSelection;
+import cn.oyzh.easyshell.llm.tool.LLMToolScope;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
 import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
@@ -70,13 +72,16 @@ import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.memory.ChatMemoryService;
 import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
+import dev.langchain4j.service.tool.ToolProvider;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -125,6 +130,11 @@ public class ChatController extends SubStageController {
     @FXML
     private void prompt() {
         ShellViewFactory.llmPrompts(this.getWindow());
+    }
+
+    @FXML
+    private void skill() {
+        ShellViewFactory.llmSkills(this.getWindow());
     }
 
     /**
@@ -222,6 +232,8 @@ public class ChatController extends SubStageController {
 
         private volatile LLMMcpToolSession mcpSession;
 
+        private volatile LLMSkillSession skillSession;
+
         private LLMAgentRuntime agentRuntime;
 
         private List<LLMMcpServer> mcpServers;
@@ -299,8 +311,19 @@ public class ChatController extends SubStageController {
         // MCP 工具，单个 Server 失败不会影响其他工具
         request.mcpSession = LLMMcpToolSession.connect(
                 request.mcpServers, progress -> this.updateMcpProgress(request, progress));
+        request.skillSession = LLMSkillSession.loadEnabled();
+        List<ToolProvider> toolProviders = new ArrayList<>(2);
         if (request.mcpSession.hasClients()) {
-            services.toolProvider(request.mcpSession.getToolProvider());
+            toolProviders.add(request.mcpSession.getToolProvider());
+        }
+        if (request.skillSession.hasSkills()) {
+            toolProviders.add(request.skillSession.getToolProvider());
+        }
+        if (!toolProviders.isEmpty()) {
+            services.toolProviders(toolProviders);
+        }
+        for (String skillError : request.skillSession.getErrors()) {
+            JulLog.warn("llm skill unavailable: " + skillError);
         }
         if (!request.mcpSession.getErrors().isEmpty()) {
             String error = String.format(I18nResourceBundle.i18nString("shell.llm.mcp.testFail"),
@@ -312,7 +335,11 @@ public class ChatController extends SubStageController {
         services.tools(tools.toArray());
         services.maxToolCallingRoundTrips(100);
         services.toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
-        services.hallucinatedToolNameStrategy(LLMToolNameStrategy.create(tools, request.mcpSession.getToolNames()));
+        Set<String> dynamicToolNames = new LinkedHashSet<>();
+        dynamicToolNames.addAll(request.mcpSession.getToolNames());
+        dynamicToolNames.addAll(request.skillSession.getToolNames());
+        services.hallucinatedToolNameStrategy(
+                LLMToolNameStrategy.create(tools, dynamicToolNames));
         // 工具调用审计
         LLMToolAudit audit = new LLMToolAudit(tools,
                 request.sessionId, request.sessionTabId,
@@ -323,6 +350,7 @@ public class ChatController extends SubStageController {
                     request.sessionTab.getHost(), request.sessionTab.getUser());
         }
         audit.registerToolSources(request.mcpSession.getToolSources());
+        audit.registerToolSources(request.skillSession.getToolSources(), LLMToolScope.SKILL);
         services.afterToolExecution(audit::record);
         String systemMessage = joinSystemMessages(
                 promptSystemMessage,
@@ -330,6 +358,10 @@ public class ChatController extends SubStageController {
                 toolSelection.systemMessage());
         if (request.mcpSession.hasClients()) {
             systemMessage = joinSystemMessages(systemMessage, request.mcpSession.getSystemMessage());
+        }
+        if (request.skillSession.hasSkills()) {
+            systemMessage = joinSystemMessages(systemMessage,
+                    request.skillSession.getSystemMessage());
         }
         services.systemMessage(systemMessage);
         // 使用当前会话历史初始化内存，当前消息由大模型服务负责追加
@@ -349,6 +381,7 @@ public class ChatController extends SubStageController {
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
                     toolSelection.localExecutionSystemMessage(), promptSystemMessage,
+                    request.skillSession,
                     sessionContext,
                     executionMode, audit, request.maxMessages, request.agentMode,
                     request.orchestrationMode, request.agentMaxConcurrency,
@@ -365,6 +398,7 @@ public class ChatController extends SubStageController {
                     request.mcpSession, toolSelection.sessionSystemMessage(),
                     toolSelection.internalSystemMessage(),
                     toolSelection.localExecutionSystemMessage(), promptSystemMessage,
+                    request.skillSession,
                     sessionContext,
                     executionMode, audit, request.maxMessages, request.agentMode,
                     request.orchestrationMode, request.agentMaxConcurrency,
@@ -381,6 +415,7 @@ public class ChatController extends SubStageController {
                                                String internalSystemMessage,
                                                String localExecutionSystemMessage,
                                                String promptSystemMessage,
+                                               LLMSkillSession skillSession,
                                                LLMSessionContext sessionContext,
                                                LLMExecutionMode executionMode,
                                                LLMToolAudit audit,
@@ -398,6 +433,7 @@ public class ChatController extends SubStageController {
                 LLMUtil.languageSystemMessage(), audit, maxMessages, agentMode,
                 orchestrationMode, agentMaxConcurrency, agentMaxSteps, agentFailurePolicy);
         runtime.setPromptSystemMessage(promptSystemMessage);
+        runtime.setSkillSession(skillSession);
         return runtime;
     }
 
@@ -900,6 +936,11 @@ public class ChatController extends SubStageController {
         request.mcpSession = null;
         if (mcpSession != null) {
             mcpSession.close();
+        }
+        LLMSkillSession skillSession = request.skillSession;
+        request.skillSession = null;
+        if (skillSession != null) {
+            skillSession.close();
         }
     }
 

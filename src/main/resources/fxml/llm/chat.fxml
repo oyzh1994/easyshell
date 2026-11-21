@@ -5,6 +5,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.llm.MCPSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.LLMSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.PromptSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.SkillSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import javafx.geometry.Insets?>
@@ -28,6 +29,11 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </PromptSVGGlyph>
+        <SkillSVGGlyph tipText="%shell.llm.skills" onMousePrimaryClicked="#skill">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SkillSVGGlyph>
         <MCPSVGGlyph tipText="%shell.llm.mcp.servers" onMousePrimaryClicked="#mcp">
             <HBox.margin>
                 <Insets left="10" top="10"/>

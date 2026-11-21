@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.llm.LLMSkillEnabledTableColumn?>
+<?import cn.oyzh.easyshell.fx.llm.LLMSkillTableView?>
+<?import cn.oyzh.easyshell.fx.llm.LLMSkillValidationStateTableColumn?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.ExportSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMSkillListController"
+        realWidth="980" realHeight="540">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <FXHBox realHeight="30">
+            <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#add">
+                <FXHBox.margin>
+                    <Insets left="30" top="7"/>
+                </FXHBox.margin>
+            </AddSVGGlyph>
+            <EditSVGGlyph tipText="%base.edit" onMousePrimaryClicked="#update">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </EditSVGGlyph>
+            <DeleteSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#delete">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
+            <ExportSVGGlyph tipText="%shell.llm.skill.export" onMousePrimaryClicked="#export">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </ExportSVGGlyph>
+            <RefreshSVGGlyph fx:id="refreshGlyph" tipText="%shell.llm.skill.refresh"
+                             onMousePrimaryClicked="#refresh">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </RefreshSVGGlyph>
+            <FXVBox.margin>
+                <Insets top="10"/>
+            </FXVBox.margin>
+        </FXHBox>
+        <LLMSkillTableView fx:id="skillTableView" flexWidth="100% - 50"
+                           flexHeight="100% - 60">
+            <columns>
+                <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
+                <FXTableColumn flexWidth="100% - 600" valueName="filePath"
+                               text="%shell.llm.skill.file"/>
+                <FXTableColumn prefWidth="110" valueName="fileSizeText"
+                               text="%shell.llm.skill.fileSize"/>
+                <FXTableColumn prefWidth="120" valueName="hash"
+                               text="%shell.llm.skill.hash"/>
+                <LLMSkillValidationStateTableColumn prefWidth="100"
+                                                   text="%shell.llm.skill.validation"/>
+                <LLMSkillEnabledTableColumn prefWidth="100" text="%base.status"/>
+            </columns>
+            <FXVBox.margin>
+                <Insets left="30" top="7"/>
+            </FXVBox.margin>
+        </LLMSkillTableView>
+    </FXVBox>
+</FXVBox>

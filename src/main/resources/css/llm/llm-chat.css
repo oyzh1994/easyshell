@@ -403,3 +403,15 @@
 .llm-attachment-remove:hover {
     -fx-text-fill: -llm-text;
 }
+
+.llm-skill-valid {
+    -fx-text-fill: -color-success-emphasis;
+}
+
+.llm-skill-invalid {
+    -fx-text-fill: -color-danger-emphasis;
+}
+
+.llm-skill-checking {
+    -fx-text-fill: -llm-muted;
+}

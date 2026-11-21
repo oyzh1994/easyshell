@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.llm.LLMResponseUtil;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionContext;
+import cn.oyzh.easyshell.llm.skill.LLMSkillSession;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
 import cn.oyzh.easyshell.llm.tool.LLMToolScope;
@@ -28,6 +29,7 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
+import dev.langchain4j.service.tool.ToolProvider;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -89,6 +91,10 @@ public final class LLMAgentRuntime {
     private final String mcpSystemMessage;
 
     private String promptSystemMessage = "";
+
+    private LLMSkillSession skillSession;
+
+    private String skillSystemMessage = "";
 
     private final String executionSystemMessage;
 
@@ -242,6 +248,11 @@ public final class LLMAgentRuntime {
 
     public void setPromptSystemMessage(String promptSystemMessage) {
         this.promptSystemMessage = value(promptSystemMessage);
+    }
+
+    public void setSkillSession(LLMSkillSession skillSession) {
+        this.skillSession = skillSession;
+        this.skillSystemMessage = skillSession == null ? "" : value(skillSession.getSystemMessage());
     }
 
     public ChatResponse execute(String task,
@@ -663,7 +674,8 @@ public final class LLMAgentRuntime {
                                                   List<LLMAgentStepResult> results,
                                                   String currentObjective) {
         String toolCatalog = this.toolCatalog();
-        String system = LLMUtil.joinSystemMessages(this.promptSystemMessage, """
+        String system = LLMUtil.joinSystemMessages(this.promptSystemMessage,
+                this.skillSystemMessage, """
                 You are a dynamic supervisor for EasyShell's multi-agent system.
                 Choose exactly one next worker step, or finish when the task is complete.
                 Available scopes:
@@ -866,7 +878,8 @@ public final class LLMAgentRuntime {
                     """;
             case DYNAMIC_SUPERVISOR -> "";
         };
-        String system = LLMUtil.joinSystemMessages(this.promptSystemMessage, """
+        String system = LLMUtil.joinSystemMessages(this.promptSystemMessage,
+                this.skillSystemMessage, """
                 You are the supervisor of EasyShell's composite agent system.
                 Decide whether the task can be completed in one worker step or needs multiple worker steps.
                 Each step must use exactly one available agent group:
@@ -1152,9 +1165,17 @@ public final class LLMAgentRuntime {
             services.tools(selected.toArray());
         }
         Set<String> additionalNames = new LinkedHashSet<>();
+        List<ToolProvider> toolProviders = new ArrayList<>(2);
         if (includeMcp && this.mcpSession != null && this.mcpSession.hasClients()) {
-            services.toolProvider(this.mcpSession.getToolProvider());
+            toolProviders.add(this.mcpSession.getToolProvider());
             additionalNames.addAll(this.mcpSession.getToolNames());
+        }
+        if (this.skillSession != null && this.skillSession.hasSkills()) {
+            toolProviders.add(this.skillSession.getToolProvider());
+            additionalNames.addAll(this.skillSession.getToolNames());
+        }
+        if (!toolProviders.isEmpty()) {
+            services.toolProviders(toolProviders);
         }
         services.hallucinatedToolNameStrategy(
                 LLMToolNameStrategy.create(selected, additionalNames));
@@ -1176,7 +1197,7 @@ public final class LLMAgentRuntime {
                         this.orchestrationMode));
         notifyTrace(listener, trace.get());
         String system = LLMUtil.joinSystemMessages(this.promptSystemMessage,
-                this.sessionScopePrompt(), """
+                this.skillSystemMessage, this.sessionScopePrompt(), """
                 You are the final verifier and reporter of a composite agent.
                 Base the answer only on the original task and the worker step results.
                 Explicitly mention failed or unavailable steps. Do not invent tool results.
@@ -1318,6 +1339,7 @@ public final class LLMAgentRuntime {
         };
         String result = LLMUtil.joinSystemMessages(
                 this.promptSystemMessage,
+                this.skillSystemMessage,
                 this.sessionScopePrompt(),
                 "You are a focused EasyShell agent worker using " + tools + ". "
                         + "Complete only the current step. Use tools for factual data. "
@@ -1334,6 +1356,7 @@ public final class LLMAgentRuntime {
         String mcp = this.hasMcp() ? this.mcpSystemMessage : "";
         return LLMUtil.joinSystemMessages(
                 this.promptSystemMessage,
+                this.skillSystemMessage,
                 this.sessionScopePrompt(),
                 """
                 You are EasyShell's single agent.

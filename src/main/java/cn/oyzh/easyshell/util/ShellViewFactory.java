@@ -86,14 +86,17 @@ import cn.oyzh.easyshell.controller.key.ShellUpdateKeyController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddProviderController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddPromptController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMAddSkillController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMProviderListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpServerListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpImportController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMPromptListController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMSkillListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMSessionListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateProviderController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateMcpServerController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdatePromptController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateSkillController;
 import cn.oyzh.easyshell.controller.s3.ShellS3AddBucketController;
 import cn.oyzh.easyshell.controller.s3.ShellS3ShareFileController;
 import cn.oyzh.easyshell.controller.s3.ShellS3UpdateBucketController;
@@ -115,6 +118,7 @@ import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
+import cn.oyzh.easyshell.llm.skill.LLMSkill;
 import cn.oyzh.easyshell.popups.snippet.ShellSnippetPopupController;
 import cn.oyzh.easyshell.popups.term.ShellTermHistoryPopupController;
 import cn.oyzh.easyshell.s3.ShellS3Bucket;
@@ -1915,6 +1919,41 @@ public class ShellViewFactory {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellLLMUpdatePromptController.class, owner);
             adapter.setProp("prompt", prompt);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
+    }
+
+    public static void llmSkills(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMSkillListController.class, owner);
+            adapter.showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+    }
+
+    public static StageAdapter addLLMSkill(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMAddSkillController.class, owner);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
+    }
+
+    public static StageAdapter updateLLMSkill(LLMSkill skill, Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMUpdateSkillController.class, owner);
+            adapter.setProp("skill", skill);
             adapter.showAndWait();
             return adapter;
         } catch (Exception ex) {
