@@ -386,6 +386,12 @@
             <artifactId>langchain4j-skills</artifactId>
             <version>${langchain4j-beta.version}</version>
         </dependency>
+        <!-- LangChain4j Shell Skills 实验模式 -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-experimental-skills-shell</artifactId>
+            <version>${langchain4j-beta.version}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.hierynomus/sshj -->
         <dependency>

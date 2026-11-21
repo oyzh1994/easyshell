@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentStepLimit;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
+import cn.oyzh.easyshell.llm.skill.LLMSkillScriptMode;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
@@ -364,6 +365,7 @@ public class LLMView extends FXSplitPane {
         menu.getItems().addAll(
                 this.buildProviderMenu(),
                 this.buildPromptMenu(),
+                this.buildSkillScriptModeMenu(),
                 this.buildThinkingMenu(),
                 this.buildThinkingProcessMenu(),
                 this.buildAgentModeMenu(),
@@ -442,6 +444,29 @@ public class LLMView extends FXSplitPane {
             noneItem.setSelected(true);
         }
         return menu;
+    }
+
+    private Menu buildSkillScriptModeMenu() {
+        LLMSkillScriptMode selected = this.getSelectedSkillScriptMode();
+        Menu menu = new Menu(I18nResourceBundle.i18nString(
+                "shell.llm.skill.scriptMode"));
+        ToggleGroup group = new ToggleGroup();
+        for (LLMSkillScriptMode mode : LLMSkillScriptMode.values()) {
+            RadioMenuItem item = new RadioMenuItem(this.getSkillScriptModeName(mode));
+            item.setToggleGroup(group);
+            item.setSelected(mode == selected);
+            item.setOnAction(event -> this.setSkillScriptMode(mode));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private String getSkillScriptModeName(LLMSkillScriptMode mode) {
+        return switch (mode) {
+            case NONE -> I18nResourceBundle.i18nString("shell.llm.skill.scriptMode.none");
+            case SAFE -> I18nResourceBundle.i18nString("shell.llm.skill.scriptMode.safe");
+            case UNSAFE -> I18nResourceBundle.i18nString("shell.llm.skill.scriptMode.unsafe");
+        };
     }
 
     private Menu buildThinkingMenu() {
@@ -1196,6 +1221,17 @@ public class LLMView extends FXSplitPane {
     public void setPromptUid(String promptUid) {
         this.setting.setLlmPromptUid(promptUid);
         this.settingStore.replace(this.setting);
+    }
+
+    public LLMSkillScriptMode getSelectedSkillScriptMode() {
+        return LLMSkillScriptMode.fromOrdinal(this.setting.getLlmSkillScriptMode());
+    }
+
+    public void setSkillScriptMode(LLMSkillScriptMode mode) {
+        if (mode != null) {
+            this.setting.setLlmSkillScriptMode(mode.ordinal());
+            this.settingStore.replace(this.setting);
+        }
     }
 
     public LLMThinkingLevel getSelectedThinkingLevel() {

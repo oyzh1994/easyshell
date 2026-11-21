@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.llm.skill;
 import cn.oyzh.common.compress.ArchiveUtil;
 import cn.oyzh.common.compress.CompressUtil;
 import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.file.FileUtil;
 import cn.oyzh.common.util.StringUtil;
 import dev.langchain4j.skills.FileSystemSkillLoader;
 
@@ -202,6 +203,7 @@ public final class LLMSkillArchiveUtil {
     public static String inspectArchive(Path zip) throws IOException {
         Set<String> names = new LinkedHashSet<>();
         String prefix = null;
+        int prefixDepth = Integer.MAX_VALUE;
         int count = 0;
         long declaredBytes = 0;
         try (ZipFile archive = new ZipFile(zip.toFile())) {
@@ -227,16 +229,19 @@ public final class LLMSkillArchiveUtil {
                 if (!entry.isDirectory()) {
                     String[] parts = name.split("/");
                     if ("SKILL.md".equalsIgnoreCase(parts[parts.length - 1])) {
-                        String candidate = parts.length == 1
-                                ? ""
-                                : parts.length == 2 ? parts[0] + "/" : null;
-                        if (candidate == null) {
-                            throw new IOException("SKILL.md must be at the archive root or one directory deep");
+                        int depth = parts.length - 1;
+                        if (depth > 1) {
+                            // Nested SKILL.md files are resources of the primary skill.
+                            continue;
                         }
-                        if (prefix != null && !prefix.equals(candidate)) {
-                            throw new IOException("Skill archive contains multiple SKILL.md files");
+                        String candidate = depth == 0 ? "" : parts[0] + "/";
+                        if (prefix == null || depth < prefixDepth) {
+                            prefix = candidate;
+                            prefixDepth = depth;
+                        } else if (depth == prefixDepth && !prefix.equals(candidate)) {
+                            throw new IOException(
+                                    "Skill archive contains multiple root-level SKILL.md files");
                         }
-                        prefix = candidate;
                     }
                 }
             }
@@ -288,8 +293,7 @@ public final class LLMSkillArchiveUtil {
     }
 
     private static boolean isMacMetadata(String name) {
-        return name.equals("__MACOSX") || name.startsWith("__MACOSX/")
-                || name.equals(".DS_Store") || name.endsWith("/.DS_Store");
+        return FileUtil.isMacMetadata(name);
     }
 
     private static void validateExtractedContent(Path root) throws IOException {

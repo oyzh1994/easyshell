@@ -1171,7 +1171,7 @@ public final class LLMAgentRuntime {
             additionalNames.addAll(this.mcpSession.getToolNames());
         }
         if (this.skillSession != null && this.skillSession.hasSkills()) {
-            toolProviders.add(this.skillSession.getToolProvider());
+            toolProviders.addAll(this.skillSession.getToolProviders());
             additionalNames.addAll(this.skillSession.getToolNames());
         }
         if (!toolProviders.isEmpty()) {

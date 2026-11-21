@@ -39,6 +39,7 @@ import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
 import cn.oyzh.easyshell.llm.skill.LLMSkillSession;
+import cn.oyzh.easyshell.llm.skill.LLMSkillScriptMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
@@ -234,6 +235,8 @@ public class ChatController extends SubStageController {
 
         private volatile LLMSkillSession skillSession;
 
+        private LLMSkillScriptMode skillScriptMode;
+
         private LLMAgentRuntime agentRuntime;
 
         private List<LLMMcpServer> mcpServers;
@@ -311,13 +314,13 @@ public class ChatController extends SubStageController {
         // MCP 工具，单个 Server 失败不会影响其他工具
         request.mcpSession = LLMMcpToolSession.connect(
                 request.mcpServers, progress -> this.updateMcpProgress(request, progress));
-        request.skillSession = LLMSkillSession.loadEnabled();
+        request.skillSession = LLMSkillSession.loadEnabled(request.skillScriptMode);
         List<ToolProvider> toolProviders = new ArrayList<>(2);
         if (request.mcpSession.hasClients()) {
             toolProviders.add(request.mcpSession.getToolProvider());
         }
         if (request.skillSession.hasSkills()) {
-            toolProviders.add(request.skillSession.getToolProvider());
+            toolProviders.addAll(request.skillSession.getToolProviders());
         }
         if (!toolProviders.isEmpty()) {
             services.toolProviders(toolProviders);
@@ -495,6 +498,7 @@ public class ChatController extends SubStageController {
             request.agentFailurePolicy = this.view.getSelectedAgentFailurePolicy();
             request.executionMode = this.view.getSelectedExecutionMode();
             request.toolAccessMode = this.view.getSelectedToolAccessMode();
+            request.skillScriptMode = this.view.getSelectedSkillScriptMode();
             request.prompt = this.loadSelectedPrompt();
             request.sessionId = this.currentSession == null ? null : this.currentSession.getUid();
             request.sessionTabId = request.sessionTab == null ? null : request.sessionTab.getId();

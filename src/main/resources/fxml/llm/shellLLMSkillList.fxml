@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import cn.oyzh.easyshell.fx.llm.LLMSkillEnabledTableColumn?>
+<?import cn.oyzh.easyshell.fx.llm.LLMSkillScriptEnabledTableColumn?>
 <?import cn.oyzh.easyshell.fx.llm.LLMSkillTableView?>
 <?import cn.oyzh.easyshell.fx.llm.LLMSkillValidationStateTableColumn?>
 <?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
@@ -52,7 +53,7 @@
                            flexHeight="100% - 60">
             <columns>
                 <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
-                <FXTableColumn flexWidth="100% - 600" valueName="filePath"
+                <FXTableColumn flexWidth="100% - 720" valueName="filePath"
                                text="%shell.llm.skill.file"/>
                 <FXTableColumn prefWidth="110" valueName="fileSizeText"
                                text="%shell.llm.skill.fileSize"/>
@@ -60,6 +61,8 @@
                                text="%shell.llm.skill.hash"/>
                 <LLMSkillValidationStateTableColumn prefWidth="100"
                                                    text="%shell.llm.skill.validation"/>
+                <LLMSkillScriptEnabledTableColumn prefWidth="120"
+                                                 text="%shell.llm.skill.scriptEnabled"/>
                 <LLMSkillEnabledTableColumn prefWidth="100" text="%base.status"/>
             </columns>
             <FXVBox.margin>

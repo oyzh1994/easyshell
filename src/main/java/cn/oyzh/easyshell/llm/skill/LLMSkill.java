@@ -46,6 +46,9 @@ public class LLMSkill implements Serializable {
     @Column
     private Boolean enabled = false;
 
+    @Column
+    private Boolean scriptEnabled = false;
+
     private transient LLMSkillValidationState validationState =
             LLMSkillValidationState.UNKNOWN;
 
@@ -103,6 +106,14 @@ public class LLMSkill implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isScriptEnabled() {
+        return BooleanUtil.isTrue(this.scriptEnabled);
+    }
+
+    public void setScriptEnabled(boolean scriptEnabled) {
+        this.scriptEnabled = scriptEnabled;
     }
 
     public LLMSkillValidationState getValidationState() {

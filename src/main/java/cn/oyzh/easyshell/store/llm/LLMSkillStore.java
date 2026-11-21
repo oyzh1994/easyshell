@@ -31,6 +31,19 @@ public class LLMSkillStore extends JdbcStandardStore<LLMSkill> {
         return super.update(skill);
     }
 
+    public boolean setScriptEnabled(LLMSkill skill, boolean scriptEnabled) {
+        if (skill == null || skill.getUid() == null) {
+            return false;
+        }
+        boolean previous = skill.isScriptEnabled();
+        skill.setScriptEnabled(scriptEnabled);
+        if (super.update(skill)) {
+            return true;
+        }
+        skill.setScriptEnabled(previous);
+        return false;
+    }
+
     public boolean nameExists(String name, String excludeUid) {
         if (name == null || name.isBlank()) {
             return false;

@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentFailurePolicy;
 import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentStepLimit;
+import cn.oyzh.easyshell.llm.skill.LLMSkillScriptMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
@@ -109,6 +110,12 @@ public class ShellSetting extends AppSetting {
      */
     @Column
     private Integer llmAgentFailurePolicy = LLMAgentFailurePolicy.CONTINUE.ordinal();
+
+    /**
+     * LLM Skill脚本模式
+     */
+    @Column
+    private Integer llmSkillScriptMode = LLMSkillScriptMode.NONE.ordinal();
 
     /**
      * LLM当前使用的供应商id
@@ -651,6 +658,24 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 获取LLM Skill脚本模式
+     *
+     * @return 脚本模式
+     */
+    public int getLlmSkillScriptMode() {
+        return LLMSkillScriptMode.fromOrdinal(this.llmSkillScriptMode).ordinal();
+    }
+
+    /**
+     * 设置LLM Skill脚本模式
+     *
+     * @param scriptMode 脚本模式序号
+     */
+    public void setLlmSkillScriptMode(int scriptMode) {
+        this.llmSkillScriptMode = LLMSkillScriptMode.fromOrdinal(scriptMode).ordinal();
+    }
+
+    /**
      * 获取LLM当前选择的模型
      *
      * @return 模型名称
@@ -855,6 +880,7 @@ public class ShellSetting extends AppSetting {
             this.llmAgentMaxConcurrency = setting.llmAgentMaxConcurrency;
             this.llmAgentMaxSteps = setting.llmAgentMaxSteps;
             this.llmAgentFailurePolicy = setting.llmAgentFailurePolicy;
+            this.llmSkillScriptMode = setting.llmSkillScriptMode;
             this.llmExecutionMode = setting.llmExecutionMode;
             this.llmToolAccessMode = setting.llmToolAccessMode;
             this.llmTimeoutMinutes = setting.llmTimeoutMinutes;
