@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.sqlite.table.ShellSqliteTableColumnExtraController"
-        realHeight="170">
+        realHeight="200">
     <FXHBox flexWidth="100%" realHeight="30" fx:id="columnKindBox" managed="false" visible="false">
         <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.column.kind">
             <HBox.margin>

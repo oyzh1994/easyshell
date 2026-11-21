@@ -6,7 +6,6 @@ import cn.oyzh.fx.gui.tabs.RichTabController;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.tab.FXTab;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 
 
 /**
@@ -15,7 +14,7 @@ import javafx.fxml.Initializable;
  * @author oyzh
  * @since 2025-11-10
  */
-public class ShellOracleHomeTabController extends RichTabController implements Initializable {
+public class ShellOracleHomeTabController extends RichTabController {
 
     /**
      * 类型

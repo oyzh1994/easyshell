@@ -64,8 +64,8 @@
                                    flexWidth="100%">
                     <columns>
                         <DBStatusColumn/>
-                        <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name" resizable="true"/>
-                        <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type" resizable="true"/>
+                        <FXTableColumn flexWidth="20%" valueName="nameControl" text="%base.name"/>
+                        <FXTableColumn flexWidth="25%" valueName="typeControl" text="%base.type"/>
                         <FXTableColumn realWidth="80" valueName="sizeControl" text="%base.length"/>
                         <FXTableColumn realWidth="80" valueName="digitsControl" text="%base.digits"/>
                         <FXTableColumn realWidth="60" valueName="primaryKeyControl" text="%base.key"/>
