@@ -86,11 +86,14 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
     public void writeRecord(Map<String, Object> object) throws Exception {
         String tableName = this.columns.tableName();
         List<DamengColumn> columnList = this.columns.sortOfPosition();
+        List<DamengColumn> writableColumns = columnList.stream()
+                .filter(column -> !column.isGenerated())
+                .toList();
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.DAMENG);
         StringBuilder sql = new StringBuilder(sqlBase);
         if (this.config.isIncludeTitle()) {
             sql.append("(");
-            for (DamengColumn dbColumn : columnList) {
+            for (DamengColumn dbColumn : writableColumns) {
                 sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.DAMENG)).append(", ");
             }
             if (sql.toString().endsWith(", ")) {
@@ -99,7 +102,7 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
             sql.append(")");
         }
         sql.append(" VALUES (");
-        for (DamengColumn dbColumn : columnList) {
+        for (DamengColumn dbColumn : writableColumns) {
             Object val = object.get(dbColumn.getName());
             val = this.parameterized(dbColumn, val, this.config);
             sql.append(val).append(", ");
@@ -122,6 +125,10 @@ public class ShellDamengSqlTypeFileWriter extends ShellDamengTypeFileWriter {
     public Object parameterized(DamengColumn column, Object value, DBDataExportConfig config) {
         if (value == null) {
             return "NULL";
+        }
+        String complexLiteral = ShellDamengDataUtil.complexLiteral(column, value);
+        if (complexLiteral != null) {
+            return complexLiteral;
         }
         value = ShellDamengDataUtil.valueStandardization(column, value);
         //        if (column.supportGeometry()) {

@@ -42,7 +42,7 @@ public class ShellDamengCsvTypeFileWriter extends ShellDamengTypeFileWriter {
     public ShellDamengCsvTypeFileWriter(String filePath, DBDataExportConfig config, DamengColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = new CsvFileWriter(filePath, config);
+        this.writer = new CsvFileWriter(filePath, config, config.getFieldSeparator());
     }
 
     @Override

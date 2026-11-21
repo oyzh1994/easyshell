@@ -175,7 +175,18 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
         builder.append(" ADD COLUMN (\n");
         len = builder.length();
         for (DamengColumn column : param.getColumns()) {
-            if (DamengColumns.isCreated(column)) {
+            if (column.requiresGeneratedColumnRebuild()) {
+                StringBuilder drop = new StringBuilder("ALTER TABLE ")
+                        .append(fullName)
+                        .append(" DROP COLUMN ")
+                        .append(DBUtil.wrap(StringUtil.blankToDefault(
+                                column.originalName(), column.getName()), DBDialect.DAMENG))
+                        .append(";");
+                this.sqlList.add(drop.toString());
+            }
+        }
+        for (DamengColumn column : param.getColumns()) {
+            if (DamengColumns.isCreated(column) || column.requiresGeneratedColumnRebuild()) {
                 builder.append("\t");
                 builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
                 this.appendColumnType(builder, column, true);
@@ -191,7 +202,7 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
 
         // 修改字段
         for (DamengColumn column : param.getColumns()) {
-            if (DamengColumns.isChanged(column)) {
+            if (DamengColumns.isChanged(column) && !column.requiresGeneratedColumnRebuild()) {
                 StringUtil.clear(builder);
                 if (param.isExistAutoIncrement()) {
                     boolean dropIdentity = false;
@@ -460,20 +471,27 @@ public class DamengTableAlertSqlGenerator extends DBSqlGenerator {
         } else if (column.supportValue() && column.getValue() != null) {
             builder.append("(").append(column.getValue()).append(")");
         }
-        boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement();
-        if (!isIdentity && column.getDefaultValueFix() != null) {
-            builder.append(" DEFAULT ").append(column.getDefaultValueFix());
-        }
-        if (column.isNullable()) {
-            builder.append(" NULL");
+        if (column.isGenerated()) {
+            builder.append(" GENERATED ALWAYS AS (")
+                    .append(column.getGeneratedExpression())
+                    .append(") VIRTUAL");
+            builder.append(column.isNullable() ? " NULL" : " NOT NULL");
         } else {
-            builder.append(" NOT NULL");
-        }
-        if (isIdentity && created) {
-            if (column.isIdentityAutoIncrementType()) {
-                builder.append(" IDENTITY(1, 1)");
+            boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement();
+            if (!isIdentity && column.getDefaultValueFix() != null) {
+                builder.append(" DEFAULT ").append(column.getDefaultValueFix());
+            }
+            if (column.isNullable()) {
+                builder.append(" NULL");
             } else {
-                builder.append(" ").append(column.getAutoIncrementType());
+                builder.append(" NOT NULL");
+            }
+            if (isIdentity && created) {
+                if (column.isIdentityAutoIncrementType()) {
+                    builder.append(" IDENTITY(1, 1)");
+                } else {
+                    builder.append(" ").append(column.getAutoIncrementType());
+                }
             }
         }
     }

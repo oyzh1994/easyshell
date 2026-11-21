@@ -39,6 +39,18 @@ public class ShellDamengColumnUtil {
         //        clobField.supportJson = true;
         clobField.supportString = true;
 
+        DBColumnField textField = new DBColumnField("TEXT");
+        textField.supportText = true;
+        textField.supportString = true;
+
+        DBColumnField longVarcharField = new DBColumnField("LONGVARCHAR");
+        longVarcharField.supportText = true;
+        longVarcharField.supportString = true;
+
+        DBColumnField xmlTypeField = new DBColumnField("XMLTYPE");
+        xmlTypeField.supportText = true;
+        xmlTypeField.supportString = true;
+
         DBColumnField ncharField = new DBColumnField("NCHAR");
         ncharField.suggestSize = 255;
         ncharField.supportSize = true;
@@ -161,6 +173,9 @@ public class ShellDamengColumnUtil {
         DBColumnField imageField = new DBColumnField("IMAGE");
         imageField.supportBinary = true;
 
+        DBColumnField longVarBinaryField = new DBColumnField("LONGVARBINARY");
+        longVarBinaryField.supportBinary = true;
+
         DBColumnField rawField = new DBColumnField("RAW");
         rawField.suggestSize = 255;
         // rawField.supportSize = true;
@@ -215,6 +230,9 @@ public class ShellDamengColumnUtil {
         // 其他
         putFiled(bitFiled);
         putFiled(clobField);
+        putFiled(textField);
+        putFiled(longVarcharField);
+        putFiled(xmlTypeField);
 
         // 二进制
         putFiled(blobField);
@@ -222,6 +240,7 @@ public class ShellDamengColumnUtil {
         putFiled(binaryField);
         putFiled(rawField);
         putFiled(imageField);
+        putFiled(longVarBinaryField);
 
         // 不常见
         putFiled(timeWithTzField);

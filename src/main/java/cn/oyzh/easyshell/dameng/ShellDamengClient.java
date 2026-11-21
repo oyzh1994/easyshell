@@ -1263,6 +1263,25 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            // 达梦字段字典不区分默认值表达式和虚列表达式，结合建表语句识别。
+            String createSql = "";
+            try {
+                createSql = this.showCreateTable(schema, tableName);
+            } catch (Exception ignored) {
+                // 视图等对象没有表 DDL，不影响字段读取。
+            }
+            for (DamengColumn column : columns) {
+                boolean generated = ShellDamengHelper.isGeneratedColumn(createSql, column.getName());
+                column.setGenerated(generated);
+                if (generated) {
+                    String expression = column.getDefaultValueString();
+                    if (StringUtil.isBlank(expression)) {
+                        expression = ShellDamengHelper.extractGeneratedExpression(
+                                createSql, column.getName());
+                    }
+                    column.setGeneratedExpression(expression);
+                }
+            }
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, tableName, columns, false);
             // 返回排序后的数据
@@ -1291,8 +1310,14 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String columnName = resultSet.getString("COLUMN_NAME");
             String isNullable = resultSet.getString("IS_NULLABLE");
             String isAutoIncrement = resultSet.getString("IS_AUTOINCREMENT");
+            String typeName = resultSet.getString("TYPE_NAME");
             boolean isIdentity = !StringUtil.equalsIgnoreCase(isNullable, "YES") && StringUtil.equalsIgnoreCase(isAutoIncrement, "YES");
             DamengColumn column = columns.column(columnName);
+            if (column != null && StringUtil.startWithIgnoreCase(column.getType(), "CLASS")
+                    && StringUtil.isNotBlank(typeName)) {
+                // ALL_TAB_COLUMNS对用户自定义类型只返回内部CLASS编号。
+                column.typeProperty().set(typeName.toUpperCase());
+            }
             if (column != null && isIdentity) {
                 column.setAutoIncrement(isIdentity);
                 if (!isView) {
@@ -1414,7 +1439,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             builder.append("INSERT INTO ")
                     .append(DBUtil.wrap(param.getSchema(), param.getTableName(), DBDialect.DAMENG))
                     .append("(");
-            for (String column : param.getRecord().columns()) {
+            List<String> columnNames = new ArrayList<>(param.getRecord().columns());
+            for (String column : columnNames) {
                 // 序列
                 if (param.getRecord().isDefaultValueSequence(column)) {
                     continue;
@@ -1424,12 +1450,17 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
-            for (String column : param.getRecord().columns()) {
+            for (String column : columnNames) {
                 // 序列
                 if (param.getRecord().isDefaultValueSequence(column)) {
                     continue;
                 }
-                builder.append("?,");
+                String complexLiteral = complexLiteral(param.getRecord(), column);
+                if (complexLiteral != null) {
+                    builder.append(complexLiteral).append(",");
+                } else {
+                    builder.append("?,");
+                }
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
@@ -1438,9 +1469,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getSchema());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
-            for (String column : param.getRecord().columns()) {
+            for (String column : columnNames) {
                 // 序列
-                if (param.getRecord().isDefaultValueSequence(column)) {
+                if (param.getRecord().isDefaultValueSequence(column)
+                        || complexLiteral(param.getRecord(), column) != null) {
                     continue;
                 }
                 DBUtil.setVal(statement, param.getRecord().value(column), index++);
@@ -1539,28 +1571,40 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             String schema = param.getSchema();
             String tableName = param.getTableName();
             DBRecordData recordData = param.getUpdateRecord();
+            List<String> updateColumns = new ArrayList<>(recordData.columns());
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
                     .append(DBUtil.wrap(schema, tableName, DBDialect.DAMENG))
                     .append(" SET ");
-            for (String column : recordData.columns()) {
-                builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(" = ?,");
+            for (String column : updateColumns) {
+                builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(" = ");
+                String complexLiteral = complexLiteral(recordData, column);
+                if (complexLiteral != null) {
+                    builder.append(complexLiteral).append(",");
+                } else {
+                    builder.append("?,");
+                }
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.append(" WHERE ");
             Connection connection = this.getConnManager().connection(schema);
             if (param.getPrimaryKey() == null) {
                 DBRecordData originalRecordData = param.getRecord();
+                List<String> originalColumns = new ArrayList<>(originalRecordData.columns());
                 // 参数
                 boolean first = true;
-                for (String column : originalRecordData.columns()) {
+                for (String column : originalColumns) {
                     if (first) {
                         first = false;
                     } else {
                         builder.append(" AND ");
                     }
                     Object value = originalRecordData.value(column);
-                    if (value == null) {
+                    String complexLiteral = complexLiteral(originalRecordData, column);
+                    if (complexLiteral != null) {
+                        builder.append(DBUtil.wrap(column, DBDialect.DAMENG))
+                                .append(" = ").append(complexLiteral);
+                    } else if (value == null) {
                         builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(" IS NULL");
                     } else {
                         builder.append(DBUtil.wrap(column, DBDialect.DAMENG)).append(" = ?");
@@ -1572,13 +1616,15 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 this.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                for (String colName : updateColumns) {
+                    if (complexLiteral(recordData, colName) == null) {
+                        DBUtil.setVal(statement, recordData.value(colName), index++);
+                    }
                 }
                 // 设置参数
-                for (String colName : originalRecordData.columns()) {
+                for (String colName : originalColumns) {
                     Object value = originalRecordData.value(colName);
-                    if (value != null) {
+                    if (value != null && complexLiteral(originalRecordData, colName) == null) {
                         DBUtil.setVal(statement, value, index++);
                     }
                 }
@@ -1593,8 +1639,10 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 int index = 1;
                 // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                for (String colName : updateColumns) {
+                    if (complexLiteral(recordData, colName) == null) {
+                        DBUtil.setVal(statement, recordData.value(colName), index++);
+                    }
                 }
                 // 设置参数
                 DBUtil.setVal(statement, primaryKey.originalData(), index);
@@ -1606,6 +1654,22 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 是否使用达梦用户自定义类型构造表达式直接拼接 SQL。
+     *
+     * @param recordData 记录数据
+     * @param columnName 字段名称
+     * @return 结果
+     */
+    private static String complexLiteral(DBRecordData recordData, String columnName) {
+        DBColumn column = recordData.column(columnName);
+        if (column instanceof DamengColumn damengColumn) {
+            return ShellDamengDataUtil.complexLiteral(
+                    damengColumn, recordData.value(columnName));
+        }
+        return null;
     }
 
     /**

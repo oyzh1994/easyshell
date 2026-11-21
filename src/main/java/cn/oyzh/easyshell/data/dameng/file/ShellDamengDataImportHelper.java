@@ -5,6 +5,7 @@ import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
+import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -76,12 +77,23 @@ public class ShellDamengDataImportHelper {
             sql.append(DBUtil.wrap(columns.tableName(), DBDialect.DAMENG));
             sql.append("(");
             for (DamengColumn column : columns) {
+                if (column.isGenerated()) {
+                    continue;
+                }
                 sql.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG)).append(", ");
             }
             sql.deleteCharAt(sql.length() - 2);
             sql.append(") VALUES (");
             for (DamengColumn column : columns) {
+                if (column.isGenerated()) {
+                    continue;
+                }
                 Object val = record.getValue(column.getName());
+                String complexLiteral = ShellDamengDataUtil.complexLiteral(column, val);
+                if (complexLiteral != null) {
+                    sql.append(complexLiteral).append(", ");
+                    continue;
+                }
                 val = DBUtil.unwrapData(val, DBDialect.DAMENG);
                 val = parameterized(column, val, config);
                 sql.append(DBUtil.wrapData(val, DBDialect.DAMENG)).append(", ");

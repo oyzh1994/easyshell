@@ -4,6 +4,7 @@ import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import com.alibaba.fastjson2.JSON;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -83,16 +84,7 @@ public class ShellDamengJsonTypeFileWriter extends ShellDamengTypeFileWriter {
             // 值处理
             DamengColumn column = this.columns.column(entry.getKey());
             Object val = this.parameterized(column, entry.getValue(), this.config);
-            if (val != null) {
-                // 数字
-                if (val instanceof Number) {
-                    builder.append(val);
-                } else {// 其他类型
-                    builder.append("\"").append(val).append("\"");
-                }
-            } else {
-                builder.append("null");
-            }
+            builder.append(JSON.toJSONString(val));
             if (--size != 0) {
                 builder.append(",\n");
             } else {

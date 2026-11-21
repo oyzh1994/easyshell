@@ -106,7 +106,7 @@ public class ShellDamengHtmlTypeFileWriter extends ShellDamengTypeFileWriter {
             values[index] = val;
         }
         for (Object val : values) {
-            builder.append("<td>").append(val).append("</td>");
+            builder.append("<td>").append(this.escapeXml(val)).append("</td>");
         }
         builder.append("</tr>");
         this.writer.writeLine(builder.toString());

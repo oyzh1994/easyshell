@@ -19,6 +19,7 @@ import javafx.beans.property.StringProperty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 达梦数据库字段信息
@@ -27,6 +28,10 @@ import java.util.Map;
  * @since 2025-11-06
  */
 public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<DamengColumn>, Destroyable {
+
+    public static final String KIND_NORMAL = "NORMAL";
+
+    public static final String KIND_GENERATED = "GENERATED";
 
     /**
      * 模式名称
@@ -117,6 +122,16 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
      * 名称
      */
     private String name;
+
+    /**
+     * 是否为虚拟生成列
+     */
+    private boolean generated;
+
+    /**
+     * 生成列表达式
+     */
+    private String generatedExpression;
 
     /**
      * 构造达梦数据库字段
@@ -296,6 +311,82 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
      */
     public boolean isAutoIncrementChanged() {
         return super.checkOriginalData("autoIncrement", this.autoIncrement);
+    }
+
+    @Override
+    public boolean isGenerated() {
+        return this.generated;
+    }
+
+    /**
+     * 设置是否为虚列。
+     *
+     * @param generated 是否为虚列
+     */
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
+        super.putOriginalData("generated", generated);
+    }
+
+    /**
+     * 生成列状态是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedChanged() {
+        return super.checkOriginalData("generated", this.generated);
+    }
+
+    /**
+     * 是否需要重建字段。
+     *
+     * <p>达梦的 MODIFY 不会移除虚列表达式，因此普通列和虚列互换都需要重建。</p>
+     *
+     * @return 结果
+     */
+    public boolean requiresGeneratedColumnRebuild() {
+        return !this.isCreated() && !this.isDeleted() && this.isGeneratedChanged();
+    }
+
+    /**
+     * 获取生成列表达式。
+     *
+     * @return 表达式
+     */
+    public String getGeneratedExpression() {
+        return this.generatedExpression;
+    }
+
+    /**
+     * 设置生成列表达式。
+     *
+     * @param generatedExpression 表达式
+     */
+    public void setGeneratedExpression(String generatedExpression) {
+        this.generatedExpression = generatedExpression;
+        if (StringUtil.isNotBlank(generatedExpression)) {
+            this.setGenerated(true);
+        }
+        super.putOriginalData("generatedExpression", generatedExpression);
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return this.isGenerated();
+    }
+
+    /**
+     * 是否为用户自定义复杂类型。
+     *
+     * @return 结果
+     */
+    public boolean isUserDefinedType() {
+        if (StringUtil.isBlank(this.getType())) {
+            return false;
+        }
+        return DBColumnFieldManager.fieldNames(DBDialect.DAMENG).stream()
+                .noneMatch(type -> Objects.equals(type.trim().toUpperCase(),
+                        this.getType().trim().toUpperCase()));
     }
 
     /**
@@ -549,6 +640,31 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
     }
 
     /**
+     * 清理普通列和生成列互斥属性。
+     */
+    public void normalizeGeneratedAttributes() {
+        if (this.isGenerated()) {
+            this.setAutoIncrement(false);
+            this.setAutoIncrementType(null);
+            this.setDefaultValue(null);
+            this.setUpdateOnCurrentTimestamp(false);
+        } else {
+            this.setGeneratedExpression(null);
+            if (this.isGeneratedChanged()) {
+                // 虚列表达式存放在数据字典 DATA_DEFAULT 中，转回普通列时必须移除。
+                this.setDefaultValue(null);
+            }
+        }
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return StringUtil.isBlank(this.getName())
+                || StringUtil.isBlank(this.getType())
+                || (this.isGenerated() && StringUtil.isBlank(this.generatedExpression));
+    }
+
+    /**
      * 主键是否变更
      *
      * @return 结果
@@ -687,6 +803,8 @@ public class DamengColumn extends DBObject implements DBColumn, ObjectCopier<Dam
             this.setAutoIncrement(column.autoIncrement);
             this.setPrimaryKeySize(column.primaryKeySize);
             this.setAutoIncrementType(column.autoIncrementType);
+            this.setGenerated(column.generated);
+            this.setGeneratedExpression(column.generatedExpression);
             this.setUpdateOnCurrentTimestamp(column.updateOnCurrentTimestamp);
         }
     }

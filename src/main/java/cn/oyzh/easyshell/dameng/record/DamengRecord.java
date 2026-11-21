@@ -100,7 +100,8 @@ public class DamengRecord extends DBObject implements DBRecord, ObjectCopier<Dam
     public DamengRecordProperty putValue(String column, Object value) {
         DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column);
         if (property == null) {
-            property = this.putValue(new DamengColumn(column), value);
+            DamengColumn dbColumn = this.columns == null ? null : this.columns.column(column);
+            property = this.putValue(dbColumn == null ? new DamengColumn(column) : dbColumn, value);
         } else {
             property.setValue(value);
         }
@@ -117,7 +118,7 @@ public class DamengRecord extends DBObject implements DBRecord, ObjectCopier<Dam
     public DamengRecordProperty putValue(DamengColumn column, Object value) {
         DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column.getName());
         if (property == null) {
-            property = new DamengRecordProperty(this, column, value, this.readonly);
+            property = new DamengRecordProperty(this, column, value, this.readonly || column.isGenerated());
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
             this.properties.put(column.getName(), property);
         } else {
@@ -190,6 +191,9 @@ public class DamengRecord extends DBObject implements DBRecord, ObjectCopier<Dam
             if (property == null) {
                 continue;
             }
+            if (column.isGenerated()) {
+                continue;
+            }
             // 主键忽略
             if (column.isPrimaryKey() || column.isAutoIncrement()) {
                 continue;
@@ -203,6 +207,18 @@ public class DamengRecord extends DBObject implements DBRecord, ObjectCopier<Dam
                 continue;
             }
             recordData.put(property.getColumn(), value);
+        }
+        return recordData;
+    }
+
+    @Override
+    public DBRecordData getChangedRecordData() {
+        DBRecordData recordData = new DBRecordData();
+        for (DamengColumn column : this.getColumns()) {
+            DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column.getName());
+            if (property != null && !column.isGenerated() && property.isChanged()) {
+                recordData.put(property.getColumn(), property.get());
+            }
         }
         return recordData;
     }

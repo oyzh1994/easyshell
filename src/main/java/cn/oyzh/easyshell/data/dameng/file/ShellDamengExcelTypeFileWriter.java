@@ -11,6 +11,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -119,6 +121,12 @@ public class ShellDamengExcelTypeFileWriter extends ShellDamengTypeFileWriter {
                 case Calendar v -> cell.setCellValue(v);
                 case LocalDate v -> cell.setCellValue(v);
                 case LocalDateTime v -> cell.setCellValue(v);
+                case BigDecimal v -> cell.setCellValue(v.toPlainString());
+                case BigInteger v -> cell.setCellValue(v.toString());
+                case Byte v -> cell.setCellValue(v.toString());
+                case Short v -> cell.setCellValue(v.toString());
+                case Integer v -> cell.setCellValue(v.toString());
+                case Long v -> cell.setCellValue(v.toString());
                 case Number v -> cell.setCellValue(v.doubleValue());
                 default -> cell.setCellValue(val.toString());
             }

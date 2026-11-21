@@ -4,6 +4,7 @@ import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -23,6 +25,94 @@ import java.util.Map;
  * @since 2026-09-02
  */
 public class ShellDamengHelper {
+
+    /**
+     * 判断字段是否为虚列。
+     *
+     * @param createSql  建表语句
+     * @param columnName 字段名称
+     * @return 结果
+     */
+    public static boolean isGeneratedColumn(String createSql, String columnName) {
+        String line = findColumnDefinitionLine(createSql, columnName);
+        return line != null && line.toUpperCase(Locale.ROOT).contains("GENERATED ALWAYS AS");
+    }
+
+    /**
+     * 从建表语句中提取虚列表达式。
+     *
+     * @param createSql  建表语句
+     * @param columnName 字段名称
+     * @return 表达式，未找到时返回 null
+     */
+    public static String extractGeneratedExpression(String createSql, String columnName) {
+        String line = findColumnDefinitionLine(createSql, columnName);
+        if (line == null) {
+            return null;
+        }
+        String upper = line.toUpperCase(Locale.ROOT);
+        int start = upper.indexOf("GENERATED ALWAYS AS");
+        if (start < 0) {
+            return null;
+        }
+        start = line.indexOf('(', start);
+        if (start < 0) {
+            return null;
+        }
+        int depth = 1;
+        char quote = 0;
+        for (int i = start + 1; i < line.length(); i++) {
+            char current = line.charAt(i);
+            if (quote != 0) {
+                if (current == quote) {
+                    if (i + 1 < line.length() && line.charAt(i + 1) == quote) {
+                        i++;
+                    } else {
+                        quote = 0;
+                    }
+                }
+                continue;
+            }
+            if (current == '\'' || current == '"') {
+                quote = current;
+            } else if (current == '(') {
+                depth++;
+            } else if (current == ')' && --depth == 0) {
+                return line.substring(start + 1, i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 查找字段定义行。
+     *
+     * @param createSql  建表语句
+     * @param columnName 字段名称
+     * @return 字段定义行
+     */
+    private static String findColumnDefinitionLine(String createSql, String columnName) {
+        if (StringUtil.isBlank(createSql) || StringUtil.isBlank(columnName)) {
+            return null;
+        }
+        String quotedName = DBUtil.wrap(columnName, DBDialect.DAMENG);
+        int start = createSql.indexOf(quotedName + " ");
+        if (start < 0) {
+            start = createSql.indexOf(quotedName);
+        }
+        if (start < 0) {
+            return null;
+        }
+        int lineStart = createSql.lastIndexOf('\n', start);
+        int lineEnd = createSql.indexOf('\n', start);
+        if (lineStart < 0) {
+            lineStart = 0;
+        }
+        if (lineEnd < 0) {
+            lineEnd = createSql.length();
+        }
+        return createSql.substring(lineStart, lineEnd);
+    }
 
     //    public static String getFunctionDefinition(Connection connection, String functionName) throws Exception {
     //        String sql = "SELECT DBMS_METADATA.GET_DDL('FUNCTION', " + DBUtil.wrapData(functionName) + ") FROM DUAL";

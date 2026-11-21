@@ -146,27 +146,34 @@ public class DamengTableCreateSqlGenerator extends DBSqlGenerator {
                 builder.append("(").append(column.getValue()).append(")");
             }
 
-            // 达梦自增列使用 IDENTITY
-            boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement();
-
-            // 默认值（达梦自增列不能有DEFAULT约束）
-            if (!isIdentity && column.getDefaultValueFix() != null) {
-                builder.append(" DEFAULT ").append(column.getDefaultValueFix());
-            }
-
-            // 可为null
-            if (column.isNullable()) {
-                builder.append(" NULL");
+            if (column.isGenerated()) {
+                builder.append(" GENERATED ALWAYS AS (")
+                        .append(column.getGeneratedExpression())
+                        .append(") VIRTUAL");
+                builder.append(column.isNullable() ? " NULL" : " NOT NULL");
             } else {
-                builder.append(" NOT NULL");
-            }
+                // 达梦自增列使用 IDENTITY
+                boolean isIdentity = column.supportAutoIncrement() && column.isAutoIncrement();
 
-            // 达梦自增列使用 IDENTITY
-            if (isIdentity) {
-                if (column.isIdentityAutoIncrementType()) {
-                    builder.append(" IDENTITY(1, 1)");
+                // 默认值（达梦自增列不能有DEFAULT约束）
+                if (!isIdentity && column.getDefaultValueFix() != null) {
+                    builder.append(" DEFAULT ").append(column.getDefaultValueFix());
+                }
+
+                // 可为null
+                if (column.isNullable()) {
+                    builder.append(" NULL");
                 } else {
-                    builder.append(" ").append(column.getAutoIncrementType());
+                    builder.append(" NOT NULL");
+                }
+
+                // 达梦自增列使用 IDENTITY
+                if (isIdentity) {
+                    if (column.isIdentityAutoIncrementType()) {
+                        builder.append(" IDENTITY(1, 1)");
+                    } else {
+                        builder.append(" ").append(column.getAutoIncrementType());
+                    }
                 }
             }
 

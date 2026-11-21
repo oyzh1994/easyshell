@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.util.dameng;
 
 import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.column.DamengColumns;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
@@ -18,6 +19,8 @@ import dm.jdbc.driver.DmdbNumeric;
 import dm.jdbc.driver.DmdbRowId;
 import dm.jdbc.driver.DmdbSQLXML;
 import dm.jdbc.driver.DmdbStruct;
+import dm.jdbc.driver.DmdbType;
+import dm.jdbc.internal.desc.Column;
 
 import java.sql.Blob;
 import java.sql.Clob;
@@ -450,12 +453,17 @@ public class ShellDamengDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<DamengColumn> columnList = columns.sortOfPosition();
+        boolean includeColumnNames = includeFields
+                || columnList.stream().anyMatch(DamengColumn::isGenerated);
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.DAMENG);
         for (DamengRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
-            if (includeFields) {
+            if (includeColumnNames) {
                 sql.append(" (");
                 for (DamengColumn dbColumn : columnList) {
+                    if (dbColumn.isGenerated()) {
+                        continue;
+                    }
                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.DAMENG)).append(", ");
                 }
                 if (sql.toString().endsWith(", ")) {
@@ -465,7 +473,15 @@ public class ShellDamengDataUtil {
             }
             sql.append(" VALUES (");
             for (DamengColumn dbColumn : columnList) {
+                if (dbColumn.isGenerated()) {
+                    continue;
+                }
                 Object value = record.getValue(dbColumn.getName());
+                String complexLiteral = complexLiteral(dbColumn, value);
+                if (complexLiteral != null) {
+                    sql.append(complexLiteral).append(", ");
+                    continue;
+                }
                 value = valueStandardization(dbColumn, value);
                 value = DBDataUtil.parameterizedForSql(dbColumn, value, DBDialect.DAMENG);
                 sql.append(value).append(", ");
@@ -495,10 +511,20 @@ public class ShellDamengDataUtil {
                 .append(" SET ");
         boolean doSet = false;
         for (DamengColumn column : columns) {
+            if (column.isGenerated()) {
+                continue;
+            }
             if (primaryKey != null && column == primaryKey.getColumn()) {
                 continue;
             }
             Object value = record.getValue(column.getName());
+            String complexLiteral = complexLiteral(column, value);
+            if (complexLiteral != null) {
+                builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
+                builder.append(" = ").append(complexLiteral).append(", ");
+                doSet = true;
+                continue;
+            }
             value = valueStandardization(column, value);
             value = DBDataUtil.parameterizedForSql(column, value, DBDialect.DAMENG);
             builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
@@ -523,6 +549,11 @@ public class ShellDamengDataUtil {
                 builder.append(DBUtil.wrap(column.getName(), DBDialect.DAMENG));
                 builder.append(" = ");
                 Object value = record.getValue(column.getName());
+                String complexLiteral = complexLiteral(column, value);
+                if (complexLiteral != null) {
+                    builder.append(complexLiteral);
+                    continue;
+                }
                 value = valueStandardization(column, value);
                 value = DBDataUtil.parameterizedForSql(column, value, DBDialect.DAMENG);
                 builder.append(value);
@@ -684,7 +715,13 @@ public class ShellDamengDataUtil {
                 return sqlXml;
             }
         }
-        if (value instanceof DmdbArray || value instanceof DmdbStruct || value instanceof Ref) {
+        if (value instanceof DmdbArray array) {
+            return arrayLiteral(array);
+        }
+        if (value instanceof DmdbStruct struct) {
+            return structLiteral(struct);
+        }
+        if (value instanceof Ref) {
             return value.toString();
         }
         if (value instanceof Clob clob) {
@@ -719,6 +756,130 @@ public class ShellDamengDataUtil {
             return new byte[]{(byte) (bool ? 1 : 0)};
         }
         return value;
+    }
+
+    /**
+     * 判断值是否可以直接作为达梦用户自定义类型构造表达式。
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 结果
+     */
+    public static boolean isComplexLiteral(DamengColumn column, Object value) {
+        return complexLiteral(column, value) != null;
+    }
+
+    /**
+     * 获取可直接嵌入 SQL 的达梦复杂类型构造表达式。
+     *
+     * @param column 字段
+     * @param value  值
+     * @return 构造表达式，不匹配时返回 null
+     */
+    public static String complexLiteral(DamengColumn column, Object value) {
+        if (column == null || !column.isUserDefinedType()
+                || !(value instanceof CharSequence sequence)) {
+            return null;
+        }
+        String text = sequence.toString().trim();
+        String type = column.getType() == null ? "" : column.getType().toUpperCase();
+        String upper = text.toUpperCase();
+        if (type.isEmpty() || !text.endsWith(")")
+                || (!upper.startsWith(type + "(") && !upper.contains("." + type + "("))) {
+            return null;
+        }
+        int depth = 0;
+        char quote = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char current = text.charAt(i);
+            if (quote != 0) {
+                if (current == quote) {
+                    if (i + 1 < text.length() && text.charAt(i + 1) == quote) {
+                        i++;
+                    } else {
+                        quote = 0;
+                    }
+                }
+            } else if (current == '\'' || current == '"') {
+                quote = current;
+            } else if (current == '(') {
+                depth++;
+            } else if (current == ')' && --depth < 0) {
+                return null;
+            }
+        }
+        if (depth != 0 || quote != 0) {
+            return null;
+        }
+        int qualifiedType = upper.indexOf("." + type + "(");
+        if (qualifiedType >= 0) {
+            text = text.substring(qualifiedType + 1);
+        }
+        return text;
+    }
+
+    private static String structLiteral(DmdbStruct struct) {
+        try {
+            Object[] attributes = struct.getAttributes();
+            StringBuilder builder = new StringBuilder(struct.getSQLTypeName()).append("(");
+            for (int i = 0; i < attributes.length; i++) {
+                if (i > 0) {
+                    builder.append(",");
+                }
+                String typeName = null;
+                Column typeColumn = null;
+                if (struct.m_strctDesc != null
+                        && struct.m_strctDesc.m_fieldsObj != null
+                        && i < struct.m_strctDesc.m_fieldsObj.length
+                        && struct.m_strctDesc.m_fieldsObj[i] != null
+                        && struct.m_strctDesc.m_fieldsObj[i].column != null) {
+                    typeColumn = struct.m_strctDesc.m_fieldsObj[i].column;
+                    typeName = typeColumn.typeName;
+                }
+                builder.append(complexAttributeLiteral(attributes[i], typeName, typeColumn));
+            }
+            return builder.append(")").toString();
+        } catch (SQLException ex) {
+            return struct.toString();
+        }
+    }
+
+    private static String arrayLiteral(DmdbArray array) {
+        try {
+            Object values = array.getArray();
+            String itemTypeName = array.m_arrDesc == null || array.m_arrDesc.m_arrObj == null
+                    || array.m_arrDesc.m_arrObj.column == null
+                    ? null : array.m_arrDesc.m_arrObj.column.typeName;
+            Column itemType = array.m_arrDesc == null || array.m_arrDesc.m_arrObj == null
+                    ? null : array.m_arrDesc.m_arrObj.column;
+            String arrayTypeName = array.m_arrDesc == null
+                    ? array.getBaseTypeName() : array.m_arrDesc.getFulName();
+            StringBuilder builder = new StringBuilder(arrayTypeName).append("(");
+            int length = values == null ? 0 : java.lang.reflect.Array.getLength(values);
+            for (int i = 0; i < length; i++) {
+                if (i > 0) {
+                    builder.append(",");
+                }
+                builder.append(complexAttributeLiteral(
+                        java.lang.reflect.Array.get(values, i), itemTypeName, itemType));
+            }
+            return builder.append(")").toString();
+        } catch (SQLException ex) {
+            return array.toString();
+        }
+    }
+
+    private static String complexAttributeLiteral(Object value, String typeName, Column column) {
+        if (value == null) {
+            return "NULL";
+        }
+        if ((column != null && (DmdbType.isCharacter(column.type)
+                || column.type == DmdbType.CLOB))
+                || (typeName != null && StringUtil.containsAnyIgnoreCase(typeName,
+                "CHAR", "CLOB", "TEXT"))) {
+            return DBUtil.wrapString(value.toString(), DBDialect.DAMENG);
+        }
+        return value.toString();
     }
 
     private static String readClob(Clob clob) {
