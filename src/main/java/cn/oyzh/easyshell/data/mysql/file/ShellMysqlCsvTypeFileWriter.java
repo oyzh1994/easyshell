@@ -42,7 +42,7 @@ public class ShellMysqlCsvTypeFileWriter extends ShellMysqlTypeFileWriter {
     public ShellMysqlCsvTypeFileWriter(String filePath, DBDataExportConfig config, MysqlColumns columns) throws IOException {
         this.columns = columns;
         this.config = config;
-        this.writer = new CsvFileWriter(filePath, config);
+        this.writer = new CsvFileWriter(filePath, config, config.getFieldSeparator());
     }
 
     @Override

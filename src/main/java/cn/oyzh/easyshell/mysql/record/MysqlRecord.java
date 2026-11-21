@@ -100,7 +100,8 @@ public class MysqlRecord extends DBObject implements DBRecord, ObjectCopier<Mysq
     public MysqlRecordProperty putValue(String column, Object value) {
         MysqlRecordProperty property = (MysqlRecordProperty) this.getProperty(column);
         if (property == null) {
-            property = putValue(new MysqlColumn(column), value);
+            MysqlColumn dbColumn = this.columns == null ? null : this.columns.column(column);
+            property = putValue(dbColumn == null ? new MysqlColumn(column) : dbColumn, value);
         } else {
             property.setValue(value);
         }
@@ -117,7 +118,7 @@ public class MysqlRecord extends DBObject implements DBRecord, ObjectCopier<Mysq
     public MysqlRecordProperty putValue(MysqlColumn column, Object value) {
         MysqlRecordProperty property = (MysqlRecordProperty) this.getProperty(column.getName());
         if (property == null) {
-            property = new MysqlRecordProperty(this, column, value, this.readonly);
+            property = new MysqlRecordProperty(this, column, value, this.readonly || column.isGenerated());
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
             this.properties.put(column.getName(), property);
         } else {
@@ -189,6 +190,9 @@ public class MysqlRecord extends DBObject implements DBRecord, ObjectCopier<Mysq
             if (property == null) {
                 continue;
             }
+            if (column.isGenerated()) {
+                continue;
+            }
             // 主键忽略
             if (column.isPrimaryKey() || column.isAutoIncrement()) {
                 continue;
@@ -202,6 +206,18 @@ public class MysqlRecord extends DBObject implements DBRecord, ObjectCopier<Mysq
                 continue;
             }
             recordData.put(property.getColumn(), value);
+        }
+        return recordData;
+    }
+
+    @Override
+    public DBRecordData getChangedRecordData() {
+        DBRecordData recordData = new DBRecordData();
+        for (MysqlColumn column : this.getColumns()) {
+            MysqlRecordProperty property = (MysqlRecordProperty) this.getProperty(column.getName());
+            if (property != null && !column.isGenerated() && property.isChanged()) {
+                recordData.put(property.getColumn(), property.get());
+            }
         }
         return recordData;
     }

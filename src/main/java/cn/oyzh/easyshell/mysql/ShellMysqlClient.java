@@ -1377,13 +1377,14 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             builder.append("INSERT INTO ")
                     .append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()))
                     .append("(");
-            for (String column : param.getRecord().columns()) {
+            List<String> columnNames = new ArrayList<>(param.getRecord().columns());
+            for (String column : columnNames) {
                 builder.append(DBUtil.wrap(column, this.dialect())).append(",");
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
-            for (String column : param.getRecord().columns()) {
+            for (String column : columnNames) {
                 if (param.getRecord().isTypeGeometry(column)) {
                     builder.append("ST_GeomFromText(?),");
                 } else {
@@ -1397,7 +1398,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getDbName());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
-            for (String colName : param.getRecord().columns()) {
+            for (String colName : columnNames) {
                 DBUtil.setVal(statement, param.getRecord().value(colName), index++);
             }
             int count = statement.executeUpdate();
@@ -1488,11 +1489,12 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             String dbName = param.getDbName();
             String tableName = param.getTableName();
             DBRecordData recordData = param.getUpdateRecord();
+            List<String> updateColumns = new ArrayList<>(recordData.columns());
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
                     .append(DBUtil.wrap(dbName, tableName, this.dialect()))
                     .append(" SET ");
-            for (String column : recordData.columns()) {
+            for (String column : updateColumns) {
                 if (recordData.isTypeGeometry(column)) {
                     builder.append(DBUtil.wrap(column, this.dialect())).append(" = ST_GeomFromText(?),");
                 } else {
@@ -1504,9 +1506,10 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(dbName);
             if (param.getPrimaryKey() == null) {
                 DBRecordData originalRecordData = param.getRecord();
+                List<String> originalColumns = new ArrayList<>(originalRecordData.columns());
                 // 参数
                 boolean first = true;
-                for (String column : originalRecordData.columns()) {
+                for (String column : originalColumns) {
                     if (first) {
                         first = false;
                     } else {
@@ -1520,11 +1523,11 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 this.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 // 设置值
-                for (String colName : recordData.columns()) {
+                for (String colName : updateColumns) {
                     DBUtil.setVal(statement, recordData.value(colName), index++);
                 }
                 // 设置参数
-                for (String colName : originalRecordData.columns()) {
+                for (String colName : originalColumns) {
                     DBUtil.setVal(statement, originalRecordData.value(colName), index++);
                 }
                 updateCount = DBUtil.executeUpdate(statement);
@@ -1539,7 +1542,7 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 int index = 1;
                 // 设置值
-                for (String colName : recordData.columns()) {
+                for (String colName : updateColumns) {
                     DBUtil.setVal(statement, recordData.value(colName), index++);
                 }
                 // 设置参数

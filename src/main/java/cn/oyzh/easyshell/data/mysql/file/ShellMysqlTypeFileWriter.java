@@ -50,7 +50,7 @@ public abstract class ShellMysqlTypeFileWriter extends DBDataTypeFileWriter {
             }
         }
         if (column.supportJson()) {
-            return TextUtil.escape(value.toString());
+            return value.toString();
         }
         if (column.supportBinary()) {
             byte[] bytes = (byte[]) value;
@@ -60,21 +60,46 @@ public abstract class ShellMysqlTypeFileWriter extends DBDataTypeFileWriter {
             return "0x" + HexUtil.encodeHexStr(bytes, false);
         }
         if (column.supportBit()) {
+            if (value instanceof Boolean bool) {
+                return bool ? "b'1'" : "b'0'";
+            }
             byte[] bytes = (byte[]) value;
             if (bytes.length == 0) {
                 return "";
             }
-            return "b'" + TextUtil.byteToBitStr(bytes) + "'";
+            String bits = TextUtil.byteToBitStr(bytes);
+            if (column.getSize() != null && bits.length() > column.getSize()) {
+                bits = bits.substring(bits.length() - column.getSize());
+            }
+            return "b'" + bits + "'";
         }
         if (column.supportEnum()) {
             return value.toString();
         }
         if (column.supportString()) {
-            return TextUtil.escape((String) value);
+            return value.toString();
         }
         if (column.supportInteger() || column.supportDigits()) {
             return value;
         }
         return value.toString();
+    }
+
+    /**
+     * 转义 XML 文本节点和属性值。
+     *
+     * @param value 原始值
+     * @return 转义后的值
+     */
+    protected String escapeXml(Object value) {
+        if (value == null) {
+            return "";
+        }
+        return value.toString()
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&apos;");
     }
 }

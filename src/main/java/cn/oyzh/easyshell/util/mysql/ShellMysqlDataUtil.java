@@ -415,12 +415,17 @@ public class ShellMysqlDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MysqlColumn> columnList = columns.sortOfPosition();
+        boolean includeColumnNames = includeFields
+                || columnList.stream().anyMatch(MysqlColumn::isGenerated);
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
         for (MysqlRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
-            if (includeFields) {
+            if (includeColumnNames) {
                 sql.append(" (");
                 for (MysqlColumn dbColumn : columnList) {
+                    if (dbColumn.isGenerated()) {
+                        continue;
+                    }
                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
                 }
                 if (sql.toString().endsWith(", ")) {
@@ -430,6 +435,9 @@ public class ShellMysqlDataUtil {
             }
             sql.append(" VALUES (");
             for (MysqlColumn dbColumn : columnList) {
+                if (dbColumn.isGenerated()) {
+                    continue;
+                }
                 Object value = record.getValue(dbColumn.getName());
                 value = valueStandardization(dbColumn, value);
                 value = DBDataUtil.parameterizedForSql(dbColumn, value, DBDialect.MYSQL);
@@ -460,6 +468,9 @@ public class ShellMysqlDataUtil {
                 .append(" SET ");
         boolean doSet = false;
         for (MysqlColumn column : columns) {
+            if (column.isGenerated()) {
+                continue;
+            }
             if (primaryKey != null && column == primaryKey.getColumn()) {
                 continue;
             }
@@ -516,11 +527,7 @@ public class ShellMysqlDataUtil {
      * @return 规整后的值
      */
     public static Object valueStandardization(MysqlColumn column, Object value) {
-        value = valueStandardization(value);
-        if (column != null && column.supportBit() && value instanceof Boolean bool) {
-            return new byte[]{(byte) (bool ? 1 : 0)};
-        }
-        return value;
+        return valueStandardization(value);
     }
 
     /**

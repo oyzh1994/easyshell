@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * MySQL工具类
@@ -326,11 +327,8 @@ public class ShellMysqlHelper {
         DEFAULT_ENVIRONMENT.put(PropertyKey.characterEncoding.getKeyName(), "utf8");
         DEFAULT_ENVIRONMENT.put(PropertyKey.allowPublicKeyRetrieval.getKeyName(), "true");
         DEFAULT_ENVIRONMENT.put(PropertyKey.zeroDateTimeBehavior.getKeyName(), "convertToNull");
-        if (Locale.getDefault().equals(Locale.CHINA)) {
-            DEFAULT_ENVIRONMENT.put(PropertyKey.connectionTimeZone.getKeyName(), "Asia/Shanghai");
-        } else {
-            DEFAULT_ENVIRONMENT.put(PropertyKey.connectionTimeZone.getKeyName(), "UTC");
-        }
+        DEFAULT_ENVIRONMENT.put(PropertyKey.connectionTimeZone.getKeyName(),
+                TimeZone.getDefault().getID());
         DEFAULT_ENVIRONMENT.put(PropertyKey.maxReconnects.getKeyName(), 1);
     }
 

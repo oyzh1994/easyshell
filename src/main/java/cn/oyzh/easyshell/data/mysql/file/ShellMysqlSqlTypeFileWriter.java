@@ -61,10 +61,13 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
         String tableName = this.columns.tableName();
         List<MysqlColumn> columnList = this.columns.sortOfPosition();
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MYSQL);
+        List<MysqlColumn> writableColumns = columnList.stream()
+                .filter(column -> !column.isGenerated())
+                .toList();
         StringBuilder sql = new StringBuilder(sqlBase);
         if (this.config.isIncludeTitle()) {
             sql.append("(");
-            for (MysqlColumn dbColumn : columnList) {
+            for (MysqlColumn dbColumn : writableColumns) {
                 sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MYSQL)).append(", ");
             }
             if (sql.toString().endsWith(", ")) {
@@ -73,7 +76,7 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
             sql.append(")");
         }
         sql.append(" VALUES (");
-        for (MysqlColumn dbColumn : columnList) {
+        for (MysqlColumn dbColumn : writableColumns) {
             Object val = object.get(dbColumn.getName());
             val = this.parameterized(dbColumn, val, this.config);
             sql.append(val).append(", ");
@@ -103,6 +106,12 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
         if (column.supportGeometry()) {
             return "ST_GeomFromText('" + value + "')";
         }
+        if (column.isYearType()) {
+            String text = value.toString();
+            if (text.matches("\\d{4}.*")) {
+                return text.substring(0, 4);
+            }
+        }
         if (column.isDateType() || column.supportTimestamp()) {
             if (value instanceof LocalDateTime date) {
                 return "'" + DateUtil.format(date, config.getDateFormat()) + "'";
@@ -122,11 +131,18 @@ public class ShellMysqlSqlTypeFileWriter extends ShellMysqlTypeFileWriter {
             return "0x" + HexUtil.encodeHexStr(bytes, false);
         }
         if (column.supportBit()) {
+            if (value instanceof Boolean bool) {
+                return bool ? "b'1'" : "b'0'";
+            }
             byte[] bytes = (byte[]) value;
             if (bytes.length == 0) {
                 return "NULL";
             }
-            return "b'" + TextUtil.byteToBitStr(bytes) + "'";
+            String bits = TextUtil.byteToBitStr(bytes);
+            if (column.getSize() != null && bits.length() > column.getSize()) {
+                bits = bits.substring(bits.length() - column.getSize());
+            }
+            return "b'" + bits + "'";
         }
         //        if (column.supportEnum()) {
         //            return "'" + value + "'";

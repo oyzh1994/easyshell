@@ -127,6 +127,16 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
     private String collation;
 
     /**
+     * 是否为生成列
+     */
+    private boolean generated;
+
+    /**
+     * 生成列存储方式
+     */
+    private String generatedStorage;
+
+    /**
      * 构造字段
      */
     public MysqlColumn() {
@@ -260,6 +270,43 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
     @Override
     public boolean isAutoIncrement() {
         return BooleanUtil.isTrue(this.autoIncrement);
+    }
+
+    @Override
+    public boolean isGenerated() {
+        return this.generated;
+    }
+
+    /**
+     * 设置是否为生成列
+     *
+     * @param generated 是否为生成列
+     */
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
+    }
+
+    /**
+     * 获取生成列存储方式
+     *
+     * @return 结果
+     */
+    public String getGeneratedStorage() {
+        return this.generatedStorage;
+    }
+
+    /**
+     * 设置生成列存储方式
+     *
+     * @param generatedStorage 存储方式
+     */
+    public void setGeneratedStorage(String generatedStorage) {
+        this.generatedStorage = generatedStorage;
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return this.isGenerated() && "VIRTUAL".equalsIgnoreCase(this.generatedStorage);
     }
 
     /**
@@ -674,6 +721,13 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         if (StringUtil.isEmpty(extra)) {
             return;
         }
+        if (StringUtil.containsIgnoreCase(extra, "VIRTUAL GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("VIRTUAL");
+        } else if (StringUtil.containsIgnoreCase(extra, "STORED GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("STORED");
+        }
         if (StringUtil.containsIgnoreCase(extra, "auto_increment")) {
             this.setAutoIncrement(true);
         }
@@ -729,6 +783,13 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
         if (StringUtil.containsIgnoreCase(columnExtra, "auto_increment")) {
             this.setAutoIncrement(true);
         }
+        if (StringUtil.containsIgnoreCase(columnExtra, "VIRTUAL GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("VIRTUAL");
+        } else if (StringUtil.containsIgnoreCase(columnExtra, "STORED GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("STORED");
+        }
         if (StringUtil.containsIgnoreCase(columnExtra, "on update CURRENT_TIMESTAMP")) {
             this.setUpdateOnCurrentTimestamp(true);
         }
@@ -762,6 +823,8 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
             this.setPrimaryKey(column.isPrimaryKey());
             this.setDefaultValue(column.getDefaultValue());
             this.setAutoIncrement(column.isAutoIncrement());
+            this.setGenerated(column.isGenerated());
+            this.setGeneratedStorage(column.getGeneratedStorage());
             this.setPrimaryKeySize(column.getPrimaryKeySize());
             this.setUpdateOnCurrentTimestamp(column.isUpdateOnCurrentTimestamp());
         }
