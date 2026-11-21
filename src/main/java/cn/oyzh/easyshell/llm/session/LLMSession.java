@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm.session;
 
 import cn.oyzh.common.date.DateHelper;
+import cn.oyzh.easyshell.llm.LLMTokenUsageStats;
 import cn.oyzh.store.jdbc.Column;
 import cn.oyzh.store.jdbc.PrimaryKey;
 import cn.oyzh.store.jdbc.Table;
@@ -61,6 +62,42 @@ public class LLMSession implements Serializable {
     @Column
     private long updateTime = System.currentTimeMillis();
 
+    /**
+     * Token usage from the most recent model request.
+     */
+    @Column
+    private long lastInputTokens = LLMTokenUsageStats.UNKNOWN;
+
+    @Column
+    private long lastOutputTokens = LLMTokenUsageStats.UNKNOWN;
+
+    @Column
+    private long lastTotalTokens = LLMTokenUsageStats.UNKNOWN;
+
+    /**
+     * Cumulative token usage for this session.
+     */
+    @Column
+    private long sessionInputTokens = LLMTokenUsageStats.UNKNOWN;
+
+    @Column
+    private long sessionOutputTokens = LLMTokenUsageStats.UNKNOWN;
+
+    @Column
+    private long sessionTotalTokens = LLMTokenUsageStats.UNKNOWN;
+
+    /**
+     * Whether every completed request supplied complete provider usage.
+     */
+    @Column
+    private boolean cumulativeUsageComplete = true;
+
+    /**
+     * Duration of the most recent request.
+     */
+    @Column
+    private long lastDurationMillis = LLMTokenUsageStats.UNKNOWN;
+
     public String getUid() {
         return uid;
     }
@@ -108,6 +145,52 @@ public class LLMSession implements Serializable {
 
     public void setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
+    }
+
+    /**
+     * Returns persisted token usage statistics.
+     *
+     * @return statistics
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public LLMTokenUsageStats getTokenUsageStats() {
+        // Columns added by schema migration default to zero on existing rows.
+        if (this.lastInputTokens == 0
+                && this.lastOutputTokens == 0
+                && this.lastTotalTokens == 0
+                && this.sessionInputTokens == 0
+                && this.sessionOutputTokens == 0
+                && this.sessionTotalTokens == 0
+                && this.lastDurationMillis == 0) {
+            return LLMTokenUsageStats.EMPTY;
+        }
+        return new LLMTokenUsageStats(
+                this.lastInputTokens,
+                this.lastOutputTokens,
+                this.lastTotalTokens,
+                this.sessionInputTokens,
+                this.sessionOutputTokens,
+                this.sessionTotalTokens,
+                this.cumulativeUsageComplete,
+                this.lastDurationMillis);
+    }
+
+    /**
+     * Replaces persisted token usage statistics.
+     *
+     * @param stats statistics
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public void setTokenUsageStats(LLMTokenUsageStats stats) {
+        LLMTokenUsageStats value = stats == null ? LLMTokenUsageStats.EMPTY : stats;
+        this.lastInputTokens = value.lastInputTokens();
+        this.lastOutputTokens = value.lastOutputTokens();
+        this.lastTotalTokens = value.lastTotalTokens();
+        this.sessionInputTokens = value.sessionInputTokens();
+        this.sessionOutputTokens = value.sessionOutputTokens();
+        this.sessionTotalTokens = value.sessionTotalTokens();
+        this.cumulativeUsageComplete = value.cumulativeUsageComplete();
+        this.lastDurationMillis = value.lastDurationMillis();
     }
 
     /**

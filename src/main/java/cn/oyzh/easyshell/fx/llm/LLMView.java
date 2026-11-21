@@ -7,7 +7,11 @@ import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.llm.LLMAttachmentCache;
 import cn.oyzh.easyshell.llm.LLMDurationUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.LLMFileContentUtil;
+import cn.oyzh.easyshell.llm.LLMFileContentType;
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.LLMModelContextWindowUtil;
+import cn.oyzh.easyshell.llm.LLMTokenUsageStats;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
@@ -17,6 +21,8 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentFailurePolicy;
 import cn.oyzh.easyshell.llm.agent.LLMAgentMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentStepLimit;
+import cn.oyzh.easyshell.llm.capability.LLMModelCapability;
+import cn.oyzh.easyshell.llm.capability.LLMModelCapabilityResolver;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.skill.LLMSkillScriptMode;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
@@ -32,7 +38,6 @@ import cn.oyzh.fx.gui.svg.glyph.StopSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.llm.SendSVGGlyph;
 import cn.oyzh.fx.plus.chooser.FileChooserHelper;
-import cn.oyzh.fx.plus.controls.FXProgressBar;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
@@ -44,6 +49,7 @@ import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
+import dev.langchain4j.model.output.TokenUsage;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -54,6 +60,7 @@ import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -75,15 +82,15 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 public class LLMView extends FXSplitPane {
 
     private static final double SELECTOR_LABEL_WIDTH = 44;
 
-    private static final double SELECTOR_WIDTH = 180;
+    private static final double SELECTOR_WIDTH = 160;
 
     private static final String EXECUTION_MODE_TOOLTIP = "llm.executionMode.tooltip";
 
@@ -150,9 +157,11 @@ public class LLMView extends FXSplitPane {
 
     private final FXButton settingsButton = new FXButton();
 
-    private final FXProgressBar contextProgress = new FXProgressBar();
+    private final LLMContextUsageIndicator contextUsageIndicator =
+            new LLMContextUsageIndicator();
 
-    private final FXLabel contextLabel = new FXLabel(String.format(I18nResourceBundle.i18nString("shell.llm.contextUsage"), 0));
+    private final StackPane contextUsageSlot =
+            new StackPane(this.contextUsageIndicator);
 
     private final FXLabel attachmentLabel = new FXLabel();
 
@@ -184,6 +193,12 @@ public class LLMView extends FXSplitPane {
 
     private boolean updatingModels;
 
+    private LLMTokenUsageStats tokenUsageStats = LLMTokenUsageStats.EMPTY;
+
+    private LLMModelContextWindowUtil.ContextWindow contextWindowOverride;
+
+    private LLMModelCapability modelCapability = new LLMModelCapability();
+
     public LLMView() {
         this.getStyleClass().add("llm-view");
         FXVBox composer = this.buildComposer();
@@ -213,6 +228,7 @@ public class LLMView extends FXSplitPane {
         this.attachmentBar.setSpacing(6);
         this.attachmentLabel.getStyleClass().add("llm-attachment-chip");
         this.attachmentLabel.setTextOverrun(OverrunStyle.CENTER_ELLIPSIS);
+        this.attachmentLabel.setMinWidth(0);
         this.attachmentLabel.setMaxWidth(360);
         this.attachmentLabel.setCursor(Cursor.HAND);
         this.attachmentLabel.setOnMouseClicked(event -> this.openSelectedFile());
@@ -230,7 +246,8 @@ public class LLMView extends FXSplitPane {
                 this.buildAttachButton(),
                 this.attachmentLabel,
                 this.attachmentRemoveButton,
-                attachmentSpacer
+                attachmentSpacer,
+                this.contextUsageSlot
         );
         this.attachmentBar.setVisible(true);
         this.attachmentBar.setManaged(true);
@@ -284,6 +301,12 @@ public class LLMView extends FXSplitPane {
         Region spacer = new Region();
         FXHBox.setHgrow(spacer, Priority.ALWAYS);
 
+        this.contextUsageSlot.getStyleClass().add("llm-context-usage-slot");
+        this.contextUsageSlot.setMinSize(36, 36);
+        this.contextUsageSlot.setPrefSize(36, 36);
+        this.contextUsageSlot.setMaxSize(36, 36);
+        FXHBox.setHgrow(this.contextUsageSlot, Priority.NEVER);
+
         this.taskStatusLabel.getStyleClass().add("llm-task-status");
         this.taskStatusLabel.setAlignment(Pos.CENTER_RIGHT);
         this.taskStatusLabel.setMinWidth(120);
@@ -311,12 +334,18 @@ public class LLMView extends FXSplitPane {
     private <T> FXHBox labeledCombo(String labelText, FXComboBox<T> comboBox) {
         FXLabel label = new FXLabel(labelText);
         label.getStyleClass().add("llm-field-label");
+        label.setMinWidth(SELECTOR_LABEL_WIDTH);
         label.setPrefWidth(SELECTOR_LABEL_WIDTH);
+        label.setMaxWidth(SELECTOR_LABEL_WIDTH);
         comboBox.getStyleClass().add("llm-combo");
+        comboBox.setMinWidth(SELECTOR_WIDTH);
         comboBox.setPrefWidth(SELECTOR_WIDTH);
+        comboBox.setMaxWidth(SELECTOR_WIDTH);
         FXHBox box = new FXHBox(label, comboBox);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(3);
+        box.setMinWidth(SELECTOR_LABEL_WIDTH + SELECTOR_WIDTH + 3);
+        FXHBox.setHgrow(box, Priority.NEVER);
         return box;
     }
 
@@ -362,25 +391,110 @@ public class LLMView extends FXSplitPane {
 
     private void showSettingsMenu() {
         ContextMenu menu = new ContextMenu();
+        Menu skillScriptModeMenu = this.buildSkillScriptModeMenu();
+        Menu thinkingMenu = this.buildThinkingMenu();
+        Menu executionModeMenu = this.buildExecutionModeMenu();
+        Menu toolAccessModeMenu = this.buildToolAccessModeMenu();
+        skillScriptModeMenu.setDisable(!this.modelCapability.isTools());
+        thinkingMenu.setDisable(!this.modelCapability.isThinking());
+        executionModeMenu.setDisable(!this.modelCapability.isTools());
+        toolAccessModeMenu.setDisable(!this.modelCapability.isTools());
         menu.getItems().addAll(
                 this.buildProviderMenu(),
                 this.buildPromptMenu(),
-                this.buildSkillScriptModeMenu(),
-                this.buildThinkingMenu(),
+                skillScriptModeMenu,
+                this.buildContextWindowMenu(),
+                this.buildModelCapabilityMenu(),
+                thinkingMenu,
                 this.buildThinkingProcessMenu(),
                 this.buildAgentModeMenu(),
                 this.buildAgentOrchestrationMenu(),
                 this.buildAgentConcurrencyMenu(),
                 this.buildAgentMaxStepsMenu(),
                 this.buildAgentFailurePolicyMenu(),
-                this.buildExecutionModeMenu(),
-                this.buildToolAccessModeMenu(),
+                executionModeMenu,
+                toolAccessModeMenu,
                 this.buildStreamingMenu(),
                 this.buildTimeoutMenu(),
                 this.buildMessageLimitMenu(),
                 this.buildMaxOutputTokensMenu()
         );
         menu.show(this.settingsButton, Side.TOP, 0, -4);
+    }
+
+    private Menu buildContextWindowMenu() {
+        String model = this.modelComboBox.getValue();
+        Menu menu = new Menu(I18nResourceBundle.i18nString(
+                "shell.llm.modelCapability.context"));
+        if (StringUtil.isBlank(model) || this.getSelectedProvider() == null) {
+            MenuItem unavailable = new MenuItem(
+                    I18nResourceBundle.i18nString("shell.llm.modelCapability.unavailable"));
+            unavailable.setDisable(true);
+            menu.getItems().add(unavailable);
+            return menu;
+        }
+        ToggleGroup contextGroup = new ToggleGroup();
+        for (Integer tokens : LLMModelContextWindowUtil.OPTIONS) {
+            RadioMenuItem item = new RadioMenuItem(
+                    LLMModelContextWindowUtil.label(tokens));
+            item.setToggleGroup(contextGroup);
+            item.setSelected(tokens == this.modelCapability.getContextWindowTokens());
+            item.setOnAction(event -> this.updateModelCapability(
+                    capability -> capability.setContextWindowTokens(tokens)));
+            menu.getItems().add(item);
+        }
+        return menu;
+    }
+
+    private Menu buildModelCapabilityMenu() {
+        String model = this.modelComboBox.getValue();
+        Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.modelCapability"));
+        if (StringUtil.isBlank(model) || this.getSelectedProvider() == null) {
+            MenuItem unavailable = new MenuItem(
+                    I18nResourceBundle.i18nString("shell.llm.modelCapability.unavailable"));
+            unavailable.setDisable(true);
+            menu.getItems().add(unavailable);
+            return menu;
+        }
+        menu.getItems().add(this.capabilityItem("tools",
+                this.modelCapability.isTools(), LLMModelCapability::setTools));
+        menu.getItems().add(this.capabilityItem("image",
+                this.modelCapability.isImage(), LLMModelCapability::setImage));
+        menu.getItems().add(this.capabilityItem("pdf",
+                this.modelCapability.isPdf(), LLMModelCapability::setPdf));
+        menu.getItems().add(this.capabilityItem("audio",
+                this.modelCapability.isAudio(), LLMModelCapability::setAudio));
+        menu.getItems().add(this.capabilityItem("video",
+                this.modelCapability.isVideo(), LLMModelCapability::setVideo));
+        menu.getItems().add(this.capabilityItem("thinking",
+                this.modelCapability.isThinking(), LLMModelCapability::setThinking));
+        return menu;
+    }
+
+    private CheckMenuItem capabilityItem(String key,
+                                         boolean selected,
+                                         CapabilitySetter setter) {
+        CheckMenuItem item = new CheckMenuItem(I18nResourceBundle.i18nString(
+                "shell.llm.modelCapability." + key));
+        item.setSelected(selected);
+        item.setOnAction(event -> this.updateModelCapability(
+                capability -> setter.set(capability, item.isSelected())));
+        return item;
+    }
+
+    private void updateModelCapability(Consumer<LLMModelCapability> updater) {
+        LLMProvider provider = this.getSelectedProvider();
+        String model = this.modelComboBox.getValue();
+        if (provider == null || StringUtil.isBlank(model) || updater == null) {
+            return;
+        }
+        LLMModelCapability capability = this.modelCapability.copy();
+        updater.accept(capability);
+        if (LLMModelCapabilityResolver.save(provider, model, capability)) {
+            this.modelCapability = capability;
+            this.refreshModelCapabilities();
+            this.refreshContextUsage();
+        }
     }
 
     private Menu buildProviderMenu() {
@@ -802,11 +916,15 @@ public class LLMView extends FXSplitPane {
         this.providerComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.syncProviderSetting(newValue);
             this.updateModels(newValue);
+            this.refreshModelCapabilities();
+            this.refreshContextUsage();
         });
         this.modelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (!this.updatingModels && StringUtil.isNotBlank(newValue)) {
                 this.persistModel(newValue);
             }
+            this.refreshModelCapabilities();
+            this.refreshContextUsage();
         });
         this.thinkingLevelComboBox.selectLevel(this.getSavedThinkingLevel());
         this.thinkingLevelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -1033,31 +1151,72 @@ public class LLMView extends FXSplitPane {
     }
 
     public void setContextUsage(long usedTokens, long maxTokens) {
-        double ratio = maxTokens <= 0 ? 0 : Math.min(1.0, usedTokens / (double) maxTokens);
-        this.setContextUsage(ratio, usedTokens, maxTokens);
+        this.tokenUsageStats = new LLMTokenUsageStats(
+                usedTokens, LLMTokenUsageStats.UNKNOWN, usedTokens,
+                usedTokens, LLMTokenUsageStats.UNKNOWN, usedTokens,
+                false, LLMTokenUsageStats.UNKNOWN);
+        this.contextWindowOverride = new LLMModelContextWindowUtil.ContextWindow(
+                maxTokens, false);
+        this.refreshContextUsage();
     }
 
     public void setContextUsage(double ratio) {
-        this.setContextUsage(ratio, -1, -1);
+        this.tokenUsageStats = LLMTokenUsageStats.EMPTY;
+        this.contextWindowOverride = ratio < 0
+                ? LLMModelContextWindowUtil.ContextWindow.UNKNOWN
+                : new LLMModelContextWindowUtil.ContextWindow(
+                        100_000, false);
+        if (ratio >= 0) {
+            long used = Math.round(Math.max(0, Math.min(1, ratio)) * 100_000);
+            this.tokenUsageStats = this.tokenUsageStats.record(
+                    new TokenUsage((int) used, 0), 0);
+        }
+        this.refreshContextUsage();
     }
 
-    private void setContextUsage(double ratio, long usedTokens, long maxTokens) {
-        double value = Math.max(0, Math.min(1, ratio));
-        FXUtil.runLater(() -> {
-            this.contextProgress.setProgress(value);
-            this.contextLabel.setText(String.format(I18nResourceBundle.i18nString("shell.llm.contextUsage"), Math.round(value * 100)));
-            this.contextProgress.getStyleClass().removeAll("llm-warning", "llm-danger");
-            if (value >= 0.9) {
-                this.contextProgress.getStyleClass().add("llm-danger");
-            } else if (value >= 0.7) {
-                this.contextProgress.getStyleClass().add("llm-warning");
-            }
-            if (usedTokens >= 0 && maxTokens > 0) {
-                this.contextLabel.setTooltip(new Tooltip(formatTokens(usedTokens) + " / " + formatTokens(maxTokens) + " tokens"));
-            } else {
-                this.contextLabel.setTooltip(null);
-            }
-        });
+    /**
+     * Updates real token usage and context occupancy for the current session.
+     *
+     * @param stats token usage statistics
+     */
+    public void setTokenUsageStats(LLMTokenUsageStats stats) {
+        this.tokenUsageStats = stats == null ? LLMTokenUsageStats.EMPTY : stats;
+        this.contextWindowOverride = null;
+        this.refreshContextUsage();
+    }
+
+    public LLMContextUsageIndicator getContextUsageIndicator() {
+        return this.contextUsageIndicator;
+    }
+
+    private void refreshContextUsage() {
+        LLMModelContextWindowUtil.ContextWindow window = this.contextWindowOverride;
+        if (window == null) {
+            window = new LLMModelContextWindowUtil.ContextWindow(
+                    this.modelCapability.getContextWindowTokens(), false);
+        }
+        LLMTokenUsageStats stats = this.tokenUsageStats;
+        LLMModelContextWindowUtil.ContextWindow targetWindow = window;
+        FXUtil.runLater(() -> this.contextUsageIndicator.update(stats, targetWindow));
+    }
+
+    private void refreshModelCapabilities() {
+        this.modelCapability = LLMModelCapabilityResolver.resolve(
+                this.getSelectedProvider(), this.modelComboBox.getValue());
+        boolean thinking = this.modelCapability.isThinking();
+        this.thinkingLevelComboBox.setDisable(!thinking);
+        this.thinkingLevelComboBox.setTooltip(thinking ? null : new Tooltip(
+                I18nResourceBundle.i18nString(
+                        "shell.llm.modelCapability.thinkingDisabled")));
+        String supported = LLMModelCapabilityResolver.attachmentSummary(
+                this.modelCapability);
+        this.attachButton.setTooltip(new Tooltip(String.format(
+                I18nResourceBundle.i18nString(
+                        "shell.llm.modelCapability.attachmentHint"), supported)));
+    }
+
+    public LLMModelCapability getModelCapability() {
+        return this.modelCapability.copy();
     }
 
     public synchronized void setBusy(boolean busy) {
@@ -1480,6 +1639,15 @@ public class LLMView extends FXSplitPane {
     }
 
     public void setSelectedFile(File file) {
+        if (file != null
+                && !this.modelCapability.supports(LLMFileContentUtil.contentType(file))) {
+            String type = LLMFileContentUtil.contentType(file).name();
+            MessageBox.warn(String.format(
+                    I18nResourceBundle.i18nString(
+                            "shell.llm.modelCapability.unsupportedAttachment"),
+                    this.modelComboBox.getValue(), type), this.getWindow());
+            return;
+        }
         this.selectedFile = file;
         boolean hasFile = file != null;
         this.attachmentLabel.setVisible(hasFile);
@@ -1496,16 +1664,6 @@ public class LLMView extends FXSplitPane {
         this.updateSendState();
     }
 
-    private static String formatTokens(long value) {
-        if (value >= 1_000_000L) {
-            return String.format(Locale.ROOT, "%.1fM", value / 1_000_000.0);
-        }
-        if (value >= 1_000L) {
-            return String.format(Locale.ROOT, "%.1fK", value / 1_000.0);
-        }
-        return Long.toString(value);
-    }
-
     public LLMSessionTab findSessionTab(String tabId) {
         if (tabId == null) {
             return null;
@@ -1520,5 +1678,10 @@ public class LLMView extends FXSplitPane {
 
     public void clearSessionTab() {
         this.sessionTabComboBox.clearSelection();
+    }
+
+    @FunctionalInterface
+    private interface CapabilitySetter {
+        void set(LLMModelCapability capability, boolean value);
     }
 }

@@ -26,7 +26,10 @@ public class LLMPromptFxmlTest {
     public static void startJavaFx() throws Exception {
         CountDownLatch startup = new CountDownLatch(1);
         try {
-            Platform.startup(startup::countDown);
+            Platform.startup(() -> {
+                Platform.setImplicitExit(false);
+                startup.countDown();
+            });
         } catch (IllegalStateException ex) {
             startup.countDown();
         }

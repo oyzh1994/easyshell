@@ -132,6 +132,32 @@ public final class LLMFileContentUtil {
         return List.of(TextContent.from(textDescription(text, file, decode(bytes))));
     }
 
+    /**
+     * Returns the attachment content category without reading the file body.
+     *
+     * @param file attachment
+     * @return content category
+     */
+    public static LLMFileContentType contentType(File file) {
+        if (file == null) {
+            return LLMFileContentType.TEXT;
+        }
+        String extension = extension(file);
+        if (IMAGE_MIME_TYPES.containsKey(extension)) {
+            return LLMFileContentType.IMAGE;
+        }
+        if ("pdf".equals(extension)) {
+            return LLMFileContentType.PDF;
+        }
+        if (AUDIO_MIME_TYPES.containsKey(extension)) {
+            return LLMFileContentType.AUDIO;
+        }
+        if (VIDEO_MIME_TYPES.containsKey(extension)) {
+            return LLMFileContentType.VIDEO;
+        }
+        return LLMFileContentType.TEXT;
+    }
+
     private static void validateFile(File file) {
         if (!file.exists()) {
             throw new IllegalArgumentException(ShellI18nHelper.fileNotExists(file.getName()));

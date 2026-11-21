@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.easyshell.fx.llm.LLMProviderTableView;
+import cn.oyzh.easyshell.llm.capability.LLMModelCapabilityStore;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
@@ -71,6 +72,7 @@ public class ShellLLMProviderListController extends StageController {
         String message = String.format(I18nResourceBundle.i18nString("shell.llm.deleteProviderConfirm"), provider.getName());
         if (MessageBox.confirm(message, this.getWindow())) {
             if (this.providerStore.delete(provider)) {
+                LLMModelCapabilityStore.INSTANCE.deleteByProvider(provider.getUid());
                 this.providerTableView.removeItem(provider);
                 MessageBox.okToast(I18nHelper.operationSuccess(), this.getWindow());
             } else {

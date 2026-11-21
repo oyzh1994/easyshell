@@ -104,6 +104,20 @@ public class LLMFileContentUtilTest {
     }
 
     @Test
+    public void classifiesAttachmentTypesWithoutReadingTheBody() throws IOException {
+        assertEquals(LLMFileContentType.IMAGE,
+                LLMFileContentUtil.contentType(this.temp("photo.jpg", new byte[0]).toFile()));
+        assertEquals(LLMFileContentType.PDF,
+                LLMFileContentUtil.contentType(this.temp("doc.pdf", new byte[0]).toFile()));
+        assertEquals(LLMFileContentType.AUDIO,
+                LLMFileContentUtil.contentType(this.temp("voice.mp3", new byte[0]).toFile()));
+        assertEquals(LLMFileContentType.VIDEO,
+                LLMFileContentUtil.contentType(this.temp("clip.mp4", new byte[0]).toFile()));
+        assertEquals(LLMFileContentType.TEXT,
+                LLMFileContentUtil.contentType(this.temp("notes.md", new byte[0]).toFile()));
+    }
+
+    @Test
     public void rejectsUnknownBinaryFile() throws IOException {
         Path file = this.temp("archive.bin", new byte[]{0, 1, 2, 3, 4});
 

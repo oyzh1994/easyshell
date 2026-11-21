@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm.session;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMMessageType;
+import cn.oyzh.easyshell.llm.LLMTokenUsageStats;
 import org.junit.After;
 import org.junit.Test;
 
@@ -96,17 +97,30 @@ public class LLMSessionUtilTest {
         session.setTitle("before");
         session.setMessages("[]");
         session.setSessionTabId("tab-1");
+        session.setTokenUsageStats(new LLMTokenUsageStats(
+                100, 20, 120, 300, 60, 360, true, 1_500));
 
         LLMSession snapshot = LLMSessionUtil.snapshot(session);
         session.setTitle("after");
         session.setMessages("[{\"message\":\"new\"}]");
         session.setSessionTabId("tab-2");
+        session.setTokenUsageStats(LLMTokenUsageStats.EMPTY);
 
         assertNotSame(session, snapshot);
         assertEquals("session-1", snapshot.getUid());
         assertEquals("before", snapshot.getTitle());
         assertEquals("[]", snapshot.getMessages());
         assertEquals("tab-1", snapshot.getSessionTabId());
+        assertEquals(120, snapshot.getTokenUsageStats().lastTotalTokens());
+        assertEquals(360, snapshot.getTokenUsageStats().sessionTotalTokens());
+        assertEquals(1_500, snapshot.getTokenUsageStats().lastDurationMillis());
         assertNull(LLMSessionUtil.snapshot(null));
+    }
+
+    @Test
+    public void newSessionStartsWithoutTokenUsage() {
+        LLMSession session = new LLMSession();
+
+        assertEquals(LLMTokenUsageStats.EMPTY, session.getTokenUsageStats());
     }
 }

@@ -11,7 +11,9 @@ import cn.oyzh.easyshell.fx.llm.LLMView;
 import cn.oyzh.easyshell.internal.ShellLLMTools;
 import cn.oyzh.easyshell.llm.LLMAssistant;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.LLMContextBudgetUtil;
 import cn.oyzh.easyshell.llm.LLMFileContentUtil;
+import cn.oyzh.easyshell.llm.LLMFileContentType;
 import cn.oyzh.easyshell.llm.LLMMessage;
 import cn.oyzh.easyshell.llm.LLMNetworkRetry;
 import cn.oyzh.easyshell.llm.LLMRequestTimeout;
@@ -19,6 +21,8 @@ import cn.oyzh.easyshell.llm.LLMResponseUtil;
 import cn.oyzh.easyshell.llm.LLMSafeChatMemory;
 import cn.oyzh.easyshell.llm.LLMTabCapability;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
+import cn.oyzh.easyshell.llm.LLMTokenUsageStats;
+import cn.oyzh.easyshell.llm.LLMTokenUsageTracker;
 import cn.oyzh.easyshell.llm.LLMUtil;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEvent;
 import cn.oyzh.easyshell.llm.agent.LLMAgentEventType;
@@ -29,6 +33,8 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
 import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
+import cn.oyzh.easyshell.llm.capability.LLMModelCapability;
+import cn.oyzh.easyshell.llm.capability.LLMModelCapabilityResolver;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
@@ -80,6 +86,7 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -176,7 +183,7 @@ public class ChatController extends SubStageController {
     protected void bindListeners() {
         this.initLLM();
         this.view.setStopHandler(this::stopCurrentRequest);
-        this.view.setSendValidator(this::validateSessionForSend);
+        this.view.setSendValidator(this::validateRequestForSend);
         this.view.getModelComboBox().selectedItemChanged((observable, oldValue, newValue) -> this.initLLM());
         this.view.getSessionTabComboBox().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (this.activeRequest != null) {
@@ -287,12 +294,22 @@ public class ChatController extends SubStageController {
         private String sessionId;
 
         private String sessionTabId;
+
+        private LLMModelCapability capabilities;
+
+        private final LLMTokenUsageTracker usageTracker = new LLMTokenUsageTracker();
+
+        private final AtomicBoolean usageApplied = new AtomicBoolean();
+
+        private long startedAtMillis;
     }
 
     private LLMAssistant initAssistant(LLMRequest request) {
         LLMProvider provider = request.provider;
         String modelName = LLMUtil.resolveModel(provider, request.model);
         request.model = modelName;
+        boolean toolsEnabled = request.capabilities == null
+                || request.capabilities.isTools();
         // 服务
         AiServices<LLMAssistant> services = AiServices.builder(LLMAssistant.class);
         // 当前 Tab 是默认操作目标，Local Tab 同样属于 SESSION。
@@ -310,18 +327,27 @@ public class ChatController extends SubStageController {
             createdTools.add(internalTools);
         }
         createdTools.add(localExecutionTools);
-        request.tools = createdTools;
         LLMToolSelection toolSelection = new LLMToolSelection(
                 request.sessionTools, internalTools, localExecutionTools,
                 request.executionMode, request.toolAccessMode);
         String promptSystemMessage = LLMPromptUtil.systemMessage(request.prompt);
         LLMSessionContext sessionContext = LLMSessionContext.from(request.sessionTab);
-        List<LLMTools> tools = new ArrayList<>(toolSelection.tools());
+        List<LLMTools> tools = toolsEnabled
+                ? new ArrayList<>(toolSelection.tools())
+                : List.of();
+        if (!toolsEnabled) {
+            this.closeTools(createdTools);
+        }
         request.tools = tools;
         // MCP 工具，单个 Server 失败不会影响其他工具
-        request.mcpSession = LLMMcpToolSession.connect(
-                request.mcpServers, progress -> this.updateMcpProgress(request, progress));
-        request.skillSession = LLMSkillSession.loadEnabled(request.skillScriptMode);
+        request.mcpSession = toolsEnabled
+                ? LLMMcpToolSession.connect(
+                        request.mcpServers,
+                        progress -> this.updateMcpProgress(request, progress))
+                : LLMMcpToolSession.connect(List.of());
+        request.skillSession = toolsEnabled
+                ? LLMSkillSession.loadEnabled(request.skillScriptMode)
+                : LLMSkillSession.emptySession();
         List<ToolProvider> toolProviders = new ArrayList<>(2);
         if (request.mcpSession.hasClients()) {
             toolProviders.add(request.mcpSession.getToolProvider());
@@ -380,12 +406,16 @@ public class ChatController extends SubStageController {
         String systemMessage = joinSystemMessages(
                 promptSystemMessage,
                 sessionContext == null ? "" : sessionContext.promptText(),
-                request.toolPolicy.exposes(LLMToolScope.SESSION)
+                toolsEnabled && request.toolPolicy.exposes(LLMToolScope.SESSION)
                         ? toolSelection.sessionSystemMessage() : "",
-                request.toolPolicy.exposes(LLMToolScope.INTERNAL)
+                toolsEnabled && request.toolPolicy.exposes(LLMToolScope.INTERNAL)
                         ? toolSelection.internalSystemMessage() : "",
-                request.toolPolicy.exposes(LLMToolScope.LOCAL_EXECUTION)
+                toolsEnabled && request.toolPolicy.exposes(LLMToolScope.LOCAL_EXECUTION)
                         ? toolSelection.localExecutionSystemMessage() : "",
+                toolsEnabled ? "" : """
+                        ## Model capability
+                        Tool calling is disabled for the selected model. Do not claim to call or execute tools.
+                        """,
                 request.toolPolicy.promptText());
         if (request.mcpSession.hasClients()
                 && request.toolPolicy.exposes(LLMToolScope.MCP)) {
@@ -401,12 +431,13 @@ public class ChatController extends SubStageController {
         services.chatMemory(request.chatMemory);
         if (request.streaming) {
             // 创建模型
-            StreamingChatModel model = LLMUtil.createStreamingChatModel(provider,
+            StreamingChatModel model = request.usageTracker.wrap(
+                    LLMUtil.createStreamingChatModel(provider,
                     modelName, request.thinkingLevel, request.maxOutputTokens,
-                    LLMRequestTimeout.fromMinutes(request.timeoutMinutes).getDuration());
-            ChatModel agentModel = LLMUtil.createChatModel(provider,
+                    LLMRequestTimeout.fromMinutes(request.timeoutMinutes).getDuration()));
+            ChatModel agentModel = request.usageTracker.wrap(LLMUtil.createChatModel(provider,
                     modelName, request.thinkingLevel, request.maxOutputTokens,
-                    LLMRequestTimeout.fromMinutes(request.timeoutMinutes).getDuration());
+                    LLMRequestTimeout.fromMinutes(request.timeoutMinutes).getDuration()));
             services.streamingChatModel(model);
             // 创建工具
             this.assistant = services.build();
@@ -422,9 +453,9 @@ public class ChatController extends SubStageController {
             request.agentRuntime.setToolPolicy(request.toolPolicy);
         } else {
             // 创建模型
-            ChatModel model = LLMUtil.createChatModel(provider,
+            ChatModel model = request.usageTracker.wrap(LLMUtil.createChatModel(provider,
                     modelName, request.thinkingLevel, request.maxOutputTokens,
-                    LLMRequestTimeout.fromMinutes(request.timeoutMinutes).getDuration());
+                    LLMRequestTimeout.fromMinutes(request.timeoutMinutes).getDuration()));
             services.chatModel(model);
             // 创建工具
             this.assistant = services.build();
@@ -464,7 +495,7 @@ public class ChatController extends SubStageController {
         LLMAgentRuntime runtime = new LLMAgentRuntime(chatModel, streamingChatModel, tools, mcpSession,
                 sessionSystemMessage, internalSystemMessage, localExecutionSystemMessage,
                 sessionContext, mcpSystemMessage,
-                LLMUtil.executionSystemMessage(executionMode),
+                tools.isEmpty() ? "" : LLMUtil.executionSystemMessage(executionMode),
                 LLMUtil.languageSystemMessage(), audit, maxMessages, agentMode,
                 orchestrationMode, agentMaxConcurrency, agentMaxSteps, agentFailurePolicy);
         runtime.setPromptSystemMessage(promptSystemMessage);
@@ -506,7 +537,7 @@ public class ChatController extends SubStageController {
     private void initLLM() {
         this.assistant = null;
         this.view.setSendHandler(message -> {
-            if (!this.validateSessionForSend()) {
+            if (!this.validateRequestForSend()) {
                 return;
             }
             LLMProvider provider = this.validateProviderForSend();
@@ -514,16 +545,21 @@ public class ChatController extends SubStageController {
                 return;
             }
             LLMRequest request = new LLMRequest();
+            request.startedAtMillis = System.currentTimeMillis();
             request.userText = message.getMessage();
             request.provider = provider;
             request.model = this.view.getSelectedModel();
+            request.capabilities = LLMModelCapabilityResolver.resolve(
+                    provider, request.model);
             request.maxOutputTokens = this.view.getLlmMaxOutputTokens();
             request.maxMessages = this.view.getLlmMaxMessages();
             request.timeoutMinutes = this.view.getLlmTimeoutMinutes();
             request.streaming = this.view.isStreamingEnabled();
             request.chatMemory = this.buildChatMemory(message);
             request.sessionTab = this.view.getSelectedSession();
-            request.thinkingLevel = this.view.getSelectedThinkingLevel();
+            request.thinkingLevel = request.capabilities.isThinking()
+                    ? this.view.getSelectedThinkingLevel()
+                    : LLMThinkingLevel.OFF;
             request.agentMode = this.view.getSelectedAgentMode();
             request.orchestrationMode = this.view.getSelectedOrchestrationMode();
             request.agentMaxConcurrency = this.view.getSelectedAgentMaxConcurrency();
@@ -694,6 +730,7 @@ public class ChatController extends SubStageController {
                     if (LLMResponseUtil.outputTruncated(response)) {
                         this.view.addErrorMessage(ShellI18nHelper.outputTruncated(), message.getSessionTabId());
                     }
+                    this.completeRequestUsage(request, response);
                     this.finishRequest(request, true);
                 } catch (Exception ex) {
                     if (!this.isRequestActive(request)) {
@@ -878,6 +915,7 @@ public class ChatController extends SubStageController {
             if (!this.isRequestActive(request)) {
                 return;
             }
+            this.completeRequestUsage(request, response);
             placeholder.finishThinking();
             this.view.flushMessageUpdates();
             String finalText = LLMResponseUtil.finalText(response);
@@ -953,12 +991,40 @@ public class ChatController extends SubStageController {
             if (this.activeRequest == request) {
                 this.activeRequest = null;
             }
+            this.applyRequestUsage(request);
             this.view.setBusy(false);
             if (save) {
                 this.saveCurrentSession();
             }
         }
         this.closeRequestResourcesIfDone(request);
+    }
+
+    private void completeRequestUsage(LLMRequest request, ChatResponse response) {
+        if (request != null) {
+            request.usageTracker.complete(
+                    response == null ? null : response.tokenUsage(),
+                    requestDurationMillis(request));
+        }
+    }
+
+    private void applyRequestUsage(LLMRequest request) {
+        if (request == null || !request.usageApplied.compareAndSet(false, true)) {
+            return;
+        }
+        LLMTokenUsageStats stats = request.usageTracker.snapshot(
+                requestDurationMillis(request));
+        LLMSession session = this.currentSession;
+        if (session != null && Objects.equals(session.getUid(), request.sessionId)) {
+            session.setTokenUsageStats(stats);
+            this.view.setTokenUsageStats(stats);
+        }
+    }
+
+    private static long requestDurationMillis(LLMRequest request) {
+        return request.startedAtMillis <= 0
+                ? LLMTokenUsageStats.UNKNOWN
+                : Math.max(0, System.currentTimeMillis() - request.startedAtMillis);
     }
 
     private void closeRequestResourcesIfDone(LLMRequest request) {
@@ -971,13 +1037,7 @@ public class ChatController extends SubStageController {
         List<LLMTools> requestTools = request.tools;
         request.tools = null;
         if (requestTools != null) {
-            for (LLMTools tools : requestTools) {
-                try {
-                    tools.close();
-                } catch (Exception ex) {
-                    JulLog.warn("close llm tools failed", ex);
-                }
-            }
+            this.closeTools(requestTools);
         }
         LLMMcpToolSession mcpSession = request.mcpSession;
         request.mcpSession = null;
@@ -988,6 +1048,19 @@ public class ChatController extends SubStageController {
         request.skillSession = null;
         if (skillSession != null) {
             skillSession.close();
+        }
+    }
+
+    private void closeTools(List<LLMTools> tools) {
+        if (tools == null) {
+            return;
+        }
+        for (LLMTools tool : tools) {
+            try {
+                tool.close();
+            } catch (Exception ex) {
+                JulLog.warn("close llm tools failed", ex);
+            }
         }
     }
 
@@ -1098,6 +1171,7 @@ public class ChatController extends SubStageController {
         try {
             this.currentSession = LLMSessionUtil.newSession(this.resolveNewSessionTab());
             this.view.clearMessages();
+            this.view.setTokenUsageStats(this.currentSession.getTokenUsageStats());
             this.initLLM();
         } finally {
             this.syncingSessionState = false;
@@ -1130,6 +1204,7 @@ public class ChatController extends SubStageController {
         try {
             this.currentSession = session;
             this.view.setMessages(LLMSessionUtil.fromJson(session.getMessages()));
+            this.view.setTokenUsageStats(session.getTokenUsageStats());
             LLMSessionTab sessionTab = this.view.findSessionTab(session.getSessionTabId());
             if (sessionTab == null) {
                 this.view.clearSessionTab();
@@ -1194,6 +1269,49 @@ public class ChatController extends SubStageController {
         return true;
     }
 
+    private boolean validateRequestForSend() {
+        if (!this.validateSessionForSend()) {
+            return false;
+        }
+        LLMProvider provider = this.view.getSelectedProvider();
+        if (provider == null) {
+            return false;
+        }
+        String model = this.view.getSelectedModel();
+        LLMModelCapability capability = LLMModelCapabilityResolver.resolve(
+                provider, model);
+        File file = this.view.getSelectedFile();
+        if (file != null) {
+            LLMFileContentType type = LLMFileContentUtil.contentType(file);
+            if (!capability.supports(type)) {
+                MessageBox.warn(String.format(
+                        I18nResourceBundle.i18nString(
+                                "shell.llm.modelCapability.unsupportedAttachment"),
+                        model, type.name()), this.getWindow());
+                return false;
+            }
+        }
+        LLMContextBudgetUtil.Result budget = LLMContextBudgetUtil.check(
+                this.currentSession == null
+                        ? LLMTokenUsageStats.EMPTY
+                        : this.currentSession.getTokenUsageStats(),
+                this.view.getMessages(),
+                this.view.getInputArea().getTextTrim(),
+                file,
+                this.view.getLlmMaxOutputTokens(),
+                capability);
+        if (!budget.allowed()) {
+            MessageBox.warn(String.format(
+                    I18nResourceBundle.i18nString(
+                            "shell.llm.modelCapability.contextExceeded"),
+                    LLMTokenUsageStats.formatTokens(budget.estimatedTokens()),
+                    LLMTokenUsageStats.formatTokens(budget.limitTokens())),
+                    this.getWindow());
+            return false;
+        }
+        return true;
+    }
+
     private void saveCurrentSession() {
         FXUtil.runLater(() -> {
             // 请求进行中仅更新界面，避免持久化未完成的 LLM 消息
@@ -1245,5 +1363,7 @@ public class ChatController extends SubStageController {
         this.currentSession.setTitle(stored.getTitle());
         this.currentSession.setCreateTime(stored.getCreateTime());
         this.currentSession.setUpdateTime(stored.getUpdateTime());
+        this.currentSession.setTokenUsageStats(stored.getTokenUsageStats());
+        this.view.setTokenUsageStats(this.currentSession.getTokenUsageStats());
     }
 }

@@ -66,6 +66,7 @@ public final class LLMSessionUtil {
         result.setSessionTabId(session.getSessionTabId());
         result.setCreateTime(session.getCreateTime());
         result.setUpdateTime(session.getUpdateTime());
+        result.setTokenUsageStats(session.getTokenUsageStats());
         return result;
     }
 

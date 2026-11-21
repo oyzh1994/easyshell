@@ -68,6 +68,10 @@ public final class LLMSkillSession implements AutoCloseable {
         }
     }
 
+    public static LLMSkillSession emptySession() {
+        return empty(List.of());
+    }
+
     static LLMSkillSession load(List<LLMSkill> configurations,
                                 LLMSkillManager manager) {
         return load(configurations, manager, LLMSkillScriptMode.NONE);

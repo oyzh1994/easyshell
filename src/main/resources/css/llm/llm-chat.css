@@ -360,6 +360,42 @@
     -fx-background-color: -llm-hover;
 }
 
+.llm-context-usage {
+    -fx-padding: 0;
+    -fx-cursor: help;
+}
+
+.llm-context-usage-slot {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+
+.llm-context-usage-track {
+    -fx-stroke: rgba(128, 128, 128, 0.42);
+    -fx-stroke-line-cap: round;
+}
+
+.llm-context-usage-progress {
+    -fx-stroke: -llm-accent;
+    -fx-stroke-line-cap: round;
+}
+
+.llm-context-usage-warning .llm-context-usage-progress {
+    -fx-stroke: -color-warning-emphasis;
+}
+
+.llm-context-usage-danger .llm-context-usage-progress {
+    -fx-stroke: -color-danger-emphasis;
+}
+
+.llm-context-usage-unknown {
+    -fx-opacity: 0.48;
+}
+
 .llm-send-button {
     -fx-background-color: -llm-accent;
     -fx-background-radius: 8;

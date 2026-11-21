@@ -330,6 +330,7 @@ public class LLMListViewAgentTraceInlineTest {
     private static void startToolkit() {
         try {
             Platform.startup(() -> {
+                Platform.setImplicitExit(false);
             });
         } catch (IllegalStateException ignored) {
             // toolkit is already running in the test JVM

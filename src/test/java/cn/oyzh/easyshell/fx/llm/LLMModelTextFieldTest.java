@@ -62,6 +62,7 @@ public class LLMModelTextFieldTest {
     private static void startToolkit() {
         try {
             Platform.startup(() -> {
+                Platform.setImplicitExit(false);
             });
         } catch (IllegalStateException ignored) {
         }
