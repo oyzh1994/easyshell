@@ -43,6 +43,8 @@ import cn.oyzh.easyshell.llm.skill.LLMSkillScriptMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.llm.tool.LLMToolAudit;
 import cn.oyzh.easyshell.llm.tool.LLMToolNameStrategy;
+import cn.oyzh.easyshell.llm.tool.LLMToolRegistry;
+import cn.oyzh.easyshell.llm.tool.LLMToolRuntimePolicy;
 import cn.oyzh.easyshell.llm.tool.LLMToolSelection;
 import cn.oyzh.easyshell.llm.tool.LLMToolScope;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
@@ -81,6 +83,7 @@ import javafx.scene.control.Tab;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -265,6 +268,10 @@ public class ChatController extends SubStageController {
 
         private LLMExecutionMode executionMode;
 
+        private LLMToolRuntimePolicy toolPolicy;
+
+        private String userText;
+
         private String model;
 
         private int maxOutputTokens;
@@ -322,9 +329,20 @@ public class ChatController extends SubStageController {
         if (request.skillSession.hasSkills()) {
             toolProviders.addAll(request.skillSession.getToolProviders());
         }
-        if (!toolProviders.isEmpty()) {
-            services.toolProviders(toolProviders);
+        Map<String, LLMToolScope> toolScopes = LLMToolRegistry.scopes(tools);
+        for (String name : request.mcpSession.getToolNames()) {
+            toolScopes.put(name, LLMToolScope.MCP);
         }
+        for (String name : request.skillSession.getToolNames()) {
+            toolScopes.put(name, LLMToolScope.SKILL);
+        }
+        request.toolPolicy = new LLMToolRuntimePolicy(
+                request.executionMode, request.toolAccessMode,
+                sessionContext, request.userText, toolScopes);
+        List<LLMTools> exposedTools = tools.stream()
+                .filter(tool -> request.toolPolicy.exposes(tool.scope()))
+                .toList();
+        LLMToolRegistry.configure(services, tools, toolProviders, request.toolPolicy);
         for (String skillError : request.skillSession.getErrors()) {
             JulLog.warn("llm skill unavailable: " + skillError);
         }
@@ -335,14 +353,15 @@ public class ChatController extends SubStageController {
         }
         LLMExecutionMode executionMode = request.executionMode;
         // 工具相关配置
-        services.tools(tools.toArray());
         services.maxToolCallingRoundTrips(100);
         services.toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm());
         Set<String> dynamicToolNames = new LinkedHashSet<>();
-        dynamicToolNames.addAll(request.mcpSession.getToolNames());
-        dynamicToolNames.addAll(request.skillSession.getToolNames());
-        services.hallucinatedToolNameStrategy(
-                LLMToolNameStrategy.create(tools, dynamicToolNames));
+        if (request.toolPolicy.exposes(LLMToolScope.MCP)) {
+            dynamicToolNames.addAll(request.mcpSession.getToolNames());
+        }
+        if (request.toolPolicy.exposes(LLMToolScope.SKILL)) {
+            dynamicToolNames.addAll(request.skillSession.getToolNames());
+        }
         // 工具调用审计
         LLMToolAudit audit = new LLMToolAudit(tools,
                 request.sessionId, request.sessionTabId,
@@ -354,15 +373,26 @@ public class ChatController extends SubStageController {
         }
         audit.registerToolSources(request.mcpSession.getToolSources());
         audit.registerToolSources(request.skillSession.getToolSources(), LLMToolScope.SKILL);
+        services.hallucinatedToolNameStrategy(LLMToolRegistry.protectHallucinatedStrategy(
+                LLMToolNameStrategy.create(exposedTools, dynamicToolNames),
+                request.toolPolicy, audit));
         services.afterToolExecution(audit::record);
         String systemMessage = joinSystemMessages(
                 promptSystemMessage,
                 sessionContext == null ? "" : sessionContext.promptText(),
-                toolSelection.systemMessage());
-        if (request.mcpSession.hasClients()) {
+                request.toolPolicy.exposes(LLMToolScope.SESSION)
+                        ? toolSelection.sessionSystemMessage() : "",
+                request.toolPolicy.exposes(LLMToolScope.INTERNAL)
+                        ? toolSelection.internalSystemMessage() : "",
+                request.toolPolicy.exposes(LLMToolScope.LOCAL_EXECUTION)
+                        ? toolSelection.localExecutionSystemMessage() : "",
+                request.toolPolicy.promptText());
+        if (request.mcpSession.hasClients()
+                && request.toolPolicy.exposes(LLMToolScope.MCP)) {
             systemMessage = joinSystemMessages(systemMessage, request.mcpSession.getSystemMessage());
         }
-        if (request.skillSession.hasSkills()) {
+        if (request.skillSession.hasSkills()
+                && request.toolPolicy.exposes(LLMToolScope.SKILL)) {
             systemMessage = joinSystemMessages(systemMessage,
                     request.skillSession.getSystemMessage());
         }
@@ -389,6 +419,7 @@ public class ChatController extends SubStageController {
                     executionMode, audit, request.maxMessages, request.agentMode,
                     request.orchestrationMode, request.agentMaxConcurrency,
                     request.agentMaxSteps, request.agentFailurePolicy);
+            request.agentRuntime.setToolPolicy(request.toolPolicy);
         } else {
             // 创建模型
             ChatModel model = LLMUtil.createChatModel(provider,
@@ -406,6 +437,7 @@ public class ChatController extends SubStageController {
                     executionMode, audit, request.maxMessages, request.agentMode,
                     request.orchestrationMode, request.agentMaxConcurrency,
                     request.agentMaxSteps, request.agentFailurePolicy);
+            request.agentRuntime.setToolPolicy(request.toolPolicy);
         }
         return this.assistant;
     }
@@ -482,6 +514,7 @@ public class ChatController extends SubStageController {
                 return;
             }
             LLMRequest request = new LLMRequest();
+            request.userText = message.getMessage();
             request.provider = provider;
             request.model = this.view.getSelectedModel();
             request.maxOutputTokens = this.view.getLlmMaxOutputTokens();

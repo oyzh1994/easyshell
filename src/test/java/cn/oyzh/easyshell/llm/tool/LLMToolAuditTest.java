@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm.tool;
 
 import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.easyshell.llm.LLMExecutionMode;
+import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.local.ShellLocalExecutionLLMTools;
 import com.alibaba.fastjson2.JSONObject;
 import dev.langchain4j.agent.tool.P;
@@ -103,6 +104,65 @@ public class LLMToolAuditTest {
         JSONObject record = readSingleRecord(file);
         assertTrue(record.getBooleanValue("failed"));
         assertEquals("permission denied", record.getString("result"));
+    }
+
+    @Test
+    public void marksRuntimePolicyDenialAsBlocked() throws Exception {
+        Path file = Files.createTempFile("llm-tool-audit-", ".jsonl");
+        try (ShellLocalExecutionLLMTools tools = new ShellLocalExecutionLLMTools()) {
+            LLMToolAudit audit = new LLMToolAudit(file, List.of(tools),
+                    null, null, null, null, LLMExecutionMode.APPROVE);
+            ToolExecutionResult result = ToolExecutionResult.builder()
+                    .isError(true)
+                    .resultText(LLMToolRuntimePolicy.BLOCKED_PREFIX
+                            + "local execution is outside the current SSH target")
+                    .build();
+
+            audit.record(execution("local_execute_command_direct",
+                    "{\"command\":\"id\"}", result));
+        }
+
+        JSONObject record = readSingleRecord(file);
+        assertTrue(record.getBooleanValue("blockedByScope"));
+        assertTrue(record.getBooleanValue("failed"));
+        assertEquals("local execution is outside the current SSH target",
+                record.getString("blockReason"));
+    }
+
+    @Test
+    public void recordsHiddenToolAttemptFromHallucinatedToolStrategy() throws Exception {
+        Path file = Files.createTempFile("llm-tool-audit-", ".jsonl");
+        try (ShellLocalExecutionLLMTools tools = new ShellLocalExecutionLLMTools()) {
+            LLMToolAudit audit = new LLMToolAudit(file, List.of(tools),
+                    "session-1", "tab-1", "provider-1", "model-1",
+                    LLMExecutionMode.APPROVE);
+            audit.registerToolAccessMode(LLMToolAccessMode.SESSION_WITH_LOCAL);
+            audit.registerSessionContext("SSH", "10.0.0.12", "root");
+            LLMToolRuntimePolicy policy = new LLMToolRuntimePolicy(
+                    LLMExecutionMode.APPROVE,
+                    LLMToolAccessMode.SESSION_WITH_LOCAL,
+                    new LLMSessionContext("tab-1", "server-a", "SSH",
+                            "10.0.0.12", 22, "root"),
+                    "安装 Docker",
+                    LLMToolRegistry.scopes(List.of(tools)));
+            ToolExecutionRequest request = ToolExecutionRequest.builder()
+                    .id("hidden-local-1")
+                    .name("local_execute_command_direct")
+                    .arguments("{\"command\":\"id\"}")
+                    .build();
+
+            ToolExecutionResultMessage result = LLMToolRegistry.protectHallucinatedStrategy(
+                            LLMToolNameStrategy.create(List.of()), policy, audit)
+                    .apply(request);
+
+            assertTrue(result.isError());
+            assertTrue(result.text().startsWith(LLMToolRuntimePolicy.BLOCKED_PREFIX));
+        }
+
+        JSONObject record = readSingleRecord(file);
+        assertTrue(record.getBooleanValue("blockedByScope"));
+        assertEquals("local_execute_command_direct", record.getString("toolName"));
+        assertTrue(record.getString("blockReason").contains("current bound target"));
     }
 
     @Test

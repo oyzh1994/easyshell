@@ -921,6 +921,8 @@ public class LLMView extends FXSplitPane {
         if (StringUtil.isBlank(text) && this.selectedFile == null) {
             return;
         }
+        // 用户主动发送新消息时恢复自动跟随，不能沿用上一次手动上翻产生的滚动锁。
+        this.messageListView.scrollToBottom();
         LLMMessage message = this.addUserMessage(text, this.selectedFile);
         this.inputArea.clear();
         this.setSelectedFile(null);

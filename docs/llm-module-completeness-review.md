@@ -15,13 +15,14 @@
 - Agent 并发、最大步骤、失败策略和请求取消。
 - 工具作用域、工具命名去重、MCP Tools/Resources、Skill 和脚本模式。
 - 工具审计、敏感参数脱敏和 Agent Trace。
-- 完整 LLM 回归：`189` 项通过，`0` 失败，`2` 项外部环境测试跳过。
+- 完整 LLM 回归：`205` 项通过，`0` 失败，`2` 项外部环境测试跳过。
 
-当前还不建议直接定义为“生产级功能完整”。剩余问题主要集中在运行时安全边界、上下文管理、模型能力识别和少量通用聊天能力。
+当前还不建议直接定义为“生产级功能完整”。剩余问题主要集中在上下文管理、
+模型能力识别、审计凭据安全和少量通用聊天能力。
 
 ## 2. 待办清单
 
-### [ ] P0-1. 将执行模式和作用域变为运行时硬约束
+### [x] P0-1. 将执行模式和作用域变为运行时硬约束
 
 现状：
 
@@ -50,6 +51,25 @@
 - 拒绝结果包含当前目标、拒绝原因和建议的正确工具。
 - 审计日志记录 `blockedByScope=true` 和拒绝原因。
 - 不依赖提示词是否被模型正确遵循。
+
+完成记录：
+
+- 新增 `LLMToolRuntimePolicy`，统一执行模式、工具访问模式、绑定 Session、
+  当前用户任务和工具作用域。
+- 新增 `LLMToolRegistry`，普通工具、MCP 工具和 Skill 工具统一经过包装后的
+  `ToolProvider` 与 `ToolExecutor` 注册。
+- `SUGGEST` 模式不再向模型暴露任何工具；如果模型仍调用已知工具名，会返回
+  `[EASYSHELL_POLICY_BLOCKED]` 错误结果，而不是执行工具。
+- 非 Local Session 默认隐藏 `LOCAL_EXECUTION` 工具。只有当前用户任务明确出现
+  “本机”、“本地机器”、“local machine”等本地意图时才会暴露。
+- Runtime Executor 会再次校验工具作用域，确保即使工具被错误注册也不会执行。
+- 隐藏工具被模型误调用时由工具名保护策略返回可纠正结果，并写入
+  `blockedByScope=true` 和 `blockReason`。
+- Agent Planner 的可用分组和 Worker 工具同步使用同一策略；Local Worker 在无明确
+  本地意图时不会出现在计划中。
+- `SUGGEST`、`SESSION_ONLY`、非 Local Session 本地工具隔离、真实本地工具解析、
+  Local Session、MCP/Skill 独立作用域、AiServices 静态工具注册、Runtime Executor
+  拒绝和审计脱敏均补充测试。
 
 ### [ ] P1-1. 接入真实 Token Usage 和上下文占用
 

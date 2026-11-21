@@ -193,6 +193,7 @@ public final class LLMToolAudit {
         InvocationContext invocationContext = execution.invocationContext();
         Arguments arguments = this.redactArguments(request.arguments());
         String result = resultText(execution);
+        boolean blockedByPolicy = result.startsWith(LLMToolRuntimePolicy.BLOCKED_PREFIX);
 
         Map<String, Object> record = new LinkedHashMap<>();
         record.put("timestamp", OffsetDateTime.now().format(TIME_FORMATTER));
@@ -215,7 +216,11 @@ public final class LLMToolAudit {
         record.put("toolName", request.name());
         record.put("toolClass", this.toolClasses.get(request.name()));
         record.put("toolScope", this.toolScopes.get(request.name()));
-        record.put("blockedByScope", false);
+        record.put("blockedByScope", blockedByPolicy);
+        if (blockedByPolicy) {
+            record.put("blockReason", result.substring(
+                    LLMToolRuntimePolicy.BLOCKED_PREFIX.length()).trim());
+        }
         record.put("arguments", truncate(arguments.text));
         record.put("argumentsLength", arguments.text == null ? 0 : arguments.text.length());
         record.put("argumentsTruncated", arguments.text != null && arguments.text.length() > MAX_TEXT_LENGTH);

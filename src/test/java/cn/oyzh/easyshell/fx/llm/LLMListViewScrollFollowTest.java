@@ -12,8 +12,10 @@ import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -76,6 +78,69 @@ public class LLMListViewScrollFollowTest {
             });
         } finally {
             TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    @Test
+    public void manualSendRestoresAutoFollowAfterUpwardScroll() {
+        startToolkit();
+        AtomicReference<ViewTestContext> contextRef = new AtomicReference<>();
+        AtomicInteger sendCalls = new AtomicInteger();
+        runFxAndWait(() -> {
+            LLMView view = new LLMView();
+            for (int i = 0; i < 80; i++) {
+                view.addUserMessage("message " + i + "\nline 2\nline 3\nline 4\nline 5");
+            }
+            view.setSendHandler(message -> sendCalls.incrementAndGet());
+            StackPane root = new StackPane(view);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root, 720, 600));
+            stage.show();
+            contextRef.set(new ViewTestContext(stage, root, view));
+        });
+        try {
+            for (int i = 0; i < 3; i++) {
+                waitForPulse();
+            }
+            runFxAndWait(() -> {
+                ViewTestContext context = contextRef.get();
+                context.root().applyCss();
+                context.root().layout();
+                context.view().applyCss();
+                context.view().layout();
+                ScrollBar scrollBar = verticalScrollBar(context.view().getMessageListView());
+                assertNotNull(scrollBar);
+                scrollBar.setValue(scrollBar.getMax());
+                Event.fireEvent(context.view().getMessageListView(), upwardScrollEvent());
+                scrollBar.setValue(scrollBar.getMax());
+            });
+            waitForPulse();
+            runFxAndWait(() -> {
+                assertFalse(contextRef.get().view().getMessageListView()
+                        .isAutoScrollEnabled());
+                contextRef.get().view().getInputArea().setText("next message");
+                contextRef.get().view().sendMessage();
+                assertTrue("manual send did not restore auto-follow",
+                        contextRef.get().view().getMessageListView()
+                                .isAutoScrollEnabled());
+            });
+            waitForPulse();
+            waitForPulse();
+            runFxAndWait(() -> {
+                assertEquals(1, sendCalls.get());
+                assertTrue(contextRef.get().view().getMessageListView()
+                        .isAutoScrollEnabled());
+                ScrollBar scrollBar = verticalScrollBar(
+                        contextRef.get().view().getMessageListView());
+                assertNotNull(scrollBar);
+                assertTrue("chat did not return to the bottom",
+                        scrollBar.getValue() >= scrollBar.getMax() - 1);
+            });
+        } finally {
+            ViewTestContext context = contextRef.get();
             if (context != null) {
                 runFxAndWait(context.stage()::close);
             }
@@ -151,5 +216,8 @@ public class LLMListViewScrollFollowTest {
     }
 
     private record TestContext(Stage stage, StackPane root, LLMListView listView) {
+    }
+
+    private record ViewTestContext(Stage stage, StackPane root, LLMView view) {
     }
 }
