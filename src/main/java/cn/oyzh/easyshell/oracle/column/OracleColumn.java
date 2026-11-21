@@ -28,6 +28,10 @@ import java.util.Map;
  */
 public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<OracleColumn>, Destroyable {
 
+    public static final String KIND_NORMAL = "NORMAL";
+
+    public static final String KIND_GENERATED = "GENERATED";
+
     /**
      * 模式名称
      */
@@ -72,6 +76,11 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
      * 是否虚拟列
      */
     private boolean virtual;
+
+    /**
+     * 虚拟列表达式
+     */
+    private String generatedExpression;
 
     /**
      * 注释
@@ -201,6 +210,15 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     }
 
     /**
+     * 获取原始字段类型。
+     *
+     * @return 字段类型
+     */
+    public String getTypeOriginal() {
+        return (String) super.getOriginalData("type");
+    }
+
+    /**
      * 长度是否变更
      *
      * @return 变更结果
@@ -210,12 +228,30 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
     }
 
     /**
+     * 获取原始字段长度。
+     *
+     * @return 字段长度
+     */
+    public Integer getSizeOriginal() {
+        return (Integer) super.getOriginalData("size");
+    }
+
+    /**
      * 小数位是否变更
      *
      * @return 变更结果
      */
     public boolean isDigitsChanged() {
         return super.checkOriginalData("digits", this.digits);
+    }
+
+    /**
+     * 获取原始小数位。
+     *
+     * @return 小数位
+     */
+    public Integer getDigitsOriginal() {
+        return (Integer) super.getOriginalData("digits");
     }
 
     /**
@@ -747,6 +783,9 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
         if (this.autoIncrement == null) {
             this.setAutoIncrement(null);
         }
+        if (this.autoIncrementType == null) {
+            this.setAutoIncrementType(null);
+        }
         if (this.updateOnCurrentTimestamp == null) {
             this.setUpdateOnCurrentTimestamp(null);
         }
@@ -784,6 +823,7 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
             this.setName(column.name);
             this.setSchema(column.schema);
             this.setVirtual(column.virtual);
+            this.setGeneratedExpression(column.generatedExpression);
             this.setDigits(column.digits);
             this.setType(column.getType());
             this.setTypeOwner(column.typeOwner);
@@ -895,6 +935,77 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
      */
     public void setVirtual(boolean virtual) {
         this.virtual = virtual;
+        super.putOriginalData("virtual", virtual);
+    }
+
+    /**
+     * 获取虚拟列表达式。
+     *
+     * @return 表达式
+     */
+    public String getGeneratedExpression() {
+        return generatedExpression;
+    }
+
+    /**
+     * 设置虚拟列表达式。
+     *
+     * @param generatedExpression 表达式
+     */
+    public void setGeneratedExpression(String generatedExpression) {
+        this.generatedExpression = generatedExpression;
+        super.putOriginalData("generatedExpression", generatedExpression);
+    }
+
+    /**
+     * 设置是否为生成列。
+     *
+     * @param generated 是否生成列
+     */
+    public void setGenerated(boolean generated) {
+        this.setVirtual(generated);
+        if (!generated) {
+            this.setGeneratedExpression(null);
+        }
+    }
+
+    /**
+     * 虚拟列表达式是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedExpressionChanged() {
+        return super.checkOriginalData("generatedExpression", this.generatedExpression);
+    }
+
+    /**
+     * 是否为生成列状态是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedChanged() {
+        return this.isGeneratedOriginal() != this.isGenerated();
+    }
+
+    /**
+     * 是否为数据库中的生成列。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedOriginal() {
+        return Boolean.TRUE.equals(super.getOriginalData("virtual"))
+                && !this.isXmlType() && !this.isCollectionType();
+    }
+
+    /**
+     * 清理生成列不适用的普通属性。
+     */
+    public void normalizeGeneratedAttributes() {
+        if (this.isGenerated()) {
+            this.setAutoIncrement(false);
+            this.setDefaultValue(null);
+            this.setUpdateOnCurrentTimestamp(false);
+        }
     }
 
     /**
@@ -995,6 +1106,21 @@ public class OracleColumn extends DBObject implements DBColumn, ObjectCopier<Ora
      */
     public boolean isDmlWritable() {
         return !this.isGenerated() && !this.isBfile() && !this.isAnyDataType();
+    }
+
+    /**
+     * 当前类型是否允许设计为Oracle虚拟列。
+     *
+     * @return 结果
+     */
+    public boolean supportGenerated() {
+        String type = this.getType();
+        return !this.isXmlType()
+                && !this.isComplexType()
+                && !this.isBfile()
+                && !this.isAnyDataType()
+                && !StringUtil.equalsAnyIgnoreCase(type,
+                "CLOB", "NCLOB", "BLOB", "LONG", "LONG RAW", "BFILE", "ROWID", "UROWID");
     }
 
     /**

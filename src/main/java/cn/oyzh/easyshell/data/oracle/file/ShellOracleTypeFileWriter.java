@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileWriter;
+import cn.oyzh.fx.db.util.DBDataUtil;
 
 import java.io.Closeable;
 import java.time.Instant;
@@ -70,11 +71,12 @@ public abstract class ShellOracleTypeFileWriter extends DBDataTypeFileWriter {
         if (column.isObjectType() || column.isCollectionType()) {
             String json = value instanceof CharSequence sequence
                     ? sequence.toString() : JSONUtil.toJson(value);
-            return TextUtil.escape(json);
+            return DBDataUtil.normalizeJson(json);
         }
         if (column.supportJson()) {
-            return TextUtil.escape(value instanceof CharSequence sequence
+            String json = DBDataUtil.normalizeJson(value instanceof CharSequence sequence
                     ? sequence.toString() : JSONUtil.toJson(value));
+            return json;
         }
         if (column.supportBinary()) {
             byte[] bytes = (byte[]) value;

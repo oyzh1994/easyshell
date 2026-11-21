@@ -17,7 +17,10 @@ import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Oracle表结构修改SQL生成器，根据表变更参数生成对应的 ALTER TABLE 等语句
@@ -166,9 +169,33 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
             this.sqlList.add(builder.toString());
         }
 
+        // 被虚拟列引用的基础列不能直接修改，先临时删除相关虚拟列。
+        List<OracleColumn> dependentVirtualColumns = this.dependentVirtualColumns(param);
+        for (int i = dependentVirtualColumns.size() - 1; i >= 0; i--) {
+            OracleColumn column = dependentVirtualColumns.get(i);
+            this.sqlList.add("ALTER TABLE " + fullName + " DROP COLUMN "
+                    + DBUtil.wrap(column.getName(), DBDialect.ORACLE) + ";");
+        }
+
         // 修改字段
         for (OracleColumn column : param.getColumns()) {
             if (OracleColumns.isChanged(column) && this.hasDefinitionChanged(column)) {
+                if (dependentVirtualColumns.contains(column)) {
+                    continue;
+                }
+                if (column.isGeneratedChanged() && column.isGenerated()) {
+                    this.convertColumnToVirtual(fullName, param, column);
+                    continue;
+                }
+                if (column.isGeneratedChanged() && !column.isGenerated()) {
+                    this.materializeVirtualColumn(fullName, param, column);
+                    continue;
+                }
+                if (this.requiresColumnRebuild(column)) {
+                    this.rebuildColumn(fullName, param, column);
+                    this.autoIncrementHandle(param, column);
+                    continue;
+                }
                 StringUtil.clear(builder);
                 builder.append("ALTER TABLE ")
                         .append(fullName)
@@ -187,6 +214,16 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
             }
         }
 
+        // 基础列修改完成后按原依赖顺序重建虚拟列。
+        for (OracleColumn column : dependentVirtualColumns) {
+            StringUtil.clear(builder);
+            builder.append("ALTER TABLE ").append(fullName).append(" ADD (")
+                    .append(DBUtil.wrap(column.getName(), DBDialect.ORACLE));
+            this.appendColumnType(builder, column, true);
+            builder.append(");");
+            this.sqlList.add(builder.toString());
+        }
+
         // 注释
         for (OracleColumn column : param.getColumns()) {
             if (OracleColumns.isChanged(column) || OracleColumns.isCreated(column)) {
@@ -201,6 +238,219 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
         }
     }
 
+    /**
+     * Oracle在列非空时不允许直接减小NUMBER精度或标度，此时需要重建该列。
+     */
+    private boolean requiresColumnRebuild(OracleColumn column) {
+        if (column.isPrimaryKey() || column.isAutoIncrement() || column.isGenerated()) {
+            return false;
+        }
+        if (!column.isTypeChanged() && !column.isSizeChanged() && !column.isDigitsChanged()) {
+            return false;
+        }
+        String originalType = StringUtil.blankToDefault(column.getTypeOriginal(), column.getType());
+        String targetType = StringUtil.blankToDefault(column.getType(), originalType);
+        if (!this.isNumericType(originalType) || !this.isNumericType(targetType)) {
+            return false;
+        }
+        int originalScale = this.effectiveScale(
+                originalType, column.getDigitsOriginal());
+        int targetScale = this.effectiveScale(
+                targetType, column.getDigits());
+        if (targetScale < originalScale) {
+            return true;
+        }
+        int originalPrecision = column.getSizeOriginal() == null ? 0 : column.getSizeOriginal();
+        int targetPrecision = column.getSize() == null ? 0 : column.getSize();
+        return targetPrecision > 0 && originalPrecision > 0 && targetPrecision < originalPrecision;
+    }
+
+    private int effectiveScale(String type, Integer digits) {
+        String upper = StringUtil.blankToDefault(type, "").toUpperCase(java.util.Locale.ROOT);
+        if (upper.equals("INT") || upper.contains("INTEGER")
+                || upper.equals("SMALLINT") || upper.equals("BIGINT")) {
+            return 0;
+        }
+        return digits == null ? 0 : digits;
+    }
+
+    private boolean isNumericType(String type) {
+        String upper = StringUtil.blankToDefault(type, "").toUpperCase(java.util.Locale.ROOT);
+        return upper.contains("NUMBER") || upper.contains("INTEGER") || upper.equals("INT")
+                || upper.contains("DECIMAL") || upper.contains("NUMERIC")
+                || upper.startsWith("FLOAT") || upper.startsWith("BINARY_FLOAT")
+                || upper.startsWith("BINARY_DOUBLE");
+    }
+
+    /**
+     * 通过临时列转换并替换原列，避免Oracle要求先清空数据。
+     */
+    private void rebuildColumn(String tableFullName, OracleAlertTableParam param, OracleColumn column) {
+        String temporary = "TMP_" + Integer.toUnsignedString(
+                (param.tableName() + "." + column.getName()).hashCode(), 16)
+                .toUpperCase(java.util.Locale.ROOT);
+        String original = DBUtil.wrap(column.getName(), DBDialect.ORACLE);
+        String temporaryName = DBUtil.wrap(temporary, DBDialect.ORACLE);
+        StringBuilder builder = new StringBuilder("ALTER TABLE ")
+                .append(tableFullName).append(" ADD (").append(temporaryName);
+        this.appendColumnDataType(builder, column);
+        builder.append(");");
+        this.sqlList.add(builder.toString());
+        this.sqlList.add("UPDATE " + tableFullName + " SET " + temporaryName
+                + " = " + original + ";");
+        if (!column.isNullable()) {
+            this.sqlList.add("ALTER TABLE " + tableFullName + " MODIFY ("
+                    + temporaryName + " NOT NULL);");
+        }
+        this.sqlList.add("ALTER TABLE " + tableFullName + " DROP COLUMN " + original + ";");
+        this.sqlList.add("ALTER TABLE " + tableFullName + " RENAME COLUMN "
+                + temporaryName + " TO " + original + ";");
+        if (!column.isAutoIncrement() && column.getDefaultValueFix() != null) {
+            this.sqlList.add("ALTER TABLE " + tableFullName + " MODIFY (" + original
+                    + " DEFAULT " + column.getDefaultValueFix() + ");");
+        }
+        if (StringUtil.isNotBlank(column.getComment())) {
+            this.sqlList.add("COMMENT ON COLUMN " + tableFullName + "." + original + " IS "
+                    + DBUtil.wrapData(column.getComment(), DBDialect.ORACLE) + ";");
+        }
+    }
+
+    /**
+     * 查找因基础列定义变化而必须临时重建的已有虚拟列。
+     */
+    private List<OracleColumn> dependentVirtualColumns(OracleAlertTableParam param) {
+        List<OracleColumn> changedBaseColumns = param.getColumns().stream()
+                .filter(column -> !OracleColumns.isCreated(column))
+                .filter(column -> !OracleColumns.isDeleted(column))
+                .filter(column -> OracleColumns.isChanged(column) && this.hasDefinitionChanged(column))
+                .toList();
+        if (changedBaseColumns.isEmpty()) {
+            return List.of();
+        }
+        List<OracleColumn> virtualColumns = param.getColumns().stream()
+                .filter(column -> column.isGenerated()
+                        && !OracleColumns.isCreated(column)
+                        && !OracleColumns.isDeleted(column))
+                .toList();
+        Set<OracleColumn> dependent = new HashSet<>();
+        for (OracleColumn virtualColumn : virtualColumns) {
+            for (OracleColumn baseColumn : changedBaseColumns) {
+                if (this.expressionReferences(
+                        virtualColumn.getGeneratedExpression(), baseColumn.getName())
+                        || this.expressionReferences(
+                        virtualColumn.getGeneratedExpression(), baseColumn.originalName())) {
+                    dependent.add(virtualColumn);
+                    break;
+                }
+            }
+        }
+        // 虚拟列之间也可能存在引用，按原列顺序逐步补齐依赖，删除时反向执行。
+        boolean added;
+        do {
+            added = false;
+            for (OracleColumn virtualColumn : virtualColumns) {
+                if (dependent.contains(virtualColumn)) {
+                    continue;
+                }
+                for (OracleColumn dependency : dependent) {
+                    if (this.expressionReferences(
+                            virtualColumn.getGeneratedExpression(), dependency.getName())) {
+                        dependent.add(virtualColumn);
+                        added = true;
+                        break;
+                    }
+                }
+            }
+        } while (added);
+        List<OracleColumn> result = new ArrayList<>();
+        for (OracleColumn virtualColumn : virtualColumns) {
+            if (dependent.contains(virtualColumn)) {
+                result.add(virtualColumn);
+            }
+        }
+        return result;
+    }
+
+    private boolean expressionReferences(String expression, String columnName) {
+        if (StringUtil.isBlank(expression) || StringUtil.isBlank(columnName)) {
+            return false;
+        }
+        return java.util.regex.Pattern.compile(
+                        "(?i)(?<![A-Z0-9_$#])" + java.util.regex.Pattern.quote(columnName)
+                                + "(?![A-Z0-9_$#])")
+                .matcher(expression).find();
+    }
+
+    /**
+     * Oracle不能直接移除虚拟列表达式，先复制计算值到临时普通列，再替换原列。
+     */
+    private void materializeVirtualColumn(String tableFullName, OracleAlertTableParam param,
+                                          OracleColumn column) {
+        String temporary = "TMP_" + Integer.toUnsignedString(
+                (param.tableName() + "." + column.getName()).hashCode(), 16)
+                .toUpperCase(java.util.Locale.ROOT);
+        String original = DBUtil.wrap(column.getName(), DBDialect.ORACLE);
+        String temporaryName = DBUtil.wrap(temporary, DBDialect.ORACLE);
+        StringBuilder builder = new StringBuilder("ALTER TABLE ")
+                .append(tableFullName).append(" ADD (").append(temporaryName);
+        this.appendColumnType(builder, column, true);
+        builder.append(");");
+        this.sqlList.add(builder.toString());
+        this.sqlList.add("UPDATE " + tableFullName + " SET " + temporaryName
+                + " = " + original + ";");
+        this.sqlList.add("ALTER TABLE " + tableFullName + " DROP COLUMN " + original + ";");
+        this.sqlList.add("ALTER TABLE " + tableFullName + " RENAME COLUMN "
+                + temporaryName + " TO " + original + ";");
+        if (StringUtil.isNotBlank(column.getComment())) {
+            this.sqlList.add("COMMENT ON COLUMN " + tableFullName + "." + original + " IS "
+                    + DBUtil.wrapData(column.getComment(), DBDialect.ORACLE) + ";");
+        }
+    }
+
+    /**
+     * Oracle不能直接把普通列改成虚拟列，通过临时虚拟列替换原列。
+     */
+    private void convertColumnToVirtual(String tableFullName, OracleAlertTableParam param,
+                                        OracleColumn column) {
+        if (!column.supportGenerated()) {
+            throw new IllegalArgumentException(
+                    "Oracle column type does not support virtual columns: " + column.getName());
+        }
+        String expression = StringUtil.blankToDefault(
+                column.getGeneratedExpression(), "").trim();
+        if (StringUtil.isBlank(expression)) {
+            throw new IllegalArgumentException(
+                    "Oracle virtual column expression is empty: " + column.getName());
+        }
+        if (column.isPrimaryKey()) {
+            throw new IllegalArgumentException(
+                    "Oracle primary key columns cannot be converted to virtual columns: "
+                            + column.getName());
+        }
+        if (column.isAutoIncrementOriginal()) {
+            throw new IllegalArgumentException(
+                    "Oracle auto-increment columns cannot be converted to virtual columns: "
+                            + column.getName());
+        }
+        String temporary = "TMP_" + Integer.toUnsignedString(
+                (param.tableName() + "." + column.getName()).hashCode(), 16)
+                .toUpperCase(java.util.Locale.ROOT);
+        String original = DBUtil.wrap(column.getName(), DBDialect.ORACLE);
+        String temporaryName = DBUtil.wrap(temporary, DBDialect.ORACLE);
+        StringBuilder builder = new StringBuilder("ALTER TABLE ")
+                .append(tableFullName).append(" ADD (").append(temporaryName);
+        this.appendColumnType(builder, column, true);
+        builder.append(");");
+        this.sqlList.add(builder.toString());
+        this.sqlList.add("ALTER TABLE " + tableFullName + " DROP COLUMN " + original + ";");
+        this.sqlList.add("ALTER TABLE " + tableFullName + " RENAME COLUMN "
+                + temporaryName + " TO " + original + ";");
+        if (StringUtil.isNotBlank(column.getComment())) {
+            this.sqlList.add("COMMENT ON COLUMN " + tableFullName + "." + original + " IS "
+                    + DBUtil.wrapData(column.getComment(), DBDialect.ORACLE) + ";");
+        }
+    }
+
     private boolean hasDefinitionChanged(OracleColumn column) {
         return column.isNameChanged()
                 || column.isTypeChanged()
@@ -209,7 +459,9 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
                 || column.isDefaultValueChanged()
                 || column.isNullableChanged()
                 || column.isAutoIncrementChanged()
-                || column.isAutoIncrementTypeChanged();
+                || column.isAutoIncrementTypeChanged()
+                || column.isGeneratedChanged()
+                || column.isGeneratedExpressionChanged();
     }
 
     /**
@@ -221,7 +473,10 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
             return;
         }
         boolean originalIdentity = StringUtil.equalsIgnoreCase(column.getAutoIncrementTypeOriginal(), "IDENTITY");
-        boolean targetIdentity = this.isIdentity(column);
+        // Oracle不支持把已有普通列通过MODIFY转换为IDENTITY列。
+        // 对已有列使用等价的序列和触发器实现，新建列仍保留原生IDENTITY。
+        boolean targetIdentity = this.isIdentity(column)
+                && (OracleColumns.isCreated(column) || originalIdentity);
         String sourceColumnName = column.isNameChanged() ? column.originalName() : column.getName();
         String generatedSequenceName = autoIncrementObjectName(param.tableName(), sourceColumnName, "SEQ");
         String generatedTriggerName = autoIncrementObjectName(param.tableName(), sourceColumnName, "TRG");
@@ -277,17 +532,42 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
                 this.dropAutoIncrementSequence(param, oldSequenceName);
             }
         }
-        if (!customSequence
+        boolean createSequence = !customSequence
                 && (OracleColumns.isCreated(column) || !column.isAutoIncrementOriginal()
-                || !oldSequenceName.equals(targetSequenceName))) {
-            this.sqlList.add("CREATE SEQUENCE " + DBUtil.wrap(param.getSchema(), targetSequenceName, DBDialect.ORACLE)
-                    + " START WITH 1 INCREMENT BY 1 NOCACHE;");
+                || !oldSequenceName.equals(targetSequenceName));
+        if (createSequence) {
+            this.createAutoIncrementSequence(param, targetSequenceName, column.getName(),
+                    OracleColumns.isCreated(column));
         }
         this.sqlList.add("CREATE OR REPLACE TRIGGER " + DBUtil.wrap(param.getSchema(), targetTriggerName, DBDialect.ORACLE)
                 + " BEFORE INSERT ON " + tableFullName
                 + " FOR EACH ROW WHEN (NEW." + targetColumnName + " IS NULL) BEGIN SELECT "
                 + DBUtil.wrap(param.getSchema(), targetSequenceName, DBDialect.ORACLE)
                 + ".NEXTVAL INTO :NEW." + targetColumnName + " FROM DUAL; END;");
+    }
+
+    /**
+     * 新建序列。已有表从当前最大值之后开始，避免自增列与存量主键冲突。
+     */
+    private void createAutoIncrementSequence(OracleAlertTableParam param, String sequenceName,
+                                             String columnName, boolean created) {
+        String sequenceFullName = DBUtil.wrap(param.getSchema(), sequenceName, DBDialect.ORACLE);
+        if (created) {
+            this.sqlList.add("CREATE SEQUENCE " + sequenceFullName
+                    + " START WITH 1 INCREMENT BY 1 NOCACHE;");
+            return;
+        }
+        String tableFullName = DBUtil.wrap(param.getSchema(), param.tableName(), DBDialect.ORACLE);
+        String columnFullName = DBUtil.wrap(columnName, DBDialect.ORACLE);
+        String sequenceLiteral = sequenceFullName.replace("'", "''");
+        this.sqlList.add("DECLARE\n"
+                + "    V_START NUMBER;\n"
+                + "BEGIN\n"
+                + "    SELECT NVL(MAX(" + columnFullName + "), 0) + 1 INTO V_START FROM "
+                + tableFullName + ";\n"
+                + "    EXECUTE IMMEDIATE 'CREATE SEQUENCE " + sequenceLiteral
+                + " START WITH ' || TO_CHAR(V_START) || ' INCREMENT BY 1 NOCACHE';\n"
+                + "END;");
     }
 
     private void dropAutoIncrementTrigger(OracleAlertTableParam param, String triggerName) {
@@ -487,24 +767,26 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
      * @param created 是否为新增列
      */
     private void appendColumnType(StringBuilder builder, OracleColumn column, boolean created) {
-        builder.append(" ").append(column.getType());
-        Integer size = column.getSize() != null
-                ? column.getSize()
-                : ShellOracleColumnUtil.requiredSize(column.getType());
-        if (column.supportSize() && size != null) {
-            builder.append("(").append(size);
-            if (column.supportDigits() && column.getDigits() != null) {
-                builder.append(",").append(column.getDigits());
+        this.appendColumnDataType(builder, column);
+        if (column.isGenerated()) {
+            if (!column.supportGenerated()) {
+                throw new IllegalArgumentException(
+                        "Oracle column type does not support virtual columns: " + column.getName());
             }
-            builder.append(")");
-        } else if (column.supportValue() && column.getValue() != null) {
-            builder.append("(").append(column.getValue()).append(")");
+            String expression = StringUtil.blankToDefault(
+                    column.getGeneratedExpression(), "").trim();
+            if (StringUtil.isBlank(expression)) {
+                throw new IllegalArgumentException(
+                        "Oracle virtual column expression is empty: " + column.getName());
+            }
+            builder.append(" GENERATED ALWAYS AS (").append(expression).append(") VIRTUAL");
         }
-        boolean isIdentity = this.isIdentity(column);
+        boolean isIdentity = !column.isGenerated() && this.isIdentity(column);
         if (created && isIdentity) {
             builder.append(" GENERATED BY DEFAULT ON NULL AS IDENTITY");
         }
-        if (!column.isAutoIncrement() && column.getDefaultValueFix() != null) {
+        if (!column.isGenerated() && !column.isAutoIncrement()
+                && column.getDefaultValueFix() != null) {
             builder.append(" DEFAULT ").append(column.getDefaultValueFix());
         }
         if (isIdentity) {
@@ -518,6 +800,22 @@ public class OracleTableAlertSqlGenerator extends DBSqlGenerator {
             if (created || column.isNullableOriginal()) {
                 builder.append(" NOT NULL");
             }
+        }
+    }
+
+    private void appendColumnDataType(StringBuilder builder, OracleColumn column) {
+        builder.append(" ").append(column.getType());
+        Integer size = column.getSize() != null
+                ? column.getSize()
+                : ShellOracleColumnUtil.requiredSize(column.getType());
+        if (column.supportSize() && size != null) {
+            builder.append("(").append(size);
+            if (column.supportDigits() && column.getDigits() != null) {
+                builder.append(",").append(column.getDigits());
+            }
+            builder.append(")");
+        } else if (column.supportValue() && column.getValue() != null) {
+            builder.append("(").append(column.getValue()).append(")");
         }
     }
 

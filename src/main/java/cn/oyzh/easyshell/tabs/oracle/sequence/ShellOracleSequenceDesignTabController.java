@@ -360,7 +360,8 @@ public class ShellOracleSequenceDesignTabController extends RichTabController {
             param.setSequence(temp);
             param.setOriginalSequence(this.sequence);
             param.setSchema(this.schema());
-            sql = OracleSequenceAlertSqlGenerator.generateSqlSingle(param);
+            sql = OracleSequenceAlertSqlGenerator.generateSqlSingle(
+                    param, this.dbItem.client().supportsSequenceRestart());
         }
         this.preview.text(sql);
     }

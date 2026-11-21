@@ -25,7 +25,6 @@ import cn.oyzh.easyshell.trees.oracle.schema.ShellOracleSchemaTreeItem;
 import cn.oyzh.easyshell.util.oracle.ShellOracleViewFactory;
 import cn.oyzh.easyshell.util.db.ShellDB18nHelper;
 import cn.oyzh.fx.db.DBRecordData;
-import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
@@ -157,7 +156,7 @@ public class ShellOracleTableTreeItem extends ShellOracleTreeItem<ShellOracleTab
      */
     private void doCloneTable(boolean includeRecord) {
         try {
-            String cloneTable = this.tableName() + DBUtil.genCloneName();
+            String cloneTable = this.client().cloneTableName(this.tableName());
             this.dbItem().cloneTable(this.tableName(), cloneTable, includeRecord);
             OracleTable oracleTable = this.dbItem().selectTable(cloneTable);
             this.dbItem().getTableTypeChild().addTable(oracleTable);

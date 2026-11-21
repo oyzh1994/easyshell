@@ -100,7 +100,8 @@ public class OracleRecord extends DBObject implements DBRecord, ObjectCopier<Ora
     public OracleRecordProperty putValue(String column, Object value) {
         OracleRecordProperty property = (OracleRecordProperty) this.getProperty(column);
         if (property == null) {
-            property = this.putValue(new OracleColumn(column), value);
+            OracleColumn dbColumn = this.columns == null ? null : this.columns.column(column);
+            property = this.putValue(dbColumn == null ? new OracleColumn(column) : dbColumn, value);
         } else {
             property.setValue(value);
         }

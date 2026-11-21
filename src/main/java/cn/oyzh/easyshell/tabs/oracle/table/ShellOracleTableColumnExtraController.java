@@ -3,11 +3,13 @@ package cn.oyzh.easyshell.tabs.oracle.table;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
+import cn.oyzh.easyshell.fx.oracle.OracleColumnKindComboBox;
 import cn.oyzh.easyshell.fx.oracle.record.ShellOracleAoutoIncrementTypeComboBox;
 import cn.oyzh.easyshell.fx.oracle.table.ShellOracleDefaultValueTextFiled;
 import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled;
 import cn.oyzh.fx.gui.tabs.SubTabController;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.controls.box.FXHBox;
 import cn.oyzh.fx.plus.controls.button.FXCheckBox;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -30,6 +32,30 @@ public class ShellOracleTableColumnExtraController extends SubTabController {
      */
     @FXML
     private FXHBox defaultValueBox;
+
+    /**
+     * 生成列组件
+     */
+    @FXML
+    private FXHBox columnKindBox;
+
+    /**
+     * 字段种类
+     */
+    @FXML
+    private OracleColumnKindComboBox columnKind;
+
+    /**
+     * 生成列表达式组件
+     */
+    @FXML
+    private FXHBox generatedExpressionBox;
+
+    /**
+     * 生成列表达式
+     */
+    @FXML
+    private ClearableTextField generatedExpression;
 
     /**
      * 默认值
@@ -133,6 +159,12 @@ public class ShellOracleTableColumnExtraController extends SubTabController {
             if (this.defaultValueBox.isVisible()) {
                 this.column.setDefaultValue(this.defaultValue.getValue());
             }
+            boolean generated = this.columnKindBox.isVisible() && this.generatedKindSelected();
+            this.column.setGenerated(generated);
+            if (generated) {
+                this.column.setGeneratedExpression(this.generatedExpression.getTextTrim());
+                this.column.normalizeGeneratedAttributes();
+            }
             // 自动递增处理
             if (this.autoIncrementBox.isVisible()) {
                 this.column.setAutoIncrement(this.autoIncrement.isSelected());
@@ -171,6 +203,11 @@ public class ShellOracleTableColumnExtraController extends SubTabController {
         this.currentTimestamp.selectedChanged((observable, oldValue, newValue) -> this.apply());
         // 默认值变化事件
         this.defaultValue.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
+        // 字段种类变化事件
+        this.columnKind.selectedItemChanged((observable, oldValue, newValue) ->
+                this.onColumnKindChanged());
+        // 生成列表达式变化事件
+        this.generatedExpression.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
         // 键长度变化事件
         this.primaryKeySize.addTextChangeListener((observable, oldValue, newValue) -> this.apply());
     }
@@ -227,6 +264,20 @@ public class ShellOracleTableColumnExtraController extends SubTabController {
             this.defaultValueBox.disappear();
         }
 
+        // 生成列
+        if (this.column.supportGenerated()) {
+            this.columnKind.select(this.column.isGenerated()
+                    ? OracleColumn.KIND_GENERATED : OracleColumn.KIND_NORMAL);
+            this.columnKindBox.display();
+            this.generatedExpression.text(StringUtil.blankToDefault(
+                    this.column.getGeneratedExpression(), ""));
+            this.updateKindLayout(this.column.isGenerated());
+        } else {
+            this.columnKind.clearSelection();
+            this.columnKindBox.disappear();
+            this.generatedExpressionBox.disappear();
+        }
+
         // 自动递增
         if (this.column.supportAutoIncrement()) {
             this.autoIncrementBox.display();
@@ -268,11 +319,73 @@ public class ShellOracleTableColumnExtraController extends SubTabController {
         this.ignoreChanged = false;
     }
 
+    /**
+     * 处理生成列状态变化，并隐藏与生成列互斥的普通列属性。
+     *
+     * @param generated 是否生成列
+     */
+    private void onColumnKindChanged() {
+        if (this.ignoreChanged || this.column == null) {
+            return;
+        }
+        boolean generated = this.generatedKindSelected();
+        this.ignoreChanged = true;
+        try {
+            if (generated) {
+                this.defaultValue.clear();
+                this.autoIncrement.setSelected(false);
+                this.currentTimestamp.setSelected(false);
+            } else {
+                this.generatedExpression.clear();
+            }
+            this.updateKindLayout(generated);
+        } finally {
+            this.ignoreChanged = false;
+        }
+        this.apply();
+    }
+
+    /**
+     * 是否选择了生成列。
+     *
+     * @return 结果
+     */
+    private boolean generatedKindSelected() {
+        return OracleColumn.KIND_GENERATED.equals(this.columnKind.getValue());
+    }
+
+    /**
+     * 更新字段种类对应布局。
+     *
+     * @param generated 是否生成列
+     */
+    private void updateKindLayout(boolean generated) {
+        if (generated) {
+            this.generatedExpressionBox.display();
+            this.defaultValueBox.disappear();
+            this.autoIncrementBox.disappear();
+            this.currentTimestampBox.disappear();
+        } else {
+            this.generatedExpressionBox.disappear();
+            if (this.column != null && this.column.supportDefaultValue()) {
+                this.defaultValueBox.display();
+            }
+            if (this.column != null && this.column.supportAutoIncrement()) {
+                this.autoIncrementBox.display();
+            }
+            if (this.column != null && this.column.supportTimestamp()) {
+                this.currentTimestampBox.display();
+            }
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
         this.valueBox.managedBindVisible();
         this.unsignedBox.managedBindVisible();
         this.defaultValueBox.managedBindVisible();
+        this.columnKindBox.managedBindVisible();
+        this.generatedExpressionBox.managedBindVisible();
         this.autoIncrementBox.managedBindVisible();
         this.primaryKeySizeBox.managedBindVisible();
         this.currentTimestampBox.managedBindVisible();

@@ -79,6 +79,7 @@ import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
 import cn.oyzh.fx.db.util.DBUtil;
+import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import javafx.beans.property.ObjectProperty;
@@ -976,6 +977,19 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      * @return 是否支持
      */
     public boolean supportsIdentity() {
+        return this.supportsDatabaseVersion(12);
+    }
+
+    /**
+     * 当前Oracle版本是否支持ALTER SEQUENCE RESTART。
+     *
+     * @return 是否支持
+     */
+    public boolean supportsSequenceRestart() {
+        return this.supportsDatabaseVersion(18);
+    }
+
+    private boolean supportsDatabaseVersion(int minimumVersion) {
         java.util.regex.Matcher matcher = java.util.regex.Pattern
                 .compile("\\d+")
                 .matcher(this.selectVersion());
@@ -983,7 +997,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             return false;
         }
         try {
-            return Integer.parseInt(matcher.group()) >= 12;
+            return Integer.parseInt(matcher.group()) >= minimumVersion;
         } catch (NumberFormatException ex) {
             return false;
         }
@@ -1420,11 +1434,17 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 column.setTypeCode(resultSet.getString("TYPE_CODE"));
                 column.setSchema(schema);
                 column.setComment(comment);
-                column.setDefaultValue(def);
                 column.setPosition(position);
                 column.setTableName(tableName);
                 column.setNullable("yes".equalsIgnoreCase(nullable));
                 column.setVirtual(StringUtil.equalsIgnoreCase("YES", resultSet.getString("VIRTUAL")));
+                if (column.isGenerated()) {
+                    column.setGeneratedExpression(def instanceof CharSequence sequence
+                            ? sequence.toString().strip() : null);
+                    column.setDefaultValue(null);
+                } else {
+                    column.setDefaultValue(def);
+                }
                 columns.add(column);
             }
             IOUtil.close(resultSet);
@@ -1440,6 +1460,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             }
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, tableName, columns, false);
+            // 记录普通列的自动递增初始状态，避免首次编辑时被误判为原始值。
+            for (OracleColumn column : columns) {
+                column.initStatus();
+            }
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
@@ -1579,10 +1603,20 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 OracleRecord record = new OracleRecord(columns, param.isReadonly());
                 for (OracleColumn column : columns) {
-                    Object data = resultSet.getObject(column.getName());
+                    Object data;
+                    if (column.isObjectType() || column.isCollectionType()) {
+                        data = resultSet.getObject(column.getName());
+                    } else {
+                        data = column.supportJson()
+                                ? resultSet.getString(column.getName())
+                                : resultSet.getObject(column.getName());
+                    }
+                    if (column.supportJson() && data instanceof CharSequence sequence) {
+                        data = DBDataUtil.normalizeJson(sequence.toString());
+                    }
                     if (column.isObjectType() || column.isCollectionType()) {
                         data = OracleComplexValueUtil.toJsonValue(connection, data);
-                    } else if (data instanceof oracle.sql.TIMESTAMPLTZ) {
+                    } else {
                         data = ShellOracleDataUtil.valueStandardization(connection, data);
                     }
                     record.putValue(column, data);
@@ -1660,11 +1694,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             builder.append(")");
             builder.append(" VALUES(");
             for (DBColumn column : insertColumns) {
-                if (this.isXmlTypeColumn(column) && this.hasXmlContent(recordData.value(column.getName()))) {
-                    builder.append("XMLTYPE(?),");
-                } else {
-                    builder.append("?,");
-                }
+                builder.append(this.valuePlaceholder(column,
+                        recordData.value(column.getName()))).append(",");
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
@@ -1684,7 +1715,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             CallableStatement statement = connection.prepareCall(sql);
             int index = 1;
             for (DBColumn column : insertColumns) {
-                DBUtil.setVal(statement, recordData.value(column.getName()), index++);
+                index = this.bindInsertValue(statement, column,
+                        recordData.value(column.getName()), index);
             }
             if (returnGeneratedKey) {
                 statement.registerOutParameter(index, java.sql.Types.NUMERIC);
@@ -1776,10 +1808,10 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                                   DBRecordData recordData, OracleRecordPrimaryKey primaryKey,
                                   String schema, String tableName) throws Exception {
         List<DBColumn> deferredColumns = insertColumns.stream()
-                .filter(this::isDeferredLobColumn)
+                .filter(column -> this.isDeferredLobColumn(column) || this.isLongColumn(column))
                 .toList();
         List<DBColumn> baseColumns = insertColumns.stream()
-                .filter(column -> !this.isDeferredLobColumn(column))
+                .filter(column -> !this.isDeferredLobColumn(column) && !this.isLongColumn(column))
                 .toList();
         boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
         StringBuilder builder = new StringBuilder("BEGIN INSERT INTO ")
@@ -1790,8 +1822,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         }
         StringUtil.deleteLast(builder);
         builder.append(") VALUES(");
-        for (int i = 0; i < baseColumns.size(); i++) {
-            builder.append("?,");
+        for (DBColumn column : baseColumns) {
+            builder.append(this.valuePlaceholder(
+                    column, recordData.value(column.getName()))).append(",");
         }
         StringUtil.deleteLast(builder);
         builder.append(") RETURNING ROWID");
@@ -1811,7 +1844,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         try (CallableStatement statement = connection.prepareCall(sql)) {
             int index = 1;
             for (DBColumn column : baseColumns) {
-                this.bindInsertValue(statement, column, recordData.value(column.getName()), index++);
+                index = this.bindInsertValue(
+                        statement, column, recordData.value(column.getName()), index);
             }
             statement.registerOutParameter(index, Types.ROWID);
             int rowidIndex = index++;
@@ -1841,14 +1875,15 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     .append(" SET ")
                     .append(DBUtil.wrap(column.getName(), DBDialect.ORACLE))
                     .append("=")
-                    .append(this.isXmlTypeColumn(column)
-                            && this.hasXmlContent(recordData.value(column.getName())) ? "XMLTYPE(?)" : "?")
+                    .append(this.valuePlaceholder(
+                            column, recordData.value(column.getName())))
                     .append(" WHERE ROWID=?");
             String updateSql = update.toString();
             this.printSql(updateSql);
             try (PreparedStatement statement = connection.prepareStatement(updateSql)) {
-                this.bindInsertValue(statement, column, recordData.value(column.getName()), 1);
-                statement.setString(2, rowid);
+                int index = this.bindInsertValue(
+                        statement, column, recordData.value(column.getName()), 1);
+                statement.setString(index, rowid);
                 statement.executeUpdate();
             }
         }
@@ -1859,17 +1894,21 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                                   DBRecordData recordData) throws SQLException {
         int index = 1;
         for (DBColumn column : insertColumns) {
-            this.bindInsertValue(statement, column, recordData.value(column.getName()), index++);
+            index = this.bindInsertValue(
+                    statement, column, recordData.value(column.getName()), index);
         }
     }
 
-    private void bindInsertValue(PreparedStatement statement, DBColumn column, Object value, int index)
+    private int bindInsertValue(PreparedStatement statement, DBColumn column, Object value, int index)
             throws SQLException {
-        this.bindValue(statement.getConnection(), statement, column, value, index);
+        return this.bindValue(statement.getConnection(), statement, column, value, index);
     }
 
-    private void bindValue(Connection connection, PreparedStatement statement, DBColumn column, Object value,
-                           int index) throws SQLException {
+    private int bindValue(Connection connection, PreparedStatement statement, DBColumn column, Object value,
+                          int index) throws SQLException {
+        if (this.useInlineComplexLiteral(column, value)) {
+            return index;
+        }
         if (value == null) {
             if (column instanceof OracleColumn oracleColumn
                     && (oracleColumn.isObjectType() || oracleColumn.isCollectionType())) {
@@ -1884,8 +1923,12 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             Object jdbcValue = OracleComplexValueUtil.toJdbcValue(connection, oracleColumn, value);
             if (jdbcValue == null) {
                 OracleComplexValueUtil.setNull(statement, index, oracleColumn);
+            } else if (statement instanceof oracle.jdbc.OraclePreparedStatement oracleStatement
+                    && jdbcValue instanceof oracle.sql.Datum datum) {
+                oracleStatement.setOracleObject(index, datum);
             } else {
-                statement.setObject(index, jdbcValue);
+                statement.setObject(index, jdbcValue,
+                        oracleColumn.isCollectionType() ? Types.ARRAY : Types.STRUCT);
             }
         } else if (this.isXmlTypeColumn(column) && value instanceof CharSequence sequence) {
             String text = sequence.toString();
@@ -1893,6 +1936,17 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 statement.setNull(index, Types.NULL);
             } else {
                 statement.setClob(index, new StringReader(text), text.length());
+            }
+        } else if (StringUtil.equalsIgnoreCase(column.getType(), "JSON")) {
+            statement.setString(index, DBDataUtil.normalizeJson(value.toString()));
+        } else if (StringUtil.equalsIgnoreCase(column.getType(), "VECTOR")) {
+            statement.setString(index, value.toString());
+        } else if (column.supportBoolean()) {
+            if (value instanceof Boolean bool) {
+                statement.setBoolean(index, bool);
+            } else {
+                String text = value.toString();
+                statement.setBoolean(index, "1".equals(text) || "true".equalsIgnoreCase(text));
             }
         } else if (this.isClobColumn(column) && value instanceof CharSequence sequence) {
             String text = sequence.toString();
@@ -1902,9 +1956,73 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             statement.setNCharacterStream(index, new StringReader(text), text.length());
         } else if (this.isBlobColumn(column) && value instanceof byte[] bytes) {
             statement.setBinaryStream(index, new ByteArrayInputStream(bytes), bytes.length);
+        } else if (this.isIntervalYmColumn(column)) {
+            statement.setString(index, this.normalizeIntervalYm(value));
+        } else if (this.isIntervalDsColumn(column)) {
+            statement.setString(index, this.normalizeIntervalDs(value));
         } else {
             DBUtil.setVal(statement, value, index);
         }
+        return index + 1;
+    }
+
+    private String valuePlaceholder(DBColumn column, Object value) {
+        if (this.useInlineComplexLiteral(column, value)) {
+            return OracleComplexValueUtil.toSqlLiteral((OracleColumn) column, value);
+        }
+        if (this.isXmlTypeColumn(column) && this.hasXmlContent(value)) {
+            return "XMLTYPE(?)";
+        }
+        if (value != null && StringUtil.equalsIgnoreCase(column.getType(), "JSON")) {
+            return "JSON(?)";
+        }
+        if (value != null && StringUtil.equalsIgnoreCase(column.getType(), "VECTOR")) {
+            return "TO_VECTOR(?)";
+        }
+        if (this.isIntervalYmColumn(column)) {
+            return "TO_YMINTERVAL(?)";
+        }
+        if (this.isIntervalDsColumn(column)) {
+            return "TO_DSINTERVAL(?)";
+        }
+        return "?";
+    }
+
+    private boolean useInlineComplexLiteral(DBColumn column, Object value) {
+        return value != null && column instanceof OracleColumn oracleColumn
+                && oracleColumn.isObjectType();
+    }
+
+    private boolean isIntervalYmColumn(DBColumn column) {
+        String type = column.getType();
+        return type != null && type.toUpperCase().contains("INTERVAL YEAR");
+    }
+
+    private boolean isIntervalDsColumn(DBColumn column) {
+        String type = column.getType();
+        return type != null && type.toUpperCase().contains("INTERVAL DAY");
+    }
+
+    private String normalizeIntervalYm(Object value) {
+        String text = value == null ? null : value.toString().trim();
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(?is)INTERVAL\\s*'([^']+)'\\s*YEAR\\s+TO\\s+MONTH")
+                .matcher(String.valueOf(text));
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return text;
+    }
+
+    private String normalizeIntervalDs(Object value) {
+        String text = value == null ? null : value.toString().trim();
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(?is)INTERVAL\\s*'([^']+)'\\s*DAY\\s+TO\\s+SECOND(?:\\s*\\(\\d+\\))?")
+                .matcher(String.valueOf(text));
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return text;
     }
 
     private boolean isLobColumn(DBColumn column) {
@@ -2045,11 +2163,16 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     .append(DBUtil.wrap(schema, tableName, DBDialect.ORACLE))
                     .append(" SET ");
             for (Map.Entry<DBColumn, Object> entry : setEntries) {
-                builder.append(DBUtil.wrap(entry.getKey().getName(), DBDialect.ORACLE)).append(" = ?,");
+                builder.append(DBUtil.wrap(entry.getKey().getName(), DBDialect.ORACLE))
+                        .append(" = ").append(this.valuePlaceholder(
+                                entry.getKey(), entry.getValue())).append(",");
             }
             builder.deleteCharAt(builder.length() - 1);
             builder.append(" WHERE ");
             Connection connection = this.getConnManager().connection(schema);
+            if (this.requiresSplitUpdate(setEntries)) {
+                return this.updateRecordSplit(connection, param, setEntries);
+            }
             if (param.getPrimaryKey() == null) {
                 DBRecordData originalRecordData = param.getRecord();
                 List<Map.Entry<DBColumn, Object>> whereEntries = new ArrayList<>(originalRecordData.entries());
@@ -2075,12 +2198,14 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 try (PreparedStatement statement = connection.prepareStatement(sql)) {
                     // 设置值
                     for (Map.Entry<DBColumn, Object> entry : setEntries) {
-                        this.bindValue(connection, statement, entry.getKey(), entry.getValue(), index++);
+                        index = this.bindValue(
+                                connection, statement, entry.getKey(), entry.getValue(), index);
                     }
                     // 设置参数
                     for (Map.Entry<DBColumn, Object> entry : whereEntries) {
                         if (entry.getValue() != null) {
-                            this.bindValue(connection, statement, entry.getKey(), entry.getValue(), index++);
+                            index = this.bindValue(
+                                    connection, statement, entry.getKey(), entry.getValue(), index);
                         }
                     }
                     updateCount = DBUtil.executeUpdate(statement);
@@ -2094,16 +2219,66 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     int index = 1;
                     // 设置值
                     for (Map.Entry<DBColumn, Object> entry : setEntries) {
-                        this.bindValue(connection, statement, entry.getKey(), entry.getValue(), index++);
+                        index = this.bindValue(
+                                connection, statement, entry.getKey(), entry.getValue(), index);
                     }
                     // 设置参数
-                    this.bindValue(connection, statement, primaryKey.getColumn(), primaryKey.originalData(), index);
+                    this.bindValue(connection, statement, primaryKey.getColumn(),
+                            primaryKey.originalData(), index);
                     updateCount = DBUtil.executeUpdate(statement);
                 }
             }
             return updateCount;
         } catch (Exception ex) {
             ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    private boolean requiresSplitUpdate(List<Map.Entry<DBColumn, Object>> entries) {
+        return entries.stream().anyMatch(entry -> this.isLongColumn(entry.getKey()))
+                && entries.stream().anyMatch(entry -> this.isDeferredLobColumn(entry.getKey()));
+    }
+
+    /**
+     * Oracle 11g 同一 UPDATE 中不能同时绑定 LOB 和 LONG，按普通列、LOB 分组更新。
+     */
+    private int updateRecordSplit(Connection connection, OracleUpdateRecordParam param,
+                                  List<Map.Entry<DBColumn, Object>> entries) {
+        List<Map.Entry<DBColumn, Object>> baseEntries = entries.stream()
+                .filter(entry -> !this.isLongColumn(entry.getKey())
+                        && !this.isDeferredLobColumn(entry.getKey()))
+                .toList();
+        List<Map.Entry<DBColumn, Object>> deferredEntries = entries.stream()
+                .filter(entry -> this.isLongColumn(entry.getKey())
+                        || this.isDeferredLobColumn(entry.getKey()))
+                .toList();
+        int count = 0;
+        if (!baseEntries.isEmpty()) {
+            count += this.updateRecordEntries(connection, param, baseEntries);
+        }
+        for (Map.Entry<DBColumn, Object> entry : deferredEntries) {
+            count += this.updateRecordEntries(connection, param, List.of(entry));
+        }
+        // 分组更新仍然只修改同一条逻辑记录。
+        return count > 0 ? 1 : 0;
+    }
+
+    private int updateRecordEntries(Connection connection, OracleUpdateRecordParam param,
+                                    List<Map.Entry<DBColumn, Object>> entries) {
+        DBRecordData data = new DBRecordData();
+        for (Map.Entry<DBColumn, Object> entry : entries) {
+            data.put(entry.getKey(), entry.getValue());
+        }
+        OracleUpdateRecordParam subParam = new OracleUpdateRecordParam();
+        subParam.setSchema(param.getSchema());
+        subParam.setTableName(param.getTableName());
+        subParam.setRecord(param.getRecord());
+        subParam.setUpdateRecord(data);
+        subParam.setPrimaryKey(param.getPrimaryKey());
+        try {
+            return this.updateRecord(subParam);
+        } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
@@ -4523,7 +4698,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      * @return 克隆表名称
      */
     public String cloneTable(String schema, String tableName, String newTableName, boolean includeRecord) {
+        newTableName = cloneObjectName(newTableName, "",
+                this.supportsDatabaseVersion(12) ? 128 : 30);
         String cloneSuffix = DBUtil.genCloneName();
+        Connection connection = null;
+        boolean cloneCreated = false;
         // 查询检查
         List<OracleCheck> checks = this.selectChecks(schema, tableName);
         // 查询触发器
@@ -4564,7 +4743,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         }
 
         try {
-            Connection connection = this.getConnManager().connection(schema);
+            connection = this.getConnManager().connection(schema);
             // 克隆基本的表结构
             //            String sql = "CREATE TABLE " + DBUtil.wrap(schema, newTableName, DBDialect.ORACLE);
             //            if (!includeRecord) {
@@ -4575,11 +4754,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             //            }
             String sql = this.showCreateTable(schema, tableName);
             sql = sql.replace(DBUtil.wrap(schema, tableName, DBDialect.ORACLE), DBUtil.wrap(schema, newTableName, DBDialect.ORACLE));
+            sql = renameNestedTableStores(sql, cloneSuffix);
             sql = renameTableConstraints(sql, cloneSuffix);
             this.printSql(sql);
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.execute();
             IOUtil.close(stmt);
+            cloneCreated = true;
             OracleTable table = new OracleTable();
             table.setSchema(schema);
             table.setName(newTableName);
@@ -4603,32 +4784,139 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         .filter(OracleColumn::isDmlWritable)
                         .toList();
                 if (!copyColumns.isEmpty()) {
-                    StringBuilder builder = new StringBuilder();
-                    for (OracleColumn column : copyColumns) {
-                        builder.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE))
-                                .append(" ,");
+                    if (copyColumns.stream().anyMatch(this::isLongColumn)) {
+                        this.copyTableRecordsWithLong(schema, tableName, newTableName, copyColumns);
+                    } else {
+                        this.copyTableRecordsDirectly(connection, schema, tableName,
+                                newTableName, copyColumns);
                     }
-                    StringUtil.deleteLast(builder, ",");
-
-                    // 处理数据
-                    String sql2 = "INSERT INTO " + DBUtil.wrap(schema, newTableName, this.dialect())
-                            + "(" + builder + ")"
-                            + " SELECT " + builder + " FROM " + DBUtil.wrap(schema, tableName, this.dialect());
-                    connection.setAutoCommit(false);
-                    Statement statement = connection.createStatement();
-                    this.printSql(sql2);
-                    statement.executeUpdate(sql2);
-                    connection.commit();
-                    IOUtil.close(statement);
                 }
             }
             // 数据复制完成后再创建检查、外键和触发器，避免复制数据时触发源表上的业务触发器
             this.alertTable(alertTableParam);
         } catch (Exception ex) {
+            this.rollbackQuietly(connection);
+            if (cloneCreated) {
+                this.dropCloneTableQuietly(connection, schema, newTableName);
+            }
             ex.printStackTrace();
             throw new ShellException(ex);
         }
         return newTableName;
+    }
+
+    /**
+     * 生成当前Oracle版本可用的克隆表名称。
+     */
+    public String cloneTableName(String tableName) {
+        return cloneObjectName(tableName, DBUtil.genCloneName(),
+                this.supportsDatabaseVersion(12) ? 128 : 30);
+    }
+
+    /**
+     * 不含LONG列时使用单条INSERT SELECT复制数据。
+     */
+    private void copyTableRecordsDirectly(Connection connection, String schema, String tableName,
+                                          String newTableName, List<OracleColumn> copyColumns)
+            throws SQLException {
+        StringBuilder builder = new StringBuilder();
+        for (OracleColumn column : copyColumns) {
+            builder.append(DBUtil.wrap(column.getName(), DBDialect.ORACLE)).append(" ,");
+        }
+        StringUtil.deleteLast(builder, ",");
+
+        String sql = "INSERT INTO " + DBUtil.wrap(schema, newTableName, this.dialect())
+                + "(" + builder + ")"
+                + " SELECT " + builder + " FROM " + DBUtil.wrap(schema, tableName, this.dialect());
+        boolean autoCommit = connection.getAutoCommit();
+        try {
+            connection.setAutoCommit(false);
+            try (Statement statement = connection.createStatement()) {
+                this.printSql(sql);
+                statement.executeUpdate(sql);
+            }
+            connection.commit();
+            connection.setAutoCommit(autoCommit);
+        } catch (SQLException ex) {
+            this.rollbackQuietly(connection);
+            this.restoreAutoCommitQuietly(connection, autoCommit);
+            throw ex;
+        }
+    }
+
+    /**
+     * Oracle不允许在INSERT SELECT中直接引用LONG列，
+     * 因此通过真实记录查询和新增入口逐条复制。
+     */
+    private void copyTableRecordsWithLong(String schema, String tableName, String newTableName,
+                                          List<OracleColumn> copyColumns) {
+        OracleSelectRecordParam selectParam = new OracleSelectRecordParam();
+        selectParam.setSchema(schema);
+        selectParam.setTableName(tableName);
+        selectParam.setColumns(copyColumns);
+        selectParam.setReadonly(true);
+
+        long recordCount = this.selectRecordCount(selectParam);
+        if (recordCount == 0) {
+            return;
+        }
+        int pageSize = 500;
+        try {
+            for (long start = 0; start < recordCount; start += pageSize) {
+                selectParam.setStart(start);
+                selectParam.setLimit((long) pageSize);
+                List<OracleRecord> records = this.selectRecords(selectParam);
+                if (CollectionUtil.isEmpty(records)) {
+                    break;
+                }
+                for (OracleRecord record : records) {
+                    DBRecordData data = new DBRecordData();
+                    for (OracleColumn column : copyColumns) {
+                        data.put(column, record.getValue(column.getName()));
+                    }
+                    OracleInsertRecordParam insertParam = new OracleInsertRecordParam();
+                    insertParam.setSchema(schema);
+                    insertParam.setTableName(newTableName);
+                    insertParam.setRecord(data);
+                    this.insertRecord(insertParam);
+                }
+            }
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    private void rollbackQuietly(Connection connection) {
+        if (connection != null) {
+            try {
+                if (!connection.getAutoCommit()) {
+                    connection.rollback();
+                }
+            } catch (SQLException ignored) {
+            }
+        }
+    }
+
+    private void restoreAutoCommitQuietly(Connection connection, boolean autoCommit) {
+        if (connection != null) {
+            try {
+                connection.setAutoCommit(autoCommit);
+            } catch (SQLException ignored) {
+            }
+        }
+    }
+
+    private void dropCloneTableQuietly(Connection connection, String schema, String tableName) {
+        if (connection == null) {
+            return;
+        }
+        String sql = "DROP TABLE " + DBUtil.wrap(schema, tableName, DBDialect.ORACLE)
+                + " CASCADE CONSTRAINTS PURGE";
+        try (Statement statement = connection.createStatement()) {
+            this.printSql(sql);
+            statement.executeUpdate(sql);
+        } catch (Exception ignored) {
+        }
     }
 
     /**
@@ -4658,6 +4946,32 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 重命名嵌套表存储对象，避免克隆表复用源表的 schema 级存储名称。
+     *
+     * @param sql         建表语句
+     * @param cloneSuffix 克隆名称后缀
+     * @return 重命名后的建表语句
+     */
+    private static String renameNestedTableStores(String sql, String cloneSuffix) {
+        java.util.regex.Matcher matcher = Pattern
+                .compile("(?is)(NESTED\\s+TABLE\\s+(?:\"[^\"]+\"|[A-Za-z][A-Za-z0-9_$#]*)"
+                                + "\\s+STORE\\s+AS\\s+)(\"(?:[^\"]|\"\")*\"|[A-Za-z][A-Za-z0-9_$#]*)")
+                .matcher(sql);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            String oldName = matcher.group(2);
+            String unwrappedName = oldName.startsWith("\"") && oldName.endsWith("\"")
+                    ? oldName.substring(1, oldName.length() - 1).replace("\"\"", "\"")
+                    : oldName;
+            String replacement = matcher.group(1)
+                    + DBUtil.wrap(cloneConstraintName(unwrappedName, cloneSuffix), DBDialect.ORACLE);
+            matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+    /**
      * 生成不超过 Oracle 11g 标识符长度限制的克隆对象名称。
      *
      * @param name   原始名称
@@ -4665,8 +4979,13 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      * @return 克隆后的名称
      */
     private static String cloneConstraintName(String name, String suffix) {
-        String suffixPart = suffix.length() >= 30 ? suffix.substring(suffix.length() - 30) : suffix;
-        int prefixLength = 30 - suffixPart.length();
+        return cloneObjectName(name, suffix, 30);
+    }
+
+    private static String cloneObjectName(String name, String suffix, int maxLength) {
+        String suffixPart = suffix.length() >= maxLength
+                ? suffix.substring(suffix.length() - maxLength) : suffix;
+        int prefixLength = maxLength - suffixPart.length();
         if (prefixLength <= 0) {
             return suffixPart;
         }
@@ -5143,16 +5462,23 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         try {
             String schema = param.getSchema();
             param.setOriginalSequence(this.selectSequence(schema, param.getSequenceName()));
-            String sql = OracleSequenceAlertSqlGenerator.generateSqlSingle(param);
+            List<String> sqlList = OracleSequenceAlertSqlGenerator.generateSql(
+                    param, this.supportsSequenceRestart());
             // 无变化
-            if (StringUtil.isBlank(sql)) {
+            if (CollectionUtil.isEmpty(sqlList)) {
                 return;
             }
             connection = this.getConnManager().connection(schema);
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
-            this.printSql(sql);
-            statement.executeUpdate(sql);
+            for (String sql : sqlList) {
+                if (StringUtil.isBlank(sql)) {
+                    continue;
+                }
+                String executableSql = this.stripStatementTerminator(sql);
+                this.printSql(executableSql);
+                statement.executeUpdate(executableSql);
+            }
             connection.commit();
             IOUtil.close(statement);
         } catch (Exception ex) {

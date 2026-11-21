@@ -24,6 +24,7 @@ import javax.sql.rowset.RowSetProvider;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Types;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -87,6 +88,29 @@ public class SequenceBigIntegerTest {
         assertFalse(sql.contains(" MINVALUE "));
         assertTrue(sql.contains(" MAXVALUE " + changed.getMaxVal()));
         assertFalse(sql.endsWith(";"));
+    }
+
+    @Test
+    public void oracleAlertChangesCurrentValueWithVersionFallback() {
+        OracleSequence original = oracleSequence();
+        original.setCurrentVal(BigInteger.TEN);
+        OracleSequence changed = oracleSequence();
+        changed.setCurrentVal(BigInteger.valueOf(1000));
+
+        OracleAlertSequenceParam param = alertParam(changed);
+        param.setOriginalSequence(original);
+
+        List<String> modernSql = OracleSequenceAlertSqlGenerator.generateSql(param, true);
+        assertEquals(1, modernSql.size());
+        assertTrue(modernSql.getFirst().contains(" RESTART START WITH 1000"));
+
+        List<String> legacySql = OracleSequenceAlertSqlGenerator.generateSql(param, false);
+        assertEquals(1, legacySql.size());
+        String fallback = legacySql.getFirst();
+        assertFalse(fallback.contains(" RESTART "));
+        assertTrue(fallback.contains("V_TARGET NUMBER := 1000"));
+        assertTrue(fallback.contains("\"SYSTEM\".\"LARGE_SEQ\".NEXTVAL"));
+        assertTrue(fallback.contains("INCREMENT BY ' || TO_CHAR(V_TARGET - V_CURRENT - V_INCREMENT)"));
     }
 
     @Test

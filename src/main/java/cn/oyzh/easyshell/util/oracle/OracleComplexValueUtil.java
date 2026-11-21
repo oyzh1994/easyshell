@@ -164,6 +164,18 @@ public final class OracleComplexValueUtil {
      * @return SQL字面量
      */
     public static String toSqlLiteral(OracleColumn column, Object value) {
+        return toSqlLiteral(column, value, true);
+    }
+
+    /**
+     * 将对象/集合值生成Oracle SQL构造函数字面量。
+     *
+     * @param column       字段
+     * @param value        值
+     * @param qualifyType  是否携带类型所有者
+     * @return SQL字面量
+     */
+    public static String toSqlLiteral(OracleColumn column, Object value, boolean qualifyType) {
         Object json = parse(value);
         if (json == null) {
             return "NULL";
@@ -173,10 +185,10 @@ public final class OracleComplexValueUtil {
             throw new IllegalArgumentException("Missing Oracle type metadata: "
                     + column.getTypeOwner() + "." + column.getType());
         }
-        return toSqlLiteral(meta, json);
+        return toSqlLiteral(meta, json, qualifyType);
     }
 
-    private static String toSqlLiteral(OracleTypeMeta meta, Object value) {
+    private static String toSqlLiteral(OracleTypeMeta meta, Object value, boolean qualifyType) {
         if (value == null) {
             return "NULL";
         }
@@ -186,10 +198,12 @@ public final class OracleComplexValueUtil {
             for (Map.Entry<?, ?> entry : map.entrySet()) {
                 values.put(String.valueOf(entry.getKey()).toLowerCase(Locale.ROOT), entry.getValue());
             }
-            StringBuilder builder = new StringBuilder(typeName(meta.owner(), meta.name())).append("(");
+            StringBuilder builder = new StringBuilder(
+                    qualifyType ? typeName(meta.owner(), meta.name()) : DBUtil.wrap(meta.name(), DBDialect.ORACLE))
+                    .append("(");
             for (OracleTypeMeta.Attribute attribute : meta.attributes()) {
                 Object attributeValue = values.get(attribute.name().toLowerCase(Locale.ROOT));
-                builder.append(toSqlLiteral(attribute.type(), attributeValue)).append(", ");
+                builder.append(toSqlLiteral(attribute.type(), attributeValue, qualifyType)).append(", ");
             }
             if (builder.toString().endsWith(", ")) {
                 builder.delete(builder.length() - 2, builder.length());
@@ -198,9 +212,11 @@ public final class OracleComplexValueUtil {
         }
         if (meta.isCollection()) {
             List<?> list = toList(value);
-            StringBuilder builder = new StringBuilder(typeName(meta.owner(), meta.name())).append("(");
+            StringBuilder builder = new StringBuilder(
+                    qualifyType ? typeName(meta.owner(), meta.name()) : DBUtil.wrap(meta.name(), DBDialect.ORACLE))
+                    .append("(");
             for (Object element : list) {
-                builder.append(toSqlLiteral(meta.element(), element)).append(", ");
+                builder.append(toSqlLiteral(meta.element(), element, qualifyType)).append(", ");
             }
             if (builder.toString().endsWith(", ")) {
                 builder.delete(builder.length() - 2, builder.length());

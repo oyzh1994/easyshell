@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.oracle.OracleColumnKindComboBox?>
 <?import cn.oyzh.easyshell.fx.oracle.record.ShellOracleAoutoIncrementTypeComboBox?>
 <?import cn.oyzh.easyshell.fx.oracle.table.ShellOracleDefaultValueTextFiled?>
 <?import cn.oyzh.easyshell.fx.db.ShellDBEnumTextFiled?>
 <?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.gui.text.field.NumberTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
@@ -11,6 +13,18 @@
 <?import javafx.scene.layout.HBox?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.tabs.oracle.table.ShellOracleTableColumnExtraController" realHeight="200">
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="columnKindBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.column.kind">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <OracleColumnKindComboBox fx:id="columnKind" realHeight="25" flexWidth="100% - 140">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </OracleColumnKindComboBox>
+    </FXHBox>
     <FXHBox flexWidth="100%" realHeight="30" fx:id="valueBox" managed="false" visible="false">
         <AccentLabel realHeight="25" realWidth="80" text="%base.value">
             <HBox.margin>
@@ -79,5 +93,18 @@
                 <Insets left="5" top="5"/>
             </HBox.margin>
         </NumberTextField>
+    </FXHBox>
+    <FXHBox flexWidth="100%" realHeight="30" fx:id="generatedExpressionBox" managed="false" visible="false">
+        <AccentLabel realHeight="25" realWidth="80" text="%shell.sqlite.expression">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </AccentLabel>
+        <ClearableTextField fx:id="generatedExpression" flexWidth="100% - 140" realHeight="25"
+                            styleClass="popover-item">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </ClearableTextField>
     </FXHBox>
 </FXVBox>

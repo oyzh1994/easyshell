@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.data.oracle.file;
 
 import cn.oyzh.common.file.LineFileWriter;
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
@@ -87,8 +88,10 @@ public class ShellOracleJsonTypeFileWriter extends ShellOracleTypeFileWriter {
                 // 数字
                 if (val instanceof Number) {
                     builder.append(val);
+                } else if (val instanceof Boolean) {
+                    builder.append(val);
                 } else {// 其他类型
-                    builder.append("\"").append(val).append("\"");
+                    builder.append(JSONUtil.toJson(String.valueOf(val)));
                 }
             } else {
                 builder.append("null");

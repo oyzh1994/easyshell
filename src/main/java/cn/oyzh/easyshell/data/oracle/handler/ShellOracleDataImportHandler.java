@@ -1,14 +1,19 @@
 package cn.oyzh.easyshell.data.oracle.handler;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
+import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
+import cn.oyzh.easyshell.oracle.record.OracleInsertRecordParam;
 import cn.oyzh.easyshell.data.oracle.dto.ShellOracleDataImportFile;
 import cn.oyzh.easyshell.data.oracle.file.ShellOracleDataImportHelper;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
@@ -18,9 +23,12 @@ import cn.oyzh.fx.db.data.file.DBDataTxtTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
+import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +108,8 @@ public class ShellOracleDataImportHandler extends DBDataImportHandler<String> {
                         this.checkInterrupt();
                         try {
                             long start1 = System.currentTimeMillis();
-                            List<OracleRecord> records = this.readRecords(reader, this.readLimit);
+                            List<OracleRecord> records = this.readRecords(
+                                    reader, this.readLimit, dbColumns);
                             if (CollectionUtil.isEmpty(records)) {
                                 break;
                             }
@@ -173,13 +182,17 @@ public class ShellOracleDataImportHandler extends DBDataImportHandler<String> {
      * @return 记录列表
      * @throws Exception 异常
      */
-    private List<OracleRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
+    private List<OracleRecord> readRecords(DBDataTypeFileReader reader, int count,
+                                           OracleColumns columns) throws Exception {
         List<OracleRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readRecords(count);
         for (Map<String, Object> objectMap : list) {
-            OracleRecord record = new OracleRecord(null);
+            OracleRecord record = new OracleRecord(columns);
             for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
-                record.putValue(entry.getKey(), entry.getValue());
+                OracleColumn column = columns.column(entry.getKey());
+                if (column != null) {
+                    record.putValue(column, entry.getValue());
+                }
             }
             records.add(record);
         }
@@ -194,8 +207,86 @@ public class ShellOracleDataImportHandler extends DBDataImportHandler<String> {
      * @throws Exception 异常
      */
     private void writeRecord(OracleColumns columns, List<OracleRecord> records) throws Exception {
+        if (this.requiresBindingImport(columns)) {
+            for (OracleRecord record : records) {
+                DBRecordData data = new DBRecordData();
+                for (OracleColumn column : columns) {
+                    if (!column.isDmlWritable()) {
+                        continue;
+                    }
+                    Object value = this.convertBindValue(
+                            column, record.getValue(column.getName()));
+                    data.put(column, value);
+                }
+                OracleInsertRecordParam param = new OracleInsertRecordParam();
+                param.setSchema(this.name);
+                param.setTableName(columns.tableName());
+                param.setRecord(data);
+                int count = this.dbClient.insertRecord(param);
+                this.processedIncr(count);
+            }
+            return;
+        }
         List<String> sqlList = ShellOracleDataImportHelper.toInsertSql(columns, records, this.config);
-         this.addInsert(sqlList);
+        this.addInsert(sqlList);
+    }
+
+    private boolean requiresBindingImport(OracleColumns columns) {
+        for (OracleColumn column : columns) {
+            String type = column.getType() == null ? "" : column.getType().toUpperCase();
+            if (column.supportText() || column.supportBinary() || column.isComplexType()
+                    || column.supportJson() || "VECTOR".equals(type)
+                    || type.contains("INTERVAL") || column.supportTimestamp()
+                    || column.isDateType()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Object convertBindValue(OracleColumn column, Object value) {
+        if (value == null) {
+            return null;
+        }
+        String text = value.toString();
+        if (text.isEmpty()) {
+            return null;
+        }
+        String type = column.getType() == null ? "" : column.getType().toUpperCase();
+        if (column.supportBinary()) {
+            return value instanceof byte[] bytes ? bytes
+                    : HexUtil.decodeHexStr(text.replaceFirst("^(?i)0x", ""));
+        }
+        if (column.supportBoolean()) {
+            if (value instanceof Boolean bool) {
+                return bool;
+            }
+            return "1".equals(text) || "true".equalsIgnoreCase(text);
+        }
+        if (column.supportJson()) {
+            return DBDataUtil.normalizeJson(text);
+        }
+        if (column.supportText() || column.supportString()) {
+            text = TextUtil.unescape(text);
+        }
+        if (column.isDateType() || column.supportTimestamp()) {
+            if (value instanceof java.util.Date || value instanceof java.time.temporal.Temporal) {
+                return value;
+            }
+            if (type.contains("WITH TIME ZONE")) {
+                return java.time.OffsetDateTime.parse(
+                        text.replace(' ', 'T'));
+            }
+            return Timestamp.valueOf(text);
+        }
+        if (column.supportInteger() || column.supportDigits()) {
+            try {
+                return new BigDecimal(text.trim());
+            } catch (NumberFormatException ignored) {
+                return value;
+            }
+        }
+        return text;
     }
 
     //    /**

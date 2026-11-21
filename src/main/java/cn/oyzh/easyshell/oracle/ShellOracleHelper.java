@@ -558,10 +558,65 @@ public class ShellOracleHelper {
     public static String getTableDefinition(Connection connection, String schema, String tableName) throws SQLException {
         try {
             String definition = getMetadataDefinition(connection, schema, "TABLE", tableName);
-            return StringUtil.isBlank(definition) ? buildTableDefinition(connection, schema, tableName) : definition;
+            return normalizeTableDefinition(connection, schema, tableName, StringUtil.isBlank(definition)
+                    ? buildTableDefinition(connection, schema, tableName) : definition);
         } catch (SQLException ex) {
-            return buildTableDefinition(connection, schema, tableName);
+            return normalizeTableDefinition(connection, schema, tableName,
+                    buildTableDefinition(connection, schema, tableName));
         }
+    }
+
+    /**
+     * 去掉嵌套表列自动生成的隐藏列约束，数据字典生成的DDL不能直接引用这些隐藏列。
+     */
+    private static String normalizeTableDefinition(Connection connection, String schema,
+                                                   String tableName, String definition)
+            throws SQLException {
+        if (StringUtil.isBlank(definition)) {
+            return definition;
+        }
+        String result = definition.replaceAll(
+                "(?is)\\s*,\\s*CONSTRAINT\\s+(?:\"[^\"]+\"|[A-Za-z][A-Za-z0-9_$#]*)\\s+"
+                        + "UNIQUE\\s*\\([^)]*SYS_NC[^)]*\\$[^)]*\\)", "");
+        if (result.toUpperCase(Locale.ROOT).contains("NESTED TABLE")) {
+            return result;
+        }
+        List<String> nestedColumns = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("""
+                SELECT C.COLUMN_NAME
+                FROM ALL_TAB_COLS C
+                JOIN ALL_COLL_TYPES T
+                  ON T.OWNER = C.DATA_TYPE_OWNER
+                 AND T.TYPE_NAME = C.DATA_TYPE
+                 AND T.COLL_TYPE = 'TABLE'
+                WHERE C.OWNER = ? AND C.TABLE_NAME = ? AND C.HIDDEN_COLUMN = 'NO'
+                ORDER BY C.COLUMN_ID
+                """)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    nestedColumns.add(resultSet.getString(1));
+                }
+            }
+        }
+        if (nestedColumns.isEmpty()) {
+            return result;
+        }
+        int close = result.lastIndexOf(')');
+        if (close < 0) {
+            return result;
+        }
+        StringBuilder storage = new StringBuilder();
+        int index = 0;
+        for (String column : nestedColumns) {
+            String key = schema + "." + tableName + "." + column + "." + index;
+            String store = "NES_" + Integer.toUnsignedString(key.hashCode(), 16).toUpperCase(Locale.ROOT)
+                    + "_" + index++;
+            storage.append(" NESTED TABLE ").append(DBUtil.wrap(column, DBDialect.ORACLE))
+                    .append(" STORE AS ").append(DBUtil.wrap(store, DBDialect.ORACLE));
+        }
+        return result.substring(0, close + 1) + storage + result.substring(close + 1);
     }
 
     public static String getViewDefinition(Connection connection, String schema, String viewName) throws SQLException {
@@ -630,11 +685,144 @@ public class ShellOracleHelper {
     }
 
     public static String getTypeDefinition(Connection connection, String schema, String typeName) throws SQLException {
-        return getMetadataDefinition(connection, schema, "TYPE", typeName);
+        try {
+            String definition = getMetadataDefinition(connection, schema, "TYPE", typeName);
+            return StringUtil.isBlank(definition)
+                    ? buildTypeDefinition(connection, schema, typeName)
+                    : definition;
+        } catch (SQLException ex) {
+            return buildTypeDefinition(connection, schema, typeName);
+        }
     }
 
     public static String getTypeBodyDefinition(Connection connection, String schema, String typeName) throws SQLException {
-        return getMetadataDefinition(connection, schema, "TYPE BODY", typeName);
+        try {
+            String definition = getMetadataDefinition(connection, schema, "TYPE BODY", typeName);
+            return StringUtil.isBlank(definition)
+                    ? buildTypeBodyDefinition(connection, schema, typeName)
+                    : definition;
+        } catch (SQLException ex) {
+            return buildTypeBodyDefinition(connection, schema, typeName);
+        }
+    }
+
+    /**
+     * 当DBMS_METADATA不可用时，基于数据字典生成对象/集合类型DDL。
+     */
+    private static String buildTypeDefinition(Connection connection, String schema, String typeName)
+            throws SQLException {
+        String typeCode;
+        try (PreparedStatement statement = connection.prepareStatement("""
+                SELECT TYPECODE
+                FROM ALL_TYPES
+                WHERE OWNER = ? AND TYPE_NAME = ?
+                """)) {
+            statement.setString(1, schema);
+            statement.setString(2, typeName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return "";
+                }
+                typeCode = resultSet.getString(1);
+            }
+        }
+        String name = DBUtil.wrap(schema, typeName, DBDialect.ORACLE);
+        if (StringUtil.equalsIgnoreCase(typeCode, "OBJECT")) {
+            List<String> attributes = new ArrayList<>();
+            try (PreparedStatement statement = connection.prepareStatement("""
+                    SELECT ATTR_NAME, ATTR_TYPE_OWNER, ATTR_TYPE_NAME, LENGTH, PRECISION,
+                           SCALE, CHAR_USED
+                    FROM ALL_TYPE_ATTRS
+                    WHERE OWNER = ? AND TYPE_NAME = ? AND INHERITED = 'NO'
+                    ORDER BY ATTR_NO
+                    """)) {
+                statement.setString(1, schema);
+                statement.setString(2, typeName);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        attributes.add(DBUtil.wrap(resultSet.getString("ATTR_NAME"), DBDialect.ORACLE)
+                                + " " + typeValue(resultSet.getString("ATTR_TYPE_OWNER"),
+                                resultSet.getString("ATTR_TYPE_NAME"),
+                                resultSet.getObject("LENGTH"),
+                                resultSet.getObject("PRECISION"),
+                                resultSet.getObject("SCALE"),
+                                resultSet.getString("CHAR_USED")));
+                    }
+                }
+            }
+            return "CREATE OR REPLACE TYPE " + name + " AS OBJECT (\n  "
+                    + String.join(",\n  ", attributes) + "\n)";
+        }
+        if (StringUtil.equalsIgnoreCase(typeCode, "COLLECTION")) {
+            try (PreparedStatement statement = connection.prepareStatement("""
+                    SELECT COLL_TYPE, UPPER_BOUND, ELEM_TYPE_OWNER, ELEM_TYPE_NAME,
+                           LENGTH, PRECISION, SCALE, CHAR_USED
+                    FROM ALL_COLL_TYPES
+                    WHERE OWNER = ? AND TYPE_NAME = ?
+                    """)) {
+                statement.setString(1, schema);
+                statement.setString(2, typeName);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        String collectionType = resultSet.getString("COLL_TYPE");
+                        String prefix = StringUtil.equalsIgnoreCase(collectionType, "VARYING ARRAY")
+                                ? " AS VARRAY(" + resultSet.getInt("UPPER_BOUND") + ")"
+                                : " AS TABLE";
+                        return "CREATE OR REPLACE TYPE " + name + prefix + " OF "
+                                + typeValue(resultSet.getString("ELEM_TYPE_OWNER"),
+                                resultSet.getString("ELEM_TYPE_NAME"),
+                                resultSet.getObject("LENGTH"),
+                                resultSet.getObject("PRECISION"),
+                                resultSet.getObject("SCALE"),
+                                resultSet.getString("CHAR_USED"));
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
+    private static String typeValue(String owner, String type, Object length, Object precision,
+                                    Object scale, String charUsed) {
+        String typeName = StringUtil.isBlank(owner)
+                ? type : DBUtil.wrap(owner, type, DBDialect.ORACLE);
+        if (StringUtil.isBlank(typeName) || typeName.contains("(")) {
+            return typeName;
+        }
+        String upper = typeName.toUpperCase(Locale.ROOT);
+        if ((upper.contains("CHAR") || upper.startsWith("RAW"))
+                && length instanceof Number number && number.intValue() > 0) {
+            return typeName + "(" + number.intValue()
+                    + ("C".equalsIgnoreCase(charUsed) ? " CHAR" : "") + ")";
+        }
+        if (upper.contains("NUMBER") && precision instanceof Number p && p.intValue() > 0) {
+            String result = typeName + "(" + p.intValue();
+            if (scale instanceof Number s && s.intValue() >= 0) {
+                result += "," + s.intValue();
+            }
+            return result + ")";
+        }
+        return typeName;
+    }
+
+    private static String buildTypeBodyDefinition(Connection connection, String schema, String typeName)
+            throws SQLException {
+        StringBuilder source = new StringBuilder();
+        try (PreparedStatement statement = connection.prepareStatement("""
+                SELECT TEXT
+                FROM ALL_SOURCE
+                WHERE OWNER = ? AND NAME = ? AND TYPE = 'TYPE BODY'
+                ORDER BY LINE
+                """)) {
+            statement.setString(1, schema);
+            statement.setString(2, typeName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    source.append(resultSet.getString(1));
+                }
+            }
+        }
+        return source.toString().strip();
     }
 
     private static String getMetadataDefinition(Connection connection, String schema, String objectType, String objectName) throws SQLException {

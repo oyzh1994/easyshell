@@ -6,13 +6,14 @@ import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
+import cn.oyzh.easyshell.oracle.record.OracleInsertRecordParam;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleSelectRecordParam;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
 import cn.oyzh.easyshell.oracle.type.OracleTypeDefinition;
-import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
 import cn.oyzh.easyshell.util.oracle.ShellOracleUtil;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.handler.DBDataTransportHandler;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -243,6 +244,8 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
             if (this.dataType == 0) {
                 this.message("Transport Table " + tableName + " Starting");
                 OracleColumns columns = new OracleColumns(this.sourceClient.selectColumns(new OracleSelectColumnParam(this.sourceDatabase, tableName)));
+                OracleColumns targetColumns = new OracleColumns(this.targetClient.selectColumns(
+                        new OracleSelectColumnParam(this.targetDatabase, tableName)));
                 long start = 0;
                 while (true) {
                     this.checkInterrupt();
@@ -253,30 +256,32 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                         param.setTableName(tableName);
                         param.setSchema(this.sourceDatabase);
                         param.setLimit((long) this.selectLimit);
+                        param.setColumns(columns);
                         List<OracleRecord> records = this.sourceClient.selectRecords(param);
                         if (CollectionUtil.isEmpty(records)) {
                             break;
                         }
-                        List<String> list = ShellOracleDataUtil.toInsertSql(columns, records, true);
-                        list = list.stream()
-                                .map(sql -> ShellOracleUtil.removeSchema(sql, this.sourceDatabase))
-                                .toList();
-                        this.addInsert(list);
+                        for (OracleRecord record : records) {
+                            try {
+                                this.transportRecord(tableName, targetColumns, record);
+                            } catch (Exception ex) {
+                                if (this.isContinueWithErrors()) {
+                                    this.exception(ex);
+                                } else {
+                                    throw ex;
+                                }
+                            }
+                        }
                         start += this.selectLimit;
-                        // 更新状态
-                        this.processed(0);
                     } catch (Exception ex) {
                         if (this.isContinueWithErrors()) {
                             this.exception(ex);
-                            this.processedDecr();
-                            this.getInsertList().clear();
+                            break;
                         } else {
                             throw ex;
                         }
                     }
                 }
-                // 收尾批量插入
-                this.doBatchInsert();
                 this.message("Transport Table " + tableName + " Finished");
             }
         } catch (Exception ex) {
@@ -288,6 +293,25 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                 throw ex;
             }
         }
+    }
+
+    /**
+     * 通过客户端新增入口传输单条记录，确保LOB、复杂类型和特殊标量使用真实参数绑定。
+     */
+    private void transportRecord(String tableName, OracleColumns targetColumns,
+                                 OracleRecord sourceRecord) {
+        DBRecordData data = new DBRecordData();
+        for (OracleColumn column : targetColumns) {
+            if (column.isDmlWritable()) {
+                data.put(column, sourceRecord.getValue(column.getName()));
+            }
+        }
+        OracleInsertRecordParam param = new OracleInsertRecordParam();
+        param.setSchema(this.targetDatabase);
+        param.setTableName(tableName);
+        param.setRecord(data);
+        this.targetClient.insertRecord(param);
+        this.processedIncr();
     }
 
     /**
