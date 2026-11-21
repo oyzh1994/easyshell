@@ -1234,8 +1234,9 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             String dbName = param.getDbName();
             String tableName = param.getTableName();
             MariadbColumns columns = new MariadbColumns();
+            Connection connection = this.getConnManager().connection(dbName);
             String sql = "SHOW FULL COLUMNS FROM " + DBUtil.wrap(dbName, tableName, this.dialect());
-            PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             int position = 0;
@@ -1253,6 +1254,9 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 column.parseKey(key);
                 column.setType(type);
                 column.parseExtra(extra);
+                // 普通列没有生成列相关Extra，也要记录明确初始状态，供表设计判断类型切换。
+                column.setGenerated(column.isGenerated());
+                column.setGeneratedStorage(column.getGeneratedStorage());
                 column.parseCollation(collation);
 
                 column.setName(field);
@@ -1265,6 +1269,43 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            String generationSql = """
+                    SELECT COLUMN_NAME, GENERATION_EXPRESSION
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = ?
+                    AND TABLE_NAME = ?
+                    """;
+            PreparedStatement generationStatement = connection.prepareStatement(generationSql);
+            generationStatement.setString(1, dbName);
+            generationStatement.setString(2, tableName);
+            ResultSet generationResult = generationStatement.executeQuery();
+            while (generationResult.next()) {
+                MariadbColumn column = columns.column(generationResult.getString("COLUMN_NAME"));
+                if (column != null && column.isGenerated()) {
+                    String expression = generationResult.getString("GENERATION_EXPRESSION");
+                    if (StringUtil.isNotBlank(expression)) {
+                        column.setGeneratedExpression(expression);
+                    }
+                }
+            }
+            IOUtil.close(generationResult);
+            IOUtil.close(generationStatement);
+            // MariaDB的INFORMATION_SCHEMA会丢失补充平面字符，优先使用SHOW CREATE TABLE覆盖表达式。
+            String createSql = ShellMariadbHelper.showCreateTable(connection, dbName, tableName);
+            for (MariadbColumn column : columns) {
+                if (ShellMariadbHelper.isJsonColumn(createSql, column.getName())) {
+                    column.typeProperty().set("JSON");
+                    column.setSize(null);
+                }
+                if (column.isGenerated()) {
+                    String expression = ShellMariadbHelper.extractGeneratedExpression(
+                            createSql, column.getName());
+                    if (StringUtil.isNotBlank(expression)) {
+                        column.setGeneratedExpression(expression);
+                    }
+                }
+            }
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
@@ -1374,13 +1415,14 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             builder.append("INSERT INTO ")
                     .append(DBUtil.wrap(param.getDbName(), param.getTableName(), this.dialect()))
                     .append("(");
-            for (String column : param.getRecord().columns()) {
+            List<String> columnNames = new ArrayList<>(param.getRecord().columns());
+            for (String column : columnNames) {
                 builder.append(DBUtil.wrap(column, this.dialect())).append(",");
             }
             StringUtil.deleteLast(builder);
             builder.append(")");
             builder.append(" VALUES(");
-            for (String column : param.getRecord().columns()) {
+            for (String column : columnNames) {
                 if (param.getRecord().isTypeGeometry(column)) {
                     builder.append("ST_GeomFromText(?),");
                 } else {
@@ -1394,8 +1436,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(param.getDbName());
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int index = 1;
-            for (String colName : param.getRecord().columns()) {
-                DBUtil.setVal(statement, param.getRecord().value(colName), index++);
+            for (String colName : columnNames) {
+                DBUtil.setVal(statement, valueForBinding(param.getRecord(), colName), index++);
             }
             int count = statement.executeUpdate();
             MariadbRecordPrimaryKey primaryKey = param.getPrimaryKey();
@@ -1431,19 +1473,14 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             if (param.getPrimaryKey() == null) {
                 DBRecordData recordData = param.getRecord();
                 boolean first = true;
-                for (String colName : recordData.columns()) {
+                for (String colName : recordData.notNullColumns()) {
                     if (first) {
                         first = false;
                     } else {
                         builder.append(" AND ");
                     }
-                    if (recordData.hasValue(colName)) {
-                        builder.append(DBUtil.wrap(colName, this.dialect()))
-                                .append(" = ?");
-                    } else {
-                        builder.append(DBUtil.wrap(colName, this.dialect()))
-                                .append(" IS NULL");
-                    }
+                    builder.append(DBUtil.wrap(colName, this.dialect()))
+                            .append(" = ?");
                 }
                 builder.append(" LIMIT 1");
                 String sql = builder.toString();
@@ -1452,7 +1489,7 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 int index = 1;
                 // 设置参数
                 for (String colName : recordData.notNullColumns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                    DBUtil.setVal(statement, valueForBinding(recordData, colName), index++);
                 }
                 updateCount = DBUtil.executeUpdate(statement);
             } else {
@@ -1485,11 +1522,12 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             String dbName = param.getDbName();
             String tableName = param.getTableName();
             DBRecordData recordData = param.getUpdateRecord();
+            List<String> updateColumns = new ArrayList<>(recordData.columns());
             StringBuilder builder = new StringBuilder();
             builder.append("UPDATE ")
                     .append(DBUtil.wrap(dbName, tableName, this.dialect()))
                     .append(" SET ");
-            for (String column : recordData.columns()) {
+            for (String column : updateColumns) {
                 if (recordData.isTypeGeometry(column)) {
                     builder.append(DBUtil.wrap(column, this.dialect())).append(" = ST_GeomFromText(?),");
                 } else {
@@ -1501,9 +1539,10 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             Connection connection = this.getConnManager().connection(dbName);
             if (param.getPrimaryKey() == null) {
                 DBRecordData originalRecordData = param.getRecord();
+                List<String> originalColumns = new ArrayList<>(originalRecordData.columns());
                 // 参数
                 boolean first = true;
-                for (String column : originalRecordData.columns()) {
+                for (String column : originalColumns) {
                     if (first) {
                         first = false;
                     } else {
@@ -1517,12 +1556,12 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 this.printSql(sql);
                 PreparedStatement statement = connection.prepareStatement(sql);
                 // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                for (String colName : updateColumns) {
+                    DBUtil.setVal(statement, valueForBinding(recordData, colName), index++);
                 }
                 // 设置参数
-                for (String colName : originalRecordData.columns()) {
-                    DBUtil.setVal(statement, originalRecordData.value(colName), index++);
+                for (String colName : originalColumns) {
+                    DBUtil.setVal(statement, valueForBinding(originalRecordData, colName), index++);
                 }
                 updateCount = DBUtil.executeUpdate(statement);
                 IOUtil.close(statement);
@@ -1536,8 +1575,8 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 int index = 1;
                 // 设置值
-                for (String colName : recordData.columns()) {
-                    DBUtil.setVal(statement, recordData.value(colName), index++);
+                for (String colName : updateColumns) {
+                    DBUtil.setVal(statement, valueForBinding(recordData, colName), index++);
                 }
                 // 设置参数
                 DBUtil.setVal(statement, primaryKey.originalData(), index);
@@ -1549,6 +1588,22 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 获取可直接绑定到 JDBC 参数的值。
+     *
+     * @param recordData 记录数据
+     * @param columnName 字段名称
+     * @return JDBC 参数值
+     */
+    private static Object valueForBinding(DBRecordData recordData, String columnName) {
+        var column = recordData.column(columnName);
+        if (column instanceof MariadbColumn mariadbColumn) {
+            return ShellMariadbDataUtil.valueStandardization(mariadbColumn,
+                    recordData.value(columnName));
+        }
+        return recordData.value(columnName);
     }
 
     /**

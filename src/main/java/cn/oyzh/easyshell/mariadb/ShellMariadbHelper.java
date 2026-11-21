@@ -190,6 +190,121 @@ public class ShellMariadbHelper {
         return value;
     }
 
+    /**
+     * 查询建表语句。
+     *
+     * @param connection 数据库连接
+     * @param dbName     数据库名称
+     * @param tableName  表名称
+     * @return 建表语句
+     * @throws Exception 异常
+     */
+    public static String showCreateTable(Connection connection, String dbName, String tableName) throws Exception {
+        String sql = "SHOW CREATE TABLE " + DBUtil.wrap(dbName, tableName, DBDialect.MARIADB);
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        String definition = "";
+        if (resultSet.next()) {
+            definition = resultSet.getString(2);
+        }
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
+        return definition;
+    }
+
+    /**
+     * 从建表语句中提取生成列表达式。
+     *
+     * <p>MariaDB 的 INFORMATION_SCHEMA 会丢失生成表达式中的补充平面字符，
+     * 因此优先从 SHOW CREATE TABLE 中提取完整表达式。</p>
+     *
+     * @param createSql  建表语句
+     * @param columnName 字段名称
+     * @return 表达式，未找到时返回 null
+     */
+    public static String extractGeneratedExpression(String createSql, String columnName) {
+        String line = findColumnDefinitionLine(createSql, columnName);
+        if (line == null) {
+            return null;
+        }
+        String lower = line.toLowerCase(Locale.ROOT);
+        int generated = lower.indexOf("generated always as (");
+        if (generated < 0) {
+            return null;
+        }
+        int expressionStart = generated + "generated always as (".length();
+        int depth = 1;
+        char quote = 0;
+        for (int i = expressionStart; i < line.length(); i++) {
+            char current = line.charAt(i);
+            if (quote != 0) {
+                if (current == '\\' && quote != '`' && i + 1 < line.length()) {
+                    i++;
+                } else if (current == quote) {
+                    if (i + 1 < line.length() && line.charAt(i + 1) == quote) {
+                        i++;
+                    } else {
+                        quote = 0;
+                    }
+                }
+                continue;
+            }
+            if (current == '\'' || current == '"' || current == '`') {
+                quote = current;
+            } else if (current == '(') {
+                depth++;
+            } else if (current == ')' && --depth == 0) {
+                return line.substring(expressionStart, i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断字段是否为 MariaDB JSON 别名。
+     *
+     * <p>MariaDB 将 JSON 存储为 LONGTEXT，并在建表语句中生成
+     * {@code CHECK (json_valid(column))} 约束。</p>
+     *
+     * @param createSql  建表语句
+     * @param columnName 字段名称
+     * @return 结果
+     */
+    public static boolean isJsonColumn(String createSql, String columnName) {
+        String line = findColumnDefinitionLine(createSql, columnName);
+        if (line == null) {
+            return false;
+        }
+        String quotedName = DBUtil.wrap(columnName, DBDialect.MARIADB).toLowerCase(Locale.ROOT);
+        return line.toLowerCase(Locale.ROOT).contains("json_valid(" + quotedName + ")");
+    }
+
+    /**
+     * 查找字段定义所在行。
+     *
+     * @param createSql  建表语句
+     * @param columnName 字段名称
+     * @return 字段定义行
+     */
+    private static String findColumnDefinitionLine(String createSql, String columnName) {
+        if (StringUtil.isBlank(createSql) || StringUtil.isBlank(columnName)) {
+            return null;
+        }
+        String quotedName = DBUtil.wrap(columnName, DBDialect.MARIADB);
+        int columnStart = createSql.indexOf("\n  " + quotedName + " ");
+        if (columnStart < 0) {
+            columnStart = createSql.indexOf("\n" + quotedName + " ");
+        }
+        if (columnStart < 0) {
+            return null;
+        }
+        int lineEnd = createSql.indexOf('\n', columnStart + 1);
+        if (lineEnd < 0) {
+            lineEnd = createSql.length();
+        }
+        return createSql.substring(columnStart, lineEnd);
+    }
+
 //    public static Long lastInsertId(Connection connection) throws Exception {
 //        String sql = "SELECT LAST_INSERT_ID();";
 //        Statement statement = connection.createStatement();

@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.mariadb.record.MariadbRecordPrimaryKey;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBDataUtil;
 import cn.oyzh.fx.db.util.DBUtil;
+import com.alibaba.fastjson2.JSON;
 import org.mariadb.jdbc.type.Geometry;
 
 import java.sql.Array;
@@ -416,12 +417,17 @@ public class ShellMariadbDataUtil {
         List<String> list = new ArrayList<>();
         String tableName = columns.tableName();
         List<MariadbColumn> columnList = columns.sortOfPosition();
+        boolean includeColumnNames = includeFields
+                || columnList.stream().anyMatch(MariadbColumn::isGenerated);
         final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.MARIADB) + " ";
         for (MariadbRecord record : records) {
             StringBuilder sql = new StringBuilder(sqlBase);
-            if (includeFields) {
+            if (includeColumnNames) {
                 sql.append("(");
                 for (MariadbColumn dbColumn : columnList) {
+                    if (dbColumn.isGenerated()) {
+                        continue;
+                    }
                     sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.MARIADB)).append(", ");
                 }
                 if (sql.toString().endsWith(", ")) {
@@ -431,6 +437,9 @@ public class ShellMariadbDataUtil {
             }
             sql.append(" VALUES (");
             for (MariadbColumn dbColumn : columnList) {
+                if (dbColumn.isGenerated()) {
+                    continue;
+                }
                 Object value = record.getValue(dbColumn.getName());
                 value = valueStandardization(dbColumn, value);
                 value = DBDataUtil.parameterizedForSql(dbColumn, value, DBDialect.MARIADB);
@@ -461,6 +470,9 @@ public class ShellMariadbDataUtil {
                 .append(" SET ");
         boolean doSet = false;
         for (MariadbColumn column : columns) {
+            if (column.isGenerated()) {
+                continue;
+            }
             if (primaryKey != null && column == primaryKey.getColumn()) {
                 continue;
             }
@@ -517,6 +529,10 @@ public class ShellMariadbDataUtil {
      * @return 规整后的值
      */
     public static Object valueStandardization(MariadbColumn column, Object value) {
+        if (column != null && column.supportJson()
+                && value != null && !(value instanceof CharSequence)) {
+            value = JSON.toJSONString(value);
+        }
         value = valueStandardization(value);
         if (column != null && column.supportBit() && value instanceof Boolean bool) {
             return new byte[]{(byte) (bool ? 1 : 0)};

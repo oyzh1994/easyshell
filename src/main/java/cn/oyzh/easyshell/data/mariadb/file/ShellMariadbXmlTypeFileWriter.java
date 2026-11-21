@@ -70,7 +70,7 @@ public class ShellMariadbXmlTypeFileWriter extends ShellMariadbTypeFileWriter {
                 if (val != null) {
                     builder.append(entry.getKey())
                             .append("=\"")
-                            .append(val)
+                            .append(this.escapeXml(val))
                             .append("\" ");
                 }
             }
@@ -85,7 +85,7 @@ public class ShellMariadbXmlTypeFileWriter extends ShellMariadbTypeFileWriter {
                 Object val = this.parameterized(column, entry.getValue(), this.config);
                 if (val != null) {
                     builder.append(">");
-                    builder.append(val);
+                    builder.append(this.escapeXml(val));
                     builder.append("</").append(entry.getKey()).append(">");
                 } else {
                     builder.append("/>");

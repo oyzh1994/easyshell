@@ -60,11 +60,13 @@ public class MariadbArchitectureTest {
         List<Path> mariadbFiles = new ArrayList<>();
         try (Stream<Path> stream = Files.walk(javaRoot)) {
             stream.filter(Files::isRegularFile)
+                    .filter(MariadbArchitectureTest::isSourceFile)
                     .filter(path -> path.toString().contains("/mariadb/"))
                     .forEach(mariadbFiles::add);
         }
         try (Stream<Path> stream = Files.walk(resourceRoot)) {
             stream.filter(Files::isRegularFile)
+                    .filter(MariadbArchitectureTest::isSourceFile)
                     .filter(path -> path.toString().contains("/mariadb/"))
                     .forEach(mariadbFiles::add);
         }
@@ -96,6 +98,7 @@ public class MariadbArchitectureTest {
         List<Path> files = new ArrayList<>();
         try (Stream<Path> stream = Files.walk(javaRoot)) {
             stream.filter(Files::isRegularFile)
+                    .filter(MariadbArchitectureTest::isSourceFile)
                     .filter(path -> path.toString().contains("/mariadb/"))
                     .forEach(files::add);
         }
@@ -134,5 +137,10 @@ public class MariadbArchitectureTest {
 
     private Path resourceRootFor(String resource) {
         return Paths.get("src/main/resources").resolve(resource);
+    }
+
+    private static boolean isSourceFile(Path path) {
+        String name = path.getFileName().toString();
+        return !name.equals(".DS_Store") && !name.startsWith("._");
     }
 }

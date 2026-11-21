@@ -196,26 +196,37 @@ public class MariadbTableCreateSqlGenerator extends DBSqlGenerator {
                 }
             }
 
-            // 默认值
-            if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
-                builder.append(" DEFAULT ").append(column.getDefaultValueFix());
-            }
-
-            // 可为null
-            if (column.isNullable()) {
-                builder.append(" NULL");
+            if (column.isGenerated()) {
+                // 生成列
+                builder.append(" GENERATED ALWAYS AS (")
+                        .append(column.getGeneratedExpression())
+                        .append(") ")
+                        .append(StringUtil.blankToDefault(column.getGeneratedStorage(), "VIRTUAL"));
+                if (!column.isNullable()) {
+                    builder.append(" NOT NULL");
+                }
             } else {
-                builder.append(" NOT NULL");
-            }
+                // 默认值
+                if (column.supportDefaultValue() && column.getDefaultValueFix() != null) {
+                    builder.append(" DEFAULT ").append(column.getDefaultValueFix());
+                }
 
-            // 根据时间戳更新
-            if (column.supportTimestamp() && column.isUpdateOnCurrentTimestamp()) {
-                builder.append(" ON UPDATE CURRENT_TIMESTAMP(0)");
-            }
+                // 可为null
+                if (column.isNullable()) {
+                    builder.append(" NULL");
+                } else {
+                    builder.append(" NOT NULL");
+                }
 
-            // 自动递增
-            if (column.supportAutoIncrement() && column.isAutoIncrement()) {
-                builder.append(" AUTO_INCREMENT ");
+                // 根据时间戳更新
+                if (column.supportTimestamp() && column.isUpdateOnCurrentTimestamp()) {
+                    builder.append(" ON UPDATE CURRENT_TIMESTAMP(0)");
+                }
+
+                // 自动递增
+                if (column.supportAutoIncrement() && column.isAutoIncrement()) {
+                    builder.append(" AUTO_INCREMENT ");
+                }
             }
 
             // 注释

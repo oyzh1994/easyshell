@@ -100,7 +100,8 @@ public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<Ma
     public MariadbRecordProperty putValue(String column, Object value) {
         MariadbRecordProperty property = (MariadbRecordProperty) this.getProperty(column);
         if (property == null) {
-            property = putValue(new MariadbColumn(column), value);
+            MariadbColumn dbColumn = this.columns == null ? null : this.columns.column(column);
+            property = putValue(dbColumn == null ? new MariadbColumn(column) : dbColumn, value);
         } else {
             property.setValue(value);
         }
@@ -117,7 +118,7 @@ public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<Ma
     public MariadbRecordProperty putValue(MariadbColumn column, Object value) {
         MariadbRecordProperty property = (MariadbRecordProperty) this.getProperty(column.getName());
         if (property == null) {
-            property = new MariadbRecordProperty(this, column, value, this.readonly);
+            property = new MariadbRecordProperty(this, column, value, this.readonly || column.isGenerated());
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
             this.properties.put(column.getName(), property);
         } else {
@@ -189,6 +190,9 @@ public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<Ma
             if (property == null) {
                 continue;
             }
+            if (column.isGenerated()) {
+                continue;
+            }
             // 主键忽略
             if (column.isPrimaryKey() || column.isAutoIncrement()) {
                 continue;
@@ -202,6 +206,18 @@ public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<Ma
                 continue;
             }
             recordData.put(property.getColumn(), value);
+        }
+        return recordData;
+    }
+
+    @Override
+    public DBRecordData getChangedRecordData() {
+        DBRecordData recordData = new DBRecordData();
+        for (MariadbColumn column : this.getColumns()) {
+            MariadbRecordProperty property = (MariadbRecordProperty) this.getProperty(column.getName());
+            if (property != null && !column.isGenerated() && property.isChanged()) {
+                recordData.put(property.getColumn(), property.get());
+            }
         }
         return recordData;
     }

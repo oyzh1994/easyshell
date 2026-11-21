@@ -26,6 +26,10 @@ import java.util.Map;
  */
 public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<MariadbColumn> {
 
+    public static final String KIND_NORMAL = "NORMAL";
+
+    public static final String KIND_GENERATED = "GENERATED";
+
     /**
      * 库名称
      */
@@ -125,6 +129,21 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
      * 字段排序规则
      */
     private String collation;
+
+    /**
+     * 是否为生成列
+     */
+    private boolean generated;
+
+    /**
+     * 生成列存储方式
+     */
+    private String generatedStorage;
+
+    /**
+     * 生成列表达式
+     */
+    private String generatedExpression;
 
     /**
      * 构造字段
@@ -262,6 +281,103 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         return BooleanUtil.isTrue(this.autoIncrement);
     }
 
+    @Override
+    public boolean isGenerated() {
+        return this.generated;
+    }
+
+    /**
+     * 设置是否为生成列
+     *
+     * @param generated 是否为生成列
+     */
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
+        super.putOriginalData("generated", generated);
+    }
+
+    /**
+     * 获取生成列存储方式
+     *
+     * @return 结果
+     */
+    public String getGeneratedStorage() {
+        return this.generatedStorage;
+    }
+
+    /**
+     * 设置生成列存储方式
+     *
+     * @param generatedStorage 存储方式
+     */
+    public void setGeneratedStorage(String generatedStorage) {
+        this.generatedStorage = generatedStorage;
+        super.putOriginalData("generatedStorage", generatedStorage);
+    }
+
+    /**
+     * 生成列状态是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedChanged() {
+        return super.checkOriginalData("generated", this.generated);
+    }
+
+    /**
+     * 生成列存储方式是否变更。
+     *
+     * @return 结果
+     */
+    public boolean isGeneratedStorageChanged() {
+        return super.checkOriginalData("generatedStorage", this.generatedStorage);
+    }
+
+    /**
+     * 是否需要通过删除并新增字段来变更生成列定义。
+     *
+     * <p>MariaDB 当前不支持直接修改普通列和生成列的关系，
+     * 也不支持直接修改 VIRTUAL/STORED 存储方式。</p>
+     *
+     * @return 结果
+     */
+    public boolean requiresGeneratedColumnRebuild() {
+        if (this.isCreated() || this.isDeleted()) {
+            return false;
+        }
+        return this.isGeneratedChanged()
+                || (this.isGenerated() && this.isGeneratedStorageChanged());
+    }
+
+    /**
+     * 获取生成列表达式
+     *
+     * @return 结果
+     */
+    public String getGeneratedExpression() {
+        return this.generatedExpression;
+    }
+
+    /**
+     * 设置生成列表达式
+     *
+     * @param generatedExpression 表达式
+     */
+    public void setGeneratedExpression(String generatedExpression) {
+        this.generatedExpression = generatedExpression;
+        if (StringUtil.isNotBlank(generatedExpression)) {
+            this.setGenerated(true);
+        }
+        super.putOriginalData("generatedExpression", generatedExpression);
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return this.isGenerated()
+                && "VIRTUAL".equalsIgnoreCase(
+                StringUtil.blankToDefault(this.generatedStorage, "VIRTUAL"));
+    }
+
     /**
      * 是否ENUM类型
      *
@@ -278,6 +394,31 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
      */
     public boolean isSetType() {
         return StringUtil.equalsIgnoreCase(this.getType(), "SET");
+    }
+
+    /**
+     * 清理普通列与生成列互斥的属性。
+     */
+    public void normalizeGeneratedAttributes() {
+        if (this.isGenerated()) {
+            this.setAutoIncrement(false);
+            this.setDefaultValue(null);
+            this.setUpdateOnCurrentTimestamp(false);
+            if (StringUtil.isBlank(this.generatedStorage)) {
+                this.setGeneratedStorage("VIRTUAL");
+            }
+        } else {
+            this.setGeneratedExpression(null);
+            this.setGeneratedStorage(null);
+        }
+    }
+
+    @Override
+    public boolean isInvalid() {
+        return StringUtil.isBlank(this.getName())
+                || StringUtil.isBlank(this.getType())
+                || (this.isGenerated()
+                && StringUtil.isBlank(this.generatedExpression));
     }
 
     /**
@@ -692,6 +833,13 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         if (StringUtil.isEmpty(extra)) {
             return;
         }
+        if (StringUtil.containsIgnoreCase(extra, "VIRTUAL GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("VIRTUAL");
+        } else if (StringUtil.containsIgnoreCase(extra, "STORED GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("STORED");
+        }
         if (StringUtil.containsIgnoreCase(extra, "auto_increment")) {
             this.setAutoIncrement(true);
         }
@@ -747,6 +895,13 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
         if (StringUtil.containsIgnoreCase(columnExtra, "auto_increment")) {
             this.setAutoIncrement(true);
         }
+        if (StringUtil.containsIgnoreCase(columnExtra, "VIRTUAL GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("VIRTUAL");
+        } else if (StringUtil.containsIgnoreCase(columnExtra, "STORED GENERATED")) {
+            this.setGenerated(true);
+            this.setGeneratedStorage("STORED");
+        }
         if (StringUtil.containsIgnoreCase(columnExtra, "on update CURRENT_TIMESTAMP")) {
             this.setUpdateOnCurrentTimestamp(true);
         }
@@ -780,6 +935,9 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
             this.setPrimaryKey(column.isPrimaryKey());
             this.setDefaultValue(column.getDefaultValue());
             this.setAutoIncrement(column.isAutoIncrement());
+            this.setGenerated(column.isGenerated());
+            this.setGeneratedStorage(column.getGeneratedStorage());
+            this.setGeneratedExpression(column.getGeneratedExpression());
             this.setPrimaryKeySize(column.getPrimaryKeySize());
             this.setUpdateOnCurrentTimestamp(column.isUpdateOnCurrentTimestamp());
         }
