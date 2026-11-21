@@ -757,9 +757,12 @@ public class ChatController extends SubStageController {
                         @Override
                         public void onEvent(LLMAgentEvent event) {
                             if (!isRequestActive(request) || event == null
-                                    || event.type() == LLMAgentEventType.COMPLETED) {
+                                    || event.type() == LLMAgentEventType.COMPLETED
+                                    || !firstResponse.get()) {
                                 return;
                             }
+                            // Agent 事件只用于正式回复开始前的状态展示。正文开始流式输出后，
+                            // 后续事件不能再覆盖或混入正文。
                             view.replaceMessage(placeholder, agentEventText(event));
                         }
 

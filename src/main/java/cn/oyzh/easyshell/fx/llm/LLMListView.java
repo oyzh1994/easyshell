@@ -270,6 +270,7 @@ public class LLMListView extends FXListView<LLMMessage> {
     private void resetScrollState() {
         this.userScrollActivity++;
         this.userScrolling = false;
+        this.manualScrollLatched = false;
         this.autoScroll = true;
     }
 
@@ -291,17 +292,31 @@ public class LLMListView extends FXListView<LLMMessage> {
 
     private boolean userScrolling;
 
+    private boolean manualScrollLatched;
+
+    private boolean scrollingTowardBottom;
+
+    private boolean scrollBarReleased;
+
     private int userScrollActivity;
 
     private final ChangeListener<Number> scrollBarValueListener = (observable, oldValue, newValue) -> {
         if (this.userScrolling && this.verticalScrollBar != null) {
-            this.autoScroll = this.isAtBottom(this.verticalScrollBar);
+            // 内容增长也会改变滚动条数值，只有用户离开底部时才锁定手动模式。
+            // 手动模式只能在用户明确向下回到底部或拖动滚动条回到底部后解除。
+            if (!this.isAtBottom(this.verticalScrollBar)) {
+                this.manualScrollLatched = true;
+                this.autoScroll = false;
+            }
         }
     };
 
     private final EventHandler<MouseEvent> scrollBarPressedHandler = event -> this.beginUserScroll();
 
-    private final EventHandler<MouseEvent> scrollBarReleasedHandler = event -> this.endUserScrollLater();
+    private final EventHandler<MouseEvent> scrollBarReleasedHandler = event -> {
+        this.scrollBarReleased = true;
+        this.endUserScrollLater();
+    };
 
     /**
      * 滚动到底部，并恢复自动跟随
@@ -309,6 +324,9 @@ public class LLMListView extends FXListView<LLMMessage> {
     public void scrollToBottom() {
         this.autoScroll = true;
         this.userScrolling = false;
+        this.manualScrollLatched = false;
+        this.scrollingTowardBottom = false;
+        this.scrollBarReleased = false;
         this.userScrollActivity++;
         this.scheduleScrollToBottom();
     }
@@ -471,12 +489,17 @@ public class LLMListView extends FXListView<LLMMessage> {
         this.beginUserScroll();
         if (event.getDeltaY() > 0) {
             this.autoScroll = false;
+            this.manualScrollLatched = true;
+        } else if (event.getDeltaY() < 0) {
+            this.scrollingTowardBottom = true;
         }
         this.endUserScrollLater();
     }
 
     private void beginUserScroll() {
         this.userScrolling = true;
+        this.scrollingTowardBottom = false;
+        this.scrollBarReleased = false;
         this.userScrollActivity++;
     }
 
@@ -488,8 +511,18 @@ public class LLMListView extends FXListView<LLMMessage> {
             }
             this.userScrolling = false;
             if (this.verticalScrollBar != null) {
-                this.autoScroll = this.isAtBottom(this.verticalScrollBar);
+                boolean atBottom = this.isAtBottom(this.verticalScrollBar);
+                boolean returnedToBottom = atBottom
+                        && (this.scrollingTowardBottom || this.scrollBarReleased);
+                if (returnedToBottom) {
+                    this.manualScrollLatched = false;
+                    this.autoScroll = true;
+                } else if (!this.manualScrollLatched) {
+                    this.autoScroll = atBottom;
+                }
             }
+            this.scrollingTowardBottom = false;
+            this.scrollBarReleased = false;
         });
     }
 
@@ -509,6 +542,10 @@ public class LLMListView extends FXListView<LLMMessage> {
             return true;
         }
         return scrollBar.getValue() >= scrollBar.getMax() - range * BOTTOM_TOLERANCE;
+    }
+
+    boolean isAutoScrollEnabled() {
+        return this.autoScroll;
     }
 
 }

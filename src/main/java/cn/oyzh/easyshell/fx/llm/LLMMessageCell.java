@@ -34,8 +34,6 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
 
     private final LLMMessageView text = new LLMMessageView();
 
-    private final LLMMessageView agentTraceText = new LLMMessageView();
-
     /**
      * 当前绑定的消息
      */
@@ -66,7 +64,6 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
      * Agent 轨迹变更监听
      */
     private final ChangeListener<String> agentTraceListener = (observable, oldValue, newValue) -> {
-        this.refreshAgentTrace();
         this.refreshText();
     };
 
@@ -99,18 +96,6 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.text.maxWidthProperty().bind(Bindings.max(40, this.bubble.maxWidthProperty().subtract(28)));
         this.text.maxWidthProperty().addListener((observable, oldValue, newValue) -> this.requestLayout());
 
-        this.agentTraceText.getStyleClass().addAll("llm-agent-trace-text", "llm-agent-trace-inline");
-        this.agentTraceText.setWrapText(true);
-        this.agentTraceText.setMinWidth(0);
-        this.agentTraceText.setMaxWidth(Double.MAX_VALUE);
-        this.agentTraceText.measurementWidthProperty().bind(this.agentTraceText.maxWidthProperty());
-        this.agentTraceText.maxWidthProperty().bind(
-                Bindings.max(40, this.bubble.maxWidthProperty().subtract(28)));
-        this.agentTraceText.maxWidthProperty().addListener(
-                (observable, oldValue, newValue) -> this.requestLayout());
-        this.agentTraceText.setVisible(false);
-        this.agentTraceText.setManaged(false);
-
         this.attachment.getStyleClass().add("llm-bubble-attachment");
         this.attachment.setWrapText(true);
         this.attachment.setMaxWidth(Double.MAX_VALUE);
@@ -120,7 +105,7 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.meta.getStyleClass().add("llm-meta");
         this.meta.setMaxWidth(Double.MAX_VALUE);
 
-        this.bubble.getChildren().addAll(this.agentTraceText, this.text, this.attachment);
+        this.bubble.getChildren().addAll(this.text, this.attachment);
         this.bubbleStack.getChildren().addAll(this.bubble, this.meta);
         this.row.getChildren().add(this.bubbleStack);
         this.setGraphic(this.row);
@@ -137,7 +122,6 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
             if (!key.equals(this.appliedThemeKey)) {
                 this.appliedThemeKey = key;
                 this.text.changeTheme(style);
-                this.agentTraceText.changeTheme(style);
             }
         }
     }
@@ -153,11 +137,8 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         }
         if (empty || item == null) {
             this.text.setMessageNow("", EditorFormatType.RAW);
-            this.agentTraceText.setMessageNow("", EditorFormatType.RAW);
             this.text.setManaged(false);
             this.text.setVisible(false);
-            this.agentTraceText.setManaged(false);
-            this.agentTraceText.setVisible(false);
             this.setGraphic(null);
             return;
         }
@@ -190,7 +171,6 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         this.boundMessage = item;
         this.text.setMessageNow(this.displayText(item), this.messageFormat(item));
         this.updateTextVisibility(this.text.getText());
-        this.refreshAgentTrace();
 
         File file = item.getFile();
         boolean hasFile = file != null;
@@ -236,18 +216,6 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         }
     }
 
-    private void refreshAgentTrace() {
-        LLMMessage item = this.getItem();
-        String trace = item == null ? "" : item.getAgentTrace();
-        if (!this.thinkingVisible.get()) {
-            trace = LLMAgentTraceFormatter.hideThinking(trace);
-        }
-        boolean visible = item != null && !item.isUser() && trace != null && !trace.isBlank();
-        this.agentTraceText.setManaged(visible);
-        this.agentTraceText.setVisible(visible);
-        this.agentTraceText.setMessage(visible ? trace : "", EditorFormatType.LLM_CHAT);
-    }
-
     private void updateTextVisibility(String displayText) {
         boolean visible = displayText != null && !displayText.isBlank();
         this.text.setManaged(visible);
@@ -258,21 +226,24 @@ public final class LLMMessageCell extends ListCell<LLMMessage> {
         String thinking = item.getThinking();
         String message = item.getMessage();
         String agentTrace = item.getAgentTrace();
-        boolean hasThinking = this.thinkingVisible.get()
-                && thinking != null && !thinking.isBlank()
-                && (agentTrace == null || agentTrace.isBlank());
-        boolean hasMessage = message != null && !message.isBlank();
-        if (!hasThinking) {
-            return message == null ? "" : message;
+        String result = "";
+        if (!item.isUser() && agentTrace != null && !agentTrace.isBlank()) {
+            result = this.thinkingVisible.get()
+                    ? agentTrace.strip()
+                    : LLMAgentTraceFormatter.hideThinking(agentTrace);
+        } else if (this.thinkingVisible.get() && thinking != null && !thinking.isBlank()) {
+            result = "**" + ShellI18nHelper.thinkingLabel() + "**\n\n" + thinking.strip();
         }
-        StringBuilder result = new StringBuilder()
-                .append("**").append(ShellI18nHelper.thinkingLabel()).append("**\n\n")
-                .append(thinking.trim());
-        if (hasMessage) {
-            result.append("\n\n---\n\n")
-                    .append("**").append(ShellI18nHelper.answerLabel()).append("**\n\n")
-                    .append(message.trim());
+        if (message == null || message.isBlank()) {
+            return result;
         }
-        return result.toString();
+        if (result.isBlank()) {
+            return message;
+        }
+        return new StringBuilder(result)
+                .append("\n\n---\n\n")
+                .append("**").append(ShellI18nHelper.answerLabel()).append("**\n\n")
+                .append(message)
+                .toString();
     }
 }

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -33,37 +34,38 @@ public class LLMListViewAgentTraceInlineTest {
             TestContext context = contextRef.get();
             LLMMessage message = context.listView().getItems().getFirst();
 
-            LLMMessageView trace = findTraceView(context.listView(), 0);
-            assertTrue(trace.isManaged());
-            assertTrue(trace.isVisible());
-            assertTrue(trace.getText().contains("step thinking"));
-            assertTrue(trace.getText().contains("step result"));
+            LLMMessageView content = findStyledView(
+                    context.listView(), 0, "llm-bubble-text-assistant");
+            assertTrue(content.isManaged());
+            assertTrue(content.isVisible());
+            assertTrue(content.getText().contains("step thinking"));
+            assertTrue(content.getText().contains("step result"));
+            assertTrue(content.getText().contains("final answer"));
             assertFalse("agent trace must not use an expandable button",
                     context.listView().lookupAll(".llm-agent-trace-button").iterator().hasNext());
 
-            VBox bubble = (VBox) trace.getParent();
-            assertSame("agent trace must be rendered before the answer", trace, bubble.getChildren().getFirst());
-            LLMMessageView answer = findStyledView(context.listView(), 0, "llm-bubble-text-assistant");
-            assertFalse("agent thinking must not be duplicated in the answer",
-                    answer.getText().contains("aggregate thinking"));
+            VBox bubble = (VBox) content.getParent();
+            assertSame("the message content must use one editor", content, bubble.getChildren().getFirst());
+            assertFalse(context.listView().lookupAll(".llm-agent-trace-text").iterator().hasNext());
 
             runFxAndWait(() -> context.listView().setThinkingVisible(false));
             waitForPulse();
-            LLMMessageView hiddenTrace = findTraceView(context.listView(), 0);
-            assertFalse(hiddenTrace.getText().contains("step thinking"));
-            assertTrue(hiddenTrace.getText().contains("step result"));
-            LLMMessageView hiddenAnswer = findStyledView(
+            LLMMessageView hiddenContent = findStyledView(
                     context.listView(), 0, "llm-bubble-text-assistant");
-            assertFalse(hiddenAnswer.getText().contains("aggregate thinking"));
+            assertFalse(hiddenContent.getText().contains("step thinking"));
+            assertTrue(hiddenContent.getText().contains("step result"));
+            assertFalse(hiddenContent.getText().contains("aggregate thinking"));
 
             runFxAndWait(() -> context.listView().setThinkingVisible(true));
             waitForPulse();
-            assertTrue(findTraceView(context.listView(), 0).getText().contains("step thinking"));
+            assertTrue(findStyledView(context.listView(), 0, "llm-bubble-text-assistant")
+                    .getText().contains("step thinking"));
 
             runFxAndWait(() -> message.setAgentTrace(message.getAgentTrace()
                     + "\n\n### streamed step\n\nstreamed result"));
             waitForPulse();
-            assertTrue(findTraceView(context.listView(), 0).getText().contains("streamed result"));
+            assertTrue(findStyledView(context.listView(), 0, "llm-bubble-text-assistant")
+                    .getText().contains("streamed result"));
         } finally {
             TestContext context = contextRef.get();
             if (context != null) {
@@ -113,6 +115,68 @@ public class LLMListViewAgentTraceInlineTest {
         }
     }
 
+    @Test
+    public void longAgentTraceAndAnswerShareOneEditor() {
+        startToolkit();
+        AtomicReference<TestContext> contextRef = new AtomicReference<>();
+        runFxAndWait(() -> {
+            LLMListView listView = new LLMListView();
+            LLMMessage message = LLMMessage.llm("final answer");
+            message.setAgentTrace(longTrace());
+            listView.addMessage(message);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(new StackPane(listView), 560, 420));
+            stage.show();
+            contextRef.set(new TestContext(stage, null, listView));
+        });
+        try {
+            for (int i = 0; i < 4; i++) {
+                waitForPulse();
+            }
+            TestContext context = contextRef.get();
+            LLMMessageView content = findStyledView(
+                    context.listView(), 0, "llm-bubble-text-assistant");
+            assertTrue(content.getText().contains("执行 Agent 40"));
+            assertTrue(content.getText().contains("final answer"));
+            VBox bubble = (VBox) content.getParent();
+            assertSame(content, bubble.getChildren().getFirst());
+            assertFalse(context.listView().lookupAll(".llm-agent-trace-text").iterator().hasNext());
+            LLMMessage message = context.listView().getItems().getFirst();
+            for (int i = 0; i < 12; i++) {
+                int step = i;
+                runFxAndWait(() -> {
+                    message.setAgentTrace(longTrace() + "\n\n### 流式步骤 "
+                            + step + "\n\n新的结果内容");
+                    message.setMessage(message.getMessage() + "\n\n流式正文 " + step);
+                });
+                waitForPulse();
+                LLMMessageView updated = findStyledView(
+                        context.listView(), 0, "llm-bubble-text-assistant");
+                assertTrue(updated.getText().contains("流式正文 " + step));
+                assertTrue(updated.getText().contains("**" + ShellI18nHelper.answerLabel() + "**"));
+            }
+        } finally {
+            TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    private static String longTrace() {
+        StringBuilder trace = new StringBuilder();
+        for (int i = 0; i < 40; i++) {
+            trace.append("### 执行 Agent ").append(i + 1).append(" · 已完成\n\n")
+                    .append("**思考过程**\n\n")
+                    .append("分析第 ").append(i + 1)
+                    .append(" 步，并核对当前环境、输入与预期输出。\n\n")
+                    .append("**结果**\n\n")
+                    .append("第 ").append(i + 1)
+                    .append(" 步已完成，继续处理后续内容。\n\n");
+        }
+        return trace.toString();
+    }
+
     private static TestContext createContext() {
         LLMListView listView = new LLMListView();
         LLMMessage message = LLMMessage.llm("final answer");
@@ -136,10 +200,6 @@ public class LLMListViewAgentTraceInlineTest {
         root.applyCss();
         root.layout();
         return new TestContext(stage, root, listView);
-    }
-
-    private static LLMMessageView findTraceView(LLMListView listView, int itemIndex) {
-        return findStyledView(listView, itemIndex, "llm-agent-trace-text");
     }
 
     private static LLMMessageView findStyledView(LLMListView listView, int itemIndex, String styleClass) {
