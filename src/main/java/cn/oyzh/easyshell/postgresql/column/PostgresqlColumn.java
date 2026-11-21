@@ -339,11 +339,6 @@ public class PostgresqlColumn extends DBObject implements DBColumn, ObjectCopier
         this.generated = generated;
     }
 
-    /**
-     * 是否为生成列
-     *
-     * @return 结果
-     */
     @Override
     public boolean isGenerated() {
         return this.generated;
