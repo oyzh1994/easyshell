@@ -98,6 +98,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1193,6 +1197,18 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 新增记录是否需要获取生成主键。
+     * 查询结果不包含序列触发器元数据，因此主键为空时也需要RETURNING。
+     *
+     * @param primaryKey 主键参数
+     * @return 结果
+     */
+    private boolean shouldReturnGeneratedKey(OracleRecordPrimaryKey primaryKey) {
+        return primaryKey != null
+                && (primaryKey.shouldReturnData() || primaryKey.data() == null);
+    }
+
+    /**
      * 获取序列当前值
      *
      * @param statement 语句块
@@ -1675,7 +1691,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         }
         try {
             OracleRecordPrimaryKey primaryKey = param.getPrimaryKey();
-            boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
+            boolean returnGeneratedKey = this.shouldReturnGeneratedKey(primaryKey);
             DBRecordData recordData = param.getRecord();
             List<DBColumn> insertColumns = recordData.entries().stream()
                     .map(Map.Entry::getKey)
@@ -1732,7 +1748,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             if (primaryKey != null) {
                 Long newId;
                 // 正常主键
-                if (primaryKey.shouldReturnData()) {
+                if (returnGeneratedKey) {
                     newId = statement.getLong(index);
                 } else {// 处理序列值
                     newId = this.getSequenceCurrVal(statement, primaryKey.getColumn());
@@ -1763,12 +1779,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
 
     private int insertRecordDirectOnce(Connection connection, String insertSql, List<DBColumn> insertColumns,
                                        DBRecordData recordData, OracleRecordPrimaryKey primaryKey) throws Exception {
-        boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
-        boolean identity = returnGeneratedKey && primaryKey.getColumn().isIdentityAutoIncrementType();
+        boolean returnGeneratedKey = this.shouldReturnGeneratedKey(primaryKey);
         this.printSql(insertSql);
         int count;
         Long generatedKey = null;
-        if (identity) {
+        if (returnGeneratedKey) {
             try (PreparedStatement statement = connection.prepareStatement(
                     insertSql, new String[]{primaryKey.getColumnName()})) {
                 this.bindInsertValues(statement, insertColumns, recordData);
@@ -1813,7 +1828,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         List<DBColumn> baseColumns = insertColumns.stream()
                 .filter(column -> !this.isDeferredLobColumn(column) && !this.isLongColumn(column))
                 .toList();
-        boolean returnGeneratedKey = primaryKey != null && primaryKey.shouldReturnData();
+        boolean returnGeneratedKey = this.shouldReturnGeneratedKey(primaryKey);
         StringBuilder builder = new StringBuilder("BEGIN INSERT INTO ")
                 .append(DBUtil.wrap(schema, tableName, DBDialect.ORACLE))
                 .append("(");
@@ -1941,6 +1956,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             statement.setString(index, DBDataUtil.normalizeJson(value.toString()));
         } else if (StringUtil.equalsIgnoreCase(column.getType(), "VECTOR")) {
             statement.setString(index, value.toString());
+        } else if (this.isTimestampTzColumn(column)) {
+            this.bindTimestampTz(connection, statement, index, value);
         } else if (column.supportBoolean()) {
             if (value instanceof Boolean bool) {
                 statement.setBoolean(index, bool);
@@ -1989,8 +2006,14 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     }
 
     private boolean useInlineComplexLiteral(DBColumn column, Object value) {
-        return value != null && column instanceof OracleColumn oracleColumn
-                && oracleColumn.isObjectType();
+        if (!(column instanceof OracleColumn oracleColumn)
+                || (!oracleColumn.isObjectType() && !oracleColumn.isCollectionType())) {
+            return false;
+        }
+        // UDT空值使用SQL NULL字面量，避免DBMS_PICKLER生成超长内部标识符(ORA-01948)。
+        return oracleColumn.isObjectType()
+                || value == null
+                || (value instanceof CharSequence sequence && StringUtil.isBlank(sequence.toString()));
     }
 
     private boolean isIntervalYmColumn(DBColumn column) {
@@ -2001,6 +2024,69 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     private boolean isIntervalDsColumn(DBColumn column) {
         String type = column.getType();
         return type != null && type.toUpperCase().contains("INTERVAL DAY");
+    }
+
+    private boolean isTimestampTzColumn(DBColumn column) {
+        String type = column.getType();
+        if (type == null) {
+            return false;
+        }
+        String upper = type.toUpperCase();
+        return (upper.contains("TIMESTAMP") && upper.contains("WITH TIME ZONE")
+                && !upper.contains("LOCAL TIME ZONE"))
+                || "TIMESTAMPTZ".equals(upper);
+    }
+
+    private void bindTimestampTz(Connection connection, PreparedStatement statement,
+                                 int index, Object value) throws SQLException {
+        OffsetDateTime dateTime = this.toOffsetDateTime(value);
+        if (dateTime != null) {
+            oracle.sql.TIMESTAMPTZ timestampTz = new oracle.sql.TIMESTAMPTZ(dateTime);
+            if (statement instanceof oracle.jdbc.OraclePreparedStatement oracleStatement) {
+                oracleStatement.setOracleObject(index, timestampTz);
+            } else {
+                statement.setObject(index, dateTime);
+            }
+        } else if (value instanceof CharSequence sequence) {
+            // 兼容Oracle原生TIMESTAMPTZ字符串格式。
+            oracle.sql.TIMESTAMPTZ timestampTz = new oracle.sql.TIMESTAMPTZ(
+                    connection, sequence.toString());
+            if (statement instanceof oracle.jdbc.OraclePreparedStatement oracleStatement) {
+                oracleStatement.setOracleObject(index, timestampTz);
+            } else {
+                statement.setObject(index, timestampTz);
+            }
+        } else {
+            DBUtil.setVal(statement, value, index);
+        }
+    }
+
+    private OffsetDateTime toOffsetDateTime(Object value) {
+        if (value instanceof OffsetDateTime dateTime) {
+            return dateTime;
+        }
+        if (value instanceof ZonedDateTime dateTime) {
+            return dateTime.toOffsetDateTime();
+        }
+        if (value instanceof LocalDateTime dateTime) {
+            return dateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        }
+        if (value instanceof java.util.Date date) {
+            return date.toInstant().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        }
+        if (value instanceof CharSequence sequence) {
+            String text = sequence.toString().strip();
+            try {
+                return OffsetDateTime.parse(text);
+            } catch (Exception ignored) {
+                try {
+                    return ZonedDateTime.parse(text).toOffsetDateTime();
+                } catch (Exception ignoredAgain) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     private String normalizeIntervalYm(Object value) {
@@ -4578,7 +4664,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     Object data = resultSet.getObject(column.getName());
                     if (column.isObjectType() || column.isCollectionType()) {
                         data = OracleComplexValueUtil.toJsonValue(connection, data);
-                    } else if (data instanceof oracle.sql.TIMESTAMPLTZ) {
+                    } else {
                         data = ShellOracleDataUtil.valueStandardization(connection, data);
                     }
                     record.putValue(column, data);

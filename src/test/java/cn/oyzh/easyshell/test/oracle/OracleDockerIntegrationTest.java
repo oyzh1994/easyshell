@@ -22,6 +22,7 @@ import cn.oyzh.easyshell.oracle.foreignKey.OracleForeignKey;
 import cn.oyzh.easyshell.oracle.record.OracleInsertRecordParam;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
+import cn.oyzh.easyshell.oracle.record.OracleUpdateRecordParam;
 import cn.oyzh.easyshell.oracle.record.OracleSelectRecordParam;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
 import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
@@ -65,6 +66,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -409,6 +411,196 @@ public class OracleDockerIntegrationTest {
             assertTrue(json.toString().contains("\"a\""));
             assertTrue(records.get(0).getValue("C_VECTOR") != null);
             assertTrue(records.get(0).getValue("C_BOOLEAN") instanceof Boolean);
+
+            var queryResult = client.executeSql(schema,
+                    "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"").getResults().getFirst();
+            assertTrue(queryResult.isSuccess());
+            Object queryJson = queryResult.getRecords().getFirst().getValue("C_JSON");
+            assertTrue(queryJson instanceof CharSequence);
+            assertTrue(queryJson.toString().contains("\"a\""));
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+            dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void queryRecordUpdateEchoesPrimaryKey() throws Exception {
+        String schema = "E2E_QUERY_EDIT_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "Query2026";
+        String tableName = "QUERY_EDIT";
+        createTemporarySchema(schema, password);
+        ShellOracleClient client = null;
+        try {
+            try (Connection connection = open(url, schema, password);
+                 Statement statement = connection.createStatement()) {
+                statement.execute("CREATE TYPE \"" + schema + "\".\"QUERY_EDIT_ADDRESS\""
+                        + " AS OBJECT (\"VALUE\" VARCHAR2(50))");
+                statement.execute("CREATE TABLE \"" + schema + "\".\"" + tableName
+                        + "\" (\"ID\" NUMBER PRIMARY KEY, \"EMAIL\" VARCHAR2(50),"
+                        + " \"USERNAME\" VARCHAR2(50),"
+                        + " \"C_OBJECT\" \"" + schema + "\".\"QUERY_EDIT_ADDRESS\","
+                        + " \"C_TS_TZ\" TIMESTAMP(6) WITH TIME ZONE)");
+                statement.execute("INSERT INTO \"" + schema + "\".\"" + tableName
+                        + "\" VALUES (7, 'before@example.com', 'before',"
+                        + " \"" + schema + "\".\"QUERY_EDIT_ADDRESS\"('before'),"
+                        + " TIMESTAMP '2026-11-22 12:34:56.123456 +08:00')");
+            }
+
+            client = openShellClient(schema, password);
+            var queryResult = client.executeSql(schema,
+                    "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"").getResults().getFirst();
+            OracleRecord record = queryResult.getRecords().getFirst();
+            Integer originalId = ((Number) record.getValue("ID")).intValue();
+            Object timestampTz = record.getValue("C_TS_TZ");
+            assertTrue(timestampTz instanceof CharSequence);
+            assertTrue(timestampTz.toString().contains("+08:00"));
+            OracleColumn primaryKeyColumn = queryResult.getPrimaryKey();
+            assertNotNull(primaryKeyColumn);
+
+            record.getProperty("EMAIL").set("after@example.com");
+            record.getProperty("EMAIL").setChanged(true);
+            record.getProperty("C_OBJECT").set("{\"VALUE\":\"after\"}");
+            record.getProperty("C_OBJECT").setChanged(true);
+            record.getProperty("C_TS_TZ").set("2026-11-22T13:34:56.123456+08:00");
+            record.getProperty("C_TS_TZ").setChanged(true);
+            OracleRecordPrimaryKey primaryKey = new OracleRecordPrimaryKey();
+            primaryKey.init(primaryKeyColumn, record);
+            OracleUpdateRecordParam updateParam = new OracleUpdateRecordParam();
+            updateParam.setSchema(queryResult.schema());
+            updateParam.setTableName(queryResult.tableName());
+            updateParam.setUpdateRecord(record.getChangedRecordData());
+            updateParam.setPrimaryKey(primaryKey);
+            assertEquals(1, client.updateRecord(updateParam));
+
+            OracleSelectRecordParam selectParam = new OracleSelectRecordParam();
+            selectParam.setSchema(queryResult.schema());
+            selectParam.setTableName(queryResult.tableName());
+            selectParam.setPrimaryKey(primaryKey);
+            OracleRecord selected = client.selectRecord(selectParam);
+            assertNotNull(selected.getValue("ID"));
+            record.copy(selected);
+            assertEquals(originalId.intValue(), ((Number) record.getValue("ID")).intValue());
+            assertTrue(record.getValue("C_OBJECT") instanceof java.util.Map);
+            assertTrue(record.getValue("C_TS_TZ") instanceof CharSequence);
+            assertTrue(record.getValue("C_TS_TZ").toString().contains("13:34:56"));
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+            dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void insertsNullObjectWithLongTypeIdentifier() throws Exception {
+        String schema = "E2E_LONG_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "LongType2026";
+        String tableName = "LONG_OBJECT_TEST";
+        String typeName = "T_OBJECT_WITH_LONG_NAME";
+        createTemporarySchema(schema, password);
+        ShellOracleClient client = null;
+        try {
+            try (Connection connection = open(url, schema, password);
+                 Statement statement = connection.createStatement()) {
+                statement.execute("CREATE TYPE \"" + schema + "\".\"" + typeName
+                        + "\" AS OBJECT (\"NAME\" VARCHAR2(50))");
+                statement.execute("CREATE TABLE \"" + schema + "\".\"" + tableName
+                        + "\" (\"ID\" NUMBER, \"C_OBJECT\" \"" + schema + "\".\"" + typeName + "\")");
+            }
+
+            client = openShellClient(schema, password);
+            OracleSelectColumnParam columnParam = new OracleSelectColumnParam();
+            columnParam.setSchema(schema);
+            columnParam.setTableName(tableName);
+            OracleColumns columns = new OracleColumns(client.selectColumns(columnParam));
+            OracleRecord record = new OracleRecord(columns);
+            record.putValue("ID", 1);
+            record.putValue("C_OBJECT", null);
+
+            OracleInsertRecordParam insertParam = new OracleInsertRecordParam();
+            insertParam.setSchema(schema);
+            insertParam.setTableName(tableName);
+            insertParam.setRecord(record.getRecordData());
+            assertEquals(1, client.insertRecord(insertParam));
+        } finally {
+            if (client != null) {
+                client.close();
+            }
+            dropTemporarySchema(schema);
+        }
+    }
+
+    @Test
+    public void queryRecordInsertEchoesSequenceGeneratedPrimaryKey() throws Exception {
+        String schema = "E2E_QUERY_INS_" + Long.toUnsignedString(System.nanoTime(), 16).toUpperCase(Locale.ROOT);
+        String password = "QueryIns2026";
+        String tableName = "QUERY_INSERT";
+        String sequenceName = "QUERY_INSERT_SEQ";
+        createTemporarySchema(schema, password);
+        ShellOracleClient client = null;
+        try {
+            try (Connection connection = open(url, schema, password);
+                 Statement statement = connection.createStatement()) {
+                statement.execute("CREATE SEQUENCE \"" + schema + "\".\"" + sequenceName + "\" START WITH 10");
+                statement.execute("CREATE TYPE \"" + schema + "\".\"QUERY_INSERT_OBJECT\""
+                        + " AS OBJECT (\"VALUE\" VARCHAR2(50))");
+                statement.execute("CREATE TABLE \"" + schema + "\".\"" + tableName
+                        + "\" (\"ID\" NUMBER PRIMARY KEY, \"NAME\" VARCHAR2(50),"
+                        + " \"C_OBJECT\" \"" + schema + "\".\"QUERY_INSERT_OBJECT\","
+                        + " \"C_XML\" XMLTYPE,"
+                        + " \"C_TS_TZ\" TIMESTAMP(6) WITH TIME ZONE,"
+                        + " \"C_VIRTUAL\" VARCHAR2(50) GENERATED ALWAYS AS (UPPER(\"NAME\")) VIRTUAL)");
+                statement.execute("CREATE TRIGGER \"" + schema + "\".\"QUERY_INSERT_TRG\""
+                        + " BEFORE INSERT ON \"" + schema + "\".\"" + tableName
+                        + "\" FOR EACH ROW WHEN (NEW.\"ID\" IS NULL)"
+                        + " BEGIN SELECT \"" + sequenceName + "\".NEXTVAL INTO :NEW.\"ID\" FROM DUAL; END;");
+            }
+
+            client = openShellClient(schema, password);
+            var queryResult = client.executeSql(schema,
+                    "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"").getResults().getFirst();
+            OracleColumn primaryKeyColumn = queryResult.getPrimaryKey();
+            assertNotNull(primaryKeyColumn);
+            OracleColumn virtualColumn = queryResult.getColumns().column("C_VIRTUAL");
+            assertNotNull(virtualColumn);
+            assertTrue(virtualColumn.isGenerated());
+            assertFalse(virtualColumn.isDmlWritable());
+            OracleColumn xmlColumn = queryResult.getColumns().column("C_XML");
+            assertNotNull(xmlColumn);
+            assertTrue(xmlColumn.isXmlType());
+            assertFalse(xmlColumn.isGenerated());
+            assertTrue(xmlColumn.isDmlWritable());
+
+            OracleRecord record = new OracleRecord(queryResult.getColumns());
+            for (OracleColumn column : queryResult.getColumns()) {
+                record.putValue(column, null);
+            }
+            record.putValue("NAME", "inserted");
+            record.putValue("C_TS_TZ", "2026-11-22T13:34:56.123456+08:00");
+            assertTrue(record.getProperty("C_VIRTUAL").isReadonly());
+            assertFalse(record.getProperty("C_XML").isReadonly());
+            OracleRecordPrimaryKey primaryKey = new OracleRecordPrimaryKey();
+            primaryKey.init(primaryKeyColumn, record);
+            OracleInsertRecordParam insertParam = new OracleInsertRecordParam();
+            insertParam.setSchema(queryResult.schema());
+            insertParam.setTableName(queryResult.tableName());
+            insertParam.setRecord(record.getRecordData());
+            insertParam.setPrimaryKey(primaryKey);
+            assertEquals(1, client.insertRecord(insertParam));
+            assertNotNull(primaryKey.getReturnData());
+
+            OracleSelectRecordParam selectParam = new OracleSelectRecordParam();
+            selectParam.setSchema(queryResult.schema());
+            selectParam.setTableName(queryResult.tableName());
+            selectParam.setPrimaryKey(primaryKey);
+            OracleRecord selected = client.selectRecord(selectParam);
+            assertNotNull(selected.getValue("ID"));
+            assertEquals("inserted", selected.getValue("NAME"));
+            assertTrue(selected.getValue("C_TS_TZ") instanceof CharSequence);
+            assertTrue(selected.getValue("C_TS_TZ").toString().contains("+08:00"));
         } finally {
             if (client != null) {
                 client.close();
@@ -493,6 +685,15 @@ public class OracleDockerIntegrationTest {
             assertTrue(nestedValue instanceof List);
             assertEquals(List.of("tag1", "tag2"), nestedValue);
             assertNull(records.get(0).getValue("C_ANYDATA"));
+
+            var queryResult = client.executeSql(schema,
+                    "SELECT * FROM \"" + schema + "\".\"" + tableName + "\"").getResults().getFirst();
+            assertTrue(queryResult.isSuccess());
+            Object queryObject = queryResult.getRecords().getFirst().getValue("C_OBJECT");
+            assertTrue(queryObject instanceof java.util.Map);
+            Object queryArray = queryResult.getRecords().getFirst().getValue("C_VARRAY");
+            assertTrue(queryArray instanceof List);
+
             String insertSql = ShellOracleDataUtil.toInsertSql(
                     new OracleColumns(columns), records.get(0), true);
             assertTrue(insertSql.contains("\"T_ADDR\"("));
@@ -724,6 +925,17 @@ public class OracleDockerIntegrationTest {
             }
 
             assertTableDesignRoundTrip(client);
+            var queryResult = client.executeSql("DEMO",
+                    "SELECT * FROM \"DEMO\".\"USERS\"").getResults().getFirst();
+            assertEquals("DEMO", queryResult.schema());
+            assertEquals("USERS", queryResult.tableName());
+            assertTrue(queryResult.isUpdatable());
+            var unqualifiedQueryResult = client.executeSql("DEMO",
+                    "SELECT * FROM USERS").getResults().getFirst();
+            assertTrue(unqualifiedQueryResult.isSuccess());
+            assertEquals("DEMO", unqualifiedQueryResult.schema());
+            assertEquals("USERS", unqualifiedQueryResult.tableName());
+            assertTrue(unqualifiedQueryResult.isUpdatable());
             assertTrue(client.selectTablesSimple("DEMO").stream()
                     .allMatch(table -> StringUtil.isBlank(table.getCreateDefinition())));
             assertTrue(client.selectTables("DEMO").stream().anyMatch(table -> "USERS".equals(table.getName())

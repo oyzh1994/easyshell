@@ -3,6 +3,9 @@ package cn.oyzh.easyshell.query.oracle;
 import cn.oyzh.easyshell.oracle.ShellOracleHelper;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
+import cn.oyzh.easyshell.util.oracle.OracleComplexValueUtil;
+import cn.oyzh.easyshell.util.oracle.ShellOracleDataUtil;
+import cn.oyzh.fx.db.util.DBDataUtil;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -12,6 +15,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,28 +45,152 @@ public class OracleExecuteResult extends OracleQueryResult {
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         String schema = resultSetMetaData.getSchemaName(1);
         String tableName = resultSetMetaData.getTableName(1);
+        List<Object[]> rows = new ArrayList<>();
+        while (resultSet.next()) {
+            int colIndex = 1;
+            Object[] row = new Object[this.columns.size()];
+            for (OracleColumn dbColumn : this.columns) {
+                Object data;
+                if (dbColumn.isObjectType() || dbColumn.isCollectionType()) {
+                    data = resultSet.getObject(colIndex++);
+                } else {
+                    data = dbColumn.supportJson()
+                            ? resultSet.getString(colIndex++)
+                            : resultSet.getObject(colIndex++);
+                }
+                row[colIndex - 2] = data;
+            }
+            rows.add(row);
+        }
+        // Oracle JDBC只允许同一连接同时存在一个活动结果流。
+        // 结果集读完后再查询当前schema和主键，避免ORA-17027。
         if (tableName == null || tableName.isBlank()) {
-            SourceName sourceName = this.findSourceName(this.content);
+            SourceName sourceName = this.resolveSourceName(this.content, null);
             if (sourceName != null) {
                 tableName = sourceName.name();
                 if (schema == null || schema.isBlank()) {
-                    schema = sourceName.schema() != null ? sourceName.schema() : this.currentSchema(connection);
+                    schema = sourceName.schema();
+                    if (schema == null || schema.isBlank()) {
+                        schema = this.currentSchema(connection);
+                    }
                 }
             }
         }
+        this.fillColumnSource(schema, tableName);
+        this.enrichColumnMetadata(connection, schema, tableName);
         this.initPrimaryKeys(connection, schema, tableName);
-        while (resultSet.next()) {
-            OracleRecord record = new OracleRecord(columns, readonly);
-            int colIndex = 1;
-            for (OracleColumn dbColumn : this.columns) {
-                Object data = resultSet.getObject(colIndex++);
-//                // 获取几何值
-//                if (dbColumn.supportGeometry()) {
-//                    data = OracleHelper.getGeometryString(connection, data);
-//                }
-                record.putValue(dbColumn, data);
+        for (Object[] row : rows) {
+            OracleRecord record = new OracleRecord(this.columns, readonly);
+            for (int i = 0; i < this.columns.size(); i++) {
+                OracleColumn column = this.columns.get(i);
+                record.putValue(column, this.normalizeValue(connection, column, row[i]));
             }
             this.records.add(record);
+        }
+    }
+
+    private Object normalizeValue(Connection connection, OracleColumn column, Object data) throws SQLException {
+        if (column.supportJson() && data instanceof CharSequence sequence) {
+            data = DBDataUtil.normalizeJson(sequence.toString());
+        }
+        if (column.isObjectType() || column.isCollectionType()) {
+            return OracleComplexValueUtil.toJsonValue(connection, data);
+        }
+        return ShellOracleDataUtil.valueStandardization(connection, data);
+    }
+
+    /**
+     * 回填结果字段所属的表和模式。
+     * Oracle JDBC对查询结果通常不返回表名，而查询编辑依赖列上的表信息生成UPDATE/DELETE。
+     *
+     * @param schema    模式
+     * @param tableName 表名
+     */
+    void fillColumnSource(String schema, String tableName) {
+        if (this.columns == null || tableName == null || tableName.isBlank()) {
+            return;
+        }
+        for (OracleColumn column : this.columns) {
+            if (column.getTableName() == null || column.getTableName().isBlank()) {
+                column.setTableName(tableName);
+            }
+            if ((column.getSchema() == null || column.getSchema().isBlank())
+                    && schema != null && !schema.isBlank()) {
+                column.setSchema(schema);
+            }
+        }
+    }
+
+    /**
+     * 使用来源表元数据补齐ResultSetMetaData缺少的虚拟列和默认值信息。
+     *
+     * @param connection 连接
+     * @param schema     模式
+     * @param tableName  表名
+     * @throws SQLException 异常
+     */
+    void enrichColumnMetadata(Connection connection, String schema, String tableName) throws SQLException {
+        if (connection == null || this.columns == null
+                || schema == null || schema.isBlank()
+                || tableName == null || tableName.isBlank()) {
+            return;
+        }
+        String sql = """
+                SELECT
+                    C.COLUMN_NAME,
+                    C.DATA_TYPE,
+                    C.DATA_TYPE_OWNER,
+                    T.TYPECODE,
+                    C.VIRTUAL_COLUMN,
+                    C.DATA_DEFAULT
+                FROM ALL_TAB_COLS C
+                LEFT JOIN ALL_TYPES T
+                  ON T.OWNER = C.DATA_TYPE_OWNER
+                 AND T.TYPE_NAME = C.DATA_TYPE
+                WHERE C.OWNER = ?
+                  AND C.TABLE_NAME = ?
+                  AND C.HIDDEN_COLUMN = 'NO'
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    OracleColumn column = this.columns.column(resultSet.getString("COLUMN_NAME"));
+                    if (column == null) {
+                        continue;
+                    }
+                    String dataType = resultSet.getString("DATA_TYPE");
+                    if (dataType != null && !dataType.isBlank()) {
+                        // ResultSet元数据可能返回SYS.XMLTYPE等限定名称，使用表列元数据规范化。
+                        column.setType(dataType);
+                    }
+                    String typeOwner = resultSet.getString("DATA_TYPE_OWNER");
+                    String typeCode = resultSet.getString("TYPECODE");
+                    if (typeOwner != null && !typeOwner.isBlank()) {
+                        column.setTypeOwner(typeOwner);
+                    }
+                    if (typeCode != null && !typeCode.isBlank()) {
+                        column.setTypeCode(typeCode);
+                    }
+                    if (column.isObjectType() || column.isCollectionType()) {
+                        if (column.getTypeOwner() == null || column.getTypeOwner().isBlank()) {
+                            column.setTypeOwner(schema);
+                        }
+                        column.setTypeMeta(OracleComplexValueUtil.loadTypeMeta(
+                                connection, column.getTypeOwner(), column.getType()));
+                    }
+                    String defaultValue = resultSet.getString("DATA_DEFAULT");
+                    boolean virtual = "YES".equalsIgnoreCase(resultSet.getString("VIRTUAL_COLUMN"));
+                    column.setVirtual(virtual);
+                    if (column.isGenerated()) {
+                        column.setGeneratedExpression(defaultValue);
+                        column.setDefaultValue(null);
+                    } else {
+                        column.setDefaultValue(defaultValue);
+                    }
+                }
+            }
         }
     }
 
@@ -115,6 +243,17 @@ public class OracleExecuteResult extends OracleQueryResult {
         }
     }
 
+    SourceName resolveSourceName(String sql, String defaultSchema) {
+        SourceName sourceName = this.findSourceName(sql);
+        if (sourceName == null) {
+            return null;
+        }
+        String schema = sourceName.schema() == null || sourceName.schema().isBlank()
+                ? defaultSchema
+                : sourceName.schema();
+        return new SourceName(schema, sourceName.name());
+    }
+
     private SourceName findSourceName(String sql) {
         if (sql == null || sql.isBlank()) {
             return null;
@@ -158,7 +297,7 @@ public class OracleExecuteResult extends OracleQueryResult {
         return result.toUpperCase(Locale.ROOT);
     }
 
-    private record SourceName(String schema, String name) {
+    record SourceName(String schema, String name) {
     }
 
     /**

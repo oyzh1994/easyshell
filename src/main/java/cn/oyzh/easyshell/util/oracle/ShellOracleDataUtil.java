@@ -190,9 +190,14 @@ public class ShellOracleDataUtil {
         }
         if (value instanceof TIMESTAMPTZ timestamptz) {
             try {
-                return timestamptz.offsetDateTimeValue();
+                return timestamptz.offsetDateTimeValue().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             } catch (SQLException ex) {
-                return timestamptz;
+                try {
+                    return timestamptz.zonedDateTimeValue().toOffsetDateTime()
+                            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                } catch (SQLException ignored) {
+                    return timestamptz.toString();
+                }
             }
         }
         if (value instanceof INTERVALYM || value instanceof INTERVALDS) {
@@ -264,6 +269,23 @@ public class ShellOracleDataUtil {
      * @return 规整后的值
      */
     public static Object valueStandardization(Connection connection, Object value) {
+        if (value instanceof TIMESTAMPTZ timestamptz) {
+            try {
+                return timestamptz.offsetDateTimeValue(connection)
+                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            } catch (SQLException ex) {
+                try {
+                    return timestamptz.zonedDateTimeValue().toOffsetDateTime()
+                            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                } catch (SQLException ignored) {
+                    try {
+                        return timestamptz.stringValue(connection);
+                    } catch (SQLException ignoredAgain) {
+                        return timestamptz.toString();
+                    }
+                }
+            }
+        }
         if (value instanceof TIMESTAMPLTZ timestampltz) {
             try {
                 return timestampltz.localDateTimeValue(connection);
