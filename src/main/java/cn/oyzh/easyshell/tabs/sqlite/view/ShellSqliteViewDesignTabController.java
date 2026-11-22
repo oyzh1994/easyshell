@@ -56,7 +56,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         this.dbItem = dbItem;
         this.client = dbItem.client();
         this.originalName = view == null ? null : view.getName();
-        this.definition.setText(view == null ? "" : StringUtil.blankToDefault(view.getDefinition(), ""));
+        this.definition.text(view == null ? "" : StringUtil.blankToDefault(view.getDefinition(), ""));
         this.unsaved = view == null;
         if (view == null) {
             NodeGroupUtil.disappear(this.getTab(), "action3");
@@ -76,7 +76,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
 
     private void initPreview() {
         String name = StringUtil.blankToDefault(this.originalName, I18nHelper.unnamedView());
-        this.preview.setText(SQLiteViewCreateSqlGenerator.createViewPreview(name, this.definition.getText()));
+        this.preview.text(SQLiteViewCreateSqlGenerator.createViewPreview(name, this.definition.getText()));
     }
 
     @FXML
@@ -126,7 +126,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
                 return;
             }
-            this.definition.setText(StringUtil.blankToDefault(view.getDefinition(), ""));
+            this.definition.text(StringUtil.blankToDefault(view.getDefinition(), ""));
             this.definition.forgetHistory();
             this.unsaved = false;
             this.flushTab();

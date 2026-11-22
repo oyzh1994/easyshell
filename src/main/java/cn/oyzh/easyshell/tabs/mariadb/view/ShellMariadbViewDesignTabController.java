@@ -121,15 +121,15 @@ public class ShellMariadbViewDesignTabController extends RichTabController {
             this.algorithm.selectFirst();
             this.checkOption.selectFirst();
             this.securityType.selectFirst();
-            this.definer.setText("`root`@`%`");
+            this.definer.text("`root`@`%`");
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询视图信息
             this.view = this.dbItem.selectView(this.view.getName());
             // 初始化数据
-            this.definer.setText(this.view.getDefiner());
+            this.definer.text(this.view.getDefiner());
             this.algorithm.select(this.view.getAlgorithm());
-            this.definition.setText(this.view.getDefinition());
+            this.definition.text(this.view.getDefinition());
             this.checkOption.select(this.view.getCheckOption());
             this.securityType.select(this.view.getSecurityType());
             this.definition.forgetHistory();
