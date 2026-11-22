@@ -6,6 +6,8 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
+import java.math.BigInteger;
+
 /**
  * SqlServer创建序列SQL生成器
  *
@@ -23,13 +25,15 @@ public class SqlServerSequenceCreateSqlGenerator extends DBSqlGenerator {
         SqlServerSequence sequence = param.getSequence();
         this.sqlBuilder.append("CREATE SEQUENCE ");
         this.sqlBuilder.append(DBUtil.wrap(sequence.getSchema(), sequence.getName(), DBDialect.SQLSERVER));
+        BigInteger increment = sequence.getIncrementBy() == null
+                ? BigInteger.ONE : sequence.getIncrementBy();
         // 参数
-        if (sequence.getIncrementBy() != null) {
-            this.sqlBuilder.append(" INCREMENT BY ").append(sequence.getIncrementBy());
-        }
-        // SqlServer中min/max为0或空时使用默认值
+        this.sqlBuilder.append(" INCREMENT BY ").append(increment);
+        // SQL Server的NO MINVALUE会使用数据类型最小值，应用层采用常见的正整数起点
         if (sequence.getMinVal() != null && sequence.getMinVal().signum() != 0) {
             this.sqlBuilder.append(" MINVALUE ").append(sequence.getMinVal());
+        } else if (increment.signum() > 0) {
+            this.sqlBuilder.append(" MINVALUE 1");
         } else {
             this.sqlBuilder.append(" NO MINVALUE");
         }
@@ -39,8 +43,14 @@ public class SqlServerSequenceCreateSqlGenerator extends DBSqlGenerator {
             this.sqlBuilder.append(" NO MAXVALUE");
         }
         // SqlServer使用START WITH指定起始值
-        if (sequence.getCurrentVal() != null) {
-            this.sqlBuilder.append(" START WITH ").append(sequence.getCurrentVal());
+        BigInteger start = sequence.getCurrentVal();
+        if (start == null) {
+            start = sequence.getMinVal() != null && sequence.getMinVal().signum() != 0
+                    ? sequence.getMinVal()
+                    : increment.signum() > 0 ? BigInteger.ONE : null;
+        }
+        if (start != null) {
+            this.sqlBuilder.append(" START WITH ").append(start);
         }
         if (sequence.getCacheSize() != null) {
             this.sqlBuilder.append(" CACHE ").append(sequence.getCacheSize());

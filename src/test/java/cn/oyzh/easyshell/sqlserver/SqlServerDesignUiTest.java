@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableCreateSqlGenera
 import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.procedure.SqlServerProcedureAlertSqlGenerator;
+import cn.oyzh.easyshell.sqlserver.generator.sequence.SqlServerSequenceCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.view.SqlServerViewAlertSqlGenerator;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
@@ -30,6 +31,8 @@ import cn.oyzh.easyshell.sqlserver.function.SqlServerAlertFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerProcedure;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerAlertProcedureParam;
+import cn.oyzh.easyshell.sqlserver.sequence.SqlServerCreateSequenceParam;
+import cn.oyzh.easyshell.sqlserver.sequence.SqlServerSequence;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
@@ -348,6 +351,30 @@ public class SqlServerDesignUiTest {
         assertEquals(2, sql.toUpperCase().split(" OUTPUT", -1).length - 1);
         assertEquals(1, sql.toUpperCase().split("\\bBEGIN\\b", -1).length - 1);
         assertEquals(1, sql.toUpperCase().split("\\bEND\\b", -1).length - 1);
+    }
+
+    @Test
+    public void newSequenceUsesPositiveDefaults() {
+        String fxml;
+        try {
+            fxml = Files.readString(Path.of(
+                    "src/main/resources/tabs/sqlserver/sequence/shellSqlServerSequenceDesignTab.fxml"));
+        } catch (Exception ex) {
+            throw new AssertionError(ex);
+        }
+        assertFalse(fxml.contains("fx:id=\"order\""));
+        assertFalse(fxml.contains("%base.order"));
+        SqlServerSequence sequence = new SqlServerSequence();
+        sequence.setName("SEQ_DEFAULT");
+        sequence.setSchema("dbo");
+        SqlServerCreateSequenceParam param = new SqlServerCreateSequenceParam();
+        param.setSchema("dbo");
+        param.setSequence(sequence);
+        String sql = SqlServerSequenceCreateSqlGenerator.generateSqlSingle(param);
+        assertTrue(sql.contains("INCREMENT BY 1"));
+        assertTrue(sql.contains("MINVALUE 1"));
+        assertTrue(sql.contains("START WITH 1"));
+        assertFalse(sql.contains("NO MINVALUE"));
     }
 
     @Test

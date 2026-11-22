@@ -109,12 +109,6 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
     private FXCheckBox cycle;
 
     /**
-     * 顺序
-     */
-    @FXML
-    private FXCheckBox order;
-
-    /**
      * 数据监听器
      */
     private DBStatusListener listener;
@@ -168,7 +162,6 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
             this.listener.destroy();
             //            DBStatusListenerManager.unbindListener(this.definition, this.listener);
             DBStatusListenerManager.unbindListener(this.cycle, this.listener);
-            DBStatusListenerManager.unbindListener(this.order, this.listener);
             DBStatusListenerManager.unbindListener(this.maxVal, this.listener);
             DBStatusListenerManager.unbindListener(this.minVal, this.listener);
             DBStatusListenerManager.unbindListener(this.cacheSize, this.listener);
@@ -208,8 +201,12 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
         // 更新初始化标志位
         this.initiating = true;
 
-        // 如果是新数据，则默认触发变更
-        if (!this.newData) {
+        // 如果是新数据，则使用常见的正整数序列默认值
+        if (this.newData) {
+            this.minVal.setValue(BigInteger.ONE);
+            this.currentVal.setValue(BigInteger.ONE);
+            this.incrementBy.setValue(BigInteger.ONE);
+        } else {
             // 查询函数信息
             this.sequence = this.dbItem.selectSequence(this.sequence.getName());
             // 初始化数据
@@ -229,7 +226,6 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
             if (this.sequence.getIncrementBy() != null) {
                 this.incrementBy.setValue(this.sequence.getIncrementBy());
             }
-            this.order.setSelected(this.sequence.isOrder());
             this.cycle.setSelected(this.sequence.isCycle());
         }
 
@@ -336,7 +332,8 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
         if (!this.incrementBy.isBlank()) {
             tempSequence.setIncrementBy(this.incrementBy.getValue());
         }
-        tempSequence.setOrder(this.order.isSelected());
+        // SQL Server序列不支持ORDER
+        tempSequence.setOrder(false);
         tempSequence.setCycle(this.cycle.isSelected());
         return tempSequence;
     }

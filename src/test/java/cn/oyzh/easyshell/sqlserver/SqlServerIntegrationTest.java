@@ -381,7 +381,10 @@ public class SqlServerIntegrationTest {
         sequenceParam.setSchema(SOURCE_SCHEMA);
         sequenceParam.setSequence(sequence);
         client.createSequence(sequenceParam);
-        assertNotNull(client.selectSequence(SOURCE_SCHEMA, sequenceName));
+        SqlServerSequence selectedSequence = client.selectSequence(SOURCE_SCHEMA, sequenceName);
+        assertNotNull(selectedSequence);
+        assertEquals(java.math.BigInteger.ONE, selectedSequence.getMinVal());
+        assertEquals(java.math.BigInteger.TEN, selectedSequence.getCurrentVal());
         assertTrue(client.selectSequencesSimple(SOURCE_SCHEMA).stream()
                 .anyMatch(item -> sequenceName.equals(item.getName())));
     }
