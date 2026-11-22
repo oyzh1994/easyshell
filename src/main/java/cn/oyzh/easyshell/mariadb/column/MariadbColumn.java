@@ -504,6 +504,13 @@ public class MariadbColumn extends DBObject implements DBColumn, ObjectCopier<Ma
     }
 
     @Override
+    public boolean supportBoolean() {
+        return DBColumnFieldManager.supportBoolean(DBDialect.MARIADB, this.getType())
+                || (StringUtil.equalsIgnoreCase(this.getType(), "TINYINT")
+                && Integer.valueOf(1).equals(this.getSize()));
+    }
+
+    @Override
     public DBDialect getDialect() {
         return DBDialect.MARIADB;
     }

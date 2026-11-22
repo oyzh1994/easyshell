@@ -151,6 +151,48 @@ public class MariadbComplexDataIntegrationTest {
     }
 
     @Test
+    public void queryPageSkipsGeneratedColumnsOnInsert() {
+        var queryResult = sourceClient.executeSql(SOURCE_DB,
+                "SELECT * FROM `" + SOURCE_DB + "`.`" + TABLE + "`").getResults().getFirst();
+        assertEquals(SOURCE_DB, queryResult.dbName());
+        assertEquals(TABLE, queryResult.tableName());
+        assertTrue(queryResult.isUpdatable());
+
+        MariadbColumn virtual = queryResult.getColumns().column("c_virtual");
+        MariadbColumn stored = queryResult.getColumns().column("c_stored");
+        MariadbColumn bool = queryResult.getColumns().column("c_bool");
+        assertNotNull(virtual);
+        assertNotNull(stored);
+        assertNotNull(bool);
+        assertTrue(virtual.isGenerated());
+        assertTrue(virtual.isVirtual());
+        assertTrue(StringUtil.containsIgnoreCase(virtual.getGeneratedExpression(), "CONCAT"));
+        assertTrue(stored.isGenerated());
+        assertFalse(stored.isVirtual());
+        assertEquals("TINYINT", bool.getType());
+        assertEquals(1, bool.getSize().intValue());
+        assertTrue(bool.supportBoolean());
+
+        MariadbRecord record = new MariadbRecord(queryResult.getColumns());
+        seedValues().forEach(record::putValue);
+        assertFalse(record.getRecordData().columns().contains("c_virtual"));
+        assertFalse(record.getRecordData().columns().contains("c_stored"));
+
+        MariadbRecordPrimaryKey primaryKey = new MariadbRecordPrimaryKey();
+        primaryKey.init(queryResult.getPrimaryKey(), record);
+        MariadbInsertRecordParam param = new MariadbInsertRecordParam();
+        param.setDbName(queryResult.dbName());
+        param.setTableName(queryResult.tableName());
+        param.setRecord(record.getRecordData());
+        param.setPrimaryKey(primaryKey);
+        assertEquals(1, sourceClient.insertRecord(param));
+
+        long id = ((Number) primaryKey.getReturnData()).longValue();
+        assertGeneratedValues(loadSingle(sourceClient, SOURCE_DB, TABLE, id),
+                "alpha-value", "alpha-value");
+    }
+
+    @Test
     public void editsEveryComplexColumnThroughClientEntry() {
         MariadbRecord inserted = insertSeed(sourceClient, SOURCE_DB, TABLE);
         long id = ((Number) inserted.getValue("id")).longValue();

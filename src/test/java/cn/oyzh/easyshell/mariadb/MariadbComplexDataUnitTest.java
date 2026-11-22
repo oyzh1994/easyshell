@@ -55,6 +55,17 @@ public class MariadbComplexDataUnitTest {
     }
 
     @Test
+    public void tinyIntOneFormatsAsBoolean() {
+        MariadbColumn tinyInt = column("c_bool", "TINYINT(1)", "complex_types");
+        MariadbColumn booleanColumn = column("c_bool_alias", "BOOLEAN", "complex_types");
+        MariadbColumn boolColumn = column("c_bool_alias2", "BOOL", "complex_types");
+
+        assertTrue(tinyInt.supportBoolean());
+        assertTrue(booleanColumn.supportBoolean());
+        assertTrue(boolColumn.supportBoolean());
+    }
+
+    @Test
     public void importSqlRestoresSpecialLiteralsAndSkipsGeneratedColumns() throws Exception {
         MariadbColumn id = column("id", "BIGINT", "complex_types");
         MariadbColumn bit = column("c_bit", "BIT(13)", "complex_types");

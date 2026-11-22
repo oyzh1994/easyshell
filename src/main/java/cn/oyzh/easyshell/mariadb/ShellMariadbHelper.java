@@ -407,6 +407,74 @@ public class ShellMariadbHelper {
     }
 
     /**
+     * 为查询结果补齐MariaDB生成列和JSON别名元数据。
+     *
+     * @param connection 数据库连接
+     * @param dbName     数据库名称
+     * @param tableName  表名称
+     * @param columns    查询结果字段
+     * @throws SQLException 异常
+     */
+    public static void enrichColumnMetadata(Connection connection, String dbName, String tableName,
+                                            MariadbColumns columns) throws SQLException {
+        if (connection == null || StringUtil.isBlank(dbName)
+                || StringUtil.isBlank(tableName) || columns == null || columns.isEmpty()) {
+            return;
+        }
+        String sql = """
+                SELECT COLUMN_NAME, COLUMN_TYPE, EXTRA, GENERATION_EXPRESSION
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ?
+                  AND TABLE_NAME = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, dbName);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    MariadbColumn column = columns.column(resultSet.getString("COLUMN_NAME"));
+                    if (column == null) {
+                        continue;
+                    }
+                    String columnType = resultSet.getString("COLUMN_TYPE");
+                    if (StringUtil.isNotBlank(columnType)) {
+                        column.setType(columnType);
+                    }
+                    column.parseExtra(resultSet.getString("EXTRA"));
+                    column.setGenerated(column.isGenerated());
+                    column.setGeneratedStorage(column.getGeneratedStorage());
+                    if (column.isGenerated()) {
+                        String expression = resultSet.getString("GENERATION_EXPRESSION");
+                        if (StringUtil.isNotBlank(expression)) {
+                            column.setGeneratedExpression(expression);
+                        }
+                    }
+                }
+            }
+        }
+        String createSql = null;
+        try {
+            createSql = showCreateTable(connection, dbName, tableName);
+        } catch (Exception ignored) {
+        }
+        if (StringUtil.isBlank(createSql)) {
+            return;
+        }
+        for (MariadbColumn column : columns) {
+            if (isJsonColumn(createSql, column.getName())) {
+                column.typeProperty().set("JSON");
+                column.setSize(null);
+            }
+            if (column.isGenerated()) {
+                String expression = extractGeneratedExpression(createSql, column.getName());
+                if (StringUtil.isNotBlank(expression)) {
+                    column.setGeneratedExpression(expression);
+                }
+            }
+        }
+    }
+
+    /**
      * 查询视图创建语句
      *
      * @param connection 数据库连接
