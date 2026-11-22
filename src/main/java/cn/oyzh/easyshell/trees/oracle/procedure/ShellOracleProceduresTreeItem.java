@@ -225,7 +225,7 @@ public class ShellOracleProceduresTreeItem extends ShellOracleTreeItem<ShellOrac
     public void addProcedure(OracleProcedure procedure) {
         this.addChild(new ShellOracleProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearProcedureSize();
+        this.procedureSize = this.incrementCount(this.procedureSize);
     }
 
     /**

@@ -225,7 +225,7 @@ public class ShellOracleSequencesTreeItem extends ShellOracleTreeItem<ShellOracl
     public void addSequence(OracleSequence Sequence) {
         this.addChild(new ShellOracleSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearSequenceSize();
+        this.sequenceSize = this.incrementCount(this.sequenceSize);
     }
 
     /**

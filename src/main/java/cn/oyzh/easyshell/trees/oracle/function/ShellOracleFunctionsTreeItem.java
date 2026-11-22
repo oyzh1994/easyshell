@@ -224,7 +224,7 @@ public class ShellOracleFunctionsTreeItem extends ShellOracleTreeItem<ShellOracl
     public void addFunction(OracleFunction function) {
         this.addChild(new ShellOracleFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+        this.functionSize = this.incrementCount(this.functionSize);
     }
 
     /**

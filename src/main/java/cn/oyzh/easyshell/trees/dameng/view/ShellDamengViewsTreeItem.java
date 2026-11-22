@@ -228,7 +228,7 @@ public class ShellDamengViewsTreeItem extends ShellDamengTreeItem<ShellDamengVie
         }
         this.addChild(new ShellDamengViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearViewSize();
+        this.viewSize = this.incrementCount(this.viewSize);
     }
 
     /**

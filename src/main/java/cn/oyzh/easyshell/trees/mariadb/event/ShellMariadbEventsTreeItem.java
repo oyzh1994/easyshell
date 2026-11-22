@@ -224,7 +224,7 @@ public class ShellMariadbEventsTreeItem extends ShellMariadbTreeItem<ShellMariad
     public void addEvent(MariadbEvent event) {
         this.addChild(new ShellMariadbEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearEventSize();
+        this.eventSize = this.incrementCount(this.eventSize);
     }
 
     /**

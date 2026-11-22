@@ -224,7 +224,7 @@ public class ShellMariadbFunctionsTreeItem extends ShellMariadbTreeItem<ShellMar
     public void addFunction(MariadbFunction function) {
         this.addChild(new ShellMariadbFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+        this.functionSize = this.incrementCount(this.functionSize);
     }
 
     /**

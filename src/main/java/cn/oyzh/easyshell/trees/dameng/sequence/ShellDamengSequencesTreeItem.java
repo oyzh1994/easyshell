@@ -225,7 +225,7 @@ public class ShellDamengSequencesTreeItem extends ShellDamengTreeItem<ShellDamen
     public void addSequence(DamengSequence Sequence) {
         this.addChild(new ShellDamengSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearSequenceSize();
+        this.sequenceSize = this.incrementCount(this.sequenceSize);
     }
 
     /**

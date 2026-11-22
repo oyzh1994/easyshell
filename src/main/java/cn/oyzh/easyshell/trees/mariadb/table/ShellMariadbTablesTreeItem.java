@@ -244,7 +244,7 @@ public class ShellMariadbTablesTreeItem extends ShellMariadbTreeItem<ShellMariad
     public void addTable(MariadbTable table) {
         this.addChild(new ShellMariadbTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
     }
 
     /**

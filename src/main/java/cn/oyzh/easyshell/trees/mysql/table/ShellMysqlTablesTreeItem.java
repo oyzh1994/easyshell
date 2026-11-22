@@ -244,7 +244,7 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
     public void addTable(MysqlTable table) {
         this.addChild(new ShellMysqlTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
     }
 
     /**

@@ -225,7 +225,7 @@ public class ShellMariadbProceduresTreeItem extends ShellMariadbTreeItem<ShellMa
     public void addProcedure(MariadbProcedure procedure) {
         this.addChild(new ShellMariadbProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearProcedureSize();
+        this.procedureSize = this.incrementCount(this.procedureSize);
     }
 
     /**

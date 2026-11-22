@@ -225,7 +225,7 @@ public class ShellPostgresqlSequencesTreeItem extends ShellPostgresqlTreeItem<Sh
     public void addSequence(PostgresqlSequence Sequence) {
         this.addChild(new ShellPostgresqlSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearSequenceSize();
+        this.sequenceSize = this.incrementCount(this.sequenceSize);
     }
 
     /**

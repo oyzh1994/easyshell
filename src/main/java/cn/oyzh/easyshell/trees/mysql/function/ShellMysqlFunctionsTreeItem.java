@@ -224,7 +224,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
     public void addFunction(MysqlFunction function) {
         this.addChild(new ShellMysqlFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+        this.functionSize = this.incrementCount(this.functionSize);
     }
 
     /**

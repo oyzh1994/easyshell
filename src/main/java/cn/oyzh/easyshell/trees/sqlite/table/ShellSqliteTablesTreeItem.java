@@ -178,7 +178,7 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
      * 刷新表数量
      */
     public void refreshCount() {
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
         this.refresh();
     }
 

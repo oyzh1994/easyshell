@@ -52,11 +52,7 @@ public class ShellOracleViewsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCachedViewSize();
-        if (size != null) {
-            return " (" + size + ")";
-        }
-        return super.extra();
+        return this.item().extraCount(this.item().getCachedViewSize());
     }
 
     @Override

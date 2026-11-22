@@ -177,7 +177,7 @@ public class ShellSqliteFunctionsTreeItem extends ShellSqliteTreeItem<ShellSqlit
     public void addFunction(SQLiteFunction function) {
         this.addChild(new ShellSqliteFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+        this.functionSize = this.incrementCount(this.functionSize);
     }
 
     /**

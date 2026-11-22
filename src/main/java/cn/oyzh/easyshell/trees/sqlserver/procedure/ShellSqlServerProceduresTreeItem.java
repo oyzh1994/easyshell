@@ -225,7 +225,7 @@ public class ShellSqlServerProceduresTreeItem extends ShellSqlServerTreeItem<She
     public void addProcedure(SqlServerProcedure procedure) {
         this.addChild(new ShellSqlServerProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearProcedureSize();
+        this.procedureSize = this.incrementCount(this.procedureSize);
     }
 
     /**

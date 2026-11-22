@@ -228,7 +228,7 @@ public class ShellSqlServerViewsTreeItem extends ShellSqlServerTreeItem<ShellSql
         }
         this.addChild(new ShellSqlServerViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearViewSize();
+        this.viewSize = this.incrementCount(this.viewSize);
     }
 
     /**

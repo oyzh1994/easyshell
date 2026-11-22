@@ -177,7 +177,7 @@ public class ShellSqliteViewsTreeItem extends ShellSqliteTreeItem<ShellSqliteVie
      * 刷新视图数量
      */
     public void refreshCount() {
-        this.clearViewSize();
+        this.viewSize = this.incrementCount(this.viewSize);
         this.refresh();
     }
 

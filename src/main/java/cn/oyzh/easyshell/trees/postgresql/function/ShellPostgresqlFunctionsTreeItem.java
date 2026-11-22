@@ -224,7 +224,7 @@ public class ShellPostgresqlFunctionsTreeItem extends ShellPostgresqlTreeItem<Sh
     public void addFunction(PostgresqlFunction function) {
         this.addChild(new ShellPostgresqlFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+        this.functionSize = this.incrementCount(this.functionSize);
     }
 
     /**

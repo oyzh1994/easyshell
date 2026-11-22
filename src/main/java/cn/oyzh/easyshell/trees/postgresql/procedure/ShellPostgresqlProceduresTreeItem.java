@@ -225,7 +225,7 @@ public class ShellPostgresqlProceduresTreeItem extends ShellPostgresqlTreeItem<S
     public void addProcedure(PostgresqlProcedure procedure) {
         this.addChild(new ShellPostgresqlProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearProcedureSize();
+        this.procedureSize = this.incrementCount(this.procedureSize);
     }
 
     /**

@@ -225,7 +225,7 @@ public class ShellDamengProceduresTreeItem extends ShellDamengTreeItem<ShellDame
     public void addProcedure(DamengProcedure procedure) {
         this.addChild(new ShellDamengProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearProcedureSize();
+        this.procedureSize = this.incrementCount(this.procedureSize);
     }
 
     /**

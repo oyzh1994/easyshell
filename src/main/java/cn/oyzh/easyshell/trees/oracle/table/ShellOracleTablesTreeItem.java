@@ -244,7 +244,7 @@ public class ShellOracleTablesTreeItem extends ShellOracleTreeItem<ShellOracleTa
     public void addTable(OracleTable table) {
         this.addChild(new ShellOracleTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
     }
 
     /**

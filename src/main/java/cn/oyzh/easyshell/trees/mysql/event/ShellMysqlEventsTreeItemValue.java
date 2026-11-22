@@ -52,11 +52,7 @@ public class ShellMysqlEventsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCachedEventSize();
-        if (size != null) {
-            return " (" + size + ")";
-        }
-        return super.extra();
+        return this.item().extraCount(this.item().getCachedEventSize());
     }
 
     @Override

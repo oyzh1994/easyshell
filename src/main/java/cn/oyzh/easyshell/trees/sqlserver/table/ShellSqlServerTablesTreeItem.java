@@ -244,7 +244,7 @@ public class ShellSqlServerTablesTreeItem extends ShellSqlServerTreeItem<ShellSq
     public void addTable(SqlServerTable table) {
         this.addChild(new ShellSqlServerTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
     }
 
     /**

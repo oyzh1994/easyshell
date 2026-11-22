@@ -228,7 +228,7 @@ public class ShellOracleViewsTreeItem extends ShellOracleTreeItem<ShellOracleVie
         }
         this.addChild(new ShellOracleViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearViewSize();
+        this.viewSize = this.incrementCount(this.viewSize);
     }
 
     /**

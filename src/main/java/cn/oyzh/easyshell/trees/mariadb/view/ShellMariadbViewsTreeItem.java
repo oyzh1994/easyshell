@@ -225,7 +225,7 @@ public class ShellMariadbViewsTreeItem extends ShellMariadbTreeItem<ShellMariadb
     public void addView(MariadbView view) {
         this.addChild(new ShellMariadbViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearViewSize();
+        this.viewSize = this.incrementCount(this.viewSize);
     }
 
     /**

@@ -244,7 +244,7 @@ public class ShellPostgresqlTablesTreeItem extends ShellPostgresqlTreeItem<Shell
     public void addTable(PostgresqlTable table) {
         this.addChild(new ShellPostgresqlTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
     }
 
     /**

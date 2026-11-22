@@ -225,7 +225,7 @@ public class ShellSqlServerSequencesTreeItem extends ShellSqlServerTreeItem<Shel
     public void addSequence(SqlServerSequence Sequence) {
         this.addChild(new ShellSqlServerSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearSequenceSize();
+        this.sequenceSize = this.incrementCount(this.sequenceSize);
     }
 
     /**

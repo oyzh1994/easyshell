@@ -224,7 +224,7 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
     public void addFunction(DamengFunction function) {
         this.addChild(new ShellDamengFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+        this.functionSize = this.incrementCount(this.functionSize);
     }
 
     /**

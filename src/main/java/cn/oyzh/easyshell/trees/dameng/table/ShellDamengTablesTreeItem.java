@@ -244,7 +244,7 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
     public void addTable(DamengTable table) {
         this.addChild(new ShellDamengTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+        this.tableSize = this.incrementCount(this.tableSize);
     }
 
     /**

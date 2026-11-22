@@ -44,11 +44,7 @@ public class ShellMariadbProceduresTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCachedProcedureSize();
-        if (size != null) {
-            return " (" + size + ")";
-        }
-        return super.extra();
+        return this.item().extraCount(this.item().getCachedProcedureSize());
     }
 
     @Override

@@ -224,7 +224,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     public void addEvent(MysqlEvent event) {
         this.addChild(new ShellMysqlEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearEventSize();
+        this.eventSize = this.incrementCount(this.eventSize);
     }
 
     /**

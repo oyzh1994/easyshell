@@ -228,7 +228,7 @@ public class ShellPostgresqlViewsTreeItem extends ShellPostgresqlTreeItem<ShellP
         }
         this.addChild(new ShellPostgresqlViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearViewSize();
+        this.viewSize = this.incrementCount(this.viewSize);
     }
 
     /**
