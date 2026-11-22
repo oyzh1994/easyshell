@@ -520,6 +520,59 @@ public class ShellSqlServerHelper {
         };
     }
 
+    /**
+     * 按来源表补齐查询结果缺少的计算列和自增列元数据。
+     *
+     * @param connection 数据库连接
+     * @param schema     模式名称
+     * @param tableName  表名称
+     * @param columns    查询结果字段
+     * @throws SQLException 异常
+     */
+    public static void enrichColumnMetadata(Connection connection, String schema, String tableName,
+                                            SqlServerColumns columns) throws SQLException {
+        if (connection == null || StringUtil.isBlank(schema)
+                || StringUtil.isBlank(tableName) || columns == null || columns.isEmpty()) {
+            return;
+        }
+        String sql = """
+                SELECT
+                    C.NAME AS COLUMN_NAME,
+                    C.IS_IDENTITY,
+                    C.IS_COMPUTED,
+                    CC.DEFINITION AS GENERATED_EXPRESSION,
+                    CC.IS_PERSISTED AS GENERATED_PERSISTED
+                FROM SYS.TABLES T
+                JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = T.SCHEMA_ID
+                JOIN SYS.COLUMNS C ON C.OBJECT_ID = T.OBJECT_ID
+                LEFT JOIN SYS.COMPUTED_COLUMNS CC
+                  ON CC.OBJECT_ID = C.OBJECT_ID
+                 AND CC.COLUMN_ID = C.COLUMN_ID
+                WHERE S.NAME = ?
+                  AND T.NAME = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    SqlServerColumn column = columns.column(resultSet.getString("COLUMN_NAME"));
+                    if (column == null) {
+                        continue;
+                    }
+                    column.setAutoIncrement(resultSet.getBoolean("IS_IDENTITY"));
+                    boolean generated = resultSet.getBoolean("IS_COMPUTED");
+                    column.setGenerated(generated);
+                    if (generated) {
+                        column.setGeneratedExpression(resultSet.getString("GENERATED_EXPRESSION"));
+                        column.setGeneratedStorage(resultSet.getBoolean("GENERATED_PERSISTED")
+                                ? "PERSISTED" : "VIRTUAL");
+                    }
+                }
+            }
+        }
+    }
+
     //    public static String showCreateView(Connection connection, String viewName) throws Exception {
     //        // SqlServer中 DBMS_METADATA.GET_DDL 可能因权限不足失败，直接从 USER_VIEWS 查询视图定义
     //        String sql = "SELECT TEXT FROM USER_VIEWS WHERE VIEW_NAME = ?";

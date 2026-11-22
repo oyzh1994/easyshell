@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sqlserver;
 
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.query.sqlserver.SqlServerQueryObject;
 import cn.oyzh.easyshell.data.sqlserver.dto.ShellSqlServerDataExportTable;
 import cn.oyzh.easyshell.data.sqlserver.dto.ShellSqlServerDataImportFile;
 import cn.oyzh.easyshell.data.sqlserver.handler.ShellSqlServerDataExportHandler;
@@ -247,7 +248,8 @@ public class SqlServerIntegrationTest {
         client.executeSqlSimple(SOURCE_SCHEMA, """
                 CREATE TABLE [EASYSHELL_SRC].[QUERY_EDIT] (
                     [ID] BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-                    [LOG] NVARCHAR(100) NULL
+                    [LOG] NVARCHAR(100) NULL,
+                    [LOG_LENGTH] AS (LEN([LOG])) PERSISTED
                 )
                 """);
 
@@ -258,11 +260,16 @@ public class SqlServerIntegrationTest {
         assertTrue(queryResult.isUpdatable());
 
         SqlServerColumns columns = queryResult.getColumns();
+        SqlServerColumn computedColumn = columns.column("LOG_LENGTH");
+        assertNotNull(computedColumn);
+        assertTrue(computedColumn.isGenerated());
+        assertEquals("PERSISTED", computedColumn.getGeneratedStorage());
         SqlServerRecord record = new SqlServerRecord(columns);
         for (SqlServerColumn column : columns) {
             record.putValue(column, null);
         }
         record.putValue("LOG", "query edited");
+        assertFalse(record.getRecordData().columns().contains("LOG_LENGTH"));
         SqlServerRecordPrimaryKey primaryKey = new SqlServerRecordPrimaryKey();
         primaryKey.init(columns.column("ID"), record);
         SqlServerInsertRecordParam param = new SqlServerInsertRecordParam();
@@ -309,6 +316,41 @@ public class SqlServerIntegrationTest {
         assertEquals(client.functionSize(SOURCE_SCHEMA), counts.functions());
         assertEquals(client.procedureSize(SOURCE_SCHEMA), counts.procedures());
         assertEquals(client.sequenceSize(SOURCE_SCHEMA), counts.sequences());
+    }
+
+    @Test
+    public void queryObjectIndexLoadsAllObjectTypesInOneQuery() {
+        String table = "QUERY_INDEX_TABLE";
+        String view = "QUERY_INDEX_VIEW";
+        String function = "QUERY_INDEX_FUNCTION";
+        String procedure = "QUERY_INDEX_PROCEDURE";
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP VIEW IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + view + "]; DROP TABLE IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + table + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP FUNCTION IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + function + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP PROCEDURE IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + procedure + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "CREATE TABLE ["
+                + SOURCE_SCHEMA + "].[" + table + "] ([ID] INT NOT NULL)");
+        client.executeSqlSimple(SOURCE_SCHEMA, "CREATE VIEW ["
+                + SOURCE_SCHEMA + "].[" + view + "] AS SELECT [ID] FROM ["
+                + SOURCE_SCHEMA + "].[" + table + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "CREATE FUNCTION ["
+                + SOURCE_SCHEMA + "].[" + function + "]() RETURNS INT AS BEGIN RETURN 1 END");
+        client.executeSqlSimple(SOURCE_SCHEMA, "CREATE PROCEDURE ["
+                + SOURCE_SCHEMA + "].[" + procedure + "] AS SELECT 1");
+
+        List<SqlServerQueryObject> objects = client.selectQueryObjects();
+        assertTrue(objects.stream().anyMatch(object -> SOURCE_SCHEMA.equals(object.schema())
+                && table.equals(object.name()) && "U".equals(object.type())));
+        assertTrue(objects.stream().anyMatch(object -> SOURCE_SCHEMA.equals(object.schema())
+                && view.equals(object.name()) && "V".equals(object.type())));
+        assertTrue(objects.stream().anyMatch(object -> SOURCE_SCHEMA.equals(object.schema())
+                && function.equals(object.name()) && "FN".equals(object.type())));
+        assertTrue(objects.stream().anyMatch(object -> SOURCE_SCHEMA.equals(object.schema())
+                && procedure.equals(object.name()) && "P".equals(object.type())));
+        assertTrue(objects.stream().noneMatch(object -> "sys".equalsIgnoreCase(object.schema())));
     }
 
     @Test

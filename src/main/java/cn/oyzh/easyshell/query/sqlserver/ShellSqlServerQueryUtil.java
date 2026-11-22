@@ -354,26 +354,6 @@ public class ShellSqlServerQueryUtil {
     }
 
     /**
-     * 是否系统模式
-     * <p>
-     * SQL Server的系统信息保存在sys、INFORMATION_SCHEMA等模式中，
-     * 这些模式下的对象不参与提示。
-     *
-     * @param schema 模式名称
-     * @return 结果
-     */
-    private static boolean isSystemSchema(String schema) {
-        if (schema == null) {
-            return true;
-        }
-        return StringUtil.equalsAnyIgnoreCase(schema,
-                "SYS", "INFORMATION_SCHEMA", "GUEST",
-                "DB_OWNER", "DB_ACCESSADMIN", "DB_BACKUPOPERATOR",
-                "DB_DATAREADER", "DB_DATAWRITER", "DB_DDLADMIN",
-                "DB_DENYDATAREADER", "DB_DENYDATAWRITER", "DB_SECURITYADMIN");
-    }
-
-    /**
      * 更新索引
      *
      * @param client 客户端
@@ -392,45 +372,37 @@ public class ShellSqlServerQueryUtil {
                     // 更新模式索引
                     List<SqlServerSchema> schemas = client.selectSchemas();
                     DB_SCHEMAS.addAll(schemas);
-                    List<Runnable> tasks = new ArrayList<>();
-                    // 更新表索引
-                    for (SqlServerSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<SqlServerTable> tables = client.selectTablesSimple(schema.getName());
-                                DB_TABLES.addAll(tables);
-                            });
+                    // 一次批量查询全部对象，避免按模式并发访问同一JDBC连接。
+                    for (SqlServerQueryObject object : client.selectQueryObjects()) {
+                        switch (object.type()) {
+                            case "U" -> {
+                                SqlServerTable table = new SqlServerTable();
+                                table.setSchema(object.schema());
+                                table.setName(object.name());
+                                DB_TABLES.add(table);
+                            }
+                            case "V" -> {
+                                SqlServerView view = new SqlServerView();
+                                view.setSchema(object.schema());
+                                view.setName(object.name());
+                                DB_VIEWS.add(view);
+                            }
+                            case "FN", "IF", "TF", "FS", "FT", "AF" -> {
+                                SqlServerFunction function = new SqlServerFunction();
+                                function.setSchema(object.schema());
+                                function.setName(object.name());
+                                DB_FUNCTIONS.add(function);
+                            }
+                            case "P" -> {
+                                SqlServerProcedure procedure = new SqlServerProcedure();
+                                procedure.setSchema(object.schema());
+                                procedure.setName(object.name());
+                                DB_PROCEDURES.add(procedure);
+                            }
+                            default -> {
+                            }
                         }
                     }
-                    // 更新视图索引
-                    for (SqlServerSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<SqlServerView> views = client.selectViewsSimple(schema.getName());
-                                DB_VIEWS.addAll(views);
-                            });
-                        }
-                    }
-                    // 更新函数索引
-                    for (SqlServerSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<SqlServerFunction> functions = client.selectFunctionsSimple(schema.getName());
-                                DB_FUNCTIONS.addAll(functions);
-                            });
-                        }
-                    }
-                    // 更新过程索引
-                    for (SqlServerSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<SqlServerProcedure> procedures = client.selectProceduresSimple(schema.getName());
-                                DB_PROCEDURES.addAll(procedures);
-                            });
-                        }
-                    }
-                    // 异步执行
-                    ThreadUtil.submit(tasks);
                     indexStatus = 2;
                 } catch (Exception ex) {
                     ex.printStackTrace();

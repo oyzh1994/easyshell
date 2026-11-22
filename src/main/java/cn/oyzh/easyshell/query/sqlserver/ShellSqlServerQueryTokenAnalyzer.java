@@ -51,8 +51,8 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
             char[] chars = ArrayUtil.reverse(content.toCharArray());
             for (int i = 0; i < chars.length; i++) {
                 char c = chars[i];
-                // 寻找操作符，SqlServer使用双引号包裹标识符
-                if (c == '\n' || c == ' ' || c == '"' || c == '.' || c == ',') {
+                // 寻找操作符，SQL Server可使用方括号或双引号包裹标识符
+                if (c == '\n' || c == ' ' || c == '"' || c == '[' || c == '.' || c == ',') {
                     tokenType = c;
                     tokenIndex = chars.length - i - 1;
                     break;
@@ -86,7 +86,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
 
     @Override
     public List<ShellSqlServerQueryPromptItem> initPrompts(ShellSqlServerQueryToken token, float minCorr) {
-        if (token == null || token.isEmpty()) {
+        if (token == null || (token.isEmpty() && !token.isOpenBracketContext())) {
             return Collections.emptyList();
         }
         // 当前提示词
@@ -99,7 +99,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityKeyword()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(keyword, text);
+                double corr = this.correlation(keyword, text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 4);
@@ -113,7 +113,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityDatabase()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getSchemas().parallelStream().forEach(schema -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(schema.getName(), text);
+                double corr = this.correlation(schema.getName(), text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 1);
@@ -127,7 +127,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityTable()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getTables().parallelStream().forEach(dbTable -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(dbTable.getName(), text);
+                double corr = this.correlation(dbTable.getName(), text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 2);
@@ -142,7 +142,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityView()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getViews().parallelStream().forEach(dbTable -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(dbTable.getName(), text);
+                double corr = this.correlation(dbTable.getName(), text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 5);
@@ -157,7 +157,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityFunction()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getFunctions().parallelStream().forEach(function -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(function.getName(), text);
+                double corr = this.correlation(function.getName(), text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 6);
@@ -172,7 +172,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityProcedure()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getProcedures().parallelStream().forEach(procedure -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(procedure.getName(), text);
+                double corr = this.correlation(procedure.getName(), text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 7);
@@ -187,7 +187,7 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         if (token.isPossibilityColumn()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getColumns().parallelStream().forEach(column -> {
                 // 计算相关度
-                double corr = TextUtil.clacCorr(column.getName(), text);
+                double corr = this.correlation(column.getName(), text);
                 if (corr > minCorr) {
                     ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
                     item.setType((byte) 3);
@@ -204,5 +204,16 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
         List<ShellSqlServerQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(ShellSqlServerQueryPromptItem::getCorrelation)).collect(Collectors.toList());
         // 反转列表
         return itemList.reversed();
+    }
+
+    /**
+     * 计算候选相关度。方括号后尚未输入内容时展示全部标识符候选。
+     *
+     * @param value 候选值
+     * @param input 已输入内容
+     * @return 相关度
+     */
+    private double correlation(String value, String input) {
+        return StringUtil.isEmpty(input) ? 1.0d : TextUtil.clacCorr(value, input);
     }
 }

@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.sqlserver.record.SqlServerRecord;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SqlServer执行结果
@@ -27,14 +28,29 @@ public class SqlServerExecuteResult extends SqlServerQueryResult {
         // 解析字段列表
         this.records = new ArrayList<>();
         this.columns = ShellSqlServerHelper.parseColumns(resultSet);
-        this.fillSource();
+        List<Object[]> rows = new ArrayList<>();
         while (resultSet.next()) {
-            SqlServerRecord record = new SqlServerRecord(columns, readonly);
+            Object[] row = new Object[this.columns.size()];
             int colIndex = 1;
-            for (SqlServerColumn dbColumn : this.columns) {
+            for (int i = 0; i < this.columns.size(); i++) {
+                SqlServerColumn dbColumn = this.columns.get(i);
                 // 获取字段值并处理SQL Server二进制及CLR类型
                 Object data = this.getValue(resultSet, dbColumn, colIndex++);
-                record.putValue(dbColumn, this.parseValue(data));
+                row[i] = this.parseValue(data);
+            }
+            rows.add(row);
+        }
+        this.fillSource();
+        if (StringUtil.isBlank(this.schema()) && connection != null) {
+            this.fillSchema(connection.getSchema());
+        }
+        // ResultSetMetaData无法识别SQL Server计算列，按来源表补齐生成列元数据。
+        ShellSqlServerHelper.enrichColumnMetadata(
+                connection, this.schema(), this.tableName(), this.columns);
+        for (Object[] row : rows) {
+            SqlServerRecord record = new SqlServerRecord(columns, readonly);
+            for (int i = 0; i < this.columns.size(); i++) {
+                record.putValue(this.columns.get(i), row[i]);
             }
             this.records.add(record);
         }

@@ -26,7 +26,7 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
      * @return 结果
      */
     public boolean isPossibilityTable() {
-        return ' ' == this.getToken() || '"' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+        return this.isPossibilityObject();
     }
 
     /**
@@ -35,7 +35,7 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
      * @return 结果
      */
     public boolean isPossibilityView() {
-        return ' ' == this.getToken() || '"' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+        return this.isPossibilityObject();
     }
 
     /**
@@ -44,7 +44,7 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
      * @return 结果
      */
     public boolean isPossibilityFunction() {
-        return ' ' == this.getToken() || '"' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+        return this.isPossibilityObject();
     }
 
     /**
@@ -53,7 +53,7 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
      * @return 结果
      */
     public boolean isPossibilityProcedure() {
-        return ' ' == this.getToken() || '"' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+        return this.isPossibilityObject();
     }
 
     /**
@@ -62,7 +62,7 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
      * @return 结果
      */
     public boolean isPossibilityColumn() {
-        return ' ' == this.getToken() || '"' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+        return this.isPossibilityObject();
     }
 
     /**
@@ -71,6 +71,20 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
      * @return 结果
      */
     public boolean isPossibilityDatabase() {
-        return '"' == this.getToken() || ' ' == this.getToken();
+        return '"' == this.getToken() || '[' == this.getToken() || ' ' == this.getToken();
+    }
+
+    /**
+     * 是否处于SQL Server方括号标识符上下文
+     *
+     * @return 结果
+     */
+    public boolean isOpenBracketContext() {
+        return '[' == this.getToken();
+    }
+
+    private boolean isPossibilityObject() {
+        return ' ' == this.getToken() || '"' == this.getToken() || '[' == this.getToken()
+                || ',' == this.getToken() || '.' == this.getToken();
     }
 }

@@ -63,6 +63,7 @@ import cn.oyzh.easyshell.internal.ShellClientChecker;
 import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.sqlserver.SqlServerExecuteResult;
 import cn.oyzh.easyshell.query.sqlserver.SqlServerExplainResult;
+import cn.oyzh.easyshell.query.sqlserver.SqlServerQueryObject;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerColumnUtil;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerDataUtil;
@@ -575,15 +576,14 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
         try {
             String sql = """
                     SELECT
-                        SUM(CASE WHEN O.TYPE = 'U' AND O.IS_MS_SHIPPED = 0 THEN 1 ELSE 0 END) AS TABLE_COUNT,
-                        SUM(CASE WHEN O.TYPE = 'V' AND O.IS_MS_SHIPPED = 0 THEN 1 ELSE 0 END) AS VIEW_COUNT,
-                        SUM(CASE WHEN O.TYPE IN ('FN','IF','TF','FS','FT','AF')
-                            AND O.IS_MS_SHIPPED = 0 THEN 1 ELSE 0 END) AS FUNCTION_COUNT,
-                        SUM(CASE WHEN O.TYPE = 'P' AND O.IS_MS_SHIPPED = 0 THEN 1 ELSE 0 END) AS PROCEDURE_COUNT,
-                        SUM(CASE WHEN O.TYPE = 'SO' AND O.IS_MS_SHIPPED = 0 THEN 1 ELSE 0 END) AS SEQUENCE_COUNT
+                        SUM(CASE WHEN O.TYPE = 'U' THEN 1 ELSE 0 END) AS TABLE_COUNT,
+                        SUM(CASE WHEN O.TYPE = 'V' THEN 1 ELSE 0 END) AS VIEW_COUNT,
+                        SUM(CASE WHEN O.TYPE IN ('FN','IF','TF','FS','FT','AF') THEN 1 ELSE 0 END) AS FUNCTION_COUNT,
+                        SUM(CASE WHEN O.TYPE = 'P' THEN 1 ELSE 0 END) AS PROCEDURE_COUNT,
+                        SUM(CASE WHEN O.TYPE = 'SO' THEN 1 ELSE 0 END) AS SEQUENCE_COUNT
                     FROM SYS.OBJECTS O
-                    JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = O.SCHEMA_ID
-                    WHERE S.NAME = ?
+                    WHERE O.SCHEMA_ID = SCHEMA_ID(?)
+                      AND O.IS_MS_SHIPPED = 0
                     """;
             this.printSql(sql);
             try (PreparedStatement statement = this.getConnManager().connection().prepareStatement(sql)) {
@@ -2862,6 +2862,46 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 一次查询当前数据库的查询补全对象。
+     * 使用独立连接，避免后台建立索引时阻塞数据库树使用的连接。
+     *
+     * @return 表和视图等对象索引项
+     */
+    public List<SqlServerQueryObject> selectQueryObjects() {
+        String sql = """
+                SELECT S.NAME AS SCHEMA_NAME, O.NAME AS OBJECT_NAME, O.TYPE AS OBJECT_TYPE
+                FROM SYS.OBJECTS O
+                JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = O.SCHEMA_ID
+                WHERE O.IS_MS_SHIPPED = 0
+                  AND O.TYPE IN ('U','V','FN','IF','TF','FS','FT','AF','P')
+                  AND S.NAME NOT IN (
+                      'sys', 'INFORMATION_SCHEMA', 'guest',
+                      'db_owner', 'db_accessadmin', 'db_backupoperator',
+                      'db_datareader', 'db_datawriter', 'db_ddladmin',
+                      'db_denydatareader', 'db_denydatawriter', 'db_securityadmin'
+                  )
+                ORDER BY S.NAME, O.NAME, O.TYPE
+                """;
+        this.printSql(sql);
+        try (Connection connection = this.getConnManager()
+                .newConnection(this.shellConnect.getDatabase());
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            List<SqlServerQueryObject> objects = new ArrayList<>();
+            while (resultSet.next()) {
+                objects.add(new SqlServerQueryObject(
+                        resultSet.getString("SCHEMA_NAME"),
+                        resultSet.getString("OBJECT_NAME"),
+                        resultSet.getString("OBJECT_TYPE").strip()
+                ));
+            }
+            return objects;
+        } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
