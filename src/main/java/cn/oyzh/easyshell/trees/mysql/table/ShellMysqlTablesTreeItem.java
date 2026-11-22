@@ -194,7 +194,7 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
      *
      * @return 表数量
      */
-    public Integer getTableSize() {
+    public synchronized Integer getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
         }
@@ -236,7 +236,7 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
     public void addTable(MysqlTable table) {
         this.addChild(new ShellMysqlTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.tableSize = this.incrementCount(this.tableSize);
+        this.clearTableSize();
     }
 
     /**

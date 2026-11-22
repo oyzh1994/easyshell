@@ -194,7 +194,7 @@ public class ShellPostgresqlTablesTreeItem extends ShellPostgresqlTreeItem<Shell
      *
      * @return 表数量
      */
-    public Integer getTableSize() {
+    public synchronized Integer getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
         }
@@ -236,7 +236,7 @@ public class ShellPostgresqlTablesTreeItem extends ShellPostgresqlTreeItem<Shell
     public void addTable(PostgresqlTable table) {
         this.addChild(new ShellPostgresqlTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.tableSize = this.incrementCount(this.tableSize);
+        this.clearTableSize();
     }
 
     /**

@@ -194,7 +194,7 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
      *
      * @return 表数量
      */
-    public Integer getTableSize() {
+    public synchronized Integer getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
         }
@@ -236,7 +236,7 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
     public void addTable(DamengTable table) {
         this.addChild(new ShellDamengTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.tableSize = this.incrementCount(this.tableSize);
+        this.clearTableSize();
     }
 
     /**

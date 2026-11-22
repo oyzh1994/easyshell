@@ -52,7 +52,7 @@ public class ShellSqlServerSequencesTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().sequenceSize();
+        Integer size = this.item().getSequenceSize();
         if (size != null) {
             return " (" + size + ")";
         }

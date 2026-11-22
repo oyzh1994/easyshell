@@ -101,7 +101,7 @@ public class ShellSqliteViewsTreeItem extends ShellSqliteTreeItem<ShellSqliteVie
      *
      * @return 视图数量
      */
-    public int getViewSize() {
+    public synchronized int getViewSize() {
         if (this.viewSize == null) {
             this.viewSize = this.viewSize();
         }
@@ -128,7 +128,7 @@ public class ShellSqliteViewsTreeItem extends ShellSqliteTreeItem<ShellSqliteVie
                 items.add(new ShellSqliteViewTreeItem(view, this.getTreeView()));
             }
             this.setChild(items);
-            this.clearViewSize();
+        this.clearViewSize();
             this.setLoaded(true);
             this.doFilter();
             this.doSort();
@@ -169,7 +169,7 @@ public class ShellSqliteViewsTreeItem extends ShellSqliteTreeItem<ShellSqliteVie
      * 刷新视图数量
      */
     public void refreshCount() {
-        this.viewSize = this.incrementCount(this.viewSize);
+        this.clearViewSize();
         this.refresh();
     }
 

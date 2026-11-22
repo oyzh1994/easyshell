@@ -201,7 +201,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
      *
      * @return 函数数量
      */
-    public Integer getFunctionSize() {
+    public synchronized Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = this.functionSize();
         }
@@ -216,7 +216,7 @@ public class ShellMysqlFunctionsTreeItem extends ShellMysqlTreeItem<ShellMysqlFu
     public void addFunction(MysqlFunction function) {
         this.addChild(new ShellMysqlFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.functionSize = this.incrementCount(this.functionSize);
+        this.clearFunctionSize();
     }
 
     /**

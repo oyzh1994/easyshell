@@ -202,7 +202,7 @@ public class ShellSqlServerSequencesTreeItem extends ShellSqlServerTreeItem<Shel
      *
      * @return 序列数量
      */
-    public Integer getSequenceSize() {
+    public synchronized Integer getSequenceSize() {
         if (this.sequenceSize == null) {
             this.sequenceSize = this.sequenceSize();
         }
@@ -217,7 +217,7 @@ public class ShellSqlServerSequencesTreeItem extends ShellSqlServerTreeItem<Shel
     public void addSequence(SqlServerSequence Sequence) {
         this.addChild(new ShellSqlServerSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.sequenceSize = this.incrementCount(this.sequenceSize);
+        this.clearSequenceSize();
     }
 
     /**

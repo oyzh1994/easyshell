@@ -213,7 +213,7 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
      *
      * @return 函数数量
      */
-    public Integer getFunctionSize() {
+    public synchronized Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = Math.toIntExact(this.functionSize());
         }
@@ -228,7 +228,7 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
     public void addFunction(MongoFunction function) {
         this.addChild(new ShellMongoFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.functionSize = this.incrementCount(this.functionSize);
+        this.clearFunctionSize();
     }
 
     /**

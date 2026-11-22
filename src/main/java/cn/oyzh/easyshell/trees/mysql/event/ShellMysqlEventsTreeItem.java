@@ -201,7 +201,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
      *
      * @return 事件数量
      */
-    public Integer getEventSize() {
+    public synchronized Integer getEventSize() {
         if (this.eventSize == null) {
             this.eventSize = this.eventSize();
         }
@@ -216,7 +216,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     public void addEvent(MysqlEvent event) {
         this.addChild(new ShellMysqlEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.eventSize = this.incrementCount(this.eventSize);
+        this.clearEventSize();
     }
 
     /**

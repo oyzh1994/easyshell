@@ -202,7 +202,7 @@ public class ShellMariadbProceduresTreeItem extends ShellMariadbTreeItem<ShellMa
      *
      * @return 过程数量
      */
-    public Integer getProcedureSize() {
+    public synchronized Integer getProcedureSize() {
         if (this.procedureSize == null) {
             this.procedureSize = this.procedureSize();
         }
@@ -217,7 +217,7 @@ public class ShellMariadbProceduresTreeItem extends ShellMariadbTreeItem<ShellMa
     public void addProcedure(MariadbProcedure procedure) {
         this.addChild(new ShellMariadbProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.procedureSize = this.incrementCount(this.procedureSize);
+        this.clearProcedureSize();
     }
 
     /**

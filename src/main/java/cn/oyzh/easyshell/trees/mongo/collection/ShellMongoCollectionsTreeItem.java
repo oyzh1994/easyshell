@@ -259,7 +259,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
      *
      * @return 集合数量
      */
-    public Integer getCollectionsSize() {
+    public synchronized Integer getCollectionsSize() {
         if (this.collectionSize == null) {
             this.collectionSize = Math.toIntExact(this.collectionSize());
         }

@@ -52,7 +52,7 @@ public class ShellOracleFunctionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().functionSize();
+        Integer size = this.item().getFunctionSize();
         if (size != null) {
             return " (" + size + ")";
         }

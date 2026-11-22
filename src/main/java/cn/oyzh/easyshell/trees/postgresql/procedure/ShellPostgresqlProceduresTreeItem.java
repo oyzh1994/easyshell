@@ -202,7 +202,7 @@ public class ShellPostgresqlProceduresTreeItem extends ShellPostgresqlTreeItem<S
      *
      * @return 过程数量
      */
-    public Integer getProcedureSize() {
+    public synchronized Integer getProcedureSize() {
         if (this.procedureSize == null) {
             this.procedureSize = this.procedureSize();
         }
@@ -217,7 +217,7 @@ public class ShellPostgresqlProceduresTreeItem extends ShellPostgresqlTreeItem<S
     public void addProcedure(PostgresqlProcedure procedure) {
         this.addChild(new ShellPostgresqlProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.procedureSize = this.incrementCount(this.procedureSize);
+        this.clearProcedureSize();
     }
 
     /**

@@ -202,7 +202,7 @@ public class ShellOracleSequencesTreeItem extends ShellOracleTreeItem<ShellOracl
      *
      * @return 序列数量
      */
-    public Integer getSequenceSize() {
+    public synchronized Integer getSequenceSize() {
         if (this.sequenceSize == null) {
             this.sequenceSize = this.sequenceSize();
         }
@@ -217,7 +217,7 @@ public class ShellOracleSequencesTreeItem extends ShellOracleTreeItem<ShellOracl
     public void addSequence(OracleSequence Sequence) {
         this.addChild(new ShellOracleSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.sequenceSize = this.incrementCount(this.sequenceSize);
+        this.clearSequenceSize();
     }
 
     /**

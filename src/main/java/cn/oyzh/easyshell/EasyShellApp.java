@@ -239,13 +239,13 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 SystemUtil.gcInterval(60_000);
                 // 禁用对象观察
                 ObjectWatcherManager.disable();
-                // 打印元数据
-                DBUtil.ENABLE_PRINT_METADATA = false;
+//                // 打印元数据
+//                DBUtil.ENABLE_PRINT_METADATA = false;
             } else {
                 //                // 开启定期gc
                 //                SystemUtil.gcInterval(15_000);
-                // 打印元数据
-                DBUtil.ENABLE_PRINT_METADATA = false;
+//                // 打印元数据
+//                DBUtil.ENABLE_PRINT_METADATA = true;
                 // 启用对象观察
                 //ObjectWatcherManager.enable();
                 ObjectWatcherManager.disable();

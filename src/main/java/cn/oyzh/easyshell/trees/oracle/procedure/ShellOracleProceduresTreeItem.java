@@ -202,7 +202,7 @@ public class ShellOracleProceduresTreeItem extends ShellOracleTreeItem<ShellOrac
      *
      * @return 过程数量
      */
-    public Integer getProcedureSize() {
+    public synchronized Integer getProcedureSize() {
         if (this.procedureSize == null) {
             this.procedureSize = this.procedureSize();
         }
@@ -217,7 +217,7 @@ public class ShellOracleProceduresTreeItem extends ShellOracleTreeItem<ShellOrac
     public void addProcedure(OracleProcedure procedure) {
         this.addChild(new ShellOracleProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.procedureSize = this.incrementCount(this.procedureSize);
+        this.clearProcedureSize();
     }
 
     /**

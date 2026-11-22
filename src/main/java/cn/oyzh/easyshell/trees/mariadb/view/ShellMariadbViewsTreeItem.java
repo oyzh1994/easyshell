@@ -175,7 +175,7 @@ public class ShellMariadbViewsTreeItem extends ShellMariadbTreeItem<ShellMariadb
      *
      * @return 视图数量
      */
-    public Integer getViewSize() {
+    public synchronized Integer getViewSize() {
         if (this.viewSize == null) {
             this.viewSize = this.viewSize();
         }
@@ -217,7 +217,7 @@ public class ShellMariadbViewsTreeItem extends ShellMariadbTreeItem<ShellMariadb
     public void addView(MariadbView view) {
         this.addChild(new ShellMariadbViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.viewSize = this.incrementCount(this.viewSize);
+        this.clearViewSize();
     }
 
     /**

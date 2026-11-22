@@ -202,7 +202,7 @@ public class ShellDamengSequencesTreeItem extends ShellDamengTreeItem<ShellDamen
      *
      * @return 序列数量
      */
-    public Integer getSequenceSize() {
+    public synchronized Integer getSequenceSize() {
         if (this.sequenceSize == null) {
             this.sequenceSize = this.sequenceSize();
         }
@@ -217,7 +217,7 @@ public class ShellDamengSequencesTreeItem extends ShellDamengTreeItem<ShellDamen
     public void addSequence(DamengSequence Sequence) {
         this.addChild(new ShellDamengSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.sequenceSize = this.incrementCount(this.sequenceSize);
+        this.clearSequenceSize();
     }
 
     /**

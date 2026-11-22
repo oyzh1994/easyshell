@@ -102,7 +102,7 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
      *
      * @return 表数量
      */
-    public int getTableSize() {
+    public synchronized int getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
         }
@@ -129,7 +129,7 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
                 items.add(new ShellSqliteTableTreeItem(table, this.getTreeView()));
             }
             this.setChild(items);
-            this.clearTableSize();
+        this.clearTableSize();
             this.setLoaded(true);
             this.doFilter();
             this.doSort();
@@ -170,7 +170,7 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
      * 刷新表数量
      */
     public void refreshCount() {
-        this.tableSize = this.incrementCount(this.tableSize);
+        this.clearTableSize();
         this.refresh();
     }
 

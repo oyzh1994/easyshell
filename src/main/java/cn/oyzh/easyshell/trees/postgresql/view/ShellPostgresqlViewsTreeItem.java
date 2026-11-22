@@ -175,7 +175,7 @@ public class ShellPostgresqlViewsTreeItem extends ShellPostgresqlTreeItem<ShellP
      *
      * @return 视图数量
      */
-    public Integer getViewSize() {
+    public synchronized Integer getViewSize() {
         if (this.viewSize == null) {
             this.viewSize = this.viewSize();
         }
@@ -220,7 +220,7 @@ public class ShellPostgresqlViewsTreeItem extends ShellPostgresqlTreeItem<ShellP
         }
         this.addChild(new ShellPostgresqlViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.viewSize = this.incrementCount(this.viewSize);
+        this.clearViewSize();
     }
 
     /**

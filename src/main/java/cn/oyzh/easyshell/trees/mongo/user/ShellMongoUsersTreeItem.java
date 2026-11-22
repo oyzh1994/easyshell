@@ -230,7 +230,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
      *
      * @return 用户数量
      */
-    public Integer getUserSize() {
+    public synchronized Integer getUserSize() {
         if (this.userSize == null) {
             this.userSize = Math.toIntExact(this.userSize());
         }

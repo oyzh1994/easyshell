@@ -154,7 +154,7 @@ public class ShellSqliteFunctionsTreeItem extends ShellSqliteTreeItem<ShellSqlit
      *
      * @return 函数数量
      */
-    public Integer getFunctionSize() {
+    public synchronized Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = this.functionSize();
         }
@@ -169,7 +169,7 @@ public class ShellSqliteFunctionsTreeItem extends ShellSqliteTreeItem<ShellSqlit
     public void addFunction(SQLiteFunction function) {
         this.addChild(new ShellSqliteFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.functionSize = this.incrementCount(this.functionSize);
+        this.clearFunctionSize();
     }
 
     /**

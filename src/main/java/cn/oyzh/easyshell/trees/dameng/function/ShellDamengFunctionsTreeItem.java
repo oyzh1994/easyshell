@@ -201,7 +201,7 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
      *
      * @return 函数数量
      */
-    public Integer getFunctionSize() {
+    public synchronized Integer getFunctionSize() {
         if (this.functionSize == null) {
             this.functionSize = this.functionSize();
         }
@@ -216,7 +216,7 @@ public class ShellDamengFunctionsTreeItem extends ShellDamengTreeItem<ShellDamen
     public void addFunction(DamengFunction function) {
         this.addChild(new ShellDamengFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.functionSize = this.incrementCount(this.functionSize);
+        this.clearFunctionSize();
     }
 
     /**

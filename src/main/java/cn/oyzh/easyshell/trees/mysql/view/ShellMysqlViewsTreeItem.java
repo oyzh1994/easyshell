@@ -175,7 +175,7 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
      *
      * @return 视图数量
      */
-    public Integer getViewSize() {
+    public synchronized Integer getViewSize() {
         if (this.viewSize == null) {
             this.viewSize = this.viewSize();
         }
@@ -217,7 +217,7 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
     public void addView(MysqlView view) {
         this.addChild(new ShellMysqlViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.viewSize = this.incrementCount(this.viewSize);
+        this.clearViewSize();
     }
 
     /**

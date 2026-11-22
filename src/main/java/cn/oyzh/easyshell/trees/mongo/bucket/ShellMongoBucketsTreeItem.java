@@ -235,7 +235,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
      *
      * @return 存储桶数量
      */
-    public Integer getBucketsSize() {
+    public synchronized Integer getBucketsSize() {
         if (this.bucketsSize == null) {
             this.bucketsSize = Math.toIntExact(this.bucketsSize());
         }

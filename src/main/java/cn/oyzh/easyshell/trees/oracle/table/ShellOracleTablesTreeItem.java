@@ -194,7 +194,7 @@ public class ShellOracleTablesTreeItem extends ShellOracleTreeItem<ShellOracleTa
      *
      * @return 表数量
      */
-    public Integer getTableSize() {
+    public synchronized Integer getTableSize() {
         if (this.tableSize == null) {
             this.tableSize = this.tableSize();
         }
@@ -236,7 +236,7 @@ public class ShellOracleTablesTreeItem extends ShellOracleTreeItem<ShellOracleTa
     public void addTable(OracleTable table) {
         this.addChild(new ShellOracleTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.tableSize = this.incrementCount(this.tableSize);
+        this.clearTableSize();
     }
 
     /**
