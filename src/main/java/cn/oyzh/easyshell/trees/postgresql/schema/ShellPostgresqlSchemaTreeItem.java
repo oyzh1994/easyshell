@@ -207,23 +207,12 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        int[] counts = this.loadObjectCounts();
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        ShellPostgresqlTablesTreeItem tables = new ShellPostgresqlTablesTreeItem(this.getTreeView());
-                        tables.setTableSize(counts[0]);
-                        typeItems.add(tables);
-                        ShellPostgresqlViewsTreeItem views = new ShellPostgresqlViewsTreeItem(this.getTreeView());
-                        views.setViewSize(counts[1]);
-                        typeItems.add(views);
-                        ShellPostgresqlFunctionsTreeItem functions = new ShellPostgresqlFunctionsTreeItem(this.getTreeView());
-                        functions.setFunctionSize(counts[2]);
-                        typeItems.add(functions);
-                        ShellPostgresqlProceduresTreeItem procedures = new ShellPostgresqlProceduresTreeItem(this.getTreeView());
-                        procedures.setProcedureSize(counts[3]);
-                        typeItems.add(procedures);
-                        ShellPostgresqlSequencesTreeItem sequences = new ShellPostgresqlSequencesTreeItem(this.getTreeView());
-                        sequences.setSequenceSize(counts[4]);
-                        typeItems.add(sequences);
+                        typeItems.add(new ShellPostgresqlTablesTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellPostgresqlViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellPostgresqlFunctionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellPostgresqlProceduresTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellPostgresqlSequencesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -238,20 +227,6 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
             super.startWaiting(task);
         }
 
-    }
-
-    private int[] loadObjectCounts() {
-        try {
-            return new int[]{
-                    this.client().tableSize(this.schema()),
-                    this.client().viewSize(this.schema()),
-                    this.client().functionSize(this.schema()),
-                    this.client().procedureSize(this.schema()),
-                    this.client().sequenceSize(this.schema())
-            };
-        } catch (Exception ignored) {
-            return new int[]{0, 0, 0, 0, 0};
-        }
     }
 
     /**

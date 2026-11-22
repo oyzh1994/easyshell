@@ -52,7 +52,11 @@ public class ShellSqlServerProceduresTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return this.item().extraCount(this.item().getCachedProcedureSize());
+        Integer size = this.item().procedureSize();
+        if (size != null) {
+            return " (" + size + ")";
+        }
+        return super.extra();
     }
 
     @Override

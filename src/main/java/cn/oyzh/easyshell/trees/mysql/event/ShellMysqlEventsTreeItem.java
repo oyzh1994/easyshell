@@ -208,14 +208,6 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         return this.eventSize;
     }
 
-    public Integer getCachedEventSize() {
-        return this.eventSize;
-    }
-
-    public void setEventSize(Integer eventSize) {
-        this.eventSize = eventSize;
-    }
-
     /**
      * 新增事件并刷新排序
      *

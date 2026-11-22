@@ -38,7 +38,6 @@ import cn.oyzh.easyshell.sqlserver.record.SqlServerSelectRecordParam;
 import cn.oyzh.easyshell.sqlserver.record.SqlServerUpdateRecordParam;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
 import cn.oyzh.easyshell.sqlserver.schema.SqlServerSchema;
-import cn.oyzh.easyshell.sqlserver.schema.SqlServerSchemaObjectCounts;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerAlertSequenceParam;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerCreateSequenceParam;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerSelectSequenceParam;
@@ -564,46 +563,6 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             throw new ShellException(ex);
         }
         return size;
-    }
-
-    /**
-     * 一次查询模式内各类对象数量，避免树节点渲染时串行执行多个COUNT查询。
-     *
-     * @param schema 模式名称
-     * @return 对象数量
-     */
-    public SqlServerSchemaObjectCounts schemaObjectCounts(String schema) {
-        try {
-            String sql = """
-                    SELECT
-                        SUM(CASE WHEN O.TYPE = 'U' THEN 1 ELSE 0 END) AS TABLE_COUNT,
-                        SUM(CASE WHEN O.TYPE = 'V' THEN 1 ELSE 0 END) AS VIEW_COUNT,
-                        SUM(CASE WHEN O.TYPE IN ('FN','IF','TF','FS','FT','AF') THEN 1 ELSE 0 END) AS FUNCTION_COUNT,
-                        SUM(CASE WHEN O.TYPE = 'P' THEN 1 ELSE 0 END) AS PROCEDURE_COUNT,
-                        SUM(CASE WHEN O.TYPE = 'SO' THEN 1 ELSE 0 END) AS SEQUENCE_COUNT
-                    FROM SYS.OBJECTS O
-                    WHERE O.SCHEMA_ID = SCHEMA_ID(?)
-                      AND O.IS_MS_SHIPPED = 0
-                    """;
-            this.printSql(sql);
-            try (PreparedStatement statement = this.getConnManager().connection().prepareStatement(sql)) {
-                statement.setString(1, schema);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return new SqlServerSchemaObjectCounts(
-                                resultSet.getInt("TABLE_COUNT"),
-                                resultSet.getInt("VIEW_COUNT"),
-                                resultSet.getInt("FUNCTION_COUNT"),
-                                resultSet.getInt("PROCEDURE_COUNT"),
-                                resultSet.getInt("SEQUENCE_COUNT")
-                        );
-                    }
-                }
-            }
-            return new SqlServerSchemaObjectCounts(0, 0, 0, 0, 0);
-        } catch (Exception ex) {
-            throw new ShellException(ex);
-        }
     }
 
     /**

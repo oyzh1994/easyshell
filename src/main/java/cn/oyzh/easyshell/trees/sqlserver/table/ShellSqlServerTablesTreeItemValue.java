@@ -52,7 +52,11 @@ public class ShellSqlServerTablesTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return this.item().extraCount(this.item().getCachedTableSize());
+        Integer size = this.item().tableSize();
+        if (size != null) {
+            return " (" + size + ")";
+        }
+        return super.extra();
     }
 
     @Override

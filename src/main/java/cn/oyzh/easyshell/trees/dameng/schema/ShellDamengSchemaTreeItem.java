@@ -207,23 +207,12 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        int[] counts = this.loadObjectCounts();
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        ShellDamengTablesTreeItem tables = new ShellDamengTablesTreeItem(this.getTreeView());
-                        tables.setTableSize(counts[0]);
-                        typeItems.add(tables);
-                        ShellDamengViewsTreeItem views = new ShellDamengViewsTreeItem(this.getTreeView());
-                        views.setViewSize(counts[1]);
-                        typeItems.add(views);
-                        ShellDamengFunctionsTreeItem functions = new ShellDamengFunctionsTreeItem(this.getTreeView());
-                        functions.setFunctionSize(counts[2]);
-                        typeItems.add(functions);
-                        ShellDamengProceduresTreeItem procedures = new ShellDamengProceduresTreeItem(this.getTreeView());
-                        procedures.setProcedureSize(counts[3]);
-                        typeItems.add(procedures);
-                        ShellDamengSequencesTreeItem sequences = new ShellDamengSequencesTreeItem(this.getTreeView());
-                        sequences.setSequenceSize(counts[4]);
-                        typeItems.add(sequences);
+                        typeItems.add(new ShellDamengTablesTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellDamengViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellDamengFunctionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellDamengProceduresTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellDamengSequencesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -238,20 +227,6 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
             super.startWaiting(task);
         }
 
-    }
-
-    private int[] loadObjectCounts() {
-        try {
-            return new int[]{
-                    this.client().tableSize(this.schema()),
-                    this.client().viewSize(this.schema()),
-                    this.client().functionSize(this.schema()),
-                    this.client().procedureSize(this.schema()),
-                    this.client().sequenceSize(this.schema())
-            };
-        } catch (Exception ignored) {
-            return new int[]{0, 0, 0, 0, 0};
-        }
     }
 
     /**

@@ -201,14 +201,6 @@ public class ShellMariadbTablesTreeItem extends ShellMariadbTreeItem<ShellMariad
         return this.tableSize;
     }
 
-    public Integer getCachedTableSize() {
-        return this.tableSize;
-    }
-
-    public void setTableSize(Integer tableSize) {
-        this.tableSize = tableSize;
-    }
-
     /**
      * 获取MariaDB信息
      *

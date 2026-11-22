@@ -44,7 +44,11 @@ public class ShellMongoUsersTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return this.item().extraCount(this.item().getCachedUserSize());
+        Integer size = this.item().getUserSize();
+        if (size != null) {
+            return " (" + size + ")";
+        }
+        return super.extra();
     }
 
     @Override

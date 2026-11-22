@@ -209,14 +209,6 @@ public class ShellMysqlProceduresTreeItem extends ShellMysqlTreeItem<ShellMysqlP
         return this.procedureSize;
     }
 
-    public Integer getCachedProcedureSize() {
-        return this.procedureSize;
-    }
-
-    public void setProcedureSize(Integer procedureSize) {
-        this.procedureSize = procedureSize;
-    }
-
     /**
      * 新增过程并刷新排序
      *

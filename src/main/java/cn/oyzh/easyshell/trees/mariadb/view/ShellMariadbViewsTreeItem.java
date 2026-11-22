@@ -182,14 +182,6 @@ public class ShellMariadbViewsTreeItem extends ShellMariadbTreeItem<ShellMariadb
         return this.viewSize;
     }
 
-    public Integer getCachedViewSize() {
-        return this.viewSize;
-    }
-
-    public void setViewSize(Integer viewSize) {
-        this.viewSize = viewSize;
-    }
-
     /**
      * 获取MariaDB信息
      *

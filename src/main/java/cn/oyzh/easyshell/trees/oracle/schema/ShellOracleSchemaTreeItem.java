@@ -207,23 +207,12 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        int[] counts = this.loadObjectCounts();
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        ShellOracleTablesTreeItem tables = new ShellOracleTablesTreeItem(this.getTreeView());
-                        tables.setTableSize(counts[0]);
-                        typeItems.add(tables);
-                        ShellOracleViewsTreeItem views = new ShellOracleViewsTreeItem(this.getTreeView());
-                        views.setViewSize(counts[1]);
-                        typeItems.add(views);
-                        ShellOracleFunctionsTreeItem functions = new ShellOracleFunctionsTreeItem(this.getTreeView());
-                        functions.setFunctionSize(counts[2]);
-                        typeItems.add(functions);
-                        ShellOracleProceduresTreeItem procedures = new ShellOracleProceduresTreeItem(this.getTreeView());
-                        procedures.setProcedureSize(counts[3]);
-                        typeItems.add(procedures);
-                        ShellOracleSequencesTreeItem sequences = new ShellOracleSequencesTreeItem(this.getTreeView());
-                        sequences.setSequenceSize(counts[4]);
-                        typeItems.add(sequences);
+                        typeItems.add(new ShellOracleTablesTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellOracleViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellOracleFunctionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellOracleProceduresTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellOracleSequencesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -238,20 +227,6 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
             super.startWaiting(task);
         }
 
-    }
-
-    private int[] loadObjectCounts() {
-        try {
-            return new int[]{
-                    this.client().tableSize(this.schema()),
-                    this.client().viewSize(this.schema()),
-                    this.client().functionSize(this.schema()),
-                    this.client().procedureSize(this.schema()),
-                    this.client().sequenceSize(this.schema())
-            };
-        } catch (Exception ignored) {
-            return new int[]{0, 0, 0, 0, 0};
-        }
     }
 
     /**

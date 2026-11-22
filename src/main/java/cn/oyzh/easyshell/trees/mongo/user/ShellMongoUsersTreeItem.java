@@ -237,14 +237,6 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
         return this.userSize;
     }
 
-    public Integer getCachedUserSize() {
-        return this.userSize;
-    }
-
-    public void setUserSize(Integer userSize) {
-        this.userSize = userSize;
-    }
-
     /**
      * 清空用户数量缓存
      */

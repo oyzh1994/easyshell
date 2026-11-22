@@ -209,14 +209,6 @@ public class ShellSqlServerProceduresTreeItem extends ShellSqlServerTreeItem<She
         return this.procedureSize;
     }
 
-    public Integer getCachedProcedureSize() {
-        return this.procedureSize;
-    }
-
-    public void setProcedureSize(Integer procedureSize) {
-        this.procedureSize = procedureSize;
-    }
-
     /**
      * 添加过程
      *

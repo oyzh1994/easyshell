@@ -43,7 +43,11 @@ public class ShellMongoBucketsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return this.item().extraCount(this.item().getCachedBucketsSize());
+        Integer size = this.item().getBucketsSize();
+        if (size != null) {
+            return " (" + size + ")";
+        }
+        return super.extra();
     }
 
     @Override

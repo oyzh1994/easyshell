@@ -266,14 +266,6 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
         return this.collectionSize;
     }
 
-    public Integer getCachedCollectionsSize() {
-        return this.collectionSize;
-    }
-
-    public void setCollectionSize(Integer collectionSize) {
-        this.collectionSize = collectionSize;
-    }
-
     /**
      * 清空集合数量缓存
      */

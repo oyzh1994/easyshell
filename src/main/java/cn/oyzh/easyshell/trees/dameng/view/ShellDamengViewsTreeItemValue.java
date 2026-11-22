@@ -52,7 +52,11 @@ public class ShellDamengViewsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return this.item().extraCount(this.item().getCachedViewSize());
+        Integer size = this.item().viewSize();
+        if (size != null) {
+            return " (" + size + ")";
+        }
+        return super.extra();
     }
 
     @Override

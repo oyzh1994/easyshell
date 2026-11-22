@@ -209,14 +209,6 @@ public class ShellDamengSequencesTreeItem extends ShellDamengTreeItem<ShellDamen
         return this.sequenceSize;
     }
 
-    public Integer getCachedSequenceSize() {
-        return this.sequenceSize;
-    }
-
-    public void setSequenceSize(Integer sequenceSize) {
-        this.sequenceSize = sequenceSize;
-    }
-
     /**
      * 添加序列
      *

@@ -99,7 +99,7 @@ public class ShellSqliteFunctionsTreeItem extends ShellSqliteTreeItem<ShellSqlit
                 items.add(new ShellSqliteFunctionTreeItem(function, this.getTreeView()));
             }
             this.setChild(items);
-            this.setFunctionSize(items.size());
+            this.clearFunctionSize();
             this.setLoaded(true);
             this.doFilter();
             this.doSort();
@@ -159,14 +159,6 @@ public class ShellSqliteFunctionsTreeItem extends ShellSqliteTreeItem<ShellSqlit
             this.functionSize = this.functionSize();
         }
         return this.functionSize;
-    }
-
-    public Integer getCachedFunctionSize() {
-        return this.functionSize;
-    }
-
-    public void setFunctionSize(Integer functionSize) {
-        this.functionSize = functionSize;
     }
 
     /**

@@ -206,23 +206,12 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
-                        int[] counts = this.loadObjectCounts();
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        ShellMysqlTablesTreeItem tables = new ShellMysqlTablesTreeItem(this.getTreeView());
-                        tables.setTableSize(counts[0]);
-                        typeItems.add(tables);
-                        ShellMysqlViewsTreeItem views = new ShellMysqlViewsTreeItem(this.getTreeView());
-                        views.setViewSize(counts[1]);
-                        typeItems.add(views);
-                        ShellMysqlFunctionsTreeItem functions = new ShellMysqlFunctionsTreeItem(this.getTreeView());
-                        functions.setFunctionSize(counts[2]);
-                        typeItems.add(functions);
-                        ShellMysqlProceduresTreeItem procedures = new ShellMysqlProceduresTreeItem(this.getTreeView());
-                        procedures.setProcedureSize(counts[3]);
-                        typeItems.add(procedures);
-                        ShellMysqlEventsTreeItem events = new ShellMysqlEventsTreeItem(this.getTreeView());
-                        events.setEventSize(counts[4]);
-                        typeItems.add(events);
+                        typeItems.add(new ShellMysqlTablesTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMysqlViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMysqlFunctionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMysqlProceduresTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMysqlEventsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -237,21 +226,6 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
             super.startWaiting(task);
         }
 
-    }
-
-    private int[] loadObjectCounts() {
-        try {
-            Integer events = this.client().eventSize(this.dbName());
-            return new int[]{
-                    this.client().tableSize(this.dbName()),
-                    this.client().viewSize(this.dbName()),
-                    this.client().functionSize(this.dbName()),
-                    this.client().procedureSize(this.dbName()),
-                    events == null ? 0 : events
-            };
-        } catch (Exception ignored) {
-            return new int[]{0, 0, 0, 0, 0};
-        }
     }
 
     /**

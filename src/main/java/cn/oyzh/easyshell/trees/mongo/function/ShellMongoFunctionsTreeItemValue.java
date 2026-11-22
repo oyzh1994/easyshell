@@ -52,7 +52,11 @@ public class ShellMongoFunctionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        return this.item().extraCount(this.item().getCachedFunctionSize());
+        Integer size = this.item().getFunctionSize();
+        if (size != null) {
+            return " (" + size + ")";
+        }
+        return super.extra();
     }
 
     @Override

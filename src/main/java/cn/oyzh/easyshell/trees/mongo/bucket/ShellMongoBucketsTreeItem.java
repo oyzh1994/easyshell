@@ -242,14 +242,6 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
         return this.bucketsSize;
     }
 
-    public Integer getCachedBucketsSize() {
-        return this.bucketsSize;
-    }
-
-    public void setBucketsSize(Integer bucketsSize) {
-        this.bucketsSize = bucketsSize;
-    }
-
     /**
      * 清空存储桶数量缓存
      */
