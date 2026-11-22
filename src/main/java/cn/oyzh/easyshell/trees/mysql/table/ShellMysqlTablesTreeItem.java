@@ -201,6 +201,14 @@ public class ShellMysqlTablesTreeItem extends ShellMysqlTreeItem<ShellMysqlTable
         return this.tableSize;
     }
 
+    public Integer getCachedTableSize() {
+        return this.tableSize;
+    }
+
+    public void setTableSize(Integer tableSize) {
+        this.tableSize = tableSize;
+    }
+
     /**
      * 获取mysql信息
      *

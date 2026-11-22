@@ -208,6 +208,14 @@ public class ShellOracleFunctionsTreeItem extends ShellOracleTreeItem<ShellOracl
         return this.functionSize;
     }
 
+    public Integer getCachedFunctionSize() {
+        return this.functionSize;
+    }
+
+    public void setFunctionSize(Integer functionSize) {
+        this.functionSize = functionSize;
+    }
+
     /**
      * 添加函数
      *

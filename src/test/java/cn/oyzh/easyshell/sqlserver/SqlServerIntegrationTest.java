@@ -264,6 +264,16 @@ public class SqlServerIntegrationTest {
     }
 
     @Test
+    public void clientLoadsSchemaObjectCountsInOneQuery() {
+        var counts = client.schemaObjectCounts(SOURCE_SCHEMA);
+        assertEquals(client.tableSize(SOURCE_SCHEMA), counts.tables());
+        assertEquals(client.viewSize(SOURCE_SCHEMA), counts.views());
+        assertEquals(client.functionSize(SOURCE_SCHEMA), counts.functions());
+        assertEquals(client.procedureSize(SOURCE_SCHEMA), counts.procedures());
+        assertEquals(client.sequenceSize(SOURCE_SCHEMA), counts.sequences());
+    }
+
+    @Test
     public void clientViewFunctionProcedureAndSequenceLifecycle() {
         String table = "PROGRAMMABLE_BASE";
         String viewName = "PROGRAMMABLE_VIEW";

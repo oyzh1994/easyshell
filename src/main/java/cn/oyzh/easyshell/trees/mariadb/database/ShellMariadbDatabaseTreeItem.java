@@ -206,12 +206,23 @@ public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMari
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
+                        int[] counts = this.loadObjectCounts();
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        typeItems.add(new ShellMariadbTablesTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMariadbViewsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMariadbFunctionsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMariadbProceduresTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMariadbEventsTreeItem(this.getTreeView()));
+                        ShellMariadbTablesTreeItem tables = new ShellMariadbTablesTreeItem(this.getTreeView());
+                        tables.setTableSize(counts[0]);
+                        typeItems.add(tables);
+                        ShellMariadbViewsTreeItem views = new ShellMariadbViewsTreeItem(this.getTreeView());
+                        views.setViewSize(counts[1]);
+                        typeItems.add(views);
+                        ShellMariadbFunctionsTreeItem functions = new ShellMariadbFunctionsTreeItem(this.getTreeView());
+                        functions.setFunctionSize(counts[2]);
+                        typeItems.add(functions);
+                        ShellMariadbProceduresTreeItem procedures = new ShellMariadbProceduresTreeItem(this.getTreeView());
+                        procedures.setProcedureSize(counts[3]);
+                        typeItems.add(procedures);
+                        ShellMariadbEventsTreeItem events = new ShellMariadbEventsTreeItem(this.getTreeView());
+                        events.setEventSize(counts[4]);
+                        typeItems.add(events);
                         typeItems.add(new ShellMariadbQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMariadbTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -226,6 +237,21 @@ public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMari
             super.startWaiting(task);
         }
 
+    }
+
+    private int[] loadObjectCounts() {
+        try {
+            Integer events = this.client().eventSize(this.dbName());
+            return new int[]{
+                    this.client().tableSize(this.dbName()),
+                    this.client().viewSize(this.dbName()),
+                    this.client().functionSize(this.dbName()),
+                    this.client().procedureSize(this.dbName()),
+                    events == null ? 0 : events
+            };
+        } catch (Exception ignored) {
+            return new int[]{0, 0, 0, 0, 0};
+        }
     }
 
     /**

@@ -182,6 +182,14 @@ public class ShellMysqlViewsTreeItem extends ShellMysqlTreeItem<ShellMysqlViewsT
         return this.viewSize;
     }
 
+    public Integer getCachedViewSize() {
+        return this.viewSize;
+    }
+
+    public void setViewSize(Integer viewSize) {
+        this.viewSize = viewSize;
+    }
+
     /**
      * 获取mysql信息
      *

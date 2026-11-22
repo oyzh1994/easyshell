@@ -44,7 +44,7 @@ public class ShellMysqlProceduresTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getProcedureSize();
+        Integer size = this.item().getCachedProcedureSize();
         if (size != null) {
             return " (" + size + ")";
         }

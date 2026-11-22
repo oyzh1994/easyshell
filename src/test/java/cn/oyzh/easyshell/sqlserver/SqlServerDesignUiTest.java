@@ -280,6 +280,19 @@ public class SqlServerDesignUiTest {
         assertEquals(1, alertSql.toUpperCase().split("CREATE OR ALTER FUNCTION", -1).length - 1);
         assertFalse(alertSql.toUpperCase().contains("CREATE   FUNCTION"));
         assertFalse(alertSql.toUpperCase().contains("AS\nBEGIN\nBEGIN"));
+
+        function.setDefinition("""
+                BEGIN
+                BEGIN
+                    -- Routine body goes here...
+
+                    RETURN 0;
+                END;
+                END;
+                """);
+        alertSql = SqlServerFunctionAlertSqlGenerator.generateSqlSingle(alertParam);
+        assertEquals(1, alertSql.toUpperCase().split("\\bBEGIN\\b", -1).length - 1);
+        assertEquals(1, alertSql.toUpperCase().split("\\bEND\\b", -1).length - 1);
     }
 
     @Test

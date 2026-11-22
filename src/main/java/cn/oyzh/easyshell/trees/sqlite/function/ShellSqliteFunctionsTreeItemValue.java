@@ -44,7 +44,7 @@ public class ShellSqliteFunctionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getFunctionSize();
+        Integer size = this.item().getCachedFunctionSize();
         if (size != null) {
             return " (" + size + ")";
         }

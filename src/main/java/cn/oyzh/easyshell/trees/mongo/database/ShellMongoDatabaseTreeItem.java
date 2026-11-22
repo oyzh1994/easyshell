@@ -180,11 +180,20 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
+                        int[] counts = this.loadObjectCounts();
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        typeItems.add(new ShellMongoCollectionsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMongoBucketsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMongoFunctionsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellMongoUsersTreeItem(this.getTreeView()));
+                        ShellMongoCollectionsTreeItem collections = new ShellMongoCollectionsTreeItem(this.getTreeView());
+                        collections.setCollectionSize(counts[0]);
+                        typeItems.add(collections);
+                        ShellMongoBucketsTreeItem buckets = new ShellMongoBucketsTreeItem(this.getTreeView());
+                        buckets.setBucketsSize(counts[1]);
+                        typeItems.add(buckets);
+                        ShellMongoFunctionsTreeItem functions = new ShellMongoFunctionsTreeItem(this.getTreeView());
+                        functions.setFunctionSize(counts[2]);
+                        typeItems.add(functions);
+                        ShellMongoUsersTreeItem users = new ShellMongoUsersTreeItem(this.getTreeView());
+                        users.setUserSize(counts[3]);
+                        typeItems.add(users);
                         typeItems.add(new ShellMongoQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);
@@ -203,6 +212,19 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
             super.startWaiting(task);
         }
 
+    }
+
+    private int[] loadObjectCounts() {
+        try {
+            return new int[]{
+                    this.listCollectionNames().size(),
+                    this.listBucketNames().size(),
+                    Math.toIntExact(this.client().functionSize(this.dbName())),
+                    Math.toIntExact(this.client().userSize(this.dbName()))
+            };
+        } catch (Exception ignored) {
+            return new int[]{0, 0, 0, 0};
+        }
     }
 
     /**

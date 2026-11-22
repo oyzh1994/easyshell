@@ -209,6 +209,14 @@ public class ShellOracleProceduresTreeItem extends ShellOracleTreeItem<ShellOrac
         return this.procedureSize;
     }
 
+    public Integer getCachedProcedureSize() {
+        return this.procedureSize;
+    }
+
+    public void setProcedureSize(Integer procedureSize) {
+        this.procedureSize = procedureSize;
+    }
+
     /**
      * 添加过程
      *

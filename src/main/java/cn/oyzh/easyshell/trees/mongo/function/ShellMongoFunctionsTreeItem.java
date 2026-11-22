@@ -220,6 +220,14 @@ public class ShellMongoFunctionsTreeItem extends ShellMongoTreeItem<ShellMongoFu
         return this.functionSize;
     }
 
+    public Integer getCachedFunctionSize() {
+        return this.functionSize;
+    }
+
+    public void setFunctionSize(Integer functionSize) {
+        this.functionSize = functionSize;
+    }
+
     /**
      * 新增函数并刷新排序
      *

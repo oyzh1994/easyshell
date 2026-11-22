@@ -52,7 +52,7 @@ public class ShellMariadbEventsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getEventSize();
+        Integer size = this.item().getCachedEventSize();
         if (size != null) {
             return " (" + size + ")";
         }

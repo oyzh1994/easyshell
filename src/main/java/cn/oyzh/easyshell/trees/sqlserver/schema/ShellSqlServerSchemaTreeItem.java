@@ -19,6 +19,7 @@ import cn.oyzh.easyshell.sqlserver.record.SqlServerDeleteRecordParam;
 import cn.oyzh.easyshell.sqlserver.record.SqlServerRecord;
 import cn.oyzh.easyshell.sqlserver.record.SqlServerSelectRecordParam;
 import cn.oyzh.easyshell.sqlserver.schema.SqlServerSchema;
+import cn.oyzh.easyshell.sqlserver.schema.SqlServerSchemaObjectCounts;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerAlertSequenceParam;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerCreateSequenceParam;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerSequence;
@@ -207,12 +208,28 @@ public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSq
             this.setLoading(true);
             Task task = TaskBuilder.newBuilder()
                     .onStart(() -> {
+                        SqlServerSchemaObjectCounts counts;
+                        try {
+                            counts = this.client().schemaObjectCounts(this.schema());
+                        } catch (Exception ignored) {
+                            counts = new SqlServerSchemaObjectCounts(0, 0, 0, 0, 0);
+                        }
                         List<TreeItem<?>> typeItems = new ArrayList<>();
-                        typeItems.add(new ShellSqlServerTablesTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellSqlServerViewsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellSqlServerFunctionsTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellSqlServerProceduresTreeItem(this.getTreeView()));
-                        typeItems.add(new ShellSqlServerSequencesTreeItem(this.getTreeView()));
+                        ShellSqlServerTablesTreeItem tables = new ShellSqlServerTablesTreeItem(this.getTreeView());
+                        tables.setTableSize(counts.tables());
+                        typeItems.add(tables);
+                        ShellSqlServerViewsTreeItem views = new ShellSqlServerViewsTreeItem(this.getTreeView());
+                        views.setViewSize(counts.views());
+                        typeItems.add(views);
+                        ShellSqlServerFunctionsTreeItem functions = new ShellSqlServerFunctionsTreeItem(this.getTreeView());
+                        functions.setFunctionSize(counts.functions());
+                        typeItems.add(functions);
+                        ShellSqlServerProceduresTreeItem procedures = new ShellSqlServerProceduresTreeItem(this.getTreeView());
+                        procedures.setProcedureSize(counts.procedures());
+                        typeItems.add(procedures);
+                        ShellSqlServerSequencesTreeItem sequences = new ShellSqlServerSequencesTreeItem(this.getTreeView());
+                        sequences.setSequenceSize(counts.sequences());
+                        typeItems.add(sequences);
                         typeItems.add(new ShellSqlServerQueriesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellSqlServerTerminalTreeItem(this.getTreeView()));
                         super.setChild(typeItems);

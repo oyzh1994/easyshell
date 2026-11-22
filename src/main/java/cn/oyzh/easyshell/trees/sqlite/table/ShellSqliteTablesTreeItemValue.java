@@ -44,7 +44,7 @@ public class ShellSqliteTablesTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getTableSize();
+        Integer size = this.item().getCachedTableSize();
         if (size != null) {
             return " (" + size + ")";
         }

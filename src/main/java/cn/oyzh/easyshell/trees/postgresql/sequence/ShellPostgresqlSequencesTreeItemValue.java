@@ -52,7 +52,7 @@ public class ShellPostgresqlSequencesTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().sequenceSize();
+        Integer size = this.item().getCachedSequenceSize();
         if (size != null) {
             return " (" + size + ")";
         }

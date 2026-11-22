@@ -619,23 +619,39 @@ public class ShellSqlServerHelper {
         if (StringUtil.isBlank(body)
                 || !Pattern.compile("(?is)^\\s*(?:CREATE\\s+(?:OR\\s+ALTER\\s+)?|ALTER\\s+)FUNCTION\\b")
                         .matcher(body).find()) {
-            return stripTrailingSemicolons(body);
+            return unwrapRedundantFunctionBlock(stripTrailingSemicolons(body));
         }
         Matcher matcher = Pattern.compile("(?is)\\bAS\\s+").matcher(body);
         while (matcher.find()) {
             String tail = body.substring(matcher.end()).stripLeading();
             if (Pattern.compile("(?is)^(?:BEGIN|RETURN|SELECT|DECLARE|SET|IF|WHILE|EXEC|INSERT|UPDATE|DELETE)\\b")
                     .matcher(tail).find()) {
-                return stripTrailingSemicolons(tail);
+                return unwrapRedundantFunctionBlock(stripTrailingSemicolons(tail));
             }
         }
-        return stripTrailingSemicolons(body);
+        return unwrapRedundantFunctionBlock(stripTrailingSemicolons(body));
     }
 
     private static String stripTrailingSemicolons(String body) {
         String value = body == null ? "" : body.stripTrailing();
         while (value.endsWith(";")) {
             value = value.substring(0, value.length() - 1).stripTrailing();
+        }
+        return value;
+    }
+
+    private static String unwrapRedundantFunctionBlock(String body) {
+        String value = body;
+        while (StringUtil.startWithIgnoreCase(value, "BEGIN")) {
+            Matcher endMatcher = Pattern.compile("(?is)\\bEND\\s*$").matcher(value);
+            if (!endMatcher.find()) {
+                break;
+            }
+            String inner = value.substring("BEGIN".length(), endMatcher.start()).trim();
+            if (!StringUtil.startWithIgnoreCase(inner, "BEGIN")) {
+                break;
+            }
+            value = stripTrailingSemicolons(inner);
         }
         return value;
     }

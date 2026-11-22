@@ -208,6 +208,14 @@ public class ShellMariadbEventsTreeItem extends ShellMariadbTreeItem<ShellMariad
         return this.eventSize;
     }
 
+    public Integer getCachedEventSize() {
+        return this.eventSize;
+    }
+
+    public void setEventSize(Integer eventSize) {
+        this.eventSize = eventSize;
+    }
+
     /**
      * 新增事件并刷新排序
      *

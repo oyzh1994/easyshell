@@ -52,7 +52,7 @@ public class ShellMariadbViewsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getViewSize();
+        Integer size = this.item().getCachedViewSize();
         if (size != null) {
             return " (" + size + ")";
         }

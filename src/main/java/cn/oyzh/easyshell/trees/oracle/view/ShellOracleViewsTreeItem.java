@@ -182,6 +182,14 @@ public class ShellOracleViewsTreeItem extends ShellOracleTreeItem<ShellOracleVie
         return this.viewSize;
     }
 
+    public Integer getCachedViewSize() {
+        return this.viewSize;
+    }
+
+    public void setViewSize(Integer viewSize) {
+        this.viewSize = viewSize;
+    }
+
     /**
      * 获取连接信息
      *

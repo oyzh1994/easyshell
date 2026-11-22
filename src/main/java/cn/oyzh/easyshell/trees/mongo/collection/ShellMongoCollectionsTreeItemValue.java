@@ -44,7 +44,7 @@ public class ShellMongoCollectionsTreeItemValue extends RichTreeItemValue {
 
     @Override
     public String extra() {
-        Integer size = this.item().getCollectionsSize();
+        Integer size = this.item().getCachedCollectionsSize();
         if (size != null) {
             return " (" + size + ")";
         }

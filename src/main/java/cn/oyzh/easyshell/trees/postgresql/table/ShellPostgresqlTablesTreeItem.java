@@ -201,6 +201,14 @@ public class ShellPostgresqlTablesTreeItem extends ShellPostgresqlTreeItem<Shell
         return this.tableSize;
     }
 
+    public Integer getCachedTableSize() {
+        return this.tableSize;
+    }
+
+    public void setTableSize(Integer tableSize) {
+        this.tableSize = tableSize;
+    }
+
     /**
      * 获取连接信息
      *
