@@ -240,6 +240,44 @@ public class SqlServerIntegrationTest {
     }
 
     @Test
+    public void queryResultEditingUsesSourceTable() {
+        String table = "QUERY_EDIT";
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP TABLE IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + table + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, """
+                CREATE TABLE [EASYSHELL_SRC].[QUERY_EDIT] (
+                    [ID] BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                    [LOG] NVARCHAR(100) NULL
+                )
+                """);
+
+        var queryResult = client.executeSql(SOURCE_SCHEMA,
+                "SELECT * FROM [EASYSHELL_SRC].[QUERY_EDIT]").getResults().getFirst();
+        assertEquals(SOURCE_SCHEMA, queryResult.schema());
+        assertEquals(table, queryResult.tableName());
+        assertTrue(queryResult.isUpdatable());
+
+        SqlServerColumns columns = queryResult.getColumns();
+        SqlServerRecord record = new SqlServerRecord(columns);
+        for (SqlServerColumn column : columns) {
+            record.putValue(column, null);
+        }
+        record.putValue("LOG", "query edited");
+        SqlServerRecordPrimaryKey primaryKey = new SqlServerRecordPrimaryKey();
+        primaryKey.init(columns.column("ID"), record);
+        SqlServerInsertRecordParam param = new SqlServerInsertRecordParam();
+        param.setSchema(queryResult.schema());
+        param.setTableName(queryResult.tableName());
+        param.setRecord(record.getRecordData());
+        param.setPrimaryKey(primaryKey);
+
+        assertEquals(1, client.insertRecord(param));
+        assertNotNull(primaryKey.getReturnData());
+        assertEquals("query edited", client.selectRecords(
+                selectParamFor(SOURCE_SCHEMA, table)).getFirst().getValue("LOG"));
+    }
+
+    @Test
     public void clientShowsBuiltInSchemasAndDropsEmptySchema() {
         Map<String, SqlServerSchema> schemas = client.selectSchemas().stream()
                 .collect(Collectors.toMap(SqlServerSchema::getName, schema -> schema));

@@ -84,6 +84,9 @@ public abstract class SqlServerQueryResult extends DBQueryResult {
      * @return 结果
      */
     public boolean isUpdatable() {
+        if (StringUtil.isBlank(this.tableName())) {
+            return false;
+        }
         if (this.columns != null) {
             for (SqlServerColumn column : this.columns) {
                 if (column.isAutoIncrement()) {
