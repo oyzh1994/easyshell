@@ -282,7 +282,7 @@ public class ShellMariadbFunctionDesignTabController extends RichTabController {
                 this.returnDigits.setValue(returnParam.getDigits());
             }
             if (StringUtil.isNotBlank(returnParam.getCharset())) {
-                this.returnCharset.setValue(returnParam.getCharset());
+                this.returnCharset.select(returnParam.getCharset());
             }
             if (StringUtil.isNotBlank(returnParam.getValue())) {
                 this.returnValues.setValues(returnParam.getValueList());
