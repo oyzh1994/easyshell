@@ -10,11 +10,23 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
  */
 public class ShellSqlServerParamModeComboBox extends FXComboBox<String> {
 
+    private final boolean inputOnly;
+
+    public ShellSqlServerParamModeComboBox() {
+        this(false);
+    }
+
+    public ShellSqlServerParamModeComboBox(boolean inputOnly) {
+        this.inputOnly = inputOnly;
+    }
+
     @Override
     public void initNode() {
         this.addItem("IN");
-        this.addItem("OUT");
-        this.addItem("INOUT");
+        if (!this.inputOnly) {
+            this.addItem("OUT");
+            this.addItem("INOUT");
+        }
         super.initNode();
     }
 }

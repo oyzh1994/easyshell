@@ -8,6 +8,8 @@ import cn.oyzh.easyshell.fx.sqlserver.table.ShellSqlServerTriggerPolicyComboBox;
 import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableCreateSqlGenerator;
+import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionCreateSqlGenerator;
+import cn.oyzh.easyshell.sqlserver.generator.view.SqlServerViewAlertSqlGenerator;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumns;
@@ -20,6 +22,11 @@ import cn.oyzh.easyshell.sqlserver.table.SqlServerAlertTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerCreateTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
 import cn.oyzh.easyshell.sqlserver.trigger.SqlServerTrigger;
+import cn.oyzh.easyshell.sqlserver.function.SqlServerCreateFunctionParam;
+import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
+import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
+import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
+import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
 import cn.oyzh.easyshell.tabs.sqlserver.table.ShellSqlServerTableDesignTab;
 import cn.oyzh.easyshell.tabs.sqlserver.table.ShellSqlServerTableDesignTabController;
 import cn.oyzh.easyshell.trees.sqlserver.ShellSqlServerTreeView;
@@ -193,6 +200,67 @@ public class SqlServerDesignUiTest {
         String alertSql = new SqlServerTableAlertSqlGenerator().generateSingle(alertParam);
         assertTrue(alertSql.contains("END;"));
         assertFalse(alertSql.contains("END;;"));
+    }
+
+    @Test
+    public void removesViewHeaderBeforeRegeneratingDefinition() {
+        assertEquals("SELECT * FROM t_log",
+                ShellSqlServerHelper.normalizeViewDefinition(
+                        "CREATE VIEW [demo2].[v1] AS\nSELECT * FROM t_log;"));
+        assertEquals("SELECT * FROM t_log",
+                ShellSqlServerHelper.normalizeViewDefinition(
+                        "CREATE OR ALTER VIEW [demo2].[v1] AS SELECT * FROM t_log"));
+        assertEquals("SELECT * FROM t_log",
+                ShellSqlServerHelper.normalizeViewDefinition(
+                        "ALTER VIEW [demo2].[v1] AS SELECT * FROM t_log"));
+
+        SqlServerView view = new SqlServerView();
+        view.setName("v1");
+        view.setSchema("demo2");
+        view.setDefinition("CREATE VIEW [demo2].[v1] AS SELECT * FROM t_log;");
+        SqlServerAlertViewParam param = new SqlServerAlertViewParam();
+        param.setSchema("demo2");
+        param.setView(view);
+        String sql = SqlServerViewAlertSqlGenerator.generateSqlSingle(param);
+        assertEquals(1, sql.toUpperCase().split("CREATE OR ALTER VIEW", -1).length - 1);
+        assertFalse(sql.substring(sql.toUpperCase().indexOf(" AS ") + 4)
+                .stripLeading().toUpperCase().startsWith("CREATE"));
+    }
+
+    @Test
+    public void functionParametersAreAlwaysInputOnly() {
+        SqlServerRoutineParam first = new SqlServerRoutineParam();
+        first.setName("first");
+        first.setType("INT");
+        first.setMode("IN");
+        SqlServerRoutineParam second = new SqlServerRoutineParam();
+        second.setName("second");
+        second.setType("INT");
+        second.setMode("OUT");
+        SqlServerRoutineParam third = new SqlServerRoutineParam();
+        third.setName("third");
+        third.setType("INT");
+        third.setMode("INOUT");
+        second.setFunctionParam(true);
+        third.setFunctionParam(true);
+        assertEquals("IN", second.getMode());
+        assertEquals("IN", third.getMode());
+
+        SqlServerFunction function = new SqlServerFunction();
+        function.setName("func1");
+        function.setSchema("dbo");
+        function.setParams(List.of(first, second, third));
+        SqlServerRoutineParam returnParam = new SqlServerRoutineParam();
+        returnParam.setType("INT");
+        function.setReturnParam(returnParam);
+        function.setDefinition("RETURN @first + @second + @third;");
+        SqlServerCreateFunctionParam param = new SqlServerCreateFunctionParam();
+        param.setSchema("dbo");
+        param.setFunction(function);
+        String sql = SqlServerFunctionCreateSqlGenerator.generateSqlSingle(param);
+        assertFalse(sql.toUpperCase().contains(" OUTPUT"));
+        assertTrue(sql.contains("RETURNS INT"));
+        assertFalse(sql.toUpperCase().contains("RETURNS RECORD"));
     }
 
     @Test

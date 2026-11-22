@@ -247,6 +247,11 @@ public class ShellSqlServerViewTreeItem extends ShellSqlServerTreeItem<ShellSqlS
         SqlServerColumn dbColumn = null;
         if (this.value.columns() != null) {
             for (SqlServerColumn column : this.value.columns()) {
+                if (column.isPrimaryKey()) {
+                    return column;
+                }
+            }
+            for (SqlServerColumn column : this.value.columns()) {
                 if (column.isAutoIncrement()) {
                     dbColumn = column;
                     break;

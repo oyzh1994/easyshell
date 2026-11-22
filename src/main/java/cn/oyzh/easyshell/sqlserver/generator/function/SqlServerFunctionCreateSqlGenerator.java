@@ -10,7 +10,6 @@ import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.DBSqlGenerator;
 import cn.oyzh.fx.db.util.DBUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,35 +70,10 @@ public class SqlServerFunctionCreateSqlGenerator extends DBSqlGenerator {
      * @return 返回类型
      */
     private String returnType(SqlServerFunction function) {
-        List<SqlServerRoutineParam> outputs = new ArrayList<>();
-        List<SqlServerRoutineParam> params = function.getParams();
-        if (params != null) {
-            for (SqlServerRoutineParam param : params) {
-                if (!param.isDeleted() && this.isOutputParam(param.getMode())) {
-                    outputs.add(param);
-                }
-            }
-        }
-        if (outputs.size() == 1) {
-            String type = this.typeDefinition(outputs.get(0));
-            return StringUtil.isBlank(type) ? "record" : type;
-        }
-        if (outputs.size() > 1) {
-            return "record";
-        }
         SqlServerRoutineParam returnParam = function.getReturnParam();
         String type = returnParam == null ? null : this.typeDefinition(returnParam);
-        return StringUtil.isBlank(type) ? "INT" : type;
-    }
-
-    /**
-     * 是否为输出参数
-     *
-     * @param mode 模式
-     * @return 结果
-     */
-    private boolean isOutputParam(String mode) {
-        return StringUtil.containsIgnoreCase(mode, "OUT");
+        return StringUtil.isBlank(type) || StringUtil.equalsIgnoreCase(type, "RECORD")
+                ? "INT" : type;
     }
 
     /**
@@ -114,10 +88,6 @@ public class SqlServerFunctionCreateSqlGenerator extends DBSqlGenerator {
             builder.append("@").append(param.getName().replace("@", "")).append(" ");
         }
         builder.append(this.typeDefinition(param));
-        String mode = param.getMode();
-        if (StringUtil.isNotBlank(mode) && StringUtil.containsIgnoreCase(mode, "OUT")) {
-            builder.append(" OUTPUT");
-        }
         return builder.toString().trim();
     }
 

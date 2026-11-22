@@ -31,6 +31,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 
+import java.util.List;
+
 /**
  * db函数内容组件
  *
@@ -223,6 +225,7 @@ public class ShellSqlServerFunctionDesignTabController extends RichTabController
             // 初始化数据
             this.definition.setText(this.function.getDefinition());
             this.definition.forgetHistory();
+            this.prepareFunctionParams(this.function.getParams());
             this.paramTable.setItem(this.function.getParams());
             this.securityType.select(this.function.getSecurityType());
             NodeGroupUtil.display(this.getTab(), "action3");
@@ -337,20 +340,6 @@ public class ShellSqlServerFunctionDesignTabController extends RichTabController
      *
      * @return 临时数据
      */
-    /**
-     * 是否存在 OUT/INOUT 参数
-     *
-     * @return 结果
-     */
-    private boolean hasOutputParam() {
-        for (SqlServerRoutineParam param : this.paramTable.getItems()) {
-            if (!param.isDeleted() && StringUtil.containsIgnoreCase(param.getMode(), "OUT")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private SqlServerFunction tempData() {
         // 创建临时对象
         SqlServerFunction tempFunction = new SqlServerFunction();
@@ -360,10 +349,9 @@ public class ShellSqlServerFunctionDesignTabController extends RichTabController
         tempFunction.setSchema(this.function.getSchema());
         tempFunction.setOriginalParams(this.function.getParams());
         tempFunction.setOriginalReturnParam(this.function.getReturnParam());
+        this.prepareFunctionParams(this.paramTable.getItems());
         tempFunction.setParams(this.paramTable.getItems());
         String definition = this.definition.getTextTrim();
-        // 含OUT/INOUT参数时，默认模板中的RETURN表达式不合法
-        definition = ShellSqlServerHelper.normalizeFunctionBody(definition, this.hasOutputParam());
         tempFunction.setDefinition(definition);
         tempFunction.setSecurityType(this.securityType.getSelectedItem());
 
@@ -414,6 +402,7 @@ public class ShellSqlServerFunctionDesignTabController extends RichTabController
     private void addParam() {
         try {
             SqlServerRoutineParam param = new SqlServerRoutineParam();
+            param.setFunctionParam(true);
             param.setCreated(true);
             this.paramTable.addItem(param);
             this.paramTable.selectLast();
@@ -575,7 +564,16 @@ public class ShellSqlServerFunctionDesignTabController extends RichTabController
      */
     private void initParamTable() {
         for (SqlServerRoutineParam index : this.paramTable.itemList()) {
+            index.setFunctionParam(true);
             index.setDbClient(this.dbItem.client());
+        }
+    }
+
+    private void prepareFunctionParams(List<SqlServerRoutineParam> params) {
+        if (params != null) {
+            for (SqlServerRoutineParam param : params) {
+                param.setFunctionParam(true);
+            }
         }
     }
 }

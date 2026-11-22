@@ -83,30 +83,9 @@ public class SqlServerFunctionAlertSqlGenerator extends DBSqlGenerator {
                 .equals(this.signature(function.getParams(), false))) {
             return true;
         }
-        // 没有 OUT/INOUT 参数时，返回类型变化也需要重建函数
-        if (!this.hasOutputParam(function.getOriginalParams())
-                && !this.hasOutputParam(function.getParams())) {
-            return !this.returnSignature(function, true)
-                    .equals(this.returnSignature(function, false));
-        }
-        return false;
-    }
-
-    /**
-     * 是否存在 OUT/INOUT 参数
-     *
-     * @param params 参数列表
-     * @return 结果
-     */
-    private boolean hasOutputParam(List<SqlServerRoutineParam> params) {
-        if (params != null) {
-            for (SqlServerRoutineParam param : params) {
-                if (!param.isDeleted() && this.isOutputParam(param.getMode())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        // SQL Server函数参数只能输入，返回类型变化也需要重建函数
+        return !this.returnSignature(function, true)
+                .equals(this.returnSignature(function, false));
     }
 
     /**
@@ -272,35 +251,10 @@ public class SqlServerFunctionAlertSqlGenerator extends DBSqlGenerator {
      * @return 返回类型
      */
     private String returnType(SqlServerFunction function) {
-        List<SqlServerRoutineParam> outputs = new ArrayList<>();
-        List<SqlServerRoutineParam> params = function.getParams();
-        if (params != null) {
-            for (SqlServerRoutineParam param : params) {
-                if (!param.isDeleted() && this.isOutputParam(param.getMode())) {
-                    outputs.add(param);
-                }
-            }
-        }
-        if (outputs.size() == 1) {
-            String type = this.typeDefinition(outputs.get(0));
-            return StringUtil.isBlank(type) ? "record" : type;
-        }
-        if (outputs.size() > 1) {
-            return "record";
-        }
         SqlServerRoutineParam returnParam = function.getReturnParam();
         String type = returnParam == null ? null : this.typeDefinition(returnParam);
-        return StringUtil.isBlank(type) ? "INT" : type;
-    }
-
-    /**
-     * 是否为输出参数
-     *
-     * @param mode 模式
-     * @return 结果
-     */
-    private boolean isOutputParam(String mode) {
-        return StringUtil.containsIgnoreCase(mode, "OUT");
+        return StringUtil.isBlank(type) || StringUtil.equalsIgnoreCase(type, "RECORD")
+                ? "INT" : type;
     }
 
     /**
@@ -315,10 +269,6 @@ public class SqlServerFunctionAlertSqlGenerator extends DBSqlGenerator {
             builder.append("@").append(param.getName().replace("@", "")).append(" ");
         }
         builder.append(this.typeDefinition(param));
-        String mode = param.getMode();
-        if (StringUtil.isNotBlank(mode) && StringUtil.containsIgnoreCase(mode, "OUT")) {
-            builder.append(" OUTPUT");
-        }
         return builder.toString().trim();
     }
 

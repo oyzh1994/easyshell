@@ -50,6 +50,11 @@ public class SqlServerRoutineParam extends DBObject implements DBRoutineParam {
     private String mode;
 
     /**
+     * 是否为函数参数，SQL Server函数参数只能是IN
+     */
+    private boolean functionParam;
+
+    /**
      * 长度
      */
     private Integer size;
@@ -342,11 +347,26 @@ public class SqlServerRoutineParam extends DBObject implements DBRoutineParam {
      * @return 模式组件
      */
     public ShellSqlServerParamModeComboBox getModeControl() {
-        ShellSqlServerParamModeComboBox comboBox = new ShellSqlServerParamModeComboBox();
+        if (this.functionParam) {
+            this.mode = "IN";
+        }
+        ShellSqlServerParamModeComboBox comboBox = new ShellSqlServerParamModeComboBox(this.functionParam);
         comboBox.selectedItemChanged((observable, oldValue, newValue) -> this.setMode(newValue));
         comboBox.selectFirstIfNull(this.mode);
+        comboBox.setDisable(this.functionParam);
         TableViewUtil.selectRowOnMouseClicked(comboBox);
         return comboBox;
+    }
+
+    public boolean isFunctionParam() {
+        return functionParam;
+    }
+
+    public void setFunctionParam(boolean functionParam) {
+        this.functionParam = functionParam;
+        if (functionParam) {
+            this.setMode("IN");
+        }
     }
 
     /**

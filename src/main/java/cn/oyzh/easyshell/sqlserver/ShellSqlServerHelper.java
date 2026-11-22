@@ -13,8 +13,12 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -154,31 +158,8 @@ public class ShellSqlServerHelper {
      */
     public static boolean isViewUpdatable(Connection connection, String schema, String viewName) throws Exception {
         try {
-            String sql = """
-                        SELECT
-                            IS_UPDATABLE
-                        FROM
-                            INFORMATION_SCHEMA.VIEWS
-                        WHERE
-                            TABLE_SCHEMA = ?
-                        AND
-                            TABLE_NAME = ?
-                    """;
-            DBUtil.printSql(sql);
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, schema);
-            statement.setString(2, viewName);
-            // 执行SQL查询并获取结果集
-            ResultSet resultSet = statement.executeQuery();
-            // 打印元数据
-            DBUtil.printMetaData(resultSet);
-            String isUpdatable = null;
-            if (resultSet.next()) {
-                isUpdatable = resultSet.getString("IS_UPDATABLE");
-            }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
-            return StringUtil.equalsIgnoreCase(isUpdatable, "YES");
+            String definition = getViewDefinition(connection, schema, viewName);
+            return !updatableViewPrimaryKeys(connection, schema, viewName, definition).isEmpty();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -196,35 +177,115 @@ public class ShellSqlServerHelper {
      */
     public static String getViewReadOnly(Connection connection, String schema, String viewName) throws Exception {
         try {
-            String sql = """
-                        SELECT
-                            CASE WHEN IS_UPDATABLE = 'YES' THEN 'N' ELSE 'Y' END AS READ_ONLY
-                        FROM
-                            INFORMATION_SCHEMA.VIEWS
-                        WHERE
-                            TABLE_SCHEMA = ?
-                        AND
-                            TABLE_NAME = ?
-                    """;
-            DBUtil.printSql(sql);
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, schema);
-            statement.setString(2, viewName);
-            // 执行SQL查询并获取结果集
-            ResultSet resultSet = statement.executeQuery();
-            // 打印元数据
-            DBUtil.printMetaData(resultSet);
-            String readOnly = null;
-            if (resultSet.next()) {
-                readOnly = resultSet.getString("READ_ONLY");
-            }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
-            return readOnly;
+            return isViewUpdatable(connection, schema, viewName) ? "N" : "Y";
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取简单可更新视图对应的基表主键列。
+     *
+     * @param connection 数据库连接
+     * @param schema     视图模式
+     * @param viewName   视图名称
+     * @param definition 视图定义
+     * @return 可更新时返回基表主键列，否则返回空集合
+     * @throws Exception 异常
+     */
+    public static Set<String> updatableViewPrimaryKeys(Connection connection, String schema,
+                                                       String viewName, String definition) throws Exception {
+        if (StringUtil.isBlank(definition)
+                || Pattern.compile("(?is)\\b(DISTINCT|GROUP\\s+BY|HAVING|UNION|EXCEPT|INTERSECT|TOP|OFFSET)\\b"
+                        + "|\\b(COUNT|SUM|AVG|MIN|MAX|STDEV|VAR)\\s*\\(")
+                .matcher(definition).find()) {
+            return Set.of();
+        }
+        String sql = """
+                SELECT S.NAME AS TABLE_SCHEMA, T.NAME AS TABLE_NAME, C.NAME AS COLUMN_NAME
+                FROM SYS.VIEWS V
+                JOIN SYS.SCHEMAS VS ON VS.SCHEMA_ID = V.SCHEMA_ID
+                JOIN SYS.SQL_EXPRESSION_DEPENDENCIES D ON D.REFERENCING_ID = V.OBJECT_ID
+                JOIN SYS.OBJECTS T ON T.OBJECT_ID = D.REFERENCED_ID AND T.TYPE = 'U'
+                JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = T.SCHEMA_ID
+                JOIN SYS.INDEXES I ON I.OBJECT_ID = T.OBJECT_ID AND I.IS_PRIMARY_KEY = 1
+                JOIN SYS.INDEX_COLUMNS IC ON IC.OBJECT_ID = I.OBJECT_ID AND IC.INDEX_ID = I.INDEX_ID
+                JOIN SYS.COLUMNS C ON C.OBJECT_ID = IC.OBJECT_ID AND C.COLUMN_ID = IC.COLUMN_ID
+                WHERE VS.NAME = ? AND V.NAME = ?
+                ORDER BY S.NAME, T.NAME, IC.KEY_ORDINAL
+                """;
+        DBUtil.printSql(sql);
+        Map<String, Set<String>> tablePrimaryKeys = new LinkedHashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String table = resultSet.getString("TABLE_SCHEMA")
+                            + "." + resultSet.getString("TABLE_NAME");
+                    tablePrimaryKeys.computeIfAbsent(table, key -> new HashSet<>())
+                            .add(resultSet.getString("COLUMN_NAME"));
+                }
+            }
+        }
+        if (tablePrimaryKeys.size() != 1) {
+            return Set.of();
+        }
+        Set<String> primaryKeys = tablePrimaryKeys.values().iterator().next();
+        if (primaryKeys.isEmpty()) {
+            return Set.of();
+        }
+        String columnSql = """
+                SELECT C.NAME
+                FROM SYS.VIEWS V
+                JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = V.SCHEMA_ID
+                JOIN SYS.COLUMNS C ON C.OBJECT_ID = V.OBJECT_ID
+                WHERE S.NAME = ? AND V.NAME = ?
+                """;
+        Set<String> viewColumns = new HashSet<>();
+        try (PreparedStatement statement = connection.prepareStatement(columnSql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    viewColumns.add(resultSet.getString(1));
+                }
+            }
+        }
+        return viewColumns.containsAll(primaryKeys) ? primaryKeys : Set.of();
+    }
+
+    /**
+     * 获取简单可更新视图对应的基表主键列。
+     *
+     * @param connection 数据库连接
+     * @param schema     视图模式
+     * @param viewName   视图名称
+     * @return 可更新时返回基表主键列，否则返回空集合
+     * @throws Exception 异常
+     */
+    public static Set<String> updatableViewPrimaryKeys(Connection connection, String schema,
+                                                       String viewName) throws Exception {
+        return updatableViewPrimaryKeys(connection, schema, viewName,
+                getViewDefinition(connection, schema, viewName));
+    }
+
+    private static String getViewDefinition(Connection connection, String schema, String viewName) throws Exception {
+        String sql = """
+                SELECT M.DEFINITION
+                FROM SYS.VIEWS V
+                JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = V.SCHEMA_ID
+                JOIN SYS.SQL_MODULES M ON M.OBJECT_ID = V.OBJECT_ID
+                WHERE S.NAME = ? AND V.NAME = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next() ? resultSet.getString(1) : null;
+            }
+        }
     }
 
     //    public static Map<String, String> getViewInfo(Connection connection, String dbName, String viewName) throws Exception {
@@ -521,6 +582,29 @@ public class ShellSqlServerHelper {
         body = Pattern.compile("(?i)(^|[\\s;])BEGIN(?=\\S)")
                 .matcher(body)
                 .replaceAll("$1BEGIN ");
+        return body;
+    }
+
+    /**
+     * 提取SQL Server视图的查询主体。
+     *
+     * @param definition 视图定义，可传完整CREATE/ALTER VIEW或查询主体
+     * @return 去除视图头部的查询主体
+     */
+    public static String normalizeViewDefinition(String definition) {
+        String body = definition == null ? "" : definition.trim();
+        if (StringUtil.isBlank(body)) {
+            return "";
+        }
+        Matcher matcher = Pattern.compile(
+                "(?is)^\\s*(?:CREATE\\s+(?:OR\\s+ALTER\\s+)?|ALTER\\s+)VIEW\\b.*?\\bAS\\b\\s*(.*)$")
+                .matcher(body);
+        if (matcher.find()) {
+            body = matcher.group(1).trim();
+        }
+        while (body.endsWith(";")) {
+            body = body.substring(0, body.length() - 1).stripTrailing();
+        }
         return body;
     }
 

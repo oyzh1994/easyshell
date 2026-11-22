@@ -3008,7 +3008,7 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 view.setName(name);
                 view.setSchema(schema);
                 view.setComment(tableComment);
-                view.setDefinition(definition);
+                view.setDefinition(ShellSqlServerHelper.normalizeViewDefinition(definition));
                 view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
             }
             // 关闭连接和释放资源
@@ -3100,7 +3100,7 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 view.setSchema(schema);
                 view.setName(name);
                 view.setComment(tableComment);
-                view.setDefinition(definition);
+                view.setDefinition(ShellSqlServerHelper.normalizeViewDefinition(definition));
                 view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
                 list.add(view);
             }
@@ -3508,6 +3508,9 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
     public List<SqlServerColumn> viewColumns(String schema, String viewName) {
         try {
             SqlServerColumns columns = new SqlServerColumns();
+            Connection connection = this.getConnManager().connection();
+            java.util.Set<String> primaryKeys = ShellSqlServerHelper
+                    .updatableViewPrimaryKeys(connection, schema, viewName);
             String sql = """
                     SELECT
                         C.NAME AS "Field",
@@ -3542,24 +3545,22 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                     WHERE S.NAME = ? AND V.NAME = ?
                     ORDER BY C.COLUMN_ID
                     """;
-            Connection connection = this.getConnManager().connection();
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
             statement.setString(2, viewName);
             ResultSet resultSet = statement.executeQuery();
             DBUtil.printMetaData(resultSet);
             while (resultSet.next()) {
-                String key = resultSet.getString("Key");
                 String type = resultSet.getString("Type");
                 String field = resultSet.getString("Field");
                 Object def = resultSet.getObject("Default");
                 int position = resultSet.getInt("POSITION");
                 boolean notNull = resultSet.getBoolean("NotNull");
                 String comment = resultSet.getString("Comment");
-                String identity = resultSet.getString("IDENTITY");
-                boolean autoIncrement = StringUtil.isNotBlank(identity);
+                boolean identity = resultSet.getBoolean("IDENTITY");
+                boolean autoIncrement = identity;
                 SqlServerColumn column = new SqlServerColumn();
-                column.parseKey(key);
+                column.parseKey(primaryKeys.contains(field) ? "PRI" : "");
                 column.setName(field);
                 this.parseColumnType(column, type);
                 column.setSchema(schema);
@@ -3572,8 +3573,6 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
-            // 初始化自动递增
-            this.initAutoIncrement(connection, schema, viewName, columns, true);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {

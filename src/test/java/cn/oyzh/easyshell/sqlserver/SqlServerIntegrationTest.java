@@ -232,8 +232,6 @@ public class SqlServerIntegrationTest {
         assertEquals(1, client.selectRecordCount(selectParamFor(SOURCE_SCHEMA, clone)));
         assertFalse(client.selectColumns(new SqlServerSelectColumnParam(SOURCE_SCHEMA, clone)).isEmpty());
 
-        primaryKey.setData(primaryKey.getReturnData());
-        primaryKey.setOriginalData(primaryKey.getReturnData());
         SqlServerDeleteRecordParam deleteParam = new SqlServerDeleteRecordParam();
         deleteParam.setSchema(SOURCE_SCHEMA);
         deleteParam.setTableName(table);
@@ -326,6 +324,8 @@ public class SqlServerIntegrationTest {
         assertNotNull(client.selectProcedure(SOURCE_SCHEMA, procedureName));
 
         SqlServerView selectedView = client.selectView(SOURCE_SCHEMA, viewName);
+        assertFalse(selectedView.getDefinition().stripLeading().toUpperCase()
+                .startsWith("CREATE"));
         selectedView.setDefinition("SELECT [ID],[NAME] FROM [EASYSHELL_SRC].[" + table + "] WHERE [ID] > 0");
         selectedView.setComment("新视图注释");
         SqlServerAlertViewParam alertViewParam = new SqlServerAlertViewParam();
@@ -385,22 +385,33 @@ public class SqlServerIntegrationTest {
         functionParam.setType("INT");
         functionParam.setMode("IN");
         functionParam.setPosition(1);
+        SqlServerRoutineParam outputParam = new SqlServerRoutineParam();
+        outputParam.setName("other");
+        outputParam.setType("INT");
+        outputParam.setMode("OUT");
+        outputParam.setPosition(2);
+        SqlServerRoutineParam inoutParam = new SqlServerRoutineParam();
+        inoutParam.setName("third");
+        inoutParam.setType("INT");
+        inoutParam.setMode("INOUT");
+        inoutParam.setPosition(3);
         SqlServerFunction function = new SqlServerFunction();
         function.setName(functionName);
         function.setSchema(SOURCE_SCHEMA);
-        function.setParams(List.of(functionParam));
+        function.setParams(List.of(functionParam, outputParam, inoutParam));
         SqlServerRoutineParam functionReturn = new SqlServerRoutineParam();
         functionReturn.setType("INT");
         function.setReturnParam(functionReturn);
-        function.setDefinition("RETURN @value * 2;");
+        function.setDefinition("RETURN @value + @other + @third;");
         SqlServerCreateFunctionParam functionCreate = new SqlServerCreateFunctionParam();
         functionCreate.setSchema(SOURCE_SCHEMA);
         functionCreate.setFunction(function);
         client.createFunction(functionCreate);
-        assertFalse(client.selectFunction(SOURCE_SCHEMA, functionName).getParams().isEmpty());
+        assertTrue(client.selectFunction(SOURCE_SCHEMA, functionName).getParams().stream()
+                .allMatch(param -> "IN".equals(param.getMode())));
         var functionResults = client.executeSql(SOURCE_SCHEMA,
-                "SELECT [EASYSHELL_SRC].[" + functionName + "](6) AS [answer]");
-        assertEquals(12, ((Number) functionResults.getResults().getFirst()
+                "SELECT [EASYSHELL_SRC].[" + functionName + "](1,2,3) AS [answer]");
+        assertEquals(6, ((Number) functionResults.getResults().getFirst()
                 .getRecords().getFirst().getValue("answer")).intValue());
 
         SqlServerRoutineParam procedureParam = new SqlServerRoutineParam();
@@ -1115,6 +1126,68 @@ public class SqlServerIntegrationTest {
         assertEquals("BIGINT", altered.getType());
         assertTrue(altered.isPrimaryKey());
         assertEquals(originalPrimaryKeys, client.selectePrimaryKeys(SOURCE_SCHEMA, tableName));
+    }
+
+    @Test
+    public void clientEditsSimpleUpdatableViewWithBasePrimaryKey() {
+        String tableName = "EDITABLE_VIEW_BASE";
+        String viewName = "EDITABLE_VIEW";
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP VIEW IF EXISTS [EASYSHELL_SRC].["
+                + viewName + "]; DROP TABLE IF EXISTS [EASYSHELL_SRC].[" + tableName + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "CREATE TABLE [EASYSHELL_SRC].[" + tableName
+                + "] ([ID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY, [LOG] VARCHAR(20) NULL)");
+        client.executeSqlSimple(SOURCE_SCHEMA, "INSERT INTO [EASYSHELL_SRC].["
+                + tableName + "] ([LOG]) VALUES ('a')");
+
+        SqlServerView view = new SqlServerView();
+        view.setName(viewName);
+        view.setDefinition("SELECT * FROM [EASYSHELL_SRC].[" + tableName + "]");
+        SqlServerCreateViewParam createParam = new SqlServerCreateViewParam();
+        createParam.setSchema(SOURCE_SCHEMA);
+        createParam.setView(view);
+        client.createView(createParam);
+
+        SqlServerView selectedView = client.selectView(SOURCE_SCHEMA, viewName);
+        assertTrue(selectedView.isUpdatable());
+        List<SqlServerColumn> viewColumns = client.viewColumns(SOURCE_SCHEMA, viewName);
+        SqlServerColumn idColumn = viewColumns.stream()
+                .filter(column -> "ID".equals(column.getName()))
+                .findFirst().orElseThrow();
+        assertTrue(idColumn.isPrimaryKey());
+        assertTrue(idColumn.isAutoIncrement());
+
+        SqlServerRecord insert = new SqlServerRecord(new SqlServerColumns(viewColumns));
+        insert.putValue(idColumn, null);
+        insert.putValue(viewColumns.stream()
+                .filter(column -> "LOG".equals(column.getName()))
+                .findFirst().orElseThrow(), "b");
+        SqlServerInsertRecordParam insertParam = new SqlServerInsertRecordParam();
+        insertParam.setSchema(SOURCE_SCHEMA);
+        insertParam.setTableName(viewName);
+        insertParam.setRecord(insert.getRecordData());
+        assertEquals(1, client.insertRecord(insertParam));
+
+        SqlServerRecord selected = client.viewRecords(SOURCE_SCHEMA, viewName, 0L, 10L, null)
+                .stream().filter(record -> "b".equals(record.getValue("LOG")))
+                .findFirst().orElseThrow();
+        selected.putValue("LOG", "c");
+        selected.getProperty("LOG").setChanged(true);
+        SqlServerRecordPrimaryKey primaryKey = new SqlServerRecordPrimaryKey();
+        primaryKey.init(idColumn, selected);
+        SqlServerUpdateRecordParam updateParam = new SqlServerUpdateRecordParam();
+        updateParam.setSchema(SOURCE_SCHEMA);
+        updateParam.setTableName(viewName);
+        updateParam.setPrimaryKey(primaryKey);
+        updateParam.setUpdateRecord(selected.getChangedRecordData());
+        assertEquals(1, client.updateRecord(updateParam));
+
+        SqlServerDeleteRecordParam deleteParam = new SqlServerDeleteRecordParam();
+        deleteParam.setSchema(SOURCE_SCHEMA);
+        deleteParam.setTableName(viewName);
+        deleteParam.setPrimaryKey(primaryKey);
+        assertEquals(1, client.deleteRecord(deleteParam));
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP VIEW IF EXISTS [EASYSHELL_SRC].["
+                + viewName + "]; DROP TABLE IF EXISTS [EASYSHELL_SRC].[" + tableName + "]");
     }
 
     private SqlServerColumn designColumn(String name, String type, Integer size, int position) {

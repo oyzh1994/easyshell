@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sqlserver.generator.view;
 
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
 import cn.oyzh.fx.db.DBDialect;
@@ -63,11 +64,7 @@ public class SqlServerViewAlertSqlGenerator extends DBSqlGenerator {
      * @return 视图定义
      */
     private String normalizeDefinition(String definition) {
-        String sql = definition == null ? "" : definition.trim();
-        while (sql.endsWith(";")) {
-            sql = sql.substring(0, sql.length() - 1).trim();
-        }
-        return sql;
+        return ShellSqlServerHelper.normalizeViewDefinition(definition);
     }
 
     /**
