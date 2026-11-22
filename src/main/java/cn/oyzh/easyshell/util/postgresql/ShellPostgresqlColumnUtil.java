@@ -15,10 +15,17 @@ import cn.oyzh.fx.db.DBDialect;
  */
 public class ShellPostgresqlColumnUtil {
 
+    private static boolean initialized;
+
     /**
      * 初始化
      */
-    public static void init() {
+    public static synchronized void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         // ===== 字符类型 =====
         DBColumnField varcharField = new DBColumnField("VARCHAR");
         varcharField.alias = "CHARACTER VARYING";
@@ -273,47 +280,41 @@ public class ShellPostgresqlColumnUtil {
 
         // ===== 注册到列表 =====
 
-        // 字符串
-        putFiled(varcharField);
-        putFiled(characterVaryingField);
-        putFiled(charField);
-        putFiled(characterField);
-        putFiled(textField);
-        putFiled(uuidField);
-        putFiled(jsonField);
-        putFiled(jsonbField);
-        putFiled(xmlField);
-
-        // 数字
-        putFiled(smallintField);
-        putFiled(integerField);
+        // 常用类型优先
         putFiled(intField);
         putFiled(bigintField);
+        putFiled(varcharField);
+        putFiled(textField);
+        putFiled(numericField);
+        putFiled(booleanField);
+        putFiled(timestampField);
+        putFiled(dateField);
+        putFiled(uuidField);
+        putFiled(jsonbField);
+        putFiled(jsonField);
+        putFiled(byteaField);
+
+        // 其他常用类型
+        putFiled(integerField);
+        putFiled(smallintField);
         putFiled(smallserialField);
         putFiled(serialField);
         putFiled(bigserialField);
-        putFiled(numericField);
         putFiled(realField);
         putFiled(doublePrecisionField);
         putFiled(moneyField);
-
-        // 时间
+        putFiled(charField);
+        putFiled(characterVaryingField);
         putFiled(timeField);
         putFiled(timeWithoutTzField);
-        putFiled(dateField);
-        putFiled(timestampField);
         putFiled(timestampWithoutTzField);
         putFiled(intervalField);
-
-        // 其他
-        putFiled(booleanField);
         putFiled(bitField);
         putFiled(bitVaryingField);
+        putFiled(characterField);
+        putFiled(xmlField);
 
-        // 二进制
-        putFiled(byteaField);
-
-        // 不常见
+        // 低频、网络和空间类型
         putFiled(timeWithTzField);
         putFiled(timestampWithTzField);
         putFiled(inetField);

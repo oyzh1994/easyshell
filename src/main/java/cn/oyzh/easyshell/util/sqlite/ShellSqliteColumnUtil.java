@@ -16,29 +16,33 @@ import java.util.regex.Pattern;
  */
 public final class ShellSqliteColumnUtil {
 
+    private static boolean initialized;
+
     private ShellSqliteColumnUtil() {
     }
 
-    public static void init() {
+    public static synchronized void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         DBColumnField integer = new DBColumnField("INTEGER");
         integer.alias = "INT";
         integer.supportSize = true;
         integer.supportInteger = true;
         integer.supportDefaultValue = true;
         integer.supportAutoIncrement = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, integer);
 
         DBColumnField real = new DBColumnField("REAL");
         real.alias = "DOUBLE";
         real.supportDigits = true;
         real.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, real);
 
         DBColumnField numeric = new DBColumnField("NUMERIC");
         numeric.alias = "DECIMAL";
         numeric.supportDigits = true;
         numeric.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, numeric);
 
         DBColumnField text = new DBColumnField("TEXT");
         text.alias = "VARCHAR";
@@ -46,42 +50,35 @@ public final class ShellSqliteColumnUtil {
         text.supportText = true;
         text.supportString = true;
         text.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, text);
 
         DBColumnField blob = new DBColumnField("BLOB");
         blob.alias = "BINARY";
         blob.supportBinary = true;
         blob.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, blob);
 
         DBColumnField any = new DBColumnField("ANY");
         any.supportJson = true;
         any.supportText = true;
         any.supportString = true;
         any.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, any);
 
         DBColumnField bool = new DBColumnField("BOOLEAN");
         bool.alias = "BOOL";
         bool.supportBoolean = true;
         bool.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, bool);
 
         DBColumnField date = new DBColumnField("DATE");
         date.supportTimestamp = true;
         date.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, date);
 
         DBColumnField time = new DBColumnField("TIME");
         time.supportTimestamp = true;
         time.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, time);
 
         DBColumnField dateTime = new DBColumnField("DATETIME");
         dateTime.alias = "TIMESTAMP";
         dateTime.supportTimestamp = true;
         dateTime.supportDefaultValue = true;
-        DBColumnFieldManager.putFiled(DBDialect.SQLITE, dateTime);
 
         DBColumnField json = new DBColumnField("JSON");
         json.alias = "JSONB";
@@ -89,7 +86,21 @@ public final class ShellSqliteColumnUtil {
         json.supportText = true;
         json.supportString = true;
         json.supportDefaultValue = true;
+
+        // 常用类型优先
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, integer);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, text);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, real);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, blob);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, numeric);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, bool);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, dateTime);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, date);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, time);
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, json);
+
+        // 低频和兼容类型
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, any);
     }
 
 //    private static DBColumnField field(String name, String alias, boolean supportSize,

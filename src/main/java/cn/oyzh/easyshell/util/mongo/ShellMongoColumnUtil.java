@@ -11,10 +11,17 @@ import cn.oyzh.fx.db.DBDialect;
  */
 public class ShellMongoColumnUtil {
 
+    private static boolean initialized;
+
     /**
      * 初始化
      */
-    public static void init() {
+    public static synchronized void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         DBColumnField objectFiled = new DBColumnField("OBJECT");
         objectFiled.supportJson = true;
 
@@ -42,15 +49,18 @@ public class ShellMongoColumnUtil {
         DBColumnField dateField = new DBColumnField("DATE");
         dateField.supportTimestamp = true;
 
-        putFiled(objectFiled);
-        putFiled(listField);
+        // 常用类型优先
+        putFiled(stringField);
         putFiled(intField);
         putFiled(bigintFiled);
-        putFiled(stringField);
-        putFiled(booleanField);
         putFiled(doubleField);
-        putFiled(binaryField);
+        putFiled(booleanField);
         putFiled(dateField);
+
+        // 低频和复合类型
+        putFiled(objectFiled);
+        putFiled(listField);
+        putFiled(binaryField);
     }
 
     private static void putFiled(DBColumnField columnField) {

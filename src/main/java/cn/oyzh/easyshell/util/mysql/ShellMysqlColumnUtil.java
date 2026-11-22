@@ -11,17 +11,24 @@ import cn.oyzh.fx.db.DBDialect;
  */
 public class ShellMysqlColumnUtil {
 
+    private static boolean initialized;
+
     /**
      * 初始化
      */
-    public static void init() {
-        DBColumnField charFiled = new DBColumnField("CHAR");
-        charFiled.suggestSize = 255;
-        charFiled.supportSize = true;
-        charFiled.supportString = true;
-        charFiled.supportKeySize = true;
-        charFiled.supportCharset = true;
-        charFiled.supportDefaultValue = true;
+    public static synchronized void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        DBColumnField charField = new DBColumnField("CHAR");
+        charField.suggestSize = 255;
+        charField.supportSize = true;
+        charField.supportString = true;
+        charField.supportKeySize = true;
+        charField.supportCharset = true;
+        charField.supportDefaultValue = true;
 
         DBColumnField varcharField = new DBColumnField("VARCHAR");
         varcharField.suggestSize = 255;
@@ -247,39 +254,33 @@ public class ShellMysqlColumnUtil {
         geometrycollectionField.exampleValue = "GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,1 1,2 2),POLYGON((5 5, 6 5, 6 6, 5 6, 5 5)))";
         geometrycollectionField.supportGeometry = true;
 
-        // 字符
-        putFiled(charFiled);
-        putFiled(varcharField);
-
-        // 数字
+        // 常用类型优先
         putFiled(intField);
         putFiled(bigintFiled);
+        putFiled(varcharField);
+        putFiled(charField);
+        putFiled(decimalField);
+        putFiled(bitFiled);
+        putFiled(datetimeField);
+        putFiled(dateField);
+        putFiled(timestampField);
         putFiled(tinyintField);
         putFiled(smallintFiled);
+        putFiled(textField);
+        putFiled(doubleField);
+        putFiled(floatField);
+        putFiled(booleanField);
+        putFiled(jsonField);
+        putFiled(boolField);
+
+        // 其他常用类型
         putFiled(mediumintField);
         putFiled(integerField);
-        putFiled(floatField);
-        putFiled(doubleField);
-        putFiled(decimalField);
-
-        // 时间
-        putFiled(datetimeField);
-        putFiled(timestampField);
-        putFiled(dateField);
-        putFiled(yearField);
         putFiled(timeField);
-
-        // 文本
-        putFiled(textField);
+        putFiled(yearField);
         putFiled(longtextField);
         putFiled(tinytextFiled);
         putFiled(mediumtextField);
-
-        // 特殊
-        putFiled(bitFiled);
-        putFiled(booleanField);
-        putFiled(boolField);
-        putFiled(jsonField);
 
         // 集合
         putFiled(enumField);

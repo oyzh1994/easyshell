@@ -11,10 +11,17 @@ import cn.oyzh.fx.db.DBDialect;
  */
 public class ShellDamengColumnUtil {
 
+    private static boolean initialized;
+
     /**
      * 初始化
      */
-    public static void init() {
+    public static synchronized void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         DBColumnField varcharFiled = new DBColumnField("VARCHAR");
         varcharFiled.suggestSize = 255;
         varcharFiled.supportSize = true;
@@ -28,11 +35,11 @@ public class ShellDamengColumnUtil {
         varchar2Field.supportDefaultValue = true;
 
         // ===== 字符类型 =====
-        DBColumnField charFiled = new DBColumnField("CHAR");
-        charFiled.suggestSize = 255;
-        charFiled.supportSize = true;
-        charFiled.supportString = true;
-        charFiled.supportDefaultValue = true;
+        DBColumnField charField = new DBColumnField("CHAR");
+        charField.suggestSize = 255;
+        charField.supportSize = true;
+        charField.supportString = true;
+        charField.supportDefaultValue = true;
 
         DBColumnField clobField = new DBColumnField("CLOB");
         clobField.supportText = true;
@@ -202,47 +209,41 @@ public class ShellDamengColumnUtil {
 
         // ===== 注册到列表 =====
 
-        // 字符串
+        // 常用类型优先
+        putFiled(intField);
+        putFiled(bigintFiled);
         putFiled(varcharFiled);
         putFiled(varchar2Field);
-        putFiled(charFiled);
-        putFiled(ncharField);
-        putFiled(nvarchar2Filed);
-
-        // 数字
-        putFiled(intField);
-        putFiled(integerField);
-        putFiled(bigintFiled);
-        putFiled(smallintFiled);
-        putFiled(tinyintField);
         putFiled(decimalField);
         putFiled(numberField);
+        putFiled(dateField);
+        putFiled(timestampField);
+        putFiled(datetimeField);
+        putFiled(charField);
+        putFiled(nvarchar2Filed);
+        putFiled(clobField);
+        putFiled(blobField);
+
+        // 其他常用类型
+        putFiled(integerField);
+        putFiled(smallintFiled);
+        putFiled(tinyintField);
         putFiled(numericField);
         putFiled(floatField);
         putFiled(doubleField);
-
-        // 时间
         putFiled(timeField);
-        putFiled(dateField);
-        putFiled(datetimeField);
-        putFiled(timestampField);
-
-        // 其他
         putFiled(bitFiled);
-        putFiled(clobField);
+        putFiled(ncharField);
         putFiled(textField);
+        putFiled(varbinaryField);
+
+        // 低频、兼容和二进制类型
         putFiled(longVarcharField);
         putFiled(xmlTypeField);
-
-        // 二进制
-        putFiled(blobField);
-        putFiled(varbinaryField);
         putFiled(binaryField);
         putFiled(rawField);
         putFiled(imageField);
         putFiled(longVarBinaryField);
-
-        // 不常见
         putFiled(timeWithTzField);
         putFiled(timestampWithTzField);
         putFiled(timestampWithLocalTzField);

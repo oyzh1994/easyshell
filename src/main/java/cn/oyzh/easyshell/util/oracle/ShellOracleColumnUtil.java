@@ -13,10 +13,17 @@ import java.util.Locale;
  */
 public class ShellOracleColumnUtil {
 
+    private static boolean initialized;
+
     /**
      * 初始化
      */
-    public static void init() {
+    public static synchronized void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         DBColumnField varcharFiled = new DBColumnField("VARCHAR");
         varcharFiled.suggestSize = 255;
         varcharFiled.supportSize = true;
@@ -30,11 +37,11 @@ public class ShellOracleColumnUtil {
         varchar2Field.supportDefaultValue = true;
 
         // ===== 字符类型 =====
-        DBColumnField charFiled = new DBColumnField("CHAR");
-        charFiled.suggestSize = 255;
-        charFiled.supportSize = true;
-        charFiled.supportString = true;
-        charFiled.supportDefaultValue = true;
+        DBColumnField charField = new DBColumnField("CHAR");
+        charField.suggestSize = 255;
+        charField.supportSize = true;
+        charField.supportString = true;
+        charField.supportDefaultValue = true;
 
         DBColumnField clobField = new DBColumnField("CLOB");
         clobField.supportText = true;
@@ -175,44 +182,38 @@ public class ShellOracleColumnUtil {
 
         // ===== 注册到列表 =====
 
-        // 字符串
-        putFiled(varcharFiled);
+        // 常用类型优先
+        putFiled(numberField);
+        putFiled(intField);
+        putFiled(bigintFiled);
         putFiled(varchar2Field);
-        putFiled(charFiled);
-        putFiled(ncharField);
+        putFiled(varcharFiled);
+        putFiled(decimalField);
+        putFiled(dateField);
+        putFiled(timestampField);
+        putFiled(clobField);
+        putFiled(blobField);
+        putFiled(charField);
         putFiled(nvarchar2Filed);
 
-        // 数字
-        putFiled(intField);
+        // 其他常用类型
         putFiled(integerField);
-        putFiled(bigintFiled);
         putFiled(smallintFiled);
-        putFiled(decimalField);
-        putFiled(numberField);
         putFiled(numericField);
         putFiled(floatField);
         putFiled(doublePrecisionField);
-
-        // 时间
-        putFiled(dateField);
-        putFiled(timestampField);
-
-        // 其他
-        putFiled(clobField);
+        putFiled(ncharField);
+        putFiled(rawField);
+        putFiled(jsonField);
+        putFiled(booleanField);
         putFiled(nclobField);
 
-        // 二进制
-        putFiled(blobField);
-        putFiled(rawField);
+        // 低频、兼容和二进制类型
         putFiled(binaryFloatField);
         putFiled(binaryDoubleField);
         putFiled(longField);
         putFiled(longRawField);
         putFiled(xmlTypeField);
-        putFiled(jsonField);
-        putFiled(booleanField);
-
-        // 不常见
         putFiled(timestampWithTzField);
         putFiled(timestampWithLocalTzField);
         putFiled(intervalYmField);
