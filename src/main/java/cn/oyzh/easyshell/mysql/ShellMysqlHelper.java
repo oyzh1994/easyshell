@@ -330,6 +330,54 @@ public class ShellMysqlHelper {
     }
 
     /**
+     * 为查询结果补齐MySQL生成列元数据。
+     *
+     * @param connection 数据库连接
+     * @param dbName     数据库名称
+     * @param tableName  表名称
+     * @param columns    查询结果字段
+     * @throws SQLException 异常
+     */
+    public static void enrichColumnMetadata(Connection connection, String dbName, String tableName,
+                                            MysqlColumns columns) throws SQLException {
+        if (connection == null || StringUtil.isBlank(dbName)
+                || StringUtil.isBlank(tableName) || columns == null || columns.isEmpty()) {
+            return;
+        }
+        String sql = """
+                SELECT COLUMN_NAME, COLUMN_TYPE, EXTRA, GENERATION_EXPRESSION
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ?
+                  AND TABLE_NAME = ?
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, dbName);
+            statement.setString(2, tableName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    MysqlColumn column = columns.column(resultSet.getString("COLUMN_NAME"));
+                    if (column == null) {
+                        continue;
+                    }
+                    String columnType = resultSet.getString("COLUMN_TYPE");
+                    if (StringUtil.isNotBlank(columnType)) {
+                        column.setType(columnType);
+                    }
+                    column.parseExtra(resultSet.getString("EXTRA"));
+                    column.setGenerated(column.isGenerated());
+                    column.setGeneratedStorage(column.getGeneratedStorage());
+                    if (column.isGenerated()) {
+                        String expression = resultSet.getString("GENERATION_EXPRESSION");
+                        if (StringUtil.isNotBlank(expression)) {
+                            column.setGeneratedExpression(unescapeGenerationExpression(expression));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * 查询视图创建语句
      *
      * @param connection 数据库连接

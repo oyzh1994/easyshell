@@ -7,6 +7,7 @@ import cn.oyzh.easyshell.mysql.record.MysqlRecord;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * mysql执行结果
@@ -26,11 +27,21 @@ public class ShellMysqlExecuteResult extends ShellMysqlQueryResult {
         // 获取列数
         this.records = new ArrayList<>();
         this.columns = ShellMysqlHelper.parseColumns(resultSet);
+        List<Object[]> rows = new ArrayList<>();
         while (resultSet.next()) {
+            Object[] row = new Object[this.columns.size()];
+            for (int i = 0; i < this.columns.size(); i++) {
+                row[i] = resultSet.getObject(i + 1);
+            }
+            rows.add(row);
+        }
+        ShellMysqlHelper.enrichColumnMetadata(
+                connection, this.dbName(), this.tableName(), this.columns);
+        for (Object[] row : rows) {
             MysqlRecord record = new MysqlRecord(this.columns, readonly);
-            int colIndex = 1;
-            for (MysqlColumn dbColumn : this.columns) {
-                Object data = resultSet.getObject(colIndex++);
+            for (int i = 0; i < this.columns.size(); i++) {
+                MysqlColumn dbColumn = this.columns.get(i);
+                Object data = row[i];
                 // 获取几何值
                 if (dbColumn.supportGeometry()) {
                     data = ShellMysqlHelper.getGeometryString(connection, data);

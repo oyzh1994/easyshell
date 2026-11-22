@@ -55,6 +55,17 @@ public class MysqlComplexDataUnitTest {
     }
 
     @Test
+    public void tinyIntOneFormatsAsBoolean() {
+        MysqlColumn tinyInt = column("c_bool", "TINYINT(1)", "complex_types");
+        MysqlColumn booleanColumn = column("c_bool_alias", "BOOLEAN", "complex_types");
+        MysqlColumn boolColumn = column("c_bool_alias2", "BOOL", "complex_types");
+
+        assertTrue(tinyInt.supportBoolean());
+        assertTrue(booleanColumn.supportBoolean());
+        assertTrue(boolColumn.supportBoolean());
+    }
+
+    @Test
     public void importSqlRestoresSpecialLiteralsAndSkipsGeneratedColumns() throws Exception {
         MysqlColumn id = column("id", "BIGINT", "complex_types");
         MysqlColumn bit = column("c_bit", "BIT(13)", "complex_types");

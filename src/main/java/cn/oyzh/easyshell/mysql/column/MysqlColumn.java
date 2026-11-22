@@ -504,6 +504,13 @@ public class MysqlColumn extends DBObject implements DBColumn, ObjectCopier<Mysq
     }
 
     @Override
+    public boolean supportBoolean() {
+        return DBColumnFieldManager.supportBoolean(DBDialect.MYSQL, this.getType())
+                || (StringUtil.equalsIgnoreCase(this.getType(), "TINYINT")
+                && Integer.valueOf(1).equals(this.getSize()));
+    }
+
+    @Override
     public DBDialect getDialect() {
         return DBDialect.MYSQL;
     }

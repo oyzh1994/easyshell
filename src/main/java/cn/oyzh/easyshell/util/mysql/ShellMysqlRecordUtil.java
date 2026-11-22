@@ -11,6 +11,7 @@ import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BitTextField;
+import cn.oyzh.fx.gui.text.field.BooleanTextFiled;
 import cn.oyzh.fx.gui.text.field.DateTextField;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
@@ -188,6 +189,8 @@ public class ShellMysqlRecordUtil {
             val = object == null ? null : object.toString();
         } else if (column.supportEnum()) {
             val = SelectTextFiled.format(object);
+        } else if (column.supportBoolean()) {
+            val = BooleanTextFiled.format(object);
         } else if (column.supportInteger()) {
             val = NumberTextField.format(object);
         } else if (column.supportDigits()) {

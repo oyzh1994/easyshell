@@ -167,6 +167,14 @@ public class ShellMysqlColumnUtil {
         // jsonField.supportSize = true;
         jsonField.supportJson = true;
 
+        DBColumnField booleanField = new DBColumnField("BOOLEAN");
+        booleanField.supportBoolean = true;
+        booleanField.supportDefaultValue = true;
+
+        DBColumnField boolField = new DBColumnField("BOOL");
+        boolField.supportBoolean = true;
+        boolField.supportDefaultValue = true;
+
         DBColumnField enumField = new DBColumnField("ENUM");
         enumField.supportEnum = true;
         enumField.supportValue = true;
@@ -269,6 +277,8 @@ public class ShellMysqlColumnUtil {
 
         // 特殊
         putFiled(bitFiled);
+        putFiled(booleanField);
+        putFiled(boolField);
         putFiled(jsonField);
 
         // 集合
