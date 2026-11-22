@@ -203,14 +203,21 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
 
         // 如果是新数据，则使用常见的正整数序列默认值
         if (this.newData) {
+            this.unsaved = true;
             this.minVal.setValue(BigInteger.ONE);
             this.currentVal.setValue(BigInteger.ONE);
             this.incrementBy.setValue(BigInteger.ONE);
+            NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
-            // 查询函数信息
+            // 查询序列信息
             this.sequence = this.dbItem.selectSequence(this.sequence.getName());
             // 初始化数据
             this.definition.text(this.sequence.getCreateDefinition());
+            this.minVal.clear();
+            this.maxVal.clear();
+            this.currentVal.clear();
+            this.cacheSize.clear();
+            this.incrementBy.clear();
             if (this.sequence.getMinVal() != null) {
                 this.minVal.setValue(this.sequence.getMinVal());
             }
@@ -227,6 +234,7 @@ public class ShellSqlServerSequenceDesignTabController extends RichTabController
                 this.incrementBy.setValue(this.sequence.getIncrementBy());
             }
             this.cycle.setSelected(this.sequence.isCycle());
+            NodeGroupUtil.display(this.getTab(), "action3");
         }
 
         // 标记为结束

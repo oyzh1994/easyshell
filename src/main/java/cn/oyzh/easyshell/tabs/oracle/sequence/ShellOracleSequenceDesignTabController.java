@@ -209,11 +209,19 @@ public class ShellOracleSequenceDesignTabController extends RichTabController {
         this.initiating = true;
 
         // 如果是新数据，则默认触发变更
-        if (!this.newData) {
-            // 查询函数信息
+        if (this.newData) {
+            this.unsaved = true;
+            NodeGroupUtil.disappear(this.getTab(), "action3");
+        } else {
+            // 查询序列信息
             this.sequence = this.dbItem.selectSequence(this.sequence.getName());
             // 初始化数据
             this.definition.text(this.sequence.getCreateDefinition());
+            this.minVal.clear();
+            this.maxVal.clear();
+            this.currentVal.clear();
+            this.cacheSize.clear();
+            this.incrementBy.clear();
             if (this.sequence.getMinVal() != null) {
                 this.minVal.setValue(this.sequence.getMinVal());
             }
@@ -231,6 +239,7 @@ public class ShellOracleSequenceDesignTabController extends RichTabController {
             }
             this.order.setSelected(this.sequence.isOrder());
             this.cycle.setSelected(this.sequence.isCycle());
+            NodeGroupUtil.display(this.getTab(), "action3");
         }
 
         // 标记为结束
