@@ -27,6 +27,11 @@ public class SqlServerView extends DBObject implements DBView, ObjectCopier<SqlS
     private boolean updatable;
 
     /**
+     * 可更新状态是否已初始化
+     */
+    private boolean updatableInitialized;
+
+    /**
      * 视图定义
      */
     private SimpleStringProperty definitionProperty;
@@ -89,7 +94,12 @@ public class SqlServerView extends DBObject implements DBView, ObjectCopier<SqlS
         if (f != null) {
             this.setComment(f.getComment());
             this.setColumns(f.getColumns());
-            this.setUpdatable(f.isUpdatable());
+            if (f.isUpdatableInitialized()) {
+                this.setUpdatable(f.isUpdatable());
+            } else {
+                this.updatable = false;
+                this.updatableInitialized = false;
+            }
             this.setDefinition(f.getDefinition());
         }
     }
@@ -272,6 +282,11 @@ public class SqlServerView extends DBObject implements DBView, ObjectCopier<SqlS
     @Override
     public void setUpdatable(boolean updatable) {
         this.updatable = updatable;
+        this.updatableInitialized = true;
+    }
+
+    public boolean isUpdatableInitialized() {
+        return updatableInitialized;
     }
 
     /**

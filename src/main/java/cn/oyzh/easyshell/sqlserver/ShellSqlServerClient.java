@@ -3064,7 +3064,6 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         V.NAME AS "VIEW_NAME",
-                        CAST(NULL AS NCHAR(1)) AS "READ_ONLY",
                         M.DEFINITION AS "DEFINITION",
                         CAST(EP.VALUE AS NVARCHAR(4000)) AS "TABLE_COMMENT"
                     FROM SYS.VIEWS V
@@ -3087,21 +3086,12 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             while (resultSet.next()) {
                 SqlServerView view = new SqlServerView();
                 String name = resultSet.getString("VIEW_NAME");
-                String readOnly = resultSet.getString("READ_ONLY");
                 String definition = resultSet.getString("DEFINITION");
                 String tableComment = resultSet.getString("TABLE_COMMENT");
-                if (readOnly == null) {
-                    readOnly = ShellSqlServerHelper.getViewReadOnly(connection, schema, name);
-                }
-                if (readOnly == null) {
-                    // SqlServer视图默认不可更新
-                    readOnly = "Y";
-                }
                 view.setSchema(schema);
                 view.setName(name);
                 view.setComment(tableComment);
                 view.setDefinition(ShellSqlServerHelper.normalizeViewDefinition(definition));
-                view.setUpdatable(!StringUtil.equalsIgnoreCase("Y", readOnly));
                 list.add(view);
             }
             // 关闭连接和释放资源
@@ -3121,6 +3111,22 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 判断视图是否可更新。
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @return 可更新返回true
+     */
+    public boolean isViewUpdatable(String schema, String viewName) {
+        try {
+            return ShellSqlServerHelper.isViewUpdatable(
+                    this.getConnManager().connection(), schema, viewName);
+        } catch (Exception ex) {
             throw new ShellException(ex);
         }
     }
@@ -4278,6 +4284,7 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(definition)) {
                     definition = ShellSqlServerHelper.parseFunctionBody(createDefinition);
                 }
+                definition = ShellSqlServerHelper.normalizeFunctionDefinition(definition);
                 if (strict) {
                     characteristic.append(",STRICT");
                 }
@@ -4687,6 +4694,7 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(definition)) {
                     definition = ShellSqlServerHelper.parseFunctionBody(createDefinition);
                 }
+                definition = ShellSqlServerHelper.normalizeFunctionDefinition(definition);
                 if (strict) {
                     characteristic.append(",STRICT");
                 }

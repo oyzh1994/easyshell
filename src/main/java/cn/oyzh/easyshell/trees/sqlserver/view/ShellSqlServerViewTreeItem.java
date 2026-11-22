@@ -267,6 +267,9 @@ public class ShellSqlServerViewTreeItem extends ShellSqlServerTreeItem<ShellSqlS
      * @return 是否可更新
      */
     public boolean isUpdatable() {
+        if (!this.value.isUpdatableInitialized()) {
+            this.value.setUpdatable(this.client().isViewUpdatable(this.schema(), this.viewName()));
+        }
         return this.value.isUpdatable();
     }
 

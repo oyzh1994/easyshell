@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionCreateSqlGenerator;
+import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.view.SqlServerViewAlertSqlGenerator;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
@@ -23,6 +24,7 @@ import cn.oyzh.easyshell.sqlserver.table.SqlServerCreateTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
 import cn.oyzh.easyshell.sqlserver.trigger.SqlServerTrigger;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerCreateFunctionParam;
+import cn.oyzh.easyshell.sqlserver.function.SqlServerAlertFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
@@ -261,6 +263,23 @@ public class SqlServerDesignUiTest {
         assertFalse(sql.toUpperCase().contains(" OUTPUT"));
         assertTrue(sql.contains("RETURNS INT"));
         assertFalse(sql.toUpperCase().contains("RETURNS RECORD"));
+
+        function.setDefinition("""
+                CREATE FUNCTION [dbo].[func1] (@first INT, @second INT, @third INT)
+                RETURNS INT
+                WITH EXECUTE AS CALLER
+                AS
+                BEGIN
+                    RETURN @first + @second + @third;
+                END;
+                """);
+        SqlServerAlertFunctionParam alertParam = new SqlServerAlertFunctionParam();
+        alertParam.setSchema("dbo");
+        alertParam.setFunction(function);
+        String alertSql = SqlServerFunctionAlertSqlGenerator.generateSqlSingle(alertParam);
+        assertEquals(1, alertSql.toUpperCase().split("CREATE OR ALTER FUNCTION", -1).length - 1);
+        assertFalse(alertSql.toUpperCase().contains("CREATE   FUNCTION"));
+        assertFalse(alertSql.toUpperCase().contains("AS\nBEGIN\nBEGIN"));
     }
 
     @Test

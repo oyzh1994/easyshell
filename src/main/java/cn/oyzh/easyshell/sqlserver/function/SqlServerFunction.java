@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.sqlserver.function;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineSchema;
 
@@ -33,11 +34,13 @@ public class SqlServerFunction extends SqlServerRoutineSchema implements ObjectC
     @Override
     public void setParams(List<SqlServerRoutineParam> params) {
         List<SqlServerRoutineParam> paramsList = new ArrayList<>();
-        for (SqlServerRoutineParam param : params) {
-            if (param.isReturnParam()) {
-                this.returnParam = param;
-            } else {
-                paramsList.add(param);
+        if (CollectionUtil.isNotEmpty(params)) {
+            for (SqlServerRoutineParam param : params) {
+                if (param.isReturnParam()) {
+                    this.returnParam = param;
+                } else {
+                    paramsList.add(param);
+                }
             }
         }
         super.setParams(paramsList);
@@ -57,8 +60,8 @@ public class SqlServerFunction extends SqlServerRoutineSchema implements ObjectC
         this.setParams(function.getParams());
         this.setOriginalParams(function.getOriginalParams());
         this.setOriginalReturnParam(function.getOriginalReturnParam());
-//        this.setComment(function.getComment());
-//        this.setDefiner(function.getDefiner());
+        //        this.setComment(function.getComment());
+        //        this.setDefiner(function.getDefiner());
         this.setDefinition(function.getDefinition());
         this.setReturnParam(function.getReturnParam());
         this.setSecurityType(function.getSecurityType());

@@ -609,6 +609,38 @@ public class ShellSqlServerHelper {
     }
 
     /**
+     * 提取SQL Server函数主体，移除完整CREATE/ALTER FUNCTION头部。
+     *
+     * @param definition 函数定义
+     * @return 函数主体
+     */
+    public static String normalizeFunctionDefinition(String definition) {
+        String body = definition == null ? "" : definition.trim();
+        if (StringUtil.isBlank(body)
+                || !Pattern.compile("(?is)^\\s*(?:CREATE\\s+(?:OR\\s+ALTER\\s+)?|ALTER\\s+)FUNCTION\\b")
+                        .matcher(body).find()) {
+            return stripTrailingSemicolons(body);
+        }
+        Matcher matcher = Pattern.compile("(?is)\\bAS\\s+").matcher(body);
+        while (matcher.find()) {
+            String tail = body.substring(matcher.end()).stripLeading();
+            if (Pattern.compile("(?is)^(?:BEGIN|RETURN|SELECT|DECLARE|SET|IF|WHILE|EXEC|INSERT|UPDATE|DELETE)\\b")
+                    .matcher(tail).find()) {
+                return stripTrailingSemicolons(tail);
+            }
+        }
+        return stripTrailingSemicolons(body);
+    }
+
+    private static String stripTrailingSemicolons(String body) {
+        String value = body == null ? "" : body.stripTrailing();
+        while (value.endsWith(";")) {
+            value = value.substring(0, value.length() - 1).stripTrailing();
+        }
+        return value;
+    }
+
+    /**
      * 规范化函数默认模板
      * 含OUT/INOUT参数时，SqlServer要求使用无参数RETURN
      *

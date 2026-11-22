@@ -336,6 +336,8 @@ public class SqlServerIntegrationTest {
         assertEquals("新视图注释", client.selectView(SOURCE_SCHEMA, viewName).getComment());
 
         SqlServerFunction selectedFunction = client.selectFunction(SOURCE_SCHEMA, functionName);
+        assertFalse(selectedFunction.getDefinition().stripLeading().toUpperCase()
+                .startsWith("CREATE"));
         selectedFunction.setDefinition("RETURN 43;");
         SqlServerAlertFunctionParam alertFunctionParam = new SqlServerAlertFunctionParam();
         alertFunctionParam.setSchema(SOURCE_SCHEMA);

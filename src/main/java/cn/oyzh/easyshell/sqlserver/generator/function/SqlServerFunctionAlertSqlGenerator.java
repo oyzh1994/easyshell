@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sqlserver.generator.function;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerAlertFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
@@ -28,12 +29,7 @@ public class SqlServerFunctionAlertSqlGenerator extends DBSqlGenerator {
      */
     private void _generate(SqlServerAlertFunctionParam param) {
         SqlServerFunction function = param.getFunction();
-        String definition = function.getDefinition();
-        // 函数体已是完整的CREATE语句，原样返回
-        if (StringUtil.isNotBlank(definition) && StringUtil.startWithIgnoreCase(definition.trim(), "CREATE ")) {
-            this.sqlBuilder.append(definition.trim());
-            return;
-        }
+        String definition = ShellSqlServerHelper.normalizeFunctionDefinition(function.getDefinition());
         String schema = StringUtil.isNotBlank(function.getSchema()) ? function.getSchema() : param.getSchema();
         if (this.signatureChanged(function)) {
             this.sqlBuilder.append("DROP FUNCTION IF EXISTS ")
@@ -64,9 +60,15 @@ public class SqlServerFunctionAlertSqlGenerator extends DBSqlGenerator {
                 this.sqlBuilder.append("\nWITH EXECUTE AS CALLER");
             }
         }
-        this.sqlBuilder.append("\nAS\nBEGIN\n")
-                .append(definition == null ? "" : definition.trim())
-                .append("\nEND;");
+        this.sqlBuilder.append("\nAS\n");
+        if (StringUtil.startWithIgnoreCase(definition, "BEGIN")
+                || StringUtil.startWithIgnoreCase(definition, "DECLARE")) {
+            this.sqlBuilder.append(definition).append(";");
+        } else {
+            this.sqlBuilder.append("BEGIN\n")
+                    .append(definition)
+                    .append("\nEND;");
+        }
     }
 
     /**
