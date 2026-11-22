@@ -5,11 +5,13 @@ import cn.oyzh.easyshell.fx.sqlserver.table.SqlServerColumnKindComboBox;
 import cn.oyzh.easyshell.fx.sqlserver.table.ShellSqlServerForeignKeyPolicyComboBox;
 import cn.oyzh.easyshell.fx.sqlserver.table.ShellSqlServerIndexMethodComboBox;
 import cn.oyzh.easyshell.fx.sqlserver.table.ShellSqlServerTriggerPolicyComboBox;
+import cn.oyzh.easyshell.fx.sqlserver.routine.ShellSqlServerParamModeComboBox;
 import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.table.SqlServerTableCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.function.SqlServerFunctionAlertSqlGenerator;
+import cn.oyzh.easyshell.sqlserver.generator.procedure.SqlServerProcedureAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlserver.generator.view.SqlServerViewAlertSqlGenerator;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
@@ -26,6 +28,8 @@ import cn.oyzh.easyshell.sqlserver.trigger.SqlServerTrigger;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerCreateFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerAlertFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
+import cn.oyzh.easyshell.sqlserver.procedure.SqlServerProcedure;
+import cn.oyzh.easyshell.sqlserver.procedure.SqlServerAlertProcedureParam;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
@@ -293,6 +297,57 @@ public class SqlServerDesignUiTest {
         alertSql = SqlServerFunctionAlertSqlGenerator.generateSqlSingle(alertParam);
         assertEquals(1, alertSql.toUpperCase().split("\\bBEGIN\\b", -1).length - 1);
         assertEquals(1, alertSql.toUpperCase().split("\\bEND\\b", -1).length - 1);
+
+        ShellSqlServerParamModeComboBox functionModes = new ShellSqlServerParamModeComboBox(true);
+        assertTrue(functionModes.getItems().contains("IN"));
+        assertFalse(functionModes.getItems().contains("OUT"));
+        assertFalse(functionModes.getItems().contains("INOUT"));
+        ShellSqlServerParamModeComboBox procedureModes = new ShellSqlServerParamModeComboBox(false);
+        assertTrue(procedureModes.getItems().contains("IN"));
+        assertTrue(procedureModes.getItems().contains("OUT"));
+        assertFalse(procedureModes.getItems().contains("INOUT"));
+    }
+
+    @Test
+    public void procedureEditKeepsCreateOrAlterAndPreservesOutputParameters() {
+        SqlServerRoutineParam first = new SqlServerRoutineParam();
+        first.setName("a");
+        first.setType("INT");
+        first.setMode("IN");
+        SqlServerRoutineParam second = new SqlServerRoutineParam();
+        second.setName("b");
+        second.setType("INT");
+        second.setMode("OUT");
+        SqlServerRoutineParam third = new SqlServerRoutineParam();
+        third.setName("c");
+        third.setType("INT");
+        third.setMode("OUT");
+        SqlServerProcedure procedure = new SqlServerProcedure();
+        procedure.setName("px1");
+        procedure.setSchema("demo2");
+        procedure.setSecurityType("SELF");
+        procedure.setParams(List.of(first, second, third));
+        procedure.setDefinition("""
+                CREATE PROCEDURE [demo2].[px1]
+                 @a INT,@b INT OUTPUT,@c INT OUTPUT
+                WITH EXECUTE AS SELF
+                AS
+                BEGIN
+                BEGIN
+                    RETURN;
+                END;
+                END;
+                """);
+        SqlServerAlertProcedureParam param = new SqlServerAlertProcedureParam();
+        param.setSchema("demo2");
+        param.setProcedure(procedure);
+        String sql = SqlServerProcedureAlertSqlGenerator.generateSqlSingle(param);
+        assertEquals(1, sql.toUpperCase().split("CREATE OR ALTER PROCEDURE", -1).length - 1);
+        assertFalse(sql.toUpperCase().contains("CREATE   PROCEDURE"));
+        assertTrue(sql.toUpperCase().contains("WITH EXECUTE AS SELF"));
+        assertEquals(2, sql.toUpperCase().split(" OUTPUT", -1).length - 1);
+        assertEquals(1, sql.toUpperCase().split("\\bBEGIN\\b", -1).length - 1);
+        assertEquals(1, sql.toUpperCase().split("\\bEND\\b", -1).length - 1);
     }
 
     @Test

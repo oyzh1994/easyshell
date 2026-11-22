@@ -4286,9 +4286,9 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                     SELECT
                         O.OBJECT_ID AS "OID",
                         O.NAME AS "ROUTINE_NAME",
-                        CASE M.EXECUTE_AS_PRINCIPAL_ID
-                            WHEN -2 THEN 'OWNER'
-                            WHEN -3 THEN 'SELF'
+                        CASE
+                            WHEN UPPER(M.DEFINITION) LIKE N'%EXECUTE AS SELF%' THEN 'SELF'
+                            WHEN M.EXECUTE_AS_PRINCIPAL_ID = -2 THEN 'OWNER'
                             ELSE 'CALLER'
                         END AS "SECURITY_TYPE",
                         'v' AS "VOLATILE",
@@ -4395,9 +4395,9 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                     SELECT
                         O.OBJECT_ID AS "OID",
                         O.NAME AS "ROUTINE_NAME",
-                        CASE M.EXECUTE_AS_PRINCIPAL_ID
-                            WHEN -2 THEN 'OWNER'
-                            WHEN -3 THEN 'SELF'
+                        CASE
+                            WHEN UPPER(M.DEFINITION) LIKE N'%EXECUTE AS SELF%' THEN 'SELF'
+                            WHEN M.EXECUTE_AS_PRINCIPAL_ID = -2 THEN 'OWNER'
                             ELSE 'CALLER'
                         END AS "SECURITY_TYPE",
                         'v' AS "VOLATILE",
@@ -4435,6 +4435,7 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(definition)) {
                     definition = ShellSqlServerHelper.parseFunctionBody(createDefinition);
                 }
+                definition = ShellSqlServerHelper.normalizeProcedureDefinition(definition);
                 if (strict) {
                     characteristic.append(",STRICT");
                 }
@@ -4506,9 +4507,9 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         O.OBJECT_ID AS "OID",
-                        CASE M.EXECUTE_AS_PRINCIPAL_ID
-                            WHEN -2 THEN 'OWNER'
-                            WHEN -3 THEN 'SELF'
+                        CASE
+                            WHEN UPPER(M.DEFINITION) LIKE N'%EXECUTE AS SELF%' THEN 'SELF'
+                            WHEN M.EXECUTE_AS_PRINCIPAL_ID = -2 THEN 'OWNER'
                             ELSE 'CALLER'
                         END AS "SECURITY_TYPE",
                         CAST('v' AS NVARCHAR(10)) AS "VOLATILE",
@@ -4547,6 +4548,7 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 if (StringUtil.isBlank(definition)) {
                     definition = ShellSqlServerHelper.parseFunctionBody(createDefinition);
                 }
+                definition = ShellSqlServerHelper.normalizeProcedureDefinition(definition);
                 if (strict) {
                     characteristic.append(",STRICT");
                 }
@@ -4694,9 +4696,9 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         O.OBJECT_ID AS "OID",
-                        CASE M.EXECUTE_AS_PRINCIPAL_ID
-                            WHEN -2 THEN 'OWNER'
-                            WHEN -3 THEN 'SELF'
+                        CASE
+                            WHEN UPPER(M.DEFINITION) LIKE N'%EXECUTE AS SELF%' THEN 'SELF'
+                            WHEN M.EXECUTE_AS_PRINCIPAL_ID = -2 THEN 'OWNER'
                             ELSE 'CALLER'
                         END AS "SECURITY_TYPE",
                         CAST('v' AS NVARCHAR(10)) AS "VOLATILE",
@@ -5107,17 +5109,44 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
         if (StringUtil.isBlank(definition)) {
             return definition;
         }
-        int keywordIndex = definition.toUpperCase().indexOf(keyword + " ");
-        if (keywordIndex < 0) {
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(?i)\\b" + java.util.regex.Pattern.quote(keyword) + "\\b")
+                .matcher(definition);
+        if (!matcher.find()) {
             return definition;
         }
-        int start = keywordIndex + keyword.length() + 1;
-        int end = definition.indexOf('(', start);
-        if (end < 0) {
+        int nameStart = matcher.end();
+        while (nameStart < definition.length()
+                && Character.isWhitespace(definition.charAt(nameStart))) {
+            nameStart++;
+        }
+        int nameEnd = nameStart;
+        while (nameEnd < definition.length()) {
+            char ch = definition.charAt(nameEnd);
+            if (ch == '[') {
+                int close = definition.indexOf(']', nameEnd + 1);
+                if (close < 0) {
+                    return definition;
+                }
+                nameEnd = close + 1;
+            } else if (ch == '"') {
+                int close = definition.indexOf('"', nameEnd + 1);
+                if (close < 0) {
+                    return definition;
+                }
+                nameEnd = close + 1;
+            } else if (ch == '.' || ch == '_' || ch == '$' || ch == '#' || ch == '@'
+                    || Character.isLetterOrDigit(ch)) {
+                nameEnd++;
+            } else {
+                break;
+            }
+        }
+        if (nameEnd == nameStart) {
             return definition;
         }
         String replacement = DBUtil.wrap(schema, newName, DBDialect.SQLSERVER);
-        return definition.substring(0, start) + replacement + definition.substring(end);
+        return definition.substring(0, nameStart) + replacement + definition.substring(nameEnd);
     }
 
     /**
@@ -5195,13 +5224,16 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 param.setType(resultSet.getString("DATA_TYPE"));
                 boolean procedure = StringUtil.equalsIgnoreCase(routineType, "PROCEDURE");
                 String parameterName = resultSet.getString("PARAMETER_NAME");
+                if (parameterName != null && parameterName.startsWith("@")) {
+                    parameterName = parameterName.substring(1);
+                }
                 // sys.parameters中用PARAMETER_ID=0表示标量函数返回值，映射为通用返回参数
                 if (!procedure && position == 0) {
                     parameterName = "V_RET";
                 }
                 param.setName(parameterName);
                 boolean output = resultSet.getBoolean("IS_OUTPUT");
-                param.setMode(!procedure && position == 0 ? "OUT" : output ? "INOUT" : "IN");
+                param.setMode(!procedure && position == 0 ? "OUT" : output ? "OUT" : "IN");
                 int maxLength = resultSet.getInt("MAX_LENGTH");
                 if (maxLength > 0 && StringUtil.equalsAnyIgnoreCase(param.getType(),
                         "varchar", "char", "varbinary", "binary")) {

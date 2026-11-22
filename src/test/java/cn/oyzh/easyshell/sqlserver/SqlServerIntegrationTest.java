@@ -359,13 +359,18 @@ public class SqlServerIntegrationTest {
                 .getRecords().getFirst().getValue("answer")).intValue());
 
         SqlServerProcedure selectedProcedure = client.selectProcedure(SOURCE_SCHEMA, procedureName);
+        assertFalse(selectedProcedure.getDefinition().stripLeading().toUpperCase()
+                .startsWith("CREATE"));
+        assertEquals("CALLER", selectedProcedure.getSecurityType());
         selectedProcedure.setDefinition("SELECT 43 AS answer;");
+        selectedProcedure.setSecurityType("SELF");
         SqlServerAlertProcedureParam alertProcedureParam = new SqlServerAlertProcedureParam();
         alertProcedureParam.setSchema(SOURCE_SCHEMA);
         alertProcedureParam.setProcedure(selectedProcedure);
         client.alertProcedure(alertProcedureParam);
         assertTrue(client.selectProcedure(SOURCE_SCHEMA, procedureName)
                 .getDefinition().contains("43"));
+        assertEquals("SELF", client.selectProcedure(SOURCE_SCHEMA, procedureName).getSecurityType());
 
         SqlServerSequence sequence = new SqlServerSequence();
         sequence.setName(sequenceName);
@@ -415,12 +420,21 @@ public class SqlServerIntegrationTest {
         functionReturn.setType("INT");
         function.setReturnParam(functionReturn);
         function.setDefinition("RETURN @value + @other + @third;");
+        function.setSecurityType("CALLER");
         SqlServerCreateFunctionParam functionCreate = new SqlServerCreateFunctionParam();
         functionCreate.setSchema(SOURCE_SCHEMA);
         functionCreate.setFunction(function);
         client.createFunction(functionCreate);
-        assertTrue(client.selectFunction(SOURCE_SCHEMA, functionName).getParams().stream()
+        SqlServerFunction selectedFunction = client.selectFunction(SOURCE_SCHEMA, functionName);
+        assertEquals("CALLER", selectedFunction.getSecurityType());
+        assertTrue(selectedFunction.getParams().stream()
                 .allMatch(param -> "IN".equals(param.getMode())));
+        selectedFunction.setSecurityType("SELF");
+        SqlServerAlertFunctionParam functionAlert = new SqlServerAlertFunctionParam();
+        functionAlert.setSchema(SOURCE_SCHEMA);
+        functionAlert.setFunction(selectedFunction);
+        client.alertFunction(functionAlert);
+        assertEquals("SELF", client.selectFunction(SOURCE_SCHEMA, functionName).getSecurityType());
         var functionResults = client.executeSql(SOURCE_SCHEMA,
                 "SELECT [EASYSHELL_SRC].[" + functionName + "](1,2,3) AS [answer]");
         assertEquals(6, ((Number) functionResults.getResults().getFirst()
@@ -431,20 +445,82 @@ public class SqlServerIntegrationTest {
         procedureParam.setType("INT");
         procedureParam.setMode("IN");
         procedureParam.setPosition(1);
+        SqlServerRoutineParam procedureOut = new SqlServerRoutineParam();
+        procedureOut.setName("result");
+        procedureOut.setType("INT");
+        procedureOut.setMode("OUT");
+        procedureOut.setPosition(2);
         SqlServerProcedure procedure = new SqlServerProcedure();
         procedure.setName(procedureName);
         procedure.setSchema(SOURCE_SCHEMA);
-        procedure.setParams(List.of(procedureParam));
-        procedure.setDefinition("SELECT @value * 3 AS [answer];");
+        procedure.setParams(List.of(procedureParam, procedureOut));
+        procedure.setDefinition("SET @result = @value * 3; SELECT @result AS [answer];");
         SqlServerCreateProcedureParam procedureCreate = new SqlServerCreateProcedureParam();
         procedureCreate.setSchema(SOURCE_SCHEMA);
         procedureCreate.setProcedure(procedure);
         client.createProcedure(procedureCreate);
-        assertFalse(client.selectProcedure(SOURCE_SCHEMA, procedureName).getParams().isEmpty());
+        SqlServerProcedure selectedProcedure = client.selectProcedure(SOURCE_SCHEMA, procedureName);
+        assertEquals("OUT", selectedProcedure.getParams().stream()
+                .filter(param -> "result".equals(param.getName()))
+                .findFirst().orElseThrow().getMode());
         var procedureResults = client.executeSql(SOURCE_SCHEMA,
-                "EXEC [EASYSHELL_SRC].[" + procedureName + "] @value=7");
+                "EXEC [EASYSHELL_SRC].[" + procedureName + "] @value=7, @result=0");
         assertEquals(21, ((Number) procedureResults.getResults().getFirst()
                 .getRecords().getFirst().getValue("answer")).intValue());
+    }
+
+    @Test
+    public void clientClonesRoutinesWithMultiSpaceCreateHeaders() {
+        String procedureName = "CLONE_PROCEDURE_SRC";
+        String procedureClone = "CLONE_PROCEDURE_DST";
+        String functionName = "CLONE_FUNCTION_SRC";
+        String functionClone = "CLONE_FUNCTION_DST";
+        client.executeSqlSimple(SOURCE_SCHEMA, "IF OBJECT_ID(N'[EASYSHELL_SRC].["
+                + procedureName + "]', N'P') IS NOT NULL DROP PROCEDURE [EASYSHELL_SRC].["
+                + procedureName + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "IF OBJECT_ID(N'[EASYSHELL_SRC].["
+                + procedureClone + "]', N'P') IS NOT NULL DROP PROCEDURE [EASYSHELL_SRC].["
+                + procedureClone + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "IF OBJECT_ID(N'[EASYSHELL_SRC].["
+                + functionName + "]', N'FN') IS NOT NULL DROP FUNCTION [EASYSHELL_SRC].["
+                + functionName + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "IF OBJECT_ID(N'[EASYSHELL_SRC].["
+                + functionClone + "]', N'FN') IS NOT NULL DROP FUNCTION [EASYSHELL_SRC].["
+                + functionClone + "]");
+
+        SqlServerProcedure procedure = new SqlServerProcedure();
+        procedure.setName(procedureName);
+        procedure.setSchema(SOURCE_SCHEMA);
+        procedure.setDefinition("SELECT 1 AS [answer];");
+        procedure.setSecurityType("SELF");
+        SqlServerCreateProcedureParam procedureParam = new SqlServerCreateProcedureParam();
+        procedureParam.setSchema(SOURCE_SCHEMA);
+        procedureParam.setProcedure(procedure);
+        client.createProcedure(procedureParam);
+        client.cloneProcedure(SOURCE_SCHEMA, procedureName, procedureClone);
+        assertEquals("SELF", client.selectProcedure(SOURCE_SCHEMA, procedureClone).getSecurityType());
+
+        SqlServerFunction function = new SqlServerFunction();
+        function.setName(functionName);
+        function.setSchema(SOURCE_SCHEMA);
+        function.setDefinition("RETURN 1;");
+        SqlServerRoutineParam returnParam = new SqlServerRoutineParam();
+        returnParam.setType("INT");
+        function.setReturnParam(returnParam);
+        SqlServerCreateFunctionParam functionParam = new SqlServerCreateFunctionParam();
+        functionParam.setSchema(SOURCE_SCHEMA);
+        functionParam.setFunction(function);
+        client.createFunction(functionParam);
+        client.cloneFunction(SOURCE_SCHEMA, functionName, functionClone);
+        var cloneResult = client.executeSql(SOURCE_SCHEMA,
+                "SELECT [EASYSHELL_SRC].[" + functionClone + "]() AS [answer]");
+        assertEquals(1, ((Number) cloneResult.getResults().getFirst()
+                .getRecords().getFirst().getValue("answer")).intValue());
+
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP PROCEDURE [EASYSHELL_SRC].["
+                + procedureName + "]; DROP PROCEDURE [EASYSHELL_SRC].[" + procedureClone + "];"
+                + "DROP FUNCTION [EASYSHELL_SRC].[" + functionName + "];"
+                + "DROP FUNCTION [EASYSHELL_SRC].[" + functionClone + "];");
     }
 
     @Test

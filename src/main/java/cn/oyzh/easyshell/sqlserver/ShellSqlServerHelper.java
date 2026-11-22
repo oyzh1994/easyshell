@@ -632,6 +632,30 @@ public class ShellSqlServerHelper {
         return unwrapRedundantFunctionBlock(stripTrailingSemicolons(body));
     }
 
+    /**
+     * 提取SQL Server存储过程主体，移除完整CREATE/ALTER PROCEDURE头部。
+     *
+     * @param definition 过程定义
+     * @return 过程主体
+     */
+    public static String normalizeProcedureDefinition(String definition) {
+        String body = definition == null ? "" : definition.trim();
+        if (StringUtil.isBlank(body)
+                || !Pattern.compile("(?is)^\\s*(?:CREATE\\s+(?:OR\\s+ALTER\\s+)?|ALTER\\s+)"
+                        + "(?:PROCEDURE|PROC)\\b").matcher(body).find()) {
+            return unwrapRedundantFunctionBlock(stripTrailingSemicolons(body));
+        }
+        Matcher matcher = Pattern.compile("(?is)\\bAS\\s+").matcher(body);
+        while (matcher.find()) {
+            String tail = body.substring(matcher.end()).stripLeading();
+            if (Pattern.compile("(?is)^(?:BEGIN|RETURN|SELECT|DECLARE|SET|IF|WHILE|EXEC|INSERT|UPDATE|DELETE)\\b")
+                    .matcher(tail).find()) {
+                return unwrapRedundantFunctionBlock(stripTrailingSemicolons(tail));
+            }
+        }
+        return unwrapRedundantFunctionBlock(stripTrailingSemicolons(body));
+    }
+
     private static String stripTrailingSemicolons(String body) {
         String value = body == null ? "" : body.stripTrailing();
         while (value.endsWith(";")) {

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sqlserver.generator.procedure;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerCreateProcedureParam;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerProcedure;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
@@ -27,12 +28,7 @@ public class SqlServerProcedureCreateSqlGenerator extends DBSqlGenerator {
      */
     private void _generate(SqlServerCreateProcedureParam param) {
         SqlServerProcedure procedure = param.getProcedure();
-        String definition = procedure.getDefinition();
-        // 存储过程体已是完整的CREATE语句，原样返回
-        if (StringUtil.isNotBlank(definition) && StringUtil.startWithIgnoreCase(definition.trim(), "CREATE ")) {
-            this.sqlBuilder.append(definition.trim());
-            return;
-        }
+        String definition = ShellSqlServerHelper.normalizeProcedureDefinition(procedure.getDefinition());
         String schema = StringUtil.isNotBlank(procedure.getSchema()) ? procedure.getSchema() : param.getSchema();
         this.sqlBuilder.append("CREATE OR ALTER PROCEDURE ");
         this.sqlBuilder.append(DBUtil.wrap(schema, procedure.getName(), DBDialect.SQLSERVER));
@@ -54,9 +50,15 @@ public class SqlServerProcedureCreateSqlGenerator extends DBSqlGenerator {
                 this.sqlBuilder.append("\nWITH EXECUTE AS CALLER");
             }
         }
-        this.sqlBuilder.append("\nAS\nBEGIN\n")
-                .append(definition == null ? "" : definition.trim())
-                .append("\nEND;");
+        this.sqlBuilder.append("\nAS\n");
+        if (StringUtil.startWithIgnoreCase(definition, "BEGIN")
+                || StringUtil.startWithIgnoreCase(definition, "DECLARE")) {
+            this.sqlBuilder.append(definition).append(";");
+        } else {
+            this.sqlBuilder.append("BEGIN\n")
+                    .append(definition)
+                    .append("\nEND;");
+        }
     }
 
     /**

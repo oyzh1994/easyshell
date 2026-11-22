@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.sqlserver.generator.procedure;
 
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.sqlserver.ShellSqlServerHelper;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerAlertProcedureParam;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerProcedure;
 import cn.oyzh.easyshell.sqlserver.routine.SqlServerRoutineParam;
@@ -29,13 +30,7 @@ public class SqlServerProcedureAlertSqlGenerator extends DBSqlGenerator {
         SqlServerProcedure procedure = param.getProcedure();
         String schema = StringUtil.isNotBlank(procedure.getSchema()) ? procedure.getSchema() : param.getSchema();
         String fullName = DBUtil.wrap(schema, procedure.getName(), DBDialect.SQLSERVER);
-        String definition = procedure.getDefinition();
-
-        // 存储过程体已是完整的CREATE语句，原样返回
-        if (StringUtil.isNotBlank(definition) && StringUtil.startWithIgnoreCase(definition.trim(), "CREATE ")) {
-            this.sqlList.add(definition.trim());
-            return;
-        }
+        String definition = ShellSqlServerHelper.normalizeProcedureDefinition(procedure.getDefinition());
 
         StringBuilder builder = new StringBuilder();
         builder.append("CREATE OR ALTER PROCEDURE ").append(fullName);
@@ -57,9 +52,15 @@ public class SqlServerProcedureAlertSqlGenerator extends DBSqlGenerator {
                 builder.append("\nWITH EXECUTE AS CALLER");
             }
         }
-        builder.append("\nAS\nBEGIN\n")
-                .append(definition == null ? "" : definition.trim())
-                .append("\nEND;");
+        builder.append("\nAS\n");
+        if (StringUtil.startWithIgnoreCase(definition, "BEGIN")
+                || StringUtil.startWithIgnoreCase(definition, "DECLARE")) {
+            builder.append(definition).append(";");
+        } else {
+            builder.append("BEGIN\n")
+                    .append(definition)
+                    .append("\nEND;");
+        }
         this.sqlList.add(builder.toString());
     }
 

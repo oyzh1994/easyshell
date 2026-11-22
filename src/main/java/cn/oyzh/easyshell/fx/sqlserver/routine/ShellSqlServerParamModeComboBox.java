@@ -18,15 +18,15 @@ public class ShellSqlServerParamModeComboBox extends FXComboBox<String> {
 
     public ShellSqlServerParamModeComboBox(boolean inputOnly) {
         this.inputOnly = inputOnly;
+        this.getItems().clear();
+        this.getItems().add("IN");
+        if (!inputOnly) {
+            this.getItems().add("OUT");
+        }
     }
 
     @Override
     public void initNode() {
-        this.addItem("IN");
-        if (!this.inputOnly) {
-            this.addItem("OUT");
-            this.addItem("INOUT");
-        }
         super.initNode();
     }
 }
