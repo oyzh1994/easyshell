@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.sqlite;
 
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
@@ -183,6 +184,9 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
     }
 
     private void flushHomeTab() {
+        if (this.getClient() == null || this.getClient().getState() == ShellConnState.CLOSED) {
+            return;
+        }
         if (this.tabsEmpty()) {
             this.initHomeTab();
         } else if (this.tabsSize() > 1 && this.getHomeTab() != null) {

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.postgresql;
 
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
@@ -115,6 +116,9 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
      * 刷新主页标签
      */
     private void flushHomeTab() {
+        if (this.getClient() == null || this.getClient().getState() == ShellConnState.CLOSED) {
+            return;
+        }
         if (this.tabsEmpty()) {
             this.initHomeTab();
         } else if (this.tabsSize() > 1) {

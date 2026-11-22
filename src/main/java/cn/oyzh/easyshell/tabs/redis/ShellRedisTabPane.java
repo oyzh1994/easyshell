@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.redis;
 
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
@@ -89,7 +90,8 @@ public class ShellRedisTabPane extends RichTabPane implements FXEventListener {
      * 刷新主页标签
      */
     private void flushHomeTab() {
-        if (this.closing) {
+        if (this.closing || this.getClient() == null
+                || this.getClient().getState() == ShellConnState.CLOSED) {
             return;
         }
         if (this.tabsEmpty()) {

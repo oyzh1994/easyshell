@@ -77,7 +77,12 @@ public interface ShellBaseClient extends AutoCloseable {
      * @return 结果
      */
     default boolean isClosed() {
-        return !this.isConnected();
+        try {
+            return !this.isConnected();
+        } catch (RuntimeException ex) {
+            // 客户端销毁和延迟初始化可能并发执行，配置已被清理时按已关闭处理
+            return true;
+        }
     }
 
     /**

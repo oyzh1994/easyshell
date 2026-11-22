@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.tabs.mongo;
 
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
@@ -99,7 +100,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
      * 刷新主页标签
      */
     private void flushHomeTab() {
-        if (this.getClient() == null || this.getClient().isClosed()) {
+        if (this.getClient() == null || this.getClient().getState() == ShellConnState.CLOSED) {
             return;
         }
         if (this.tabsEmpty()) {
