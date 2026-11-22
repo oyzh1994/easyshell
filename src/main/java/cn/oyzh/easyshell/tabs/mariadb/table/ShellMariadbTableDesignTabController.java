@@ -436,7 +436,7 @@ public class ShellMariadbTableDesignTabController extends ParentTabController {
             // 更新新数据标志位
             this.newData = false;
             // 初始化信息
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 重置表格
             this.resetTable();
             // 初始化预览
@@ -863,7 +863,7 @@ public class ShellMariadbTableDesignTabController extends ParentTabController {
         this.tableEngine.init(this.dbItem.client());
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
 
         // 移除tab
         if (!this.dbItem.isSupportCheckFeature()) {

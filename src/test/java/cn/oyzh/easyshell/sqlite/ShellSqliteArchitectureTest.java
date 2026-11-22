@@ -818,7 +818,7 @@ public class ShellSqliteArchitectureTest {
         assertTrue(controller.contains("protected void initNew()"));
         assertTrue(controller.contains("protected void initNormal()"));
         assertTrue(controller.contains("protected void resetTable() throws Exception"));
-        assertTrue(controller.contains("FXUtil.runWait(this::initInfo);"));
+        assertTrue(controller.contains("this.initInfo();"));
         assertTrue(controller.contains("this.init(this.table, this.dbItem);"));
         assertTrue(controller.contains("NodeGroupUtil.display(this.getTab(), \"action2\")"));
         assertTrue(controller.contains("NodeGroupUtil.display(this.getTab(), \"action3\")"));

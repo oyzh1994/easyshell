@@ -185,7 +185,7 @@ public class ShellOracleFunctionDesignTabController extends RichTabController {
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -255,13 +255,13 @@ public class ShellOracleFunctionDesignTabController extends RichTabController {
                         RETURN 0;
                     END;
                     """;
-            this.definition.setText(defDefinition);
+            this.definition.text(defDefinition);
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询函数信息
             this.function = this.dbItem.selectFunction(this.function.getName());
             // 初始化数据
-            this.definition.setText(this.function.getDefinition());
+            this.definition.text(this.function.getDefinition());
             this.definition.forgetHistory();
             this.paramTable.setItem(this.function.getParams());
             this.securityType.select(this.function.getSecurityType());
@@ -376,7 +376,7 @@ public class ShellOracleFunctionDesignTabController extends RichTabController {
             this.newData = false;
             this.function = tempFunction;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览

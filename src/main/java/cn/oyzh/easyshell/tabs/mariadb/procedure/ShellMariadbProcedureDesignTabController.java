@@ -150,7 +150,7 @@ public class ShellMariadbProcedureDesignTabController extends RichTabController 
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -201,23 +201,22 @@ public class ShellMariadbProcedureDesignTabController extends RichTabController 
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
-//            this.definer.setText("`root`@`%`");
-            this.definer.setText(DBUtil.wrap(this.dbItem.userName(), DBDialect.MARIADB) + "@`%`");
+            this.definer.text(DBUtil.wrap(this.dbItem.userName(), DBDialect.MARIADB) + "@`%`");
             String defDefinition = """
                     BEGIN
                         #Routine body goes here...
                     
                     END
                     """;
-            this.definition.setText(defDefinition);
+            this.definition.text(defDefinition);
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询过程信息
             this.procedure = this.dbItem.selectProcedure(this.procedure.getName());
             // 初始化数据
-            this.definer.setText(this.procedure.getDefiner());
-            this.comment.setText(this.procedure.getComment());
-            this.definition.setText(this.procedure.getDefinition());
+            this.definer.text(this.procedure.getDefiner());
+            this.comment.text(this.procedure.getComment());
+            this.definition.text(this.procedure.getDefinition());
             this.definition.forgetHistory();
             this.paramTable.setItem(this.procedure.getParams());
             this.securityType.select(this.procedure.getSecurityType());
@@ -291,7 +290,7 @@ public class ShellMariadbProcedureDesignTabController extends RichTabController 
             this.newData = false;
             this.procedure = tempProcedure;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览

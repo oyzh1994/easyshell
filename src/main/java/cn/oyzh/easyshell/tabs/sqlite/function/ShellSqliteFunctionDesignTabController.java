@@ -21,6 +21,7 @@ import cn.oyzh.fx.plus.controls.combo.FXComboBox;
 import cn.oyzh.fx.plus.controls.tab.FixedTab;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeUtil;
+import cn.oyzh.fx.plus.window.StageManager;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.fxml.FXML;
@@ -94,6 +95,16 @@ public class ShellSqliteFunctionDesignTabController extends RichTabController {
      * @param dbItem   数据库树节点
      */
     public void init(SQLiteFunction function, ShellSqliteRootTreeItem dbItem) {
+        StageManager.showMask(this.getWindow(), () -> this.doInit(function, dbItem));
+    }
+
+    /**
+     * 执行初始化
+     *
+     * @param function 函数对象
+     * @param dbItem   数据库树节点
+     */
+    private void doInit(SQLiteFunction function, ShellSqliteRootTreeItem dbItem) {
         this.dbItem = dbItem;
         this.client = dbItem.client();
         this.function = function == null ? new SQLiteFunction() : function;

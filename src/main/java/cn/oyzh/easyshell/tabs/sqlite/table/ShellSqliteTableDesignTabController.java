@@ -188,7 +188,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
      */
     private void doInit() {
         this.initDBListener();
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -663,7 +663,7 @@ public class ShellSqliteTableDesignTabController extends ParentTabController {
             this.newData = false;
             ShellSqliteEventUtil.tableChanged(this.client, previousName, targetName);
             // 初始化信息
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 重置表格
             this.resetTable();
             // 初始化预览

@@ -186,7 +186,7 @@ public class ShellMariadbFunctionDesignTabController extends RichTabController {
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -247,8 +247,7 @@ public class ShellMariadbFunctionDesignTabController extends RichTabController {
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
-            //            this.definer.setText("`root`@`%`");
-            this.definer.setText(DBUtil.wrap(this.dbItem.userName(), DBDialect.MARIADB) + "@`%`");
+            this.definer.text(DBUtil.wrap(this.dbItem.userName(), DBDialect.MARIADB) + "@`%`");
             String defDefinition = """
                     BEGIN
                         #Routine body goes here...
@@ -256,15 +255,15 @@ public class ShellMariadbFunctionDesignTabController extends RichTabController {
                         RETURN 0;
                     END
                     """;
-            this.definition.setText(defDefinition);
+            this.definition.text(defDefinition);
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询函数信息
             this.function = this.dbItem.selectFunction(this.function.getName());
             // 初始化数据
-            this.definer.setText(this.function.getDefiner());
-            this.comment.setText(this.function.getComment());
-            this.definition.setText(this.function.getDefinition());
+            this.definer.text(this.function.getDefiner());
+            this.comment.text(this.function.getComment());
+            this.definition.text(this.function.getDefinition());
             this.definition.forgetHistory();
             this.paramTable.setItem(this.function.getParams());
             this.securityType.select(this.function.getSecurityType());
@@ -357,7 +356,7 @@ public class ShellMariadbFunctionDesignTabController extends RichTabController {
             this.newData = false;
             this.function = tempFunction;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览

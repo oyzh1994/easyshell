@@ -134,7 +134,7 @@ public class ShellPostgresqlProcedureDesignTabController extends RichTabControll
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -188,14 +188,14 @@ public class ShellPostgresqlProcedureDesignTabController extends RichTabControll
                         RETURN;
                     END;
                     """;
-            this.definition.setText(defDefinition);
+            this.definition.text(defDefinition);
             this.securityType.select("INVOKER");
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询函数信息
             this.procedure = this.dbItem.selectProcedure(this.procedure.getName());
             // 初始化数据
-            this.definition.setText(this.procedure.getDefinition());
+            this.definition.text(this.procedure.getDefinition());
             this.definition.forgetHistory();
             this.paramTable.setItem(this.procedure.getParams());
             this.securityType.select(this.procedure.getSecurityType());
@@ -274,7 +274,7 @@ public class ShellPostgresqlProcedureDesignTabController extends RichTabControll
             this.newData = false;
             this.procedure = tempProcedure;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 重置表格
             this.paramTable.reset();
             // 初始化预览

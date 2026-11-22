@@ -156,7 +156,7 @@ public class ShellDamengSequenceDesignTabController extends RichTabController {
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -213,7 +213,7 @@ public class ShellDamengSequenceDesignTabController extends RichTabController {
             // 查询函数信息
             this.sequence = this.dbItem.selectSequence(this.sequence.getName());
             // 初始化数据
-            this.definition.setText(this.sequence.getCreateDefinition());
+            this.definition.text(this.sequence.getCreateDefinition());
             if (this.sequence.getMinVal() != null) {
                 this.minVal.setValue(this.sequence.getMinVal());
             }
@@ -299,7 +299,7 @@ public class ShellDamengSequenceDesignTabController extends RichTabController {
             this.newData = false;
             this.sequence = tempSequence;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {

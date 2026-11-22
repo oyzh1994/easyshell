@@ -107,10 +107,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
-
-        //// 监听组件
-        //CacheHelper.set("mongo:dbClient", this.dbItem.client());
+        this.initInfo();
     }
 
     /**
@@ -158,12 +155,12 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
                     
                     }
                     """;
-            this.definition.setText(defDefinition);
+            this.definition.text(defDefinition);
         } else {
             // 查询函数信息
             this.function = this.dbItem.selectFunction(this.function.getName());
             // 初始化数据
-            this.definition.setText(this.function.getCode());
+            this.definition.text(this.function.getCode());
             this.definition.forgetHistory();
         }
 
@@ -213,7 +210,7 @@ public class ShellMongoFunctionDesignTabController extends RichTabController {
             this.newData = false;
             this.function = tempFunction;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {

@@ -268,7 +268,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         this.initDBListener();
 
         // 初始化信息
-        FXUtil.runWait(this::initInfo);
+        this.initInfo();
     }
 
     /**
@@ -377,17 +377,16 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
         // 如果是新数据，则默认触发变更
         if (this.newData) {
             this.unsaved = true;
-//            this.definer.setText("`root`@`%`");
-            this.definer.setText(DBUtil.wrap(this.dbItem.userName(), DBDialect.MYSQL) + "@`%`");
+            this.definer.text(DBUtil.wrap(this.dbItem.userName(), DBDialect.MYSQL) + "@`%`");
             NodeGroupUtil.disappear(this.getTab(), "action3");
         } else {
             // 查询事件信息
             this.event = this.dbItem.selectEvent(this.event.getName());
             // 初始化数据
             this.status.select(this.event.getEventStatus());
-            this.definer.setText(this.event.getDefiner());
-            this.comment.setText(this.event.getComment());
-            this.definition.setText(this.event.getDefinition());
+            this.definer.text(this.event.getDefiner());
+            this.comment.text(this.event.getComment());
+            this.definition.text(this.event.getDefinition());
             this.definition.forgetHistory();
             this.onCompletion.select(this.event.getOnCompletion());
             NodeGroupUtil.display(this.getTab(), "action3");
@@ -411,7 +410,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             if (this.event.getExecuteAt() != null) {
                 this.onetime.setValue(this.event.getExecuteAt());
             } else {
-                this.onetime.setText("CURRENT_TIMESTAMP");
+                this.onetime.text("CURRENT_TIMESTAMP");
             }
         }
 
@@ -481,7 +480,7 @@ public class ShellMysqlEventDesignTabController extends RichTabController {
             this.newData = false;
             this.event = tempEvent;
             // 刷新tab
-            FXUtil.runWait(this::initInfo);
+            this.initInfo();
             // 初始化预览
             this.initPreview();
         } catch (Exception ex) {
