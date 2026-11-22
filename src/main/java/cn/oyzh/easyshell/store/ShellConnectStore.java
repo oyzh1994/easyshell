@@ -194,6 +194,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载SQL Server类型
+     *
+     * @return SQL Server类型连接
+     */
+    public List<ShellConnect> loadSqlServerType() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isSqlServerType).collect(Collectors.toList());
+    }
+
+    /**
      * 加载Oracle类型
      *
      * @return Oracle类型连接

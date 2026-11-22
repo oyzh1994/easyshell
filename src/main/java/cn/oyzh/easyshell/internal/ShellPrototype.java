@@ -118,6 +118,11 @@ public class ShellPrototype {
      */
     public static final String POSTGRESQL = "PostgreSQL";
 
+    /**
+     * SQL Server连接类型
+     */
+    public static final String SQLSERVER = "SqlServer";
+
     /** Oracle连接类型 */
     public static final String ORACLE = "Oracle";
 

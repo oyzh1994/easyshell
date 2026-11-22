@@ -34,6 +34,7 @@ import cn.oyzh.easyshell.tabs.mongo.ShellMongoTab;
 import cn.oyzh.easyshell.tabs.mosh.ShellMoshTab;
 import cn.oyzh.easyshell.tabs.mysql.ShellMysqlTab;
 import cn.oyzh.easyshell.tabs.postgresql.ShellPostgresqlTab;
+import cn.oyzh.easyshell.tabs.sqlserver.ShellSqlServerTab;
 import cn.oyzh.easyshell.tabs.rdp.ShellRdpTab;
 import cn.oyzh.easyshell.tabs.redis.ShellRedisTab;
 import cn.oyzh.easyshell.tabs.rlogin.ShellRLoginTab;
@@ -384,6 +385,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = ShellDamengTab.of(connect);
             } else if (connect.isPostgresqlType()) {
                 tab = ShellPostgresqlTab.of(connect);
+            } else if (connect.isSqlServerType()) {
+                tab = ShellSqlServerTab.of(connect);
             } else if (connect.isOracleType()) {
                 tab = ShellOracleTab.of(connect);
             } else if (connect.isHttpType()) {

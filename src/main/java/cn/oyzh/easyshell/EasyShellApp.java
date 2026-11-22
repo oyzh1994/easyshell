@@ -26,6 +26,7 @@ import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
+import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
 import cn.oyzh.event.EventFormatter;
@@ -231,6 +232,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             DBColumnFieldManager.registerInitializer(DBDialect.MARIADB, ShellMariadbColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.POSTGRESQL, ShellPostgresqlColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.ORACLE, ShellOracleColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.SQLSERVER, ShellSqlServerColumnUtil::init);
             // 正式环境
             if (SystemUtil.isProd()) {
                 // 开启定期gc
@@ -243,7 +245,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
                 //                // 开启定期gc
                 //                SystemUtil.gcInterval(15_000);
                 // 打印元数据
-                DBUtil.ENABLE_PRINT_METADATA = true;
+                DBUtil.ENABLE_PRINT_METADATA = false;
                 // 启用对象观察
                 //ObjectWatcherManager.enable();
                 ObjectWatcherManager.disable();

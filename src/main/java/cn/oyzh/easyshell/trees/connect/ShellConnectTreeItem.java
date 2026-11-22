@@ -5,16 +5,18 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.store.ShellConnectStore;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.easyshell.util.ShellViewFactory;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.easyshell.util.mariadb.ShellMariadbViewFactory;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
-import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
 import cn.oyzh.easyshell.util.oracle.ShellOracleViewFactory;
+import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
-import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
+import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerViewFactory;
+import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.svg.glyph.MoveSVGGlyph;
@@ -23,7 +25,6 @@ import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.scene.control.Menu;
@@ -163,6 +164,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isPostgresqlType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellPostgresqlViewFactory.transportData(this.value, null);
+            });
+            items.add(transportData);
+        } else if (this.isSqlServerType()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellSqlServerViewFactory.transportData(this.value, null);
             });
             items.add(transportData);
         } else if (this.isOracleType()) {
@@ -432,6 +438,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否SQL Server类型
+     *
+     * @return 结果
+     */
+    public boolean isSqlServerType() {
+        return value.isSqlServerType();
+    }
+
+    /**
      * 是否Mongo类型
      *
      * @return 结果
@@ -533,6 +548,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateDamengConnect(this.value);
         } else if (this.isPostgresqlType()) {
             ShellViewFactory.updatePostgresqlConnect(this.value);
+        } else if (this.isSqlServerType()) {
+            ShellViewFactory.updateSqlServerConnect(this.value);
         } else if (this.isOracleType()) {
             ShellViewFactory.updateOracleConnect(this.value);
         } else if (this.isMongoType()) {
@@ -571,31 +588,28 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         builder.append(ShellI18nHelper.label(I18nHelper.protocol(), this.value.getType())).append("\n");
         if (this.isHttpType()) {
             if (StringUtil.isNotBlank(this.value.getRemark())) {
-                builder.append(ShellI18nHelper.label(I18nResourceBundle.i18nString("base.remark"), this.value.getRemark())).append("\n");
+                builder.append(ShellI18nHelper.label(I18nHelper.remark(), this.value.getRemark())).append("\n");
             }
         } else if (this.isS3Type()) {
             builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.getHost())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.region(), this.value.getRegion())).append("\n");
-        } else if (this.isSMBType()) {
-            builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.hostIp())).append("\n");
-            builder.append(ShellI18nHelper.label(I18nHelper.port(), this.value.hostPort())).append("\n");
-            if (this.isPostgresqlType() && StringUtil.isNotBlank(this.value.getDatabase())) {
-                builder.append(ShellI18nHelper.label(I18nHelper.database(), this.value.getDatabase())).append("\n");
-            }
-            if (StringUtil.isNotBlank(this.value.getUser())) {
-                builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
-            }
-            if (StringUtil.isNotBlank(this.value.getPassword())) {
-                builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
-            }
-            if (StringUtil.isNotBlank(this.value.getSmbShareName())) {
-                builder.append(ShellI18nHelper.label(I18nHelper.shareName(), this.value.getSmbShareName())).append("\n");
-            }
-            if (StringUtil.isNotBlank(this.value.getDomain())) {
-                builder.append(ShellI18nHelper.label(I18nHelper.domain(), this.value.getDomain())).append("\n");
-            }
+//        } else if (this.isSMBType()) {
+//            builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.hostIp())).append("\n");
+//            builder.append(ShellI18nHelper.label(I18nHelper.port(), this.value.hostPort())).append("\n");
+//            if (StringUtil.isNotBlank(this.value.getUser())) {
+//                builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
+//            }
+//            if (StringUtil.isNotBlank(this.value.getPassword())) {
+//                builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
+//            }
+//            if (StringUtil.isNotBlank(this.value.getSmbShareName())) {
+//                builder.append(ShellI18nHelper.label(I18nHelper.shareName(), this.value.getSmbShareName())).append("\n");
+//            }
+//            if (StringUtil.isNotBlank(this.value.getDomain())) {
+//                builder.append(ShellI18nHelper.label(I18nHelper.domain(), this.value.getDomain())).append("\n");
+//            }
         } else if (this.isSerialType()) {
             builder.append(ShellI18nHelper.label(I18nHelper.portName(), this.value.getSerialPortName())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.baudRate(), this.value.getSerialBaudRate())).append("\n");
@@ -606,11 +620,24 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else {
             builder.append(ShellI18nHelper.label(I18nHelper.host(), this.value.hostIp())).append("\n");
             builder.append(ShellI18nHelper.label(I18nHelper.port(), this.value.hostPort())).append("\n");
+            if ((this.isPostgresqlType()
+                    || this.isSqlServerType())
+                    && StringUtil.isNotBlank(this.value.getDatabase())) {
+                builder.append(ShellI18nHelper.label(I18nHelper.database(), this.value.getDatabase())).append("\n");
+            }
             if (StringUtil.isNotBlank(this.value.getUser())) {
                 builder.append(ShellI18nHelper.label(I18nHelper.userName(), this.value.getUser())).append("\n");
             }
             if (StringUtil.isNotBlank(this.value.getPassword())) {
                 builder.append(ShellI18nHelper.label(I18nHelper.password(), this.value.getPassword())).append("\n");
+            }
+            if (this.isSMBType()) {
+                if (StringUtil.isNotBlank(this.value.getSmbShareName())) {
+                    builder.append(ShellI18nHelper.label(I18nHelper.shareName(), this.value.getSmbShareName())).append("\n");
+                }
+                if (StringUtil.isNotBlank(this.value.getDomain())) {
+                    builder.append(ShellI18nHelper.label(I18nHelper.domain(), this.value.getDomain())).append("\n");
+                }
             }
         }
         String content = builder.substring(0, builder.lastIndexOf("\n"));

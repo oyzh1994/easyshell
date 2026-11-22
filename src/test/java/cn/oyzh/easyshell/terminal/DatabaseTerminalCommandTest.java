@@ -14,6 +14,9 @@ import cn.oyzh.easyshell.terminal.mysql.basic.MysqlUseTerminalCommandHandler;
 import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalManager;
 import cn.oyzh.easyshell.terminal.sqlite.ShellSqliteTerminalPane;
 import cn.oyzh.easyshell.terminal.sqlite.basic.SqliteUseTerminalCommandHandler;
+import cn.oyzh.easyshell.terminal.sqlserver.SqlServerTerminalManager;
+import cn.oyzh.easyshell.terminal.sqlserver.SqlServerTerminalPane;
+import cn.oyzh.easyshell.terminal.sqlserver.basic.SqlServerUseTerminalCommandHandler;
 import cn.oyzh.fx.terminal.standard.ClearTerminalCommand;
 import cn.oyzh.fx.terminal.standard.ClearTerminalCommandHandler;
 import cn.oyzh.fx.terminal.standard.HelpTerminalCommandHandler;
@@ -36,11 +39,13 @@ public class DatabaseTerminalCommandTest {
         this.assertBuiltInCommands(DamengTerminalPane.TERMINAL_NAME, DamengTerminalManager::registerHandlers);
         this.assertBuiltInCommands(MongoTerminalPane.TERMINAL_NAME, MongoTerminalManager::registerHandlers);
         this.assertBuiltInCommands(ShellSqliteTerminalPane.TERMINAL_NAME, ShellSqliteTerminalManager::registerHandlers);
+        this.assertBuiltInCommands(SqlServerTerminalPane.TERMINAL_NAME, SqlServerTerminalManager::registerHandlers);
 
         this.assertUseCommand(MysqlTerminalPane.TERMINAL_NAME, "use test;", MysqlUseTerminalCommandHandler.class);
         this.assertUseCommand(MariadbTerminalPane.TERMINAL_NAME, "use test;", MariadbUseTerminalCommandHandler.class);
         this.assertUseCommand(DamengTerminalPane.TERMINAL_NAME, "use test;", DamengUseTerminalCommandHandler.class);
         this.assertUseCommand(ShellSqliteTerminalPane.TERMINAL_NAME, "use main;", SqliteUseTerminalCommandHandler.class);
+        this.assertUseCommand(SqlServerTerminalPane.TERMINAL_NAME, "use dbo;", SqlServerUseTerminalCommandHandler.class);
     }
 
     private void assertBuiltInCommands(String terminalName, Runnable register) throws Exception {

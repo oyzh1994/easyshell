@@ -1,0 +1,59 @@
+# SQL Server Docker 环境
+
+以下命令在 `docker/sqlserver` 目录执行。
+
+## 启动
+
+```bash
+docker compose -f docker-compose.yml up -d
+```
+
+等待容器变为 healthy 后初始化数据库和测试 Schema：
+
+```bash
+bash init.sh
+```
+
+也可以不使用 Compose，直接运行与测试实例相同配置的容器：
+
+```bash
+docker run -itd --name easyshell-sqlserver \
+  --restart unless-stopped \
+  -e ACCEPT_EULA=Y \
+  -e 'MSSQL_SA_PASSWORD=easyshell@2026' \
+  -e MSSQL_PID=Developer \
+  -p 14333:1433 \
+  -v easyshell-sqlserver-data:/var/opt/mssql \
+  mcr.microsoft.com/mssql/server:2022-latest
+
+bash init.sh
+```
+
+## EasyShell 连接
+
+```text
+协议：SqlServer
+主机：127.0.0.1
+端口：14333
+用户名：sa
+密码：easyshell@2026
+数据库：EASYSHELL_SQLSERVER
+SSL：关闭
+```
+
+## 验证
+
+```bash
+docker exec easyshell-sqlserver \
+  /opt/mssql-tools18/bin/sqlcmd \
+  -S localhost -U sa -P 'easyshell@2026' -C \
+  -d EASYSHELL_SQLSERVER \
+  -Q "SELECT name FROM sys.schemas WHERE name LIKE 'EASYSHELL_%';"
+```
+
+初始化脚本会创建 `EASYSHELL_SRC`、`EASYSHELL_DST`、
+`EASYSHELL_DUMP_SRC`、`EASYSHELL_DUMP_DST`，以及表、视图、函数、
+过程、序列、触发器、索引、约束、注释和示例数据。
+
+`docker compose down` 会保留命名卷 `easyshell-sqlserver-data`；
+只有执行 `docker compose down -v` 才会删除数据库数据。

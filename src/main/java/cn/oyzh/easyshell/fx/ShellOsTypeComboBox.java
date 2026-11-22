@@ -41,6 +41,7 @@ import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.SqlServerSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.protol.RshSVGGlyph;
 import cn.oyzh.fx.plus.controls.combo.FXComboBox;
@@ -94,6 +95,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.MOSH);
         this.addItem(ShellPrototype.DAMENG);
         this.addItem(ShellPrototype.POSTGRESQL);
+        this.addItem(ShellPrototype.SQLSERVER);
         this.addItem(ShellPrototype.ORACLE);
         this.addItem(ShellPrototype.HTTP);
         this.addItem("Alibaba Cloud");
@@ -173,6 +175,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.DAMENG);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.POSTGRESQL)) {
             super.select(ShellPrototype.POSTGRESQL);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SQLSERVER)) {
+            super.select(ShellPrototype.SQLSERVER);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.ORACLE)) {
             super.select(ShellPrototype.ORACLE);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.HTTP)) {
@@ -231,6 +235,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "mosh" -> new MoshSVGGlyph();
             case "dameng" -> new DamengSVGGlyph();
             case "postgresql" -> new PostgreSQLSVGGlyph();
+            case "sqlserver" -> new SqlServerSVGGlyph();
             case "oracle" -> new OracleSVGGlyph();
             case "http" -> new HttpSVGGlyph();
             case "ssh" -> new LinuxSVGGlyph();

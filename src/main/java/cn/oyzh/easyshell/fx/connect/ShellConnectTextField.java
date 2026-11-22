@@ -145,6 +145,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadDamengType();
         } else if (ShellPrototype.POSTGRESQL.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadPostgresqlType();
+        } else if (ShellPrototype.SQLSERVER.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadSqlServerType();
         } else if (ShellPrototype.ORACLE.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadOracleType();
         } else {

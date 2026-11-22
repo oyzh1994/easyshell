@@ -1,0 +1,42 @@
+package cn.oyzh.easyshell.trees.sqlserver.procedure;
+
+import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
+import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+
+/**
+ * SqlServer数据库树过程节点值
+ *
+ * @author oyzh
+ * @since 2025-11-06
+ */
+public class ShellSqlServerProcedureTreeItemValue extends RichTreeItemValue {
+
+    /**
+     * 构造SqlServer数据库树过程节点值
+     *
+     * @param item 过程节点
+     */
+    public ShellSqlServerProcedureTreeItemValue(ShellSqlServerProcedureTreeItem item) {
+        super(item);
+        this.setRichMode(true);
+    }
+
+    @Override
+    public ShellSqlServerProcedureTreeItem item() {
+        return (ShellSqlServerProcedureTreeItem) super.item();
+    }
+
+    @Override
+    public SVGGlyph graphic() {
+        if (super.graphic() == null) {
+            super.graphic(new ProcedureSVGGlyph());
+        }
+        return super.graphic();
+    }
+
+    @Override
+    public String name() {
+        return this.item().procedureName();
+    }
+}

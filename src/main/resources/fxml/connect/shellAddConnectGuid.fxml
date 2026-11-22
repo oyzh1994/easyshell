@@ -23,6 +23,7 @@
 <?import cn.oyzh.fx.gui.label.InfoLabel?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.PostgreSQLSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.SqlServerSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.OracleSVGGlyph?>
@@ -42,7 +43,8 @@
 <?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController" realWidth="700"
+        fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController"
+        realWidth="800"
         realHeight="600">
     <FXHeaderBar/>
     <FXHBox flexWidth="100%" realHeight="80">
@@ -275,6 +277,14 @@
         <FXRadioButton toggleGroup="$type" text="MariaDB" userData="mariadb">
             <graphic>
                 <MariadbSVGGlyph/>
+            </graphic>
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </FXRadioButton>
+        <FXRadioButton toggleGroup="$type" text="SQL Server" userData="sqlserver">
+            <graphic>
+                <SqlServerSVGGlyph/>
             </graphic>
             <HBox.margin>
                 <Insets left="10" top="5"/>

@@ -1,0 +1,532 @@
+package cn.oyzh.easyshell.data.sqlserver.file;
+
+import cn.oyzh.common.date.DateUtil;
+import com.alibaba.fastjson2.JSON;
+import cn.oyzh.common.util.HexUtil;
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
+import cn.oyzh.easyshell.sqlserver.column.SqlServerColumns;
+import cn.oyzh.easyshell.sqlserver.record.SqlServerRecord;
+import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
+import cn.oyzh.fx.db.util.DBUtil;
+
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * SqlServer数据导入助手
+ *
+ * @author oyzh
+ * @since 2025-11-06
+ */
+public class ShellSqlServerDataImportHelper {
+
+    /**
+     * 参数化
+     *
+     * @param column 字段
+     * @param value  值
+     * @param config 导入配置
+     * @return 参数化后的值
+     * @throws ParseException 解析异常
+     */
+    public static Object parameterized(SqlServerColumn column, Object value, DBDataImportConfig config) throws ParseException {
+        if (value == null) {
+            return null;
+        }
+        if (value.toString().isEmpty() && !column.supportString() && !column.supportText()) {
+            return null;
+        }
+        if (column.isDateType()) {
+            if (value instanceof CharSequence date) {
+                Date date1 = DateUtil.parse(date, config.getDateFormat());
+                return DateUtil.format(date1, "yyyy-MM-dd HH:mm:ss");
+            }
+            if (value instanceof LocalDate date) {
+                return date.toString();
+            }
+            if (value instanceof Date date) {
+                return DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        if (column.supportTimestamp()) {
+            if (StringUtil.equalsIgnoreCase(column.getType(), "DATETIMEOFFSET")) {
+                if (value instanceof CharSequence date) {
+                    return date.toString();
+                }
+                if (value instanceof java.time.OffsetDateTime date) {
+                    return date.toString();
+                }
+            }
+            if (value instanceof CharSequence date) {
+                LocalDateTime date1 = DateUtil.parseLocalDateTime(date, config.getDateFormat());
+                return DateUtil.format(date1, "yyyy-MM-dd HH:mm:ss");
+            }
+            if (value instanceof Date date) {
+                return DateUtil.format(date, "yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        if (column.supportJson()) {
+            if (value instanceof CharSequence) {
+                return normalizeJson(value.toString());
+            }
+            return JSON.toJSONString(value);
+        }
+        if (column.supportString()) {
+            return value.toString();
+        }
+        return value;
+    }
+
+    /**
+     * 规整 JSON 值。兼容旧导出文件多转义一层的情况，例如 {\"level\": 1}。
+     *
+     * @param text JSON 文本
+     * @return 合法 JSON 文本
+     */
+    private static String normalizeJson(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        if (isValidJson(text)) {
+            return text;
+        }
+        String unescaped = unescapeJson(text);
+        if (isValidJson(unescaped)) {
+            return unescaped;
+        }
+        return text;
+    }
+
+    /**
+     * 是否为合法 JSON
+     *
+     * @param text 文本
+     * @return 结果
+     */
+    private static boolean isValidJson(String text) {
+        try {
+            JSON.parse(text);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    /**
+     * 去除一层 JSON 字符串转义
+     *
+     * @param text 文本
+     * @return 反转义后的文本
+     */
+    private static String unescapeJson(String text) {
+        StringBuilder builder = new StringBuilder(text.length());
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c != '\\' || i + 1 >= text.length()) {
+                builder.append(c);
+                continue;
+            }
+            char next = text.charAt(++i);
+            switch (next) {
+                case '"' -> builder.append('"');
+                case '\\' -> builder.append('\\');
+                case '/' -> builder.append('/');
+                case 'b' -> builder.append('\b');
+                case 'f' -> builder.append('\f');
+                case 'n' -> builder.append('\n');
+                case 'r' -> builder.append('\r');
+                case 't' -> builder.append('\t');
+                case 'u' -> {
+                    if (i + 4 < text.length()) {
+                        try {
+                            builder.append((char) Integer.parseInt(text.substring(i + 1, i + 5), 16));
+                            i += 4;
+                        } catch (NumberFormatException ex) {
+                            builder.append('\\').append(next);
+                        }
+                    } else {
+                        builder.append('\\').append(next);
+                    }
+                }
+                default -> builder.append(next);
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 转换为插入sql
+     *
+     * @param columns 字段列表
+     * @param records 记录
+     * @param config  配置
+     * @return 插入sql
+     * @throws Exception 异常
+     */
+    public static List<String> toInsertSql(SqlServerColumns columns, List<SqlServerRecord> records, DBDataImportConfig config) throws Exception {
+        List<String> insertSql = new ArrayList<>();
+        // SqlServer使用"schema"."table"定位表
+        String table = StringUtil.isBlank(columns.schema())
+                ? DBUtil.wrap(columns.tableName(), DBDialect.SQLSERVER)
+                : DBUtil.wrap(columns.schema(), columns.tableName(), DBDialect.SQLSERVER);
+        List<SqlServerColumn> insertColumns = insertableColumns(columns);
+        for (SqlServerRecord record : records) {
+            if (insertColumns.isEmpty()) {
+                insertSql.add("INSERT INTO " + table + " DEFAULT VALUES;");
+                continue;
+            }
+            StringBuilder sql = new StringBuilder("INSERT INTO ");
+            sql.append(table);
+            sql.append(" (");
+            for (SqlServerColumn column : insertColumns) {
+                sql.append(DBUtil.wrap(column.getName(), DBDialect.SQLSERVER)).append(", ");
+            }
+            sql.deleteCharAt(sql.length() - 2);
+            sql.append(") VALUES (");
+            for (SqlServerColumn column : insertColumns) {
+                Object val = record.getValue(column.getName());
+                if (!(val instanceof CharSequence sequence && sequence.isEmpty())) {
+                    val = DBUtil.unwrapData(val, DBDialect.SQLSERVER);
+                }
+                val = parameterized(column, val, config);
+                sql.append(toSqlLiteral(column, val)).append(", ");
+            }
+            sql.deleteCharAt(sql.length() - 2);
+            sql.append(")");
+            insertSql.add(sql.toString());
+        }
+        return insertSql;
+    }
+
+    /**
+     * 转换为SqlServer Sql字面量
+     *
+     * @param column 字段
+     * @param value  值
+     * @return Sql字面量
+     */
+    /**
+     * SqlServer 标准字符串字面量：只把单引号翻倍，保留双引号、反斜杠、换行等原始字符。
+     * 不能用 JSON 风格转义，否则JSON文本中的双引号会被错误转义。
+     *
+     * @param value 字符串
+     * @return SQL 字面量
+     */
+    public static String sqlStringLiteral(String value) {
+        // 使用Unicode字面量，避免非Unicode排序规则把中文等字符转换为问号
+        return "N'" + value.replace("'", "''") + "'";
+    }
+
+    public static String toSqlLiteral(SqlServerColumn column, Object value) {
+        if (value == null) {
+            return "NULL";
+        }
+        if (column.isDateType() || column.supportTimestamp() || column.isTimeType()) {
+            if (value instanceof LocalDateTime date) {
+                return "'" + DateUtil.format(date, "yyyy-MM-dd HH:mm:ss") + "'";
+            }
+            if (value instanceof LocalDate date) {
+                return "'" + date + "'";
+            }
+            if (value instanceof java.time.LocalTime time) {
+                return "'" + time + "'";
+            }
+            if (value instanceof java.time.OffsetDateTime date) {
+                return "'" + date + "'";
+            }
+            if (value instanceof Date date) {
+                return "'" + DateUtil.format(date, "yyyy-MM-dd HH:mm:ss") + "'";
+            }
+        }
+        if (column.supportBinary()) {
+            if (value instanceof byte[] bytes) {
+                return "0x" + HexUtil.encodeHexStr(bytes, false);
+            }
+            String str = value.toString();
+            if (StringUtil.startWithIgnoreCase(str, "\\x")) {
+                return "0x" + str.substring(2);
+            }
+            if (StringUtil.startWithIgnoreCase(str, "0x")) {
+                return str;
+            }
+            return "0x" + HexUtil.encodeHexStr(str.getBytes(java.nio.charset.StandardCharsets.UTF_8), false);
+        }
+        if (column.supportBoolean()) {
+            if (value instanceof Boolean b) {
+                return b ? "1" : "0";
+            }
+            return StringUtil.equalsAnyIgnoreCase(value.toString(), "true", "t", "1", "yes", "y") ? "1" : "0";
+        }
+        if (column.supportBit()) {
+            if (value instanceof byte[] bytes) {
+                return new java.math.BigInteger(1, bytes).toString();
+            }
+            if (value instanceof Boolean b) {
+                return b ? "1" : "0";
+            }
+            return value.toString().replaceAll("[^0-9]", "");
+        }
+        if (column.supportInteger() || column.supportDigits() || value instanceof Number) {
+            return value.toString();
+        }
+        // 字符串、json、uuid等统一使用单引号字面量
+        return sqlStringLiteral(value.toString());
+    }
+
+    /**
+     * 转换为插入sql（数据库记录直接转储）
+     *
+     * @param columns 字段列表
+     * @param records 记录
+     * @param schema  模式名称，为空则不限定模式
+     * @return 插入sql
+     */
+    public static List<String> toInsertSql(SqlServerColumns columns, List<SqlServerRecord> records, String schema) {
+        List<String> insertSql = new ArrayList<>();
+        String table = StringUtil.isBlank(schema)
+                ? DBUtil.wrap(columns.tableName(), DBDialect.SQLSERVER)
+                : DBUtil.wrap(schema, columns.tableName(), DBDialect.SQLSERVER);
+        List<SqlServerColumn> columnList = insertableColumns(columns);
+        for (SqlServerRecord record : records) {
+            if (columnList.isEmpty()) {
+                insertSql.add("INSERT INTO " + table + " DEFAULT VALUES;");
+                continue;
+            }
+            StringBuilder sql = new StringBuilder("INSERT INTO ");
+            sql.append(table);
+            sql.append(" (");
+            for (SqlServerColumn column : columnList) {
+                sql.append(DBUtil.wrap(column.getName(), DBDialect.SQLSERVER)).append(", ");
+            }
+            sql.delete(sql.length() - 2, sql.length());
+            sql.append(") VALUES (");
+            for (SqlServerColumn column : columnList) {
+                sql.append(toSqlLiteral(column, record.getValue(column.getName()))).append(", ");
+            }
+            sql.delete(sql.length() - 2, sql.length());
+            sql.append(");");
+            insertSql.add(sql.toString());
+        }
+        return insertSql;
+    }
+
+    /**
+     * 获取可插入字段，生成列由数据库计算。
+     *
+     * @param columns 字段列表
+     * @return 可插入字段
+     */
+    private static List<SqlServerColumn> insertableColumns(SqlServerColumns columns) {
+        return columns.sortOfPosition().stream()
+                .filter(column -> !column.isGenerated() && !column.isRowVersion())
+                .toList();
+    }
+
+    /**
+     * 拆分sql语句
+     *
+     * <p>按SqlServer顶层分号拆分，忽略字符串、双引号标识符、注释以及$$（或$tag$）引用中的分号。</p>
+     *
+     * @param sql sql内容
+     * @return 语句列表
+     */
+    public static List<String> splitSql(String sql) {
+        List<String> list = new ArrayList<>();
+        if (StringUtil.isBlank(sql)) {
+            return list;
+        }
+        int start = 0;
+        int end;
+        while ((end = indexOfStatementEnd(sql, start)) >= 0) {
+            String statement = sql.substring(start, end).strip();
+            if (!statement.isEmpty()) {
+                list.add(statement);
+            }
+            start = end + 1;
+        }
+        String rest = sql.substring(start).strip();
+        if (!rest.isEmpty()) {
+            list.add(rest);
+        }
+        return list;
+    }
+
+    /**
+     * 查找语句结束符位置
+     *
+     * @param sql   sql内容
+     * @param start 起始位置
+     * @return 结束符位置，未结束返回-1
+     */
+    private static int indexOfStatementEnd(String sql, int start) {
+        int state = 0; // 0普通 1单引号 2双引号 3$$引用 4行注释 5块注释
+        String dollarTag = null;
+        for (int i = start; i < sql.length(); ) {
+            char c = sql.charAt(i);
+            switch (state) {
+                case 0 -> {
+                    if (c == '-' && i + 1 < sql.length() && sql.charAt(i + 1) == '-') {
+                        state = 4;
+                        i += 2;
+                    } else if (c == '/' && i + 1 < sql.length() && sql.charAt(i + 1) == '*') {
+                        state = 5;
+                        i += 2;
+                    } else if (c == '\'') {
+                        state = 1;
+                        i++;
+                    } else if (c == '"') {
+                        state = 2;
+                        i++;
+                    } else if (c == '$') {
+                        dollarTag = readDollarTag(sql, i);
+                        if (dollarTag == null) {
+                            i++;
+                        } else {
+                            state = 3;
+                            i += dollarTag.length();
+                        }
+                    } else if (c == ';') {
+                        return i;
+                    } else {
+                        i++;
+                    }
+                }
+                case 1 -> {
+                    if (c == '\'') {
+                        if (i + 1 < sql.length() && sql.charAt(i + 1) == '\'') {
+                            i += 2;
+                        } else {
+                            state = 0;
+                            i++;
+                        }
+                    } else {
+                        i++;
+                    }
+                }
+                case 2 -> {
+                    if (c == '"') {
+                        if (i + 1 < sql.length() && sql.charAt(i + 1) == '"') {
+                            i += 2;
+                        } else {
+                            state = 0;
+                            i++;
+                        }
+                    } else {
+                        i++;
+                    }
+                }
+                case 3 -> {
+                    if (sql.startsWith(dollarTag, i)) {
+                        i += dollarTag.length();
+                        dollarTag = null;
+                        state = 0;
+                    } else {
+                        i++;
+                    }
+                }
+                case 4 -> {
+                    if (c == '\n') {
+                        state = 0;
+                    }
+                    i++;
+                }
+                case 5 -> {
+                    if (c == '*' && i + 1 < sql.length() && sql.charAt(i + 1) == '/') {
+                        state = 0;
+                        i += 2;
+                    } else {
+                        i++;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 读取$$引用标签
+     *
+     * @param sql   sql内容
+     * @param index 起始位置
+     * @return 标签，非$$引用返回null
+     */
+    private static String readDollarTag(String sql, int index) {
+        int next = sql.indexOf('$', index + 1);
+        if (next < 0) {
+            return null;
+        }
+        String tag = sql.substring(index, next + 1);
+        if (tag.length() == 2) {
+            return tag;
+        }
+        String name = tag.substring(1, tag.length() - 1);
+        return name.matches("[A-Za-z_][A-Za-z0-9_]*") ? tag : null;
+    }
+
+    /**
+     * 生成序列值重置sql
+     *
+     * <p>IDENTITY列使用DBCC CHECKIDENT重置；序列默认值使用ALTER SEQUENCE重置。</p>
+     *
+     * @param columns 字段列表
+     * @param schema  模式名称，null则使用字段中的模式，空字符串表示不限定模式
+     * @return 重置sql列表
+     */
+    public static List<String> buildSequenceResetSql(SqlServerColumns columns, String schema) {
+        List<String> sqlList = new ArrayList<>();
+        if (columns == null || columns.isEmpty()) {
+            return sqlList;
+        }
+        String tableName = columns.tableName();
+        if (StringUtil.isBlank(tableName)) {
+            return sqlList;
+        }
+        if (schema == null) {
+            schema = columns.schema();
+        }
+        String table = StringUtil.isBlank(schema)
+                ? DBUtil.wrap(tableName, DBDialect.SQLSERVER)
+                : DBUtil.wrap(schema, tableName, DBDialect.SQLSERVER);
+        for (SqlServerColumn column : columns) {
+            String columnName = column.getName();
+            String columnRef = DBUtil.wrap(columnName, DBDialect.SQLSERVER);
+            if (column.isAutoIncrement()) {
+                String sequenceTable = "'" + table.replace("'", "''") + "'";
+                sqlList.add("DECLARE @MAX_VALUE BIGINT; SELECT @MAX_VALUE = MAX(" + columnRef
+                        + ") FROM " + table + "; IF @MAX_VALUE IS NOT NULL DBCC CHECKIDENT ("
+                        + sequenceTable + ", RESEED, @MAX_VALUE) WITH NO_INFOMSGS;");
+                continue;
+            }
+            String sequenceName = column.getSequenceName();
+            if (StringUtil.isBlank(sequenceName)) {
+                continue;
+            }
+            String sequence = sequenceName;
+            int dot = sequenceName.lastIndexOf('.');
+            if (dot > 0) {
+                String seqSchema = sequenceName.substring(0, dot);
+                String seqName = sequenceName.substring(dot + 1);
+                sequence = DBUtil.wrap(seqSchema.replace("[", "").replace("]", ""),
+                        seqName.replace("[", "").replace("]", ""), DBDialect.SQLSERVER);
+            } else {
+                sequence = DBUtil.wrap(sequenceName.replace("[", "").replace("]", ""),
+                        DBDialect.SQLSERVER);
+            }
+            String sequenceLiteral = "'" + sequence.replace("'", "''") + "'";
+            sqlList.add("DECLARE @MAX_VALUE BIGINT; DECLARE @INC BIGINT = ISNULL(("
+                    + "SELECT CAST(INCREMENT AS BIGINT) FROM SYS.SEQUENCES WHERE OBJECT_ID="
+                    + "OBJECT_ID(N" + sequenceLiteral + ")),1); SELECT @MAX_VALUE = MAX(" + columnRef
+                    + ") FROM " + table + "; IF @MAX_VALUE IS NOT NULL BEGIN DECLARE @SQL NVARCHAR(400) = "
+                    + "N'ALTER SEQUENCE " + sequence.replace("'", "''") + " RESTART WITH ' + "
+                    + "CONVERT(NVARCHAR(40), @MAX_VALUE + @INC); EXEC sys.sp_executesql @SQL; END;");
+        }
+        return sqlList;
+    }
+}

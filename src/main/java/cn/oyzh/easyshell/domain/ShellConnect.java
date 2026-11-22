@@ -1315,6 +1315,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否SQL Server类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isSqlServerType() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.SQLSERVER);
+    }
+
+    /**
      * 是否Oracle类型
      *
      * @return 结果
