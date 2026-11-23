@@ -20,6 +20,7 @@ services:
           --cpu "${CPUS:-2}" \
           --ssh-port 22 \
           --vnc off \
+          --vga "${OPENBSD_VGA:-VGA}" \
           --tcg \
           --detach
 
@@ -61,7 +62,7 @@ services:
     volumes:
       - openbsd-data:/data
     healthcheck:
-      test: ["CMD-SHELL", "timeout 5 bash -c 'exec 3<>/dev/tcp/127.0.0.1/22'"]
+      test: ["CMD-SHELL", "timeout 8 bash -c 'exec 3<>/dev/tcp/127.0.0.1/22; head -c 4 <&3 | grep -q SSH-'"]
       interval: 15s
       timeout: 10s
       retries: 40

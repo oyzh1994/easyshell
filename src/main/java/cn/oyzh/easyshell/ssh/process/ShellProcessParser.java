@@ -10,9 +10,15 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 进程解析器
@@ -232,6 +238,259 @@ public class ShellProcessParser {
             ex.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * ss 输出中的 pid
+     */
+    private static final Pattern SS_PID_PATTERN = Pattern.compile("pid=(\\d+)");
+
+    /**
+     * 解析 Linux 监听端口。优先解析 ss，兼容 netstat 输出。
+     *
+     * @param output 命令输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseLinuxPorts(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyMap();
+        }
+        if (output.contains("users:((") || output.contains("Local Address:Port")) {
+            return parseSsPorts(output);
+        }
+        return parseNetstatPorts(output);
+    }
+
+    /**
+     * 解析 ss -ltnup 输出
+     *
+     * @param output 命令输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseSsPorts(String output) {
+        Map<Integer, Set<Integer>> ports = new HashMap<>();
+        for (String line : output.split("\\R")) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("Netid") || line.startsWith("State")) {
+                continue;
+            }
+            String[] cols = line.split("\\s+");
+            if (cols.length < 6) {
+                continue;
+            }
+            int port = parsePort(cols[4]);
+            if (port <= 0) {
+                continue;
+            }
+            Matcher matcher = SS_PID_PATTERN.matcher(line);
+            while (matcher.find()) {
+                addPort(ports, Integer.parseInt(matcher.group(1)), port);
+            }
+        }
+        return toPortMap(ports);
+    }
+
+    /**
+     * 解析 netstat 监听端口。兼容 Linux 与 Windows 的常见格式。
+     *
+     * @param output 命令输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseNetstatPorts(String output) {
+        Map<Integer, Set<Integer>> ports = new HashMap<>();
+        for (String line : output.split("\\R")) {
+            line = line.trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            String upper = line.toUpperCase(Locale.ROOT);
+            if (!upper.startsWith("TCP") && !upper.startsWith("UDP")) {
+                continue;
+            }
+            // TCP 只保留监听状态，UDP 本身就是无连接的本地绑定端口
+            if (upper.startsWith("TCP") && !upper.contains("LISTEN")) {
+                continue;
+            }
+            String[] cols = line.split("\\s+");
+            if (cols.length < 4) {
+                continue;
+            }
+            String last = cols[cols.length - 1];
+            int localIndex;
+            int pid;
+            if (last.matches("\\d+")) {
+                // Windows: TCP local foreign state pid
+                pid = Integer.parseInt(last);
+                localIndex = 1;
+            } else {
+                // Unix: proto recv-q send-q local foreign state pid/program
+                int slash = last.indexOf('/');
+                if (slash <= 0 || !last.substring(0, slash).matches("\\d+")) {
+                    continue;
+                }
+                pid = Integer.parseInt(last.substring(0, slash));
+                localIndex = 3;
+            }
+            if (cols.length <= localIndex) {
+                continue;
+            }
+            int port = parsePort(cols[localIndex]);
+            if (port > 0 && pid > 0) {
+                addPort(ports, pid, port);
+            }
+        }
+        return toPortMap(ports);
+    }
+
+    /**
+     * 解析 Windows 监听端口。优先解析 PowerShell 的结构化输出，兼容 netstat 输出。
+     *
+     * @param output 命令输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseWindowsPorts(String output) {
+        if (StringUtil.isBlank(output)) {
+            return Collections.emptyMap();
+        }
+        Map<Integer, Set<Integer>> ports = new HashMap<>();
+        boolean structured = false;
+        for (String line : output.split("\\R")) {
+            String[] cols = line.trim().split(",");
+            if (cols.length < 3 || !(cols[0].equals("T") || cols[0].equals("U"))) {
+                continue;
+            }
+            if (!cols[1].matches("\\d+") || !cols[2].matches("\\d+")) {
+                continue;
+            }
+            structured = true;
+            addPort(ports, Integer.parseInt(cols[1]), Integer.parseInt(cols[2]));
+        }
+        if (structured) {
+            return toPortMap(ports);
+        }
+        return parseNetstatPorts(output);
+    }
+
+    /**
+     * 解析 lsof -Fpn 输出
+     *
+     * @param output 命令输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseLsofPorts(String output) {
+        Map<Integer, Set<Integer>> ports = new HashMap<>();
+        int pid = -1;
+        for (String line : output.split("\\R")) {
+            line = line.trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            if (line.charAt(0) == 'p') {
+                String value = line.substring(1);
+                pid = value.matches("\\d+") ? Integer.parseInt(value) : -1;
+            } else if (line.charAt(0) == 'n' && pid > 0) {
+                int port = parsePort(line.substring(1));
+                if (port > 0) {
+                    addPort(ports, pid, port);
+                }
+            }
+        }
+        return toPortMap(ports);
+    }
+
+    /**
+     * 解析 BSD sockstat -l 输出
+     *
+     * @param output 命令输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseSockstatPorts(String output) {
+        Map<Integer, Set<Integer>> ports = new HashMap<>();
+        for (String line : output.split("\\R")) {
+            line = line.trim();
+            if (line.isEmpty() || line.startsWith("USER")) {
+                continue;
+            }
+            String[] cols = line.split("\\s+");
+            // USER COMMAND PID FD PROTO LOCAL_ADDRESS FOREIGN_ADDRESS
+            if (cols.length < 6 || !cols[2].matches("\\d+")) {
+                continue;
+            }
+            int port = parsePort(cols[5]);
+            if (port > 0) {
+                addPort(ports, Integer.parseInt(cols[2]), port);
+            }
+        }
+        return toPortMap(ports);
+    }
+
+    /**
+     * 将端口信息合并到进程列表
+     *
+     * @param infos      进程列表
+     * @param portsByPid pid -> 端口列表
+     */
+    public static void parsePorts(List<ShellProcessInfo> infos, Map<Integer, List<Integer>> portsByPid) {
+        if (infos == null || infos.isEmpty() || portsByPid == null || portsByPid.isEmpty()) {
+            return;
+        }
+        Map<Integer, ShellProcessInfo> processByPid = new HashMap<>(infos.size() * 2);
+        for (ShellProcessInfo info : infos) {
+            processByPid.put(info.getPid(), info);
+        }
+        for (Map.Entry<Integer, List<Integer>> entry : portsByPid.entrySet()) {
+            ShellProcessInfo info = processByPid.get(entry.getKey());
+            if (info == null || entry.getValue().isEmpty()) {
+                continue;
+            }
+            StringBuilder value = new StringBuilder();
+            for (Integer port : entry.getValue()) {
+                if (value.length() > 0) {
+                    value.append(',');
+                }
+                value.append(port);
+            }
+            info.setPorts(value.toString());
+        }
+    }
+
+    /**
+     * 添加端口
+     */
+    private static void addPort(Map<Integer, Set<Integer>> ports, int pid, int port) {
+        ports.computeIfAbsent(pid, key -> new TreeSet<>()).add(port);
+    }
+
+    /**
+     * 转换端口映射
+     */
+    private static Map<Integer, List<Integer>> toPortMap(Map<Integer, Set<Integer>> ports) {
+        Map<Integer, List<Integer>> result = new HashMap<>(ports.size());
+        ports.forEach((pid, values) -> result.put(pid, new ArrayList<>(values)));
+        return result;
+    }
+
+    /**
+     * 从本地地址中解析端口
+     */
+    private static int parsePort(String address) {
+        if (StringUtil.isBlank(address)) {
+            return -1;
+        }
+        int index = address.lastIndexOf(':');
+        if (index < 0 || index == address.length() - 1) {
+            return -1;
+        }
+        String value = address.substring(index + 1);
+        if (!value.matches("\\d+")) {
+            return -1;
+        }
+        try {
+            int port = Integer.parseInt(value);
+            return port > 0 && port <= 65535 ? port : -1;
+        } catch (NumberFormatException ignore) {
+            return -1;
+        }
     }
 
     /**

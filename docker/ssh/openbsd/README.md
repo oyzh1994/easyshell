@@ -30,6 +30,15 @@ Once the health check is green, connect with:
 ssh -p 2226 root@127.0.0.1
 ```
 
+OpenBSD/aarch64 can hang while attaching the default `virtio-gpu` device
+(the serial console stops at `viogpu0`). The compose file therefore uses a
+plain VGA device by default. Override it only if you have verified another
+device with this guest:
+
+```sh
+OPENBSD_VGA=VGA docker compose up -d
+```
+
 The upstream image does not ship a usable root password. On first boot the
 compose command waits for the guest, sets the root password to `openbsd`,
 and raises the test VM's SSH
@@ -42,9 +51,17 @@ Recreating the container keeps the installed VM. To return to a clean VM and
 force a fresh image extraction:
 
 ```sh
-docker compose down
-docker volume rm easyshell-openbsd-osc-data
+docker compose down -v
 docker compose up -d
+```
+
+`docker compose down` alone keeps the named volume. If the guest filesystem
+was damaged by a forced QEMU shutdown, the old volume will keep dropping into
+the single-user `fsck` prompt even after the container is recreated. Use
+`down -v` or remove the volume explicitly:
+
+```sh
+docker volume rm easyshell-openbsd-osc-data
 ```
 
 The password and `MaxSessions` initialization runs again automatically after

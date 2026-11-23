@@ -32,6 +32,41 @@ public class ShellProcessExec implements AutoCloseable {
             "ps -axww -o user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command";
 
     /**
+     * Linux 监听端口命令，优先 ss，缺失时回退 netstat
+     */
+    private static final String LINUX_PORT_COMMAND =
+            "sh -c 'if command -v ss >/dev/null 2>&1; then ss -ltnup 2>/dev/null; "
+                    + "elif command -v netstat >/dev/null 2>&1; then netstat -ltnup 2>/dev/null; fi'";
+
+    /**
+     * macOS/Unix 监听端口命令，直接读取套接字表，不逐进程扫描
+     */
+    private static final String LSOF_PORT_COMMAND =
+            "sh -c 'LSOF=$(command -v lsof 2>/dev/null || echo /usr/sbin/lsof); "
+                    + "\"$LSOF\" -nP -iTCP -sTCP:LISTEN -Fpn 2>/dev/null; "
+                    + "\"$LSOF\" -nP -iUDP -Fpn 2>/dev/null'";
+
+    /**
+     * FreeBSD/OpenBSD 监听端口命令
+     */
+    private static final String BSD_PORT_COMMAND =
+            "sockstat -n -l 2>/dev/null || sockstat -l 2>/dev/null";
+
+    /**
+     * Windows 监听端口命令，netstat 通常比 CIM cmdlet 更轻量
+     */
+    private static final String WINDOWS_PORT_COMMAND = "netstat -ano";
+
+    /**
+     * Windows PowerShell 兜底命令
+     */
+    private static final String WINDOWS_POWERSHELL_PORT_COMMAND =
+            "powershell -NoProfile -Command \"Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue "
+                    + "| ForEach-Object { 'T,' + $_.OwningProcess + ',' + $_.LocalPort }; "
+                    + "Get-NetUDPEndpoint -ErrorAction SilentlyContinue "
+                    + "| ForEach-Object { 'U,' + $_.OwningProcess + ',' + $_.LocalPort }\"";
+
+    /**
      * ssh客户端
      */
     private volatile ShellSSHClient client;
@@ -126,7 +161,7 @@ public class ShellProcessExec implements AutoCloseable {
                 attr.setUser(user);
             }
             this.processAttr.keySet().retainAll(activePids);
-            DownLatch latch = DownLatch.of(2);
+            DownLatch latch = DownLatch.of(3);
             AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
             ThreadUtil.start(() -> {
                 try {
@@ -143,13 +178,28 @@ public class ShellProcessExec implements AutoCloseable {
                     latch.countDown();
                 }
             });
+            AtomicReference<Map<Integer, List<Integer>>> ports = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    Map<Integer, List<Integer>> values = ShellProcessParser.parseWindowsPorts(
+                            currentClient.execWindows(WINDOWS_PORT_COMMAND));
+                    if (values.isEmpty()) {
+                        values = ShellProcessParser.parseWindowsPorts(
+                                currentClient.execWindows(WINDOWS_POWERSHELL_PORT_COMMAND));
+                    }
+                    ports.set(values);
+                } finally {
+                    latch.countDown();
+                }
+            });
             latch.await();
             ShellProcessParser.parseNetworkSpeed_windows(processInfos.get(), networkSpeed.get());
+            ShellProcessParser.parsePorts(processInfos.get(), ports.get());
             return processInfos.get();
         }
         if (currentClient.isLinux()) {
             String output = currentClient.exec(UNIX_PS_COMMAND);
-            DownLatch latch = DownLatch.of(2);
+            DownLatch latch = DownLatch.of(3);
             AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
             ThreadUtil.start(() -> {
                 try {
@@ -166,13 +216,23 @@ public class ShellProcessExec implements AutoCloseable {
                     latch.countDown();
                 }
             });
+            AtomicReference<Map<Integer, List<Integer>>> ports = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    ports.set(ShellProcessParser.parseLinuxPorts(
+                            currentClient.exec(LINUX_PORT_COMMAND)));
+                } finally {
+                    latch.countDown();
+                }
+            });
             latch.await();
             ShellProcessParser.parseNetworkSpeed_linux(processInfos.get(), networkSpeed.get());
+            ShellProcessParser.parsePorts(processInfos.get(), ports.get());
             return processInfos.get();
         }
         if (currentClient.isMacos()) {
             String output = currentClient.exec(UNIX_PS_COMMAND);
-            DownLatch latch = DownLatch.of(2);
+            DownLatch latch = DownLatch.of(3);
             AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
             ThreadUtil.start(() -> {
                 try {
@@ -189,17 +249,67 @@ public class ShellProcessExec implements AutoCloseable {
                     latch.countDown();
                 }
             });
+            AtomicReference<Map<Integer, List<Integer>>> ports = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    ports.set(ShellProcessParser.parseLsofPorts(
+                            currentClient.exec(LSOF_PORT_COMMAND)));
+                } finally {
+                    latch.countDown();
+                }
+            });
             latch.await();
             ShellProcessParser.parseNetworkSpeed_macos(processInfos.get(), networkSpeed.get());
+            ShellProcessParser.parsePorts(processInfos.get(), ports.get());
             return processInfos.get();
         }
-        if (currentClient.isOpenBSD()) {
+        if (currentClient.isOpenBSD() || currentClient.isFreeBSD()) {
             String output = currentClient.exec(UNIX_PS_COMMAND);
-            return ShellProcessParser.psForUnix(output);
+            DownLatch latch = DownLatch.of(2);
+            AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    processInfos.set(ShellProcessParser.psForUnix(output));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            AtomicReference<Map<Integer, List<Integer>>> ports = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    ports.set(ShellProcessParser.parseSockstatPorts(
+                            currentClient.exec(BSD_PORT_COMMAND)));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            latch.await();
+            ShellProcessParser.parsePorts(processInfos.get(), ports.get());
+            return processInfos.get();
         }
         if (currentClient.isUnix()) {
             String output = currentClient.exec(UNIX_PS_COMMAND);
-            return ShellProcessParser.psForUnix(output);
+            DownLatch latch = DownLatch.of(2);
+            AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    processInfos.set(ShellProcessParser.psForUnix(output));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            AtomicReference<Map<Integer, List<Integer>>> ports = new AtomicReference<>();
+            ThreadUtil.start(() -> {
+                try {
+                    ports.set(ShellProcessParser.parseLsofPorts(
+                            currentClient.exec(LSOF_PORT_COMMAND)));
+                } finally {
+                    latch.countDown();
+                }
+            });
+            latch.await();
+            ShellProcessParser.parsePorts(processInfos.get(), ports.get());
+            return processInfos.get();
         }
         return Collections.emptyList();
     }

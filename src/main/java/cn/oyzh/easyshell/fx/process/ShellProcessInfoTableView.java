@@ -213,6 +213,7 @@ public class ShellProcessInfoTableView extends FXTableView<ShellProcessInfo> {
                             StringUtil.containsIgnoreCase(f.getCommand(), this.filterText)
                                     || StringUtil.contains(f.getPid() + "", this.filterText)
                                     || StringUtil.contains(f.getStat(), this.filterText)
+                                    || StringUtil.contains(f.getPorts(), this.filterText)
                     )) {
                         return false;
                     }

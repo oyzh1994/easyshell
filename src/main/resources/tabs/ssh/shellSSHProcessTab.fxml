@@ -40,6 +40,7 @@
             <columns>
                 <FXTableColumn valueName="user" text="%base.user" prefWidth="100"/>
                 <FXTableColumn valueName="pid" text="pid" prefWidth="80"/>
+                <FXTableColumn valueName="portsData" text="%base.port" prefWidth="100"/>
                 <FXTableColumn valueName="cpuUsage" text="%base.cpuUsage" prefWidth="90"/>
                 <FXTableColumn valueName="memUsage" text="%base.memoryUsage" prefWidth="90"/>
                 <FXTableColumn valueName="rss" text="RSS(Mb)" prefWidth="80"/>
@@ -48,7 +49,7 @@
                 <FXTableColumn valueName="timeData" text="%base.time" prefWidth="80"/>
                 <FXTableColumn valueName="networkSendData" text="%base.upload" prefWidth="80"/>
                 <FXTableColumn valueName="networkRecvData" text="%base.download" prefWidth="80"/>
-                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 925"/>
+                <FXTableColumn sortable="false" valueName="command" text="%base.cmd" flexWidth="100% - 1025"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="5" top="5"/>

@@ -66,6 +66,11 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
     private double networkRecv = -1;
 
     /**
+     * 监听端口，逗号分隔
+     */
+    private String ports;
+
+    /**
      * 获取rss
      *
      * @return rss
@@ -299,6 +304,33 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
         this.networkRecv = networkRecv;
     }
 
+    /**
+     * 获取监听端口
+     *
+     * @return 监听端口
+     */
+    public String getPorts() {
+        return ports;
+    }
+
+    /**
+     * 获取监听端口，空值返回-
+     *
+     * @return 监听端口
+     */
+    public String getPortsData() {
+        return this.ports == null || this.ports.isBlank() ? "-" : this.ports;
+    }
+
+    /**
+     * 设置监听端口
+     *
+     * @param ports 监听端口
+     */
+    public void setPorts(String ports) {
+        this.ports = ports;
+    }
+
     @Override
     public void copy(ShellProcessInfo t1) {
         this.rss = t1.rss;
@@ -311,5 +343,6 @@ public class ShellProcessInfo implements ObjectCopier<ShellProcessInfo> {
         this.cpuUsage = t1.cpuUsage;
         this.networkSend = t1.networkSend;
         this.networkRecv = t1.networkRecv;
+        this.ports = t1.ports;
     }
 }
