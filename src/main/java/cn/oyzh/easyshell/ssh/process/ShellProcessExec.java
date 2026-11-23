@@ -52,6 +52,13 @@ public class ShellProcessExec implements AutoCloseable {
             "sockstat -n -l 2>/dev/null || sockstat -l 2>/dev/null";
 
     /**
+     * OpenBSD 监听端口命令。OpenBSD 基础系统没有 sockstat，
+     * 使用一次 fstat 读取全部进程 socket，再过滤掉已连接 socket。
+     */
+    private static final String OPENBSD_PORT_COMMAND =
+            "fstat 2>/dev/null | grep ' internet' | grep -v ' <-- ' | grep -v ' <-> '";
+
+    /**
      * Windows 监听端口命令，netstat 通常比 CIM cmdlet 更轻量
      */
     private static final String WINDOWS_PORT_COMMAND = "netstat -ano";
@@ -263,6 +270,7 @@ public class ShellProcessExec implements AutoCloseable {
             return processInfos.get();
         }
         if (currentClient.isOpenBSD() || currentClient.isFreeBSD()) {
+            boolean openBSD = currentClient.isOpenBSD();
             String output = currentClient.exec(UNIX_PS_COMMAND);
             DownLatch latch = DownLatch.of(2);
             AtomicReference<List<ShellProcessInfo>> processInfos = new AtomicReference<>();
@@ -276,8 +284,13 @@ public class ShellProcessExec implements AutoCloseable {
             AtomicReference<Map<Integer, List<Integer>>> ports = new AtomicReference<>();
             ThreadUtil.start(() -> {
                 try {
-                    ports.set(ShellProcessParser.parseSockstatPorts(
-                            currentClient.exec(BSD_PORT_COMMAND)));
+                    if (openBSD) {
+                        ports.set(ShellProcessParser.parseOpenBSDPorts(
+                                currentClient.exec(OPENBSD_PORT_COMMAND)));
+                    } else {
+                        ports.set(ShellProcessParser.parseSockstatPorts(
+                                currentClient.exec(BSD_PORT_COMMAND)));
+                    }
                 } finally {
                     latch.countDown();
                 }

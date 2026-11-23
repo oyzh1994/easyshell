@@ -64,6 +64,13 @@ the single-user `fsck` prompt even after the container is recreated. Use
 docker volume rm easyshell-openbsd-osc-data
 ```
 
+To keep the old volume for inspection and boot a fresh one instead:
+
+```sh
+docker compose down
+OPENBSD_DATA_VOLUME=easyshell-openbsd-osc-data-v2 docker compose up -d
+```
+
 The password and `MaxSessions` initialization runs again automatically after
 the volume is recreated.
 

@@ -70,4 +70,4 @@ services:
 
 volumes:
   openbsd-data:
-    name: easyshell-openbsd-osc-data
+    name: ${OPENBSD_DATA_VOLUME:-easyshell-openbsd-osc-data}

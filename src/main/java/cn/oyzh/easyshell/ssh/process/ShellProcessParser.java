@@ -425,6 +425,32 @@ public class ShellProcessParser {
     }
 
     /**
+     * 解析 OpenBSD fstat 监听 socket 输出
+     *
+     * @param output fstat 输出
+     * @return pid -> 端口列表
+     */
+    public static Map<Integer, List<Integer>> parseOpenBSDPorts(String output) {
+        Map<Integer, Set<Integer>> ports = new HashMap<>();
+        for (String line : output.split("\\R")) {
+            line = line.trim();
+            if (line.isEmpty() || line.contains("<--") || line.contains("<->")) {
+                continue;
+            }
+            String[] cols = line.split("\\s+");
+            // USER CMD PID FD internet stream/dgram tcp/udp [PCB] LOCAL_ADDRESS
+            if (cols.length < 8 || !cols[2].matches("\\d+")) {
+                continue;
+            }
+            int port = parsePort(cols[cols.length - 1]);
+            if (port > 0) {
+                addPort(ports, Integer.parseInt(cols[2]), port);
+            }
+        }
+        return toPortMap(ports);
+    }
+
+    /**
      * 将端口信息合并到进程列表
      *
      * @param infos      进程列表

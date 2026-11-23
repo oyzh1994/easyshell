@@ -146,6 +146,24 @@ public class ShellProcessParserTest {
     }
 
     @Test
+    public void parsesOpenBSDFstatPorts() {
+        String output = """
+                root     sshd       17580    6* internet stream tcp 0xffffff800627d420 *:22
+                root     sshd       17580    7* internet6 stream tcp 0xffffff800627d9e0 *:22
+                _smtpd   smtpd      10862   10* internet stream tcp 0xffffff800627cb80 127.0.0.1:25
+                _dhcp    dhcpleased 55960   10* internet dgram udp 192.168.122.10:68
+                root     sshd-session 41769   7* internet stream tcp 0xffffff800627d700 192.168.122.10:22 <-- 192.168.122.2:44892
+                """;
+
+        Map<Integer, List<Integer>> ports = ShellProcessParser.parseOpenBSDPorts(output);
+
+        assertEquals(List.of(22), ports.get(17580));
+        assertEquals(List.of(25), ports.get(10862));
+        assertEquals(List.of(68), ports.get(55960));
+        assertEquals(3, ports.size());
+    }
+
+    @Test
     public void mergesPortsIntoProcesses() {
         ShellProcessInfo process = new ShellProcessInfo();
         process.setPid(1188);
