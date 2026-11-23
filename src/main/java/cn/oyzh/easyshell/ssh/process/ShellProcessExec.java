@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.ssh.process;
 
 import cn.oyzh.common.thread.DownLatch;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.RegexUtil;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.ssh.server.ShellServerExec;
 import cn.oyzh.easyshell.ssh.server.ShellServerNetwork;
@@ -444,37 +443,18 @@ public class ShellProcessExec implements AutoCloseable {
      * @return 网络上下行
      */
     public Map<String, double[]> getNetworkUplinkAndDownlink_macos() {
-        Map<String, double[]> result = new HashMap<>();
         ShellSSHClient currentClient = this.client;
         if (currentClient == null) {
-            return result;
+            return new HashMap<>();
         }
         try {
-            String output = currentClient.exec("nettop -P -x -l 1 | awk '{print $2, $4, $5}' | column -t");
-            if (output == null) {
-                return result;
-            }
-            String[] lines = output.split("\n");
-            boolean first = true;
-            for (String line : lines) {
-                if (first) {
-                    first = false;
-                    continue;
-                }
-                String[] cols = line.split("\\s+");
-                String col = cols[0];
-                if (!RegexUtil.isNumber(cols[1]) || !RegexUtil.isNumber(cols[2])) {
-                    continue;
-                }
-                double receive = Double.parseDouble(cols[1]);
-                double send = Double.parseDouble(cols[2]);
-                result.put(col, new double[]{send, receive});
-            }
-            return result;
+            // -n 禁用地址/主机名反查，避免 nettop 在每次刷新时等待 DNS
+            String output = currentClient.exec("nettop -P -x -L 1 -n");
+            return ShellProcessParser.parseNetworkSpeedOutputMacos(output);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return result;
+        return new HashMap<>();
     }
 
     /**

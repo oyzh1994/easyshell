@@ -155,4 +155,32 @@ public class ShellProcessParserTest {
         assertEquals("22,80", process.getPortsData());
         assertEquals("-", new ShellProcessInfo().getPortsData());
     }
+
+    @Test
+    public void parsesMacosNettopCsv() {
+        String output = """
+                time,,interface,state,bytes_in,bytes_out,rx_dupe,rx_ooo,re-tx,rtt_avg,rcvsize,tx_win,tc_class,tc_mgt,cc_algo,P,C,R,W,arch,
+                00:00:01,launchd.1,,,100,200,0,0,0,,,,,,,,,,,,
+                00:00:02,Google H.19261,,,1000,2000,0,0,0,,,,,,,,,,,,
+                """;
+
+        Map<String, double[]> speeds = ShellProcessParser.parseNetworkSpeedOutputMacos(output);
+
+        assertEquals(200, speeds.get("launchd.1")[0], 0.01);
+        assertEquals(100, speeds.get("launchd.1")[1], 0.01);
+        assertEquals(2000, speeds.get("Google H.19261")[0], 0.01);
+        assertEquals(1000, speeds.get("Google H.19261")[1], 0.01);
+    }
+
+    @Test
+    public void mergesMacosNettopPidFromLastSegment() {
+        ShellProcessInfo process = new ShellProcessInfo();
+        process.setPid(76554);
+
+        ShellProcessParser.parseNetworkSpeed_macos(List.of(process),
+                Map.of("com.docker.back.76554", new double[]{300, 100}));
+
+        assertEquals(300, process.getNetworkSend(), 0.01);
+        assertEquals(100, process.getNetworkRecv(), 0.01);
+    }
 }

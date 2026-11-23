@@ -530,9 +530,12 @@ public class ShellProcessParser {
         }
         for (Map.Entry<String, double[]> entry : speed.entrySet()) {
             try {
-                String[] arr = entry.getKey().split("\\.");
-                if (arr.length >= 2 && RegexUtil.isNumber(arr[1])) {
-                    int pid = Integer.parseInt(arr[1]);
+                String key = entry.getKey();
+                int dot = key.lastIndexOf('.');
+                String pidValue = dot >= 0 && dot < key.length() - 1
+                        ? key.substring(dot + 1) : key;
+                if (RegexUtil.isNumber(pidValue)) {
+                    int pid = Integer.parseInt(pidValue);
                     double[] value = entry.getValue();
                     Optional<ShellProcessInfo> optional = infos.parallelStream().filter(i -> i.getPid() == pid).findAny();
                     if (optional.isPresent()) {
@@ -544,6 +547,43 @@ public class ShellProcessParser {
                 ex.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 解析 macOS nettop CSV 输出
+     *
+     * @param output nettop -P -x -L 1 -n 输出
+     * @return 进程 -> {发送, 接收}
+     */
+    public static Map<String, double[]> parseNetworkSpeedOutputMacos(String output) {
+        Map<String, double[]> result = new HashMap<>();
+        if (StringUtil.isBlank(output)) {
+            return result;
+        }
+        boolean first = true;
+        for (String line : output.split("\\R")) {
+            if (first) {
+                first = false;
+                continue;
+            }
+            List<String> cols = ShellUtil.splitWindowsCommandResult(line);
+            // time,process,interface,state,bytes_in,bytes_out,...
+            if (cols.size() < 6) {
+                continue;
+            }
+            String process = cols.get(1);
+            String receiveValue = cols.get(4);
+            String sendValue = cols.get(5);
+            if (StringUtil.isBlank(process)
+                    || !RegexUtil.isNumber(receiveValue)
+                    || !RegexUtil.isNumber(sendValue)) {
+                continue;
+            }
+            double receive = Double.parseDouble(receiveValue);
+            double send = Double.parseDouble(sendValue);
+            result.put(process, new double[]{send, receive});
+        }
+        return result;
     }
 
     /**
