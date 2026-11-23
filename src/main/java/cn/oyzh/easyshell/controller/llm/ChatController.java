@@ -1150,8 +1150,8 @@ public class ChatController extends SubStageController {
         Tab selected = this.tabPane.getSelectionModel().getSelectedItem();
         if (selected instanceof LLMTabCapability capability) {
             this.view.getSessionTabComboBox().selectTab(capability.getTabId());
-        } else if (this.view.getSessionTabComboBox().getSelectedTab() == null
-                && !this.view.getSessionTabComboBox().getItems().isEmpty()) {
+        } else if (this.view.getSessionTabComboBox().getSelectedIndex() < 0
+                && !this.view.getSessionTabComboBox().isItemEmpty()) {
             this.view.getSessionTabComboBox().selectFirst();
         }
     }

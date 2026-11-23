@@ -17,7 +17,13 @@ import java.util.List;
  */
 public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
 
+    /**
+     * 未绑定会话选项，选中后取消当前会话绑定
+     */
+    private final LLMSessionTab unboundItem = new LLMSessionTab(null, I18nResourceBundle.i18nString("shell.llm.unboundTab"));
+
     public LLMSessionTabComboBox() {
+        this.addItem(this.unboundItem);
         this.setCellFactory(list -> new LLMSessionTabCell(null));
         this.setButtonCell(new LLMSessionTabCell(I18nResourceBundle.i18nString("shell.llm.unboundTab")));
     }
@@ -28,16 +34,13 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
      * @param tabs Tab列表
      */
     public void setTabs(List<LLMSessionTab> tabs) {
-        if (tabs == null) {
-            return;
+        LLMSessionTab selected = this.getSelectedTab();
+        this.setItem(this.unboundItem);
+        if (tabs != null) {
+            this.addItem(tabs);
         }
-        String selectedId = this.getSelectedTabId();
-        this.setItem(tabs);
-        if (selectedId != null) {
-            this.selectTab(selectedId);
-        }
-        if (this.getValue() == null && !this.getItems().isEmpty()) {
-            this.getSelectionModel().selectFirst();
+        if (selected != null) {
+            this.selectTab(selected.getId());
         }
     }
 
@@ -47,7 +50,8 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
      * @return 当前绑定的Tab
      */
     public LLMSessionTab getSelectedTab() {
-        return this.getValue();
+        LLMSessionTab tab = this.getValue();
+        return tab == this.unboundItem ? null : tab;
     }
 
     /**
@@ -94,14 +98,27 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
      * @param tab Tab
      */
     public void selectTab(LLMSessionTab tab) {
-        if (tab == null) {
+        if (tab == null || tab == this.unboundItem) {
             this.getSelectionModel().clearSelection();
             return;
         }
-        if (!this.getItems().contains(tab)) {
-            this.getItems().add(tab);
+        if (!this.containsItem(tab)) {
+            this.addItem(tab);
         }
         this.getSelectionModel().select(tab);
+    }
+
+    /**
+     * 选中首个真实会话，跳过未绑定选项
+     */
+    @Override
+    public void selectFirst() {
+        for (LLMSessionTab tab : this.getItems()) {
+            if (tab != this.unboundItem) {
+                this.getSelectionModel().select(tab);
+                return;
+            }
+        }
     }
 
     public void removeTab(String tabId) {
@@ -129,8 +146,11 @@ public class LLMSessionTabComboBox extends FXComboBox<LLMSessionTab> {
         protected void updateItem(LLMSessionTab item, boolean empty) {
             super.updateItem(item, empty);
             this.setText(empty || item == null ? this.emptyText : item.getName());
-            this.setTooltip(item == null ? null
-                    : new Tooltip(item.getName() + " (" + item.getId() + ")"));
+            if (item == null || item.getId() == null) {
+                this.setTooltip(item == null ? null : new Tooltip(item.getName()));
+            } else {
+                this.setTooltip(new Tooltip(item.getName() + " (" + item.getId() + ")"));
+            }
         }
     }
 }

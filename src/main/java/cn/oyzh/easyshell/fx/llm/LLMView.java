@@ -1341,7 +1341,7 @@ public class LLMView extends FXSplitPane {
     }
 
     public void refreshSessions() {
-        if (!this.sessionTabComboBox.isItemEmpty() && this.sessionTabComboBox.getSelectedTab() == null) {
+        if (!this.sessionTabComboBox.isItemEmpty() && this.sessionTabComboBox.getSelectedIndex() < 0) {
             this.sessionTabComboBox.selectFirst();
         }
     }
@@ -1363,7 +1363,7 @@ public class LLMView extends FXSplitPane {
     }
 
     public LLMSessionTab getSelectedSession() {
-        return sessionTabComboBox.getSelectedItem();
+        return sessionTabComboBox.getSelectedTab();
     }
 
     private String getSelectedSessionTabId() {
