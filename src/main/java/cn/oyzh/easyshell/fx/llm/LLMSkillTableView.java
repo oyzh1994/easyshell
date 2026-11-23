@@ -5,7 +5,6 @@ import cn.oyzh.easyshell.llm.skill.LLMSkill;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.tableview.TableViewUtil;
-import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.scene.control.MenuItem;
 
 import java.util.ArrayList;
@@ -71,8 +70,7 @@ public class LLMSkillTableView extends FXTableView<LLMSkill> {
         MenuItem delete = MenuItemHelper.delete(this.deleteAction);
         delete.setDisable(empty);
         items.add(delete);
-        MenuItem export = MenuItemHelper.menuItem(
-                I18nResourceBundle.i18nString("shell.llm.skill.export"), this.exportAction);
+        MenuItem export = MenuItemHelper.export(this.exportAction);
         export.setDisable(empty);
         items.add(export);
         return items;

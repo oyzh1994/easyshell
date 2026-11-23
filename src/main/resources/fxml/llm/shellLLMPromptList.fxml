@@ -45,7 +45,7 @@
                             flexHeight="100% - 60">
             <columns>
                 <FXTableColumn prefWidth="180" valueName="name" text="%base.name"/>
-                <FXTableColumn flexWidth="100% - 230" valueName="contentPreview"
+                <FXTableColumn flexWidth="100% - 195" valueName="contentPreview"
                                text="%shell.llm.prompt.content"/>
             </columns>
             <FXVBox.margin>

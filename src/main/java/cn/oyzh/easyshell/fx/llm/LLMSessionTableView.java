@@ -6,6 +6,7 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.plus.controls.table.FXTableView;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,16 +67,22 @@ public class LLMSessionTableView extends FXTableView<LLMSession> {
         List<FXMenuItem> menuItems = new ArrayList<>();
         List<LLMSession> rows = this.getSelectedItems();
         FXMenuItem restore = MenuItemHelper.restore(this.restoreAction);
-        restore.setDisable(rows.isEmpty());
+        restore.setDisable(rows.size() != 1);
         menuItems.add(restore);
 
         FXMenuItem edit = MenuItemHelper.edit(this.editAction);
-        edit.setDisable(rows.isEmpty());
+        edit.setDisable(rows.size() != 1);
         menuItems.add(edit);
 
         FXMenuItem delete = MenuItemHelper.delete(this.deleteAction);
         delete.setDisable(rows.isEmpty());
         menuItems.add(delete);
         return menuItems;
+    }
+
+    @Override
+    public void initNode() {
+        this.setSelectionMode(SelectionMode.MULTIPLE);
+        super.initNode();
     }
 }

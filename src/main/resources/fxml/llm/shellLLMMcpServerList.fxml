@@ -76,7 +76,7 @@
                 <FXTableColumn flexWidth="100% - 680" valueName="endpointText" text="%shell.llm.mcp.endpoint"/>
                 <FXTableColumn prefWidth="190" valueName="toolFilterText" text="%shell.llm.mcp.toolFilterShort"/>
                 <LLMMcpConnectionStatusTableColumn prefWidth="135" text="%shell.llm.mcp.connectionStatus"/>
-                <LLMMcpServerEnabledTableColumn fx:id="enabledColumn" text="%base.status"/>
+                <LLMMcpServerEnabledTableColumn prefWidth="90" fx:id="enabledColumn" text="%base.status"/>
             </columns>
             <FXVBox.margin>
                 <Insets left="30" top="5"/>

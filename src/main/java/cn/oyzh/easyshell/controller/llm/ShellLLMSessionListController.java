@@ -1,16 +1,16 @@
 package cn.oyzh.easyshell.controller.llm;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.fx.llm.LLMSessionTableView;
 import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
+import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
-import cn.oyzh.i18n.I18nResourceBundle;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
-import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableRow;
@@ -78,18 +78,25 @@ public class ShellLLMSessionListController extends StageController {
 
     @FXML
     private void delete() {
-        LLMSession session = this.sessionTableView.getSelectedItem();
-        if (session == null) {
+        List<LLMSession> sessions = new ArrayList<>(this.sessionTableView.getSelectedItems());
+        if (CollectionUtil.isEmpty(sessions)) {
             return;
         }
-        String message = I18nResourceBundle.i18nString("base.delete") + " "
-                + LLMSessionUtil.getDisplayTitle(session) + " ?";
+        String message;
+        if (sessions.size() == 1) {
+            LLMSession session = sessions.getFirst();
+            message = I18nHelper.delete() + " " + LLMSessionUtil.getDisplayTitle(session) + " ?";
+        } else {
+            message = I18nHelper.deleteSession() + " ?";
+        }
         if (MessageBox.confirm(message, this.getWindow())) {
-            if (this.sessionStore.delete(session)) {
-                this.allItems.remove(session);
-                this.applyFilter();
-            } else {
-                MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+            for (LLMSession session : sessions) {
+                if (this.sessionStore.delete(session)) {
+                    this.allItems.remove(session);
+                    this.applyFilter();
+                } else {
+                    MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+                }
             }
         }
     }

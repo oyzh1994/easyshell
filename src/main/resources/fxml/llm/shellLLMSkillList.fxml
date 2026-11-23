@@ -61,7 +61,7 @@
                            flexHeight="100% - 60">
             <columns>
                 <FXTableColumn prefWidth="150" valueName="name" text="%base.name"/>
-                <FXTableColumn flexWidth="100% - 720" valueName="filePath"
+                <FXTableColumn flexWidth="100% - 715" valueName="filePath"
                                text="%shell.llm.skill.file"/>
                 <FXTableColumn prefWidth="110" valueName="fileSizeText"
                                text="%shell.llm.skill.fileSize"/>
