@@ -36,7 +36,6 @@ import cn.oyzh.easyshell.llm.agent.LLMAgentRuntime;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
 import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.llm.capability.LLMModelCapability;
-import cn.oyzh.easyshell.llm.capability.LLMModelCapabilityResolver;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpToolSession;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
@@ -132,6 +131,12 @@ public class ChatController extends SubStageController {
     private void llm() {
         ShellViewFactory.llmProviders(this.getWindow());
         this.view.refreshProviders();
+    }
+
+    @FXML
+    private void model() {
+        ShellViewFactory.llmModels(this.getWindow());
+        this.view.refreshModels();
     }
 
     @FXML
@@ -556,8 +561,7 @@ public class ChatController extends SubStageController {
             request.userText = message.getMessage();
             request.provider = provider;
             request.model = this.view.getSelectedModel();
-            request.capabilities = LLMModelCapabilityResolver.resolve(
-                    provider, request.model);
+            request.capabilities = this.view.getModelCapability();
             request.maxOutputTokens = this.view.getLlmMaxOutputTokens();
             request.contextTokenBudget = LLMParameterUtil.historyTokenBudget(
                     request.capabilities.getContextWindowTokens(),
@@ -1288,8 +1292,7 @@ public class ChatController extends SubStageController {
             return false;
         }
         String model = this.view.getSelectedModel();
-        LLMModelCapability capability = LLMModelCapabilityResolver.resolve(
-                provider, model);
+        LLMModelCapability capability = this.view.getModelCapability();
         File file = this.view.getSelectedFile();
         if (file != null) {
             LLMFileContentType type = LLMFileContentUtil.contentType(file);

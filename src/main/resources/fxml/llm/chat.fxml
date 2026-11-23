@@ -4,6 +4,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.HistorySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.MCPSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.LLMSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.llm.ModelSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.PromptSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.llm.SkillSVGGlyph?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
@@ -39,6 +40,11 @@
                 <Insets left="10" top="10"/>
             </HBox.margin>
         </MCPSVGGlyph>
+        <ModelSVGGlyph tipText="%shell.llm.models" onMousePrimaryClicked="#model">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </ModelSVGGlyph>
         <LLMSVGGlyph tipText="%base.llm" onMousePrimaryClicked="#llm">
             <HBox.margin>
                 <Insets left="10" top="10"/>

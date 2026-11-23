@@ -26,9 +26,10 @@ import cn.oyzh.easyshell.llm.capability.LLMModelCapabilityResolver;
 import cn.oyzh.easyshell.llm.session.LLMSessionTab;
 import cn.oyzh.easyshell.llm.skill.LLMSkillScriptMode;
 import cn.oyzh.easyshell.llm.LLMThinkingLevel;
-import cn.oyzh.easyshell.llm.LLMUtil;
+import cn.oyzh.easyshell.llm.model.LLMModelChoice;
 import cn.oyzh.easyshell.llm.tool.LLMToolAccessMode;
 import cn.oyzh.easyshell.store.ShellSettingStore;
+import cn.oyzh.easyshell.store.llm.LLMCustomModelStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.easyshell.store.llm.LLMPromptStore;
 import cn.oyzh.fx.editor.incubator.Editor;
@@ -137,7 +138,7 @@ public class LLMView extends FXSplitPane {
 
     private final LLMProviderComboBox providerComboBox = new LLMProviderComboBox();
 
-    private final FXComboBox<String> modelComboBox = new FXComboBox<>();
+    private final FXComboBox<LLMModelChoice> modelComboBox = new FXComboBox<>();
 
     private final LLMThinkingLevelComboBox thinkingLevelComboBox = new LLMThinkingLevelComboBox();
 
@@ -422,22 +423,24 @@ public class LLMView extends FXSplitPane {
     }
 
     private Menu buildContextWindowMenu() {
-        String model = this.modelComboBox.getValue();
+        LLMModelChoice choice = this.modelComboBox.getValue();
         Menu menu = new Menu(I18nResourceBundle.i18nString(
                 "shell.llm.modelCapability.context"));
-        if (StringUtil.isBlank(model) || this.getSelectedProvider() == null) {
+        if (choice == null || (!choice.isCustom() && this.getSelectedProvider() == null)) {
             MenuItem unavailable = new MenuItem(
                     I18nResourceBundle.i18nString("shell.llm.modelCapability.unavailable"));
             unavailable.setDisable(true);
             menu.getItems().add(unavailable);
             return menu;
         }
+        boolean readOnly = choice.isCustom();
         ToggleGroup contextGroup = new ToggleGroup();
         for (Integer tokens : LLMModelContextWindowUtil.OPTIONS) {
             RadioMenuItem item = new RadioMenuItem(
                     LLMModelContextWindowUtil.label(tokens));
             item.setToggleGroup(contextGroup);
             item.setSelected(tokens == this.modelCapability.getContextWindowTokens());
+            item.setDisable(readOnly);
             item.setOnAction(event -> this.updateModelCapability(
                     capability -> capability.setContextWindowTokens(tokens)));
             menu.getItems().add(item);
@@ -446,36 +449,39 @@ public class LLMView extends FXSplitPane {
     }
 
     private Menu buildModelCapabilityMenu() {
-        String model = this.modelComboBox.getValue();
+        LLMModelChoice choice = this.modelComboBox.getValue();
         Menu menu = new Menu(I18nResourceBundle.i18nString("shell.llm.modelCapability"));
-        if (StringUtil.isBlank(model) || this.getSelectedProvider() == null) {
+        if (choice == null || (!choice.isCustom() && this.getSelectedProvider() == null)) {
             MenuItem unavailable = new MenuItem(
                     I18nResourceBundle.i18nString("shell.llm.modelCapability.unavailable"));
             unavailable.setDisable(true);
             menu.getItems().add(unavailable);
             return menu;
         }
+        boolean readOnly = choice.isCustom();
         menu.getItems().add(this.capabilityItem("tools",
-                this.modelCapability.isTools(), LLMModelCapability::setTools));
+                this.modelCapability.isTools(), readOnly, LLMModelCapability::setTools));
         menu.getItems().add(this.capabilityItem("image",
-                this.modelCapability.isImage(), LLMModelCapability::setImage));
+                this.modelCapability.isImage(), readOnly, LLMModelCapability::setImage));
         menu.getItems().add(this.capabilityItem("pdf",
-                this.modelCapability.isPdf(), LLMModelCapability::setPdf));
+                this.modelCapability.isPdf(), readOnly, LLMModelCapability::setPdf));
         menu.getItems().add(this.capabilityItem("audio",
-                this.modelCapability.isAudio(), LLMModelCapability::setAudio));
+                this.modelCapability.isAudio(), readOnly, LLMModelCapability::setAudio));
         menu.getItems().add(this.capabilityItem("video",
-                this.modelCapability.isVideo(), LLMModelCapability::setVideo));
+                this.modelCapability.isVideo(), readOnly, LLMModelCapability::setVideo));
         menu.getItems().add(this.capabilityItem("thinking",
-                this.modelCapability.isThinking(), LLMModelCapability::setThinking));
+                this.modelCapability.isThinking(), readOnly, LLMModelCapability::setThinking));
         return menu;
     }
 
     private CheckMenuItem capabilityItem(String key,
                                          boolean selected,
+                                         boolean disabled,
                                          CapabilitySetter setter) {
         CheckMenuItem item = new CheckMenuItem(I18nResourceBundle.i18nString(
                 "shell.llm.modelCapability." + key));
         item.setSelected(selected);
+        item.setDisable(disabled);
         item.setOnAction(event -> this.updateModelCapability(
                 capability -> setter.set(capability, item.isSelected())));
         return item;
@@ -483,10 +489,11 @@ public class LLMView extends FXSplitPane {
 
     private void updateModelCapability(Consumer<LLMModelCapability> updater) {
         LLMProvider provider = this.getSelectedProvider();
-        String model = this.modelComboBox.getValue();
-        if (provider == null || StringUtil.isBlank(model) || updater == null) {
+        LLMModelChoice choice = this.modelComboBox.getValue();
+        if (provider == null || choice == null || choice.isCustom() || updater == null) {
             return;
         }
+        String model = choice.getModelId();
         LLMModelCapability capability = this.modelCapability.copy();
         updater.accept(capability);
         if (LLMModelCapabilityResolver.save(provider, model, capability)) {
@@ -919,8 +926,8 @@ public class LLMView extends FXSplitPane {
             this.refreshContextUsage();
         });
         this.modelComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (!this.updatingModels && StringUtil.isNotBlank(newValue)) {
-                this.persistModel(newValue);
+            if (!this.updatingModels && newValue != null) {
+                this.persistModel(newValue.getKey());
             }
             this.refreshModelCapabilities();
             this.refreshContextUsage();
@@ -947,31 +954,61 @@ public class LLMView extends FXSplitPane {
     }
 
     private void updateModels(LLMProvider provider) {
-        List<String> models = new ArrayList<>(provider == null ? List.of() : provider.getModels());
-        if (provider != null && StringUtil.isNotBlank(provider.getDefaultModel())
-                && !models.contains(provider.getDefaultModel())) {
-            models.addFirst(provider.getDefaultModel());
+        List<LLMModelChoice> choices = new ArrayList<>();
+        if (provider != null) {
+            List<String> models = new ArrayList<>(provider.getModels());
+            if (StringUtil.isNotBlank(provider.getDefaultModel())
+                    && !models.contains(provider.getDefaultModel())) {
+                models.addFirst(provider.getDefaultModel());
+            }
+            for (String model : models) {
+                if (StringUtil.isNotBlank(model)) {
+                    choices.add(LLMModelChoice.provider(model));
+                }
+            }
         }
-        models = List.copyOf(models);
-        String target = LLMUtil.selectModel(models,
-                this.modelComboBox.getValue(),
-                this.setting.getLlmModel(),
-                provider == null ? null : provider.getDefaultModel());
+        // 自定义模型与当前供应商模型共存，仅展示启用项
+        LLMCustomModelStore.INSTANCE.selectEnabled()
+                .forEach(model -> choices.add(LLMModelChoice.custom(model)));
+        LLMModelChoice current = this.modelComboBox.getValue();
+        LLMModelChoice target = this.findModelChoice(choices,
+                current == null ? null : current.getKey());
+        if (target == null) {
+            target = this.findModelChoice(choices, this.setting.getLlmModel());
+        }
+        if (target == null && provider != null) {
+            target = this.findModelChoice(choices, provider.getDefaultModel());
+        }
+        if (target == null && !choices.isEmpty()) {
+            target = choices.getFirst();
+        }
         this.updatingModels = true;
         try {
-            this.modelComboBox.getItems().setAll(models);
+            this.modelComboBox.getItems().setAll(choices);
             this.modelComboBox.setValue(target);
         } finally {
             this.updatingModels = false;
         }
         if (target != null) {
-            this.persistModel(target);
+            this.persistModel(target.getKey());
         }
     }
 
-    private void persistModel(String model) {
-        if (!Objects.equals(this.setting.getLlmModel(), model)) {
-            this.setting.setLlmModel(model);
+    private LLMModelChoice findModelChoice(List<LLMModelChoice> choices, String key) {
+        if (key == null) {
+            return null;
+        }
+        for (LLMModelChoice choice : choices) {
+            if (Objects.equals(choice.getKey(), key)) {
+                return choice;
+            }
+        }
+        return null;
+    }
+
+    private void persistModel(String modelKey) {
+        if (!Objects.equals(this.setting.getLlmModel(), modelKey)) {
+            this.setting.setLlmModel(modelKey);
             this.settingStore.replace(this.setting);
         }
     }
@@ -1200,8 +1237,10 @@ public class LLMView extends FXSplitPane {
     }
 
     private void refreshModelCapabilities() {
-        this.modelCapability = LLMModelCapabilityResolver.resolve(
-                this.getSelectedProvider(), this.modelComboBox.getValue());
+        LLMModelChoice choice = this.modelComboBox.getValue();
+        this.modelCapability = choice == null
+                ? new LLMModelCapability()
+                : choice.capability(this.getSelectedProvider());
         boolean thinking = this.modelCapability.isThinking();
         this.thinkingLevelComboBox.setDisable(!thinking);
         this.thinkingLevelComboBox.setTooltip(thinking ? null : new Tooltip(
@@ -1330,6 +1369,15 @@ public class LLMView extends FXSplitPane {
         this.updateModels(provider);
     }
 
+    /**
+     * 刷新自定义模型列表。
+     */
+    public void refreshModels() {
+        this.updateModels(this.getSelectedProvider());
+        this.refreshModelCapabilities();
+        this.refreshContextUsage();
+    }
+
     private void syncProviderSetting(LLMProvider provider) {
         String uid = provider == null ? null : provider.getUid();
         if (Objects.equals(this.setting.getLlmProviderUid(), uid)) {
@@ -1349,7 +1397,7 @@ public class LLMView extends FXSplitPane {
         return providerComboBox;
     }
 
-    public FXComboBox<String> getModelComboBox() {
+    public FXComboBox<LLMModelChoice> getModelComboBox() {
         return modelComboBox;
     }
 
@@ -1371,7 +1419,27 @@ public class LLMView extends FXSplitPane {
     }
 
     public String getSelectedModel() {
-        return modelComboBox.getValue();
+        LLMModelChoice choice = modelComboBox.getValue();
+        return choice == null ? null : choice.getModelId();
+    }
+
+    /**
+     * 获取当前模型选项
+     *
+     * @return 模型选项
+     */
+    public LLMModelChoice getSelectedModelChoice() {
+        return this.modelComboBox.getValue();
+    }
+
+    /**
+     * 获取当前模型显示名称
+     *
+     * @return 显示名称
+     */
+    public String getSelectedModelName() {
+        LLMModelChoice choice = modelComboBox.getValue();
+        return choice == null ? null : choice.getName();
     }
 
     public String getSelectedPromptUid() {
@@ -1644,7 +1712,7 @@ public class LLMView extends FXSplitPane {
             MessageBox.warn(String.format(
                     I18nResourceBundle.i18nString(
                             "shell.llm.modelCapability.unsupportedAttachment"),
-                    this.modelComboBox.getValue(), type), this.getWindow());
+                    this.getSelectedModelName(), type), this.getWindow());
             return;
         }
         this.selectedFile = file;

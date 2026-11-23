@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.llm.LLMModelContextWindowComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import javafx.geometry.Insets?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMAddModelController"
+        realWidth="780" realHeight="400">
+    <FXHeaderBar/>
+    <InfoLabel text="%base.name">
+        <FXVBox.margin>
+            <Insets left="30" top="10"/>
+        </FXVBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="name" tipText="%base.nameTip" require="true"
+                        realHeight="30" flexWidth="100% - 140" maxLen="1024">
+        <FXVBox.margin>
+            <Insets left="30" top="5"/>
+        </FXVBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%shell.llm.modelId">
+        <FXVBox.margin>
+            <Insets left="30" top="10"/>
+        </FXVBox.margin>
+    </InfoLabel>
+    <ClearableTextField fx:id="modelId" tipText="%shell.llm.modelIdTip" require="true"
+                        realHeight="30" flexWidth="100% - 140" maxLen="1024">
+        <FXVBox.margin>
+            <Insets left="30" top="5"/>
+        </FXVBox.margin>
+    </ClearableTextField>
+    <InfoLabel text="%shell.llm.modelCapability.context">
+        <FXVBox.margin>
+            <Insets left="30" top="10"/>
+        </FXVBox.margin>
+    </InfoLabel>
+    <LLMModelContextWindowComboBox fx:id="contextWindow" prefHeight="30"
+                                   flexWidth="100% - 140">
+        <FXVBox.margin>
+            <Insets left="30" top="5"/>
+        </FXVBox.margin>
+    </LLMModelContextWindowComboBox>
+    <InfoLabel text="%shell.llm.modelCapability">
+        <FXVBox.margin>
+            <Insets left="30" top="10"/>
+        </FXVBox.margin>
+    </InfoLabel>
+    <FXHBox>
+        <FXCheckBox fx:id="tools" text="%shell.llm.modelCapability.tools" selected="true">
+            <FXHBox.margin>
+                <Insets left="30" top="5"/>
+            </FXHBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="image" text="%shell.llm.modelCapability.image" selected="true">
+            <FXHBox.margin>
+                <Insets left="20" top="5"/>
+            </FXHBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="pdf" text="%shell.llm.modelCapability.pdf">
+            <FXHBox.margin>
+                <Insets left="20" top="5"/>
+            </FXHBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="audio" text="%shell.llm.modelCapability.audio">
+            <FXHBox.margin>
+                <Insets left="20" top="5"/>
+            </FXHBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="video" text="%shell.llm.modelCapability.video">
+            <FXHBox.margin>
+                <Insets left="20" top="5"/>
+            </FXHBox.margin>
+        </FXCheckBox>
+        <FXCheckBox fx:id="thinking" text="%shell.llm.modelCapability.thinking" selected="true">
+            <FXHBox.margin>
+                <Insets left="20" top="5"/>
+            </FXHBox.margin>
+        </FXCheckBox>
+    </FXHBox>
+    <FXHBox>
+        <SubmitButton onAction="#add">
+            <FXHBox.margin>
+                <Insets left="30" top="15"/>
+            </FXHBox.margin>
+        </SubmitButton>
+        <CancelButton>
+            <FXHBox.margin>
+                <Insets left="15" top="15"/>
+            </FXHBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

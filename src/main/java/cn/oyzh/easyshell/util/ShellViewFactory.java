@@ -90,6 +90,9 @@ import cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddPromptController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddSkillController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMProviderListController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMAddModelController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMModelListController;
+import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateModelController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpServerListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpImportController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMPromptListController;
@@ -118,6 +121,7 @@ import cn.oyzh.easyshell.file.ShellFile;
 import cn.oyzh.easyshell.file.ShellFileClient;
 import cn.oyzh.easyshell.file.ShellFileTask;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
+import cn.oyzh.easyshell.llm.model.LLMCustomModel;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
 import cn.oyzh.easyshell.llm.skill.LLMSkill;
@@ -1917,6 +1921,41 @@ public class ShellViewFactory {
             ex.printStackTrace();
             MessageBox.exception(ex, owner);
         }
+    }
+
+    public static void llmModels(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMModelListController.class, owner);
+            adapter.showAndWait();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+    }
+
+    public static StageAdapter addLLMModel(Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMAddModelController.class, owner);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
+    }
+
+    public static StageAdapter updateLLMModel(LLMCustomModel model, Window owner) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellLLMUpdateModelController.class, owner);
+            adapter.setProp("model", model);
+            adapter.showAndWait();
+            return adapter;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, owner);
+        }
+        return null;
     }
 
     public static void llmMcpServers(Window owner) {

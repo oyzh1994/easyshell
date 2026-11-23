@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.llm.LLMCustomModelEnabledTableColumn?>
+<?import cn.oyzh.easyshell.fx.llm.LLMCustomModelTableView?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.EditSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellLLMModelListController"
+        realWidth="900" realHeight="500">
+    <FXHeaderBar/>
+    <FXVBox flexWidth="100%" flexHeight="100% - 30">
+        <FXHBox realHeight="30">
+            <ClearableTextField fx:id="searchField" focusTraversable="false"
+                                realHeight="24" prefWidth="220"
+                                tipText="%base.searchKWTip">
+                <FXHBox.margin>
+                    <Insets left="30"/>
+                </FXHBox.margin>
+            </ClearableTextField>
+            <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#add">
+                <FXHBox.margin>
+                    <Insets left="10" top="7"/>
+                </FXHBox.margin>
+            </AddSVGGlyph>
+            <EditSVGGlyph tipText="%base.edit" onMousePrimaryClicked="#update">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </EditSVGGlyph>
+            <DeleteSVGGlyph tipText="%base.delete" onMousePrimaryClicked="#delete">
+                <FXHBox.margin>
+                    <Insets left="5" top="7"/>
+                </FXHBox.margin>
+            </DeleteSVGGlyph>
+            <FXVBox.margin>
+                <Insets top="10"/>
+            </FXVBox.margin>
+        </FXHBox>
+        <LLMCustomModelTableView fx:id="modelTableView" flexWidth="100% - 50"
+                                 flexHeight="100% - 60">
+            <columns>
+                <FXTableColumn prefWidth="180" valueName="name" text="%base.name"/>
+                <FXTableColumn flexWidth="100% - 650" valueName="modelId"
+                               text="%shell.llm.modelId"/>
+                <FXTableColumn prefWidth="130" valueName="contextWindowText"
+                               text="%shell.llm.modelCapability.context"/>
+                <FXTableColumn prefWidth="220" valueName="capabilitiesText"
+                               text="%shell.llm.modelCapability"/>
+                <LLMCustomModelEnabledTableColumn prefWidth="100" text="%base.status"/>
+            </columns>
+            <FXVBox.margin>
+                <Insets left="30" top="7"/>
+            </FXVBox.margin>
+        </LLMCustomModelTableView>
+    </FXVBox>
+</FXVBox>

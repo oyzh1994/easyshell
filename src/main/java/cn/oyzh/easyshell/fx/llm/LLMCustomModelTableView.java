@@ -1,0 +1,69 @@
+package cn.oyzh.easyshell.fx.llm;
+
+import cn.oyzh.common.util.CollectionUtil;
+import cn.oyzh.easyshell.llm.model.LLMCustomModel;
+import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.plus.controls.table.FXTableView;
+import cn.oyzh.fx.plus.tableview.TableViewUtil;
+import javafx.scene.control.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 自定义 LLM 模型表格。
+ *
+ * @author oyzh
+ * @since 2026-11-24
+ */
+public class LLMCustomModelTableView extends FXTableView<LLMCustomModel> {
+
+    {
+        TableViewUtil.copyCellDataOnDoubleClicked(this);
+    }
+
+    private Runnable addAction;
+
+    private Runnable editAction;
+
+    private Runnable deleteAction;
+
+    public void setAddAction(Runnable addAction) {
+        this.addAction = addAction;
+    }
+
+    public void setEditAction(Runnable editAction) {
+        this.editAction = editAction;
+    }
+
+    public void setDeleteAction(Runnable deleteAction) {
+        this.deleteAction = deleteAction;
+    }
+
+    @Override
+    protected void initEvenListener() {
+        super.initEvenListener();
+        this.setOnContextMenuRequested(event -> {
+            List<? extends MenuItem> items = this.getMenuItems();
+            if (CollectionUtil.isNotEmpty(items)) {
+                this.showContextMenu(items, event.getScreenX(), event.getScreenY());
+            } else {
+                this.clearContextMenu();
+            }
+        });
+    }
+
+    @Override
+    public List<? extends MenuItem> getMenuItems() {
+        List<MenuItem> items = new ArrayList<>();
+        boolean empty = this.getSelectedItems().isEmpty();
+        items.add(MenuItemHelper.add(this.addAction));
+        MenuItem edit = MenuItemHelper.edit(this.editAction);
+        edit.setDisable(empty);
+        items.add(edit);
+        MenuItem delete = MenuItemHelper.delete(this.deleteAction);
+        delete.setDisable(empty);
+        items.add(delete);
+        return items;
+    }
+}

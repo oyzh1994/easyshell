@@ -19,7 +19,7 @@ public class LLMModelCapabilityResolverTest {
         assertEquals(LLMModelContextWindowUtil.DEFAULT_TOKENS,
                 capability.getContextWindowTokens());
         assertTrue(capability.isTools());
-        assertFalse(capability.isImage());
+        assertTrue(capability.isImage());
         assertTrue(capability.isThinking());
     }
 

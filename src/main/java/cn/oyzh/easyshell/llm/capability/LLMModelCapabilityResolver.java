@@ -85,7 +85,8 @@ public final class LLMModelCapabilityResolver {
                 || name.contains("image-1"));
         result.setTools(clearlyChatModel);
         result.setThinking(clearlyChatModel);
-        result.setImage(supportsImage(apiType, name));
+        // 当前主流聊天模型默认具备图片理解能力，特殊模型仍可通过能力覆盖关闭
+        result.setImage(clearlyChatModel);
         result.setPdf(apiType == LLMApiType.GEMINI
                 || apiType == LLMApiType.ANTHROPIC && name.contains("claude"));
         result.setAudio(apiType == LLMApiType.GEMINI
@@ -95,23 +96,6 @@ public final class LLMModelCapabilityResolver {
                 || name.contains("video")
                 || name.contains("realtime"));
         return result;
-    }
-
-    private static boolean supportsImage(LLMApiType apiType, String model) {
-        if (apiType == LLMApiType.ANTHROPIC || apiType == LLMApiType.GEMINI) {
-            return true;
-        }
-        if (apiType == LLMApiType.OLLAMA) {
-            return model.contains("vision")
-                    || model.contains("llava")
-                    || model.contains("minicpm-v")
-                    || model.contains("gemma3");
-        }
-        return model.contains("gpt-4o")
-                || model.contains("gpt-4.1")
-                || model.startsWith("o1")
-                || model.startsWith("o3")
-                || model.startsWith("o4");
     }
 
     /**

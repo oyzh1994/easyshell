@@ -34,7 +34,7 @@ public class LLMModelCapability implements Serializable {
     private boolean tools = true;
 
     @Column
-    private boolean image;
+    private boolean image = true;
 
     @Column
     private boolean pdf;
