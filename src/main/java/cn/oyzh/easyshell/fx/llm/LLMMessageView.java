@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.fx.editor.incubator.Editor;
 import cn.oyzh.fx.editor.incubator.EditorFormatType;
 import cn.oyzh.fx.editor.incubator.EditorFold;
 import cn.oyzh.fx.editor.incubator.EditorHeading;
@@ -10,10 +9,12 @@ import cn.oyzh.fx.editor.incubator.EditorSkin;
 import cn.oyzh.fx.editor.incubator.EditorSyntaxAsyncStrategy;
 import cn.oyzh.fx.editor.incubator.EditorSyntaxDecorator;
 import cn.oyzh.fx.editor.incubator.EditorSyntaxStrategy;
+import cn.oyzh.fx.editor.incubator.control.LLMEditor;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.fx.plus.theme.ThemeManager;
 import cn.oyzh.fx.plus.theme.ThemeStyle;
 import cn.oyzh.fx.plus.util.ClipboardUtil;
+import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import com.sun.jfx.incubator.scene.control.richtext.VFlow;
@@ -36,7 +37,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 只读消息视图，基于 {@link Editor}，支持选择、复制、语法高亮与表情符号。
+ * 只读消息视图，基于 {@link LLMEditor}，支持选择、复制、语法高亮与表情符号。
  * <p>
  * 消息列表使用虚拟滚动，消息高度由其内容决定，因此这里需要自行计算首选高度：
  * 宽度未知时用纯文本测量估算；实际布局后再从内部 {@link VFlow} 读取精确高度并修正。
@@ -45,7 +46,7 @@ import java.util.function.Consumer;
  * @author oyzh
  * @since 2026-11-06
  */
-public final class LLMMessageView extends Editor {
+public final class LLMMessageView extends LLMEditor {
 
     private static final Color THINKING_LIGHT_COLOR = Color.web("#6E7781");
 
@@ -164,7 +165,7 @@ public final class LLMMessageView extends Editor {
             return;
         }
         this.updateScheduled = true;
-        Platform.runLater(() -> {
+        FXUtil.runLater(() -> {
             this.updateScheduled = false;
             this.applyMessage(true);
         });
@@ -326,7 +327,7 @@ public final class LLMMessageView extends Editor {
     /**
      * 重置测量结果
      */
-    protected void invalidateSize() {
+    private void invalidateSize() {
         this.measuredWidth = -1;
         this.measuredPrefWidth = -1;
         this.requestLayout();

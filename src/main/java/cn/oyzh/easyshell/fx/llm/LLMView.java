@@ -32,7 +32,7 @@ import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.easyshell.store.llm.LLMPromptStore;
 import cn.oyzh.fx.editor.incubator.Editor;
-import cn.oyzh.fx.editor.incubator.EditorFormatType;
+import cn.oyzh.fx.editor.incubator.control.LLMEditor;
 import cn.oyzh.fx.gui.svg.glyph.SettingSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.StopSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.file.FileSVGGlyph;
@@ -101,7 +101,7 @@ public class LLMView extends FXSplitPane {
     /**
      * 输入编辑器
      */
-    private final Editor inputArea = new Editor() {
+    private final Editor inputArea = new LLMEditor() {
         @Override
         public void paste() {
             if (!LLMView.this.pasteAttachment()) {
@@ -255,7 +255,6 @@ public class LLMView extends FXSplitPane {
 
         // 输入编辑器：使用聊天高亮格式，突出网址、文件路径、IP、命令等运维信息
         this.inputArea.getStyleClass().add("llm-input");
-        this.inputArea.setFormatType(EditorFormatType.LLM_CHAT);
         this.inputArea.hideLineNum();
         this.inputArea.setWrapText(true);
         this.inputArea.setHighlightCurrentParagraph(false);
