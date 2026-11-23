@@ -138,7 +138,9 @@ public class ShellSnippetTreeView extends RichTreeView implements MenuItemAdapte
      * @param snippet 片段
      */
     public void addSnippet(ShellSnippet snippet) {
-        this.root().addChild(new ShellSnippetTreeItem(snippet, this));
+        ShellSnippetTreeItem snippetTreeItem= new ShellSnippetTreeItem(snippet, this);
+        this.root().addChild(snippetTreeItem);
+        this.selectAndScroll(snippetTreeItem);
     }
 
     /**

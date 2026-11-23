@@ -100,23 +100,25 @@ public class ShellSnippetController extends StageController {
     @FXML
     private void save() {
         try {
-            //if (this.snippet == null) {
-            //    this.snippet = new ShellSnippet();
-            //}
-            //String name = this.snippet.getName();
-            //if (StringUtil.isBlank(name)) {
-            //    name = MessageBox.prompt(I18nHelper.pleaseInputName());
-            //    if (StringUtil.isBlank(name)) {
-            //        return;
-            //    }
-            //}
-            //this.snippet.setName(name);
-            //boolean isNew = this.snippet.getId() == null;
-            //if (this.snippetStore.replace(this.snippet) && isNew) {
-            //    this.snippetTreeView.addSnippet(this.snippet);
-            //}
+            if (this.snippet == null) {
+                this.snippet = new ShellSnippet();
+            }
+            String name = this.snippet.getName();
+            if (StringUtil.isBlank(name)) {
+                name = MessageBox.prompt(I18nHelper.pleaseInputName(), this.getWindow());
+                if (StringUtil.isBlank(name)) {
+                    return;
+                }
+            }
+            this.snippet.setName(name);
             this.snippet.setContent(this.content.getText());
-            this.snippetStore.update(this.snippet);
+            boolean isNew = this.snippet.getId() == null;
+            if (isNew) {
+                this.snippetStore.insert(this.snippet);
+                this.snippetTreeView.addSnippet(this.snippet);
+            } else {
+                this.snippetStore.update(this.snippet);
+            }
             this.setUnsaved(false);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -163,7 +165,7 @@ public class ShellSnippetController extends StageController {
             this.content.clear();
             this.snippet = null;
         }
-//        MessageBox.okToast(I18nHelper.contentIs2Send());
+        //        MessageBox.okToast(I18nHelper.contentIs2Send());
     }
 
     /**
@@ -180,7 +182,7 @@ public class ShellSnippetController extends StageController {
         }
     }
 
-//    private NodeWidthResizer widthResizer;
+    //    private NodeWidthResizer widthResizer;
 
     @Override
     protected void bindListeners() {
@@ -207,22 +209,22 @@ public class ShellSnippetController extends StageController {
         this.snippetTreeView.setEditCallback(this::doEdit);
         // 片段删除回调
         this.snippetTreeView.setDeleteCallback(this::doDelete);
-//        // 拉伸辅助
-//        this.widthResizer = NodeWidthResizer.of(this.snippetTreeView, this::resizeLeft, 140, 350);
+        //        // 拉伸辅助
+        //        this.widthResizer = NodeWidthResizer.of(this.snippetTreeView, this::resizeLeft, 140, 350);
     }
 
-//    /**
-//     * 左侧组件重新布局
-//     *
-//     * @param newWidth 新宽度
-//     */
-//    private void resizeLeft(Float newWidth) {
-//        if (newWidth != null && !Float.isNaN(newWidth)) {
-//            // 设置组件宽
-//            this.snippetTreeView.setRealWidth(newWidth);
-//            this.rightBox.setFlexWidth("100% - " + (newWidth + 100));
-//        }
-//    }
+    //    /**
+    //     * 左侧组件重新布局
+    //     *
+    //     * @param newWidth 新宽度
+    //     */
+    //    private void resizeLeft(Float newWidth) {
+    //        if (newWidth != null && !Float.isNaN(newWidth)) {
+    //            // 设置组件宽
+    //            this.snippetTreeView.setRealWidth(newWidth);
+    //            this.rightBox.setFlexWidth("100% - " + (newWidth + 100));
+    //        }
+    //    }
 
     /**
      * 编辑片段
@@ -256,7 +258,7 @@ public class ShellSnippetController extends StageController {
     @Override
     public void destroy() {
         this.content.destroy();
-//        this.widthResizer.destroy();
+        //        this.widthResizer.destroy();
         this.snippetTreeView.destroy();
         super.destroy();
     }
