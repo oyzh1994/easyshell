@@ -9,8 +9,6 @@ import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryPromptPopup;
 import cn.oyzh.fx.db.query.DBQueryPromptItem;
 import cn.oyzh.fx.db.query.ui.DBQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
@@ -182,14 +180,12 @@ public class ShellSqliteQueryPromptUiParityTest {
     private void assertRows(DBQueryPromptListView<?> list) {
         this.assertPopupListSize(list);
         List<?> rows = new ArrayList<>(list.getItems());
-        assertEquals(7, rows.size());
-        this.assertRow(rows.get(0), DatabaseSVGGlyph.class, "main", null);
-        this.assertRow(rows.get(1), KeywordsSVGGlyph.class, "SELECT", null);
-        this.assertRow(rows.get(2), TableSVGGlyph.class, "prompt_item", "main");
-        this.assertRow(rows.get(3), ColumnSVGGlyph.class, "name", "\"main\".\"prompt_item\"");
-        this.assertRow(rows.get(4), ViewSVGGlyph.class, "prompt_view", "main");
-        this.assertRow(rows.get(5), FunctionSVGGlyph.class, "length", null);
-        this.assertRow(rows.get(6), ProcedureSVGGlyph.class, "refresh_cache", null);
+        assertEquals(5, rows.size());
+        this.assertRow(rows.get(0), KeywordsSVGGlyph.class, "SELECT", null);
+        this.assertRow(rows.get(1), TableSVGGlyph.class, "prompt_item", "main");
+        this.assertRow(rows.get(2), ViewSVGGlyph.class, "prompt_view", "main");
+        this.assertRow(rows.get(3), FunctionSVGGlyph.class, "length", "main");
+        this.assertRow(rows.get(4), ProcedureSVGGlyph.class, "refresh_cache", "main");
     }
 
     private void assertRow(Object value, Class<?> glyphType, String content, String extContent) {
@@ -305,7 +301,7 @@ public class ShellSqliteQueryPromptUiParityTest {
         report.append("- Java: ").append(System.getProperty("java.runtime.version")).append("\n");
         report.append("- JavaFX: ").append(System.getProperty("javafx.version", "unknown")).append("\n");
         report.append("- 渲染尺寸: ").append(SCENE_WIDTH).append(" x ").append(SCENE_HEIGHT).append("\n");
-        report.append("- 提示项样式: database/keyword/table/column/view/function/procedure 共 7 类\n");
+        report.append("- 提示项样式: keyword/table/view/function/procedure 共 5 类\n");
         report.append("- SQLite 查询索引仅生成 database/keyword/table/view，不生成字段提示\n\n");
         report.append("| 对比 | 差异像素 | 总像素 | 最大通道差 | 差异边界 | 结果 |\n");
         report.append("| --- | ---: | ---: | ---: | --- | --- |\n");
@@ -390,10 +386,8 @@ public class ShellSqliteQueryPromptUiParityTest {
 
     private List<Row> rows() {
         return List.of(
-                new Row((byte) 1, "main", null),
                 new Row((byte) 4, "SELECT", null),
                 new Row((byte) 2, "prompt_item", "main"),
-                new Row((byte) 3, "name", "\"main\".\"prompt_item\""),
                 new Row((byte) 5, "prompt_view", "main"),
                 new Row((byte) 6, "length", "main"),
                 new Row((byte) 7, "refresh_cache", "main")

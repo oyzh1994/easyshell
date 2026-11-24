@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.query.sqlserver;
 
 import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SchemaSVGGlyph;
@@ -35,9 +34,6 @@ public class ShellSqlServerQueryPromptListView extends ShellQueryPromptListView<
         } else if (item.isTableType()) {
             SVGGlyph svgGlyph = new TableSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-        } else if (item.isColumnType()) {
-            SVGGlyph svgGlyph = new ColumnSVGGlyph();
-            label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isViewType()) {
             ViewSVGGlyph svgGlyph = new ViewSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
@@ -60,7 +56,8 @@ public class ShellSqlServerQueryPromptListView extends ShellQueryPromptListView<
     @Override
     protected FXLabel initExtLabel(ShellSqlServerQueryPromptItem item) {
         FXLabel label = null;
-        if (item.isTableType() || item.isViewType() || item.isColumnType() || item.isSequenceType()) {
+        if (item.isTableType() || item.isViewType() || item.isFunctionType()
+                || item.isProcedureType() || item.isSequenceType()) {
             label = new FXLabel(item.getExtContent());
             label.setTextFill(Color.valueOf("#D3D3D3"));
         }

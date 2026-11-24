@@ -26,12 +26,6 @@ public class ShellSqlServerQueryPromptPopup extends DBQueryPromptPopup<ShellSqlS
     }
 
     @Override
-    protected boolean tokenAvailable() {
-        return super.tokenAvailable()
-                || (this.token != null && this.token.isOpenBracketContext());
-    }
-
-    @Override
     public void autoComplete(DBQueryEditor editor, ShellSqlServerQueryPromptItem item) {
         if (this.token != null) {
             try {

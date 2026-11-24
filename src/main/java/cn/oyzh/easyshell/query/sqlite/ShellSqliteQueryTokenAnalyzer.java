@@ -1,18 +1,13 @@
 package cn.oyzh.easyshell.query.sqlite;
 
-import cn.oyzh.common.util.TextUtil;
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
+import cn.oyzh.fx.db.query.DBSqlQueryPromptCategory;
+import cn.oyzh.fx.db.query.DBSqlQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  * SQLite 查询提示分析器。
@@ -20,105 +15,49 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2026-11-02
  */
-public class ShellSqliteQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellSqliteQueryPromptItem, ShellSqliteQueryToken> {
+public class ShellSqliteQueryTokenAnalyzer extends DBSqlQueryTokenAnalyzer<ShellSqliteQueryPromptItem, ShellSqliteQueryToken> {
 
     public static final ShellSqliteQueryTokenAnalyzer INSTANCE = new ShellSqliteQueryTokenAnalyzer();
 
     @Override
-    public ShellSqliteQueryToken currentToken(String content, int currentIndex) {
-        try {
-            if (StringUtil.isEmpty(content)) {
-                return null;
-            }
-            if (currentIndex <= 0) {
-                return null;
-            }
-            if (currentIndex > content.length()) {
-                return null;
-            }
-            ShellSqliteQueryToken token = new ShellSqliteQueryToken();
-            content = content.substring(0, currentIndex);
-            int tokenIndex = 0;
-            Character tokenType = null;
-            char[] chars = ArrayUtil.reverse(content.toCharArray());
-            for (int i = 0; i < chars.length; i++) {
-                char c = chars[i];
-                if (c == '\n' || c == ' ' || c == '"' || c == '`' || c == '['
-                        || c == ']' || c == '.' || c == ',') {
-                    tokenType = c;
-                    tokenIndex = chars.length - i - 1;
-                    break;
-                }
-            }
-            if (tokenType == null) {
-                tokenType = '\0';
-            }
-            String tokenContent;
-            if (tokenType != '\0') {
-                tokenContent = content.substring(tokenIndex + 1);
-            } else {
-                tokenContent = content.substring(tokenIndex);
-            }
-            token.setToken(tokenType);
-            if (tokenType != '\0') {
-                token.setStartIndex(tokenIndex + 1);
-                token.setEndIndex(currentIndex);
-            } else {
-                token.setStartIndex(tokenIndex);
-                token.setEndIndex(currentIndex);
-            }
-            token.setContent(tokenContent.trim());
-            return token;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    protected ShellSqliteQueryToken createToken() {
+        return new ShellSqliteQueryToken();
+    }
+
+    @Override
+    protected ShellSqliteQueryPromptItem createPromptItem() {
+        return new ShellSqliteQueryPromptItem();
     }
 
     @Override
     public List<ShellSqliteQueryPromptItem> initPrompts(ShellSqliteQueryToken token, float minCorr) {
-        if (token == null || token.isEmpty()) {
+        if (token == null) {
             return Collections.emptyList();
         }
-        String text = token.getContent().toUpperCase();
+        String text = token.getContent() == null ? "" : token.getContent();
         List<ShellSqliteQueryPromptItem> items = new CopyOnWriteArrayList<>();
         List<Runnable> tasks = new ArrayList<>();
         if (token.isPossibilityKeyword()) {
-            tasks.add(() -> this.addItems(items, text, ShellSqliteQueryUtil.getKeywords(),
-                    (byte) 4, null, minCorr));
+            tasks.add(() -> ShellSqliteQueryUtil.getKeywords().forEach(keyword ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_KEYWORD, keyword,
+                            null, null, DBSqlQueryPromptCategory.KEYWORD)));
         }
         if (token.isPossibilityDatabase()) {
-            tasks.add(() -> this.addItems(items, text, ShellSqliteQueryUtil.getDatabases(),
-                    (byte) 1, null, minCorr));
+            tasks.add(() -> ShellSqliteQueryUtil.getDatabases().forEach(database ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_DATABASE, database,
+                            null, null, DBSqlQueryPromptCategory.DATABASE)));
         }
         if (token.isPossibilityTable()) {
-            tasks.add(() -> this.addItems(items, text, ShellSqliteQueryUtil.getTables(),
-                    (byte) 2, "main", minCorr));
+            tasks.add(() -> ShellSqliteQueryUtil.getTables().forEach(table ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_TABLE, table,
+                            "main", "main", DBSqlQueryPromptCategory.TABLE)));
         }
         if (token.isPossibilityView()) {
-            tasks.add(() -> this.addItems(items, text, ShellSqliteQueryUtil.getViews(),
-                    (byte) 5, "main", minCorr));
+            tasks.add(() -> ShellSqliteQueryUtil.getViews().forEach(view ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_VIEW, view,
+                            "main", "main", DBSqlQueryPromptCategory.VIEW)));
         }
         ThreadUtil.submit(tasks);
-        List<ShellSqliteQueryPromptItem> itemList = items.parallelStream()
-                .sorted(Comparator.comparingDouble(ShellSqliteQueryPromptItem::getCorrelation))
-                .collect(Collectors.toList());
-        return itemList.reversed();
+        return this.sortPrompts(items);
     }
-
-    private void addItems(List<ShellSqliteQueryPromptItem> items, String input, Set<String> values,
-                          byte type, String ext, float minCorr) {
-        values.parallelStream().forEach(value -> {
-            double correlation = TextUtil.clacCorr(value, input);
-            if (correlation > minCorr) {
-                ShellSqliteQueryPromptItem item = new ShellSqliteQueryPromptItem();
-                item.setType(type);
-                item.setContent(value);
-                item.setExtContent(ext);
-                item.setCorrelation(correlation);
-                items.add(item);
-            }
-        });
-    }
-
 }

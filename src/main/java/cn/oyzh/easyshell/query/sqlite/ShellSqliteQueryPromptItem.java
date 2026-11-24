@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.query.sqlite;
 
-import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryPromptItem;
-import cn.oyzh.fx.db.util.DBUtil;
 
 /**
  * SQLite 查询提示项。
@@ -28,15 +26,6 @@ public class ShellSqliteQueryPromptItem extends DBQueryPromptItem {
      */
     public boolean isTableType() {
         return 2 == this.getType();
-    }
-
-    /**
-     * 是否字段类型。
-     *
-     * @return 结果
-     */
-    public boolean isColumnType() {
-        return 3 == this.getType();
     }
 
     /**
@@ -81,9 +70,6 @@ public class ShellSqliteQueryPromptItem extends DBQueryPromptItem {
      * @return 内容
      */
     public String wrapContent() {
-        if (this.isColumnType()) {
-            return DBUtil.wrap(this.getContent(), DBDialect.SQLITE);
-        }
         return this.getContent();
     }
 }

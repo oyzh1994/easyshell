@@ -1,20 +1,13 @@
 package cn.oyzh.easyshell.query.sqlserver;
 
-
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
-import cn.oyzh.fx.db.util.DBUtil;
+import cn.oyzh.fx.db.query.DBSqlQueryPromptCategory;
+import cn.oyzh.fx.db.query.DBSqlQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  * SqlServer查询token解析器
@@ -22,213 +15,64 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-11-06
  */
-public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellSqlServerQueryPromptItem, ShellSqlServerQueryToken> {
+public class ShellSqlServerQueryTokenAnalyzer extends DBSqlQueryTokenAnalyzer<ShellSqlServerQueryPromptItem, ShellSqlServerQueryToken> {
 
-    /**
-     * 实例
-     */
     public static final ShellSqlServerQueryTokenAnalyzer INSTANCE = new ShellSqlServerQueryTokenAnalyzer();
 
     @Override
-    public ShellSqlServerQueryToken currentToken(String content, int currentIndex) {
-        try {
-            if (StringUtil.isEmpty(content)) {
-                return null;
-            }
-            if (currentIndex <= 0) {
-                return null;
-            }
-            if (currentIndex > content.length()) {
-                return null;
-            }
-            ShellSqlServerQueryToken token = new ShellSqlServerQueryToken();
-            // 截取字符串
-            content = content.substring(0, currentIndex);
-            // 当前位置
-            int tokenIndex = 0;
-            // token类型
-            Character tokenType = null;
-            char[] chars = ArrayUtil.reverse(content.toCharArray());
-            for (int i = 0; i < chars.length; i++) {
-                char c = chars[i];
-                // 寻找操作符，SQL Server可使用方括号或双引号包裹标识符
-                if (c == '\n' || c == ' ' || c == '"' || c == '[' || c == '.' || c == ',') {
-                    tokenType = c;
-                    tokenIndex = chars.length - i - 1;
-                    break;
-                }
-            }
-            // 特殊类型，默认为关键字
-            if (tokenType == null) {
-                tokenType = '\0';
-            }
-            String tokenContent;
-            if (tokenType != '\0') {
-                tokenContent = content.substring(tokenIndex + 1);
-            } else {
-                tokenContent = content.substring(tokenIndex);
-            }
-            token.setToken(tokenType);
-            if (tokenType != '\0') {
-                token.setStartIndex(tokenIndex + 1);
-                token.setEndIndex(currentIndex);
-            } else {
-                token.setStartIndex(tokenIndex);
-                token.setEndIndex(currentIndex);
-            }
-            token.setContent(tokenContent.trim());
-            return token;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    protected ShellSqlServerQueryToken createToken() {
+        return new ShellSqlServerQueryToken();
+    }
+
+    @Override
+    protected ShellSqlServerQueryPromptItem createPromptItem() {
+        return new ShellSqlServerQueryPromptItem();
     }
 
     @Override
     public List<ShellSqlServerQueryPromptItem> initPrompts(ShellSqlServerQueryToken token, float minCorr) {
-        if (token == null || (token.isEmpty() && !token.isOpenBracketContext())) {
+        if (token == null) {
             return Collections.emptyList();
         }
-        // 当前提示词
-        String text = token.getContent().toUpperCase();
-        // 提示词列表
-        final List<ShellSqlServerQueryPromptItem> items = new CopyOnWriteArrayList<>();
-        // 任务列表
+        String text = token.getContent() == null ? "" : token.getContent();
+        List<ShellSqlServerQueryPromptItem> items = new CopyOnWriteArrayList<>();
         List<Runnable> tasks = new ArrayList<>();
-        // 关键字
         if (token.isPossibilityKeyword()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
-                // 计算相关度
-                double corr = this.correlation(keyword, text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 4);
-                    item.setContent(keyword);
-                    item.setCorrelation(corr);
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getKeywords().forEach(keyword ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_KEYWORD, keyword,
+                            null, null, DBSqlQueryPromptCategory.KEYWORD)));
         }
-        // 模式（SqlServer中dbName实际为schema）
         if (token.isPossibilityDatabase()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getSchemas().parallelStream().forEach(schema -> {
-                // 计算相关度
-                double corr = this.correlation(schema.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 1);
-                    item.setContent(schema.getName());
-                    item.setCorrelation(corr);
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getSchemas().forEach(schema ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_DATABASE, schema.getName(),
+                            null, null, DBSqlQueryPromptCategory.DATABASE)));
         }
-        // 表
         if (token.isPossibilityTable()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getTables().parallelStream().forEach(dbTable -> {
-                // 计算相关度
-                double corr = this.correlation(dbTable.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 2);
-                    item.setCorrelation(corr);
-                    item.setContent(dbTable.getName());
-                    item.setExtContent(dbTable.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getTables().forEach(table ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_TABLE, table.getName(),
+                            table.getSchema(), table.getSchema(), DBSqlQueryPromptCategory.TABLE)));
         }
-        // 视图
         if (token.isPossibilityView()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getViews().parallelStream().forEach(dbTable -> {
-                // 计算相关度
-                double corr = this.correlation(dbTable.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 5);
-                    item.setCorrelation(corr);
-                    item.setContent(dbTable.getName());
-                    item.setExtContent(dbTable.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getViews().forEach(view ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_VIEW, view.getName(),
+                            view.getSchema(), view.getSchema(), DBSqlQueryPromptCategory.VIEW)));
         }
-        // 函数
         if (token.isPossibilityFunction()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getFunctions().parallelStream().forEach(function -> {
-                // 计算相关度
-                double corr = this.correlation(function.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 6);
-                    item.setCorrelation(corr);
-                    item.setContent(function.getName());
-                    item.setExtContent(function.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getFunctions().forEach(function ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_FUNCTION, function.getName(),
+                            function.getSchema(), function.getSchema(), DBSqlQueryPromptCategory.FUNCTION)));
         }
-        // 过程
         if (token.isPossibilityProcedure()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getProcedures().parallelStream().forEach(procedure -> {
-                // 计算相关度
-                double corr = this.correlation(procedure.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 7);
-                    item.setCorrelation(corr);
-                    item.setContent(procedure.getName());
-                    item.setExtContent(procedure.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getProcedures().forEach(procedure ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_PROCEDURE, procedure.getName(),
+                            procedure.getSchema(), procedure.getSchema(), DBSqlQueryPromptCategory.PROCEDURE)));
         }
-        // 序列
         if (token.isPossibilitySequence()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getSequences().parallelStream().forEach(sequence -> {
-                // 计算相关度
-                double corr = this.correlation(sequence.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 8);
-                    item.setCorrelation(corr);
-                    item.setContent(sequence.getName());
-                    item.setExtContent(sequence.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellSqlServerQueryUtil.getSequences().forEach(sequence ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_SEQUENCE, sequence.getName(),
+                            sequence.getSchema(), sequence.getSchema(), DBSqlQueryPromptCategory.SEQUENCE)));
         }
-        // 字段
-        if (token.isPossibilityColumn()) {
-            tasks.add(() -> ShellSqlServerQueryUtil.getColumns().parallelStream().forEach(column -> {
-                // 计算相关度
-                double corr = this.correlation(column.getName(), text);
-                if (corr > minCorr) {
-                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
-                    item.setType((byte) 3);
-                    item.setCorrelation(corr);
-                    item.setContent(column.getName());
-                    item.setExtContent(DBUtil.wrap(column.getSchema(), column.getTableName(), DBDialect.SQLSERVER));
-                    items.add(item);
-                }
-            }));
-        }
-        // 执行任务
         ThreadUtil.submit(tasks);
-        // 根据相关度排序
-        List<ShellSqlServerQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(ShellSqlServerQueryPromptItem::getCorrelation)).collect(Collectors.toList());
-        // 反转列表
-        return itemList.reversed();
-    }
-
-    /**
-     * 计算候选相关度。方括号后尚未输入内容时展示全部标识符候选。
-     *
-     * @param value 候选值
-     * @param input 已输入内容
-     * @return 相关度
-     */
-    private double correlation(String value, String input) {
-        return StringUtil.isEmpty(input) ? 1.0d : TextUtil.clacCorr(value, input);
+        return this.sortPrompts(items);
     }
 }

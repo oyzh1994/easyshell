@@ -61,8 +61,7 @@ public class ShellSqlServerQueryTokenAnalyzerTest {
                     && tableName.equals(item.getContent())));
             assertTrue(prompts.stream().anyMatch(item -> item.isViewType()
                     && viewName.equals(item.getContent())));
-            assertTrue(prompts.stream().anyMatch(item -> item.isColumnType()
-                    && columnName.equals(item.getContent())));
+            assertFalse(prompts.stream().anyMatch(item -> columnName.equals(item.getContent())));
             assertFalse(prompts.stream().anyMatch(ShellSqlServerQueryPromptItem::isKeywordType));
         } finally {
             schemas.remove(schema);

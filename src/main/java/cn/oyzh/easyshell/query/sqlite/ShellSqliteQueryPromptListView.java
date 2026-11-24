@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.query.sqlite;
 
 import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
@@ -31,9 +30,6 @@ public class ShellSqliteQueryPromptListView extends ShellQueryPromptListView<She
         } else if (item.isTableType()) {
             SVGGlyph svgGlyph = new TableSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
-        } else if (item.isColumnType()) {
-            SVGGlyph svgGlyph = new ColumnSVGGlyph();
-            label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isViewType()) {
             label = new SVGLabel(item.getContent(), new ViewSVGGlyph());
         } else if (item.isFunctionType()) {
@@ -52,7 +48,8 @@ public class ShellSqliteQueryPromptListView extends ShellQueryPromptListView<She
     @Override
     protected FXLabel initExtLabel(ShellSqliteQueryPromptItem item) {
         FXLabel label = null;
-        if (item.isTableType() || item.isViewType() || item.isColumnType()) {
+        if (item.isTableType() || item.isViewType()
+                || item.isFunctionType() || item.isProcedureType()) {
             label = new FXLabel(item.getExtContent());
             label.setTextFill(Color.valueOf("#D3D3D3"));
         }

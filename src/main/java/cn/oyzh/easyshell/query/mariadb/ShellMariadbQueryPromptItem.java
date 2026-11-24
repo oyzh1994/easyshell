@@ -1,8 +1,6 @@
 package cn.oyzh.easyshell.query.mariadb;
 
-import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryPromptItem;
-import cn.oyzh.fx.db.util.DBUtil;
 
 /**
  * 查询提示内容
@@ -28,15 +26,6 @@ public class ShellMariadbQueryPromptItem extends DBQueryPromptItem {
      */
     public boolean isTableType() {
         return 2 == this.getType();
-    }
-
-    /**
-     * 是否字段类型
-     *
-     * @return 结果
-     */
-    public boolean isColumnType() {
-        return 3 == this.getType();
     }
 
     /**
@@ -89,10 +78,7 @@ public class ShellMariadbQueryPromptItem extends DBQueryPromptItem {
      *
      * @return 包裹后的内容
      */
-    public String wrapContent( ) {
-        if(this.isColumnType()){
-            return DBUtil.wrap(this.getContent(), DBDialect.MARIADB);
-        }
+    public String wrapContent() {
         return this.getContent();
     }
 }

@@ -2,7 +2,6 @@ package cn.oyzh.easyshell.query.mariadb;
 
 import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
-import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.EventSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
@@ -37,10 +36,6 @@ public class ShellMariadbQueryPromptListView extends ShellQueryPromptListView<Sh
             SVGGlyph svgGlyph = new TableSVGGlyph();
 //            svgGlyph.setColor(Color.BLACK);
             label = new SVGLabel(item.getContent(), svgGlyph);
-        } else if (item.isColumnType()) {
-            SVGGlyph svgGlyph = new ColumnSVGGlyph();
-//            svgGlyph.setColor(Color.BLACK);
-            label = new SVGLabel(item.getContent(), svgGlyph);
         } else if (item.isViewType()) {
             ViewSVGGlyph svgGlyph = new ViewSVGGlyph();
 //            svgGlyph.setColor(Color.BLACK);
@@ -66,7 +61,8 @@ public class ShellMariadbQueryPromptListView extends ShellQueryPromptListView<Sh
     @Override
     protected FXLabel initExtLabel(ShellMariadbQueryPromptItem item) {
         FXLabel label = null;
-        if (item.isTableType() || item.isViewType() || item.isColumnType()) {
+        if (item.isTableType() || item.isViewType() || item.isFunctionType()
+                || item.isProcedureType() || item.isEventType()) {
             label = new FXLabel(item.getExtContent());
             label.setTextFill(Color.valueOf("#D3D3D3"));
         }

@@ -150,7 +150,7 @@ public class SQLiteDesignAndDataTest {
                     .currentToken(columnSql, columnSql.length());
             List<ShellSqliteQueryPromptItem> columnPrompts = ShellSqliteQueryTokenAnalyzer.INSTANCE
                     .initPrompts(columnToken, 0.5f);
-            assertTrue(columnPrompts.stream().noneMatch(ShellSqliteQueryPromptItem::isColumnType));
+            assertTrue(columnPrompts.stream().noneMatch(item -> "name".equals(item.getContent())));
 
             String keywordSql = "SEL";
             ShellSqliteQueryToken keywordToken = ShellSqliteQueryTokenAnalyzer.INSTANCE
@@ -160,7 +160,7 @@ public class SQLiteDesignAndDataTest {
             assertTrue(keywordPrompts.stream()
                     .anyMatch(item -> item.isKeywordType() && "SELECT".equals(item.getContent())));
             assertTrue(keywordPrompts.stream().noneMatch(item -> item.isTableType()
-                    || item.isViewType() || item.isColumnType() || item.isDatabaseType()));
+                    || item.isViewType() || item.isDatabaseType()));
         } finally {
             client.close();
         }

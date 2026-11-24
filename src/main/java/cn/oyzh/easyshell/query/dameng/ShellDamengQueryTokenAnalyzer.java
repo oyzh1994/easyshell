@@ -1,20 +1,13 @@
 package cn.oyzh.easyshell.query.dameng;
 
-
 import cn.oyzh.common.thread.ThreadUtil;
-import cn.oyzh.common.util.ArrayUtil;
-import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.common.util.TextUtil;
-import cn.oyzh.fx.db.DBDialect;
-import cn.oyzh.fx.db.query.DBQueryTokenAnalyzer;
-import cn.oyzh.fx.db.util.DBUtil;
+import cn.oyzh.fx.db.query.DBSqlQueryPromptCategory;
+import cn.oyzh.fx.db.query.DBSqlQueryTokenAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  * 达梦查询token解析器
@@ -22,202 +15,64 @@ import java.util.stream.Collectors;
  * @author oyzh
  * @since 2025-11-06
  */
-public class ShellDamengQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellDamengQueryPromptItem, ShellDamengQueryToken> {
+public class ShellDamengQueryTokenAnalyzer extends DBSqlQueryTokenAnalyzer<ShellDamengQueryPromptItem, ShellDamengQueryToken> {
 
-    /**
-     * 实例
-     */
     public static final ShellDamengQueryTokenAnalyzer INSTANCE = new ShellDamengQueryTokenAnalyzer();
 
     @Override
-    public ShellDamengQueryToken currentToken(String content, int currentIndex) {
-        try {
-            if (StringUtil.isEmpty(content)) {
-                return null;
-            }
-            if (currentIndex <= 0) {
-                return null;
-            }
-            if (currentIndex > content.length()) {
-                return null;
-            }
-            ShellDamengQueryToken token = new ShellDamengQueryToken();
-            // 截取字符串
-            content = content.substring(0, currentIndex);
-            // 当前位置
-            int tokenIndex = 0;
-            // token类型
-            Character tokenType = null;
-            char[] chars = ArrayUtil.reverse(content.toCharArray());
-            for (int i = 0; i < chars.length; i++) {
-                char c = chars[i];
-                // 寻找操作符
-                if (c == '\n' || c == ' ' || c == '`' || c == '.' || c == ',') {
-                    tokenType = c;
-                    tokenIndex = chars.length - i - 1;
-                    break;
-                }
-            }
-            // 特殊类型，默认为关键字
-            if (tokenType == null) {
-                tokenType = '\0';
-            }
-            String tokenContent;
-            if (tokenType != '\0') {
-                tokenContent = content.substring(tokenIndex + 1);
-            } else {
-                tokenContent = content.substring(tokenIndex);
-            }
-            token.setToken(tokenType);
-            if (tokenType != '\0') {
-                token.setStartIndex(tokenIndex + 1);
-                token.setEndIndex(currentIndex);
-            } else {
-                token.setStartIndex(tokenIndex);
-                token.setEndIndex(currentIndex);
-            }
-            token.setContent(tokenContent.trim());
-            return token;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    protected ShellDamengQueryToken createToken() {
+        return new ShellDamengQueryToken();
+    }
+
+    @Override
+    protected ShellDamengQueryPromptItem createPromptItem() {
+        return new ShellDamengQueryPromptItem();
     }
 
     @Override
     public List<ShellDamengQueryPromptItem> initPrompts(ShellDamengQueryToken token, float minCorr) {
-        if (token == null || token.isEmpty()) {
+        if (token == null) {
             return Collections.emptyList();
         }
-        // 当前提示词
-        String text = token.getContent().toUpperCase();
-        // 提示词列表
-        final List<ShellDamengQueryPromptItem> items = new CopyOnWriteArrayList<>();
-        // 任务列表
+        String text = token.getContent() == null ? "" : token.getContent();
+        List<ShellDamengQueryPromptItem> items = new CopyOnWriteArrayList<>();
         List<Runnable> tasks = new ArrayList<>();
-        // 关键字
         if (token.isPossibilityKeyword()) {
-            tasks.add(() -> ShellDamengQueryUtil.getKeywords().parallelStream().forEach(keyword -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(keyword, text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 4);
-                    item.setContent(keyword);
-                    item.setCorrelation(corr);
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getKeywords().forEach(keyword ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_KEYWORD, keyword,
+                            null, null, DBSqlQueryPromptCategory.KEYWORD)));
         }
-        // 库
         if (token.isPossibilityDatabase()) {
-            tasks.add(() -> ShellDamengQueryUtil.getSchemas().parallelStream().forEach(schema -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(schema.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 1);
-                    item.setContent(schema.getName());
-                    item.setCorrelation(corr);
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getSchemas().forEach(schema ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_DATABASE, schema.getName(),
+                            null, null, DBSqlQueryPromptCategory.DATABASE)));
         }
-        // 表
         if (token.isPossibilityTable()) {
-            tasks.add(() -> ShellDamengQueryUtil.getTables().parallelStream().forEach(dbTable -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(dbTable.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 2);
-                    item.setCorrelation(corr);
-                    item.setContent(dbTable.getName());
-                    item.setExtContent(dbTable.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getTables().forEach(table ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_TABLE, table.getName(),
+                            table.getSchema(), table.getSchema(), DBSqlQueryPromptCategory.TABLE)));
         }
-        // 视图
         if (token.isPossibilityView()) {
-            tasks.add(() -> ShellDamengQueryUtil.getViews().parallelStream().forEach(dbTable -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(dbTable.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 5);
-                    item.setCorrelation(corr);
-                    item.setContent(dbTable.getName());
-                    item.setExtContent(dbTable.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getViews().forEach(view ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_VIEW, view.getName(),
+                            view.getSchema(), view.getSchema(), DBSqlQueryPromptCategory.VIEW)));
         }
-        // 函数
         if (token.isPossibilityFunction()) {
-            tasks.add(() -> ShellDamengQueryUtil.getFunctions().parallelStream().forEach(function -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(function.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 6);
-                    item.setCorrelation(corr);
-                    item.setContent(function.getName());
-                    item.setExtContent(function.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getFunctions().forEach(function ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_FUNCTION, function.getName(),
+                            function.getSchema(), function.getSchema(), DBSqlQueryPromptCategory.FUNCTION)));
         }
-        // 过程
         if (token.isPossibilityProcedure()) {
-            tasks.add(() -> ShellDamengQueryUtil.getProcedures().parallelStream().forEach(procedure -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(procedure.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 7);
-                    item.setCorrelation(corr);
-                    item.setContent(procedure.getName());
-                    item.setExtContent(procedure.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getProcedures().forEach(procedure ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_PROCEDURE, procedure.getName(),
+                            procedure.getSchema(), procedure.getSchema(), DBSqlQueryPromptCategory.PROCEDURE)));
         }
-        // 序列
         if (token.isPossibilitySequence()) {
-            tasks.add(() -> ShellDamengQueryUtil.getSequences().parallelStream().forEach(sequence -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(sequence.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 8);
-                    item.setCorrelation(corr);
-                    item.setContent(sequence.getName());
-                    item.setExtContent(sequence.getSchema());
-                    items.add(item);
-                }
-            }));
+            tasks.add(() -> ShellDamengQueryUtil.getSequences().forEach(sequence ->
+                    this.addPrompt(items, token, text, minCorr, TYPE_SEQUENCE, sequence.getName(),
+                            sequence.getSchema(), sequence.getSchema(), DBSqlQueryPromptCategory.SEQUENCE)));
         }
-        // 字段
-        if (token.isPossibilityColumn()) {
-            tasks.add(() -> ShellDamengQueryUtil.getColumns().parallelStream().forEach(column -> {
-                // 计算相关度
-                double corr = TextUtil.clacCorr(column.getName(), text);
-                if (corr > minCorr) {
-                    ShellDamengQueryPromptItem item = new ShellDamengQueryPromptItem();
-                    item.setType((byte) 3);
-                    item.setCorrelation(corr);
-                    item.setContent(column.getName());
-                    item.setExtContent(DBUtil.wrap(column.getSchema(), column.getTableName(), DBDialect.DAMENG));
-                    items.add(item);
-                }
-            }));
-        }
-        // 执行任务
         ThreadUtil.submit(tasks);
-        // 根据相关度排序
-        List<ShellDamengQueryPromptItem> itemList = items.parallelStream().sorted(Comparator.comparingDouble(ShellDamengQueryPromptItem::getCorrelation)).collect(Collectors.toList());
-        // 反转列表
-        return itemList.reversed();
+        return this.sortPrompts(items);
     }
 }
