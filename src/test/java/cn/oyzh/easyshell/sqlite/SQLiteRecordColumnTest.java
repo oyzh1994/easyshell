@@ -6,9 +6,14 @@ import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumns;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecord;
 import cn.oyzh.easyshell.sqlite.record.SQLiteRecordProperty;
+import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteDataUtil;
+import cn.oyzh.fx.db.util.DBNodeUtil;
+import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
 import cn.oyzh.fx.db.listener.DBStatusListener;
 import cn.oyzh.fx.db.listener.DBStatusListenerManager;
+import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
+import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.i18n.I18nHelper;
 import javafx.application.Platform;
@@ -134,6 +139,37 @@ public class SQLiteRecordColumnTest {
         record.putValue(name, "new");
         assertEquals("UPDATE \"item\" SET \"name\" = 'new' WHERE \"id\" = 1;",
                 ShellSqliteDataUtil.toUpdateSql(record.getColumns(), record));
+    }
+
+    @Test
+    public void testSQLiteUsesTextEditorsExceptPrimaryKey() throws Exception {
+        ShellSqliteColumnUtil.init();
+        AtomicReference<Throwable> error = new AtomicReference<>();
+        CountDownLatch done = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                SQLiteColumn id = this.column("id", "INTEGER");
+                id.setPrimaryKey(true);
+                SQLiteColumn intValue = this.column("int_value", "INTEGER");
+                SQLiteColumn realValue = this.column("real_value", "REAL");
+                SQLiteColumn dateTime = this.column("date_time", "DATETIME");
+                SQLiteColumn data = this.column("data", "BLOB");
+
+                assertTrue(DBNodeUtil.getNode(1L, id) instanceof NumberTextField);
+                assertTrue(DBNodeUtil.getNode("001", intValue) instanceof LongTextFiled);
+                assertTrue(DBNodeUtil.getNode("1.25", realValue) instanceof LongTextFiled);
+                assertTrue(DBNodeUtil.getNode("2026-11-24", dateTime) instanceof LongTextFiled);
+                assertTrue(DBNodeUtil.getNode(new byte[]{1}, data) instanceof BinaryTextFiled);
+            } catch (Throwable ex) {
+                error.set(ex);
+            } finally {
+                done.countDown();
+            }
+        });
+        assertTrue("SQLite editor capability test timed out", done.await(20, TimeUnit.SECONDS));
+        if (error.get() != null) {
+            throw new AssertionError("SQLite editor capability test failed", error.get());
+        }
     }
 
     @Test

@@ -116,6 +116,22 @@ public class SQLiteColumn extends DBObject implements DBColumn, ObjectCopier<SQL
     }
 
     @Override
+    public boolean supportText() {
+        if (this.isPrimaryKey()) {
+            return ShellSqliteColumnUtil.isTextType(this.getType());
+        }
+        return !DBColumn.super.supportBinary();
+    }
+
+    @Override
+    public boolean supportString() {
+        if (this.isPrimaryKey()) {
+            return ShellSqliteColumnUtil.isTextType(this.getType());
+        }
+        return !DBColumn.super.supportBinary();
+    }
+
+    @Override
     public void setType(String type) {
         this.typeProperty().set(type);
         super.putOriginalData("type", type);

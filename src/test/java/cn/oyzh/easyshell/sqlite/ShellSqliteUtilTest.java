@@ -55,19 +55,43 @@ public class ShellSqliteUtilTest {
         ShellSqliteColumnUtil.init();
         assertFalse(DBColumnFieldManager.fieldNames(DBDialect.SQLITE).isEmpty());
         assertTrue(DBColumnFieldManager.supportInteger(DBDialect.SQLITE, "INTEGER"));
+        assertTrue(DBColumnFieldManager.supportInteger(DBDialect.SQLITE, "TINYINT"));
+        assertTrue(DBColumnFieldManager.supportInteger(DBDialect.SQLITE, "SMALLINT"));
+        assertTrue(DBColumnFieldManager.supportInteger(DBDialect.SQLITE, "MEDIUMINT"));
+        assertTrue(DBColumnFieldManager.supportInteger(DBDialect.SQLITE, "BIGINT"));
+        assertTrue(DBColumnFieldManager.supportText(DBDialect.SQLITE, "INTEGER"));
+        assertTrue(DBColumnFieldManager.supportString(DBDialect.SQLITE, "REAL"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.SQLITE, "FLOAT"));
+        assertTrue(DBColumnFieldManager.supportDigits(DBDialect.SQLITE, "DOUBLE PRECISION"));
+        assertTrue(DBColumnFieldManager.supportText(DBDialect.SQLITE, "CHAR"));
+        assertTrue(DBColumnFieldManager.supportSize(DBDialect.SQLITE, "CHAR(20)"));
+        assertTrue(DBColumnFieldManager.supportText(DBDialect.SQLITE, "STRING"));
+        assertTrue(DBColumnFieldManager.supportText(DBDialect.SQLITE, "CLOB"));
         assertTrue(DBColumnFieldManager.supportString(DBDialect.SQLITE, "TEXT"));
         assertTrue(DBColumnFieldManager.supportJson(DBDialect.SQLITE, "JSONB"));
 
         SQLiteColumn id = this.column("id", "INTEGER");
+        id.setPrimaryKey(true);
         SQLiteColumn amount = this.column("amount", "REAL");
         SQLiteColumn generated = this.column("generated", "REAL");
         generated.setGeneratedExpression("amount * 2");
         assertTrue(id.supportInteger());
+        assertFalse(id.supportText());
         assertTrue(amount.supportDigits());
         assertTrue(id.supportAutoIncrement());
         SQLiteColumn intColumn = this.column("int_value", "INT");
         SQLiteColumn textColumn = this.column("text_value", "TEXT");
         SQLiteColumn booleanColumn = this.column("bool_value", "BOOLEAN");
+        SQLiteColumn dateTimeColumn = this.column("date_time_value", "DATETIME");
+        SQLiteColumn blobColumn = this.column("blob_value", "BLOB");
+        SQLiteColumn anyColumn = this.column("any_value", null);
+        assertTrue(intColumn.supportText());
+        assertTrue(amount.supportText());
+        assertTrue(booleanColumn.supportText());
+        assertTrue(dateTimeColumn.supportText());
+        assertFalse(blobColumn.supportText());
+        assertTrue(anyColumn.supportText());
+        assertTrue(anyColumn.supportString());
         SQLiteColumn generatedInteger = this.column("generated_integer", "INTEGER");
         generatedInteger.setGeneratedExpression("1");
         assertTrue(intColumn.supportAutoIncrement());
@@ -76,14 +100,12 @@ public class ShellSqliteUtilTest {
 
         assertEquals(Color.valueOf("#D7EED0"), DBNodeUtil.getNodeBackground(id));
         assertEquals(Color.valueOf("#A1C9D1"), DBNodeUtil.getNodeBackground(textColumn));
-        assertEquals(Color.valueOf("#FBF0D0"),
-                DBNodeUtil.getNodeBackground(this.column("blob_value", "BLOB")));
-        assertEquals(Color.valueOf("#CDECFA"), DBNodeUtil.getNodeBackground(amount));
+        assertEquals(Color.valueOf("#FBF0D0"), DBNodeUtil.getNodeBackground(blobColumn));
+        assertEquals(Color.valueOf("#A1C9D1"), DBNodeUtil.getNodeBackground(amount));
         assertFalse(booleanColumn.supportInteger());
         assertTrue(booleanColumn.supportBoolean());
-        assertEquals(Color.valueOf("#FAE1E4"), DBNodeUtil.getNodeBackground(booleanColumn));
-        assertEquals(Color.valueOf("#F1E1F5"),
-                DBNodeUtil.getNodeBackground(this.column("date_time_value", "DATETIME")));
+        assertEquals(Color.valueOf("#A1C9D1"), DBNodeUtil.getNodeBackground(booleanColumn));
+        assertEquals(Color.valueOf("#A1C9D1"), DBNodeUtil.getNodeBackground(dateTimeColumn));
 
         Map<String, Object> record = Map.of(
                 "id", "1",

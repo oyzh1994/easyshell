@@ -41,6 +41,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -86,7 +87,10 @@ public class SQLiteDesignAndDataTest {
             client.executeSqlSimple("PRAGMA legacy_alter_table=ON");
             client.executeSqlSimple("ALTER TABLE T_COLLECT RENAME TO renamed_collect");
 
-            ShellSqliteQueryUtil.updateIndex(client);
+            ShellSqliteQueryUtil.refreshIndex(client);
+            this.awaitQueryIndex(() -> ShellSqliteQueryUtil.getTables().contains("index_item")
+                    && ShellSqliteQueryUtil.getTables().contains("renamed_collect")
+                    && ShellSqliteQueryUtil.getViews().contains("broken_view"));
 
             assertTrue(ShellSqliteQueryUtil.getTables().contains("index_item"));
             assertTrue(ShellSqliteQueryUtil.getTables().contains("renamed_collect"));
@@ -106,7 +110,10 @@ public class SQLiteDesignAndDataTest {
             client.executeSqlSimple("CREATE TABLE prompt_item (id INTEGER PRIMARY KEY, name TEXT)");
             client.executeSqlSimple("CREATE VIEW prompt_view AS SELECT id, name FROM prompt_item");
 
-            ShellSqliteQueryUtil.updateIndex(client);
+            ShellSqliteQueryUtil.refreshIndex(client);
+            this.awaitQueryIndex(() -> ShellSqliteQueryUtil.getDatabases().contains("main")
+                    && ShellSqliteQueryUtil.getTables().contains("prompt_item")
+                    && ShellSqliteQueryUtil.getViews().contains("prompt_view"));
 
             assertTrue(ShellSqliteQueryUtil.getDatabases().contains("main"));
 
@@ -813,6 +820,17 @@ public class SQLiteDesignAndDataTest {
         connect.setReadonly(false);
         connect.setEnvironment("createIfMissing=true\nforeign_keys=" + foreignKeys + "\n");
         return new ShellSqliteClient(connect);
+    }
+
+    private void awaitQueryIndex(BooleanSupplier condition) throws InterruptedException {
+        long deadline = System.currentTimeMillis() + 5000;
+        while (System.currentTimeMillis() < deadline) {
+            if (condition.getAsBoolean()) {
+                return;
+            }
+            Thread.sleep(20);
+        }
+        fail("SQLite query index update timed out");
     }
 
     private int occurrences(String value, String token) {

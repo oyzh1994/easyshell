@@ -31,17 +31,23 @@ public final class ShellSqliteColumnUtil {
         integer.alias = "INT";
         integer.supportSize = true;
         integer.supportInteger = true;
+        integer.supportText = true;
+        integer.supportString = true;
         integer.supportDefaultValue = true;
         integer.supportAutoIncrement = true;
 
         DBColumnField real = new DBColumnField("REAL");
         real.alias = "DOUBLE";
         real.supportDigits = true;
+        real.supportText = true;
+        real.supportString = true;
         real.supportDefaultValue = true;
 
         DBColumnField numeric = new DBColumnField("NUMERIC");
         numeric.alias = "DECIMAL";
         numeric.supportDigits = true;
+        numeric.supportText = true;
+        numeric.supportString = true;
         numeric.supportDefaultValue = true;
 
         DBColumnField text = new DBColumnField("TEXT");
@@ -65,19 +71,27 @@ public final class ShellSqliteColumnUtil {
         DBColumnField bool = new DBColumnField("BOOLEAN");
         bool.alias = "BOOL";
         bool.supportBoolean = true;
+        bool.supportText = true;
+        bool.supportString = true;
         bool.supportDefaultValue = true;
 
         DBColumnField date = new DBColumnField("DATE");
         date.supportTimestamp = true;
+        date.supportText = true;
+        date.supportString = true;
         date.supportDefaultValue = true;
 
         DBColumnField time = new DBColumnField("TIME");
         time.supportTimestamp = true;
+        time.supportText = true;
+        time.supportString = true;
         time.supportDefaultValue = true;
 
         DBColumnField dateTime = new DBColumnField("DATETIME");
         dateTime.alias = "TIMESTAMP";
         dateTime.supportTimestamp = true;
+        dateTime.supportText = true;
+        dateTime.supportString = true;
         dateTime.supportDefaultValue = true;
 
         DBColumnField json = new DBColumnField("JSON");
@@ -87,10 +101,30 @@ public final class ShellSqliteColumnUtil {
         json.supportString = true;
         json.supportDefaultValue = true;
 
+        DBColumnField tinyint = integerType("TINYINT");
+        DBColumnField smallint = integerType("SMALLINT");
+        DBColumnField mediumint = integerType("MEDIUMINT");
+        DBColumnField bigint = integerType("BIGINT");
+        DBColumnField floatType = realType("FLOAT");
+        DBColumnField doublePrecision = realType("DOUBLE PRECISION");
+        DBColumnField charType = textType("CHAR");
+        charType.supportSize = true;
+        DBColumnField stringType = textType("STRING");
+        DBColumnField clob = textType("CLOB");
+
         // 常用类型优先
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, integer);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, tinyint);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, smallint);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, mediumint);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, bigint);
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, text);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, charType);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, stringType);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, clob);
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, real);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, floatType);
+        DBColumnFieldManager.putFiled(DBDialect.SQLITE, doublePrecision);
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, blob);
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, numeric);
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, bool);
@@ -101,6 +135,32 @@ public final class ShellSqliteColumnUtil {
 
         // 低频和兼容类型
         DBColumnFieldManager.putFiled(DBDialect.SQLITE, any);
+    }
+
+    private static DBColumnField integerType(String name) {
+        DBColumnField field = new DBColumnField(name);
+        field.supportInteger = true;
+        field.supportText = true;
+        field.supportString = true;
+        field.supportDefaultValue = true;
+        return field;
+    }
+
+    private static DBColumnField realType(String name) {
+        DBColumnField field = new DBColumnField(name);
+        field.supportDigits = true;
+        field.supportText = true;
+        field.supportString = true;
+        field.supportDefaultValue = true;
+        return field;
+    }
+
+    private static DBColumnField textType(String name) {
+        DBColumnField field = new DBColumnField(name);
+        field.supportText = true;
+        field.supportString = true;
+        field.supportDefaultValue = true;
+        return field;
     }
 
 //    private static DBColumnField field(String name, String alias, boolean supportSize,

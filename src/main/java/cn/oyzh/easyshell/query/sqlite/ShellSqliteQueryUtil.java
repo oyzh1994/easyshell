@@ -19,6 +19,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public final class ShellSqliteQueryUtil {
 
+    /**
+     * 0未初始化
+     * 1 初始化中
+     * 2 已初始化
+     */
+    private static volatile int indexStatus = 0;
+
     private static final Set<String> KEYWORDS = new CopyOnWriteArraySet<>(Arrays.asList(DBUtil.SQL_KEYWORDS));
 
     private static final Set<String> DATABASES = new CopyOnWriteArraySet<>();
@@ -47,37 +54,44 @@ public final class ShellSqliteQueryUtil {
     }
 
     /**
-     * 更新对象索引。
-     *
-     * @param client SQLite客户端
-     */
-    public static void updateIndex(ShellSqliteClient client) {
-        DATABASES.clear();
-        TABLES.clear();
-        VIEWS.clear();
-        DATABASES.addAll(client.databaseNames());
-        for (SQLiteTable table : client.selectTables()) {
-            TABLES.add(table.getName());
-        }
-        for (SQLiteView view : client.selectViews()) {
-            VIEWS.add(view.getName());
-        }
-    }
-
-    /**
      * 后台更新对象索引。
      *
      * @param client SQLite客户端
      */
-    public static void updateIndexAsync(ShellSqliteClient client) {
+    public static void updateIndex(ShellSqliteClient client) {
+        if (client == null || !client.isConnected() || indexStatus != 0) {
+            return;
+        }
+        indexStatus = 1;
         ThreadUtil.start(() -> {
             try {
-                if (client != null && client.isConnected()) {
-                    updateIndex(client);
+                DATABASES.clear();
+                TABLES.clear();
+                VIEWS.clear();
+                DATABASES.addAll(client.databaseNames());
+                for (SQLiteTable table : client.selectTables()) {
+                    TABLES.add(table.getName());
                 }
+                for (SQLiteView view : client.selectViews()) {
+                    VIEWS.add(view.getName());
+                }
+                indexStatus = 2;
             } catch (Exception ex) {
-                JulLog.debug("Update sqlite query index failed", ex);
+                indexStatus = 0;
+                JulLog.warn("Update sqlite query index failed", ex);
             }
         });
+    }
+
+    /**
+     * 刷新对象索引。
+     *
+     * @param client SQLite客户端
+     */
+    public static void refreshIndex(ShellSqliteClient client) {
+        if (indexStatus != 1) {
+            indexStatus = 0;
+        }
+        updateIndex(client);
     }
 }
