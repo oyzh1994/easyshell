@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.dameng.function;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineParam;
 import cn.oyzh.easyshell.dameng.routine.DamengRoutineSchema;
 
@@ -23,11 +24,13 @@ public class DamengFunction extends DamengRoutineSchema implements ObjectCopier<
     @Override
     public void setParams(List<DamengRoutineParam> params) {
         List<DamengRoutineParam> paramsList = new ArrayList<>();
-        for (DamengRoutineParam param : params) {
-            if (param.isReturnParam()) {
-                this.returnParam = param;
-            } else {
-                paramsList.add(param);
+        if (CollectionUtil.isNotEmpty(params)) {
+            for (DamengRoutineParam param : params) {
+                if (param.isReturnParam()) {
+                    this.returnParam = param;
+                } else {
+                    paramsList.add(param);
+                }
             }
         }
         super.setParams(paramsList);
@@ -45,8 +48,8 @@ public class DamengFunction extends DamengRoutineSchema implements ObjectCopier<
     @Override
     public void copy(DamengFunction function) {
         this.setParams(function.getParams());
-//        this.setComment(function.getComment());
-//        this.setDefiner(function.getDefiner());
+        //        this.setComment(function.getComment());
+        //        this.setDefiner(function.getDefiner());
         this.setDefinition(function.getDefinition());
         this.setReturnParam(function.getReturnParam());
         this.setSecurityType(function.getSecurityType());

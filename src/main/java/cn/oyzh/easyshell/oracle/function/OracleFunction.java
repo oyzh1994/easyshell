@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.oracle.function;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.oracle.routine.OracleRoutineParam;
 import cn.oyzh.easyshell.oracle.routine.OracleRoutineSchema;
 
@@ -23,11 +24,13 @@ public class OracleFunction extends OracleRoutineSchema implements ObjectCopier<
     @Override
     public void setParams(List<OracleRoutineParam> params) {
         List<OracleRoutineParam> paramsList = new ArrayList<>();
-        for (OracleRoutineParam param : params) {
-            if (param.isReturnParam()) {
-                this.returnParam = param;
-            } else {
-                paramsList.add(param);
+        if (CollectionUtil.isNotEmpty(params)) {
+            for (OracleRoutineParam param : params) {
+                if (param.isReturnParam()) {
+                    this.returnParam = param;
+                } else {
+                    paramsList.add(param);
+                }
             }
         }
         super.setParams(paramsList);

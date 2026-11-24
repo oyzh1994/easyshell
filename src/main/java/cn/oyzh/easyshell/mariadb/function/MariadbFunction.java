@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mariadb.function;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mariadb.routine.MariadbRoutineParam;
 import cn.oyzh.easyshell.mariadb.routine.MariadbRoutineSchema;
 
@@ -23,11 +24,13 @@ public class MariadbFunction extends MariadbRoutineSchema implements ObjectCopie
     @Override
     public void setParams(List<MariadbRoutineParam> params) {
         List<MariadbRoutineParam> paramsList = new ArrayList<>();
-        for (MariadbRoutineParam param : params) {
-            if (param.isReturnParam()) {
-                this.returnParam = param;
-            } else {
-                paramsList.add(param);
+        if (CollectionUtil.isNotEmpty(params)) {
+            for (MariadbRoutineParam param : params) {
+                if (param.isReturnParam()) {
+                    this.returnParam = param;
+                } else {
+                    paramsList.add(param);
+                }
             }
         }
         super.setParams(paramsList);

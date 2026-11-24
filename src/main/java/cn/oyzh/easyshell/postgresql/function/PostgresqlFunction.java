@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.postgresql.function;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.postgresql.routine.PostgresqlRoutineParam;
 import cn.oyzh.easyshell.postgresql.routine.PostgresqlRoutineSchema;
 
@@ -33,11 +34,13 @@ public class PostgresqlFunction extends PostgresqlRoutineSchema implements Objec
     @Override
     public void setParams(List<PostgresqlRoutineParam> params) {
         List<PostgresqlRoutineParam> paramsList = new ArrayList<>();
-        for (PostgresqlRoutineParam param : params) {
-            if (param.isReturnParam()) {
-                this.returnParam = param;
-            } else {
-                paramsList.add(param);
+        if (CollectionUtil.isNotEmpty(params)) {
+            for (PostgresqlRoutineParam param : params) {
+                if (param.isReturnParam()) {
+                    this.returnParam = param;
+                } else {
+                    paramsList.add(param);
+                }
             }
         }
         super.setParams(paramsList);

@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mysql.function;
 
 import cn.oyzh.common.object.ObjectCopier;
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineParam;
 import cn.oyzh.easyshell.mysql.routine.MysqlRoutineSchema;
 
@@ -23,11 +24,13 @@ public class MysqlFunction extends MysqlRoutineSchema implements ObjectCopier<My
     @Override
     public void setParams(List<MysqlRoutineParam> params) {
         List<MysqlRoutineParam> paramsList = new ArrayList<>();
-        for (MysqlRoutineParam param : params) {
-            if (param.isReturnParam()) {
-                this.returnParam = param;
-            } else {
-                paramsList.add(param);
+        if (CollectionUtil.isNotEmpty(params)) {
+            for (MysqlRoutineParam param : params) {
+                if (param.isReturnParam()) {
+                    this.returnParam = param;
+                } else {
+                    paramsList.add(param);
+                }
             }
         }
         super.setParams(paramsList);
