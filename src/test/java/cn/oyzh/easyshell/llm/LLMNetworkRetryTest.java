@@ -1,11 +1,18 @@
 package cn.oyzh.easyshell.llm;
 
+import dev.langchain4j.exception.LangChain4jException;
 import org.junit.Test;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.SocketException;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class LLMNetworkRetryTest {
@@ -54,6 +61,45 @@ public class LLMNetworkRetryTest {
             assertEquals("bad request", ex.getMessage());
         }
         assertEquals(1, calls.get());
+    }
+
+    @Test
+    public void detectsClosedStreamErrors() {
+        assertTrue(LLMNetworkRetry.isPrematureStreamClose(
+                new LangChain4jException("closed")));
+        assertTrue(LLMNetworkRetry.isPrematureStreamClose(
+                new LangChain4jException(new IOException("closed"))));
+        assertTrue(LLMNetworkRetry.isPrematureStreamClose(
+                new LangChain4jException(new IOException("Stream closed"))));
+        assertTrue(LLMNetworkRetry.isRetryable(
+                new IllegalStateException("request failed",
+                        new LangChain4jException("closed"))));
+        assertTrue(LLMNetworkRetry.isPrematureStreamClose(new EOFException()));
+    }
+
+    @Test
+    public void retriesClosedStream() throws Exception {
+        AtomicInteger calls = new AtomicInteger();
+
+        String result = LLMNetworkRetry.execute("test", () -> {
+            if (calls.incrementAndGet() == 1) {
+                throw new LangChain4jException("closed");
+            }
+            return "ok";
+        });
+
+        assertEquals("ok", result);
+        assertEquals(2, calls.get());
+    }
+
+    @Test
+    public void doesNotTreatCancellationAsClosedStream() {
+        assertFalse(LLMNetworkRetry.isPrematureStreamClose(
+                new InterruptedIOException("closed")));
+        assertFalse(LLMNetworkRetry.isPrematureStreamClose(
+                new CancellationException("closed")));
+        assertFalse(LLMNetworkRetry.isPrematureStreamClose(
+                new IllegalStateException("bad request")));
     }
 
 }

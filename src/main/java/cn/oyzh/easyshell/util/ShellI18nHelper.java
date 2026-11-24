@@ -570,6 +570,14 @@ public class ShellI18nHelper {
         return text("shell.llm.outputTruncated");
     }
 
+    public static String streamInterrupted() {
+        return text("shell.llm.stream.interrupted");
+    }
+
+    public static String streamRetryFailed() {
+        return text("shell.llm.stream.retryFailed");
+    }
+
     public static String thinkingLabel() {
         return text("shell.llm.thinkingLabel");
     }

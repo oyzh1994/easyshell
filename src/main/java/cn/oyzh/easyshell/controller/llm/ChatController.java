@@ -1,7 +1,6 @@
 package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.common.network.NetworkUtil;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -666,8 +665,9 @@ public class ChatController extends SubStageController {
         } catch (Exception ex) {
             if (this.isRequestActive(request)) {
                 JulLog.error("llm init error", ex);
+                String error = this.llmErrorMessage(ex, request.placeholder);
                 this.clearPlaceholder(request);
-                this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                this.view.addErrorMessage(error, message.getSessionTabId());
                 this.finishRequest(request, true);
             } else {
                 this.closeRequestResources(request);
@@ -752,7 +752,8 @@ public class ChatController extends SubStageController {
                     }
                     JulLog.error("llm error", ex);
                     placeholder.finishThinking();
-                    this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                    this.view.addErrorMessage(this.llmErrorMessage(ex, placeholder),
+                            message.getSessionTabId());
                     this.finishRequest(request, true);
                 }
             }
@@ -761,7 +762,8 @@ public class ChatController extends SubStageController {
                 return;
             }
             JulLog.error("llm request error", ex);
-            this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+            this.view.addErrorMessage(this.llmErrorMessage(ex, request.placeholder),
+                    message.getSessionTabId());
             this.finishRequest(request, true);
         }
     }
@@ -774,6 +776,7 @@ public class ChatController extends SubStageController {
                                       int retry) {
         AtomicBoolean firstResponse = new AtomicBoolean(true);
         AtomicBoolean firstThinking = new AtomicBoolean(true);
+        AtomicBoolean settled = new AtomicBoolean();
         assistant.chatStream(contents)
                 .onPartialThinking(token -> {
                     if (!this.isRequestActive(request) || StringUtil.isBlank(token.text())) {
@@ -798,20 +801,27 @@ public class ChatController extends SubStageController {
                     }
                 })
                 .onError(ex -> {
-                    if (!this.isRequestActive(request)) {
+                    if (!this.isRequestActive(request)
+                            || !settled.compareAndSet(false, true)) {
                         return;
                     }
                     if (retry < LLMNetworkRetry.MAX_RETRIES
-                            && NetworkUtil.isConnectionReset(ex)) {
+                            && LLMNetworkRetry.isRetryable(ex)) {
                         int nextRetry = retry + 1;
-                        JulLog.warn("llm connection reset, retrying {}/{}",
-                                nextRetry, LLMNetworkRetry.MAX_RETRIES);
+                        JulLog.warn("llm stream interrupted, retrying "
+                                + nextRetry + "/" + LLMNetworkRetry.MAX_RETRIES, ex);
                         this.view.replaceThinking(placeholder, "");
                         this.view.replaceMessage(placeholder, ShellI18nHelper.thinkingPlaceholder());
                         try {
                             Thread.sleep(LLMNetworkRetry.retryDelayMillis(nextRetry));
                         } catch (InterruptedException interrupted) {
                             Thread.currentThread().interrupt();
+                            if (this.isRequestActive(request)) {
+                                this.view.addErrorMessage(
+                                        ShellI18nHelper.streamRetryFailed(),
+                                        message.getSessionTabId());
+                                this.finishRequest(request, true);
+                            }
                             return;
                         }
                         if (this.isRequestActive(request)) {
@@ -820,12 +830,19 @@ public class ChatController extends SubStageController {
                         }
                         return;
                     }
-                    JulLog.error("llm error", ex);
-                    this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+                    JulLog.error("llm stream error", ex);
+                    placeholder.finishThinking();
+                    this.view.flushMessageUpdates();
+                    this.view.addErrorMessage(
+                            this.llmErrorMessage(ex, placeholder),
+                            message.getSessionTabId());
                     this.finishRequest(request, true);
                 })
-                .onCompleteResponse(response ->
-                        this.completeStreamingRequest(request, placeholder, response))
+                .onCompleteResponse(response -> {
+                    if (settled.compareAndSet(false, true)) {
+                        this.completeStreamingRequest(request, placeholder, response);
+                    }
+                })
                 .start();
     }
 
@@ -905,9 +922,23 @@ public class ChatController extends SubStageController {
             }
             JulLog.error("llm agent error", ex);
             placeholder.finishThinking();
-            this.view.addErrorMessage(ex.getMessage(), message.getSessionTabId());
+            this.view.addErrorMessage(this.llmErrorMessage(ex, placeholder),
+                    message.getSessionTabId());
             this.finishRequest(request, true);
         }
+    }
+
+    private String llmErrorMessage(Throwable ex, LLMMessage placeholder) {
+        if (LLMNetworkRetry.isRetryable(ex)) {
+            String text = placeholder == null ? null : placeholder.getMessage();
+            if (StringUtil.isBlank(text)
+                    || Objects.equals(text, ShellI18nHelper.thinkingPlaceholder())) {
+                return ShellI18nHelper.streamRetryFailed();
+            }
+            return ShellI18nHelper.streamInterrupted();
+        }
+        String message = ex == null ? null : ex.getMessage();
+        return StringUtil.isBlank(message) ? I18nHelper.unknown() : message;
     }
 
     private String agentEventText(LLMAgentEvent event) {
