@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.llm;
+package cn.oyzh.easyshell.util.llm;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.skill.LLMSkillArchiveUtil;
@@ -20,12 +20,12 @@ import java.util.Locale;
  * @author oyzh
  * @since 2026-11-21
  */
-final class LLMSkillUiUtil {
+public final class ShellLLMSkillUiUtil {
 
-    private LLMSkillUiUtil() {
+    private ShellLLMSkillUiUtil() {
     }
 
-    static File chooseFile(Window owner) {
+    public  static File chooseFile(Window owner) {
         FileExtensionFilter filter = new FileExtensionFilter(
                 I18nResourceBundle.i18nString("shell.llm.skill.fileFilter"),
                 "*.zip", "*.md");
@@ -33,13 +33,13 @@ final class LLMSkillUiUtil {
                 I18nResourceBundle.i18nString("shell.llm.skill.selectFile"), filter, owner);
     }
 
-    static File chooseFolder(Window owner) {
+    public static File chooseFolder(Window owner) {
         FXDirChooser chooser = new FXDirChooser();
         chooser.setTitle(I18nResourceBundle.i18nString("shell.llm.skill.selectFolder"));
         return chooser.showDialog(owner);
     }
 
-    static boolean validateSource(File source, Window owner) {
+    public static boolean validateSource(File source, Window owner) {
         if (source == null || !source.exists()) {
             MessageBox.warn(I18nResourceBundle.i18nString("shell.llm.skill.fileRequired"), owner);
             return false;
@@ -58,7 +58,7 @@ final class LLMSkillUiUtil {
         return true;
     }
 
-    static boolean validateName(String name, String excludeUid, LLMSkillStore store, Window owner) {
+    public static boolean validateName(String name, String excludeUid, LLMSkillStore store, Window owner) {
         if (StringUtil.isBlank(name)) {
             MessageBox.warn(I18nResourceBundle.i18nString("shell.llm.skill.nameRequired"), owner);
             return false;
@@ -70,7 +70,7 @@ final class LLMSkillUiUtil {
         return true;
     }
 
-    static String suggestedName(File source) {
+    public static String suggestedName(File source) {
         if (source == null) {
             return "";
         }
@@ -85,7 +85,7 @@ final class LLMSkillUiUtil {
         return name.length() > 64 ? name.substring(0, 64) : name;
     }
 
-    static void showSource(ClearableTextField field, File source, boolean keepCurrent) {
+    public static void showSource(ClearableTextField field, File source, boolean keepCurrent) {
         if (source != null) {
             field.setText(source.getAbsolutePath());
         } else if (!keepCurrent) {

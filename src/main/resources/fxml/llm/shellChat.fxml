@@ -12,7 +12,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <FXVBox fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="cn.oyzh.easyshell.controller.llm.ChatController"
+        fx:controller="cn.oyzh.easyshell.controller.llm.ShellChatController"
         flexHeight="100%" visible="false" managed="false" managedBindVisible="true">
     <FXHBox realHeight="30" flexWidth="100%">
         <AddSVGGlyph tipText="%base.add" onMousePrimaryClicked="#newSession">

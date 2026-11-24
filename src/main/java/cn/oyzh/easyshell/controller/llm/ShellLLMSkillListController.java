@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.llm.skill.LLMSkillManager;
 import cn.oyzh.easyshell.llm.skill.LLMSkillValidationState;
 import cn.oyzh.easyshell.store.llm.LLMSkillStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.llm.ShellLLMListSearchUtil;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -185,7 +186,7 @@ public class ShellLLMSkillListController extends StageController {
     }
 
     private void applyFilter() {
-        this.skillTableView.setItem(LLMListSearchUtil.filter(
+        this.skillTableView.setItem(ShellLLMListSearchUtil.filter(
                 this.allItems,
                 this.searchField == null ? null : this.searchField.getText(),
                 LLMSkill::getName,

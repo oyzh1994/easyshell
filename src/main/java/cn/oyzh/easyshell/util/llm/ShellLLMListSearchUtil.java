@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.llm;
+package cn.oyzh.easyshell.util.llm;
 
 import cn.oyzh.common.util.StringUtil;
 
@@ -13,9 +13,9 @@ import java.util.function.Function;
  * @author oyzh
  * @since 2026-11-21
  */
-public final class LLMListSearchUtil {
+public final class ShellLLMListSearchUtil {
 
-    private LLMListSearchUtil() {
+    private ShellLLMListSearchUtil() {
     }
 
     @SafeVarargs

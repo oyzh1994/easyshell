@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.controller.llm;
 
 import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
-import cn.oyzh.easyshell.llm.prompt.LLMPromptUtil;
 import cn.oyzh.easyshell.store.llm.LLMPromptStore;
+import cn.oyzh.easyshell.util.llm.ShellLLMPromptControllerUtil;
 import cn.oyzh.fx.editor.incubator.control.MarkdownEditor;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
@@ -39,7 +39,7 @@ public class ShellLLMAddPromptController extends StageController {
 
     @FXML
     private void add() {
-        if (!LLMPromptControllerUtil.validate(this.name, this.content,
+        if (!ShellLLMPromptControllerUtil.validate(this.name, this.content,
                 this.promptStore, null, this.getWindow())) {
             return;
         }
@@ -62,7 +62,7 @@ public class ShellLLMAddPromptController extends StageController {
     @Override
     public void onWindowShown(WindowEvent event) {
         super.onWindowShown(event);
-        LLMPromptControllerUtil.prepareEditor(this.content);
+        ShellLLMPromptControllerUtil.prepareEditor(this.content);
         this.stage.switchOnTab();
         this.stage.hideOnEscape();
     }

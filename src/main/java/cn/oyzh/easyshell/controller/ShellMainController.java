@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.controller;
 
 import cn.oyzh.common.log.JulLog;
-import cn.oyzh.easyshell.controller.llm.ChatController;
+import cn.oyzh.easyshell.controller.llm.ShellChatController;
 import cn.oyzh.easyshell.controller.main.ConnectController;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellSetting;
@@ -72,7 +72,7 @@ public class ShellMainController extends ParentStageController {
      * 聊天
      */
     @FXML
-    private ChatController chatController;
+    private ShellChatController chatController;
 
     /**
      * 设置对象
@@ -190,9 +190,9 @@ public class ShellMainController extends ParentStageController {
             JulLog.warn("load chat view before stage initialize");
             return;
         }
-        FXMLResult result = FXMLLoaderExt.loadFromUrl("/fxml/llm/chat.fxml");
+        FXMLResult result = FXMLLoaderExt.loadFromUrl("/fxml/llm/shellChat.fxml");
         if (!(result.node() instanceof FXVBox chatNode)
-                || !(result.controller() instanceof ChatController controller)) {
+                || !(result.controller() instanceof ShellChatController controller)) {
             JulLog.warn("load chat view failed");
             return;
         }

@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.ui.llm;
 
-import cn.oyzh.easyshell.controller.llm.ChatController;
+import cn.oyzh.easyshell.controller.llm.ShellChatController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddPromptController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMPromptListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdatePromptController;
@@ -38,7 +38,7 @@ public class LLMPromptFxmlTest {
 
     @Test
     public void promptPagesLoadWithExpectedControllers() throws Throwable {
-        assertFxml("/fxml/llm/chat.fxml", ChatController.class);
+        assertFxml("/fxml/llm/chat.fxml", ShellChatController.class);
         assertFxml("/fxml/llm/shellLLMPromptList.fxml", ShellLLMPromptListController.class);
         assertFxml("/fxml/llm/shellLLMAddPrompt.fxml", ShellLLMAddPromptController.class);
         assertFxml("/fxml/llm/shellLLMUpdatePrompt.fxml", ShellLLMUpdatePromptController.class);

@@ -1,4 +1,4 @@
-package cn.oyzh.easyshell.controller.llm;
+package cn.oyzh.easyshell.util.llm;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.llm.prompt.LLMPromptUtil;
@@ -15,18 +15,18 @@ import javafx.stage.Window;
  * @author oyzh
  * @since 2026-11-21
  */
-final class LLMPromptControllerUtil {
+public final class ShellLLMPromptControllerUtil {
 
-    private LLMPromptControllerUtil() {
+    private ShellLLMPromptControllerUtil() {
     }
 
-    static void prepareEditor(MarkdownEditor editor) {
+    public static void prepareEditor(MarkdownEditor editor) {
         editor.setWrapText(true);
         editor.setHighlightCurrentParagraph(false);
         editor.setAutoPairEnabled(false);
     }
 
-    static boolean validate(ClearableTextField name,
+    public static boolean validate(ClearableTextField name,
                             MarkdownEditor content,
                             LLMPromptStore store,
                             String excludeUid,

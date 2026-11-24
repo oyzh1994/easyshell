@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.ui.llm;
 
-import cn.oyzh.easyshell.controller.llm.ChatController;
+import cn.oyzh.easyshell.controller.llm.ShellChatController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddSkillController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMSkillListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateSkillController;
@@ -40,7 +40,7 @@ public class LLMSkillFxmlTest {
 
     @Test
     public void skillPagesLoadWithExpectedControllers() throws Throwable {
-        assertFxml("/fxml/llm/chat.fxml", ChatController.class, SkillSVGGlyph.class);
+        assertFxml("/fxml/llm/chat.fxml", ShellChatController.class, SkillSVGGlyph.class);
         assertFxml("/fxml/llm/shellLLMSkillList.fxml", ShellLLMSkillListController.class,
                 RefreshSVGGlyph.class);
         assertFxml("/fxml/llm/shellLLMAddSkill.fxml", ShellLLMAddSkillController.class, null);

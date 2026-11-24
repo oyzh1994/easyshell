@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.llm.capability.LLMModelCapabilityStore;
 import cn.oyzh.easyshell.llm.provider.LLMProvider;
 import cn.oyzh.easyshell.store.llm.LLMProviderStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.llm.ShellLLMListSearchUtil;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.i18n.I18nResourceBundle;
@@ -112,7 +113,7 @@ public class ShellLLMProviderListController extends StageController {
     }
 
     private void applyFilter() {
-        this.providerTableView.setItem(LLMListSearchUtil.filter(
+        this.providerTableView.setItem(ShellLLMListSearchUtil.filter(
                 this.allItems,
                 this.searchField == null ? null : this.searchField.getText(),
                 LLMProvider::getName,

@@ -11,6 +11,7 @@ import cn.oyzh.easyshell.llm.mcp.LLMMcpConnectionState;
 import cn.oyzh.easyshell.llm.mcp.LLMMcpServer;
 import cn.oyzh.easyshell.store.llm.LLMMcpServerStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.llm.ShellLLMListSearchUtil;
 import cn.oyzh.fx.gui.svg.glyph.llm.TestSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
@@ -356,7 +357,7 @@ public class ShellLLMMcpServerListController extends StageController {
     }
 
     private void applyFilter() {
-        this.serverTableView.setItem(LLMListSearchUtil.filter(
+        this.serverTableView.setItem(ShellLLMListSearchUtil.filter(
                 this.allItems,
                 this.searchField == null ? null : this.searchField.getText(),
                 LLMMcpServer::getName,

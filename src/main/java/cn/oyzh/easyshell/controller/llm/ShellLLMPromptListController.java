@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.llm.prompt.LLMPrompt;
 import cn.oyzh.easyshell.store.ShellSettingStore;
 import cn.oyzh.easyshell.store.llm.LLMPromptStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.llm.ShellLLMListSearchUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -119,7 +120,7 @@ public class ShellLLMPromptListController extends StageController {
     }
 
     private void applyFilter() {
-        this.promptTableView.setItem(LLMListSearchUtil.filter(
+        this.promptTableView.setItem(ShellLLMListSearchUtil.filter(
                 this.allItems,
                 this.searchField == null ? null : this.searchField.getText(),
                 LLMPrompt::getName,

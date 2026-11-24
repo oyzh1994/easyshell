@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.controller.llm;
 import cn.oyzh.easyshell.llm.skill.LLMSkill;
 import cn.oyzh.easyshell.llm.skill.LLMSkillManager;
 import cn.oyzh.easyshell.store.llm.LLMSkillStore;
+import cn.oyzh.easyshell.util.llm.ShellLLMSkillUiUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -42,28 +43,28 @@ public class ShellLLMAddSkillController extends StageController {
 
     @FXML
     private void chooseFile() {
-        this.setSource(LLMSkillUiUtil.chooseFile(this.getWindow()));
+        this.setSource(ShellLLMSkillUiUtil.chooseFile(this.getWindow()));
     }
 
     @FXML
     private void chooseFolder() {
-        this.setSource(LLMSkillUiUtil.chooseFolder(this.getWindow()));
+        this.setSource(ShellLLMSkillUiUtil.chooseFolder(this.getWindow()));
     }
 
     private void setSource(File source) {
         this.source = source;
-        LLMSkillUiUtil.showSource(this.sourcePath, source, false);
+        ShellLLMSkillUiUtil.showSource(this.sourcePath, source, false);
         if (source != null && this.name.getTextTrim().isEmpty()) {
-            this.name.setText(LLMSkillUiUtil.suggestedName(source));
+            this.name.setText(ShellLLMSkillUiUtil.suggestedName(source));
         }
     }
 
     @FXML
     private void add() {
         if (!this.name.validate()
-                || !LLMSkillUiUtil.validateName(this.name.getTextTrim(), null,
+                || !ShellLLMSkillUiUtil.validateName(this.name.getTextTrim(), null,
                 this.skillStore, this.getWindow())
-                || !LLMSkillUiUtil.validateSource(this.source, this.getWindow())) {
+                || !ShellLLMSkillUiUtil.validateSource(this.source, this.getWindow())) {
             return;
         }
         try {

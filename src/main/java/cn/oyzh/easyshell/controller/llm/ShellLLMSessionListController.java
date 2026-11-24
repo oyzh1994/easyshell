@@ -5,6 +5,7 @@ import cn.oyzh.easyshell.fx.llm.LLMSessionTableView;
 import cn.oyzh.easyshell.llm.session.LLMSession;
 import cn.oyzh.easyshell.llm.session.LLMSessionUtil;
 import cn.oyzh.easyshell.store.llm.LLMSessionStore;
+import cn.oyzh.easyshell.util.llm.ShellLLMListSearchUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -122,7 +123,7 @@ public class ShellLLMSessionListController extends StageController {
     }
 
     private void applyFilter() {
-        this.sessionTableView.setItem(LLMListSearchUtil.filter(
+        this.sessionTableView.setItem(ShellLLMListSearchUtil.filter(
                 this.allItems,
                 this.searchField == null ? null : this.searchField.getText(),
                 LLMSessionUtil::getDisplayTitle));

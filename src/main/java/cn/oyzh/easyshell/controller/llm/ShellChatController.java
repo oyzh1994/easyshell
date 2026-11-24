@@ -104,7 +104,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author oyzh
  * @since 2025-03-03
  */
-public class ChatController extends SubStageController {
+public class ShellChatController extends SubStageController {
 
     @FXML
     private FXVBox root;

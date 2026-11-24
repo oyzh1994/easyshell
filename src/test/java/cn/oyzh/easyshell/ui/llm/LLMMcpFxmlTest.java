@@ -1,7 +1,7 @@
 package cn.oyzh.easyshell.ui.llm;
 
 import cn.oyzh.easyshell.controller.llm.ShellLLMAddMcpServerController;
-import cn.oyzh.easyshell.controller.llm.ChatController;
+import cn.oyzh.easyshell.controller.llm.ShellChatController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpServerListController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMMcpImportController;
 import cn.oyzh.easyshell.controller.llm.ShellLLMUpdateMcpServerController;
@@ -40,7 +40,7 @@ public class LLMMcpFxmlTest {
 
     @Test
     public void mcpPagesLoadWithExpectedControllers() throws Throwable {
-        assertFxml("/fxml/llm/chat.fxml", ChatController.class);
+        assertFxml("/fxml/llm/chat.fxml", ShellChatController.class);
         assertFxml("/fxml/llm/shellLLMMcpServerList.fxml", ShellLLMMcpServerListController.class);
         assertFxml("/fxml/llm/shellLLMMcpImport.fxml", ShellLLMMcpImportController.class);
         assertFxml("/fxml/llm/shellLLMAddMcpServer.fxml", ShellLLMAddMcpServerController.class);

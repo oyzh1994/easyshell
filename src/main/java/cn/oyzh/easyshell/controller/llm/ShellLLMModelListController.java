@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.fx.llm.LLMCustomModelTableView;
 import cn.oyzh.easyshell.llm.model.LLMCustomModel;
 import cn.oyzh.easyshell.store.llm.LLMCustomModelStore;
 import cn.oyzh.easyshell.util.ShellViewFactory;
+import cn.oyzh.easyshell.util.llm.ShellLLMListSearchUtil;
 import cn.oyzh.fx.gui.text.field.ClearableTextField;
 import cn.oyzh.fx.plus.FXConst;
 import cn.oyzh.fx.plus.controller.StageController;
@@ -106,7 +107,7 @@ public class ShellLLMModelListController extends StageController {
     }
 
     private void applyFilter() {
-        this.modelTableView.setItem(LLMListSearchUtil.filter(
+        this.modelTableView.setItem(ShellLLMListSearchUtil.filter(
                 this.allItems,
                 this.searchField == null ? null : this.searchField.getText(),
                 LLMCustomModel::getDisplayName,
