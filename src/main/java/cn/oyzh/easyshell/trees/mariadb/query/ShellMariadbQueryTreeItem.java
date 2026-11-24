@@ -8,7 +8,9 @@ import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
 import cn.oyzh.easyshell.store.ShellQueryStore;
 import cn.oyzh.easyshell.trees.mariadb.ShellMariadbTreeItem;
 import cn.oyzh.easyshell.trees.mariadb.database.ShellMariadbDatabaseTreeItem;
+import cn.oyzh.easyshell.util.ShellQueryUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -87,7 +89,21 @@ public class ShellMariadbQueryTreeItem extends ShellMariadbTreeItem<ShellMariadb
         items.add(renameQuery);
         FXMenuItem deleteQuery = MenuItemHelper.deleteQuery(this::delete);
         items.add(deleteQuery);
+        FXMenuItem cloneQuery = new FXMenuItem(new CopySVGGlyph(), ShellI18nHelper.cloneQuery(), this::cloneQuery);
+        items.add(cloneQuery);
         return items;
+    }
+
+    /**
+     * 克隆查询
+     */
+    private void cloneQuery() {
+        ShellQuery query = ShellQueryUtil.cloneQuery(this.value);
+        if (ShellQueryStore.INSTANCE.insert(query)) {
+            this.parent().addQuery(query);
+        } else {
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+        }
     }
 
     @Override

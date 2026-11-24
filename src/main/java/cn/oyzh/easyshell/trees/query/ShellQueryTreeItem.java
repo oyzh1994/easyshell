@@ -3,7 +3,9 @@ package cn.oyzh.easyshell.trees.query;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.store.ShellQueryStore;
+import cn.oyzh.easyshell.util.ShellQueryUtil;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.svg.glyph.CopySVGGlyph;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -70,6 +72,8 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
         items.add(rename);
         FXMenuItem delete = MenuItemHelper.deleteQuery( this::delete);
         items.add(delete);
+        FXMenuItem cloneQuery = new FXMenuItem(new CopySVGGlyph(), ShellI18nHelper.cloneQuery(), this::cloneQuery);
+        items.add(cloneQuery);
         return items;
     }
 
@@ -90,6 +94,18 @@ public class ShellQueryTreeItem extends RichTreeItem<ShellQueryTreeItemValue> {
      */
     private void edit() {
         this.getTreeView().editQuery(this.value);
+    }
+
+    /**
+     * 克隆查询
+     */
+    private void cloneQuery() {
+        ShellQuery query = ShellQueryUtil.cloneQuery(this.value);
+        if (this.queryStore.insert(query)) {
+            this.getTreeView().addQuery(query);
+        } else {
+            MessageBox.warn(I18nHelper.operationFail(), this.getWindow());
+        }
     }
 
     @Override

@@ -346,6 +346,10 @@ public class ShellI18nHelper {
         return text("shell.query.total", count);
     }
 
+    public static String cloneQuery() {
+        return text("shell.query.clone");
+    }
+
     public static String versionInfo(Object version) {
         return text("shell.home.version", version);
     }
