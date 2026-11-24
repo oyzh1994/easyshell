@@ -31,7 +31,7 @@ public class PostgresqlExplainResult extends PostgresqlQueryResult {
             for (PostgresqlColumn dbColumn : this.columns) {
                 // 计划文本逐行读取；json格式时转换为字符串展示
                 Object data = this.getValue(resultSet, dbColumn, colIndex++);
-                record.putValue(dbColumn, this.parseValue(data));
+                record.putValue(dbColumn, this.parseValue(dbColumn, data));
             }
             this.records.add(record);
         }

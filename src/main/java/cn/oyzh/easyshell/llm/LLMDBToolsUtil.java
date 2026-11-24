@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.llm;
 
 import cn.oyzh.common.json.JSONUtil;
+import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.easyshell.query.dameng.DamengQueryResult;
 import cn.oyzh.easyshell.query.oracle.OracleQueryResult;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlQueryResult;
@@ -417,6 +418,9 @@ public final class LLMDBToolsUtil {
     private static String formatValue(Object value) {
         if (value == null) {
             return "NULL";
+        }
+        if (value instanceof byte[] bytes) {
+            return "\\x" + HexUtil.encodeHexStr(bytes, true);
         }
         return value.toString()
                 .replace("\\", "\\\\")

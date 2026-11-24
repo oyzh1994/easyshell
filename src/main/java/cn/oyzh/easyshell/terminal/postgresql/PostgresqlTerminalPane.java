@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.terminal.postgresql;
 
 import cn.oyzh.common.log.JulLog;
+import cn.oyzh.common.util.HexUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
@@ -637,7 +638,7 @@ public class PostgresqlTerminalPane extends TerminalPane {
         for (PostgresqlRecord record : records) {
             for (int i = 0; i < colCount; i++) {
                 Object val = record.getValue(columns.get(i).getName());
-                String str = val == null ? "NULL" : val.toString();
+                String str = this.formatTerminalValue(val);
                 colWidths[i] = Math.max(colWidths[i], str.length());
             }
         }
@@ -659,7 +660,7 @@ public class PostgresqlTerminalPane extends TerminalPane {
         for (PostgresqlRecord record : records) {
             for (int i = 0; i < colCount; i++) {
                 Object val = record.getValue(columns.get(i).getName());
-                String str = val == null ? "NULL" : val.toString();
+                String str = this.formatTerminalValue(val);
                 sb.append(String.format("%-" + (colWidths[i] + 2) + "s", str));
             }
             sb.append(this.lineEndingText());
@@ -698,7 +699,7 @@ public class PostgresqlTerminalPane extends TerminalPane {
             for (int j = 0; j < columns.size(); j++) {
                 String name = columns.get(j).getName();
                 Object val = record.getValue(name);
-                String str = val == null ? "NULL" : val.toString();
+                String str = this.formatTerminalValue(val);
                 sb.append(String.format("%-" + nameWidth + "s | %s", name, str));
                 sb.append(this.lineEndingText());
             }
@@ -710,6 +711,16 @@ public class PostgresqlTerminalPane extends TerminalPane {
             sb.append(" (").append(ms).append(" ms)");
         }
         return sb.toString();
+    }
+
+    private String formatTerminalValue(Object value) {
+        if (value == null) {
+            return "NULL";
+        }
+        if (value instanceof byte[] bytes) {
+            return "\\x" + HexUtil.encodeHexStr(bytes, true);
+        }
+        return value.toString();
     }
 
     @Override

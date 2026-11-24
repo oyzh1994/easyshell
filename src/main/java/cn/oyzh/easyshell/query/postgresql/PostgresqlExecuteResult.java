@@ -32,7 +32,7 @@ public class PostgresqlExecuteResult extends PostgresqlQueryResult {
             for (PostgresqlColumn dbColumn : this.columns) {
                 // 获取字段值并处理PostgreSQL特有类型（json/jsonb、bytea、uuid、数组等）
                 Object data = this.getValue(resultSet, dbColumn, colIndex++);
-                record.putValue(dbColumn, this.parseValue(data));
+                record.putValue(dbColumn, this.parseValue(dbColumn, data));
             }
             this.records.add(record);
         }

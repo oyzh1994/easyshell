@@ -410,7 +410,7 @@ public class ShellPostgresqlDataUtil {
     }
 
     /**
-     * 值规整化
+     * 值规整化，统一处理PostgreSQL JDBC扩展类型并释放数组、XML临时资源
      *
      * @param value 值
      * @return 规整后的值
@@ -425,7 +425,12 @@ public class ShellPostgresqlDataUtil {
         }
         // 数组类型，如text[]、integer[]等
         if (value instanceof Array array) {
-            return array.toString();
+            String text = array.toString();
+            try {
+                array.free();
+            } catch (SQLException ignored) {
+            }
+            return text;
         }
         // 大文本
         if (value instanceof Clob clob) {
@@ -444,11 +449,17 @@ public class ShellPostgresqlDataUtil {
             }
         }
         if (value instanceof SQLXML sqlXml) {
+            String text;
             try {
-                return sqlXml.getString();
+                text = sqlXml.getString();
             } catch (SQLException ex) {
                 throw new ShellException(ex);
             }
+            try {
+                sqlXml.free();
+            } catch (SQLException ignored) {
+            }
+            return text;
         }
         // 复合类型、引用和行标识按数据库驱动提供的文本表示处理
         if (value instanceof Struct || value instanceof Ref || value instanceof RowId) {

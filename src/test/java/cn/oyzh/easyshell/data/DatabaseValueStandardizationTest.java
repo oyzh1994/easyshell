@@ -23,12 +23,17 @@ import org.mariadb.jdbc.type.Point;
 import org.postgresql.geometric.PGpoint;
 import org.postgresql.util.PGInterval;
 
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
+import java.sql.Array;
+import java.sql.SQLXML;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class DatabaseValueStandardizationTest {
 
@@ -101,6 +106,41 @@ public class DatabaseValueStandardizationTest {
                 (byte[]) ShellPostgresqlDataUtil.valueStandardization(bitColumn, true));
         assertArrayEquals(new byte[]{0},
                 (byte[]) ShellPostgresqlDataUtil.valueStandardization(bitColumn, false));
+    }
+
+    @Test
+    public void standardizesPostgresqlXmlAndArrayValues() {
+        AtomicBoolean xmlFreed = new AtomicBoolean();
+        SQLXML sqlXml = (SQLXML) Proxy.newProxyInstance(
+                SQLXML.class.getClassLoader(), new Class<?>[]{SQLXML.class},
+                (proxy, method, args) -> {
+                    if ("getString".equals(method.getName())) {
+                        return "<row>1</row>";
+                    }
+                    if ("free".equals(method.getName())) {
+                        xmlFreed.set(true);
+                        return null;
+                    }
+                    throw new UnsupportedOperationException(method.getName());
+                });
+        assertEquals("<row>1</row>", ShellPostgresqlDataUtil.valueStandardization(sqlXml));
+        assertTrue(xmlFreed.get());
+
+        AtomicBoolean arrayFreed = new AtomicBoolean();
+        Array array = (Array) Proxy.newProxyInstance(
+                Array.class.getClassLoader(), new Class<?>[]{Array.class},
+                (proxy, method, args) -> {
+                    if ("toString".equals(method.getName())) {
+                        return "{1,NULL,3}";
+                    }
+                    if ("free".equals(method.getName())) {
+                        arrayFreed.set(true);
+                        return null;
+                    }
+                    throw new UnsupportedOperationException(method.getName());
+                });
+        assertEquals("{1,NULL,3}", ShellPostgresqlDataUtil.valueStandardization(array));
+        assertTrue(arrayFreed.get());
     }
 
     @Test
