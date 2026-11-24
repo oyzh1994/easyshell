@@ -74,6 +74,7 @@ import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
+import com.mysql.cj.conf.PropertyDefinitions;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -100,6 +101,11 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since 2025-11-06
  */
 public class ShellMysqlClient implements ShellBaseClient, DBClient {
+
+    static {
+        // 禁用mysql主动清理线程
+        System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
+    }
 
     /**
      * ssh端口转发器

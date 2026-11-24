@@ -97,6 +97,15 @@ public class ShellConst {
     }
 
     /**
+     * 获取sqlite原生库路径
+     *
+     * @return 存储路径
+     */
+    public static String getSqliteNativePath() {
+        return getStorePath() + "sqlite-native" + File.separator;
+    }
+
+    /**
      * 获取skills释放缓存路径
      *
      * @return skills释放缓存路径

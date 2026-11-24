@@ -75,7 +75,7 @@
             </HBox.margin>
         </ChangelogSVGGlyph>
     </FXHBox>
-    <ShellConnectTreeView fx:id="tree" flexHeight="100% - 105" flexWidth="100% - 20">
+    <ShellConnectTreeView userData="full" fx:id="tree" flexHeight="100% - 105" flexWidth="100% - 20">
         <FXVBox.margin>
             <Insets left="10" top="5"/>
         </FXVBox.margin>

@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.trees.connect;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellSetting;
 import cn.oyzh.easyshell.event.connect.ShellConnectAddedEvent;
 import cn.oyzh.easyshell.event.connect.ShellConnectUpdatedEvent;
@@ -15,6 +16,7 @@ import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.menu.MenuItemAdapter;
 import cn.oyzh.fx.plus.menu.MenuItemManager;
 import cn.oyzh.i18n.I18nHelper;
+import javafx.collections.MapChangeListener;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
@@ -54,24 +56,61 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         super.initTreeView();
     }
 
+    /**
+     * 属性监听器
+     */
+    private MapChangeListener<Object, Object> propsListener;
+
     @Override
     protected void initRoot() {
-        super.setRoot(new ShellConnectRootTreeItem(this));
-        this.root().expend();
-        super.initRoot();
+        this.propsListener = change -> {
+            if (change.wasAdded()) {
+                this.doInitRoot();
+            }
+        };
+        this.getProperties().addListener(this.propsListener);
+        this.doInitRoot();
     }
 
-//    @Override
-//    protected void initEvenListener() {
-//        super.initEvenListener();
-//        // // 暂停按键处理
-//        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
-//        //     TreeItem<?> item = this.getSelectedItem();
-//        //     if (item instanceof ShellConnectTreeItem treeItem) {
-//        //         treeItem.closeConnect();
-//        //     }
-//        // });
-//    }
+    /**
+     * 执行root初始化
+     */
+    private void doInitRoot() {
+        if (this.getRoot() != null) {
+            return;
+        }
+        String userData = (String) this.getUserData();
+        if (userData == null) {
+            return;
+        }
+        if (this.propsListener != null) {
+            this.getProperties().removeListener(this.propsListener);
+            this.propsListener = null;
+        }
+        boolean init = false;
+        if (StringUtil.equals("split", userData) && setting.isLayout1()) {
+            init = true;
+        } else if (StringUtil.equals("full", userData) && setting.isLayout2()) {
+            init = true;
+        }
+        if (init) {
+            super.setRoot(new ShellConnectRootTreeItem(this));
+            this.root().expend();
+            super.initRoot();
+        }
+    }
+
+    //    @Override
+    //    protected void initEvenListener() {
+    //        super.initEvenListener();
+    //        // // 暂停按键处理
+    //        // KeyListener.listenReleased(this, KeyCode.PAUSE, event -> {
+    //        //     TreeItem<?> item = this.getSelectedItem();
+    //        //     if (item instanceof ShellConnectTreeItem treeItem) {
+    //        //         treeItem.closeConnect();
+    //        //     }
+    //        // });
+    //    }
 
     @Override
     public ShellConnectRootTreeItem root() {
@@ -87,31 +126,31 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
     //     }
     // }
 
-//    @Override
-//    public void expand() {
-//        TreeItem<?> item = this.getSelectedItem();
-//        if (item instanceof ShellConnectTreeItem treeItem) {
-//            treeItem.expend();
-//        } else if (item instanceof RichTreeItem<?> treeItem) {
-//            treeItem.expend();
-//        }
-//        if (item != null) {
-//            this.select(item);
-//        }
-//    }
-//
-//    @Override
-//    public void collapse() {
-//        TreeItem<?> item = this.getSelectedItem();
-//        if (item instanceof ShellConnectTreeItem treeItem) {
-//            treeItem.collapse();
-//        } else if (item instanceof RichTreeItem<?> treeItem) {
-//            treeItem.collapse();
-//        }
-//        if (item != null) {
-//            this.select(item);
-//        }
-//    }
+    //    @Override
+    //    public void expand() {
+    //        TreeItem<?> item = this.getSelectedItem();
+    //        if (item instanceof ShellConnectTreeItem treeItem) {
+    //            treeItem.expend();
+    //        } else if (item instanceof RichTreeItem<?> treeItem) {
+    //            treeItem.expend();
+    //        }
+    //        if (item != null) {
+    //            this.select(item);
+    //        }
+    //    }
+    //
+    //    @Override
+    //    public void collapse() {
+    //        TreeItem<?> item = this.getSelectedItem();
+    //        if (item instanceof ShellConnectTreeItem treeItem) {
+    //            treeItem.collapse();
+    //        } else if (item instanceof RichTreeItem<?> treeItem) {
+    //            treeItem.collapse();
+    //        }
+    //        if (item != null) {
+    //            this.select(item);
+    //        }
+    //    }
 
     /**
      * 添加分组
@@ -120,8 +159,9 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      */
     @EventSubscribe
     public void addGroup(ShellAddGroupEvent event) {
-        // this.addGroup();
-        this.root().addGroup();
+        if (super.getRoot() != null) {
+            this.root().addGroup();
+        }
     }
 
     /**
@@ -131,7 +171,9 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      */
     @EventSubscribe
     private void connectAdded(ShellConnectAddedEvent event) {
-        this.root().connectAdded(event.data());
+        if (super.getRoot() != null) {
+            this.root().connectAdded(event.data());
+        }
     }
 
     /**
@@ -141,7 +183,9 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      */
     @EventSubscribe
     private void connectUpdated(ShellConnectUpdatedEvent event) {
-        this.root().connectUpdated(event.data());
+        if (super.getRoot() != null) {
+            this.root().connectUpdated(event.data());
+        }
     }
 
     /**
@@ -151,7 +195,9 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
      */
     @EventSubscribe
     private void connectImported(ShellDataImportedEvent event) {
-        this.root().reloadChild();
+        if (super.getRoot() != null) {
+            this.root().reloadChild();
+        }
     }
 
     @Override
@@ -191,12 +237,12 @@ public class ShellConnectTreeView extends RichTreeView implements MenuItemAdapte
         Menu view = MenuItemHelper.menu(I18nHelper.view1(), new ViewSVGGlyph());
         MenuItem showType = MenuItemManager.getCheckMenuItem(I18nHelper.type(), this::showType, this.setting.isConnectShowType());
         MenuItem showMoreInfo = MenuItemManager.getCheckMenuItem(I18nHelper.moreInfo(), this::showMoreInfo, this.setting.isConnectShowMoreInfo());
-//        CheckMenuItem showType = new CheckMenuItem(I18nHelper.type());
-//        showType.setSelected(this.setting.isConnectShowType());
-//        showType.setOnAction(event -> this.showType());
-//        CheckMenuItem showMoreInfo = new CheckMenuItem(I18nHelper.moreInfo());
-//        showMoreInfo.setSelected(this.setting.isConnectShowMoreInfo());
-//        showMoreInfo.setOnAction(event -> this.showMoreInfo());
+        //        CheckMenuItem showType = new CheckMenuItem(I18nHelper.type());
+        //        showType.setSelected(this.setting.isConnectShowType());
+        //        showType.setOnAction(event -> this.showType());
+        //        CheckMenuItem showMoreInfo = new CheckMenuItem(I18nHelper.moreInfo());
+        //        showMoreInfo.setSelected(this.setting.isConnectShowMoreInfo());
+        //        showMoreInfo.setOnAction(event -> this.showMoreInfo());
         view.getItems().add(showType);
         view.getItems().add(showMoreInfo);
 

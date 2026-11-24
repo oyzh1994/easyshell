@@ -40,6 +40,6 @@
             </HBox.margin>
         </ClearableTextField>
     </FXHBox>
-    <ShellConnectTreeView fx:id="tree" flexHeight="100% - 30" flexWidth="100%"/>
+    <ShellConnectTreeView userData="split" fx:id="tree" flexHeight="100% - 30" flexWidth="100%"/>
 </FXVBox>
 

@@ -101,8 +101,8 @@ public class EasyShellApp extends FXApplication implements EventListener {
             }
             //            // 初始化jfx缓存目录
             //            ShellConst.initJfxCache();
-            // 禁用mysql主动清理线程
-            System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
+//            // 禁用mysql主动清理线程
+//            System.setProperty(PropertyDefinitions.SYSP_disableAbandonedConnectionCleanup, "true");
             // 关闭BouncyCastle的自签名检查
             System.setProperty(PKCS1Encoding.NOT_STRICT_LENGTH_ENABLED_PROPERTY, "true");
             //            // 开启fx的预览功能

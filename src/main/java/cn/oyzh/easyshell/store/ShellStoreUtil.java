@@ -26,12 +26,13 @@ public class ShellStoreUtil {
     public static void init() {
         try {
             Path storeDatabase = Path.of(ShellConst.getStorePath(), "db");
+            SQLiteNativeCache.prepare();
             H2SqliteMigrator.migrateIfNeeded(storeDatabase, storeDatabase);
             JdbcConst.dbCacheSize(1024);
             JdbcConst.dbDialect(JdbcDialect.SQLITE);
-            JdbcManager.dialect = JdbcDialect.SQLITE;
+//            JdbcManager.dialect = JdbcDialect.SQLITE;
             JdbcConst.dbFile(storeDatabase.toString());
-            JdbcManager.takeoff();
+//            JdbcManager.takeoff();
         } catch (Exception ex) {
             if (StringUtil.containsAny(ex.getMessage(), "Database may be already in use")) {
                 MessageBox.warn(I18nHelper.programTip1(), StageManager.getFrontWindow());
