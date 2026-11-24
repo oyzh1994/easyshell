@@ -1,6 +1,9 @@
 package cn.oyzh.easyshell.fx.llm;
 
 import cn.oyzh.easyshell.llm.LLMMessage;
+import cn.oyzh.easyshell.llm.agent.LLMAgentOrchestrationMode;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTrace;
+import cn.oyzh.easyshell.llm.agent.LLMAgentTraceFormatter;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.application.Platform;
@@ -14,6 +17,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.junit.Test;
 
@@ -22,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -214,6 +220,104 @@ public class LLMListViewAgentTraceInlineTest {
                     .anyMatch(node -> node instanceof Label label
                             && I18nResourceBundle.i18nString("shell.llm.agent.trace.result")
                             .equals(label.getText()))));
+        } finally {
+            TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    @Test
+    public void localCommandTraceIsRenderedAsCollapsedSection() {
+        startToolkit();
+        AtomicReference<TestContext> contextRef = new AtomicReference<>();
+        runFxAndWait(() -> {
+            LLMListView listView = new LLMListView();
+            LLMMessage message = LLMMessage.llm("command answer");
+            long now = System.currentTimeMillis();
+            LLMAgentTrace command = new LLMAgentTrace(
+                    "tool-1",
+                    LLMAgentTrace.Type.TOOL,
+                    0, 0,
+                    "local_execute_command_direct",
+                    "mvn -q -DskipTests compile",
+                    "/tmp/workspace",
+                    "exitCode: 0\nSTDOUT:\ncompiled",
+                    "",
+                    LLMAgentTrace.Status.COMPLETED,
+                    now, now + 1000,
+                    LLMAgentOrchestrationMode.SEQUENTIAL);
+            message.setAgentTrace(LLMAgentTraceFormatter.format(java.util.List.of(command)));
+            message.finishThinking();
+            listView.addMessage(message);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(new StackPane(listView), 560, 320));
+            stage.show();
+            contextRef.set(new TestContext(stage, null, listView));
+        });
+        try {
+            waitForPulse();
+            LLMMessage message = contextRef.get().listView().getItems().getFirst();
+            LLMMessageView content = findStyledView(
+                    contextRef.get().listView(), 0, "llm-bubble-text-assistant");
+
+            assertTrue(message.getAgentTrace().contains("mvn -q -DskipTests compile"));
+            assertTrue(content.getText().contains("command answer"));
+            assertFalse(content.getFolds().isEmpty());
+            assertTrue(content.getFolds().getFirst().collapsed());
+            assertTrue(content.getFolds().getFirst().title()
+                    .contains(I18nResourceBundle.i18nString("shell.llm.agent.trace.command")));
+            assertTrue(runFx(() -> content.lookup(".editor-fold-header") != null));
+            Circle indicator = runFx(() -> (Circle) content.lookup(".editor-fold-indicator"));
+            assertNotNull("command status indicator was not rendered", indicator);
+            assertNotNull(indicator.getFill());
+            HBox header = runFx(() -> (HBox) content.lookup(".editor-fold-header"));
+            assertSame("status indicator must be the last header node",
+                    indicator, header.getChildren().getLast());
+        } finally {
+            TestContext context = contextRef.get();
+            if (context != null) {
+                runFxAndWait(context.stage()::close);
+            }
+        }
+    }
+
+    @Test
+    public void partiallySuccessfulCommandGroupUsesYellowIndicator() {
+        startToolkit();
+        AtomicReference<TestContext> contextRef = new AtomicReference<>();
+        runFxAndWait(() -> {
+            LLMListView listView = new LLMListView();
+            LLMMessage message = LLMMessage.llm("partial answer");
+            long now = System.currentTimeMillis();
+            LLMAgentTrace success = new LLMAgentTrace(
+                    "tool-1", LLMAgentTrace.Type.TOOL, 0, 0,
+                    "local_execute_command_direct", "mvn -q -DskipTests compile",
+                    "", "", "", LLMAgentTrace.Status.COMPLETED,
+                    now, now + 1000, LLMAgentOrchestrationMode.SEQUENTIAL);
+            LLMAgentTrace failure = new LLMAgentTrace(
+                    "tool-2", LLMAgentTrace.Type.TOOL, 0, 0,
+                    "local_execute_command_direct", "git diff --check",
+                    "", "", "", LLMAgentTrace.Status.FAILED,
+                    now + 1000, now + 1500, LLMAgentOrchestrationMode.SEQUENTIAL);
+            message.setAgentTrace(LLMAgentTraceFormatter.format(
+                    java.util.List.of(success, failure)));
+            message.finishThinking();
+            listView.addMessage(message);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(new StackPane(listView), 560, 320));
+            stage.show();
+            contextRef.set(new TestContext(stage, null, listView));
+        });
+        try {
+            waitForPulse();
+            LLMMessageView content = findStyledView(
+                    contextRef.get().listView(), 0, "llm-bubble-text-assistant");
+            Circle indicator = runFx(() -> (Circle) content.lookup(".editor-fold-indicator"));
+            assertNotNull(indicator);
+            Color fill = (Color) indicator.getFill();
+            assertTrue(fill.equals(Color.web("#9A6700")) || fill.equals(Color.web("#D29922")));
         } finally {
             TestContext context = contextRef.get();
             if (context != null) {

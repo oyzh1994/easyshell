@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.llm.LLMExecutionMode;
 import cn.oyzh.easyshell.llm.session.LLMSessionContext;
 import cn.oyzh.easyshell.llm.tool.LLMToolScope;
 import cn.oyzh.easyshell.llm.tool.LLMTools;
+import cn.oyzh.i18n.I18nResourceBundle;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
@@ -853,6 +854,56 @@ public class LLMAgentRuntimeTest {
         assertFalse(hidden.contains("private reasoning"));
         assertTrue(hidden.contains("visible result"));
         assertFalse(hidden.contains("easyshell-thinking"));
+    }
+
+    @Test
+    public void traceFormatterRendersLocalCommandTrace() {
+        long startedAt = System.currentTimeMillis();
+        LLMAgentTrace tool = new LLMAgentTrace(
+                "tool-1",
+                LLMAgentTrace.Type.TOOL,
+                0, 0,
+                "local_execute_command_direct",
+                "mvn -q -DskipTests compile",
+                "/tmp/workspace",
+                "exitCode: 0\nSTDOUT:\ncompiled",
+                "",
+                LLMAgentTrace.Status.COMPLETED,
+                startedAt, startedAt + 1200,
+                LLMAgentOrchestrationMode.SEQUENTIAL);
+
+        String formatted = LLMAgentTraceFormatter.format(List.of(tool));
+
+        assertTrue(formatted.contains("### "
+                + I18nResourceBundle.i18nString("shell.llm.agent.trace.command")));
+        assertTrue(formatted.contains("mvn -q -DskipTests compile"));
+        assertFalse(formatted.contains("🟢"));
+        assertTrue(formatted.contains("✓ $ mvn -q -DskipTests compile"));
+        assertTrue(LLMAgentTraceFormatter.hideThinking(formatted)
+                .contains("mvn -q -DskipTests compile"));
+    }
+
+    @Test
+    public void traceFormatterGroupsLocalCommands() {
+        long startedAt = System.currentTimeMillis();
+        LLMAgentTrace first = new LLMAgentTrace(
+                "tool-1", LLMAgentTrace.Type.TOOL, 0, 0,
+                "local_execute_command_direct", "mvn -q -DskipTests compile",
+                "", "", "", LLMAgentTrace.Status.COMPLETED,
+                startedAt, startedAt + 1000, LLMAgentOrchestrationMode.SEQUENTIAL);
+        LLMAgentTrace second = new LLMAgentTrace(
+                "tool-2", LLMAgentTrace.Type.TOOL, 0, 0,
+                "local_execute_command_direct", "git diff --check",
+                "", "", "", LLMAgentTrace.Status.COMPLETED,
+                startedAt + 1000, startedAt + 1500, LLMAgentOrchestrationMode.SEQUENTIAL);
+
+        String formatted = LLMAgentTraceFormatter.format(List.of(first, second));
+
+        assertTrue(formatted.contains("### "
+                + I18nResourceBundle.i18nString("shell.llm.agent.trace.command.group")
+                + " (2)"));
+        assertTrue(formatted.contains("✓ $ mvn -q -DskipTests compile"));
+        assertTrue(formatted.contains("✓ $ git diff --check"));
     }
 
     private static LLMAgentRuntime runtime(ChatModel model) {

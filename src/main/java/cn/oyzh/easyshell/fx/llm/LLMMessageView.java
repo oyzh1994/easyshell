@@ -52,6 +52,22 @@ public final class LLMMessageView extends LLMEditor {
 
     private static final Color THINKING_DARK_COLOR = Color.web("#8B949E");
 
+    private static final Color COMMAND_SUCCESS_LIGHT_COLOR = Color.web("#0969DA");
+
+    private static final Color COMMAND_SUCCESS_DARK_COLOR = Color.web("#58A6FF");
+
+    private static final Color COMMAND_FAILURE_LIGHT_COLOR = Color.web("#CF222E");
+
+    private static final Color COMMAND_FAILURE_DARK_COLOR = Color.web("#FF7B72");
+
+    private static final Color COMMAND_PARTIAL_LIGHT_COLOR = Color.web("#9A6700");
+
+    private static final Color COMMAND_PARTIAL_DARK_COLOR = Color.web("#D29922");
+
+    private static final Color COMMAND_MUTED_LIGHT_COLOR = Color.web("#6E7781");
+
+    private static final Color COMMAND_MUTED_DARK_COLOR = Color.web("#8B949E");
+
     /**
      * 默认高度
      */
@@ -239,9 +255,14 @@ public final class LLMMessageView extends LLMEditor {
      * @param collapsed 是否折叠
      */
     private void applyThinkingFolds(String text, boolean collapsed, boolean notifyFoldChanges) {
-        // 流式思考期间保持普通富文本渲染，避免每个 token 都扫描全文。
-        // 思考结束后才建立折叠区块，并在这里按标识保留用户的展开选择。
-        if (!collapsed || text == null || text.isBlank()) {
+        String commandHeader = "### " + I18nResourceBundle.i18nString(
+                "shell.llm.agent.trace.command");
+        String commandGroupHeader = "### " + I18nResourceBundle.i18nString(
+                "shell.llm.agent.trace.command.group");
+        // 流式思考期间不扫描全文；只有命令轨迹出现时才提前建立折叠块。
+        if (text == null || text.isBlank()
+                || (!collapsed && !text.contains(commandHeader)
+                && !text.contains(commandGroupHeader))) {
             this.updateBlocks(List.of(), List.of(), notifyFoldChanges);
             return;
         }
@@ -266,26 +287,54 @@ public final class LLMMessageView extends LLMEditor {
                         "editor-block-heading-section"));
             }
         }
+        // 本地命令区块始终可折叠，默认折叠，保留用户手工展开状态。
         for (int start = 0; start < lines.length; start++) {
-            if (!thinkingHeader.equals(lines[start].strip())) {
+            String line = lines[start].strip();
+            if (!line.startsWith(commandHeader)
+                    && !line.startsWith(commandGroupHeader)) {
                 continue;
             }
             int end = lines.length - 1;
             for (int next = start + 1; next < lines.length; next++) {
-                String line = lines[next].strip();
-                if (resultHeader.equals(line) || errorHeader.equals(line)
-                        || answerHeader.equals(line) || "---".equals(line)
-                        || line.startsWith("### ")) {
+                String nextLine = lines[next].strip();
+                if (answerHeader.equals(nextLine) || "---".equals(nextLine)
+                        || nextLine.startsWith("### ")) {
                     end = next - 1;
                     break;
                 }
             }
-            String id = "thinking-collapsed-" + foldIndex++;
-            boolean foldCollapsed = this.foldStates.getOrDefault(id, collapsed);
+            String id = "tool-collapsed-" + foldIndex++;
+            boolean foldCollapsed = this.foldStates.getOrDefault(id, true);
+            String title = line.length() > 4 ? line.substring(4).strip() : line;
             folds.add(new EditorFold(id, start, Math.max(start, end),
-                    ShellI18nHelper.thinkingLabel(), foldCollapsed, thinkingColor()));
+                    title, foldCollapsed, null,
+                    commandIndicatorColor(lines, start, end)));
             start = end;
         }
+        // 流式思考期间不扫描思考链，结束后再按标识恢复展开状态。
+        if (collapsed) {
+            for (int start = 0; start < lines.length; start++) {
+                if (!thinkingHeader.equals(lines[start].strip())) {
+                    continue;
+                }
+                int end = lines.length - 1;
+                for (int next = start + 1; next < lines.length; next++) {
+                    String line = lines[next].strip();
+                    if (resultHeader.equals(line) || errorHeader.equals(line)
+                            || answerHeader.equals(line) || "---".equals(line)
+                            || line.startsWith("### ")) {
+                        end = next - 1;
+                        break;
+                    }
+                }
+                String id = "thinking-collapsed-" + foldIndex++;
+                boolean foldCollapsed = this.foldStates.getOrDefault(id, collapsed);
+                folds.add(new EditorFold(id, start, Math.max(start, end),
+                        ShellI18nHelper.thinkingLabel(), foldCollapsed, thinkingColor()));
+                start = end;
+            }
+        }
+        folds.sort(java.util.Comparator.comparingInt(EditorFold::startParagraph));
         this.updateBlocks(headings, folds, notifyFoldChanges);
     }
 
@@ -296,6 +345,49 @@ public final class LLMMessageView extends LLMEditor {
      */
     private static Color thinkingColor() {
         return ThemeManager.isDarkMode() ? THINKING_DARK_COLOR : THINKING_LIGHT_COLOR;
+    }
+
+    /**
+     * 命令组状态指示色：成功/运行中为蓝色，失败为红色，取消为灰色。
+     *
+     * @param lines 消息行
+     * @param start 起始行
+     * @param end   结束行
+     * @return 颜色
+     */
+    private static Color commandIndicatorColor(String[] lines, int start, int end) {
+        boolean success = false;
+        boolean failed = false;
+        boolean cancelled = true;
+        for (int i = start + 1; i <= end; i++) {
+            String line = lines[i].strip();
+            if (line.startsWith("✗")) {
+                failed = true;
+            } else if (line.startsWith("✓")) {
+                success = true;
+            }
+            if (!line.startsWith("−")) {
+                cancelled = false;
+            }
+        }
+        if (failed && success) {
+            return ThemeManager.isDarkMode()
+                    ? COMMAND_PARTIAL_DARK_COLOR
+                    : COMMAND_PARTIAL_LIGHT_COLOR;
+        }
+        if (failed) {
+            return ThemeManager.isDarkMode()
+                    ? COMMAND_FAILURE_DARK_COLOR
+                    : COMMAND_FAILURE_LIGHT_COLOR;
+        }
+        if (cancelled && end > start) {
+            return ThemeManager.isDarkMode()
+                    ? COMMAND_MUTED_DARK_COLOR
+                    : COMMAND_MUTED_LIGHT_COLOR;
+        }
+        return ThemeManager.isDarkMode()
+                ? COMMAND_SUCCESS_DARK_COLOR
+                : COMMAND_SUCCESS_LIGHT_COLOR;
     }
 
     @Override

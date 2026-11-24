@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.llm.agent;
 
 import cn.oyzh.i18n.I18nResourceBundle;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -35,9 +36,29 @@ public final class LLMAgentTraceFormatter {
                         .thenComparingInt(LLMAgentTrace::stepIndex))
                 .toList();
         StringBuilder result = new StringBuilder();
-        for (LLMAgentTrace trace : ordered) {
+        boolean previousTool = false;
+        for (int i = 0; i < ordered.size(); ) {
+            LLMAgentTrace trace = ordered.get(i);
+            boolean tool = trace.type() == LLMAgentTrace.Type.TOOL;
             if (!result.isEmpty()) {
-                result.append("\n\n---\n\n");
+                if (tool || previousTool) {
+                    result.append("\n\n");
+                } else {
+                    result.append("\n\n---\n\n");
+                }
+            }
+            if (tool) {
+                List<LLMAgentTrace> commands = new ArrayList<>();
+                while (i < ordered.size()
+                        && ordered.get(i).type() == LLMAgentTrace.Type.TOOL) {
+                    commands.add(ordered.get(i++));
+                }
+                appendCommandGroup(result, commands);
+                previousTool = true;
+                if (result.length() >= MAX_TRACE_LENGTH) {
+                    return limit(result.toString(), MAX_TRACE_LENGTH);
+                }
+                continue;
             }
             result.append("### ").append(title(trace))
                     .append(" · ").append(status(trace.status())).append('\n')
@@ -70,11 +91,34 @@ public final class LLMAgentTraceFormatter {
                 result.append("\n\n**").append(text("shell.llm.agent.trace.error"))
                         .append("**\n\n").append(trace.error());
             }
+            previousTool = false;
+            i++;
             if (result.length() >= MAX_TRACE_LENGTH) {
                 return limit(result.toString(), MAX_TRACE_LENGTH);
             }
         }
         return result.toString();
+    }
+
+    private static void appendCommandGroup(StringBuilder result,
+                                           List<LLMAgentTrace> commands) {
+        String title = commands.size() == 1
+                ? text("shell.llm.agent.trace.command")
+                : text("shell.llm.agent.trace.command.group") + " (" + commands.size() + ")";
+        result.append("### ").append(title).append("\n\n");
+        for (LLMAgentTrace command : commands) {
+            result.append(commandStatus(command.status())).append(" $ ")
+                    .append(preview(command.objective(), 180)).append('\n');
+        }
+    }
+
+    private static String commandStatus(LLMAgentTrace.Status status) {
+        return switch (status) {
+            case RUNNING -> "…";
+            case COMPLETED -> "✓";
+            case FAILED -> "✗";
+            case CANCELLED -> "−";
+        };
     }
 
     private static int typeOrder(LLMAgentTrace.Type type) {
@@ -83,6 +127,7 @@ public final class LLMAgentTraceFormatter {
             case SINGLE -> 1;
             case WORKER -> 2;
             case VERIFIER -> 3;
+            case TOOL -> 4;
         };
     }
 
@@ -140,7 +185,15 @@ public final class LLMAgentTraceFormatter {
             case WORKER -> String.format(text("shell.llm.agent.trace.worker"),
                     trace.stepIndex() + 1);
             case VERIFIER -> text("shell.llm.agent.trace.verifier");
+            case TOOL -> text("shell.llm.agent.trace.command");
         };
+    }
+
+    private static String preview(String value, int maxLength) {
+        String text = value == null ? "" : value.replaceAll("\\s+", " ").strip();
+        return text.length() <= maxLength
+                ? text
+                : text.substring(0, Math.max(0, maxLength - 3)) + "...";
     }
 
     private static String status(LLMAgentTrace.Status status) {

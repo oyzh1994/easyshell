@@ -111,7 +111,9 @@ public record LLMAgentTrace(String id,
 
         WORKER,
 
-        VERIFIER
+        VERIFIER,
+
+        TOOL
     }
 
     public enum Status {

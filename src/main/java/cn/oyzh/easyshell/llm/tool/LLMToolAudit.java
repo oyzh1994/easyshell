@@ -23,9 +23,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.function.Consumer;
 
 /**
  * LLM工具调用审计记录。
@@ -58,6 +60,13 @@ public final class LLMToolAudit {
      */
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
+    private static final Set<String> LOCAL_COMMAND_TOOLS = Set.of(
+            "local_execute_command_direct",
+            "local_execute_command_in_directory_direct",
+            "execute_local_command",
+            "execute_local_command_in_directory",
+            "skill_run_shell_command");
+
     /**
      * 无法按JSON解析时使用的敏感字段匹配规则
      */
@@ -87,6 +96,11 @@ public final class LLMToolAudit {
     private final String model;
 
     private final LLMExecutionMode executionMode;
+
+    /**
+     * 工具执行完成回调
+     */
+    private volatile Consumer<ToolExecution> executionListener;
 
     public LLMToolAudit(Collection<?> tools,
                         String sessionId,
@@ -181,11 +195,43 @@ public final class LLMToolAudit {
             return;
         }
         try {
+            Consumer<ToolExecution> listener = this.executionListener;
+            if (listener != null) {
+                listener.accept(execution);
+            }
+        } catch (Exception ex) {
+            JulLog.warn("llm tool execution listener failed", ex);
+        }
+        try {
             this.write(this.buildRecord(execution));
         } catch (Exception ex) {
             // 审计失败不能影响工具本身的执行
             JulLog.warn("llm tool audit failed", ex);
         }
+    }
+
+    /**
+     * 设置工具执行完成回调
+     *
+     * @param listener 回调
+     */
+    public void setExecutionListener(Consumer<ToolExecution> listener) {
+        this.executionListener = listener;
+    }
+
+    /**
+     * 是否本地命令工具
+     *
+     * @param execution 工具执行信息
+     * @return 结果
+     */
+    public boolean isLocalCommand(ToolExecution execution) {
+        if (execution == null || execution.request() == null) {
+            return false;
+        }
+        String toolName = execution.request().name();
+        return LOCAL_COMMAND_TOOLS.contains(toolName)
+                || this.toolScopes.get(toolName) == LLMToolScope.LOCAL_EXECUTION;
     }
 
     private Map<String, Object> buildRecord(ToolExecution execution) {

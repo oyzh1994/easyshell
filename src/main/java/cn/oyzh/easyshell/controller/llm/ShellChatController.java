@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.controller.llm;
 
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.thread.ThreadUtil;
@@ -69,6 +70,7 @@ import cn.oyzh.fx.plus.util.FXUtil;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.i18n.I18nHelper;
 import cn.oyzh.i18n.I18nResourceBundle;
+import com.alibaba.fastjson2.JSONObject;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.Content;
@@ -80,6 +82,7 @@ import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.memory.ChatMemoryService;
 import dev.langchain4j.service.tool.ToolArgumentsErrorHandler;
+import dev.langchain4j.service.tool.ToolExecution;
 import dev.langchain4j.service.tool.ToolProvider;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
@@ -95,6 +98,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -282,6 +286,8 @@ public class ShellChatController extends SubStageController {
 
         private LLMToolRuntimePolicy toolPolicy;
 
+        private volatile LLMToolAudit audit;
+
         private String userText;
 
         private String model;
@@ -399,6 +405,7 @@ public class ShellChatController extends SubStageController {
         LLMToolAudit audit = new LLMToolAudit(tools,
                 request.sessionId, request.sessionTabId,
                 provider.getName(), modelName, executionMode);
+        request.audit = audit;
         audit.registerToolAccessMode(request.toolAccessMode);
         if (request.sessionTab != null) {
             audit.registerSessionContext(request.sessionTab.getType(),
@@ -852,6 +859,11 @@ public class ShellChatController extends SubStageController {
         AtomicBoolean firstResponse = new AtomicBoolean(true);
         AtomicBoolean firstThinking = new AtomicBoolean(true);
         ConcurrentHashMap<String, LLMAgentTrace> traces = new ConcurrentHashMap<>();
+        AtomicInteger commandIndex = new AtomicInteger();
+        if (request.audit != null) {
+            request.audit.setExecutionListener(execution -> this.recordLocalCommandTrace(
+                    request, placeholder, traces, commandIndex, execution));
+        }
         try {
             this.view.replaceAgentTrace(placeholder, "");
             ChatResponse response = request.agentRuntime.execute(
@@ -925,7 +937,95 @@ public class ShellChatController extends SubStageController {
             this.view.addErrorMessage(this.llmErrorMessage(ex, placeholder),
                     message.getSessionTabId());
             this.finishRequest(request, true);
+        } finally {
+            if (request.audit != null) {
+                request.audit.setExecutionListener(null);
+            }
         }
+    }
+
+    private void recordLocalCommandTrace(LLMRequest request,
+                                         LLMMessage placeholder,
+                                         ConcurrentHashMap<String, LLMAgentTrace> traces,
+                                         AtomicInteger commandIndex,
+                                         ToolExecution execution) {
+        if (!this.isRequestActive(request) || request.audit == null
+                || !request.audit.isLocalCommand(execution)) {
+            return;
+        }
+        String command = this.commandArgument(execution, "command");
+        if (StringUtil.isBlank(command)) {
+            return;
+        }
+        String workingDirectory = this.commandArgument(execution, "workingDirectory");
+        String result = this.toolResult(execution);
+        boolean failed = execution.hasFailed() || commandFailed(result);
+        long startedAt = execution.startTime() == null
+                ? System.currentTimeMillis()
+                : execution.startTime().atZone(java.time.ZoneId.systemDefault())
+                        .toInstant().toEpochMilli();
+        long finishedAt = execution.finishTime() == null
+                ? System.currentTimeMillis()
+                : execution.finishTime().atZone(java.time.ZoneId.systemDefault())
+                        .toInstant().toEpochMilli();
+        LLMAgentTrace trace = new LLMAgentTrace(
+                "tool-" + commandIndex.incrementAndGet(),
+                LLMAgentTrace.Type.TOOL,
+                0, 0,
+                execution.request().name(),
+                command,
+                workingDirectory == null ? "" : workingDirectory,
+                failed ? "" : result,
+                failed ? result : "",
+                failed ? LLMAgentTrace.Status.FAILED : LLMAgentTrace.Status.COMPLETED,
+                startedAt, finishedAt,
+                LLMAgentOrchestrationMode.SEQUENTIAL);
+        synchronized (traces) {
+            traces.put(trace.id(), trace);
+            this.view.replaceAgentTrace(placeholder,
+                    LLMAgentTraceFormatter.format(traces.values()));
+        }
+    }
+
+    private String commandArgument(ToolExecution execution, String name) {
+        try {
+            String arguments = execution.request() == null
+                    ? null
+                    : execution.request().arguments();
+            if (StringUtil.isBlank(arguments)) {
+                return null;
+            }
+            JSONObject object = JSONUtil.parseObject(arguments);
+            return object == null ? null : object.getString(name);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private String toolResult(ToolExecution execution) {
+        try {
+            String result = execution.result();
+            return result == null ? "" : result;
+        } catch (Exception ex) {
+            return execution.hasFailed() ? String.valueOf(ex.getMessage()) : "";
+        }
+    }
+
+    private static boolean commandFailed(String result) {
+        if (result == null || result.isBlank()) {
+            return false;
+        }
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(?m)^exitCode:\\s*(-?\\d+)")
+                .matcher(result);
+        if (matcher.find()) {
+            try {
+                return Integer.parseInt(matcher.group(1)) != 0;
+            } catch (NumberFormatException ignored) {
+                return true;
+            }
+        }
+        return result.contains("timedOut: true") || result.contains("interrupted: true");
     }
 
     private String llmErrorMessage(Throwable ex, LLMMessage placeholder) {
