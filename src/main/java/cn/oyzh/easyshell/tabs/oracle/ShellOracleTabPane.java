@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.event.oracle.view.ShellOracleViewDesignEvent;
 import cn.oyzh.easyshell.event.oracle.view.ShellOracleViewDroppedEvent;
 import cn.oyzh.easyshell.event.oracle.view.ShellOracleViewOpenEvent;
 import cn.oyzh.easyshell.event.oracle.view.ShellOracleViewRenamedEvent;
+import cn.oyzh.easyshell.query.oracle.ShellOracleQueryUtil;
 import cn.oyzh.easyshell.tabs.oracle.function.ShellOracleFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.oracle.home.ShellOracleHomeTab;
 import cn.oyzh.easyshell.tabs.oracle.procedure.ShellOracleProcedureDesignTab;
@@ -334,6 +335,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -389,6 +391,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -407,6 +410,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -516,6 +520,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -533,6 +538,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -553,6 +559,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onSchemaDropped(ShellOracleSchemaDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        ShellOracleQueryUtil.refreshIndex(this.getClient());
     }
 
     /**
@@ -651,6 +658,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -672,6 +680,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -693,6 +702,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -710,6 +720,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -727,6 +738,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -774,6 +786,7 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshSequences(this.getClient());
     }
 
     @EventSubscribe
@@ -801,5 +814,6 @@ public class ShellOracleTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellOracleQueryUtil.refreshSequences(this.getClient());
     }
 }

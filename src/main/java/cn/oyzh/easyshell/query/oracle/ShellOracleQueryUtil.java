@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.query.oracle;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.function.OracleFunction;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
 import cn.oyzh.easyshell.oracle.schema.OracleSchema;
+import cn.oyzh.easyshell.oracle.sequence.OracleSequence;
 import cn.oyzh.easyshell.oracle.table.OracleTable;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.util.oracle.ShellOracleUtil;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static cn.oyzh.easyshell.util.ShellClientUtil.isAvailable;
+
 /**
  * Oracle查询工具类
  *
@@ -26,13 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ShellOracleQueryUtil {
 
     /**
-     * 0未初始化
-     * 1 初始化中
-     * 2 已初始化
-     */
-    private static int indexStatus = 0;
-
-    /**
      * 关键字
      */
     private static final Set<String> DB_KEYWORDS = new HashSet<>();
@@ -40,7 +37,7 @@ public class ShellOracleQueryUtil {
     /**
      * 数据库
      */
-    private static final List<OracleSchema> DB_SCHEMAS = new ArrayList<>();
+    private static final List<OracleSchema> DB_SCHEMAS = new CopyOnWriteArrayList<>();
 
     /**
      * 表
@@ -61,6 +58,11 @@ public class ShellOracleQueryUtil {
      * 过程
      */
     private static final List<OracleProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
+
+    /**
+     * 序列
+     */
+    private static final List<OracleSequence> DB_SEQUENCES = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
@@ -231,6 +233,15 @@ public class ShellOracleQueryUtil {
     }
 
     /**
+     * 获取序列列表
+     *
+     * @return 序列列表
+     */
+    public static List<OracleSequence> getSequences() {
+        return DB_SEQUENCES;
+    }
+
+    /**
      * 获取字段列表
      *
      * @return 字段列表
@@ -245,65 +256,259 @@ public class ShellOracleQueryUtil {
      * @param client 客户端
      */
     public static void updateIndex(ShellOracleClient client) {
-        Runnable task = () -> {
-            if (indexStatus == 0) {
-                try {
-                    indexStatus = 1;
-                    DB_VIEWS.clear();
-                    DB_TABLES.clear();
-                    DB_COLUMNS.clear();
-                    DB_FUNCTIONS.clear();
-                    DB_PROCEDURES.clear();
-                    DB_SCHEMAS.clear();
-                    // 更新库索引
-                    List<OracleSchema> databases = client.selectSchemas();
-                    DB_SCHEMAS.addAll(databases);
-                    List<Runnable> tasks = new ArrayList<>();
-                    // 更新表索引
-                    for (OracleSchema schema : DB_SCHEMAS) {
-                        if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<OracleTable> tables = client.selectTablesSimple(schema.getName());
-                                DB_TABLES.addAll(tables);
-                            });
-                        }
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> refreshAll(client));
+    }
+
+    /**
+     * 刷新查询索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshIndex(ShellOracleClient client) {
+        updateIndex(client);
+    }
+
+    /**
+     * 刷新模式索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSchemas(ShellOracleClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<OracleSchema> schemas = client.selectSchemas();
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SCHEMAS.clear();
+                DB_SCHEMAS.addAll(schemas);
+            } catch (Exception ex) {
+                logRefreshError("Refresh oracle schema query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新表索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshTables(ShellOracleClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<OracleSchema> schemas = client.selectSchemas();
+                List<OracleTable> tables = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (OracleSchema schema : schemas) {
+                    if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> tables.addAll(client.selectTablesSimple(schema.getName())));
                     }
-                    // 更新视图索引
-                    for (OracleSchema schema : DB_SCHEMAS) {
-                        if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<OracleView> views = client.selectViewsSimple(schema.getName());
-                                DB_VIEWS.addAll(views);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_TABLES.clear();
+                DB_TABLES.addAll(tables);
+            } catch (Exception ex) {
+                logRefreshError("Refresh oracle table query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新视图索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshViews(ShellOracleClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<OracleSchema> schemas = client.selectSchemas();
+                List<OracleView> views = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (OracleSchema schema : schemas) {
+                    if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> views.addAll(client.selectViewsSimple(schema.getName())));
                     }
-                    // 更新函数索引
-                    for (OracleSchema schema : DB_SCHEMAS) {
-                        if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<OracleFunction> functions = client.selectFunctionsSimple(schema.getName());
-                                DB_FUNCTIONS.addAll(functions);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_VIEWS.clear();
+                DB_VIEWS.addAll(views);
+            } catch (Exception ex) {
+                logRefreshError("Refresh oracle view query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新函数索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshFunctions(ShellOracleClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<OracleSchema> schemas = client.selectSchemas();
+                List<OracleFunction> functions = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (OracleSchema schema : schemas) {
+                    if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> functions.addAll(client.selectFunctionsSimple(schema.getName())));
                     }
-                    // 更新过程索引
-                    for (OracleSchema schema : DB_SCHEMAS) {
-                        if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<OracleProcedure> procedures = client.selectProceduresSimple(schema.getName());
-                                DB_PROCEDURES.addAll(procedures);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_FUNCTIONS.clear();
+                DB_FUNCTIONS.addAll(functions);
+            } catch (Exception ex) {
+                logRefreshError("Refresh oracle function query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新过程索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshProcedures(ShellOracleClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<OracleSchema> schemas = client.selectSchemas();
+                List<OracleProcedure> procedures = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (OracleSchema schema : schemas) {
+                    if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> procedures.addAll(client.selectProceduresSimple(schema.getName())));
                     }
-                    // 异步执行
-                    ThreadUtil.submit(tasks);
-                    indexStatus = 2;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    indexStatus = 0;
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_PROCEDURES.clear();
+                DB_PROCEDURES.addAll(procedures);
+            } catch (Exception ex) {
+                logRefreshError("Refresh oracle procedure query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新序列索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSequences(ShellOracleClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<OracleSchema> schemas = client.selectSchemas();
+                List<OracleSequence> sequences = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (OracleSchema schema : schemas) {
+                    if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> {
+                            try {
+                                sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                            } catch (Exception ex) {
+                                if (isAvailable(client)) {
+                                    JulLog.warn("Load oracle sequence query index failed, schema: " + schema.getName(), ex);
+                                }
+                            }
+                        });
+                    }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SEQUENCES.clear();
+                DB_SEQUENCES.addAll(sequences);
+            } catch (Exception ex) {
+                logRefreshError("Refresh oracle sequence query index failed", client, ex);
+            }
+        });
+    }
+
+    private static void refreshAll(ShellOracleClient client) {
+        try {
+            List<OracleSchema> schemas = client.selectSchemas();
+            List<OracleTable> tables = new CopyOnWriteArrayList<>();
+            List<OracleView> views = new CopyOnWriteArrayList<>();
+            List<OracleFunction> functions = new CopyOnWriteArrayList<>();
+            List<OracleProcedure> procedures = new CopyOnWriteArrayList<>();
+            List<OracleSequence> sequences = new CopyOnWriteArrayList<>();
+            List<Runnable> tasks = new ArrayList<>();
+            for (OracleSchema schema : schemas) {
+                if (!ShellOracleUtil.isInternalDatabase(schema.getName())) {
+                    tasks.add(() -> tables.addAll(client.selectTablesSimple(schema.getName())));
+                    tasks.add(() -> views.addAll(client.selectViewsSimple(schema.getName())));
+                    tasks.add(() -> functions.addAll(client.selectFunctionsSimple(schema.getName())));
+                    tasks.add(() -> procedures.addAll(client.selectProceduresSimple(schema.getName())));
+                    tasks.add(() -> {
+                        try {
+                            sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                        } catch (Exception ex) {
+                            if (isAvailable(client)) {
+                                JulLog.warn("Load oracle sequence query index failed, schema: " + schema.getName(), ex);
+                            }
+                        }
+                    });
                 }
             }
-        };
-        ThreadUtil.start(task);
+            ThreadUtil.submit(tasks);
+            if (!isAvailable(client)) {
+                return;
+            }
+            DB_SCHEMAS.clear();
+            DB_SCHEMAS.addAll(schemas);
+            DB_TABLES.clear();
+            DB_TABLES.addAll(tables);
+            DB_VIEWS.clear();
+            DB_VIEWS.addAll(views);
+            DB_FUNCTIONS.clear();
+            DB_FUNCTIONS.addAll(functions);
+            DB_PROCEDURES.clear();
+            DB_PROCEDURES.addAll(procedures);
+            DB_SEQUENCES.clear();
+            DB_SEQUENCES.addAll(sequences);
+        } catch (Exception ex) {
+            logRefreshError("Update oracle query index failed", client, ex);
+        }
+    }
+
+    private static void logRefreshError(String message, ShellOracleClient client, Exception ex) {
+        if (isAvailable(client)) {
+            JulLog.warn(message, ex);
+        } else {
+            JulLog.debug(message);
+        }
     }
 }

@@ -183,6 +183,21 @@ public class ShellSqlServerQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shell
                 }
             }));
         }
+        // 序列
+        if (token.isPossibilitySequence()) {
+            tasks.add(() -> ShellSqlServerQueryUtil.getSequences().parallelStream().forEach(sequence -> {
+                // 计算相关度
+                double corr = this.correlation(sequence.getName(), text);
+                if (corr > minCorr) {
+                    ShellSqlServerQueryPromptItem item = new ShellSqlServerQueryPromptItem();
+                    item.setType((byte) 8);
+                    item.setCorrelation(corr);
+                    item.setContent(sequence.getName());
+                    item.setExtContent(sequence.getSchema());
+                    items.add(item);
+                }
+            }));
+        }
         // 字段
         if (token.isPossibilityColumn()) {
             tasks.add(() -> ShellSqlServerQueryUtil.getColumns().parallelStream().forEach(column -> {

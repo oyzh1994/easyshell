@@ -4,6 +4,7 @@ import cn.oyzh.easyshell.query.ShellQueryPromptListView;
 import cn.oyzh.fx.gui.svg.glyph.KeywordsSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.EventSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
@@ -51,6 +52,9 @@ public class ShellMariadbQueryPromptListView extends ShellQueryPromptListView<Sh
         } else if (item.isProcedureType()) {
             ProcedureSVGGlyph svgGlyph = new ProcedureSVGGlyph();
 //            svgGlyph.setColor(Color.BLACK);
+            label = new SVGLabel(item.getContent(), svgGlyph);
+        } else if (item.isEventType()) {
+            EventSVGGlyph svgGlyph = new EventSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
         }
         if (label != null) {

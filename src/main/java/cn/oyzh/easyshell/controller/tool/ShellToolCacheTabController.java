@@ -90,7 +90,10 @@ public class ShellToolCacheTabController extends SubStageController {
                 this.cacheArea.setText("clear cache start.");
                 BiConsumer<LongAdder, LongAdder> callback = (fileCount, fileSize) -> {
                     String sizeInfo = NumberUtil.formatSize(fileSize.longValue());
-                    FXUtil.runWait(() -> this.cacheArea.setText("delete file: " + fileCount.longValue() + " total size: " + sizeInfo));
+                    FXUtil.runWait(() -> {
+                        this.cacheArea.appendLine("delete file: " + fileCount.longValue());
+                        this.cacheArea.appendLine("total size: " + sizeInfo);
+                    });
                 };
                 LongAdder fileSize = new LongAdder();
                 LongAdder fileCount = new LongAdder();

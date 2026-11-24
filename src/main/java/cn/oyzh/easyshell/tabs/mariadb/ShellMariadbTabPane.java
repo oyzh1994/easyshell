@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.event.mariadb.view.ShellMariadbViewDroppedEvent;
 import cn.oyzh.easyshell.event.mariadb.view.ShellMariadbViewOpenEvent;
 import cn.oyzh.easyshell.event.mariadb.view.ShellMariadbViewRenamedEvent;
 import cn.oyzh.easyshell.mariadb.ShellMariadbClient;
+import cn.oyzh.easyshell.query.mariadb.ShellMariadbQueryUtil;
 import cn.oyzh.easyshell.tabs.mariadb.event.ShellMariadbEventDesignTab;
 import cn.oyzh.easyshell.tabs.mariadb.function.ShellMariadbFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.mariadb.home.ShellMariadbHomeTab;
@@ -333,6 +334,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -388,6 +390,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -406,6 +409,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -515,6 +519,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshEvents(this.getClient());
     }
 
     /**
@@ -532,6 +537,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -549,6 +555,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -569,6 +576,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
     @EventSubscribe
     private void onDatabaseDropped(ShellMariadbDatabaseDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        ShellMariadbQueryUtil.refreshIndex(this.getClient());
     }
 
     /**
@@ -687,6 +695,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -708,6 +717,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -729,6 +739,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -746,6 +757,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshEvents(this.getClient());
     }
 
     /**
@@ -763,6 +775,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -780,6 +793,7 @@ public class ShellMariadbTabPane extends RichTabPane implements FXEventListener 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMariadbQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**

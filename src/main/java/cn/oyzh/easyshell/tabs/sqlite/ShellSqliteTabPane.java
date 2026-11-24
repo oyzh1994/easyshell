@@ -425,7 +425,7 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
                 this.tableCountChangedHandler.run();
             }
         }
-        ShellSqliteQueryUtil.refreshIndex(this.getClient());
+        ShellSqliteQueryUtil.refreshTables(this.getClient());
     }
 
     @EventSubscribe
@@ -469,7 +469,7 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
                 this.viewCountChangedHandler.run();
             }
         }
-        ShellSqliteQueryUtil.refreshIndex(this.getClient());
+        ShellSqliteQueryUtil.refreshViews(this.getClient());
     }
 
     @EventSubscribe
@@ -489,8 +489,8 @@ public class ShellSqliteTabPane extends RichTabPane implements FXEventListener {
                 && this.viewAddedHandler != null) {
             this.viewAddedHandler.accept(function.getName());
         }
-        if (this.getClient() != null) {
-            ShellSqliteQueryUtil.refreshIndex(this.getClient());
+        if (SQLiteFunction.KIND_TABLE_VIEW.equals(function.getKind())) {
+            ShellSqliteQueryUtil.refreshViews(this.getClient());
         }
     }
 

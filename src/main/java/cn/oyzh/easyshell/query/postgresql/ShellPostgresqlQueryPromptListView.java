@@ -6,6 +6,7 @@ import cn.oyzh.fx.gui.svg.glyph.database.ColumnSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.FunctionSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ProcedureSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SchemaSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.SequenceSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.TableSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
@@ -46,6 +47,9 @@ public class ShellPostgresqlQueryPromptListView extends ShellQueryPromptListView
         } else if (item.isProcedureType()) {
             ProcedureSVGGlyph svgGlyph = new ProcedureSVGGlyph();
             label = new SVGLabel(item.getContent(), svgGlyph);
+        } else if (item.isSequenceType()) {
+            SequenceSVGGlyph svgGlyph = new SequenceSVGGlyph();
+            label = new SVGLabel(item.getContent(), svgGlyph);
         }
         if (label != null) {
             label.setTipText(item.getContent());
@@ -56,7 +60,7 @@ public class ShellPostgresqlQueryPromptListView extends ShellQueryPromptListView
     @Override
     protected FXLabel initExtLabel(ShellPostgresqlQueryPromptItem item) {
         FXLabel label = null;
-        if (item.isTableType() || item.isViewType() || item.isColumnType()) {
+        if (item.isTableType() || item.isViewType() || item.isColumnType() || item.isSequenceType()) {
             label = new FXLabel(item.getExtContent());
             label.setTextFill(Color.valueOf("#D3D3D3"));
         }

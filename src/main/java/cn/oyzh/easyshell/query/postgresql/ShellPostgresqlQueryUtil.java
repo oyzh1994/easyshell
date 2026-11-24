@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.query.postgresql;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
@@ -7,6 +8,7 @@ import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlFunction;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlProcedure;
 import cn.oyzh.easyshell.postgresql.schema.PostgresqlSchema;
+import cn.oyzh.easyshell.postgresql.sequence.PostgresqlSequence;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
 import cn.oyzh.easyshell.postgresql.view.PostgresqlView;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static cn.oyzh.easyshell.util.ShellClientUtil.isAvailable;
+
 /**
  * PostgreSQL查询工具类
  *
@@ -26,13 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ShellPostgresqlQueryUtil {
 
     /**
-     * 0未初始化
-     * 1 初始化中
-     * 2 已初始化
-     */
-    private static int indexStatus = 0;
-
-    /**
      * 关键字
      */
     private static final Set<String> DB_KEYWORDS = new HashSet<>();
@@ -40,7 +37,7 @@ public class ShellPostgresqlQueryUtil {
     /**
      * 模式（PostgreSQL中dbName实际为schema）
      */
-    private static final List<PostgresqlSchema> DB_SCHEMAS = new ArrayList<>();
+    private static final List<PostgresqlSchema> DB_SCHEMAS = new CopyOnWriteArrayList<>();
 
     /**
      * 表
@@ -61,6 +58,11 @@ public class ShellPostgresqlQueryUtil {
      * 过程
      */
     private static final List<PostgresqlProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
+
+    /**
+     * 序列
+     */
+    private static final List<PostgresqlSequence> DB_SEQUENCES = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
@@ -364,6 +366,15 @@ public class ShellPostgresqlQueryUtil {
     }
 
     /**
+     * 获取序列列表
+     *
+     * @return 序列列表
+     */
+    public static List<PostgresqlSequence> getSequences() {
+        return DB_SEQUENCES;
+    }
+
+    /**
      * 获取字段列表
      *
      * @return 字段列表
@@ -396,65 +407,259 @@ public class ShellPostgresqlQueryUtil {
      * @param client 客户端
      */
     public static void updateIndex(ShellPostgresqlClient client) {
-        Runnable task = () -> {
-            if (indexStatus == 0) {
-                try {
-                    indexStatus = 1;
-                    DB_VIEWS.clear();
-                    DB_TABLES.clear();
-                    DB_COLUMNS.clear();
-                    DB_FUNCTIONS.clear();
-                    DB_PROCEDURES.clear();
-                    DB_SCHEMAS.clear();
-                    // 更新模式索引
-                    List<PostgresqlSchema> schemas = client.selectSchemas();
-                    DB_SCHEMAS.addAll(schemas);
-                    List<Runnable> tasks = new ArrayList<>();
-                    // 更新表索引
-                    for (PostgresqlSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<PostgresqlTable> tables = client.selectTablesSimple(schema.getName());
-                                DB_TABLES.addAll(tables);
-                            });
-                        }
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> refreshAll(client));
+    }
+
+    /**
+     * 刷新查询索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshIndex(ShellPostgresqlClient client) {
+        updateIndex(client);
+    }
+
+    /**
+     * 刷新模式索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSchemas(ShellPostgresqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<PostgresqlSchema> schemas = client.selectSchemas();
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SCHEMAS.clear();
+                DB_SCHEMAS.addAll(schemas);
+            } catch (Exception ex) {
+                logRefreshError("Refresh postgresql schema query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新表索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshTables(ShellPostgresqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<PostgresqlSchema> schemas = client.selectSchemas();
+                List<PostgresqlTable> tables = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (PostgresqlSchema schema : schemas) {
+                    if (!isSystemSchema(schema.getName())) {
+                        tasks.add(() -> tables.addAll(client.selectTablesSimple(schema.getName())));
                     }
-                    // 更新视图索引
-                    for (PostgresqlSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<PostgresqlView> views = client.selectViewsSimple(schema.getName());
-                                DB_VIEWS.addAll(views);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_TABLES.clear();
+                DB_TABLES.addAll(tables);
+            } catch (Exception ex) {
+                logRefreshError("Refresh postgresql table query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新视图索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshViews(ShellPostgresqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<PostgresqlSchema> schemas = client.selectSchemas();
+                List<PostgresqlView> views = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (PostgresqlSchema schema : schemas) {
+                    if (!isSystemSchema(schema.getName())) {
+                        tasks.add(() -> views.addAll(client.selectViewsSimple(schema.getName())));
                     }
-                    // 更新函数索引
-                    for (PostgresqlSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<PostgresqlFunction> functions = client.selectFunctionsSimple(schema.getName());
-                                DB_FUNCTIONS.addAll(functions);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_VIEWS.clear();
+                DB_VIEWS.addAll(views);
+            } catch (Exception ex) {
+                logRefreshError("Refresh postgresql view query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新函数索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshFunctions(ShellPostgresqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<PostgresqlSchema> schemas = client.selectSchemas();
+                List<PostgresqlFunction> functions = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (PostgresqlSchema schema : schemas) {
+                    if (!isSystemSchema(schema.getName())) {
+                        tasks.add(() -> functions.addAll(client.selectFunctionsSimple(schema.getName())));
                     }
-                    // 更新过程索引
-                    for (PostgresqlSchema schema : DB_SCHEMAS) {
-                        if (!isSystemSchema(schema.getName())) {
-                            tasks.add(() -> {
-                                List<PostgresqlProcedure> procedures = client.selectProceduresSimple(schema.getName());
-                                DB_PROCEDURES.addAll(procedures);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_FUNCTIONS.clear();
+                DB_FUNCTIONS.addAll(functions);
+            } catch (Exception ex) {
+                logRefreshError("Refresh postgresql function query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新过程索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshProcedures(ShellPostgresqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<PostgresqlSchema> schemas = client.selectSchemas();
+                List<PostgresqlProcedure> procedures = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (PostgresqlSchema schema : schemas) {
+                    if (!isSystemSchema(schema.getName())) {
+                        tasks.add(() -> procedures.addAll(client.selectProceduresSimple(schema.getName())));
                     }
-                    // 异步执行
-                    ThreadUtil.submit(tasks);
-                    indexStatus = 2;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    indexStatus = 0;
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_PROCEDURES.clear();
+                DB_PROCEDURES.addAll(procedures);
+            } catch (Exception ex) {
+                logRefreshError("Refresh postgresql procedure query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新序列索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSequences(ShellPostgresqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<PostgresqlSchema> schemas = client.selectSchemas();
+                List<PostgresqlSequence> sequences = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (PostgresqlSchema schema : schemas) {
+                    if (!isSystemSchema(schema.getName())) {
+                        tasks.add(() -> {
+                            try {
+                                sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                            } catch (Exception ex) {
+                                if (isAvailable(client)) {
+                                    JulLog.warn("Load postgresql sequence query index failed, schema: " + schema.getName(), ex);
+                                }
+                            }
+                        });
+                    }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SEQUENCES.clear();
+                DB_SEQUENCES.addAll(sequences);
+            } catch (Exception ex) {
+                logRefreshError("Refresh postgresql sequence query index failed", client, ex);
+            }
+        });
+    }
+
+    private static void refreshAll(ShellPostgresqlClient client) {
+        try {
+            List<PostgresqlSchema> schemas = client.selectSchemas();
+            List<PostgresqlTable> tables = new CopyOnWriteArrayList<>();
+            List<PostgresqlView> views = new CopyOnWriteArrayList<>();
+            List<PostgresqlFunction> functions = new CopyOnWriteArrayList<>();
+            List<PostgresqlProcedure> procedures = new CopyOnWriteArrayList<>();
+            List<PostgresqlSequence> sequences = new CopyOnWriteArrayList<>();
+            List<Runnable> tasks = new ArrayList<>();
+            for (PostgresqlSchema schema : schemas) {
+                if (!isSystemSchema(schema.getName())) {
+                    tasks.add(() -> tables.addAll(client.selectTablesSimple(schema.getName())));
+                    tasks.add(() -> views.addAll(client.selectViewsSimple(schema.getName())));
+                    tasks.add(() -> functions.addAll(client.selectFunctionsSimple(schema.getName())));
+                    tasks.add(() -> procedures.addAll(client.selectProceduresSimple(schema.getName())));
+                    tasks.add(() -> {
+                        try {
+                            sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                        } catch (Exception ex) {
+                            if (isAvailable(client)) {
+                                JulLog.warn("Load postgresql sequence query index failed, schema: " + schema.getName(), ex);
+                            }
+                        }
+                    });
                 }
             }
-        };
-        ThreadUtil.start(task);
+            ThreadUtil.submit(tasks);
+            if (!isAvailable(client)) {
+                return;
+            }
+            DB_SCHEMAS.clear();
+            DB_SCHEMAS.addAll(schemas);
+            DB_TABLES.clear();
+            DB_TABLES.addAll(tables);
+            DB_VIEWS.clear();
+            DB_VIEWS.addAll(views);
+            DB_FUNCTIONS.clear();
+            DB_FUNCTIONS.addAll(functions);
+            DB_PROCEDURES.clear();
+            DB_PROCEDURES.addAll(procedures);
+            DB_SEQUENCES.clear();
+            DB_SEQUENCES.addAll(sequences);
+        } catch (Exception ex) {
+            logRefreshError("Update postgresql query index failed", client, ex);
+        }
+    }
+
+    private static void logRefreshError(String message, ShellPostgresqlClient client, Exception ex) {
+        if (isAvailable(client)) {
+            JulLog.warn(message, ex);
+        } else {
+            JulLog.debug(message);
+        }
     }
 }

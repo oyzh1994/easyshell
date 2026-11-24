@@ -183,6 +183,21 @@ public class ShellMysqlQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMysq
                 }
             }));
         }
+        // 事件
+        if (token.isPossibilityEvent()) {
+            tasks.add(() -> ShellMysqlQueryUtil.getEvents().parallelStream().forEach(event -> {
+                // 计算相关度
+                double corr = TextUtil.clacCorr(event.getName(), text);
+                if (corr > minCorr) {
+                    ShellMysqlQueryPromptItem item = new ShellMysqlQueryPromptItem();
+                    item.setType((byte) 8);
+                    item.setCorrelation(corr);
+                    item.setContent(event.getName());
+                    item.setExtContent(event.getDbName());
+                    items.add(item);
+                }
+            }));
+        }
         // 字段
         if (token.isPossibilityColumn()) {
             tasks.add(() -> ShellMysqlQueryUtil.getColumns().parallelStream().forEach(column -> {

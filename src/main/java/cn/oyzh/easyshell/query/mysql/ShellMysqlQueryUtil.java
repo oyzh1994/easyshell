@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.query.mysql;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.mysql.column.MysqlColumn;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static cn.oyzh.easyshell.util.ShellClientUtil.isAvailable;
+
 /**
  * mysql查询工具类
  *
@@ -27,13 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ShellMysqlQueryUtil {
 
     /**
-     * 0未初始化
-     * 1 初始化中
-     * 2 已初始化
-     */
-    private static int indexStatus = 0;
-
-    /**
      * 关键字
      */
     private static final Set<String> DB_KEYWORDS = new HashSet<>();
@@ -41,7 +37,7 @@ public class ShellMysqlQueryUtil {
     /**
      * 数据库
      */
-    private static final List<MysqlDatabase> DB_DATABASES = new ArrayList<>();
+    private static final List<MysqlDatabase> DB_DATABASES = new CopyOnWriteArrayList<>();
 
     /**
      * 表
@@ -233,6 +229,15 @@ public class ShellMysqlQueryUtil {
     }
 
     /**
+     * 获取事件列表
+     *
+     * @return 事件列表
+     */
+    public static List<MysqlEvent> getEvents() {
+        return DB_EVENTS;
+    }
+
+    /**
      * 获取字段列表
      *
      * @return 字段列表
@@ -247,81 +252,243 @@ public class ShellMysqlQueryUtil {
      * @param client 客户端
      */
     public static void updateIndex(ShellMysqlClient client) {
-        Runnable task = () -> {
-            if (indexStatus == 0) {
-                try {
-                    indexStatus = 1;
-                    DB_VIEWS.clear();
-                    DB_TABLES.clear();
-                    DB_COLUMNS.clear();
-                    DB_FUNCTIONS.clear();
-                    DB_PROCEDURES.clear();
-                    DB_DATABASES.clear();
-                    // 更新库索引
-                    List<MysqlDatabase> databases = client.databases();
-                    DB_DATABASES.addAll(databases);
-                    List<Runnable> tasks = new ArrayList<>();
-                    // 更新表索引
-                    for (MysqlDatabase database : DB_DATABASES) {
-                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            tasks.add(() -> {
-                                List<MysqlTable> tables = client.selectTablesSimple(database.getName());
-                                DB_TABLES.addAll(tables);
-                            });
-                        }
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> refreshAll(client));
+    }
+
+    /**
+     * 刷新查询索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshIndex(ShellMysqlClient client) {
+        updateIndex(client);
+    }
+
+    /**
+     * 刷新数据库索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshDatabases(ShellMysqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<MysqlDatabase> databases = client.databases();
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_DATABASES.clear();
+                DB_DATABASES.addAll(databases);
+            } catch (Exception ex) {
+                logRefreshError("Refresh mysql database query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新表索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshTables(ShellMysqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<MysqlDatabase> databases = client.databases();
+                List<MysqlTable> tables = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (MysqlDatabase database : databases) {
+                    if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                        tasks.add(() -> tables.addAll(client.selectTablesSimple(database.getName())));
                     }
-                    // 更新视图索引
-                    for (MysqlDatabase database : DB_DATABASES) {
-                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            tasks.add(() -> {
-                                List<MysqlView> views = client.selectViewsSimple(database.getName());
-                                DB_VIEWS.addAll(views);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_TABLES.clear();
+                DB_TABLES.addAll(tables);
+            } catch (Exception ex) {
+                logRefreshError("Refresh mysql table query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新视图索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshViews(ShellMysqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<MysqlDatabase> databases = client.databases();
+                List<MysqlView> views = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (MysqlDatabase database : databases) {
+                    if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                        tasks.add(() -> views.addAll(client.selectViewsSimple(database.getName())));
                     }
-                    // 更新函数索引
-                    for (MysqlDatabase database : DB_DATABASES) {
-                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            tasks.add(() -> {
-                                List<MysqlFunction> functions = client.selectFunctionsSimple(database.getName());
-                                DB_FUNCTIONS.addAll(functions);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_VIEWS.clear();
+                DB_VIEWS.addAll(views);
+            } catch (Exception ex) {
+                logRefreshError("Refresh mysql view query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新函数索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshFunctions(ShellMysqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<MysqlDatabase> databases = client.databases();
+                List<MysqlFunction> functions = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (MysqlDatabase database : databases) {
+                    if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                        tasks.add(() -> functions.addAll(client.selectFunctionsSimple(database.getName())));
                     }
-                    // 更新过程索引
-                    for (MysqlDatabase database : DB_DATABASES) {
-                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            tasks.add(() -> {
-                                List<MysqlProcedure> procedures = client.selectProceduresSimple(database.getName());
-                                DB_PROCEDURES.addAll(procedures);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_FUNCTIONS.clear();
+                DB_FUNCTIONS.addAll(functions);
+            } catch (Exception ex) {
+                logRefreshError("Refresh mysql function query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新过程索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshProcedures(ShellMysqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<MysqlDatabase> databases = client.databases();
+                List<MysqlProcedure> procedures = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (MysqlDatabase database : databases) {
+                    if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                        tasks.add(() -> procedures.addAll(client.selectProceduresSimple(database.getName())));
                     }
-                    // 更新事件索引
-                    for (MysqlDatabase database : DB_DATABASES) {
-                        if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
-                            tasks.add(() -> {
-                                List<MysqlEvent> events = client.selectEventsSimple(database.getName());
-                                DB_EVENTS.addAll(events);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_PROCEDURES.clear();
+                DB_PROCEDURES.addAll(procedures);
+            } catch (Exception ex) {
+                logRefreshError("Refresh mysql procedure query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新事件索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshEvents(ShellMysqlClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<MysqlDatabase> databases = client.databases();
+                List<MysqlEvent> events = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (MysqlDatabase database : databases) {
+                    if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                        tasks.add(() -> events.addAll(client.selectEventsSimple(database.getName())));
                     }
-                    // // 更新字段索引
-                    // for (MysqlTable dbTable : DB_TABLES) {
-                    //     if (!ShellMysqlUtil.isInternalDatabase(dbTable.getDbName())) {
-                    //         List<MysqlColumn> columns = client.selectColumns(new MysqlSelectColumnParam(dbTable.getDbName(), dbTable.getName()));
-                    //         DB_COLUMNS.addAll(columns);
-                    //     }
-                    // }
-                    // 异步执行
-                    ThreadUtil.submit(tasks);
-                    indexStatus = 2;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    indexStatus = 0;
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_EVENTS.clear();
+                DB_EVENTS.addAll(events);
+            } catch (Exception ex) {
+                logRefreshError("Refresh mysql event query index failed", client, ex);
+            }
+        });
+    }
+
+    private static void refreshAll(ShellMysqlClient client) {
+        try {
+            List<MysqlDatabase> databases = client.databases();
+            List<MysqlTable> tables = new CopyOnWriteArrayList<>();
+            List<MysqlView> views = new CopyOnWriteArrayList<>();
+            List<MysqlFunction> functions = new CopyOnWriteArrayList<>();
+            List<MysqlProcedure> procedures = new CopyOnWriteArrayList<>();
+            List<MysqlEvent> events = new CopyOnWriteArrayList<>();
+            List<Runnable> tasks = new ArrayList<>();
+            for (MysqlDatabase database : databases) {
+                if (!ShellMysqlUtil.isInternalDatabase(database.getName())) {
+                    tasks.add(() -> tables.addAll(client.selectTablesSimple(database.getName())));
+                    tasks.add(() -> views.addAll(client.selectViewsSimple(database.getName())));
+                    tasks.add(() -> functions.addAll(client.selectFunctionsSimple(database.getName())));
+                    tasks.add(() -> procedures.addAll(client.selectProceduresSimple(database.getName())));
+                    tasks.add(() -> events.addAll(client.selectEventsSimple(database.getName())));
                 }
             }
-        };
-        ThreadUtil.start(task);
+            ThreadUtil.submit(tasks);
+            if (!isAvailable(client)) {
+                return;
+            }
+            DB_DATABASES.clear();
+            DB_DATABASES.addAll(databases);
+            DB_TABLES.clear();
+            DB_TABLES.addAll(tables);
+            DB_VIEWS.clear();
+            DB_VIEWS.addAll(views);
+            DB_FUNCTIONS.clear();
+            DB_FUNCTIONS.addAll(functions);
+            DB_PROCEDURES.clear();
+            DB_PROCEDURES.addAll(procedures);
+            DB_EVENTS.clear();
+            DB_EVENTS.addAll(events);
+        } catch (Exception ex) {
+            logRefreshError("Update mysql query index failed", client, ex);
+        }
+    }
+
+    private static void logRefreshError(String message, ShellMysqlClient client, Exception ex) {
+        if (isAvailable(client)) {
+            JulLog.warn(message, ex);
+        } else {
+            JulLog.debug(message);
+        }
     }
 }

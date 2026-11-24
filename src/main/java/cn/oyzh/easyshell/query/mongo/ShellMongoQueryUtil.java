@@ -1,13 +1,16 @@
 package cn.oyzh.easyshell.query.mongo;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.script.MongoScriptUtil;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static cn.oyzh.easyshell.util.ShellClientUtil.isAvailable;
 
 /**
  * mongo查询工具类
@@ -16,13 +19,6 @@ import java.util.Set;
  * @since 2026-06-29
  */
 public class ShellMongoQueryUtil {
-
-    /**
-     * 0未初始化
-     * 1 初始化中
-     * 2 已初始化
-     */
-    private static int indexStatus = 0;
 
     /**
      * 关键字
@@ -37,7 +33,7 @@ public class ShellMongoQueryUtil {
     /**
      * 集合
      */
-    private static final List<String> DB_COLLECTIONS = new ArrayList<>();
+    private static final List<String> DB_COLLECTIONS = new CopyOnWriteArrayList<>();
 
     static {
         DB_KEYWORDS.add("db");
@@ -91,21 +87,37 @@ public class ShellMongoQueryUtil {
      * @param dbName 数据库名称
      */
     public static void updateIndex(ShellMongoClient client, String dbName) {
-        Runnable task = () -> {
-            if (indexStatus == 0) {
-                try {
-                    indexStatus = 1;
-                    DB_COLLECTIONS.clear();
-                    // 更新集合索引
-                    List<String> collections = client.listCollectionNames(dbName);
-                    DB_COLLECTIONS.addAll(collections);
-                    indexStatus = 2;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    indexStatus = 0;
+        if (!isAvailable(client) || dbName == null) {
+            return;
+        }
+        ThreadUtil.start(() -> refreshCollections(client, dbName));
+    }
+
+    /**
+     * 刷新集合索引
+     *
+     * @param client 客户端
+     * @param dbName 数据库名称
+     */
+    public static void refreshCollections(ShellMongoClient client, String dbName) {
+        if (!isAvailable(client) || dbName == null) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<String> collections = client.listCollectionNames(dbName);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_COLLECTIONS.clear();
+                DB_COLLECTIONS.addAll(collections);
+            } catch (Exception ex) {
+                if (isAvailable(client)) {
+                    JulLog.warn("Refresh mongo collection query index failed", ex);
+                } else {
+                    JulLog.debug("Refresh mongo collection query index failed");
                 }
             }
-        };
-        ThreadUtil.start(task);
+        });
     }
 }

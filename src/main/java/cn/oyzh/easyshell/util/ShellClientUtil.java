@@ -39,6 +39,23 @@ import cn.oyzh.easyshell.zk.ShellZKClient;
 public class ShellClientUtil {
 
     /**
+     * 客户端是否可用
+     *
+     * @param client 客户端
+     * @return 结果
+     */
+    public static boolean isAvailable(ShellBaseClient client) {
+        if (client == null) {
+            return false;
+        }
+        try {
+            return client.isConnected();
+        } catch (RuntimeException ex) {
+            return false;
+        }
+    }
+
+    /**
      * 创建新客户端
      *
      * @param connect 连接

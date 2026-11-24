@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.event.sqlserver.view.ShellSqlServerViewDesignEvent;
 import cn.oyzh.easyshell.event.sqlserver.view.ShellSqlServerViewDroppedEvent;
 import cn.oyzh.easyshell.event.sqlserver.view.ShellSqlServerViewOpenEvent;
 import cn.oyzh.easyshell.event.sqlserver.view.ShellSqlServerViewRenamedEvent;
+import cn.oyzh.easyshell.query.sqlserver.ShellSqlServerQueryUtil;
 import cn.oyzh.easyshell.tabs.sqlserver.function.ShellSqlServerFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.sqlserver.home.ShellSqlServerHomeTab;
 import cn.oyzh.easyshell.tabs.sqlserver.procedure.ShellSqlServerProcedureDesignTab;
@@ -334,6 +335,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -389,6 +391,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -407,6 +410,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -516,6 +520,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -533,6 +538,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -553,6 +559,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
     @EventSubscribe
     private void onSchemaDropped(ShellSqlServerSchemaDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        ShellSqlServerQueryUtil.refreshIndex(this.getClient());
     }
 
     /**
@@ -651,6 +658,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -672,6 +680,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -693,6 +702,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -710,6 +720,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -727,6 +738,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -774,6 +786,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshSequences(this.getClient());
     }
 
     @EventSubscribe
@@ -801,5 +814,6 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellSqlServerQueryUtil.refreshSequences(this.getClient());
     }
 }

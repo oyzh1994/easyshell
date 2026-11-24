@@ -1,11 +1,13 @@
 package cn.oyzh.easyshell.query.dameng;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
+import cn.oyzh.easyshell.dameng.sequence.DamengSequence;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static cn.oyzh.easyshell.util.ShellClientUtil.isAvailable;
+
 /**
  * 达梦查询工具类
  *
@@ -26,13 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ShellDamengQueryUtil {
 
     /**
-     * 0未初始化
-     * 1 初始化中
-     * 2 已初始化
-     */
-    private static int indexStatus = 0;
-
-    /**
      * 关键字
      */
     private static final Set<String> DB_KEYWORDS = new HashSet<>();
@@ -40,7 +37,7 @@ public class ShellDamengQueryUtil {
     /**
      * 数据库
      */
-    private static final List<DamengSchema> DB_SCHEMAS = new ArrayList<>();
+    private static final List<DamengSchema> DB_SCHEMAS = new CopyOnWriteArrayList<>();
 
     /**
      * 表
@@ -61,6 +58,11 @@ public class ShellDamengQueryUtil {
      * 过程
      */
     private static final List<DamengProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
+
+    /**
+     * 序列
+     */
+    private static final List<DamengSequence> DB_SEQUENCES = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
@@ -224,6 +226,15 @@ public class ShellDamengQueryUtil {
     }
 
     /**
+     * 获取序列列表
+     *
+     * @return 序列列表
+     */
+    public static List<DamengSequence> getSequences() {
+        return DB_SEQUENCES;
+    }
+
+    /**
      * 获取字段列表
      *
      * @return 字段列表
@@ -238,65 +249,259 @@ public class ShellDamengQueryUtil {
      * @param client 客户端
      */
     public static void updateIndex(ShellDamengClient client) {
-        Runnable task = () -> {
-            if (indexStatus == 0) {
-                try {
-                    indexStatus = 1;
-                    DB_VIEWS.clear();
-                    DB_TABLES.clear();
-                    DB_COLUMNS.clear();
-                    DB_FUNCTIONS.clear();
-                    DB_PROCEDURES.clear();
-                    DB_SCHEMAS.clear();
-                    // 更新库索引
-                    List<DamengSchema> databases = client.selectSchemas();
-                    DB_SCHEMAS.addAll(databases);
-                    List<Runnable> tasks = new ArrayList<>();
-                    // 更新表索引
-                    for (DamengSchema schema : DB_SCHEMAS) {
-                        if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<DamengTable> tables = client.selectTablesSimple(schema.getName());
-                                DB_TABLES.addAll(tables);
-                            });
-                        }
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> refreshAll(client));
+    }
+
+    /**
+     * 刷新查询索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshIndex(ShellDamengClient client) {
+        updateIndex(client);
+    }
+
+    /**
+     * 刷新模式索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSchemas(ShellDamengClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<DamengSchema> schemas = client.selectSchemas();
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SCHEMAS.clear();
+                DB_SCHEMAS.addAll(schemas);
+            } catch (Exception ex) {
+                logRefreshError("Refresh dameng schema query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新表索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshTables(ShellDamengClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<DamengSchema> schemas = client.selectSchemas();
+                List<DamengTable> tables = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (DamengSchema schema : schemas) {
+                    if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> tables.addAll(client.selectTablesSimple(schema.getName())));
                     }
-                    // 更新视图索引
-                    for (DamengSchema schema : DB_SCHEMAS) {
-                        if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<DamengView> views = client.selectViewsSimple(schema.getName());
-                                DB_VIEWS.addAll(views);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_TABLES.clear();
+                DB_TABLES.addAll(tables);
+            } catch (Exception ex) {
+                logRefreshError("Refresh dameng table query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新视图索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshViews(ShellDamengClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<DamengSchema> schemas = client.selectSchemas();
+                List<DamengView> views = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (DamengSchema schema : schemas) {
+                    if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> views.addAll(client.selectViewsSimple(schema.getName())));
                     }
-                    // 更新函数索引
-                    for (DamengSchema schema : DB_SCHEMAS) {
-                        if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<DamengFunction> functions = client.selectFunctionsSimple(schema.getName());
-                                DB_FUNCTIONS.addAll(functions);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_VIEWS.clear();
+                DB_VIEWS.addAll(views);
+            } catch (Exception ex) {
+                logRefreshError("Refresh dameng view query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新函数索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshFunctions(ShellDamengClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<DamengSchema> schemas = client.selectSchemas();
+                List<DamengFunction> functions = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (DamengSchema schema : schemas) {
+                    if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> functions.addAll(client.selectFunctionsSimple(schema.getName())));
                     }
-                    // 更新过程索引
-                    for (DamengSchema schema : DB_SCHEMAS) {
-                        if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
-                            tasks.add(() -> {
-                                List<DamengProcedure> procedures = client.selectProceduresSimple(schema.getName());
-                                DB_PROCEDURES.addAll(procedures);
-                            });
-                        }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_FUNCTIONS.clear();
+                DB_FUNCTIONS.addAll(functions);
+            } catch (Exception ex) {
+                logRefreshError("Refresh dameng function query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新过程索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshProcedures(ShellDamengClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<DamengSchema> schemas = client.selectSchemas();
+                List<DamengProcedure> procedures = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (DamengSchema schema : schemas) {
+                    if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> procedures.addAll(client.selectProceduresSimple(schema.getName())));
                     }
-                    // 异步执行
-                    ThreadUtil.submit(tasks);
-                    indexStatus = 2;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    indexStatus = 0;
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_PROCEDURES.clear();
+                DB_PROCEDURES.addAll(procedures);
+            } catch (Exception ex) {
+                logRefreshError("Refresh dameng procedure query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新序列索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSequences(ShellDamengClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<DamengSchema> schemas = client.selectSchemas();
+                List<DamengSequence> sequences = new CopyOnWriteArrayList<>();
+                List<Runnable> tasks = new ArrayList<>();
+                for (DamengSchema schema : schemas) {
+                    if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
+                        tasks.add(() -> {
+                            try {
+                                sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                            } catch (Exception ex) {
+                                if (isAvailable(client)) {
+                                    JulLog.warn("Load dameng sequence query index failed, schema: " + schema.getName(), ex);
+                                }
+                            }
+                        });
+                    }
+                }
+                ThreadUtil.submit(tasks);
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SEQUENCES.clear();
+                DB_SEQUENCES.addAll(sequences);
+            } catch (Exception ex) {
+                logRefreshError("Refresh dameng sequence query index failed", client, ex);
+            }
+        });
+    }
+
+    private static void refreshAll(ShellDamengClient client) {
+        try {
+            List<DamengSchema> schemas = client.selectSchemas();
+            List<DamengTable> tables = new CopyOnWriteArrayList<>();
+            List<DamengView> views = new CopyOnWriteArrayList<>();
+            List<DamengFunction> functions = new CopyOnWriteArrayList<>();
+            List<DamengProcedure> procedures = new CopyOnWriteArrayList<>();
+            List<DamengSequence> sequences = new CopyOnWriteArrayList<>();
+            List<Runnable> tasks = new ArrayList<>();
+            for (DamengSchema schema : schemas) {
+                if (!ShellDamengUtil.isInternalDatabase(schema.getName())) {
+                    tasks.add(() -> tables.addAll(client.selectTablesSimple(schema.getName())));
+                    tasks.add(() -> views.addAll(client.selectViewsSimple(schema.getName())));
+                    tasks.add(() -> functions.addAll(client.selectFunctionsSimple(schema.getName())));
+                    tasks.add(() -> procedures.addAll(client.selectProceduresSimple(schema.getName())));
+                    tasks.add(() -> {
+                        try {
+                            sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                        } catch (Exception ex) {
+                            if (isAvailable(client)) {
+                                JulLog.warn("Load dameng sequence query index failed, schema: " + schema.getName(), ex);
+                            }
+                        }
+                    });
                 }
             }
-        };
-        ThreadUtil.start(task);
+            ThreadUtil.submit(tasks);
+            if (!isAvailable(client)) {
+                return;
+            }
+            DB_SCHEMAS.clear();
+            DB_SCHEMAS.addAll(schemas);
+            DB_TABLES.clear();
+            DB_TABLES.addAll(tables);
+            DB_VIEWS.clear();
+            DB_VIEWS.addAll(views);
+            DB_FUNCTIONS.clear();
+            DB_FUNCTIONS.addAll(functions);
+            DB_PROCEDURES.clear();
+            DB_PROCEDURES.addAll(procedures);
+            DB_SEQUENCES.clear();
+            DB_SEQUENCES.addAll(sequences);
+        } catch (Exception ex) {
+            logRefreshError("Update dameng query index failed", client, ex);
+        }
+    }
+
+    private static void logRefreshError(String message, ShellDamengClient client, Exception ex) {
+        if (isAvailable(client)) {
+            JulLog.warn(message, ex);
+        } else {
+            JulLog.debug(message);
+        }
     }
 }

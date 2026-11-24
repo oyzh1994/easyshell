@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.event.postgresql.view.ShellPostgresqlViewDesignEvent;
 import cn.oyzh.easyshell.event.postgresql.view.ShellPostgresqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.postgresql.view.ShellPostgresqlViewOpenEvent;
 import cn.oyzh.easyshell.event.postgresql.view.ShellPostgresqlViewRenamedEvent;
+import cn.oyzh.easyshell.query.postgresql.ShellPostgresqlQueryUtil;
 import cn.oyzh.easyshell.tabs.postgresql.function.ShellPostgresqlFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.postgresql.home.ShellPostgresqlHomeTab;
 import cn.oyzh.easyshell.tabs.postgresql.procedure.ShellPostgresqlProcedureDesignTab;
@@ -334,6 +335,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -389,6 +391,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -407,6 +410,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -516,6 +520,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -533,6 +538,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -553,6 +559,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
     @EventSubscribe
     private void onSchemaDropped(ShellPostgresqlSchemaDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        ShellPostgresqlQueryUtil.refreshIndex(this.getClient());
     }
 
     /**
@@ -651,6 +658,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -672,6 +680,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -693,6 +702,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -710,6 +720,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -727,6 +738,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -774,6 +786,7 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshSequences(this.getClient());
     }
 
     @EventSubscribe
@@ -801,5 +814,6 @@ public class ShellPostgresqlTabPane extends RichTabPane implements FXEventListen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellPostgresqlQueryUtil.refreshSequences(this.getClient());
     }
 }

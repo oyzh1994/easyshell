@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewOpenEvent;
 import cn.oyzh.easyshell.event.mysql.view.ShellMysqlViewRenamedEvent;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
+import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.home.ShellMysqlHomeTab;
@@ -333,6 +334,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -388,6 +390,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -406,6 +409,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -515,6 +519,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshEvents(this.getClient());
     }
 
     /**
@@ -532,6 +537,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -549,6 +555,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -569,6 +576,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onDatabaseDropped(ShellMysqlDatabaseDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        ShellMysqlQueryUtil.refreshIndex(this.getClient());
     }
 
     /**
@@ -687,6 +695,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -708,6 +717,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -729,6 +739,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -746,6 +757,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshEvents(this.getClient());
     }
 
     /**
@@ -763,6 +775,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -780,6 +793,7 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMysqlQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**

@@ -183,6 +183,21 @@ public class ShellOracleQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellOra
                 }
             }));
         }
+        // 序列
+        if (token.isPossibilitySequence()) {
+            tasks.add(() -> ShellOracleQueryUtil.getSequences().parallelStream().forEach(sequence -> {
+                // 计算相关度
+                double corr = TextUtil.clacCorr(sequence.getName(), text);
+                if (corr > minCorr) {
+                    ShellOracleQueryPromptItem item = new ShellOracleQueryPromptItem();
+                    item.setType((byte) 8);
+                    item.setCorrelation(corr);
+                    item.setContent(sequence.getName());
+                    item.setExtContent(sequence.getSchema());
+                    items.add(item);
+                }
+            }));
+        }
         // 字段
         if (token.isPossibilityColumn()) {
             tasks.add(() -> ShellOracleQueryUtil.getColumns().parallelStream().forEach(column -> {

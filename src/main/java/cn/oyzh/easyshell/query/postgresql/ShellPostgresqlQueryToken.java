@@ -57,6 +57,15 @@ public class ShellPostgresqlQueryToken extends DBQueryToken {
     }
 
     /**
+     * 是否可能是序列
+     *
+     * @return 结果
+     */
+    public boolean isPossibilitySequence() {
+        return ' ' == this.getToken() || '"' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+    }
+
+    /**
      * 是否可能是字段
      *
      * @return 结果

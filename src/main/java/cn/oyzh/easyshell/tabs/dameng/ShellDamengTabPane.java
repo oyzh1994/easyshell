@@ -33,6 +33,7 @@ import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewDesignEvent;
 import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewDroppedEvent;
 import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewOpenEvent;
 import cn.oyzh.easyshell.event.dameng.view.ShellDamengViewRenamedEvent;
+import cn.oyzh.easyshell.query.dameng.ShellDamengQueryUtil;
 import cn.oyzh.easyshell.tabs.dameng.function.ShellDamengFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.dameng.home.ShellDamengHomeTab;
 import cn.oyzh.easyshell.tabs.dameng.procedure.ShellDamengProcedureDesignTab;
@@ -334,6 +335,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -389,6 +391,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -407,6 +410,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshTables(this.getClient());
     }
 
     /**
@@ -516,6 +520,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -533,6 +538,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -553,6 +559,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onSchemaDropped(ShellDamengSchemaDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        ShellDamengQueryUtil.refreshIndex(this.getClient());
     }
 
     /**
@@ -651,6 +658,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -672,6 +680,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -693,6 +702,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshViews(this.getClient());
     }
 
     /**
@@ -710,6 +720,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshFunctions(this.getClient());
     }
 
     /**
@@ -727,6 +738,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshProcedures(this.getClient());
     }
 
     /**
@@ -774,6 +786,7 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshSequences(this.getClient());
     }
 
     @EventSubscribe
@@ -801,5 +814,6 @@ public class ShellDamengTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellDamengQueryUtil.refreshSequences(this.getClient());
     }
 }

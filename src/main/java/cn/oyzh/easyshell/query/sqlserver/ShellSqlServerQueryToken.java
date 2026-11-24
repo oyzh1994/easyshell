@@ -57,6 +57,15 @@ public class ShellSqlServerQueryToken extends DBQueryToken {
     }
 
     /**
+     * 是否可能是序列
+     *
+     * @return 结果
+     */
+    public boolean isPossibilitySequence() {
+        return this.isPossibilityObject();
+    }
+
+    /**
      * 是否可能是字段
      *
      * @return 结果

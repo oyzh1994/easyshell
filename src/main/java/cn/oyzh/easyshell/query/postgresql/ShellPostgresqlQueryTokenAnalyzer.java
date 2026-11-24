@@ -183,6 +183,21 @@ public class ShellPostgresqlQueryTokenAnalyzer extends DBQueryTokenAnalyzer<Shel
                 }
             }));
         }
+        // 序列
+        if (token.isPossibilitySequence()) {
+            tasks.add(() -> ShellPostgresqlQueryUtil.getSequences().parallelStream().forEach(sequence -> {
+                // 计算相关度
+                double corr = TextUtil.clacCorr(sequence.getName(), text);
+                if (corr > minCorr) {
+                    ShellPostgresqlQueryPromptItem item = new ShellPostgresqlQueryPromptItem();
+                    item.setType((byte) 8);
+                    item.setCorrelation(corr);
+                    item.setContent(sequence.getName());
+                    item.setExtContent(sequence.getSchema());
+                    items.add(item);
+                }
+            }));
+        }
         // 字段
         if (token.isPossibilityColumn()) {
             tasks.add(() -> ShellPostgresqlQueryUtil.getColumns().parallelStream().forEach(column -> {

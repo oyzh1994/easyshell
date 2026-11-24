@@ -76,6 +76,15 @@ public class ShellMysqlQueryPromptItem extends DBQueryPromptItem {
     }
 
     /**
+     * 是否事件类型
+     *
+     * @return 结果
+     */
+    public boolean isEventType() {
+        return 8 == this.getType();
+    }
+
+    /**
      * 获取包裹后的内容
      *
      * @return 包裹后的内容

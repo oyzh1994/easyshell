@@ -20,6 +20,7 @@ import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserDeletedEvent;
 import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserViewEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
+import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.tabs.mongo.bucket.ShellMongoBucketRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTab;
@@ -406,6 +407,7 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        ShellMongoQueryUtil.refreshCollections(this.getClient(), event.dbName());
     }
 
     /**

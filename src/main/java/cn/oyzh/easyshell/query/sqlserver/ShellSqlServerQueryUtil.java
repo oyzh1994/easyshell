@@ -1,5 +1,6 @@
 package cn.oyzh.easyshell.query.sqlserver;
 
+import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.thread.ThreadUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlserver.ShellSqlServerClient;
@@ -7,6 +8,7 @@ import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerProcedure;
 import cn.oyzh.easyshell.sqlserver.schema.SqlServerSchema;
+import cn.oyzh.easyshell.sqlserver.sequence.SqlServerSequence;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
 import cn.oyzh.fx.db.util.DBUtil;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static cn.oyzh.easyshell.util.ShellClientUtil.isAvailable;
+
 /**
  * SqlServer查询工具类
  *
@@ -26,13 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ShellSqlServerQueryUtil {
 
     /**
-     * 0未初始化
-     * 1 初始化中
-     * 2 已初始化
-     */
-    private static int indexStatus = 0;
-
-    /**
      * 关键字
      */
     private static final Set<String> DB_KEYWORDS = new HashSet<>();
@@ -40,7 +37,7 @@ public class ShellSqlServerQueryUtil {
     /**
      * 模式（SqlServer中dbName实际为schema）
      */
-    private static final List<SqlServerSchema> DB_SCHEMAS = new ArrayList<>();
+    private static final List<SqlServerSchema> DB_SCHEMAS = new CopyOnWriteArrayList<>();
 
     /**
      * 表
@@ -61,6 +58,11 @@ public class ShellSqlServerQueryUtil {
      * 过程
      */
     private static final List<SqlServerProcedure> DB_PROCEDURES = new CopyOnWriteArrayList<>();
+
+    /**
+     * 序列
+     */
+    private static final List<SqlServerSequence> DB_SEQUENCES = new CopyOnWriteArrayList<>();
 
     /**
      * 字段
@@ -345,6 +347,15 @@ public class ShellSqlServerQueryUtil {
     }
 
     /**
+     * 获取序列列表
+     *
+     * @return 序列列表
+     */
+    public static List<SqlServerSequence> getSequences() {
+        return DB_SEQUENCES;
+    }
+
+    /**
      * 获取字段列表
      *
      * @return 字段列表
@@ -359,57 +370,281 @@ public class ShellSqlServerQueryUtil {
      * @param client 客户端
      */
     public static void updateIndex(ShellSqlServerClient client) {
-        Runnable task = () -> {
-            if (indexStatus == 0) {
-                try {
-                    indexStatus = 1;
-                    DB_VIEWS.clear();
-                    DB_TABLES.clear();
-                    DB_COLUMNS.clear();
-                    DB_FUNCTIONS.clear();
-                    DB_PROCEDURES.clear();
-                    DB_SCHEMAS.clear();
-                    // 更新模式索引
-                    List<SqlServerSchema> schemas = client.selectSchemas();
-                    DB_SCHEMAS.addAll(schemas);
-                    // 一次批量查询全部对象，避免按模式并发访问同一JDBC连接。
-                    for (SqlServerQueryObject object : client.selectQueryObjects()) {
-                        switch (object.type()) {
-                            case "U" -> {
-                                SqlServerTable table = new SqlServerTable();
-                                table.setSchema(object.schema());
-                                table.setName(object.name());
-                                DB_TABLES.add(table);
-                            }
-                            case "V" -> {
-                                SqlServerView view = new SqlServerView();
-                                view.setSchema(object.schema());
-                                view.setName(object.name());
-                                DB_VIEWS.add(view);
-                            }
-                            case "FN", "IF", "TF", "FS", "FT", "AF" -> {
-                                SqlServerFunction function = new SqlServerFunction();
-                                function.setSchema(object.schema());
-                                function.setName(object.name());
-                                DB_FUNCTIONS.add(function);
-                            }
-                            case "P" -> {
-                                SqlServerProcedure procedure = new SqlServerProcedure();
-                                procedure.setSchema(object.schema());
-                                procedure.setName(object.name());
-                                DB_PROCEDURES.add(procedure);
-                            }
-                            default -> {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> refreshAll(client));
+    }
+
+    /**
+     * 刷新查询索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshIndex(ShellSqlServerClient client) {
+        updateIndex(client);
+    }
+
+    /**
+     * 刷新模式索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSchemas(ShellSqlServerClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SqlServerSchema> schemas = client.selectSchemas();
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SCHEMAS.clear();
+                DB_SCHEMAS.addAll(schemas);
+            } catch (Exception ex) {
+                logRefreshError("Refresh sqlserver schema query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新表索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshTables(ShellSqlServerClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SqlServerTable> tables = new CopyOnWriteArrayList<>();
+                for (SqlServerQueryObject object : client.selectQueryObjects()) {
+                    if ("U".equals(object.type())) {
+                        tables.add(toTable(object));
+                    }
+                }
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_TABLES.clear();
+                DB_TABLES.addAll(tables);
+            } catch (Exception ex) {
+                logRefreshError("Refresh sqlserver table query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新视图索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshViews(ShellSqlServerClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SqlServerView> views = new CopyOnWriteArrayList<>();
+                for (SqlServerQueryObject object : client.selectQueryObjects()) {
+                    if ("V".equals(object.type())) {
+                        views.add(toView(object));
+                    }
+                }
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_VIEWS.clear();
+                DB_VIEWS.addAll(views);
+            } catch (Exception ex) {
+                logRefreshError("Refresh sqlserver view query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新函数索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshFunctions(ShellSqlServerClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SqlServerFunction> functions = new CopyOnWriteArrayList<>();
+                for (SqlServerQueryObject object : client.selectQueryObjects()) {
+                    switch (object.type()) {
+                        case "FN", "IF", "TF", "FS", "FT", "AF" -> functions.add(toFunction(object));
+                        default -> {
+                        }
+                    }
+                }
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_FUNCTIONS.clear();
+                DB_FUNCTIONS.addAll(functions);
+            } catch (Exception ex) {
+                logRefreshError("Refresh sqlserver function query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新过程索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshProcedures(ShellSqlServerClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SqlServerProcedure> procedures = new CopyOnWriteArrayList<>();
+                for (SqlServerQueryObject object : client.selectQueryObjects()) {
+                    if ("P".equals(object.type())) {
+                        procedures.add(toProcedure(object));
+                    }
+                }
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_PROCEDURES.clear();
+                DB_PROCEDURES.addAll(procedures);
+            } catch (Exception ex) {
+                logRefreshError("Refresh sqlserver procedure query index failed", client, ex);
+            }
+        });
+    }
+
+    /**
+     * 刷新序列索引。
+     *
+     * @param client 客户端
+     */
+    public static void refreshSequences(ShellSqlServerClient client) {
+        if (!isAvailable(client)) {
+            return;
+        }
+        ThreadUtil.start(() -> {
+            try {
+                List<SqlServerSchema> schemas = client.selectSchemas();
+                List<SqlServerSequence> sequences = new CopyOnWriteArrayList<>();
+                for (SqlServerSchema schema : schemas) {
+                    if (!isSystemSchema(schema.getName())) {
+                        try {
+                            sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                        } catch (Exception ex) {
+                            if (isAvailable(client)) {
+                                JulLog.warn("Load sqlserver sequence query index failed, schema: " + schema.getName(), ex);
                             }
                         }
                     }
-                    indexStatus = 2;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    indexStatus = 0;
+                }
+                if (!isAvailable(client)) {
+                    return;
+                }
+                DB_SEQUENCES.clear();
+                DB_SEQUENCES.addAll(sequences);
+            } catch (Exception ex) {
+                logRefreshError("Refresh sqlserver sequence query index failed", client, ex);
+            }
+        });
+    }
+
+    private static boolean isSystemSchema(String schema) {
+        return StringUtil.equalsAnyIgnoreCase(schema, "sys", "INFORMATION_SCHEMA", "guest",
+                "db_owner", "db_accessadmin", "db_backupoperator", "db_datareader", "db_datawriter",
+                "db_ddladmin", "db_denydatareader", "db_denydatawriter", "db_securityadmin");
+    }
+
+    private static void refreshAll(ShellSqlServerClient client) {
+        try {
+            List<SqlServerSchema> schemas = client.selectSchemas();
+            List<SqlServerTable> tables = new CopyOnWriteArrayList<>();
+            List<SqlServerView> views = new CopyOnWriteArrayList<>();
+            List<SqlServerFunction> functions = new CopyOnWriteArrayList<>();
+            List<SqlServerProcedure> procedures = new CopyOnWriteArrayList<>();
+            List<SqlServerSequence> sequences = new CopyOnWriteArrayList<>();
+            for (SqlServerQueryObject object : client.selectQueryObjects()) {
+                switch (object.type()) {
+                    case "U" -> tables.add(toTable(object));
+                    case "V" -> views.add(toView(object));
+                    case "FN", "IF", "TF", "FS", "FT", "AF" -> functions.add(toFunction(object));
+                    case "P" -> procedures.add(toProcedure(object));
+                    default -> {
+                    }
                 }
             }
-        };
-        ThreadUtil.start(task);
+            for (SqlServerSchema schema : schemas) {
+                if (!isSystemSchema(schema.getName())) {
+                    try {
+                        sequences.addAll(client.selectSequencesSimple(schema.getName()));
+                    } catch (Exception ex) {
+                        if (isAvailable(client)) {
+                            JulLog.warn("Load sqlserver sequence query index failed, schema: " + schema.getName(), ex);
+                        }
+                    }
+                }
+            }
+            if (!isAvailable(client)) {
+                return;
+            }
+            DB_SCHEMAS.clear();
+            DB_SCHEMAS.addAll(schemas);
+            DB_TABLES.clear();
+            DB_TABLES.addAll(tables);
+            DB_VIEWS.clear();
+            DB_VIEWS.addAll(views);
+            DB_FUNCTIONS.clear();
+            DB_FUNCTIONS.addAll(functions);
+            DB_PROCEDURES.clear();
+            DB_PROCEDURES.addAll(procedures);
+            DB_SEQUENCES.clear();
+            DB_SEQUENCES.addAll(sequences);
+        } catch (Exception ex) {
+            logRefreshError("Update sqlserver query index failed", client, ex);
+        }
+    }
+
+    private static SqlServerTable toTable(SqlServerQueryObject object) {
+        SqlServerTable table = new SqlServerTable();
+        table.setSchema(object.schema());
+        table.setName(object.name());
+        return table;
+    }
+
+    private static SqlServerView toView(SqlServerQueryObject object) {
+        SqlServerView view = new SqlServerView();
+        view.setSchema(object.schema());
+        view.setName(object.name());
+        return view;
+    }
+
+    private static SqlServerFunction toFunction(SqlServerQueryObject object) {
+        SqlServerFunction function = new SqlServerFunction();
+        function.setSchema(object.schema());
+        function.setName(object.name());
+        return function;
+    }
+
+    private static SqlServerProcedure toProcedure(SqlServerQueryObject object) {
+        SqlServerProcedure procedure = new SqlServerProcedure();
+        procedure.setSchema(object.schema());
+        procedure.setName(object.name());
+        return procedure;
+    }
+
+    private static void logRefreshError(String message, ShellSqlServerClient client, Exception ex) {
+        if (isAvailable(client)) {
+            JulLog.warn(message, ex);
+        } else {
+            JulLog.debug(message);
+        }
     }
 }

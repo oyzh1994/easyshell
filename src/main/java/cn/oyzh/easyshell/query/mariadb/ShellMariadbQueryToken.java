@@ -57,6 +57,15 @@ public class ShellMariadbQueryToken extends DBQueryToken {
     }
 
     /**
+     * 是否可能是事件
+     *
+     * @return 结果
+     */
+    public boolean isPossibilityEvent() {
+        return ' ' == this.getToken() || '`' == this.getToken() || ',' == this.getToken() || '.' == this.getToken();
+    }
+
+    /**
      * 是否可能是字段
      *
      * @return 结果

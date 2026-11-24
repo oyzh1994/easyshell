@@ -183,6 +183,21 @@ public class ShellMariadbQueryTokenAnalyzer extends DBQueryTokenAnalyzer<ShellMa
                 }
             }));
         }
+        // 事件
+        if (token.isPossibilityEvent()) {
+            tasks.add(() -> ShellMariadbQueryUtil.getEvents().parallelStream().forEach(event -> {
+                // 计算相关度
+                double corr = TextUtil.clacCorr(event.getName(), text);
+                if (corr > minCorr) {
+                    ShellMariadbQueryPromptItem item = new ShellMariadbQueryPromptItem();
+                    item.setType((byte) 8);
+                    item.setCorrelation(corr);
+                    item.setContent(event.getName());
+                    item.setExtContent(event.getDbName());
+                    items.add(item);
+                }
+            }));
+        }
         // 字段
         if (token.isPossibilityColumn()) {
             tasks.add(() -> ShellMariadbQueryUtil.getColumns().parallelStream().forEach(column -> {
