@@ -312,7 +312,7 @@ public class ShellMongoCollectionRecordTabController extends RichTabController {
             if (lastItem == null) {
                 this.addDocument();
             } else {
-                MongoColumns columns = new MongoColumns(lastItem.getColumns());
+                MongoColumns columns = ShellMongoRecordUtil.copyColumns(this.columns);
                 MongoRecord record = new MongoRecord(columns);
                 record.setCreated(true);
                 for (MongoColumn column : columns) {

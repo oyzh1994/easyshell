@@ -13,6 +13,7 @@ import org.bson.Document;
 import org.bson.types.Code;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -229,7 +230,10 @@ public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<Mong
         if (this.supportDigits()) {
             return 0d;
         }
-        if (this.supportJson() || this.supportJsonArray()) {
+        if (this.supportJsonArray()) {
+            return new ArrayList<>();
+        }
+        if (this.supportJson()) {
             return new Document();
         }
         if (this.supportTimestamp()) {

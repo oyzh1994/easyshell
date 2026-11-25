@@ -266,7 +266,8 @@ public class ShellMongoRecordUtil {
      * @return 结果
      */
     public static boolean isCollection(String name) {
-        return !StringUtil.endWithAny(name, ".files", ".chunks") && StringUtil.notEquals(name, ShellMongoUtil.SYSTEM_JS);
+        return !StringUtil.endWithAny(name, ".files", ".chunks")
+                && !StringUtil.startWith(name, "system.");
     }
 
     /**
@@ -349,6 +350,24 @@ public class ShellMongoRecordUtil {
             }
         }
         return columns;
+    }
+
+    /**
+     * 复制字段列表，避免新增记录修改字段类型时影响已有记录。
+     *
+     * @param columns 字段列表
+     * @return 复制后的字段列表
+     */
+    public static MongoColumns copyColumns(MongoColumns columns) {
+        MongoColumns list = new MongoColumns();
+        if (columns != null) {
+            for (MongoColumn column : columns) {
+                MongoColumn copy = new MongoColumn();
+                copy.copy(column);
+                list.add(copy);
+            }
+        }
+        return list;
     }
 
     /**

@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
@@ -28,8 +29,10 @@ import com.mongodb.client.model.Filters;
 import javafx.application.Platform;
 import org.bson.BsonMaxKey;
 import org.bson.BsonMinKey;
+import org.bson.BsonObjectId;
 import org.bson.BsonRegularExpression;
 import org.bson.BsonTimestamp;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.bson.types.Code;
@@ -56,6 +59,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -214,6 +218,79 @@ public class MongoComplexDataIntegrationTest {
                 || updated.get("regex") instanceof BsonRegularExpression);
         assertEquals(timestamp, updated.get("timestamp"));
         assertTrue(updated.get("code") instanceof Code);
+    }
+
+    @Test
+    public void insertsNewDocumentWithDefaultsAndClearsStatus() {
+        MongoColumns columns = ShellMongoRecordUtil.copyColumns(selectSourceColumns());
+        MongoRecord record = new MongoRecord(columns);
+        record.setCreated(true);
+        for (MongoColumn column : columns) {
+            record.putValue(column, column.defaultValue());
+        }
+
+        BsonValue id = client.insertCollectionRecord(record);
+        if (record._idColumn().supportObjectId()) {
+            record.set_id(id);
+        } else {
+            record.set_id(ShellMongoRecordUtil.idValue(id));
+        }
+        record.clearStatus();
+
+        assertEquals(5, rawCollection(SOURCE).countDocuments());
+        assertFalse(record.isCreated());
+        assertFalse(record.isChanged());
+        Document inserted = rawCollection(SOURCE)
+                .find(Filters.eq("name", "")).first();
+        assertNotNull(inserted);
+        assertTrue(inserted.get("_id") instanceof ObjectId);
+        assertTrue(inserted.get("regex") instanceof Pattern
+                || inserted.get("regex") instanceof BsonRegularExpression);
+        assertTrue(inserted.get("minKey") instanceof MinKey);
+        assertTrue(inserted.get("maxKey") instanceof MaxKey);
+        assertTrue(inserted.get("decimal") instanceof Decimal128);
+        assertTrue(inserted.get("int32") instanceof Integer);
+        assertTrue(inserted.get("int64") instanceof Long);
+        assertTrue(inserted.get("items") instanceof List<?>);
+        assertTrue(inserted.get("mixed") instanceof List<?>);
+    }
+
+    @Test
+    public void filtersSystemCollections() {
+        assertFalse(ShellMongoRecordUtil.isCollection("system.views"));
+        assertFalse(ShellMongoRecordUtil.isCollection("system.js"));
+        assertFalse(ShellMongoRecordUtil.isCollection("system.profile"));
+        assertTrue(ShellMongoRecordUtil.isCollection("complex_types"));
+        assertFalse(client.listCollectionNames("demo_complex").contains("system.views"));
+        assertFalse(client.listCollectionNames("demo_complex").contains("system.js"));
+    }
+
+    @Test
+    public void createdObjectIdUsesManualValue() throws Exception {
+        initToolkit();
+        MongoColumns columns = ShellMongoRecordUtil.copyColumns(selectSourceColumns());
+        MongoRecord record = new MongoRecord(columns);
+        record.setCreated(true);
+        for (MongoColumn column : columns) {
+            record.putValue(column, column.defaultValue());
+        }
+        MongoRecordProperty idProperty = (MongoRecordProperty) record.getProperty("_id");
+        FXTextField idNode = (FXTextField) idProperty.getValue();
+        ObjectId id = new ObjectId();
+        idNode.setText(id.toHexString());
+        idProperty.setChanged(true);
+
+        BsonValue insertedId = client.insertCollectionRecord(record);
+        assertNotNull(insertedId);
+        assertTrue(insertedId instanceof BsonObjectId);
+        assertEquals(id, ((BsonObjectId) insertedId).getValue());
+        record.set_id(insertedId);
+        record.clearStatus();
+
+        assertEquals(5, rawCollection(SOURCE).countDocuments());
+        assertFalse(record.isCreated());
+        Document inserted = rawCollection(SOURCE).find(Filters.eq("_id", id)).first();
+        assertNotNull(inserted);
     }
 
     @Test
@@ -510,6 +587,15 @@ public class MongoComplexDataIntegrationTest {
     private static List<MongoRecord> selectSource() {
         try {
             return client.selectCollectionRecords(selectParam(SOURCE));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static MongoColumns selectSourceColumns() {
+        try {
+            return new MongoColumns(new ArrayList<>(
+                    client.selectColumns(selectParam(SOURCE))));
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

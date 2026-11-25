@@ -42,6 +42,7 @@ import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellSSLConfigStore;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoNodeUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.i18n.I18nHelper;
@@ -679,11 +680,16 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         String collectionName = record.getColumns().getFirst().getCollectionName();
         Document document = new Document();
         for (MongoColumn column : record.getColumns()) {
-            Object value = column.is_id() ? record._idValue() : record.getValue(column.getName());
-            if (column.is_id() && value == null) {
-                continue;
+            var property = record.getProperty(column.getName());
+            Object value = column.is_id()
+                    ? (record.isCreated() && property != null ? property.get() : record._idValue())
+                    : record.getValue(column.getName());
+            if (column.is_id()) {
+                if (value == null) {
+                    continue;
+                }
             }
-            document.append(column.getName(), value);
+            document.append(column.getName(), ShellMongoNodeUtil.normalizeValue(value, column));
         }
         if (dbName != null) {
             com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
