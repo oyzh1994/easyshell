@@ -1,6 +1,7 @@
 package cn.oyzh.easyshell.mongo.script;
 
 import cn.oyzh.common.util.ReflectUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoDataUtil;
 import org.bson.Document;
 import org.openjdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -100,6 +101,11 @@ public class MongoScriptUtil {
                     list.add(convertValue(item));
                 }
                 return list;
+            }
+            if ("RegExp".equals(mirror.getClassName())) {
+                Object defaultValue = mirror.getDefaultValue(null);
+                return ShellMongoDataUtil.parseRegex(
+                        defaultValue == null ? "" : defaultValue.toString());
             }
             return toDocument(mirror);
         }

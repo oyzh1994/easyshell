@@ -3,8 +3,10 @@ package cn.oyzh.easyshell.data.mongo.file;
 import cn.oyzh.common.file.LineFileWriter;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
-import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.db.data.dto.DBDataExportConfig;
+import org.bson.Document;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,6 +19,11 @@ import java.util.Map;
  * @since 2025-11-06
  */
 public class ShellMongoJsonTypeFileWriter extends ShellMongoTypeFileWriter {
+
+    private static final JsonWriterSettings JSON_SETTINGS = JsonWriterSettings.builder()
+            .outputMode(JsonMode.RELAXED)
+            .indent(true)
+            .build();
 
     /**
      * 字段列表
@@ -76,31 +83,13 @@ public class ShellMongoJsonTypeFileWriter extends ShellMongoTypeFileWriter {
         if (!this.firstWrite) {
             this.writer.write(",\n");
         }
-        int size = object.size();
-        StringBuilder builder = new StringBuilder("  {\n");
-        for (Map.Entry<String, Object> entry : object.entrySet()) {
-            // 名称
-            builder.append("   \"").append(entry.getKey()).append("\" : ");
-            // 值处理
-            MongoColumn column = this.columns.column(entry.getKey());
-            Object val = this.parameterized(column, entry.getValue(), this.config);
-            if (val != null) {
-                if (ShellMongoUtil.isPrimaryType(entry.getValue())) {
-                    builder.append(val);
-                } else {// 其他类型
-                    builder.append("\"").append(val).append("\"");
-                }
-            } else {
-                builder.append("null");
-            }
-            if (--size != 0) {
-                builder.append(",\n");
-            } else {
-                builder.append("\n");
+        Document document = new Document();
+        for (MongoColumn column : this.columns) {
+            if (object.containsKey(column.getName())) {
+                document.put(column.getName(), object.get(column.getName()));
             }
         }
-        builder.append("  }");
-        this.writer.write(builder.toString());
+        this.writer.write(document.toJson(JSON_SETTINGS));
         this.firstWrite = false;
     }
 

@@ -679,7 +679,7 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         String collectionName = record.getColumns().getFirst().getCollectionName();
         Document document = new Document();
         for (MongoColumn column : record.getColumns()) {
-            Object value = record.getValue(column.getName());
+            Object value = column.is_id() ? record._idValue() : record.getValue(column.getName());
             if (column.is_id() && value == null) {
                 continue;
             }
@@ -704,13 +704,20 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         if (CollectionUtil.isEmpty(records)) {
             return Collections.emptyList();
         }
-        String dbName = records.getFirst()._idColumn().getDbName();
-        String collectionName = records.getFirst()._idColumn().getCollectionName();
+        String dbName = records.getFirst().getColumns().dbName();
+        String collectionName = records.getFirst().getColumns().collectionName();
+        if (StringUtil.isBlank(dbName) || StringUtil.isBlank(collectionName)) {
+            throw new ShellException("Mongo collection target is missing");
+        }
         List<Document> documents = new ArrayList<>();
         for (MongoRecord record : records) {
             Document document = new Document();
             for (String col : record.columns()) {
-                document.append(col, record.getValue(col));
+                Object value = ShellMongoUtil.ID.equals(col) ? record._idValue() : record.getValue(col);
+                if (ShellMongoUtil.ID.equals(col) && value == null) {
+                    continue;
+                }
+                document.append(col, value);
             }
             documents.add(document);
         }

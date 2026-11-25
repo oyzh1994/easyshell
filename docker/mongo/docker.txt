@@ -9,16 +9,35 @@ docker run -itd --name easyshell-mongo \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
   -e MONGO_INITDB_ROOT_PASSWORD=mongo@2026 \
   -p 27017:27017 \
-  -v "$(pwd)/init.js:/docker-entrypoint-initdb.d/init.js:ro" \
+  -v "$(pwd)/init.js:/docker-entrypoint-initdb.d/01-init.js:ro" \
+  -v "$(pwd)/complex-init.js:/docker-entrypoint-initdb.d/02-complex-init.js:ro" \
   mongo:latest
+```
+
+也可以直接使用 compose：
+
+```bash
+docker compose -f mongo-compose.yml up -d
 ```
 
 说明：
 
 - `init.js` 使用 mongosh JavaScript 格式，创建 `demo` 数据库。
 - 包含 `users`、`orders`、`logs`、`counters`、`system.js` 集合，以及 `v_users` 视图、唯一索引、JSON Schema 校验器和示例数据。
-- `init.js` 只在容器首次初始化时执行；数据卷已存在时需要重建容器/卷，或手动用 mongosh 执行。
+- `complex-init.js` 创建 `demo_complex` 数据库，包含复杂 BSON 类型测试数据。
+- `demo_complex.complex_types` 包含混合 `_id`、嵌套对象/数组、Decimal128、Date、ObjectId、Binary、正则、Timestamp、MinKey/MaxKey、Code、null、中文/换行/引号字符串。
+- `demo_complex.complex_events` 是第二个复杂数据集合，便于测试多集合导入、导出和传输。
+- 还包含 `v_complex_types` 视图、唯一/普通索引和 `system.js` 函数。
+- 初始化脚本只在容器首次初始化时执行；数据卷已存在时需要重建容器/卷，或手动用 mongosh 执行。
 - `$jsonSchema` 校验器需要 MongoDB 3.6+，建议使用 `mongo:latest`。
+
+已有容器可手动初始化复杂数据：
+
+```bash
+docker exec -i easyshell-mongo mongosh \
+  -u admin -p mongo@2026 --authenticationDatabase admin \
+  < complex-init.js
+```
 
 ## 2. 早期版本
 
@@ -41,6 +60,7 @@ docker run -itd --name easyshell-mongo34 \
 密码：mongo@2026
 认证库：admin
 数据库：demo
+复杂数据测试库：demo_complex
 ```
 
 ## 4. 开启 SSL
@@ -64,6 +84,7 @@ docker compose -f mongo-ssl-compose.yml up -d
 
 ```bash
 docker exec -it easyshell-mongo mongosh -u admin -p mongo@2026 --authenticationDatabase admin --eval "db.getSiblingDB('demo').users.countDocuments()"
+docker exec -it easyshell-mongo mongosh -u admin -p mongo@2026 --authenticationDatabase admin --eval "db.getSiblingDB('demo_complex').complex_types.countDocuments()"
 ```
 
 ## 6. 清理

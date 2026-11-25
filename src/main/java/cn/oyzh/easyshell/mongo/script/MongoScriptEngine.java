@@ -5,7 +5,12 @@ import cn.oyzh.easyshell.mongo.script.function.MongoScriptCodeFunction;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptISODateFunction;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptInt32Function;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptLongFunction;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptMaxKeyFunction;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptMinKeyFunction;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptNumberDecimalFunction;
 import cn.oyzh.easyshell.mongo.script.function.MongoScriptObjectIdFunction;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptRegexFunction;
+import cn.oyzh.easyshell.mongo.script.function.MongoScriptTimestampFunction;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
@@ -45,6 +50,11 @@ public class MongoScriptEngine {
         this.engine.put("Binary", new MongoScriptBinaryFunction());
         this.engine.put("ISODate", new MongoScriptISODateFunction());
         this.engine.put("ObjectId", new MongoScriptObjectIdFunction());
+        this.engine.put("MinKey", new MongoScriptMinKeyFunction());
+        this.engine.put("MaxKey", new MongoScriptMaxKeyFunction());
+        this.engine.put("Timestamp", new MongoScriptTimestampFunction());
+        this.engine.put("NumberDecimal", new MongoScriptNumberDecimalFunction());
+        this.engine.put("MongoRegex", new MongoScriptRegexFunction());
     }
 
     public ScriptEngine getEngine() {

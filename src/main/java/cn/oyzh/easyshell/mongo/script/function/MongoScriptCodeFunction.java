@@ -4,8 +4,6 @@ import org.bson.types.Code;
 import org.openjdk.nashorn.api.scripting.AbstractJSObject;
 import org.openjdk.nashorn.internal.runtime.Undefined;
 
-import java.util.Date;
-
 /**
  *
  * @author oyzh
@@ -24,7 +22,7 @@ public class MongoScriptCodeFunction extends AbstractJSObject {
                 || args.length == 0
                 || args[0] == null
                 || args[0] instanceof Undefined) {
-            return new Date();
+            return new Code("");
         }
         return new Code(args[0].toString());
     }

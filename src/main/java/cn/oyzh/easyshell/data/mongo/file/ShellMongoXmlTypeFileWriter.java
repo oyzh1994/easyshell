@@ -64,12 +64,14 @@ public class ShellMongoXmlTypeFileWriter extends ShellMongoTypeFileWriter {
         StringBuilder builder;
         if (this.config.isFieldToAttr()) {
             builder = new StringBuilder("  <RECORD ");
-            for (Map.Entry<String, Object> entry : object.entrySet()) {
+            for (MongoColumn column : this.columns) {
+                if (!object.containsKey(column.getName())) {
+                    continue;
+                }
                 // 值处理
-                MongoColumn column = this.columns.column(entry.getKey());
-                Object val = this.parameterized(column, entry.getValue(), this.config);
+                Object val = this.parameterized(column, object.get(column.getName()), this.config);
                 if (val != null) {
-                    builder.append(entry.getKey())
+                    builder.append(column.getName())
                             .append("=\"")
                             .append(val)
                             .append("\" ");
@@ -78,16 +80,18 @@ public class ShellMongoXmlTypeFileWriter extends ShellMongoTypeFileWriter {
             builder.append(" />");
         } else {
             builder = new StringBuilder("  <RECORD>\n");
-            for (Map.Entry<String, Object> entry : object.entrySet()) {
+            for (MongoColumn column : this.columns) {
+                if (!object.containsKey(column.getName())) {
+                    continue;
+                }
                 // 名称
-                builder.append("   <").append(entry.getKey());
+                builder.append("   <").append(column.getName());
                 // 值处理
-                MongoColumn column = this.columns.column(entry.getKey());
-                Object val = this.parameterized(column, entry.getValue(), this.config);
+                Object val = this.parameterized(column, object.get(column.getName()), this.config);
                 if (val != null) {
                     builder.append(">");
                     builder.append(val);
-                    builder.append("</").append(entry.getKey()).append(">");
+                    builder.append("</").append(column.getName()).append(">");
                 } else {
                     builder.append("/>");
                 }

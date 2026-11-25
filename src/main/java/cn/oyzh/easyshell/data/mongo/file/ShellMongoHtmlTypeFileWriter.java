@@ -99,11 +99,9 @@ public class ShellMongoHtmlTypeFileWriter extends ShellMongoTypeFileWriter {
     public void writeRecord(Map<String, Object> object) throws Exception {
         StringBuilder builder = new StringBuilder("<tr>");
         Object[] values = new Object[this.columns.size()];
-        for (Map.Entry<String, Object> entry : object.entrySet()) {
-            int index = this.columns.index(entry.getKey());
-            MongoColumn column = this.columns.column(entry.getKey());
-            Object val = this.parameterized(column, entry.getValue(), this.config);
-            values[index] = val;
+        int index = 0;
+        for (MongoColumn column : this.columns) {
+            values[index++] = this.parameterized(column, object.get(column.getName()), this.config);
         }
         for (Object val : values) {
             builder.append("<td>").append(val).append("</td>");

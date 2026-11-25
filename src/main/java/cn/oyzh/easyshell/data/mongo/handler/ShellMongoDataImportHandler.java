@@ -1,6 +1,6 @@
 package cn.oyzh.easyshell.data.mongo.handler;
 
-import cn.oyzh.common.file.FileNameUtil;
+import cn.oyzh.common.json.JSONUtil;
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
+import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataExcelTypeFileReader;
@@ -17,9 +18,11 @@ import cn.oyzh.fx.db.data.file.DBDataTypeFileReader;
 import cn.oyzh.fx.db.data.file.DBDataXmlTypeFileReader;
 import cn.oyzh.fx.db.data.handler.DBDataImportHandler;
 import org.bson.BsonValue;
+import org.bson.Document;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +95,7 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
                     this.checkInterrupt();
                     try {
                         long start1 = System.currentTimeMillis();
-                        List<MongoRecord> records = this.readRecords(reader, this.readLimit);
+                        List<MongoRecord> records = this.readRecords(reader, this.readLimit, tableName);
                         if (CollectionUtil.isEmpty(records)) {
                             break;
                         }
@@ -161,16 +164,17 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
      * @return 记录列表
      * @throws Exception 异常
      */
-    private List<MongoRecord> readRecords(DBDataTypeFileReader reader, int count) throws Exception {
+    private List<MongoRecord> readRecords(DBDataTypeFileReader reader, int count,
+                                          String collectionName) throws Exception {
         List<MongoRecord> records = new ArrayList<>();
         List<Map<String, Object>> list = reader.readRecords(count);
         for (Map<String, Object> objectMap : list) {
+            objectMap = this.normalizeRecord(objectMap);
             MongoColumns columns = new MongoColumns();
-            String collectionName = reader.getFile().getName();
-            collectionName = FileNameUtil.removeExtName(collectionName);
             for (String s : objectMap.keySet()) {
                 MongoColumn column = new MongoColumn();
                 column.setName(s);
+                column.setType(ShellMongoUtil.getType(objectMap.get(s)));
                 column.setCollectionName(collectionName);
                 columns.add(column);
             }
@@ -181,6 +185,21 @@ public class ShellMongoDataImportHandler extends DBDataImportHandler<MongoRecord
             records.add(record);
         }
         return records;
+    }
+
+    /**
+     * JSON 导入使用扩展 JSON 还原 ObjectId、日期、Decimal128、二进制等 BSON 类型。
+     */
+    private Map<String, Object> normalizeRecord(Map<String, Object> objectMap) {
+        if (!this.isJsonType()) {
+            return objectMap;
+        }
+        try {
+            Document document = Document.parse(JSONUtil.toJson(objectMap));
+            return new LinkedHashMap<>(document);
+        } catch (Exception ignored) {
+            return objectMap;
+        }
     }
 
     @Override

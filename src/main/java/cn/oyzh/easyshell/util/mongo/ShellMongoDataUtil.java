@@ -6,10 +6,18 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
+import org.bson.BsonDecimal128;
+import org.bson.BsonMaxKey;
+import org.bson.BsonMinKey;
+import org.bson.BsonRegularExpression;
+import org.bson.BsonTimestamp;
 import org.bson.BsonBinary;
 import org.bson.BsonObjectId;
 import org.bson.types.Binary;
 import org.bson.types.Code;
+import org.bson.types.Decimal128;
+import org.bson.types.MaxKey;
+import org.bson.types.MinKey;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -17,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * @author oyzh
@@ -147,22 +156,58 @@ public class ShellMongoDataUtil {
      * @return 结果
      */
     public static Object buildRecordValue(Object value, String type, int deep) {
+        if (value == null) {
+            return null;
+        }
         if ("int".equalsIgnoreCase(type)) {
-            if (value == null) {
-                return "Int32()";
-            }
             return "Int32(" + value + ")";
         }
 
         if ("long".equalsIgnoreCase(type)) {
-            if (value == null) {
-                return "Long()";
-            }
             return "Long(" + value + ")";
+        }
+
+        if (value instanceof Decimal128 || value instanceof BsonDecimal128) {
+            if (value == null) {
+                return "NumberDecimal()";
+            }
+            return "NumberDecimal('" + value + "')";
         }
 
         if ("double".equalsIgnoreCase(type) || "boolean".equalsIgnoreCase(type)) {
             return value;
+        }
+
+        if ("decimal".equalsIgnoreCase(type)) {
+            if (value == null) {
+                return "NumberDecimal()";
+            }
+            return "NumberDecimal('" + value + "')";
+        }
+
+        if ("regex".equalsIgnoreCase(type)
+                || value instanceof Pattern || value instanceof BsonRegularExpression) {
+            String pattern;
+            String options = "";
+            if (value instanceof Pattern p) {
+                pattern = p.pattern();
+                options = patternOptions(p.flags());
+            } else if (value instanceof BsonRegularExpression r) {
+                pattern = r.getPattern();
+                options = r.getOptions();
+            } else {
+                pattern = value == null ? "" : value.toString();
+            }
+            return "MongoRegex('" + escapeScriptString(pattern)
+                    + "','" + escapeScriptString(options) + "')";
+        }
+
+        if ("minKey".equalsIgnoreCase(type) || value instanceof MinKey || value instanceof BsonMinKey) {
+            return "MinKey()";
+        }
+
+        if ("maxKey".equalsIgnoreCase(type) || value instanceof MaxKey || value instanceof BsonMaxKey) {
+            return "MaxKey()";
         }
 
         if ("objectid".equalsIgnoreCase(type)) {
@@ -177,6 +222,10 @@ public class ShellMongoDataUtil {
             }
             ObjectId id = (ObjectId) value;
             return "ObjectId('" + id.toHexString() + "')";
+        }
+
+        if (value instanceof BsonTimestamp timestamp) {
+            return "Timestamp(" + timestamp.getTime() + "," + timestamp.getInc() + ")";
         }
 
         if ("date".equalsIgnoreCase(type)) {
@@ -238,13 +287,83 @@ public class ShellMongoDataUtil {
             return "{" + sb + "\n" + "\t".repeat(deep) + "}";
         }
 
+        if ("code".equalsIgnoreCase(type) || value instanceof Code) {
+            if (value == null) {
+                return "Code('')";
+            }
+            String code = value instanceof Code c ? c.getCode() : value.toString();
+            return "Code('" + escapeScriptString(code) + "')";
+        }
+
         if (value != null) {
             // 处理特殊字符
-            value = value.toString().replace("\r", "\\r");
-            value = value.toString().replace("\n", "\\n");
-            return "'" + value + "'";
+            String text = value.toString().replace("\\", "\\\\");
+            text = text.replace("\r", "\\r").replace("\n", "\\n");
+            text = text.replace("'", "\\'");
+            return "'" + text + "'";
         }
         return null;
+    }
+
+    private static String escapeScriptString(String value) {
+        return value.replace("\\", "\\\\").replace("'", "\\'");
+    }
+
+    /**
+     * 转换为可编辑的正则文本，格式为 /pattern/options。
+     *
+     * @param value 正则值
+     * @return 正则文本
+     */
+    public static String toRegexText(Object value) {
+        if (value instanceof BsonRegularExpression regex) {
+            return "/" + regex.getPattern() + "/" + regex.getOptions();
+        }
+        if (value instanceof Pattern pattern) {
+            return "/" + pattern.pattern() + "/" + patternOptions(pattern.flags());
+        }
+        return value == null ? "" : value.toString();
+    }
+
+    /**
+     * 从可编辑正则文本还原 BSON 正则。
+     *
+     * @param text 正则文本
+     * @return BSON 正则
+     */
+    public static BsonRegularExpression parseRegex(String text) {
+        if (valueIsBlank(text)) {
+            return new BsonRegularExpression("", "");
+        }
+        if (text.startsWith("/")) {
+            int lastIndex = text.lastIndexOf('/');
+            if (lastIndex > 0) {
+                return new BsonRegularExpression(
+                        text.substring(1, lastIndex), text.substring(lastIndex + 1));
+            }
+        }
+        return new BsonRegularExpression(text, "");
+    }
+
+    private static boolean valueIsBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    private static String patternOptions(int flags) {
+        StringBuilder options = new StringBuilder();
+        if ((flags & Pattern.CASE_INSENSITIVE) != 0) {
+            options.append("i");
+        }
+        if ((flags & Pattern.MULTILINE) != 0) {
+            options.append("m");
+        }
+        if ((flags & Pattern.DOTALL) != 0) {
+            options.append("s");
+        }
+        if ((flags & Pattern.COMMENTS) != 0) {
+            options.append("x");
+        }
+        return options.toString();
     }
 
     /**
@@ -258,9 +377,10 @@ public class ShellMongoDataUtil {
     private static void buildRecordData(MongoColumn column, Object value, StringBuilder builder, int deep) {
         builder.append(",\n");
         builder.repeat("\t", deep);
+        String type = value == null ? column.getType() : ShellMongoUtil.getType(value);
         builder.append(column.getName())
                 .append(": ")
-                .append(buildRecordValue(value, column.getType(), deep));
+                .append(buildRecordValue(value, type, deep));
     }
 
     /**

@@ -2,15 +2,24 @@ package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.common.util.UUIDUtil;
+import org.bson.BsonDecimal128;
+import org.bson.BsonMaxKey;
+import org.bson.BsonMinKey;
+import org.bson.BsonRegularExpression;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.bson.types.Code;
+import org.bson.types.Decimal128;
+import org.bson.types.MaxKey;
+import org.bson.types.MinKey;
 import org.bson.types.ObjectId;
+import org.bson.types.Symbol;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 /**
  * mongodb工具类
@@ -41,6 +50,9 @@ public class ShellMongoUtil {
         if (val instanceof Long) {
             return "long";
         }
+        if (val instanceof Decimal128) {
+            return "decimal";
+        }
         if (val instanceof Number) {
             return "double";
         }
@@ -68,6 +80,18 @@ public class ShellMongoUtil {
         if (val instanceof Code) {
             return "code";
         }
+        if (val instanceof Pattern || val instanceof BsonRegularExpression) {
+            return "regex";
+        }
+        if (val instanceof MinKey || val instanceof BsonMinKey) {
+            return "minKey";
+        }
+        if (val instanceof MaxKey || val instanceof BsonMaxKey) {
+            return "maxKey";
+        }
+        if (val instanceof Symbol) {
+            return "string";
+        }
         if (val instanceof BsonValue bsonValue) {
             if (bsonValue.isInt32()) {
                 return "int";
@@ -75,7 +99,10 @@ public class ShellMongoUtil {
             if (bsonValue.isInt64()) {
                 return "long";
             }
-            if (bsonValue.isDouble() || bsonValue.isDecimal128() || bsonValue.isNumber()) {
+            if (bsonValue.isDecimal128() || bsonValue instanceof BsonDecimal128) {
+                return "decimal";
+            }
+            if (bsonValue.isDouble() || bsonValue.isNumber()) {
                 return "double";
             }
             if (bsonValue.isDateTime() || bsonValue.isTimestamp()) {
@@ -99,6 +126,15 @@ public class ShellMongoUtil {
             if (bsonValue.isObjectId()) {
                 return "objectid";
             }
+            if (bsonValue.isRegularExpression()) {
+                return "regex";
+            }
+            if (bsonValue.isSymbol()) {
+                return "string";
+            }
+            if (bsonValue.isJavaScript() || bsonValue.isJavaScriptWithScope()) {
+                return "code";
+            }
         }
         return "string";
     }
@@ -110,7 +146,8 @@ public class ShellMongoUtil {
      * @return 类型
      */
     public static boolean isPrimaryType(Object val) {
-        return StringUtil.equalsAnyIgnoreCase(getType(val), "int", "long", "double", "list", "object", "boolean");
+        return StringUtil.equalsAnyIgnoreCase(getType(val), "int", "long", "double", "decimal",
+                "list", "object", "boolean");
     }
 
     /**

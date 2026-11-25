@@ -43,19 +43,27 @@ public class ShellMongoColumnUtil {
         DBColumnField doubleField = new DBColumnField("DOUBLE");
         doubleField.supportDigits = true;
 
+        DBColumnField decimalField = new DBColumnField("DECIMAL");
+        decimalField.supportDigits = true;
+
         DBColumnField binaryField = new DBColumnField("BINARY");
         binaryField.supportBinary = true;
 
         DBColumnField dateField = new DBColumnField("DATE");
         dateField.supportTimestamp = true;
 
+        DBColumnField regexField = new DBColumnField("REGEX");
+        regexField.supportString = true;
+
         // 常用类型优先
         putFiled(stringField);
         putFiled(intField);
         putFiled(bigintFiled);
         putFiled(doubleField);
+        putFiled(decimalField);
         putFiled(booleanField);
         putFiled(dateField);
+        putFiled(regexField);
 
         // 低频和复合类型
         putFiled(objectFiled);

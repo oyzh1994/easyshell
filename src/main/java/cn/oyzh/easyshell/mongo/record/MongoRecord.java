@@ -231,7 +231,9 @@ public class MongoRecord extends DBObject implements DBRecord, ObjectCopier<Mong
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, MongoRecordProperty> value : this.properties.entrySet()) {
-            map.put(value.getKey(), value.getValue().get());
+            MongoRecordProperty property = value.getValue();
+            Object val = property.getColumn().is_id() ? property.getOriginal() : property.get();
+            map.put(value.getKey(), val);
         }
         return map;
     }

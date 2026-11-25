@@ -95,11 +95,10 @@ public class ShellMongoExcelTypeFileWriter extends ShellMongoTypeFileWriter {
     private void writeRecord(Map<String, Object> object, boolean flush) throws Exception {
         // 处理数据
         Object[] values = new Object[this.columns.size()];
-        for (Map.Entry<String, Object> entry : object.entrySet()) {
-            int index = this.columns.index(entry.getKey());
-            MongoColumn column = this.columns.column(entry.getKey());
-            Object val = this.parameterized(column, entry.getValue(), this.config);
-            values[index] = val;
+        int columnIndex = 0;
+        for (MongoColumn column : this.columns) {
+            values[columnIndex++] = this.parameterized(column,
+                    object.get(column.getName()), this.config);
         }
         // 获取当前页
         Sheet sheet = WorkbookHelper.getActiveSheet(this.workbook);

@@ -1,6 +1,8 @@
 package cn.oyzh.easyshell.util.mongo;
 
+import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
@@ -11,6 +13,13 @@ import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import org.bson.types.Code;
+import org.bson.types.Decimal128;
+import org.bson.types.MaxKey;
+import org.bson.types.MinKey;
+import org.bson.types.ObjectId;
+
+import java.math.BigInteger;
 
 /**
  * mongodb节点工具类
@@ -42,6 +51,79 @@ public class ShellMongoNodeUtil {
         return DBNodeUtil.getNodeVal(node);
     }
 
+    /**
+     * 获取节点值并按 Mongo 列类型还原 BSON 类型。
+     *
+     * @param node   节点
+     * @param column 字段
+     * @return 节点值
+     */
+    public static Object getNodeValue(Node node, MongoColumn column) {
+        Object value = getNodeVal(node);
+        return normalizeValue(value, column);
+    }
+
+    /**
+     * 按 Mongo 列类型规范化编辑值，避免 BigInteger、字符串等类型直接写入 Mongo。
+     *
+     * @param value  编辑值
+     * @param column 字段
+     * @return 规范化后的值
+     */
+    public static Object normalizeValue(Object value, MongoColumn column) {
+        if (column == null) {
+            return value;
+        }
+        String type = column.getType();
+        if ("minKey".equalsIgnoreCase(type)) {
+            return new MinKey();
+        }
+        if ("maxKey".equalsIgnoreCase(type)) {
+            return new MaxKey();
+        }
+        if ("code".equalsIgnoreCase(type)) {
+            if (value instanceof Code code) {
+                return code.getCode() == null ? new Code("") : code;
+            }
+            if (value instanceof CharSequence text) {
+                return new Code(text.toString());
+            }
+        }
+        if (value instanceof String text) {
+            if (column.supportObjectId() && StringUtil.isNotBlank(text)) {
+                return new ObjectId(text);
+            }
+            if ("decimal".equalsIgnoreCase(type) && StringUtil.isNotBlank(text)) {
+                return Decimal128.parse(text);
+            }
+            if ("regex".equalsIgnoreCase(type)) {
+                return ShellMongoDataUtil.parseRegex(text);
+            }
+        }
+        if (value instanceof BigInteger integer) {
+            if ("int".equalsIgnoreCase(type)) {
+                return integer.intValue();
+            }
+            if ("long".equalsIgnoreCase(type)) {
+                if (integer.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) >= 0
+                        && integer.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0) {
+                    return integer.longValue();
+                }
+                return Decimal128.parse(integer.toString());
+            }
+            if ("decimal".equalsIgnoreCase(type)) {
+                return Decimal128.parse(integer.toString());
+            }
+            if ("double".equalsIgnoreCase(type)) {
+                return integer.doubleValue();
+            }
+        }
+        if ("decimal".equalsIgnoreCase(type) && value instanceof Number number) {
+            return Decimal128.parse(number.toString());
+        }
+        return value;
+    }
+
     public static void setNodeVal(Node node, Object val) {
         val = ShellMongoDataUtil.valueStandardization(val);
         DBNodeUtil.setNodeVal(node, val);
@@ -68,13 +150,17 @@ public class ShellMongoNodeUtil {
         Node node;
         if (column.supportInteger() || column.supportBigInteger()) {
             node = new NumberTextField();
+        } else if ("decimal".equalsIgnoreCase(column.getType())) {
+            node = new FXTextField();
         } else if (column.supportDigits()) {
             node = new DecimalTextField();
         } else if (column.supportTimestamp()) {
             node = new DateTimeTextField();
         } else if (column.supportBinary()) {
             node = new BinaryTextFiled();
-        } else if (column.supportJson() || column.supportCode()) {
+        } else if (column.supportCode()) {
+            node = new ShellMongoCodeTextFiled();
+        } else if (column.supportJson()) {
             node = new JsonTextFiled();
         } else if (column.supportJsonArray()) {
             JsonTextFiled filed = new JsonTextFiled();

@@ -16,5 +16,5 @@ docker build -t rlogin-server -f rlogin.dockerfile .
 - Oracle：`oracle/README.md`（Oracle 11g/23c、Service Name/SID/TNS、测试对象初始化脚本）
 - SQL Server：`sqlserver/README.md`（SQL Server 2022、持久卷、Compose 与测试对象初始化脚本）
 - 达梦：`dameng/docker.txt`
-- MongoDB：`mongo/docker.txt`
+- MongoDB：`mongo/docker.txt`（复杂 BSON 初始化脚本：`mongo/complex-init.js`）
 - Valkey：`valkey/README.md`（单节点、ACL、主从/哨兵、集群、TLS）

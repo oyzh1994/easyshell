@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
+import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
@@ -54,7 +55,7 @@ public class ShellMongoRecordUtil {
             textField.setValue(object);
             node = textField;
         } else if (column.supportCode()) {
-            JsonTextFiled textField = new JsonTextFiled();
+            ShellMongoCodeTextFiled textField = new ShellMongoCodeTextFiled();
             textField.setValue(object);
             textField.setBackground(ControlUtil.background(Color.valueOf("#D4E0D0")));
             node = textField;
@@ -62,6 +63,16 @@ public class ShellMongoRecordUtil {
             FXTextField textField = new FXTextField();
             textField.setBackground(ControlUtil.background(Color.valueOf("#FEE9E4")));
             textField.setValue(object);
+            node = textField;
+        } else if ("decimal".equalsIgnoreCase(column.getType())) {
+            FXTextField textField = new FXTextField();
+            textField.setBackground(ControlUtil.background(Color.valueOf("#CDECFA")));
+            textField.setValue(object);
+            node = textField;
+        } else if ("regex".equalsIgnoreCase(column.getType())) {
+            FXTextField textField = new FXTextField();
+            textField.setBackground(ControlUtil.background(Color.valueOf("#E8E0F0")));
+            textField.setValue(ShellMongoDataUtil.toRegexText(object));
             node = textField;
         } else {
             node = DBNodeUtil.getNode(object, column);
@@ -161,6 +172,10 @@ public class ShellMongoRecordUtil {
             val = BinaryTextFiled.format(object);
         } else if (column.supportJson() || column.supportJsonArray()) {
             val = JsonTextFiled.format(object);
+        } else if (column.supportCode()) {
+            val = ShellMongoCodeTextFiled.format(object);
+        } else if ("regex".equalsIgnoreCase(column.getType())) {
+            val = ShellMongoDataUtil.toRegexText(object);
         } else if (column.supportTimestamp()) {
             val = ShellMongoUtil.DATE_FORMAT.format(object);
         } else if (column.supportBoolean()) {

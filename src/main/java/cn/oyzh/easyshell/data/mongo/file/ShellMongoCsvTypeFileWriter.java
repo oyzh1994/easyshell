@@ -53,11 +53,9 @@ public class ShellMongoCsvTypeFileWriter extends ShellMongoTypeFileWriter {
     @Override
     public void writeRecord(Map<String, Object> object) throws Exception {
         Object[] values = new Object[this.columns.size()];
-        for (Map.Entry<String, Object> entry : object.entrySet()) {
-            int index = this.columns.index(entry.getKey());
-            MongoColumn column = this.columns.column(entry.getKey());
-            Object val = this.parameterized(column, entry.getValue(), this.config);
-            values[index] = val;
+        int index = 0;
+        for (MongoColumn column : this.columns) {
+            values[index++] = this.parameterized(column, object.get(column.getName()), this.config);
         }
         this.writer.write(values);
     }

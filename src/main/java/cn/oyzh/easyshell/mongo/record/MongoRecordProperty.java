@@ -50,7 +50,7 @@ public class MongoRecordProperty extends DBRecordProperty {
             return null;
         }
         try {
-            return ShellMongoNodeUtil.getNodeVal(this.node);
+            return ShellMongoNodeUtil.getNodeValue(this.node, this.getColumn());
         } catch (Exception ex) {
             throw new ShellException(ex);
         }
@@ -134,7 +134,7 @@ public class MongoRecordProperty extends DBRecordProperty {
     public void updateOriginal() {
         try {
             if (!this.getColumn().is_id() && this.node != null) {
-                super.set(ShellMongoNodeUtil.getNodeVal(this.node));
+                super.set(ShellMongoNodeUtil.getNodeValue(this.node, this.getColumn()));
                 this.original = super.get();
             }
         } catch (Exception ex) {
