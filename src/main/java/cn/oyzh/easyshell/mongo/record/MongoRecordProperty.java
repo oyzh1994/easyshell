@@ -131,9 +131,10 @@ public class MongoRecordProperty extends DBRecordProperty {
         super.setChanged(changed);
     }
 
+    @Override
     public void updateOriginal() {
         try {
-            if (!this.getColumn().is_id() && this.node != null) {
+            if (this.isChanged() && !this.getColumn().is_id() && this.node != null) {
                 super.set(ShellMongoNodeUtil.getNodeValue(this.node, this.getColumn()));
                 this.original = super.get();
             }

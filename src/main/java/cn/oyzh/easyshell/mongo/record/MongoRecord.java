@@ -128,14 +128,17 @@ public class MongoRecord extends DBObject implements DBRecord, ObjectCopier<Mong
         return false;
     }
 
-    @Override
-    public void clearStatus() {
-        for (MongoRecordProperty property : this.properties.values()) {
-            property.setChanged(false);
-            property.updateOriginal();
-        }
-        super.clearStatus();
-    }
+//    @Override
+//    public void clearStatus() {
+//        try {
+//            for (MongoRecordProperty property : this.properties.values()) {
+//                property.updateOriginal();
+//                property.setChanged(false);
+//            }
+//        } finally {
+//            super.clearStatus();
+//        }
+//    }
 
     @Override
     public void discard() throws Exception {

@@ -153,14 +153,17 @@ public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<Ma
         return false;
     }
 
-    @Override
-    public void clearStatus() {
-        for (MariadbRecordProperty property : this.properties.values()) {
-            property.setChanged(false);
-            property.updateOriginal();
-        }
-        super.clearStatus();
-    }
+//    @Override
+//    public void clearStatus() {
+//        try {
+//            for (MariadbRecordProperty property : this.properties.values()) {
+//                property.updateOriginal();
+//                property.setChanged(false);
+//            }
+//        } finally {
+//            super.clearStatus();
+//        }
+//    }
 
     @Override
     public void discard() throws Exception {
@@ -221,7 +224,6 @@ public class MariadbRecord extends DBObject implements DBRecord, ObjectCopier<Ma
         }
         return recordData;
     }
-
 
 
     /**

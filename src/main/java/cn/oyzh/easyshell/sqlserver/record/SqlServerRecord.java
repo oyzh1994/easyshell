@@ -154,14 +154,14 @@ public class SqlServerRecord extends DBObject implements DBRecord, ObjectCopier<
         return false;
     }
 
-    @Override
-    public void clearStatus() {
-        for (SqlServerRecordProperty property : this.properties.values()) {
-            property.setChanged(false);
-            property.updateOriginal();
-        }
-        super.clearStatus();
-    }
+//    @Override
+//    public void clearStatus() {
+//        for (SqlServerRecordProperty property : this.properties.values()) {
+//            property.setChanged(false);
+//            property.updateOriginal();
+//        }
+//        super.clearStatus();
+//    }
 
     @Override
     public void discard() throws Exception {

@@ -103,12 +103,10 @@ public class MysqlRecordProperty extends DBRecordProperty {
         super.setChanged(changed);
     }
 
-    /**
-     * 更新原始值
-     */
+    @Override
     public void updateOriginal() {
         try {
-            if (this.node != null) {
+            if (this.isChanged() && this.node != null) {
                 super.set(ShellMysqlNodeUtil.getNodeVal(this.node));
                 this.original = super.get();
             }

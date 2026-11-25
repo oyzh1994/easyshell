@@ -153,14 +153,18 @@ public class OracleRecord extends DBObject implements DBRecord, ObjectCopier<Ora
         return false;
     }
 
-    @Override
-    public void clearStatus() {
-        for (OracleRecordProperty property : this.properties.values()) {
-            property.setChanged(false);
-            property.updateOriginal();
-        }
-        super.clearStatus();
-    }
+//    @Override
+//    public void clearStatus() {
+//        try {
+//            for (OracleRecordProperty property : this.properties.values()) {
+//                property.updateOriginal();
+//                property.setChanged(false);
+//            }
+//            super.clearStatus();
+//        } finally {
+//            super.clearStatus();
+//        }
+//    }
 
     @Override
     public void discard() throws Exception {
