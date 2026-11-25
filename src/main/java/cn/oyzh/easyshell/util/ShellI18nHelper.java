@@ -1373,4 +1373,68 @@ public class ShellI18nHelper {
         return text("shell.http.binaryResponse", size, type);
     }
 
+    public static String mongoDesignCollection() {
+        return text("shell.mongo.designCollection");
+    }
+
+    public static String mongoUnnamedCollection() {
+        return text("shell.mongo.unnamedCollection");
+    }
+
+    public static String mongoInvalidCollectionName() {
+        return text("shell.mongo.invalidCollectionName");
+    }
+
+    public static String mongoCollectionExists(Object name) {
+        return text("shell.mongo.collectionExists", name);
+    }
+
+    public static String mongoInvalidIndex(Object name) {
+        return text("shell.mongo.invalidIndex", name);
+    }
+
+    public static String mongoInvalidValidator() {
+        return text("shell.mongo.invalidValidator");
+    }
+
+    public static String mongoCappedSizeRequired() {
+        return text("shell.mongo.cappedSizeRequired");
+    }
+
+    public static String mongoIdIndexNotEditable() {
+        return text("shell.mongo.idIndexNotEditable");
+    }
+
+    public static String mongoOnlyNewOptions() {
+        return text("shell.mongo.onlyNewOptions");
+    }
+
+    public static String mongoViewSource() {
+        return text("shell.mongo.viewSource");
+    }
+
+    public static String mongoViewPipeline() {
+        return text("shell.mongo.viewPipeline");
+    }
+
+    public static String mongoUnnamedView() {
+        return text("shell.mongo.unnamedView");
+    }
+
+    public static String mongoInvalidViewName() {
+        return text("shell.mongo.invalidViewName");
+    }
+
+    public static String mongoViewExists(Object name) {
+        return text("shell.mongo.viewExists", name);
+    }
+
+    public static String mongoInvalidViewSource() {
+        return text("shell.mongo.invalidViewSource");
+    }
+
+    public static String mongoInvalidViewPipeline() {
+        return text("shell.mongo.invalidViewPipeline");
+    }
+
 }

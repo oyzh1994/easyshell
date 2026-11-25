@@ -18,6 +18,7 @@ import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueriesTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.easyshell.trees.mongo.terminal.ShellMongoTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mongo.user.ShellMongoUsersTreeItem;
+import cn.oyzh.easyshell.trees.mongo.view.ShellMongoViewsTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -182,6 +183,7 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
                     .onStart(() -> {
                         List<TreeItem<?>> typeItems = new ArrayList<>();
                         typeItems.add(new ShellMongoCollectionsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellMongoViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoBucketsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMongoUsersTreeItem(this.getTreeView()));
@@ -227,6 +229,34 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
     public ShellMongoFunctionsTreeItem getFunctionTypeChild() {
         for (RichTreeItem<?> child : this.richChildren()) {
             if (child instanceof ShellMongoFunctionsTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取集合类型子节点
+     *
+     * @return 集合类型子节点
+     */
+    public ShellMongoCollectionsTreeItem getCollectionTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellMongoCollectionsTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取视图类型子节点
+     *
+     * @return 视图类型子节点
+     */
+    public ShellMongoViewsTreeItem getViewTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellMongoViewsTreeItem treeItem) {
                 return treeItem;
             }
         }

@@ -8,14 +8,19 @@ import cn.oyzh.easyshell.data.mongo.handler.ShellMongoRunScriptFileHandler;
 import cn.oyzh.easyshell.data.mongo.handler.ShellMongoDataTransportHandler;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
+import cn.oyzh.easyshell.mongo.collection.MongoCollectionOptions;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
+import cn.oyzh.easyshell.mongo.index.MongoIndex;
+import cn.oyzh.easyshell.mongo.view.MongoView;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoRecordProperty;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
 import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoCollectionDesignUtil;
 import cn.oyzh.easyshell.util.mongo.ShellMongoRecordUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewDesignUtil;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
@@ -263,6 +268,77 @@ public class MongoComplexDataIntegrationTest {
         assertTrue(ShellMongoRecordUtil.isCollection("complex_types"));
         assertFalse(client.listCollectionNames("demo_complex").contains("system.views"));
         assertFalse(client.listCollectionNames("demo_complex").contains("system.js"));
+    }
+
+    @Test
+    public void marksViewsInCollectionList() {
+        rawClient.getDatabase(DB).createView("complex_types_view", SOURCE,
+                List.of(new Document("$match", new Document("name", "复杂文档1"))));
+        var view = client.listViews(DB).stream()
+                .filter(item -> "complex_types_view".equals(item.getName()))
+                .findFirst().orElseThrow();
+        assertEquals(SOURCE, view.getViewOn());
+        assertEquals(1, view.getPipeline().size());
+        assertFalse(client.listCollections(DB).stream()
+                .anyMatch(item -> "complex_types_view".equals(item.getName())));
+        assertTrue(client.listCollections(DB).stream()
+                .anyMatch(item -> SOURCE.equals(item.getName())));
+    }
+
+    @Test
+    public void createsUpdatesAndDropsView() {
+        MongoView view = new MongoView();
+        view.setDbName(DB);
+        view.setName("complex_types_view_design");
+        view.setViewOn(SOURCE);
+        view.setPipeline(List.of(
+                new Document("$match", new Document("name", "复杂文档1")),
+                new Document("$project", new Document("name", 1).append("int32", 1))));
+        client.createView(view);
+
+        MongoView created = client.selectView(DB, view.getName());
+        assertNotNull(created);
+        assertEquals(SOURCE, created.getViewOn());
+        assertEquals(2, created.getPipeline().size());
+        assertTrue(client.listViews(DB).stream()
+                .anyMatch(item -> view.getName().equals(item.getName())));
+        assertFalse(client.listCollections(DB).stream()
+                .anyMatch(item -> view.getName().equals(item.getName())));
+
+        created.setViewOn(SOURCE);
+        created.setPipeline(List.of(
+                new Document("$match", new Document("int32", new Document("$gte", 3)))));
+        client.updateView(created);
+        MongoView updated = client.selectView(DB, view.getName());
+        assertNotNull(updated);
+        assertEquals(1, updated.getPipeline().size());
+
+        client.dropView(DB, view.getName());
+        assertFalse(client.listViews(DB).stream()
+                .anyMatch(item -> view.getName().equals(item.getName())));
+    }
+
+    @Test
+    public void rendersViewDesignScript() {
+        MongoView view = new MongoView();
+        view.setName("complex_types_view");
+        view.setViewOn(SOURCE);
+        view.setPipeline(List.of(
+                new Document("$match", new Document("int32", new Document("$gte", 3)))));
+        String createScript = ShellMongoViewDesignUtil.toScript(view, true);
+        assertTrue(createScript, createScript.contains("db.createView('complex_types_view'"));
+        assertTrue(createScript, createScript.contains("'complex_types'"));
+        assertTrue(createScript, createScript.contains("\"$match\""));
+
+        String updateScript = ShellMongoViewDesignUtil.toScript(view, false);
+        assertTrue(updateScript, updateScript.contains("db.runCommand("));
+        assertTrue(updateScript, updateScript.contains("\"collMod\""));
+        assertTrue(updateScript, updateScript.contains("\"viewOn\""));
+
+        List<Document> pipeline = ShellMongoViewDesignUtil.parsePipeline(
+                ShellMongoViewDesignUtil.pipelineText(view.getPipeline()));
+        assertEquals(1, pipeline.size());
+        assertTrue(pipeline.getFirst().containsKey("$match"));
     }
 
     @Test
@@ -577,6 +653,109 @@ public class MongoComplexDataIntegrationTest {
             assertTrue(regex instanceof BsonRegularExpression);
             assertEquals("^legacy.*", ((BsonRegularExpression) regex).getPattern());
         }
+    }
+
+    @Test
+    public void managesCollectionIndexesAndValidator() {
+        MongoCollectionOptions options = client.selectCollectionOptions(DB, SOURCE);
+        assertEquals(SOURCE, options.getName());
+        assertFalse(options.isCapped());
+        assertTrue(client.listCollectionIndexes(DB, SOURCE).stream()
+                .anyMatch(MongoIndex::isIdIndex));
+
+        MongoIndex index = new MongoIndex();
+        index.setName("idx_complex_types_name");
+        index.setKeys(new Document("name", 1));
+        index.setUnique(true);
+        index.setPartialFilterExpression(new Document("name", new Document("$exists", true)));
+        client.createIndex(DB, SOURCE, index);
+
+        MongoIndex created = client.listCollectionIndexes(DB, SOURCE).stream()
+                .filter(item -> "idx_complex_types_name".equals(item.getName()))
+                .findFirst().orElseThrow();
+        assertEquals(1, created.getKeys().get("name"));
+        assertTrue(created.isUnique());
+        assertEquals(new Document("name", new Document("$exists", true)),
+                created.getPartialFilterExpression());
+
+        Document validator = new Document("$jsonSchema", new Document("bsonType", "object")
+                .append("required", List.of("name"))
+                .append("properties", new Document("name", new Document("bsonType", "string"))));
+        options.setValidator(validator);
+        options.setValidationLevel("strict");
+        options.setValidationAction("error");
+        client.updateCollectionOptions(DB, options);
+
+        MongoCollectionOptions updated = client.selectCollectionOptions(DB, SOURCE);
+        assertEquals(validator, updated.getValidator());
+        assertEquals("strict", updated.getValidationLevel());
+        assertEquals("error", updated.getValidationAction());
+
+        client.dropIndex(DB, SOURCE, "idx_complex_types_name");
+        assertFalse(client.listCollectionIndexes(DB, SOURCE).stream()
+                .anyMatch(item -> "idx_complex_types_name".equals(item.getName())));
+    }
+
+    @Test
+    public void createsDesignedCollectionWithIndexesAndValidator() {
+        String collectionName = "complex_types_design";
+        MongoCollectionOptions options = new MongoCollectionOptions();
+        options.setDbName(TARGET_DB);
+        options.setName(collectionName);
+        options.setCapped(true);
+        options.setSizeInBytes(1024L * 1024L);
+        options.setMaxDocuments(100L);
+        options.setValidator(new Document("$jsonSchema", new Document("bsonType", "object")
+                .append("required", List.of("name"))
+                .append("properties", new Document("name", new Document("bsonType", "string")))));
+        options.setValidationLevel("moderate");
+        options.setValidationAction("warn");
+        client.createCollection(options);
+
+        MongoIndex index = new MongoIndex();
+        index.setName("idx_design_name");
+        index.setKeys(new Document("name", 1));
+        index.setUnique(true);
+        client.createIndex(TARGET_DB, collectionName, index);
+
+        assertTrue(client.listCollectionNames(TARGET_DB).contains(collectionName));
+        MongoCollectionOptions created = client.selectCollectionOptions(TARGET_DB, collectionName);
+        assertTrue(created.isCapped());
+        assertEquals(1024L * 1024L, created.getSizeInBytes().longValue());
+        assertEquals(100L, created.getMaxDocuments().longValue());
+        assertEquals(options.getValidator(), created.getValidator());
+        assertEquals("moderate", created.getValidationLevel());
+        assertEquals("warn", created.getValidationAction());
+        assertTrue(client.listCollectionIndexes(TARGET_DB, collectionName).stream()
+                .anyMatch(item -> "idx_design_name".equals(item.getName())));
+    }
+
+    @Test
+    public void rendersCollectionDesignScript() {
+        MongoCollectionOptions options = new MongoCollectionOptions();
+        options.setName("complex_types_design");
+        options.setCapped(true);
+        options.setSizeInBytes(1024L);
+        options.setValidator(new Document("name", new Document("$exists", true)));
+        options.setValidationLevel("strict");
+        options.setValidationAction("error");
+
+        MongoIndex index = new MongoIndex();
+        index.setName("idx_design_name");
+        index.setKeys(MongoIndex.parseKeys("name:1, nested.city:-1"));
+        index.setUnique(true);
+        index.setPartialFilterExpression(new Document("name", new Document("$type", "string")));
+
+        String script = ShellMongoCollectionDesignUtil.toCreateCollectionScript(
+                options, List.of(index));
+        assertTrue(script, script.contains("db.createCollection('complex_types_design'"));
+        assertTrue(script, script.contains("\"capped\": true"));
+        assertTrue(script, script.contains("\"size\": 1024"));
+        assertTrue(script, script.contains("\"validator\""));
+        assertTrue(script, script.contains("createIndex("));
+        assertTrue(script, script.contains("\"name\": \"idx_design_name\""));
+        assertTrue(script, script.contains("\"nested.city\": -1"));
+        assertTrue(script, script.contains("\"partialFilterExpression\""));
     }
 
     private static void updateValue(MongoRecord record, String columnName, Object value) {

@@ -32,6 +32,15 @@ public class MongoCollection implements DBName, ObjectComparator<MongoCollection
         this.dbName = dbName;
     }
 
+    /**
+     * 是否为新集合。
+     *
+     * @return 是否为新集合
+     */
+    public boolean isNew() {
+        return StringUtil.isBlank(this.name);
+    }
+
     @Override
     public boolean compare(MongoCollection collection) {
         if (collection == null) {

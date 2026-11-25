@@ -13,6 +13,7 @@ import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
+import cn.oyzh.fx.gui.svg.glyph.DesignSVGGlyph;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -97,6 +98,9 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem openCollection = MenuItemHelper.openCollection( this::onPrimaryDoubleClick);
         items.add(openCollection);
+        FXMenuItem designCollection = new FXMenuItem(new DesignSVGGlyph(),
+                ShellI18nHelper.mongoDesignCollection(), this::designCollection);
+        items.add(designCollection);
         FXMenuItem renameCollection = MenuItemHelper.renameCollection( this::rename);
         items.add(renameCollection);
         FXMenuItem clearCollection = MenuItemHelper.clearCollection( this::clearCollection);
@@ -109,6 +113,14 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         FXMenuItem exportTable = MenuItemHelper.exportData( this::export);
         items.add(exportTable);
         return items;
+    }
+
+    /**
+     * 设计集合
+     */
+    private void designCollection() {
+        this.reloadChild();
+        ShellMongoEventUtil.designCollection(this.value, this.dbItem());
     }
 
     /**

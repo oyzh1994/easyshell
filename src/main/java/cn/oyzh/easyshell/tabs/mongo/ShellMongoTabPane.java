@@ -5,6 +5,8 @@ import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketOpenEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionDesignEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionDroppedEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionOpenEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.database.ShellMongoDatabaseClosedEvent;
@@ -18,16 +20,22 @@ import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalCloseEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserDeletedEvent;
 import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserViewEvent;
+import cn.oyzh.easyshell.event.mongo.view.ShellMongoViewDesignEvent;
+import cn.oyzh.easyshell.event.mongo.view.ShellMongoViewDroppedEvent;
+import cn.oyzh.easyshell.event.mongo.view.ShellMongoViewOpenEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.query.mongo.ShellMongoQueryUtil;
 import cn.oyzh.easyshell.tabs.mongo.bucket.ShellMongoBucketRecordTab;
+import cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionDesignTab;
 import cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionRecordTab;
 import cn.oyzh.easyshell.tabs.mongo.function.ShellMongoFunctionDesignTab;
 import cn.oyzh.easyshell.tabs.mongo.home.ShellMongoHomeTab;
 import cn.oyzh.easyshell.tabs.mongo.query.ShellMongoQueryMainTab;
 import cn.oyzh.easyshell.tabs.mongo.terminal.ShellMongoTerminalTab;
 import cn.oyzh.easyshell.tabs.mongo.user.ShellMongoUserViewTab;
+import cn.oyzh.easyshell.tabs.mongo.view.ShellMongoViewDesignTab;
+import cn.oyzh.easyshell.tabs.mongo.view.ShellMongoViewRecordTab;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.event.EventSubscribe;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
@@ -176,6 +184,142 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
         }
         // 初始化节点
         this.select(tab);
+    }
+
+    /**
+     * 获取集合设计标签
+     *
+     * @param dbItem         数据库树节点
+     * @param collectionName 集合名称
+     * @return 集合设计标签
+     */
+    private ShellMongoCollectionDesignTab getMongoCollectionDesignTab(ShellMongoDatabaseTreeItem dbItem, String collectionName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMongoCollectionDesignTab tab1
+                    && tab1.dbItem() == dbItem
+                    && StringUtil.equals(collectionName, tab1.collectionName())) {
+                return tab1;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 集合设计事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoCollectionDesign(ShellMongoCollectionDesignEvent event) {
+        try {
+            ShellMongoCollectionDesignTab tab = this.getMongoCollectionDesignTab(
+                    event.getDbItem(), event.collectionName());
+            if (tab == null) {
+                tab = new ShellMongoCollectionDesignTab();
+                tab.init(event.data(), event.getDbItem());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 视图打开事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoViewOpen(ShellMongoViewOpenEvent event) {
+        ShellMongoViewRecordTab tab = this.getMongoViewRecordTab(
+                event.getDbItem(), event.viewName());
+        if (tab == null) {
+            tab = new ShellMongoViewRecordTab();
+            tab.init(event.data());
+            super.addTab(tab);
+        }
+        this.select(tab);
+    }
+
+    /**
+     * 获取视图记录标签
+     *
+     * @param dbItem   数据库节点
+     * @param viewName 视图名称
+     * @return 视图记录标签
+     */
+    private ShellMongoViewRecordTab getMongoViewRecordTab(ShellMongoDatabaseTreeItem dbItem, String viewName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMongoViewRecordTab tab1
+                    && tab1.dbItem() == dbItem
+                    && StringUtil.equals(viewName, tab1.viewName())) {
+                return tab1;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取视图设计标签
+     *
+     * @param dbItem  数据库节点
+     * @param viewName 视图名称
+     * @return 视图设计标签
+     */
+    private ShellMongoViewDesignTab getMongoViewDesignTab(ShellMongoDatabaseTreeItem dbItem, String viewName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellMongoViewDesignTab tab1
+                    && tab1.dbItem() == dbItem
+                    && StringUtil.equals(viewName, tab1.viewName())) {
+                return tab1;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 视图设计事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoViewDesign(ShellMongoViewDesignEvent event) {
+        try {
+            ShellMongoViewDesignTab tab = this.getMongoViewDesignTab(
+                    event.getDbItem(), event.viewName());
+            if (tab == null) {
+                tab = new ShellMongoViewDesignTab();
+                tab.init(event.data(), event.getDbItem());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 视图删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoViewDropped(ShellMongoViewDroppedEvent event) {
+        try {
+            ShellMongoViewRecordTab recordTab = this.getMongoViewRecordTab(
+                    event.getDbItem(), event.viewName());
+            if (recordTab != null) {
+                recordTab.closeTab();
+            }
+            ShellMongoViewDesignTab designTab = this.getMongoViewDesignTab(
+                    event.getDbItem(), event.viewName());
+            if (designTab != null) {
+                designTab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -404,10 +548,37 @@ public class ShellMongoTabPane extends RichTabPane implements FXEventListener {
             if (tab1 != null) {
                 tab1.closeTab();
             }
+            ShellMongoCollectionDesignTab designTab = this.getMongoCollectionDesignTab(event.getDbItem(), event.tableName());
+            if (designTab != null) {
+                designTab.closeTab();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         ShellMongoQueryUtil.refreshCollections(this.getClient(), event.dbName());
+    }
+
+    /**
+     * 集合删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onMongoCollectionDropped(ShellMongoCollectionDroppedEvent event) {
+        try {
+            ShellMongoCollectionRecordTab recordTab = this.getMongoCollectionRecordTab(
+                    event.getDbItem(), event.collectionName());
+            if (recordTab != null) {
+                recordTab.closeTab();
+            }
+            ShellMongoCollectionDesignTab designTab = this.getMongoCollectionDesignTab(
+                    event.getDbItem(), event.collectionName());
+            if (designTab != null) {
+                designTab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

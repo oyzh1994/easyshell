@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.event.mongo;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketDroppedEvent;
 import cn.oyzh.easyshell.event.mongo.bucket.ShellMongoBucketOpenEvent;
+import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionDesignEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionDroppedEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionOpenEvent;
 import cn.oyzh.easyshell.event.mongo.collection.ShellMongoCollectionRenamedEvent;
@@ -21,10 +22,15 @@ import cn.oyzh.easyshell.event.mongo.query.ShellMongoQueryRenamedEvent;
 import cn.oyzh.easyshell.event.mongo.terminal.ShellMongoTerminalOpenEvent;
 import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserDeletedEvent;
 import cn.oyzh.easyshell.event.mongo.user.ShellMongoUserViewEvent;
+import cn.oyzh.easyshell.event.mongo.view.ShellMongoViewDesignEvent;
+import cn.oyzh.easyshell.event.mongo.view.ShellMongoViewDroppedEvent;
+import cn.oyzh.easyshell.event.mongo.view.ShellMongoViewOpenEvent;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
+import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
+import cn.oyzh.easyshell.mongo.view.MongoView;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketTreeItem;
 import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
@@ -32,6 +38,7 @@ import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
 import cn.oyzh.easyshell.trees.mongo.query.ShellMongoQueryTreeItem;
 import cn.oyzh.easyshell.trees.mongo.root.ShellMongoRootTreeItem;
 import cn.oyzh.easyshell.trees.mongo.user.ShellMongoUserTreeItem;
+import cn.oyzh.easyshell.trees.mongo.view.ShellMongoViewTreeItem;
 import cn.oyzh.event.EventUtil;
 
 /**
@@ -178,6 +185,19 @@ public class ShellMongoEventUtil {
     }
 
     /**
+     * 集合设计事件
+     *
+     * @param collection 集合
+     * @param dbItem     数据库节点
+     */
+    public static void designCollection(MongoCollection collection, ShellMongoDatabaseTreeItem dbItem) {
+        ShellMongoCollectionDesignEvent event = new ShellMongoCollectionDesignEvent();
+        event.data(collection);
+        event.setDbItem(dbItem);
+        EventUtil.post(event);
+    }
+
+    /**
      * 集合重命名事件
      *
      * @param collectionName    集合名称
@@ -189,6 +209,45 @@ public class ShellMongoEventUtil {
         event.setDbItem(dbItem);
         event.data(collectionName);
         event.setNewCollectionName(newCollectionName);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 视图打开事件
+     *
+     * @param viewItem 视图节点
+     * @param dbItem   数据库节点
+     */
+    public static void viewOpen(ShellMongoViewTreeItem viewItem, ShellMongoDatabaseTreeItem dbItem) {
+        ShellMongoViewOpenEvent event = new ShellMongoViewOpenEvent();
+        event.data(viewItem);
+        event.setDbItem(dbItem);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 视图设计事件
+     *
+     * @param view   视图
+     * @param dbItem 数据库节点
+     */
+    public static void designView(MongoView view, ShellMongoDatabaseTreeItem dbItem) {
+        ShellMongoViewDesignEvent event = new ShellMongoViewDesignEvent();
+        event.data(view);
+        event.setDbItem(dbItem);
+        EventUtil.post(event);
+    }
+
+    /**
+     * 视图删除事件
+     *
+     * @param viewItem 视图节点
+     * @param dbItem   数据库节点
+     */
+    public static void viewDropped(ShellMongoViewTreeItem viewItem, ShellMongoDatabaseTreeItem dbItem) {
+        ShellMongoViewDroppedEvent event = new ShellMongoViewDroppedEvent();
+        event.data(viewItem);
+        event.setDbItem(dbItem);
         EventUtil.post(event);
     }
 

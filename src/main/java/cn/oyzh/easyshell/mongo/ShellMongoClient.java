@@ -25,11 +25,13 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucket;
 import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
+import cn.oyzh.easyshell.mongo.collection.MongoCollectionOptions;
 import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.condition.MongoConditionUtil;
 import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
+import cn.oyzh.easyshell.mongo.index.MongoIndex;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.record.MongoSelectRecordParam;
 import cn.oyzh.easyshell.mongo.script.MongoScriptCursor;
@@ -38,6 +40,7 @@ import cn.oyzh.easyshell.mongo.script.MongoScriptFindCursor;
 import cn.oyzh.easyshell.mongo.script.MongoScriptParser;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
 import cn.oyzh.easyshell.mongo.user.MongoUserRole;
+import cn.oyzh.easyshell.mongo.view.MongoView;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.store.ShellProxyConfigStore;
 import cn.oyzh.easyshell.store.ShellSSLConfigStore;
@@ -63,7 +66,12 @@ import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.CreateCollectionOptions;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.ValidationAction;
+import com.mongodb.client.model.ValidationLevel;
+import com.mongodb.client.model.ValidationOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -570,8 +578,12 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     public List<MongoCollection> listCollections(String dbName) {
         com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
         List<MongoCollection> collections = new ArrayList<>();
-        for (String name : database.listCollectionNames()) {
+        for (Document document : database.listCollections()) {
+            String name = document.getString("name");
             if (!ShellMongoRecordUtil.isCollection(name)) {
+                continue;
+            }
+            if ("view".equals(document.getString("type"))) {
                 continue;
             }
             MongoCollection collection = new MongoCollection();
@@ -581,6 +593,85 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
         }
         collections = collections.stream().sorted(Comparator.comparing(MongoCollection::getName)).toList();
         return collections;
+    }
+
+    /**
+     * 列举视图
+     *
+     * @param dbName 数据库名称
+     * @return 视图列表
+     */
+    public List<MongoView> listViews(String dbName) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        List<MongoView> views = new ArrayList<>();
+        for (Document document : database.listCollections()) {
+            String name = document.getString("name");
+            if (!ShellMongoRecordUtil.isCollection(name)
+                    || !"view".equals(document.getString("type"))) {
+                continue;
+            }
+            MongoView view = MongoView.from(document);
+            view.setDbName(dbName);
+            views.add(view);
+        }
+        return views.stream().sorted(Comparator.comparing(MongoView::getName)).toList();
+    }
+
+    /**
+     * 查询视图
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @return 视图
+     */
+    public MongoView selectView(String dbName, String viewName) {
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        Document info = database.listCollections()
+                .filter(Filters.eq("name", viewName))
+                .first();
+        if (info == null || !"view".equals(info.getString("type"))) {
+            return null;
+        }
+        MongoView view = MongoView.from(info);
+        view.setDbName(dbName);
+        return view;
+    }
+
+    /**
+     * 创建视图
+     *
+     * @param view 视图
+     */
+    public void createView(MongoView view) {
+        if (view == null || StringUtil.isBlank(view.getName()) || StringUtil.isBlank(view.getViewOn())) {
+            throw new IllegalArgumentException("view name and source can not be empty");
+        }
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(view.getDbName());
+        List<Document> pipeline = view.getPipeline() == null ? List.of() : view.getPipeline();
+        database.createView(view.getName(), view.getViewOn(), pipeline);
+    }
+
+    /**
+     * 修改视图
+     *
+     * @param view 视图
+     * @return 命令结果
+     */
+    public Document updateView(MongoView view) {
+        Document command = new Document("collMod", view.getName())
+                .append("viewOn", view.getViewOn())
+                .append("pipeline", view.getPipeline() == null ? List.of() : view.getPipeline());
+        return this.mongoClient.getDatabase(view.getDbName()).runCommand(command);
+    }
+
+    /**
+     * 删除视图
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     */
+    public void dropView(String dbName, String viewName) {
+        this.dropCollection(dbName, viewName);
     }
 
     /**
@@ -772,6 +863,154 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     public void createCollection(String dbName, String collectionName) {
         com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
         database.createCollection(collectionName);
+    }
+
+    /**
+     * 查询集合设计参数
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @return 集合设计参数
+     */
+    public MongoCollectionOptions selectCollectionOptions(String dbName, String collectionName) {
+        MongoCollectionOptions options = new MongoCollectionOptions();
+        options.setDbName(dbName);
+        options.setName(collectionName);
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(dbName);
+        Document info = database.listCollections()
+                .filter(Filters.eq("name", collectionName))
+                .first();
+        if (info == null) {
+            return options;
+        }
+        Document optionDocument = MongoIndex.asDocument(info.get("options"));
+        if (optionDocument == null) {
+            return options;
+        }
+        options.setCapped(Boolean.TRUE.equals(optionDocument.getBoolean("capped")));
+        Object size = optionDocument.get("size");
+        if (size instanceof Number number) {
+            options.setSizeInBytes(number.longValue());
+        }
+        Object max = optionDocument.get("max");
+        if (max instanceof Number number) {
+            options.setMaxDocuments(number.longValue());
+        }
+        options.setValidator(MongoIndex.asDocument(optionDocument.get("validator")));
+        options.setValidationLevel(optionDocument.getString("validationLevel"));
+        options.setValidationAction(optionDocument.getString("validationAction"));
+        return options;
+    }
+
+    /**
+     * 查询集合索引列表
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @return 索引列表
+     */
+    public List<MongoIndex> listCollectionIndexes(String dbName, String collectionName) {
+        com.mongodb.client.MongoCollection<Document> collection = this.collection(dbName, collectionName);
+        List<MongoIndex> indexes = new ArrayList<>();
+        for (Document document : collection.listIndexes()) {
+            indexes.add(MongoIndex.from(document));
+        }
+        return indexes;
+    }
+
+    /**
+     * 按设计参数创建集合
+     *
+     * @param options 集合设计参数
+     */
+    public void createCollection(MongoCollectionOptions options) {
+        if (options == null || StringUtil.isBlank(options.getName())) {
+            throw new IllegalArgumentException("collection name can not be empty");
+        }
+        com.mongodb.client.MongoDatabase database = this.mongoClient.getDatabase(options.getDbName());
+        CreateCollectionOptions createOptions = new CreateCollectionOptions();
+        if (options.isCapped()) {
+            createOptions.capped(true);
+            if (options.getSizeInBytes() != null) {
+                createOptions.sizeInBytes(options.getSizeInBytes());
+            }
+            if (options.getMaxDocuments() != null) {
+                createOptions.maxDocuments(options.getMaxDocuments());
+            }
+        }
+        if (options.getValidator() != null) {
+            ValidationOptions validationOptions = new ValidationOptions()
+                    .validator(options.getValidator());
+            if (StringUtil.isNotBlank(options.getValidationLevel())) {
+                validationOptions.validationLevel(ValidationLevel.fromString(options.getValidationLevel()));
+            }
+            if (StringUtil.isNotBlank(options.getValidationAction())) {
+                validationOptions.validationAction(ValidationAction.fromString(options.getValidationAction()));
+            }
+            createOptions.validationOptions(validationOptions);
+        }
+        database.createCollection(options.getName(), createOptions);
+    }
+
+    /**
+     * 修改集合校验器参数
+     *
+     * @param dbName  数据库名称
+     * @param options 集合设计参数
+     * @return 命令结果
+     */
+    public Document updateCollectionOptions(String dbName, MongoCollectionOptions options) {
+        Document command = new Document("collMod", options.getName());
+        command.append("validator", options.getValidator() == null
+                ? new Document() : options.getValidator());
+        if (StringUtil.isNotBlank(options.getValidationLevel())) {
+            command.append("validationLevel", options.getValidationLevel());
+        }
+        if (StringUtil.isNotBlank(options.getValidationAction())) {
+            command.append("validationAction", options.getValidationAction());
+        }
+        return this.mongoClient.getDatabase(dbName).runCommand(command);
+    }
+
+    /**
+     * 创建集合索引
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @param index          索引
+     * @return 索引名称
+     */
+    public String createIndex(String dbName, String collectionName, MongoIndex index) {
+        if (index == null || index.getKeys() == null || index.getKeys().isEmpty()) {
+            throw new IllegalArgumentException("index keys can not be empty");
+        }
+        IndexOptions indexOptions = new IndexOptions();
+        if (StringUtil.isNotBlank(index.getName())) {
+            indexOptions.name(index.getName());
+        }
+        indexOptions.unique(index.isUnique());
+        indexOptions.sparse(index.isSparse());
+        indexOptions.background(index.isBackground());
+        indexOptions.hidden(index.isHidden());
+        if (index.getExpireAfterSeconds() != null) {
+            indexOptions.expireAfter(index.getExpireAfterSeconds(), TimeUnit.SECONDS);
+        }
+        if (index.getPartialFilterExpression() != null
+                && !index.getPartialFilterExpression().isEmpty()) {
+            indexOptions.partialFilterExpression(index.getPartialFilterExpression());
+        }
+        return this.collection(dbName, collectionName).createIndex(index.getKeys(), indexOptions);
+    }
+
+    /**
+     * 删除集合索引
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @param indexName      索引名称
+     */
+    public void dropIndex(String dbName, String collectionName, String indexName) {
+        this.collection(dbName, collectionName).dropIndex(indexName);
     }
 
     /**

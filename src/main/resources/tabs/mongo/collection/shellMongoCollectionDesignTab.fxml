@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.db.ui.DBStatusColumn?>
+<?import cn.oyzh.fx.db.ui.DBStatusTableView?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.AddSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.DeleteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.combo.FXComboBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.table.FXTableColumn?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionDesignTabController"
+        flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <AddSVGGlyph groupId="indexAction" onMousePrimaryClicked="#doAdd" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </AddSVGGlyph>
+        <DeleteSVGGlyph groupId="indexAction" onMousePrimaryClicked="#doDelete" managedBindVisible="true">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </DeleteSVGGlyph>
+        <RefreshSVGGlyph groupId="action3" onMousePrimaryClicked="#refresh"
+                         managedBindVisible="true" visible="false">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+    </FXHBox>
+    <RichTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 25">
+        <FixedTab text="%base.indexes" fx:id="indexTab">
+            <DBStatusTableView fixedCellSize="30" fx:id="indexTable" flexWidth="100%" flexHeight="100%">
+                <columns>
+                    <DBStatusColumn/>
+                    <FXTableColumn realWidth="140" valueName="nameControl" text="%base.name"/>
+                    <FXTableColumn flexWidth="28%" valueName="keysControl" text="%shell.mongo.indexKeys"/>
+                    <FXTableColumn realWidth="58" valueName="uniqueControl" text="%shell.mongo.indexUnique"/>
+                    <FXTableColumn realWidth="58" valueName="sparseControl" text="%shell.mongo.indexSparse"/>
+                    <FXTableColumn realWidth="58" valueName="backgroundControl"
+                                   text="%shell.mongo.indexBackground"/>
+                    <FXTableColumn realWidth="58" valueName="hiddenControl" text="%shell.mongo.indexHidden"/>
+                    <FXTableColumn realWidth="82" valueName="expireAfterSecondsControl" text="%base.ttl"/>
+                    <FXTableColumn flexWidth="22%" valueName="partialFilterExpressionControl"
+                                   text="%shell.mongo.indexPartialFilter"/>
+                </columns>
+            </DBStatusTableView>
+        </FixedTab>
+        <FixedTab text="%shell.mongo.validator" fx:id="validatorTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <AccentLabel realHeight="30" text="%shell.mongo.validationLevel">
+                    <VBox.margin>
+                        <Insets left="20" top="10"/>
+                    </VBox.margin>
+                </AccentLabel>
+                <FXComboBox fx:id="validationLevel" realHeight="30" flexWidth="100% - 40">
+                    <VBox.margin>
+                        <Insets left="20" top="5"/>
+                    </VBox.margin>
+                </FXComboBox>
+                <AccentLabel realHeight="30" text="%shell.mongo.validationAction">
+                    <VBox.margin>
+                        <Insets left="20" top="10"/>
+                    </VBox.margin>
+                </AccentLabel>
+                <FXComboBox fx:id="validationAction" realHeight="30" flexWidth="100% - 40">
+                    <VBox.margin>
+                        <Insets left="20" top="5"/>
+                    </VBox.margin>
+                </FXComboBox>
+                <AccentLabel realHeight="30" text="%shell.mongo.validator">
+                    <VBox.margin>
+                        <Insets left="20" top="10"/>
+                    </VBox.margin>
+                </AccentLabel>
+                <ShellDataEditor formatType="JSON" fx:id="validator" tipText="%shell.mongo.validator"
+                                 flexWidth="100% - 40" flexHeight="100% - 190">
+                    <VBox.margin>
+                        <Insets left="20" top="5"/>
+                    </VBox.margin>
+                </ShellDataEditor>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.options" fx:id="optionsTab">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox flexWidth="100%">
+                    <AccentLabel realHeight="30" realWidth="150" text="%shell.mongo.capped">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <FXCheckBox fx:id="capped">
+                        <HBox.margin>
+                            <Insets left="10" top="12"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+                <FXHBox flexWidth="100%">
+                    <AccentLabel realHeight="30" realWidth="150" text="%shell.mongo.sizeInBytes">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <NumberTextField fx:id="sizeInBytes" realHeight="30" flexWidth="100% - 205"
+                                     tipText="%shell.mongo.onlyNewOptions">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                </FXHBox>
+                <FXHBox flexWidth="100%">
+                    <AccentLabel realHeight="30" realWidth="150" text="%shell.mongo.maxDocuments">
+                        <HBox.margin>
+                            <Insets left="20" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <NumberTextField fx:id="maxDocuments" realHeight="30" flexWidth="100% - 205"
+                                     tipText="%shell.mongo.onlyNewOptions">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.preview" fx:id="previewTab">
+            <ShellDataEditor formatType="JAVASCRIPT" editable="false" fx:id="preview" flexWidth="100%"
+                             flexHeight="100%"/>
+        </FixedTab>
+    </RichTabPane>
+</FXVBox>

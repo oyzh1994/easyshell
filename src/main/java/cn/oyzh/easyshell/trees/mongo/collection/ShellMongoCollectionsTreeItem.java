@@ -2,8 +2,8 @@ package cn.oyzh.easyshell.trees.mongo.collection;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
-import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.event.mongo.ShellMongoEventUtil;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
 import cn.oyzh.easyshell.mongo.collection.MongoCollection;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
@@ -13,8 +13,6 @@ import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
-import cn.oyzh.easyshell.util.ShellI18nHelper;
-import cn.oyzh.i18n.I18nHelper;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -81,24 +79,9 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
      * 新增集合
      */
     private void addCollection() {
-        try {
-            String name = MessageBox.prompt(I18nHelper.pleaseInputCollectionName(), this.getWindow());
-            if (StringUtil.isBlank(name)) {
-                return;
-            }
-            if (this.client().existCollection(this.dbName(), name)) {
-                MessageBox.warn(ShellI18nHelper.alreadyExists(name), this.getWindow());
-                return;
-            }
-            MongoCollection collection = new MongoCollection();
-            collection.setName(name);
-            collection.setDbName(this.dbName());
-            this.client().createCollection(collection);
-            this.addCollection(collection);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            MessageBox.exception(ex, this.getWindow());
-        }
+        MongoCollection collection = new MongoCollection();
+        collection.setDbName(this.dbName());
+        ShellMongoEventUtil.designCollection(collection, this.parent());
     }
 
     @Override
@@ -242,7 +225,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
      */
     public long collectionSize() {
         try {
-            return this.parent().listCollectionNames().size();
+            return this.client().listCollections(this.dbName()).size();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
