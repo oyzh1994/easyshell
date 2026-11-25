@@ -829,12 +829,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         }
     }
 
-    /**
-     * 查询模式下的用户自定义类型，并按依赖顺序排列。
-     *
-     * @param schema 模式名称
-     * @return 类型定义列表
-     */
+    @Override
     public List<OracleTypeDefinition> selectTypes(String schema) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -854,7 +849,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                     while (resultSet.next()) {
                         OracleTypeDefinition type = new OracleTypeDefinition();
                         type.setName(resultSet.getString("TYPE_NAME"));
-                        type.setTypeCode(resultSet.getString("TYPECODE"));
+                        type.setObjectType(resultSet.getString("TYPECODE"));
                         list.add(type);
                     }
                 }

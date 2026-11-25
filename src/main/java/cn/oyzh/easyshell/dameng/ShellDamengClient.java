@@ -1050,12 +1050,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         return this.selectTables(param);
     }
 
-    /**
-     * 查询模式下的用户自定义类型，并按依赖顺序排列。
-     *
-     * @param schema 模式名称
-     * @return 类型定义列表
-     */
+    @Override
     public List<DamengTypeDefinition> selectTypes(String schema) {
         try {
             Connection connection = this.getConnManager().connection(schema);
@@ -3312,8 +3307,8 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
     /**
      * 批量插入
      *
-     * @param schema   模式名称
-     * @param sqlList  SQL列表
+     * @param schema        模式名称
+     * @param sqlList       SQL列表
      * @param newConnection 是否使用新连接
      * @return 受影响的行数
      */

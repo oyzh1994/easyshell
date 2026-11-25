@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.sqlserver.sequence.SqlServerSequence;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerSelectTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
 import cn.oyzh.easyshell.sqlserver.trigger.SqlServerTrigger;
+import cn.oyzh.easyshell.sqlserver.type.SqlServerTypeDefinition;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
 import cn.oyzh.easyshell.data.sqlserver.file.ShellSqlServerDataImportHelper;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerUtil;
@@ -79,7 +80,7 @@ public class ShellSqlServerDataDumpHandler extends DBDataDumpHandler {
                 this.views = this.dbClient.selectViews(this.dbName);
                 this.triggers = this.dbClient.selectTriggers(this.dbName);
                 try {
-                    this.dumpCustomType();
+                    this.dumpType();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
                 }
@@ -115,6 +116,7 @@ public class ShellSqlServerDataDumpHandler extends DBDataDumpHandler {
                 }
             } else if (this.dumpType == 2) {
                 try {
+                    this.dumpType();
                     SqlServerTable table = this.dbClient.selectTable(this.dbName, this.tableName);
                     String drop = "DROP TABLE IF EXISTS "
                             + DBUtil.wrap(this.dbName, table.getName(), DBDialect.SQLSERVER) + ";";
@@ -228,13 +230,13 @@ public class ShellSqlServerDataDumpHandler extends DBDataDumpHandler {
     }
 
     /**
-     * 转储自定义枚举、域和复合类型。
+     * 转储用户自定义别名类型和表类型。
      *
      * @throws Exception 异常
      */
-    protected void dumpCustomType() throws Exception {
-        List<String> definitions = this.dbClient.selectCustomTypeDefinitions(this.dbName);
-        if (CollectionUtil.isNotEmpty(definitions)) {
+    protected void dumpType() throws Exception {
+        List<SqlServerTypeDefinition> types = this.dbClient.selectTypes(this.dbName);
+        if (CollectionUtil.isNotEmpty(types)) {
             this.message("Dumping custom types");
             this.fileWriter.appendLines(List.of(
                     "",
@@ -242,7 +244,21 @@ public class ShellSqlServerDataDumpHandler extends DBDataDumpHandler {
                     "-- Custom types",
                     "-- ----------------------------"
             ));
-            this.fileWriter.appendLines(definitions);
+            for (int i = types.size() - 1; i >= 0; i--) {
+                SqlServerTypeDefinition type = types.get(i);
+                this.fileWriter.appendLine("DROP TYPE IF EXISTS "
+                        + DBUtil.wrap(this.dbName, type.getName(), DBDialect.SQLSERVER) + ";");
+                this.fileWriter.appendLine("GO");
+            }
+            for (SqlServerTypeDefinition type : types) {
+                String createDefinition = type.getCreateDefinition();
+                if (!createDefinition.endsWith(";")) {
+                    createDefinition += ";";
+                }
+                this.fileWriter.appendLine("GO");
+                this.fileWriter.appendLine(createDefinition);
+                this.fileWriter.appendLine("GO");
+            }
         }
     }
 

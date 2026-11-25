@@ -35,6 +35,7 @@ import cn.oyzh.easyshell.sqlserver.table.SqlServerAlertTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerCreateTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
 import cn.oyzh.easyshell.sqlserver.trigger.SqlServerTrigger;
+import cn.oyzh.easyshell.sqlserver.type.SqlServerTypeDefinition;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerCreateViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
@@ -1349,6 +1350,87 @@ public class SqlServerIntegrationTest {
         assertEquals(1, client.deleteRecord(deleteParam));
         client.executeSqlSimple(SOURCE_SCHEMA, "DROP VIEW IF EXISTS [EASYSHELL_SRC].["
                 + viewName + "]; DROP TABLE IF EXISTS [EASYSHELL_SRC].[" + tableName + "]");
+    }
+
+    @Test
+    public void dumpsAndImportsUserDefinedAliasTypes() throws Exception {
+        String sourceSchema = "EASYSHELL_TYPE_SRC";
+        String targetSchema = "EASYSHELL_TYPE_DST";
+        String typeName = "PHONE_TYPE";
+        String tableTypeName = "ID_LIST";
+        String tableName = "ALIAS_TYPE_TABLE";
+        for (String schema : List.of(sourceSchema, targetSchema)) {
+            if (client.existSchema(schema)) {
+                client.executeSqlSimple(schema, "DROP TABLE IF EXISTS [" + schema + "].["
+                        + tableName + "]");
+                client.executeSqlSimple(schema, "DROP TYPE IF EXISTS [" + schema + "].["
+                        + tableTypeName + "]");
+                client.executeSqlSimple(schema, "DROP TYPE IF EXISTS [" + schema + "].["
+                        + typeName + "]");
+                client.dropSchema(schema);
+            }
+            SqlServerSchema sqlServerSchema = new SqlServerSchema();
+            sqlServerSchema.setName(schema);
+            client.createSchema(sqlServerSchema);
+        }
+
+        client.executeSqlSimple(sourceSchema, "CREATE TYPE [" + sourceSchema + "].["
+                + typeName + "] FROM NVARCHAR(20) NOT NULL");
+        client.executeSqlSimple(sourceSchema, "CREATE TYPE [" + sourceSchema + "].["
+                + tableTypeName + "] AS TABLE ([ID] INT NOT NULL PRIMARY KEY,"
+                + " [PHONE] [" + sourceSchema + "].[" + typeName + "] NULL,"
+                + " [NAME] NVARCHAR(50) NULL, [V] INT DEFAULT (5) NULL)");
+        client.executeSqlSimple(sourceSchema, "CREATE TABLE [" + sourceSchema + "].["
+                + tableName + "] ([ID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
+                + " [PHONE] [" + sourceSchema + "].[" + typeName + "] NOT NULL,"
+                + " [NOTE] NVARCHAR(50) NULL)");
+        client.executeSqlSimple(sourceSchema, "INSERT INTO [" + sourceSchema + "].["
+                + tableName + "] ([PHONE],[NOTE]) VALUES (N'1234567890', N'alias')");
+
+        Path dumpFile = Files.createTempFile("easyshell-sqlserver-alias-type-", ".sql");
+        ShellSqlServerDataDumpHandler dumpHandler =
+                new ShellSqlServerDataDumpHandler(client, sourceSchema);
+        dumpHandler.setDumpType((byte) 1);
+        dumpHandler.setDataType((byte) 0);
+        dumpHandler.dumpFile(dumpFile.toFile());
+        dumpHandler.setContinueWithErrors(false);
+        dumpHandler.doDump();
+        String dump = Files.readString(dumpFile, StandardCharsets.UTF_8);
+        String upperDump = dump.toUpperCase();
+        assertTrue(dump, upperDump.contains(("CREATE TYPE [" + sourceSchema + "].["
+                + typeName + "] FROM NVARCHAR(20) NOT NULL").toUpperCase()));
+        assertTrue(dump, dump.contains("[PHONE] [" + sourceSchema + "].["
+                + typeName + "] NOT NULL"));
+        assertTrue(dump, dump.contains("CREATE TYPE [" + sourceSchema + "].["
+                + tableTypeName + "] AS TABLE"));
+        assertTrue(dump, dump.contains("[PHONE] [" + sourceSchema + "].["
+                + typeName + "] NULL"));
+
+        ShellSqlServerDataRunSqlFileHandler runHandler =
+                new ShellSqlServerDataRunSqlFileHandler(client, targetSchema);
+        runHandler.setContinueWithErrors(false);
+        runHandler.file(dumpFile.toFile());
+        runHandler.runFile();
+
+        assertEquals(1, client.selectRecordCount(selectParamFor(targetSchema, tableName)));
+        assertTrue(client.selectColumns(new SqlServerSelectColumnParam(targetSchema, tableName))
+                .stream().anyMatch(column -> typeName.equals(column.getType())));
+        assertTrue(client.selectTypes(targetSchema).stream()
+                .anyMatch(type -> type.getCreateDefinition().contains("CREATE TYPE [" + targetSchema + "].["
+                        + tableTypeName + "] AS TABLE")));
+        assertTrue(client.selectTypes(targetSchema).stream()
+                .anyMatch(type -> SqlServerTypeDefinition.OBJECT_TYPE_ALIAS
+                        .equals(type.getObjectType())));
+
+        for (String schema : List.of(sourceSchema, targetSchema)) {
+            client.executeSqlSimple(schema, "DROP TABLE IF EXISTS [" + schema + "].["
+                    + tableName + "]");
+            client.executeSqlSimple(schema, "DROP TYPE IF EXISTS [" + schema + "].["
+                    + tableTypeName + "]");
+            client.executeSqlSimple(schema, "DROP TYPE IF EXISTS [" + schema + "].["
+                    + typeName + "]");
+            client.dropSchema(schema);
+        }
     }
 
     private SqlServerColumn designColumn(String name, String type, Integer size, int position) {

@@ -1,5 +1,7 @@
 package cn.oyzh.easyshell.oracle.type;
 
+import cn.oyzh.fx.db.DBTypeDefinition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-11-20
  */
-public class OracleTypeDefinition {
+public class OracleTypeDefinition implements DBTypeDefinition {
 
     /**
      * 类型名称
@@ -19,7 +21,7 @@ public class OracleTypeDefinition {
     /**
      * 类型类型，OBJECT/COLLECTION
      */
-    private String typeCode;
+    private String objectType;
 
     /**
      * 创建语句
@@ -36,26 +38,32 @@ public class OracleTypeDefinition {
      */
     private List<String> dependencies = new ArrayList<>();
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getTypeCode() {
-        return typeCode;
+    @Override
+    public String getObjectType() {
+        return objectType;
     }
 
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
+    @Override
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
     }
 
+    @Override
     public String getCreateDefinition() {
         return createDefinition;
     }
 
+    @Override
     public void setCreateDefinition(String createDefinition) {
         this.createDefinition = createDefinition;
     }

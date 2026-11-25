@@ -8,7 +8,6 @@ import cn.oyzh.easyshell.sqlserver.check.SqlServerCheck;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumns;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerSelectColumnParam;
-import cn.oyzh.easyshell.sqlserver.condition.SqlServerConditionUtil;
 import cn.oyzh.easyshell.sqlserver.foreignKey.SqlServerForeignKey;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerAlertFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerCreateFunctionParam;
@@ -48,6 +47,7 @@ import cn.oyzh.easyshell.sqlserver.table.SqlServerSelectTableParam;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
 import cn.oyzh.easyshell.sqlserver.trigger.SqlServerSelectTriggerParam;
 import cn.oyzh.easyshell.sqlserver.trigger.SqlServerTrigger;
+import cn.oyzh.easyshell.sqlserver.type.SqlServerTypeDefinition;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerAlertViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerCreateViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerSelectViewParam;
@@ -88,20 +88,19 @@ import javafx.beans.value.ChangeListener;
 
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2067,16 +2066,268 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 || StringUtil.containsIgnoreCase(type, "DATETIMEOFFSET");
     }
 
-    /**
-     * 查询自定义类型定义，供模式转储和迁移使用。
-     *
-     * @param schema 模式名称
-     * @return 类型删除和创建语句
-     */
-    public List<String> selectCustomTypeDefinitions(String schema) {
-        // SQL Server没有PostgreSQL ENUM/DOMAIN/复合类型等价物，用户定义别名类型
-        // 会在列元数据中作为实际类型出现，不在此处重复生成。
-        return List.of();
+    @Override
+    public List<SqlServerTypeDefinition> selectTypes(String schema) {
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT
+                        T.NAME AS TYPE_NAME,
+                        S.NAME AS TYPE_SCHEMA,
+                        B.NAME AS BASE_TYPE,
+                        T.MAX_LENGTH AS MAX_LENGTH,
+                        T.PRECISION AS PRECISION,
+                        T.SCALE AS SCALE,
+                        T.IS_NULLABLE AS IS_NULLABLE
+                    FROM
+                        SYS.TYPES T
+                    JOIN
+                        SYS.SCHEMAS S ON S.SCHEMA_ID = T.SCHEMA_ID
+                    JOIN
+                        SYS.TYPES B ON B.USER_TYPE_ID = T.SYSTEM_TYPE_ID
+                    WHERE
+                        S.NAME = ?
+                    AND
+                        T.IS_USER_DEFINED = 1
+                    AND
+                        T.IS_TABLE_TYPE = 0
+                    AND
+                        T.IS_ASSEMBLY_TYPE = 0
+                    ORDER BY
+                        T.NAME
+                    """;
+            this.printSql(sql);
+            List<SqlServerTypeDefinition> types = new ArrayList<>();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, schema);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        String typeName = DBUtil.wrap(schema,
+                                resultSet.getString("TYPE_NAME"), DBDialect.SQLSERVER);
+                        String baseType = formatSqlServerType(
+                                resultSet.getString("BASE_TYPE"),
+                                resultSet.getInt("MAX_LENGTH"),
+                                resultSet.getInt("PRECISION"),
+                                resultSet.getInt("SCALE"));
+                        String nullable = resultSet.getBoolean("IS_NULLABLE") ? " NULL" : " NOT NULL";
+                        SqlServerTypeDefinition type = new SqlServerTypeDefinition();
+                        type.setName(resultSet.getString("TYPE_NAME"));
+                        type.setObjectType(SqlServerTypeDefinition.OBJECT_TYPE_ALIAS);
+                        type.setCreateDefinition("CREATE TYPE " + typeName
+                                + " FROM " + baseType + nullable);
+                        types.add(type);
+                    }
+                }
+            }
+            types.addAll(this.selectTableTypeDefinitions(connection, schema));
+            return types;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    private List<SqlServerTypeDefinition> selectTableTypeDefinitions(Connection connection, String schema) throws SQLException {
+        String columnSql = """
+                SELECT
+                    TT.NAME AS TYPE_NAME,
+                    C.NAME AS COLUMN_NAME,
+                    TY.NAME AS COLUMN_TYPE,
+                    TY.IS_USER_DEFINED AS USER_DEFINED_TYPE,
+                    TYS.NAME AS COLUMN_TYPE_SCHEMA,
+                    C.MAX_LENGTH AS MAX_LENGTH,
+                    C.PRECISION AS PRECISION,
+                    C.SCALE AS SCALE,
+                    C.IS_NULLABLE AS IS_NULLABLE,
+                    C.IS_IDENTITY AS IS_IDENTITY,
+                    CAST(IC.SEED_VALUE AS NVARCHAR(100)) AS IDENTITY_SEED,
+                    CAST(IC.INCREMENT_VALUE AS NVARCHAR(100)) AS IDENTITY_INCREMENT,
+                    C.IS_COMPUTED AS IS_COMPUTED,
+                    CC.DEFINITION AS COMPUTED_DEFINITION,
+                    CC.IS_PERSISTED AS COMPUTED_PERSISTED,
+                    DC.DEFINITION AS DEFAULT_DEFINITION
+                FROM
+                    SYS.TABLE_TYPES TT
+                JOIN
+                    SYS.SCHEMAS S ON S.SCHEMA_ID = TT.SCHEMA_ID
+                JOIN
+                    SYS.COLUMNS C ON C.OBJECT_ID = TT.TYPE_TABLE_OBJECT_ID
+                JOIN
+                    SYS.TYPES TY ON TY.USER_TYPE_ID = C.USER_TYPE_ID
+                JOIN
+                    SYS.SCHEMAS TYS ON TYS.SCHEMA_ID = TY.SCHEMA_ID
+                LEFT JOIN
+                    SYS.COMPUTED_COLUMNS CC
+                    ON CC.OBJECT_ID = C.OBJECT_ID AND CC.COLUMN_ID = C.COLUMN_ID
+                LEFT JOIN
+                    SYS.DEFAULT_CONSTRAINTS DC
+                    ON DC.PARENT_OBJECT_ID = C.OBJECT_ID AND DC.PARENT_COLUMN_ID = C.COLUMN_ID
+                LEFT JOIN
+                    SYS.IDENTITY_COLUMNS IC
+                    ON IC.OBJECT_ID = C.OBJECT_ID AND IC.COLUMN_ID = C.COLUMN_ID
+                WHERE
+                    S.NAME = ?
+                ORDER BY
+                    TT.NAME, C.COLUMN_ID
+                """;
+        this.printSql(columnSql);
+        Map<String, List<SqlServerTableTypeColumn>> columnsByType = new LinkedHashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(columnSql)) {
+            statement.setString(1, schema);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String columnType = resultSet.getString("COLUMN_TYPE");
+                    if (resultSet.getBoolean("USER_DEFINED_TYPE")) {
+                        columnType = DBUtil.wrap(resultSet.getString("COLUMN_TYPE_SCHEMA"),
+                                columnType, DBDialect.SQLSERVER);
+                    } else {
+                        columnType = formatSqlServerType(
+                                columnType,
+                                resultSet.getInt("MAX_LENGTH"),
+                                resultSet.getInt("PRECISION"),
+                                resultSet.getInt("SCALE"));
+                    }
+                    SqlServerTableTypeColumn column = new SqlServerTableTypeColumn(
+                            resultSet.getString("COLUMN_NAME"),
+                            columnType,
+                            resultSet.getString("DEFAULT_DEFINITION"),
+                            resultSet.getBoolean("IS_NULLABLE"),
+                            resultSet.getBoolean("IS_IDENTITY"),
+                            resultSet.getString("IDENTITY_SEED"),
+                            resultSet.getString("IDENTITY_INCREMENT"),
+                            resultSet.getBoolean("IS_COMPUTED"),
+                            resultSet.getString("COMPUTED_DEFINITION"),
+                            resultSet.getBoolean("COMPUTED_PERSISTED")
+                    );
+                    columnsByType.computeIfAbsent(resultSet.getString("TYPE_NAME"),
+                            key -> new ArrayList<>()).add(column);
+                }
+            }
+        }
+        if (columnsByType.isEmpty()) {
+            return List.of();
+        }
+
+        String keySql = """
+                SELECT
+                    TT.NAME AS TYPE_NAME,
+                    KC.NAME AS KEY_NAME,
+                    KC.TYPE AS KEY_TYPE,
+                    C.NAME AS COLUMN_NAME
+                FROM
+                    SYS.TABLE_TYPES TT
+                JOIN
+                    SYS.SCHEMAS S ON S.SCHEMA_ID = TT.SCHEMA_ID
+                JOIN
+                    SYS.KEY_CONSTRAINTS KC ON KC.PARENT_OBJECT_ID = TT.TYPE_TABLE_OBJECT_ID
+                JOIN
+                    SYS.INDEX_COLUMNS IC
+                    ON IC.OBJECT_ID = KC.PARENT_OBJECT_ID AND IC.INDEX_ID = KC.UNIQUE_INDEX_ID
+                JOIN
+                    SYS.COLUMNS C ON C.OBJECT_ID = IC.OBJECT_ID AND C.COLUMN_ID = IC.COLUMN_ID
+                WHERE
+                    S.NAME = ?
+                ORDER BY
+                    TT.NAME, KC.NAME, IC.KEY_ORDINAL
+                """;
+        this.printSql(keySql);
+        Map<String, List<SqlServerTableTypeKey>> keysByType = new LinkedHashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(keySql)) {
+            statement.setString(1, schema);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String typeName = resultSet.getString("TYPE_NAME");
+                    String keyName = resultSet.getString("KEY_NAME");
+                    String keyType = resultSet.getString("KEY_TYPE");
+                    List<SqlServerTableTypeKey> keys = keysByType.computeIfAbsent(typeName,
+                            key -> new ArrayList<>());
+                    SqlServerTableTypeKey key = keys.stream()
+                            .filter(item -> item.name().equalsIgnoreCase(keyName))
+                            .findFirst()
+                            .orElseGet(() -> {
+                                SqlServerTableTypeKey created = new SqlServerTableTypeKey(
+                                        keyName, keyType, new ArrayList<>());
+                                keys.add(created);
+                                return created;
+                            });
+                    key.columns().add(resultSet.getString("COLUMN_NAME"));
+                }
+            }
+        }
+
+        List<SqlServerTypeDefinition> definitions = new ArrayList<>();
+        for (Map.Entry<String, List<SqlServerTableTypeColumn>> entry : columnsByType.entrySet()) {
+            String typeName = entry.getKey();
+            String wrappedType = DBUtil.wrap(schema, typeName, DBDialect.SQLSERVER);
+            Set<String> primaryKeyColumns = new HashSet<>();
+            for (SqlServerTableTypeKey key : keysByType.getOrDefault(typeName, List.of())) {
+                if ("PK".equalsIgnoreCase(key.type())) {
+                    primaryKeyColumns.addAll(key.columns());
+                }
+            }
+            List<String> parts = new ArrayList<>();
+            for (SqlServerTableTypeColumn column : entry.getValue()) {
+                StringBuilder builder = new StringBuilder(DBUtil.wrap(column.name(), DBDialect.SQLSERVER));
+                if (column.computed()) {
+                    builder.append(" AS (").append(column.computedDefinition()).append(")");
+                    if (column.computedPersisted()) {
+                        builder.append(" PERSISTED");
+                    }
+                } else {
+                    builder.append(" ").append(column.type());
+                    if (column.identity()) {
+                        builder.append(" IDENTITY(").append(column.identitySeed())
+                                .append(",").append(column.identityIncrement()).append(")");
+                    }
+                    if (StringUtil.isNotBlank(column.defaultValue())) {
+                        builder.append(" DEFAULT ").append(column.defaultValue());
+                    }
+                    boolean primaryKey = primaryKeyColumns.stream()
+                            .anyMatch(name -> name.equalsIgnoreCase(column.name()));
+                    builder.append(primaryKey || !column.nullable() ? " NOT NULL" : " NULL");
+                }
+                parts.add(builder.toString());
+            }
+            for (SqlServerTableTypeKey key : keysByType.getOrDefault(typeName, List.of())) {
+                String keyword = "PK".equalsIgnoreCase(key.type()) ? "PRIMARY KEY" : "UNIQUE";
+                parts.add(keyword + " (" + key.columns().stream()
+                        .map(column -> DBUtil.wrap(column, DBDialect.SQLSERVER))
+                        .collect(java.util.stream.Collectors.joining(",")) + ")");
+            }
+            SqlServerTypeDefinition definition = new SqlServerTypeDefinition();
+            definition.setName(typeName);
+            definition.setObjectType(SqlServerTypeDefinition.OBJECT_TYPE_TABLE);
+            definition.setCreateDefinition("CREATE TYPE " + wrappedType + " AS TABLE ("
+                    + String.join(", ", parts) + ")");
+            definitions.add(definition);
+        }
+        return definitions;
+    }
+
+    private static String formatSqlServerType(String baseType, int maxLength, int precision, int scale) {
+        String type = baseType.toUpperCase();
+        return switch (type) {
+            case "VARCHAR", "CHAR", "VARBINARY", "BINARY" ->
+                    baseType + "(" + (maxLength == -1 ? "MAX" : maxLength) + ")";
+            case "NVARCHAR", "NCHAR" ->
+                    baseType + "(" + (maxLength == -1 ? "MAX" : maxLength / 2) + ")";
+            case "DECIMAL", "NUMERIC" ->
+                    baseType + "(" + precision + "," + scale + ")";
+            case "DATETIME2", "DATETIMEOFFSET", "TIME" ->
+                    baseType + "(" + scale + ")";
+            case "FLOAT" ->
+                    precision == 53 ? baseType : baseType + "(" + precision + ")";
+            default -> baseType;
+        };
+    }
+
+    private record SqlServerTableTypeColumn(String name, String type, String defaultValue,
+                                            boolean nullable, boolean identity,
+                                            String identitySeed, String identityIncrement,
+                                            boolean computed, String computedDefinition,
+                                            boolean computedPersisted) {
+    }
+
+    private record SqlServerTableTypeKey(String name, String type, List<String> columns) {
     }
 
     /**
@@ -2118,11 +2369,14 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                         C.IS_COMPUTED AS GENERATED_COLUMN,
                         CC.DEFINITION AS GENERATED_EXPRESSION,
                         CC.IS_PERSISTED AS GENERATED_PERSISTED,
+                        TY.IS_USER_DEFINED AS USER_DEFINED_TYPE,
+                        TYS.NAME AS TYPE_SCHEMA,
                         CAST(EP.VALUE AS NVARCHAR(4000)) AS COLUMN_COMMENT
                     FROM SYS.COLUMNS C
                     JOIN SYS.TABLES TB ON TB.OBJECT_ID = C.OBJECT_ID
                     JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = TB.SCHEMA_ID
                     JOIN SYS.TYPES TY ON TY.USER_TYPE_ID = C.USER_TYPE_ID
+                    JOIN SYS.SCHEMAS TYS ON TYS.SCHEMA_ID = TY.SCHEMA_ID
                     LEFT JOIN SYS.DEFAULT_CONSTRAINTS DC
                         ON DC.PARENT_OBJECT_ID = C.OBJECT_ID AND DC.PARENT_COLUMN_ID = C.COLUMN_ID
                     LEFT JOIN SYS.COMPUTED_COLUMNS CC
@@ -2150,7 +2404,12 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                                 builder.append(" PERSISTED");
                             }
                         } else {
-                            builder.append(" ").append(resultSet.getString("TYPE_NAME"));
+                            String typeName = resultSet.getString("TYPE_NAME");
+                            if (resultSet.getBoolean("USER_DEFINED_TYPE")) {
+                                typeName = DBUtil.wrap(resultSet.getString("TYPE_SCHEMA"),
+                                        typeName, DBDialect.SQLSERVER);
+                            }
+                            builder.append(" ").append(typeName);
                             if (resultSet.getBoolean("IDENTITY_COLUMN")) {
                                 builder.append(" IDENTITY(")
                                         .append(resultSet.getBigDecimal("IDENTITY_SEED")

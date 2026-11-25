@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.sqlserver.record.SqlServerRecord;
 import cn.oyzh.easyshell.sqlserver.record.SqlServerSelectRecordParam;
 import cn.oyzh.easyshell.sqlserver.sequence.SqlServerSequence;
 import cn.oyzh.easyshell.sqlserver.table.SqlServerTable;
+import cn.oyzh.easyshell.sqlserver.type.SqlServerTypeDefinition;
 import cn.oyzh.easyshell.data.sqlserver.file.ShellSqlServerDataImportHelper;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerUtil;
 import cn.oyzh.fx.db.DBDialect;
@@ -84,7 +85,7 @@ public class ShellSqlServerDataTransportHandler extends DBDataTransportHandler<S
         this.message("Transport Starting");
         try {
             // 类型和独立序列是表结构的依赖，必须先于表传输
-            this.transportCustomTypes();
+            this.transportTypes();
             this.transportSequences();
             if (CollectionUtil.isNotEmpty(this.tables)) {
                 // 全部表
@@ -138,15 +139,22 @@ public class ShellSqlServerDataTransportHandler extends DBDataTransportHandler<S
     }
 
     /**
-     * 传输自定义枚举、域和复合类型。
+     * 传输用户自定义别名类型和表类型。
      */
-    private void transportCustomTypes() {
-        List<String> definitions = this.sourceClient.selectCustomTypeDefinitions(this.sourceDatabase);
-        for (String definition : definitions) {
-            String sql = ShellSqlServerUtil.replaceSchema(definition, this.sourceDatabase, this.targetDatabase);
+    private void transportTypes() {
+        List<SqlServerTypeDefinition> types = this.sourceClient.selectTypes(this.sourceDatabase);
+        for (int i = types.size() - 1; i >= 0; i--) {
+            SqlServerTypeDefinition type = types.get(i);
+            String drop = "DROP TYPE IF EXISTS "
+                    + DBUtil.wrap(this.targetDatabase, type.getName(), DBDialect.SQLSERVER) + ";";
+            this.targetClient.executeSqlSimple(this.targetDatabase, drop);
+        }
+        for (SqlServerTypeDefinition type : types) {
+            String sql = ShellSqlServerUtil.replaceSchemaForDdl(
+                    type.getCreateDefinition(), this.sourceDatabase, this.targetDatabase);
             this.targetClient.executeSqlSimple(this.targetDatabase, sql);
         }
-        if (CollectionUtil.isNotEmpty(definitions)) {
+        if (CollectionUtil.isNotEmpty(types)) {
             this.message("Transport custom types");
         }
     }

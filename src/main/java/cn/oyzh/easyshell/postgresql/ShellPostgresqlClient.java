@@ -4,11 +4,18 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.postgresql.check.PostgresqlCheck;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumns;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlSelectColumnParam;
-import cn.oyzh.easyshell.postgresql.condition.PostgresqlConditionUtil;
 import cn.oyzh.easyshell.postgresql.foreignKey.PostgresqlForeignKey;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlAlertFunctionParam;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlCreateFunctionParam;
@@ -48,18 +55,11 @@ import cn.oyzh.easyshell.postgresql.table.PostgresqlSelectTableParam;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
 import cn.oyzh.easyshell.postgresql.trigger.PostgresqlSelectTriggerParam;
 import cn.oyzh.easyshell.postgresql.trigger.PostgresqlTrigger;
+import cn.oyzh.easyshell.postgresql.type.PostgresqlTypeDefinition;
 import cn.oyzh.easyshell.postgresql.view.PostgresqlAlertViewParam;
 import cn.oyzh.easyshell.postgresql.view.PostgresqlCreateViewParam;
 import cn.oyzh.easyshell.postgresql.view.PostgresqlSelectViewParam;
 import cn.oyzh.easyshell.postgresql.view.PostgresqlView;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
-import cn.oyzh.easyshell.internal.ShellClientChecker;
-import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExecuteResult;
 import cn.oyzh.easyshell.query.postgresql.PostgresqlExplainResult;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
@@ -87,19 +87,18 @@ import javafx.beans.value.ChangeListener;
 
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2130,13 +2129,8 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
         }
     }
 
-    /**
-     * 查询自定义类型定义，供模式转储和迁移使用。
-     *
-     * @param schema 模式名称
-     * @return 类型删除和创建语句
-     */
-    public List<String> selectCustomTypeDefinitions(String schema) {
+    @Override
+    public List<PostgresqlTypeDefinition> selectTypes(String schema) {
         try {
             Connection connection = this.getConnManager().connection();
             String sql = """
@@ -2159,17 +2153,11 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         N.NSPNAME = ?
                     AND
                         (
-                            T.TYPTYPE IN ('e', 'd')
+                            T.TYPTYPE IN ('e', 'd', 'r')
                             OR
                             (T.TYPTYPE = 'c' AND C.RELKIND = 'c')
                         )
-                    ORDER BY
-                        CASE T.TYPTYPE
-                            WHEN 'e' THEN 1
-                            WHEN 'd' THEN 2
-                            ELSE 3
-                        END,
-                        T.TYPNAME
+                    ORDER BY T.TYPNAME
                     """;
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, schema);
@@ -2190,25 +2178,22 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             IOUtil.close(resultSet);
             IOUtil.close(statement);
 
-            List<String> definitions = new ArrayList<>();
-            for (int i = types.size() - 1; i >= 0; i--) {
-                PostgresqlTypeInfo type = types.get(i);
-                String keyword = StringUtil.equalsIgnoreCase(type.type(), "d") ? "DOMAIN" : "TYPE";
-                definitions.add("DROP " + keyword + " IF EXISTS "
-                        + DBUtil.wrap(schema, type.name(), DBDialect.POSTGRESQL) + " CASCADE;");
-            }
+            List<PostgresqlTypeDefinition> typeDefinitions = new ArrayList<>();
             for (PostgresqlTypeInfo type : types) {
                 String fullName = DBUtil.wrap(schema, type.name(), DBDialect.POSTGRESQL);
                 StringBuilder builder = new StringBuilder("CREATE ");
+                String objectType;
                 if (StringUtil.equalsIgnoreCase(type.type(), "e")) {
+                    objectType = PostgresqlTypeDefinition.OBJECT_TYPE_ENUM;
                     builder.append("TYPE ").append(fullName).append(" AS ENUM (");
                     List<String> labels = this.selectEnumLabels(connection, type.typeId());
                     for (String label : labels) {
                         builder.append(this.quoteLiteral(label)).append(",");
                     }
                     StringUtil.deleteLast(builder, ",");
-                    builder.append(");");
+                    builder.append(")");
                 } else if (StringUtil.equalsIgnoreCase(type.type(), "d")) {
+                    objectType = PostgresqlTypeDefinition.OBJECT_TYPE_DOMAIN;
                     builder.append("DOMAIN ").append(fullName).append(" AS ").append(type.baseType());
                     if (StringUtil.isNotBlank(type.defaultValue())) {
                         builder.append(" DEFAULT ").append(type.defaultValue());
@@ -2222,8 +2207,30 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                                 .append(DBUtil.wrap(constraint.name(), DBDialect.POSTGRESQL))
                                 .append(" ").append(constraint.definition());
                     }
-                    builder.append(";");
+                } else if (StringUtil.equalsIgnoreCase(type.type(), "r")) {
+                    objectType = PostgresqlTypeDefinition.OBJECT_TYPE_RANGE;
+                    PostgresqlRangeInfo range = this.selectRangeInfo(connection, type.typeId());
+                    builder.append("TYPE ").append(fullName).append(" AS RANGE (SUBTYPE = ")
+                            .append(range.subtype());
+                    if (StringUtil.isNotBlank(range.opclassName())) {
+                        builder.append(", SUBTYPE_OPCLASS = ")
+                                .append(DBUtil.wrap(range.opclassSchema(), range.opclassName(), DBDialect.POSTGRESQL));
+                    }
+                    if (StringUtil.isNotBlank(range.collationName())) {
+                        builder.append(", COLLATION = ")
+                                .append(DBUtil.wrap(range.collationSchema(), range.collationName(), DBDialect.POSTGRESQL));
+                    }
+                    if (StringUtil.isNotBlank(range.canonicalName())) {
+                        builder.append(", CANONICAL = ")
+                                .append(DBUtil.wrap(range.canonicalSchema(), range.canonicalName(), DBDialect.POSTGRESQL));
+                    }
+                    if (StringUtil.isNotBlank(range.subtypeDiffName())) {
+                        builder.append(", SUBTYPE_DIFF = ")
+                                .append(DBUtil.wrap(range.subtypeDiffSchema(), range.subtypeDiffName(), DBDialect.POSTGRESQL));
+                    }
+                    builder.append(")");
                 } else {
+                    objectType = PostgresqlTypeDefinition.OBJECT_TYPE_COMPOSITE;
                     builder.append("TYPE ").append(fullName).append(" AS (");
                     List<PostgresqlTypeAttribute> attributes = this.selectCompositeAttributes(connection, type.relId());
                     for (PostgresqlTypeAttribute attribute : attributes) {
@@ -2235,15 +2242,138 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         builder.append(",");
                     }
                     StringUtil.deleteLast(builder, ",");
-                    builder.append(");");
+                    builder.append(")");
                 }
-                definitions.add(builder.toString());
+                PostgresqlTypeDefinition definition = new PostgresqlTypeDefinition();
+                definition.setName(type.name());
+                definition.setObjectType(objectType);
+                definition.setCreateDefinition(builder.toString());
+                typeDefinitions.add(definition);
             }
-            return definitions;
+            this.collectTypeDependencies(typeDefinitions);
+            return sortTypes(typeDefinitions);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    private void collectTypeDependencies(List<PostgresqlTypeDefinition> types) {
+        for (PostgresqlTypeDefinition type : types) {
+            for (PostgresqlTypeDefinition dependency : types) {
+                if (type == dependency) {
+                    continue;
+                }
+                String dependencyName = dependency.getName().toUpperCase();
+                if (containsTypeReference(type.getCreateDefinition(), dependency.getName())
+                        && !type.getDependencies().contains(dependencyName)) {
+                    type.getDependencies().add(dependencyName);
+                }
+            }
+        }
+    }
+
+    private static boolean containsTypeReference(String definition, String typeName) {
+        if (StringUtil.isBlank(typeName)) {
+            return false;
+        }
+        if (definition.contains("\"" + typeName + "\"")) {
+            return true;
+        }
+        Pattern pattern = Pattern.compile("(?i)(?<![\\p{L}\\p{N}_$])"
+                + Pattern.quote(typeName) + "(?![\\p{L}\\p{N}_$])");
+        return pattern.matcher(definition).find();
+    }
+
+    private static List<PostgresqlTypeDefinition> sortTypes(List<PostgresqlTypeDefinition> types) {
+        Map<String, PostgresqlTypeDefinition> typeMap = new LinkedHashMap<>();
+        for (PostgresqlTypeDefinition type : types) {
+            typeMap.put(type.getName().toUpperCase(), type);
+        }
+        List<PostgresqlTypeDefinition> result = new ArrayList<>(types.size());
+        Set<String> visited = new HashSet<>();
+        Set<String> visiting = new HashSet<>();
+        for (PostgresqlTypeDefinition type : types) {
+            sortType(type, typeMap, visited, visiting, result);
+        }
+        return result;
+    }
+
+    private static void sortType(PostgresqlTypeDefinition type, Map<String, PostgresqlTypeDefinition> typeMap,
+                                 Set<String> visited, Set<String> visiting, List<PostgresqlTypeDefinition> result) {
+        String name = type.getName().toUpperCase();
+        if (visited.contains(name) || visiting.contains(name)) {
+            return;
+        }
+        visiting.add(name);
+        for (String dependency : type.getDependencies()) {
+            PostgresqlTypeDefinition referenced = typeMap.get(dependency);
+            if (referenced != null) {
+                sortType(referenced, typeMap, visited, visiting, result);
+            }
+        }
+        visiting.remove(name);
+        if (visited.add(name)) {
+            result.add(type);
+        }
+    }
+
+    private PostgresqlRangeInfo selectRangeInfo(Connection connection, long typeId) throws SQLException {
+        String sql = """
+                SELECT
+                    PG_CATALOG.FORMAT_TYPE(R.RNGSUBTYPE, NULL) AS SUBTYPE,
+                    CASE WHEN OPC.OPCDEFAULT THEN NULL ELSE OPC.OPCNAME END AS OPC_NAME,
+                    CASE WHEN OPC.OPCDEFAULT THEN NULL ELSE ONSP.NSPNAME END AS OPC_SCHEMA,
+                    COLL.COLLNAME AS COLLATION_NAME,
+                    COLLNS.NSPNAME AS COLLATION_SCHEMA,
+                    CANON.PRONAME AS CANONICAL_NAME,
+                    CANONNS.NSPNAME AS CANONICAL_SCHEMA,
+                    DIFF.PRONAME AS SUBTYPE_DIFF_NAME,
+                    DIFFNS.NSPNAME AS SUBTYPE_DIFF_SCHEMA
+                FROM
+                    PG_CATALOG.PG_RANGE R
+                JOIN
+                    PG_CATALOG.PG_OPCLASS OPC ON OPC.OID = R.RNGSUBOPC
+                JOIN
+                    PG_CATALOG.PG_NAMESPACE ONSP ON ONSP.OID = OPC.OPCNAMESPACE
+                LEFT JOIN
+                    PG_CATALOG.PG_COLLATION COLL ON COLL.OID = R.RNGCOLLATION
+                LEFT JOIN
+                    PG_CATALOG.PG_NAMESPACE COLLNS ON COLLNS.OID = COLL.COLLNAMESPACE
+                LEFT JOIN
+                    PG_CATALOG.PG_PROC CANON ON CANON.OID = R.RNGCANONICAL
+                LEFT JOIN
+                    PG_CATALOG.PG_NAMESPACE CANONNS ON CANONNS.OID = CANON.PRONAMESPACE
+                LEFT JOIN
+                    PG_CATALOG.PG_PROC DIFF ON DIFF.OID = R.RNGSUBDIFF
+                LEFT JOIN
+                    PG_CATALOG.PG_NAMESPACE DIFFNS ON DIFFNS.OID = DIFF.PRONAMESPACE
+                WHERE
+                    R.RNGTYPID = ?
+                """;
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setLong(1, typeId);
+        ResultSet resultSet = statement.executeQuery();
+        PostgresqlRangeInfo range = null;
+        if (resultSet.next()) {
+            range = new PostgresqlRangeInfo(
+                    resultSet.getString("SUBTYPE"),
+                    resultSet.getString("OPC_SCHEMA"),
+                    resultSet.getString("OPC_NAME"),
+                    resultSet.getString("COLLATION_SCHEMA"),
+                    resultSet.getString("COLLATION_NAME"),
+                    resultSet.getString("CANONICAL_SCHEMA"),
+                    resultSet.getString("CANONICAL_NAME"),
+                    resultSet.getString("SUBTYPE_DIFF_SCHEMA"),
+                    resultSet.getString("SUBTYPE_DIFF_NAME")
+            );
+        }
+        IOUtil.close(resultSet);
+        IOUtil.close(statement);
+        if (range == null) {
+            throw new SQLException("Range type info not found: " + typeId);
+        }
+        return range;
     }
 
     private List<String> selectEnumLabels(Connection connection, long typeId) throws SQLException {
@@ -2305,6 +2435,12 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
 
     private record PostgresqlTypeInfo(String name, String type, long typeId, long relId, String baseType,
                                       boolean notNull, String defaultValue, String relKind) {
+    }
+
+    private record PostgresqlRangeInfo(String subtype, String opclassSchema, String opclassName,
+                                       String collationSchema, String collationName,
+                                       String canonicalSchema, String canonicalName,
+                                       String subtypeDiffSchema, String subtypeDiffName) {
     }
 
     private record PostgresqlTypeConstraint(String name, String definition) {
@@ -4414,8 +4550,8 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
     /**
      * 批量插入
      *
-     * @param schema   模式名称
-     * @param sqlList  SQL列表
+     * @param schema        模式名称
+     * @param sqlList       SQL列表
      * @param newConnection 是否使用新连接
      * @return 受影响的行数
      */
@@ -4539,6 +4675,15 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                         P.PRORETTYPE <> 'trigger'::REGTYPE
                     AND
                         NOT EXISTS (SELECT 1 FROM PG_CATALOG.PG_AGGREGATE A WHERE A.AGGFNOID = P.OID)
+                    AND
+                        NOT EXISTS (
+                            SELECT 1
+                            FROM PG_CATALOG.PG_DEPEND D
+                            WHERE D.CLASSID = 'pg_proc'::REGCLASS
+                            AND D.OBJID = P.OID
+                            AND D.REFCLASSID = 'pg_type'::REGCLASS
+                            AND D.DEPTYPE = 'i'
+                        )
                     ORDER BY
                         P.PRONAME, P.OID
                     """;

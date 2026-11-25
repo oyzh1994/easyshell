@@ -103,6 +103,7 @@ public class ShellOracleDataDumpHandler extends DBDataDumpHandler {
                 }
             } else if (this.dumpType == 2) {
                 try {
+                    this.dumpType();
                     OracleTable table = this.dbClient.selectTable(this.dbName, this.tableName);
                     this.dumpTable(table);
                     this.processedIncr();

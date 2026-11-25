@@ -12,6 +12,7 @@ import cn.oyzh.easyshell.postgresql.record.PostgresqlRecord;
 import cn.oyzh.easyshell.postgresql.record.PostgresqlSelectRecordParam;
 import cn.oyzh.easyshell.postgresql.sequence.PostgresqlSequence;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
+import cn.oyzh.easyshell.postgresql.type.PostgresqlTypeDefinition;
 import cn.oyzh.easyshell.data.postgresql.file.ShellPostgresqlDataImportHelper;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
 import cn.oyzh.fx.db.DBDialect;
@@ -84,7 +85,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
         this.message("Transport Starting");
         try {
             // 类型和独立序列是表结构的依赖，必须先于表传输
-            this.transportCustomTypes();
+            this.transportTypes();
             this.transportSequences();
             if (CollectionUtil.isNotEmpty(this.tables)) {
                 // 全部表
@@ -134,15 +135,24 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
     }
 
     /**
-     * 传输自定义枚举、域和复合类型。
+     * 传输自定义枚举、域、复合类型和范围类型。
      */
-    private void transportCustomTypes() {
-        List<String> definitions = this.sourceClient.selectCustomTypeDefinitions(this.sourceDatabase);
-        for (String definition : definitions) {
-            String sql = ShellPostgresqlUtil.replaceSchema(definition, this.sourceDatabase, this.targetDatabase);
+    private void transportTypes() {
+        List<PostgresqlTypeDefinition> types = this.sourceClient.selectTypes(this.sourceDatabase);
+        for (int i = types.size() - 1; i >= 0; i--) {
+            PostgresqlTypeDefinition type = types.get(i);
+            String keyword = PostgresqlTypeDefinition.OBJECT_TYPE_DOMAIN.equals(type.getObjectType())
+                    ? "DOMAIN" : "TYPE";
+            String drop = "DROP " + keyword + " IF EXISTS "
+                    + DBUtil.wrap(this.targetDatabase, type.getName(), DBDialect.POSTGRESQL) + " CASCADE;";
+            this.targetClient.executeSqlSimple(this.targetDatabase, drop);
+        }
+        for (PostgresqlTypeDefinition type : types) {
+            String sql = ShellPostgresqlUtil.replaceSchema(
+                    type.getCreateDefinition(), this.sourceDatabase, this.targetDatabase);
             this.targetClient.executeSqlSimple(this.targetDatabase, sql);
         }
-        if (CollectionUtil.isNotEmpty(definitions)) {
+        if (CollectionUtil.isNotEmpty(types)) {
             this.message("Transport custom types");
         }
     }

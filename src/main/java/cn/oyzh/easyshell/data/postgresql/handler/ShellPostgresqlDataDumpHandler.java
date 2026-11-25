@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.postgresql.sequence.PostgresqlSequence;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlSelectTableParam;
 import cn.oyzh.easyshell.postgresql.table.PostgresqlTable;
 import cn.oyzh.easyshell.postgresql.trigger.PostgresqlTrigger;
+import cn.oyzh.easyshell.postgresql.type.PostgresqlTypeDefinition;
 import cn.oyzh.easyshell.postgresql.view.PostgresqlView;
 import cn.oyzh.easyshell.data.postgresql.file.ShellPostgresqlDataImportHelper;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlUtil;
@@ -79,7 +80,7 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
                 this.views = this.dbClient.selectViews(this.dbName);
                 this.triggers = this.dbClient.selectTriggers(this.dbName);
                 try {
-                    this.dumpCustomType();
+                    this.dumpType();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
                 }
@@ -115,6 +116,7 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
                 }
             } else if (this.dumpType == 2) {
                 try {
+                    this.dumpType();
                     PostgresqlTable table = this.dbClient.selectTable(this.dbName, this.tableName);
                     this.dumpTable(table);
                     this.processedIncr();
@@ -215,13 +217,13 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
     }
 
     /**
-     * 转储自定义枚举、域和复合类型。
+     * 转储自定义枚举、域、复合类型和范围类型。
      *
      * @throws Exception 异常
      */
-    protected void dumpCustomType() throws Exception {
-        List<String> definitions = this.dbClient.selectCustomTypeDefinitions(this.dbName);
-        if (CollectionUtil.isNotEmpty(definitions)) {
+    protected void dumpType() throws Exception {
+        List<PostgresqlTypeDefinition> types = this.dbClient.selectTypes(this.dbName);
+        if (CollectionUtil.isNotEmpty(types)) {
             this.message("Dumping custom types");
             this.fileWriter.appendLines(List.of(
                     "",
@@ -229,7 +231,20 @@ public class ShellPostgresqlDataDumpHandler extends DBDataDumpHandler {
                     "-- Custom types",
                     "-- ----------------------------"
             ));
-            this.fileWriter.appendLines(definitions);
+            for (int i = types.size() - 1; i >= 0; i--) {
+                PostgresqlTypeDefinition type = types.get(i);
+                String keyword = PostgresqlTypeDefinition.OBJECT_TYPE_DOMAIN.equals(type.getObjectType())
+                        ? "DOMAIN" : "TYPE";
+                this.fileWriter.appendLine("DROP " + keyword + " IF EXISTS "
+                        + DBUtil.wrap(this.dbName, type.getName(), DBDialect.POSTGRESQL) + " CASCADE;");
+            }
+            for (PostgresqlTypeDefinition type : types) {
+                String createDefinition = type.getCreateDefinition();
+                if (!createDefinition.endsWith(";")) {
+                    createDefinition += ";";
+                }
+                this.fileWriter.appendLine(createDefinition);
+            }
         }
     }
 
