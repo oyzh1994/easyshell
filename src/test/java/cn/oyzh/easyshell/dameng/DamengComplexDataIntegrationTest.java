@@ -4,6 +4,8 @@ import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataExportTable;
 import cn.oyzh.easyshell.data.dameng.dto.ShellDamengDataImportFile;
 import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataExportHandler;
 import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataImportHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataDumpHandler;
+import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataRunSqlFileHandler;
 import cn.oyzh.easyshell.data.dameng.handler.ShellDamengDataTransportHandler;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -15,6 +17,7 @@ import cn.oyzh.easyshell.dameng.record.DamengRecordPrimaryKey;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.dameng.record.DamengUpdateRecordParam;
 import cn.oyzh.easyshell.dameng.schema.DamengSchema;
+import cn.oyzh.easyshell.dameng.type.DamengTypeDefinition;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.internal.ShellPrototype;
 import cn.oyzh.easyshell.util.dameng.ShellDamengColumnUtil;
@@ -289,6 +292,63 @@ public class DamengComplexDataIntegrationTest {
         String numbers = imported.getFirst().getValue("NUMBER_VALUES").toString();
         assertTrue(numbers, numbers.contains("11") && numbers.contains("12")
                 && numbers.contains("13"));
+    }
+
+    @Test
+    public void dumpsUserDefinedTypesBeforeTables() throws Exception {
+        prepareUdtSource();
+        List<DamengTypeDefinition> types = client.selectTypes(SCHEMA);
+        assertEquals(2, types.size());
+        DamengTypeDefinition address = types.stream()
+                .filter(type -> "ADDRESS_T".equals(type.getName()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("CLASS", address.getObjectType());
+        assertTrue(address.getCreateDefinition().contains("ADDRESS_T"));
+        DamengTypeDefinition numbers = types.stream()
+                .filter(type -> "INT_ARRAY".equals(type.getName()))
+                .findFirst()
+                .orElseThrow();
+        assertEquals("TYPE", numbers.getObjectType());
+        assertTrue(numbers.getCreateDefinition().contains("VARRAY"));
+
+        Path file = workDirectory.resolve("udt_types_dump.sql");
+        ShellDamengDataDumpHandler handler = new ShellDamengDataDumpHandler(client, SCHEMA);
+        handler.dumpFile(file.toFile()).setDumpType((byte) 1);
+        handler.setDataType((byte) 0);
+        handler.setContinueWithErrors(false);
+        handler.doDump();
+
+        String sql = Files.readString(file);
+        int addressIndex = sql.indexOf("-- Type structure for ADDRESS_T");
+        int numbersIndex = sql.indexOf("-- Type structure for INT_ARRAY");
+        int tableIndex = sql.indexOf("-- Table structure for UDT_TYPES");
+        assertTrue(sql, addressIndex >= 0);
+        assertTrue(sql, numbersIndex >= 0);
+        assertTrue(sql, tableIndex > addressIndex);
+        assertTrue(sql, tableIndex > numbersIndex);
+        String normalized = sql.replaceAll("\\s+", " ");
+        assertTrue(sql, normalized.contains("CREATE OR REPLACE TYPE \"ADDRESS_T\""));
+        assertTrue(sql, normalized.contains("CREATE OR REPLACE TYPE \"INT_ARRAY\""));
+
+        dropUdtTables(targetClient, TARGET_SCHEMA);
+        targetClient.executeSqlSimple(TARGET_SCHEMA, "DROP TABLE IF EXISTS \"COMPLEX_TYPES\"");
+        dropTypeIfExists(targetClient, TARGET_SCHEMA, "INT_ARRAY");
+        dropTypeIfExists(targetClient, TARGET_SCHEMA, "ADDRESS_T");
+        ShellDamengDataRunSqlFileHandler runHandler =
+                new ShellDamengDataRunSqlFileHandler(targetClient, TARGET_SCHEMA);
+        runHandler.setContinueWithErrors(false);
+        runHandler.setFile(file.toFile());
+        runHandler.runFile();
+
+        List<DamengTypeDefinition> targetTypes = targetClient.selectTypes(TARGET_SCHEMA);
+        assertEquals(2, targetTypes.size());
+        List<DamengColumn> targetColumns = targetClient.selectColumns(
+                new DamengSelectColumnParam(TARGET_SCHEMA, UDT_TABLE));
+        assertTrue(targetColumns.stream().anyMatch(column ->
+                "ADDRESS_T".equals(column.getType())));
+        assertTrue(targetColumns.stream().anyMatch(column ->
+                "INT_ARRAY".equals(column.getType())));
     }
 
     @Test

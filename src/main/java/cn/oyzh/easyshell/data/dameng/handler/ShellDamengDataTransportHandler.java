@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.dameng.column.DamengSelectColumnParam;
 import cn.oyzh.easyshell.dameng.record.DamengRecord;
 import cn.oyzh.easyshell.dameng.record.DamengSelectRecordParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
+import cn.oyzh.easyshell.dameng.type.DamengTypeDefinition;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
 import cn.oyzh.fx.db.DBDialect;
@@ -77,6 +78,13 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
     public void doTransport() throws Exception {
         this.message("Transport Starting");
         try {
+            if (CollectionUtil.isNotEmpty(this.tables)
+                    || CollectionUtil.isNotEmpty(this.views)
+                    || CollectionUtil.isNotEmpty(this.functions)
+                    || CollectionUtil.isNotEmpty(this.procedures)
+                    || CollectionUtil.isNotEmpty(this.triggers)) {
+                this.transportTypes();
+            }
             if (CollectionUtil.isNotEmpty(this.tables)) {
                 // 全部表
                 List<DamengTable> allTables = new ArrayList<>();
@@ -126,6 +134,29 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
             this.exception(ex);
         } finally {
             this.message("Transport Finished");
+        }
+    }
+
+    /**
+     * 传输用户自定义类型；类型必须先于依赖它的表、视图和存储程序创建。
+     *
+     * @throws Exception 异常
+     */
+    private void transportTypes() throws Exception {
+        List<DamengTypeDefinition> types = this.sourceClient.selectTypes(this.sourceDatabase);
+        if (CollectionUtil.isEmpty(types)) {
+            return;
+        }
+        for (DamengTypeDefinition type : types) {
+            this.checkInterrupt();
+            String createDefinition = ShellDamengUtil.removeSchema(
+                    type.getCreateDefinition(), this.sourceDatabase);
+            if (StringUtil.isBlank(createDefinition)) {
+                continue;
+            }
+            this.targetClient.executeSqlSimple(this.targetDatabase, createDefinition);
+            this.message("Create Type " + type.getName());
+            this.processedIncr();
         }
     }
 

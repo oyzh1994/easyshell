@@ -47,6 +47,7 @@ import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengSelectTriggerParam;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
+import cn.oyzh.easyshell.dameng.type.DamengTypeDefinition;
 import cn.oyzh.easyshell.dameng.view.DamengAlertViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengSelectViewParam;
@@ -91,9 +92,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 /**
  * 达梦数据库客户端封装，提供数据库连接、表/视图/函数/过程/触发器等对象的CRUD操作，
@@ -1043,6 +1048,159 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
         param.setFull(false);
         param.setSchema(schema);
         return this.selectTables(param);
+    }
+
+    /**
+     * 查询模式下的用户自定义类型，并按依赖顺序排列。
+     *
+     * @param schema 模式名称
+     * @return 类型定义列表
+     */
+    public List<DamengTypeDefinition> selectTypes(String schema) {
+        try {
+            Connection connection = this.getConnManager().connection(schema);
+            List<DamengTypeDefinition> types = new ArrayList<>();
+            String sql = """
+                    SELECT OBJECT_NAME, OBJECT_TYPE
+                    FROM ALL_OBJECTS
+                    WHERE OWNER = ?
+                      AND OBJECT_TYPE IN ('CLASS', 'TYPE')
+                    ORDER BY OBJECT_ID
+                    """;
+            this.printSql(sql);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, schema);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    Set<String> names = new HashSet<>();
+                    while (resultSet.next()) {
+                        String name = resultSet.getString(1);
+                        if (StringUtil.isBlank(name) || !names.add(name.toUpperCase())) {
+                            continue;
+                        }
+                        DamengTypeDefinition type = new DamengTypeDefinition();
+                        type.setName(name);
+                        type.setObjectType(resultSet.getString(2));
+                        types.add(type);
+                    }
+                }
+            }
+            for (DamengTypeDefinition type : types) {
+                type.setCreateDefinition(this.showCreateType(connection, schema, type));
+            }
+            this.collectTypeDependencies(types);
+            return sortTypes(types);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询创建类型语句
+     *
+     * @param connection 连接
+     * @param schema     模式名称
+     * @param type       类型
+     * @return 创建语句
+     */
+    private String showCreateType(Connection connection, String schema, DamengTypeDefinition type) {
+        try {
+            String sql = "SELECT DBMS_METADATA.GET_DDL(?, ?, ?) FROM DUAL";
+            this.printSql(sql);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, type.getObjectType());
+                statement.setString(2, type.getName());
+                statement.setString(3, schema);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    String definition = resultSet.next() ? resultSet.getString(1) : "";
+                    return StringUtil.isBlank(definition) ? "" : definition.strip();
+                }
+            }
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 收集类型之间的依赖关系
+     *
+     * @param types 类型列表
+     */
+    private void collectTypeDependencies(List<DamengTypeDefinition> types) {
+        for (DamengTypeDefinition type : types) {
+            String definition = type.getCreateDefinition();
+            if (StringUtil.isBlank(definition)) {
+                continue;
+            }
+            for (DamengTypeDefinition dependency : types) {
+                if (type == dependency) {
+                    continue;
+                }
+                String dependencyName = dependency.getName().toUpperCase();
+                if (containsTypeReference(definition, dependency.getName())
+                        && !type.getDependencies().contains(dependencyName)) {
+                    type.getDependencies().add(dependencyName);
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断定义中是否引用了指定类型
+     *
+     * @param definition 定义
+     * @param typeName   类型名称
+     * @return 结果
+     */
+    private static boolean containsTypeReference(String definition, String typeName) {
+        if (StringUtil.isBlank(typeName)) {
+            return false;
+        }
+        if (definition.contains("\"" + typeName + "\"")) {
+            return true;
+        }
+        Pattern pattern = Pattern.compile("(?i)(?<![\\p{L}\\p{N}_$])"
+                + Pattern.quote(typeName) + "(?![\\p{L}\\p{N}_$])");
+        return pattern.matcher(definition).find();
+    }
+
+    /**
+     * 按依赖顺序排列类型
+     *
+     * @param types 类型列表
+     * @return 排序后的类型列表
+     */
+    private static List<DamengTypeDefinition> sortTypes(List<DamengTypeDefinition> types) {
+        Map<String, DamengTypeDefinition> typeMap = new LinkedHashMap<>();
+        for (DamengTypeDefinition type : types) {
+            typeMap.put(type.getName().toUpperCase(), type);
+        }
+        List<DamengTypeDefinition> result = new ArrayList<>(types.size());
+        Set<String> visited = new HashSet<>();
+        Set<String> visiting = new HashSet<>();
+        for (DamengTypeDefinition type : types) {
+            sortType(type, typeMap, visited, visiting, result);
+        }
+        return result;
+    }
+
+    private static void sortType(DamengTypeDefinition type, Map<String, DamengTypeDefinition> typeMap,
+                                 Set<String> visited, Set<String> visiting, List<DamengTypeDefinition> result) {
+        String name = type.getName().toUpperCase();
+        if (visited.contains(name) || visiting.contains(name)) {
+            return;
+        }
+        visiting.add(name);
+        for (String dependency : type.getDependencies()) {
+            DamengTypeDefinition referenced = typeMap.get(dependency);
+            if (referenced != null) {
+                sortType(referenced, typeMap, visited, visiting, result);
+            }
+        }
+        visiting.remove(name);
+        if (visited.add(name)) {
+            result.add(type);
+        }
     }
 
     /**

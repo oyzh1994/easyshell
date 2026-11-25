@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.dameng.sequence.DamengSequence;
 import cn.oyzh.easyshell.dameng.table.DamengSelectTableParam;
 import cn.oyzh.easyshell.dameng.table.DamengTable;
 import cn.oyzh.easyshell.dameng.trigger.DamengTrigger;
+import cn.oyzh.easyshell.dameng.type.DamengTypeDefinition;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.util.dameng.ShellDamengDataUtil;
 import cn.oyzh.easyshell.util.dameng.ShellDamengUtil;
@@ -60,6 +61,11 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
             this.writeHeader();
             if (this.dumpType == 1) {
                 try {
+                    this.dumpType();
+                } catch (Exception ex) {
+                    this.handleDumpError(ex);
+                }
+                try {
                     this.dumpTable();
                 } catch (Exception ex) {
                     this.handleDumpError(ex);
@@ -91,6 +97,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
                 }
             } else if (this.dumpType == 2) {
                 try {
+                    this.dumpType();
                     DamengTable table = this.dbClient.selectTable(this.dbName, this.tableName);
                     this.dumpTable(table);
                     this.processedIncr();
@@ -150,6 +157,36 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
     @Override
     protected void writeTail() throws IOException {
 
+    }
+
+    /**
+     * 转储用户自定义类型；类型必须先于依赖它的表创建。
+     *
+     * @throws Exception 异常
+     */
+    protected void dumpType() throws Exception {
+        List<DamengTypeDefinition> types = this.dbClient.selectTypes(this.dbName);
+        if (CollectionUtil.isEmpty(types)) {
+            return;
+        }
+        for (DamengTypeDefinition type : types) {
+            this.checkInterrupt();
+            this.message("Dumping Type " + type.getName());
+            String createDefinition = ShellDamengUtil.removeSchema(
+                    type.getCreateDefinition(), this.dbName);
+            if (StringUtil.isBlank(createDefinition)) {
+                continue;
+            }
+            if (!createDefinition.endsWith(";")) {
+                createDefinition += ";";
+            }
+            String line0 = "";
+            String line1 = "-- ----------------------------";
+            String line2 = "-- Type structure for " + type.getName();
+            String line3 = "-- ----------------------------";
+            this.fileWriter.appendLines(List.of(line0, line1, line2, line3, createDefinition));
+            this.processedIncr();
+        }
     }
 
     /**
