@@ -4,11 +4,18 @@ import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.domain.ShellJumpConfig;
+import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.event.ShellEventUtil;
+import cn.oyzh.easyshell.exception.ShellException;
+import cn.oyzh.easyshell.internal.ShellBaseClient;
+import cn.oyzh.easyshell.internal.ShellClientChecker;
+import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.oracle.check.OracleCheck;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
 import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
-import cn.oyzh.easyshell.oracle.condition.OracleConditionUtil;
 import cn.oyzh.easyshell.oracle.foreignKey.OracleForeignKey;
 import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
@@ -53,14 +60,6 @@ import cn.oyzh.easyshell.oracle.view.OracleAlertViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleSelectViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleView;
-import cn.oyzh.easyshell.domain.ShellConnect;
-import cn.oyzh.easyshell.domain.ShellJumpConfig;
-import cn.oyzh.easyshell.domain.ShellProxyConfig;
-import cn.oyzh.easyshell.event.ShellEventUtil;
-import cn.oyzh.easyshell.exception.ShellException;
-import cn.oyzh.easyshell.internal.ShellBaseClient;
-import cn.oyzh.easyshell.internal.ShellClientChecker;
-import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.easyshell.query.oracle.OracleExecuteResult;
 import cn.oyzh.easyshell.query.oracle.OracleExplainResult;
 import cn.oyzh.easyshell.util.db.ShellSequenceUtil;
@@ -76,10 +75,10 @@ import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.DBRecordData;
 import cn.oyzh.fx.db.query.DBQueryResults;
-import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
-import cn.oyzh.fx.db.util.DBUtil;
+import cn.oyzh.fx.db.sql.DBSqlParser;
 import cn.oyzh.fx.db.util.DBDataUtil;
+import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.ssh.domain.SSHConnect;
 import cn.oyzh.ssh.jump.SSHJumpForwarder;
 import javafx.beans.property.ObjectProperty;
@@ -89,8 +88,8 @@ import javafx.beans.value.ChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.math.BigInteger;
-import java.sql.Connection;
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -968,6 +967,9 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         try {
             Connection connection = this.getConnManager().connection();
             version = connection.getMetaData().getDatabaseProductVersion();
+            if (version != null) {
+                version = version.replace("\n", " ");
+            }
             this.putProperty("version", version);
         } catch (Exception e) {
             e.printStackTrace();
@@ -4028,8 +4030,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     /**
      * 批量插入
      *
-     * @param schema   模式名称
-     * @param sqlList  SQL列表
+     * @param schema        模式名称
+     * @param sqlList       SQL列表
      * @param newConnection 是否使用新连接
      * @return 受影响的行数
      */
@@ -5041,7 +5043,7 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
     private static String renameNestedTableStores(String sql, String cloneSuffix) {
         java.util.regex.Matcher matcher = Pattern
                 .compile("(?is)(NESTED\\s+TABLE\\s+(?:\"[^\"]+\"|[A-Za-z][A-Za-z0-9_$#]*)"
-                                + "\\s+STORE\\s+AS\\s+)(\"(?:[^\"]|\"\")*\"|[A-Za-z][A-Za-z0-9_$#]*)")
+                        + "\\s+STORE\\s+AS\\s+)(\"(?:[^\"]|\"\")*\"|[A-Za-z][A-Za-z0-9_$#]*)")
                 .matcher(sql);
         StringBuffer result = new StringBuffer();
         while (matcher.find()) {

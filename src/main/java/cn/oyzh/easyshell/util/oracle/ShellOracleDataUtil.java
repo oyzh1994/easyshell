@@ -76,39 +76,8 @@ public class ShellOracleDataUtil {
      */
     public static List<String> toInsertSql(OracleColumns columns, List<OracleRecord> records, boolean includeFields) {
         List<String> list = new ArrayList<>();
-        String tableName = columns.tableName();
-        List<OracleColumn> columnList = columns.sortOfPosition();
-        final String sqlBase = "INSERT INTO " + DBUtil.wrap(tableName, DBDialect.ORACLE);
         for (OracleRecord record : records) {
-            StringBuilder sql = new StringBuilder(sqlBase);
-            if (includeFields) {
-                sql.append(" (");
-                for (OracleColumn dbColumn : columnList) {
-                    if (!dbColumn.isDmlWritable()) {
-                        continue;
-                    }
-                    sql.append(DBUtil.wrap(dbColumn.getName(), DBDialect.ORACLE)).append(", ");
-                }
-                if (sql.toString().endsWith(", ")) {
-                    sql.delete(sql.length() - 2, sql.length());
-                }
-                sql.append(")");
-            }
-            sql.append(" VALUES (");
-            for (OracleColumn dbColumn : columnList) {
-                if (!dbColumn.isDmlWritable()) {
-                    continue;
-                }
-                Object value = record.getValue(dbColumn.getName());
-                value = valueStandardization(value);
-                value = parameterizedForSql(dbColumn, value);
-                sql.append(value).append(", ");
-            }
-            if (sql.toString().endsWith(", ")) {
-                sql.delete(sql.length() - 2, sql.length());
-            }
-            sql.append(");");
-            list.add(sql.toString());
+            list.add(OracleInsertSqlBuilder.build(columns, record.toMap(), includeFields));
         }
         return list;
     }
@@ -371,6 +340,13 @@ public class ShellOracleDataUtil {
             if (value instanceof LocalDateTime date) {
                 return timestampLiteral(date);
             }
+            if (value instanceof CharSequence sequence) {
+                String text = sequence.toString().trim();
+                if (isTimestampTz(type)) {
+                    return timestampTzLiteral(text);
+                }
+                return timestampLiteral(text);
+            }
         }
         if (value instanceof CharSequence sequence) {
             return quote(sequence.toString());
@@ -406,6 +382,12 @@ public class ShellOracleDataUtil {
         return StringUtil.equalsIgnoreCase(type, "VECTOR");
     }
 
+    private static boolean isTimestampTz(String type) {
+        return StringUtil.contains(type, "TIMESTAMP")
+                && StringUtil.contains(type, "WITH TIME ZONE")
+                && !StringUtil.contains(type, "LOCAL TIME ZONE");
+    }
+
     private static String intervalLiteral(String type, String value) {
         if (isIntervalYm(type)) {
             return "INTERVAL " + quote(value) + " YEAR TO MONTH";
@@ -431,11 +413,21 @@ public class ShellOracleDataUtil {
     }
 
     private static String timestampTzLiteral(String value) {
-        return "TO_TIMESTAMP_TZ(" + quote(value) + ",'YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')";
+        try {
+            return timestampTzLiteral(OffsetDateTime.parse(value));
+        } catch (Exception ignored) {
+            return "TO_TIMESTAMP_TZ('" + value.replaceFirst("T", " ").replace("'", "''")
+                    + "','YYYY-MM-DD HH24:MI:SS.FF6TZH:TZM')";
+        }
     }
 
     private static String timestampLiteral(LocalDateTime value) {
         return "TO_TIMESTAMP('" + value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"))
+                + "','YYYY-MM-DD HH24:MI:SS.FF6')";
+    }
+
+    private static String timestampLiteral(String value) {
+        return "TO_TIMESTAMP('" + value.replaceFirst("T", " ").replace("'", "''")
                 + "','YYYY-MM-DD HH24:MI:SS.FF6')";
     }
 }
