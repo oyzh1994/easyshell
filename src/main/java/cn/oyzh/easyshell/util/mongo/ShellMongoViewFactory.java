@@ -5,10 +5,13 @@ import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataExportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataImportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoDataTransportController;
 import cn.oyzh.easyshell.controller.mongo.data.ShellMongoRunScriptFileController;
+import cn.oyzh.easyshell.controller.mongo.collection.ShellMongoCollectionInfoController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoBucketDocumentUpdateController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentAddController;
 import cn.oyzh.easyshell.controller.mongo.document.ShellMongoCollectionDocumentUpdateController;
+import cn.oyzh.easyshell.controller.mongo.function.ShellMongoFunctionInfoController;
 import cn.oyzh.easyshell.controller.mongo.user.ShellMongoUserCreateController;
+import cn.oyzh.easyshell.controller.mongo.view.ShellMongoViewInfoController;
 import cn.oyzh.easyshell.data.mongo.dto.ShellMongoDataExportCollection;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.mongo.ShellMongoClient;
@@ -16,6 +19,9 @@ import cn.oyzh.easyshell.mongo.bucket.MongoBucketFile;
 import cn.oyzh.easyshell.mongo.column.MongoColumns;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
+import cn.oyzh.easyshell.trees.mongo.collection.ShellMongoCollectionTreeItem;
+import cn.oyzh.easyshell.trees.mongo.function.ShellMongoFunctionTreeItem;
+import cn.oyzh.easyshell.trees.mongo.view.ShellMongoViewTreeItem;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.window.StageAdapter;
 import cn.oyzh.fx.plus.window.StageManager;
@@ -254,6 +260,57 @@ public class ShellMongoViewFactory {
             MessageBox.exception(ex, StageManager.getFrontWindow());
         }
         return null;
+    }
+
+    /**
+     * 集合信息
+     *
+     * @param treeItem 集合节点
+     */
+    public static void collectionInfo(ShellMongoCollectionTreeItem treeItem) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(
+                    ShellMongoCollectionInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 函数信息
+     *
+     * @param treeItem 函数节点
+     */
+    public static void functionInfo(ShellMongoFunctionTreeItem treeItem) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(
+                    ShellMongoFunctionInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 视图信息
+     *
+     * @param treeItem 视图节点
+     */
+    public static void viewInfo(ShellMongoViewTreeItem treeItem) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(
+                    ShellMongoViewInfoController.class, StageManager.getPrimaryStage());
+            adapter.setProp("item", treeItem);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
     }
 
 //    /**

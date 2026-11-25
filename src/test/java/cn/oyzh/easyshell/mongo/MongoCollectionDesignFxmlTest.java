@@ -3,6 +3,9 @@ package cn.oyzh.easyshell.mongo;
 import cn.oyzh.easyshell.tabs.mongo.collection.ShellMongoCollectionDesignTabController;
 import cn.oyzh.easyshell.tabs.mongo.view.ShellMongoViewDesignTabController;
 import cn.oyzh.easyshell.tabs.mongo.view.ShellMongoViewRecordTabController;
+import cn.oyzh.easyshell.controller.mongo.collection.ShellMongoCollectionInfoController;
+import cn.oyzh.easyshell.controller.mongo.function.ShellMongoFunctionInfoController;
+import cn.oyzh.easyshell.controller.mongo.view.ShellMongoViewInfoController;
 import cn.oyzh.fx.plus.controls.tab.FXTabPane;
 import cn.oyzh.i18n.I18nResourceBundle;
 import javafx.application.Platform;
@@ -132,6 +135,50 @@ public class MongoCollectionDesignFxmlTest {
                     Field field = loader.getController().getClass().getDeclaredField(fieldName);
                     field.setAccessible(true);
                     assertNotNull(fieldName, field.get(loader.getController()));
+                }
+            } catch (Throwable ex) {
+                error.set(ex);
+            } finally {
+                loaded.countDown();
+            }
+        });
+        assertTrue(loaded.await(20, TimeUnit.SECONDS));
+        if (error.get() != null) {
+            throw new AssertionError(error.get());
+        }
+    }
+
+    @Test
+    public void mongoInfoFxmlLoads() throws Exception {
+        CountDownLatch startup = new CountDownLatch(1);
+        try {
+            Platform.startup(startup::countDown);
+        } catch (IllegalStateException ex) {
+            startup.countDown();
+        }
+        assertTrue(startup.await(10, TimeUnit.SECONDS));
+
+        AtomicReference<Throwable> error = new AtomicReference<>();
+        CountDownLatch loaded = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try {
+                for (String resource : List.of(
+                        "/fxml/mongo/collection/shellMongoCollectionInfo.fxml",
+                        "/fxml/mongo/function/shellMongoFunctionInfo.fxml",
+                        "/fxml/mongo/view/shellMongoViewInfo.fxml")) {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+                    loader.setResources(I18nResourceBundle.INSTANCE);
+                    Parent root = loader.load();
+                    assertNotNull(resource, root);
+                    Object controller = loader.getController();
+                    assertNotNull(resource, controller);
+                    if (resource.contains("/collection/")) {
+                        assertTrue(controller instanceof ShellMongoCollectionInfoController);
+                    } else if (resource.contains("/function/")) {
+                        assertTrue(controller instanceof ShellMongoFunctionInfoController);
+                    } else {
+                        assertTrue(controller instanceof ShellMongoViewInfoController);
+                    }
                 }
             } catch (Throwable ex) {
                 error.set(ex);

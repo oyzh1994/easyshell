@@ -9,6 +9,7 @@ import cn.oyzh.easyshell.mongo.database.MongoDatabase;
 import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.mongo.record.MongoRecord;
 import cn.oyzh.easyshell.mongo.user.MongoUser;
+import cn.oyzh.easyshell.mongo.view.MongoView;
 import cn.oyzh.easyshell.query.mongo.ShellMongoExecuteResult;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.bucket.ShellMongoBucketsTreeItem;
@@ -453,6 +454,16 @@ public class ShellMongoDatabaseTreeItem extends ShellMongoTreeItem<ShellMongoDat
      */
     public MongoFunction selectFunction(String functionName) {
         return this.client().selectFunction(this.dbName(), functionName);
+    }
+
+    /**
+     * 查询视图
+     *
+     * @param viewName 视图名称
+     * @return 视图
+     */
+    public MongoView selectView(String viewName) {
+        return this.client().selectView(this.dbName(), viewName);
     }
 
     /**

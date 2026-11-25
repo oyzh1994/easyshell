@@ -70,6 +70,7 @@ public class ShellMongoViewTreeItem extends ShellMongoTreeItem<ShellMongoViewTre
         List<MenuItem> items = new ArrayList<>();
         FXMenuItem open = MenuItemHelper.openView(this::onPrimaryDoubleClick);
         FXMenuItem design = MenuItemHelper.designView(this::design);
+        FXMenuItem info = MenuItemHelper.viewInfo(this::viewInfo);
         FXMenuItem delete = MenuItemHelper.deleteView(this::delete);
         FXMenuItem export = MenuItemHelper.exportData(this::export);
         items.add(open);
@@ -77,6 +78,7 @@ public class ShellMongoViewTreeItem extends ShellMongoTreeItem<ShellMongoViewTre
         items.add(delete);
         items.add(MenuItemHelper.separator());
         items.add(export);
+        items.add(info);
         return items;
     }
 
@@ -87,6 +89,10 @@ public class ShellMongoViewTreeItem extends ShellMongoTreeItem<ShellMongoViewTre
 
     private void design() {
         ShellMongoEventUtil.designView(this.value, this.dbItem());
+    }
+
+    private void viewInfo() {
+        ShellMongoViewFactory.viewInfo(this);
     }
 
     private void export() {

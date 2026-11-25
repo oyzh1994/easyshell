@@ -8,6 +8,7 @@ import cn.oyzh.easyshell.mongo.function.MongoFunction;
 import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoUtil;
+import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -81,7 +82,16 @@ public class ShellMongoFunctionTreeItem extends ShellMongoTreeItem<ShellMongoFun
         items.add(MenuItemHelper.separator());
         FXMenuItem cloneFunction = MenuItemHelper.cloneFunction( this::cloneFunction);
         items.add(cloneFunction);
+        FXMenuItem info = MenuItemHelper.functionInfo(this::functionInfo);
+        items.add(info);
         return items;
+    }
+
+    /**
+     * 函数信息
+     */
+    private void functionInfo() {
+        ShellMongoViewFactory.functionInfo(this);
     }
 
     /**

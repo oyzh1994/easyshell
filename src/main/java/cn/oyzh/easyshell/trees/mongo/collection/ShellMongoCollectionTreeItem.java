@@ -14,6 +14,7 @@ import cn.oyzh.easyshell.trees.mongo.ShellMongoTreeItem;
 import cn.oyzh.easyshell.trees.mongo.database.ShellMongoDatabaseTreeItem;
 import cn.oyzh.easyshell.util.mongo.ShellMongoViewFactory;
 import cn.oyzh.fx.gui.svg.glyph.DesignSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.InfoSVGGlyph;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.tree.view.RichTreeView;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -112,6 +113,9 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
         items.add(dumpTable);
         FXMenuItem exportTable = MenuItemHelper.exportData( this::export);
         items.add(exportTable);
+        FXMenuItem collectionInfo = new FXMenuItem(new InfoSVGGlyph(),
+                ShellI18nHelper.mongoCollectionInfo(), this::collectionInfo);
+        items.add(collectionInfo);
         return items;
     }
 
@@ -121,6 +125,13 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
     private void designCollection() {
         this.reloadChild();
         ShellMongoEventUtil.designCollection(this.value, this.dbItem());
+    }
+
+    /**
+     * 集合信息
+     */
+    private void collectionInfo() {
+        ShellMongoViewFactory.collectionInfo(this);
     }
 
     /**

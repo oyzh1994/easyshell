@@ -65,7 +65,7 @@ public class ShellMongoCollectionDesignUtil {
         builder.append(");\n");
         if (indexes != null) {
             for (MongoIndex index : indexes) {
-                if (index == null || index.isInvalid()) {
+                if (index == null || index.isInvalid() || index.isIdIndex()) {
                     continue;
                 }
                 builder.append(toCreateIndexScript(collectionName, index)).append('\n');

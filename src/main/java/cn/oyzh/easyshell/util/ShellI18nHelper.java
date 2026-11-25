@@ -1437,4 +1437,8 @@ public class ShellI18nHelper {
         return text("shell.mongo.invalidViewPipeline");
     }
 
+    public static String mongoCollectionInfo() {
+        return text("shell.mongo.collectionInfo");
+    }
+
 }

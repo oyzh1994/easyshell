@@ -697,6 +697,19 @@ public class MongoComplexDataIntegrationTest {
     }
 
     @Test
+    public void readsCollectionStatsAndDdl() {
+        Document stats = client.collectionStats(DB, SOURCE);
+        assertEquals(4L, ((Number) stats.get("count")).longValue());
+        assertEquals(4L, client.collectionCount(DB, SOURCE));
+
+        MongoCollectionOptions options = client.selectCollectionOptions(DB, SOURCE);
+        String ddl = ShellMongoCollectionDesignUtil.toCreateCollectionScript(
+                options, client.listCollectionIndexes(DB, SOURCE));
+        assertTrue(ddl, ddl.contains("db.createCollection('" + SOURCE + "'"));
+        assertFalse(ddl, ddl.contains("_id_"));
+    }
+
+    @Test
     public void createsDesignedCollectionWithIndexesAndValidator() {
         String collectionName = "complex_types_design";
         MongoCollectionOptions options = new MongoCollectionOptions();

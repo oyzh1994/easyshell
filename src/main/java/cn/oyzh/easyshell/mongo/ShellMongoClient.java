@@ -903,6 +903,29 @@ public class ShellMongoClient implements ShellFileClient<MongoBucketFile> {
     }
 
     /**
+     * 查询集合统计信息
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @return 统计信息
+     */
+    public Document collectionStats(String dbName, String collectionName) {
+        return this.mongoClient.getDatabase(dbName)
+                .runCommand(new Document("collStats", collectionName));
+    }
+
+    /**
+     * 查询集合文档数量
+     *
+     * @param dbName         数据库名称
+     * @param collectionName 集合名称
+     * @return 文档数量
+     */
+    public long collectionCount(String dbName, String collectionName) {
+        return this.collection(dbName, collectionName).countDocuments();
+    }
+
+    /**
      * 查询集合索引列表
      *
      * @param dbName         数据库名称
