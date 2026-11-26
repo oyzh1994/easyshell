@@ -690,7 +690,8 @@ public final class LLMAgentRuntime {
                                                   String currentObjective) {
         String toolCatalog = this.toolCatalog();
         String system = LLMUtil.joinSystemMessages(this.promptSystemMessage,
-                this.visibleSkillSystemMessage(), """
+                this.visibleSkillSystemMessage(),
+                this.hasMcp() ? this.mcpSystemMessage : "", """
                 You are a dynamic supervisor for EasyShell's multi-agent system.
                 Choose exactly one next worker step, or finish when the task is complete.
                 Available scopes:
@@ -895,7 +896,8 @@ public final class LLMAgentRuntime {
             case DYNAMIC_SUPERVISOR -> "";
         };
         String system = LLMUtil.joinSystemMessages(this.promptSystemMessage,
-                this.visibleSkillSystemMessage(), """
+                this.visibleSkillSystemMessage(),
+                this.hasMcp() ? this.mcpSystemMessage : "", """
                 You are the supervisor of EasyShell's composite agent system.
                 Decide whether the task can be completed in one worker step or needs multiple worker steps.
                 Each step must use exactly one available agent group:
