@@ -1,0 +1,16 @@
+1.  启动
+docker run -d --name xinference \
+  -p 9997:9997 \
+  -e XINFERENCE_MODEL_SOURCE=modelscope \
+  xprobe/xinference:latest \
+  xinference-local -H 0.0.0.0 --port 9997
+
+docker run -d --name xinference \
+  -p 9997:9997 \
+  -e HTTP_PROXY=http://host.docker.internal:8118 \
+  -e HTTPS_PROXY=http://host.docker.internal:8118 \
+  xprobe/xinference:latest \
+  xinference-local -H 0.0.0.0 --port 9997
+
+2. 配置
+http://localhost:9997
