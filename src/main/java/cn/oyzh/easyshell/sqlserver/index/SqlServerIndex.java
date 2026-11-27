@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.sqlserver.index;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025-11-06
  */
-public class SqlServerIndex extends DBObject implements ObjectCopier<SqlServerIndex> {
+public class SqlServerIndex extends DBObject implements DBIndex, ObjectCopier<SqlServerIndex> {
 
     /**
      * 索引顺序
@@ -46,6 +47,11 @@ public class SqlServerIndex extends DBObject implements ObjectCopier<SqlServerIn
      * 字段列表
      */
     private List<IndexColumn> columns;
+
+    /**
+     * 所属表名称
+     */
+    private String tableName;
 
     /**
      * 获取原始名称
@@ -164,6 +170,17 @@ public class SqlServerIndex extends DBObject implements ObjectCopier<SqlServerIn
     }
 
     @Override
+    public String getTableName() {
+        return this.tableName;
+    }
+
+    @Override
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+        super.putOriginalData("tableName", tableName);
+    }
+
+    @Override
     public void copy(SqlServerIndex t1) {
         if (t1 != null) {
             this.setName(t1.name);
@@ -171,6 +188,7 @@ public class SqlServerIndex extends DBObject implements ObjectCopier<SqlServerIn
             this.setMethod(t1.method);
             this.setColumns(t1.columns);
             this.setSeqIndex(t1.seqIndex);
+            this.setTableName(t1.tableName);
         }
     }
 

@@ -1,8 +1,11 @@
 package cn.oyzh.easyshell.oracle.index;
 
+import cn.oyzh.common.object.ObjectComparator;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBIndex;
+import cn.oyzh.fx.db.DBName;
 import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
@@ -15,7 +18,17 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025-11-06
  */
-public class OracleIndex extends DBObject implements ObjectCopier<OracleIndex> {
+public class OracleIndex extends DBObject implements DBName, DBIndex, ObjectCopier<OracleIndex>, ObjectComparator<OracleIndex> {
+
+    /**
+     * 模式名称
+     */
+    private String schema;
+
+    /**
+     * 表名称
+     */
+    private String tableName;
 
     /**
      * 索引顺序
@@ -171,7 +184,20 @@ public class OracleIndex extends DBObject implements ObjectCopier<OracleIndex> {
             this.setMethod(t1.method);
             this.setColumns(t1.columns);
             this.setSeqIndex(t1.seqIndex);
+            this.setSchema(t1.schema);
+            this.setTableName(t1.tableName);
         }
+    }
+
+    /**
+     * 比较是否为同一个索引
+     *
+     * @param index 索引
+     * @return 结果
+     */
+    @Override
+    public boolean compare(OracleIndex index) {
+        return index != null && StringUtil.equalsIgnoreCase(this.name, index.name);
     }
 
     /**
@@ -200,6 +226,42 @@ public class OracleIndex extends DBObject implements ObjectCopier<OracleIndex> {
      */
     public void setSeqIndex(int seqIndex) {
         this.seqIndex = seqIndex;
+    }
+
+    /**
+     * 获取模式名称
+     *
+     * @return 模式名称
+     */
+    public String getSchema() {
+        return schema;
+    }
+
+    /**
+     * 设置模式名称
+     *
+     * @param schema 模式名称
+     */
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    /**
+     * 获取表名称
+     *
+     * @return 表名称
+     */
+    public String getTableName() {
+        return tableName;
+    }
+
+    /**
+     * 设置表名称
+     *
+     * @param tableName 表名称
+     */
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     /**

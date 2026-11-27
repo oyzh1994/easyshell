@@ -5,6 +5,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.db.index.ShellIndexHelper;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -16,7 +18,6 @@ import cn.oyzh.easyshell.mariadb.check.MariadbCheck;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumn;
 import cn.oyzh.easyshell.mariadb.column.MariadbColumns;
 import cn.oyzh.easyshell.mariadb.column.MariadbSelectColumnParam;
-import cn.oyzh.easyshell.mariadb.condition.MariadbConditionUtil;
 import cn.oyzh.easyshell.mariadb.database.MariadbDatabase;
 import cn.oyzh.easyshell.mariadb.event.MariadbEvent;
 import cn.oyzh.easyshell.mariadb.event.MariadbSelectEventParam;
@@ -2374,6 +2375,198 @@ public class ShellMariadbClient implements ShellBaseClient, DBClient {
             IOUtil.close(statement);
             return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引列表（数据库级别，包含所属表名称）
+     *
+     * @param param 查询参数，包含数据库名称与索引名称
+     * @return 索引列表
+     */
+    public List<MariadbIndex> selectSchemaIndexes(ShellSelectIndexParam param) {
+        String dbName = param.getScope();
+        String indexName = param.getIndexName();
+        try {
+            String sql = """
+                    SELECT
+                        TABLE_NAME AS "Table_name",
+                        INDEX_NAME AS "Key_name",
+                        COLUMN_NAME AS "Column_name",
+                        SEQ_IN_INDEX AS "Seq_in_index",
+                        NON_UNIQUE AS "Non_unique",
+                        INDEX_TYPE AS "Index_type",
+                        SUB_PART AS "Sub_part",
+                        INDEX_COMMENT AS "Index_comment"
+                    FROM
+                        information_schema.STATISTICS
+                    WHERE
+                        TABLE_SCHEMA = ?
+                    AND
+                        INDEX_NAME <> 'PRIMARY'
+                    """;
+            if (StringUtil.isNotBlank(indexName)) {
+                sql += " AND INDEX_NAME = ?";
+            }
+            sql += " ORDER BY TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX";
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection(dbName);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, dbName);
+            if (StringUtil.isNotBlank(indexName)) {
+                statement.setString(2, indexName);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            Map<String, MariadbIndex> indexMap = new HashMap<>();
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("Table_name");
+                String keyName = resultSet.getString("Key_name");
+                String columnName = resultSet.getString("Column_name");
+                String mapKey = tableName + "." + keyName;
+                MariadbIndex index = indexMap.get(mapKey);
+                if (index == null) {
+                    index = new MariadbIndex();
+                    index.setName(keyName);
+                    index.setTableName(tableName);
+                    index.setSeqIndex(resultSet.getInt("Seq_in_index"));
+                    index.setComment(resultSet.getString("Index_comment"));
+                    index.type(resultSet.getString("Index_type"), resultSet.getInt("Non_unique"));
+                    indexMap.put(mapKey, index);
+                }
+                if (StringUtil.isNotBlank(columnName)) {
+                    index.addColumn(columnName, resultSet.getInt("Sub_part"));
+                }
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return new ArrayList<>(indexMap.values());
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param dbName    数据库名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    public String selectIndexDefinition(String dbName, String indexName) {
+        try {
+            List<MariadbIndex> indexes = this.selectSchemaIndexes(new ShellSelectIndexParam(dbName, indexName));
+            if (CollectionUtil.isEmpty(indexes)) {
+                return null;
+            }
+            MariadbIndex index = indexes.getFirst();
+            // 函数索引等无法解析字段的场景，不使用构建的定义
+            if (CollectionUtil.isEmpty(index.getColumns())) {
+                return null;
+            }
+            StringBuilder builder = new StringBuilder("CREATE ");
+            // 类型前缀
+            String typeName = index.typeName();
+            if (typeName != null) {
+                builder.append(typeName).append(" ");
+            }
+            builder.append("INDEX ")
+                    .append(DBUtil.wrap(index.getName(), DBDialect.MYSQL))
+                    .append(" ON ")
+                    .append(DBUtil.wrap(dbName, index.getTableName(), DBDialect.MYSQL))
+                    .append(" (");
+            for (MariadbIndex.IndexColumn column : index.getColumns()) {
+                builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.MYSQL));
+                if (column.getSubPart() != null && column.getSubPart() > 0) {
+                    builder.append("(").append(column.getSubPart()).append(")");
+                }
+                builder.append(",");
+            }
+            StringUtil.deleteLast(builder, ",");
+            builder.append(")");
+            // 索引方式
+            if (StringUtil.isNotBlank(index.methodName())) {
+                builder.append(" USING ").append(index.methodName());
+            }
+            // 索引注释
+            if (StringUtil.isNotBlank(index.getComment())) {
+                builder.append(" COMMENT ").append(DBUtil.wrapData(index.getComment(), DBDialect.MYSQL));
+            }
+            return builder.toString();
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 判断索引是否存在
+     *
+     * @param dbName    数据库名称
+     * @param indexName 索引名称
+     * @return 是否存在
+     */
+    public boolean existIndex(String dbName, String indexName) {
+        try {
+            String sql = "SELECT COUNT(1) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = ? AND INDEX_NAME = ?";
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection(dbName);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, dbName);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            boolean exist = false;
+            if (resultSet.next()) {
+                exist = resultSet.getInt(1) > 0;
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return exist;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param dbName    数据库名称
+     * @param indexName 索引名称
+     * @param tableName 表名称
+     */
+    public void dropIndex(String dbName, String indexName, String tableName) {
+        String sql = "DROP INDEX " + DBUtil.wrap(indexName, DBDialect.MYSQL)
+                + " ON " + DBUtil.wrap(dbName, tableName, DBDialect.MYSQL);
+        this.executeIndexSql(dbName, List.of(sql));
+    }
+
+    /**
+     * 执行索引相关SQL
+     *
+     * @param dbName  数据库名称
+     * @param sqlList SQL列表
+     */
+    public void executeIndexSql(String dbName, List<String> sqlList) {
+        if (CollectionUtil.isEmpty(sqlList)) {
+            return;
+        }
+        Connection connection = null;
+        try {
+            connection = this.getConnManager().connection(dbName);
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (StringUtil.isBlank(sql)) {
+                    continue;
+                }
+                String execSql = ShellIndexHelper.stripTerminator(sql);
+                this.printSql(execSql);
+                statement.execute(execSql);
+            }
+            connection.commit();
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }

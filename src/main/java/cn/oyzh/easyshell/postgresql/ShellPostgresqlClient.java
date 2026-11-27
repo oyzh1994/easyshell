@@ -5,6 +5,8 @@ import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.db.index.ShellIndexHelper;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -3717,6 +3719,222 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             IOUtil.close(statement);
             return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引列表（模式级别，包含所属表名称）
+     *
+     * @param param 查询参数，包含模式名称与索引名称
+     * @return 索引列表
+     */
+    public List<PostgresqlIndex> selectSchemaIndexes(ShellSelectIndexParam param) {
+        String schema = param.getScope();
+        String indexName = param.getIndexName();
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT
+                        TC.RELNAME AS "Table_name",
+                        IC.RELNAME AS "Key_name",
+                        A.ATTNAME AS "Column_name",
+                        K.ORD AS "Seq_in_index",
+                        CASE WHEN IX.INDISUNIQUE THEN 0 ELSE 1 END AS "Non_unique",
+                        AM.AMNAME AS "Index_type"
+                    FROM
+                        PG_CATALOG.PG_INDEX IX
+                    JOIN
+                        PG_CATALOG.PG_CLASS TC ON TC.OID = IX.INDRELID
+                    JOIN
+                        PG_CATALOG.PG_NAMESPACE N ON N.OID = TC.RELNAMESPACE
+                    JOIN
+                        PG_CATALOG.PG_CLASS IC ON IC.OID = IX.INDEXRELID
+                    JOIN
+                        PG_CATALOG.PG_AM AM ON AM.OID = IC.RELAM
+                    LEFT JOIN LATERAL
+                        UNNEST(IX.INDKEY::SMALLINT[]) WITH ORDINALITY AS K(ATTNUM, ORD) ON TRUE
+                    LEFT JOIN
+                        PG_CATALOG.PG_ATTRIBUTE A ON A.ATTRELID = IX.INDRELID AND A.ATTNUM = K.ATTNUM
+                    WHERE
+                        N.NSPNAME = ?
+                    AND
+                        NOT IX.INDISPRIMARY
+                    AND
+                        IX.INDISVALID
+                    AND
+                        NOT EXISTS (
+                            SELECT 1
+                            FROM PG_CATALOG.PG_CONSTRAINT CON
+                            WHERE CON.CONINDID = IX.INDEXRELID
+                            AND CON.CONRELID = IX.INDRELID
+                            AND CON.CONTYPE IN ('p', 'u', 'x')
+                        )
+                    """;
+            if (StringUtil.isNotBlank(indexName)) {
+                sql += " AND IC.RELNAME = ?";
+            }
+            sql += " ORDER BY TC.RELNAME, IC.RELNAME, K.ORD";
+            this.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            if (StringUtil.isNotBlank(indexName)) {
+                statement.setString(2, indexName);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            Map<String, PostgresqlIndex> indexMap = new HashMap<>();
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("Table_name");
+                String keyName = resultSet.getString("Key_name");
+                String columnName = resultSet.getString("Column_name");
+                String mapKey = tableName + "." + keyName;
+                PostgresqlIndex index = indexMap.get(mapKey);
+                if (index == null) {
+                    int noneUnique = resultSet.getInt("Non_unique");
+                    int seqInIndex = resultSet.getInt("Seq_in_index");
+                    String indexType = resultSet.getString("Index_type");
+                    index = new PostgresqlIndex();
+                    index.setName(keyName);
+                    index.setTableName(tableName);
+                    index.setSeqIndex(seqInIndex);
+                    index.setType(noneUnique == 0 ? "UNIQUE" : "NORMAL");
+                    index.setMethod(indexType == null ? null : indexType.toUpperCase());
+                    indexMap.put(mapKey, index);
+                }
+                if (StringUtil.isNotBlank(columnName)) {
+                    index.addColumn(columnName);
+                }
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return new ArrayList<>(indexMap.values());
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    public String selectIndexDefinition(String schema, String indexName) {
+        try {
+            String sql = """
+                    SELECT
+                        PG_CATALOG.PG_GET_INDEXDEF(C.OID)
+                    FROM
+                        PG_CATALOG.PG_CLASS C
+                    JOIN
+                        PG_CATALOG.PG_NAMESPACE N ON N.OID = C.RELNAMESPACE
+                    WHERE
+                        N.NSPNAME = ?
+                    AND
+                        C.RELNAME = ?
+                    AND
+                        C.RELKIND = 'i'
+                    """;
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            String definition = null;
+            if (resultSet.next()) {
+                definition = resultSet.getString(1);
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return ShellIndexHelper.stripTerminator(definition);
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 判断索引是否存在
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 是否存在
+     */
+    public boolean existIndex(String schema, String indexName) {
+        try {
+            String sql = """
+                    SELECT
+                        COUNT(1)
+                    FROM
+                        PG_CATALOG.PG_CLASS C
+                    JOIN
+                        PG_CATALOG.PG_NAMESPACE N ON N.OID = C.RELNAMESPACE
+                    WHERE
+                        N.NSPNAME = ?
+                    AND
+                        C.RELNAME = ?
+                    AND
+                        C.RELKIND = 'i'
+                    """;
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            boolean exist = false;
+            if (resultSet.next()) {
+                exist = resultSet.getInt(1) > 0;
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return exist;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @param tableName 表名称
+     */
+    public void dropIndex(String schema, String indexName, String tableName) {
+        String sql = "DROP INDEX " + DBUtil.wrap(schema, indexName, DBDialect.POSTGRESQL);
+        this.executeIndexSql(schema, List.of(sql));
+    }
+
+    /**
+     * 执行索引相关SQL
+     *
+     * @param schema  模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeIndexSql(String schema, List<String> sqlList) {
+        if (CollectionUtil.isEmpty(sqlList)) {
+            return;
+        }
+        Connection connection = null;
+        try {
+            connection = this.getConnManager().connection();
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (StringUtil.isBlank(sql)) {
+                    continue;
+                }
+                String execSql = ShellIndexHelper.stripTerminator(sql);
+                this.printSql(execSql);
+                statement.execute(execSql);
+            }
+            connection.commit();
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }

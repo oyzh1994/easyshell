@@ -5,6 +5,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaManager;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.util.DBUtil;
 
@@ -14,7 +15,7 @@ import cn.oyzh.fx.db.util.DBUtil;
  * @author oyzh
  * @since 2026-11-02
  */
-public class SQLiteIndex extends DBObject implements ObjectCopier<SQLiteIndex> {
+public class SQLiteIndex extends DBObject implements DBIndex, ObjectCopier<SQLiteIndex> {
 
     private String name;
 

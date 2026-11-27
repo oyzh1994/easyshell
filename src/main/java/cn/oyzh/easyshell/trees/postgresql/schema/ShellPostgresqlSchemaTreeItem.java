@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.postgresql.schema;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.postgresql.ShellPostgresqlClient;
 import cn.oyzh.easyshell.postgresql.check.PostgresqlCheck;
 import cn.oyzh.easyshell.postgresql.column.PostgresqlColumn;
@@ -12,6 +13,8 @@ import cn.oyzh.easyshell.postgresql.function.PostgresqlAlertFunctionParam;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlCreateFunctionParam;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlFunction;
 import cn.oyzh.easyshell.postgresql.index.PostgresqlIndex;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlAlertProcedureParam;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlCreateProcedureParam;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlProcedure;
@@ -48,6 +51,7 @@ import cn.oyzh.easyshell.trees.postgresql.view.ShellPostgresqlViewTreeItem;
 import cn.oyzh.easyshell.trees.postgresql.view.ShellPostgresqlViewsTreeItem;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -70,7 +74,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<ShellPostgresqlSchemaTreeItemValue> {
+public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<ShellPostgresqlSchemaTreeItemValue> implements ShellIndexTarget {
 
     /**
      * 当前值
@@ -210,6 +214,7 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
                         List<TreeItem<?>> typeItems = new ArrayList<>();
                         typeItems.add(new ShellPostgresqlTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellPostgresqlFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlSequencesTreeItem(this.getTreeView()));
@@ -256,6 +261,20 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
             }
         }
         return list;
+    }
+
+    /**
+     * 获取索引类型子节点
+     *
+     * @return 索引类型子节点
+     */
+    public ShellIndexesTreeItem getIndexTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 
     /**
@@ -836,6 +855,7 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
      *
      * @return 数据库方言
      */
+    @Override
     public DBDialect dialect() {
         return this.client().dialect();
     }
@@ -991,5 +1011,53 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
         param.setSequence(sequence);
         param.setSchema(this.schema());
         this.client().alertSequence(param);
+    }
+
+    @Override
+    public String indexScope() {
+        return this.schema();
+    }
+
+    @Override
+    public List<? extends DBIndex> selectIndexes() {
+        return this.client().selectSchemaIndexes(new ShellSelectIndexParam(this.schema()));
+    }
+
+    @Override
+    public String selectIndexDefinition(String indexName) {
+        return this.client().selectIndexDefinition(this.schema(), indexName);
+    }
+
+    @Override
+    public void executeIndexSql(List<String> sqlList) {
+        this.client().executeIndexSql(this.schema(), sqlList);
+    }
+
+    @Override
+    public boolean existIndex(String indexName) {
+        return this.client().existIndex(this.schema(), indexName);
+    }
+
+    @Override
+    public void dropIndex(String indexName, String tableName) {
+        this.client().dropIndex(this.schema(), indexName, tableName);
+    }
+
+    @Override
+    public DBIndex newIndex() {
+        return new PostgresqlIndex();
+    }
+
+    @Override
+    public void reloadIndexes() {
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
     }
 }

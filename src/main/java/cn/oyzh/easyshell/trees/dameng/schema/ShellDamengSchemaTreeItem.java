@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.dameng.schema;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.dameng.ShellDamengClient;
 import cn.oyzh.easyshell.dameng.check.DamengCheck;
 import cn.oyzh.easyshell.dameng.column.DamengColumn;
@@ -12,6 +13,8 @@ import cn.oyzh.easyshell.dameng.function.DamengAlertFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengCreateFunctionParam;
 import cn.oyzh.easyshell.dameng.function.DamengFunction;
 import cn.oyzh.easyshell.dameng.index.DamengIndex;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.dameng.procedure.DamengAlertProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengCreateProcedureParam;
 import cn.oyzh.easyshell.dameng.procedure.DamengProcedure;
@@ -48,6 +51,7 @@ import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewsTreeItem;
 import cn.oyzh.easyshell.util.dameng.ShellDamengViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -70,7 +74,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSchemaTreeItemValue> {
+public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSchemaTreeItemValue> implements ShellIndexTarget {
 
     /**
      * 当前值
@@ -210,6 +214,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
                         List<TreeItem<?>> typeItems = new ArrayList<>();
                         typeItems.add(new ShellDamengTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellDamengFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellDamengSequencesTreeItem(this.getTreeView()));
@@ -256,6 +261,20 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
             }
         }
         return list;
+    }
+
+    /**
+     * 获取索引类型子节点
+     *
+     * @return 索引类型子节点
+     */
+    public ShellIndexesTreeItem getIndexTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 
     /**
@@ -836,6 +855,7 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
      *
      * @return 数据库方言
      */
+    @Override
     public DBDialect dialect() {
         return this.client().dialect();
     }
@@ -991,5 +1011,53 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         param.setSequence(sequence);
         param.setSchema(this.schema());
         this.client().alertSequence(param);
+    }
+
+    @Override
+    public String indexScope() {
+        return this.schema();
+    }
+
+    @Override
+    public List<? extends DBIndex> selectIndexes() {
+        return this.client().selectSchemaIndexes(new ShellSelectIndexParam(this.schema()));
+    }
+
+    @Override
+    public String selectIndexDefinition(String indexName) {
+        return this.client().selectIndexDefinition(this.schema(), indexName);
+    }
+
+    @Override
+    public void executeIndexSql(List<String> sqlList) {
+        this.client().executeIndexSql(this.schema(), sqlList);
+    }
+
+    @Override
+    public boolean existIndex(String indexName) {
+        return this.client().existIndex(this.schema(), indexName);
+    }
+
+    @Override
+    public void dropIndex(String indexName, String tableName) {
+        this.client().dropIndex(this.schema(), indexName, tableName);
+    }
+
+    @Override
+    public DBIndex newIndex() {
+        return new DamengIndex();
+    }
+
+    @Override
+    public void reloadIndexes() {
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
     }
 }

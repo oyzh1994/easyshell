@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.sqlserver.schema;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.sqlserver.ShellSqlServerClient;
 import cn.oyzh.easyshell.sqlserver.check.SqlServerCheck;
 import cn.oyzh.easyshell.sqlserver.column.SqlServerColumn;
@@ -12,6 +13,8 @@ import cn.oyzh.easyshell.sqlserver.function.SqlServerAlertFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerCreateFunctionParam;
 import cn.oyzh.easyshell.sqlserver.function.SqlServerFunction;
 import cn.oyzh.easyshell.sqlserver.index.SqlServerIndex;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerAlertProcedureParam;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerCreateProcedureParam;
 import cn.oyzh.easyshell.sqlserver.procedure.SqlServerProcedure;
@@ -48,6 +51,7 @@ import cn.oyzh.easyshell.trees.sqlserver.view.ShellSqlServerViewTreeItem;
 import cn.oyzh.easyshell.trees.sqlserver.view.ShellSqlServerViewsTreeItem;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -69,7 +73,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSqlServerSchemaTreeItemValue> {
+public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSqlServerSchemaTreeItemValue> implements ShellIndexTarget {
 
     /**
      * 当前值
@@ -210,6 +214,7 @@ public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSq
                         List<TreeItem<?>> typeItems = new ArrayList<>();
                         typeItems.add(new ShellSqlServerTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellSqlServerViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellSqlServerFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellSqlServerProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellSqlServerSequencesTreeItem(this.getTreeView()));
@@ -256,6 +261,20 @@ public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSq
             }
         }
         return list;
+    }
+
+    /**
+     * 获取索引类型子节点
+     *
+     * @return 索引类型子节点
+     */
+    public ShellIndexesTreeItem getIndexTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 
     /**
@@ -836,6 +855,7 @@ public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSq
      *
      * @return 数据库方言
      */
+    @Override
     public DBDialect dialect() {
         return this.client().dialect();
     }
@@ -991,5 +1011,53 @@ public class ShellSqlServerSchemaTreeItem extends ShellSqlServerTreeItem<ShellSq
         param.setSequence(sequence);
         param.setSchema(this.schema());
         this.client().alertSequence(param);
+    }
+
+    @Override
+    public String indexScope() {
+        return this.schema();
+    }
+
+    @Override
+    public List<? extends DBIndex> selectIndexes() {
+        return this.client().selectSchemaIndexes(new ShellSelectIndexParam(this.schema()));
+    }
+
+    @Override
+    public String selectIndexDefinition(String indexName) {
+        return this.client().selectIndexDefinition(this.schema(), indexName);
+    }
+
+    @Override
+    public void executeIndexSql(List<String> sqlList) {
+        this.client().executeIndexSql(this.schema(), sqlList);
+    }
+
+    @Override
+    public boolean existIndex(String indexName) {
+        return this.client().existIndex(this.schema(), indexName);
+    }
+
+    @Override
+    public void dropIndex(String indexName, String tableName) {
+        this.client().dropIndex(this.schema(), indexName, tableName);
+    }
+
+    @Override
+    public DBIndex newIndex() {
+        return new SqlServerIndex();
+    }
+
+    @Override
+    public void reloadIndexes() {
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
     }
 }

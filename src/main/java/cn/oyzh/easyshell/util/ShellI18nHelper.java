@@ -703,6 +703,18 @@ public class ShellI18nHelper {
         return text("shell.confirm.deleteIndex", name);
     }
 
+    public static String addIndex() {
+        return text("shell.db.addIndex");
+    }
+
+    public static String designIndex() {
+        return text("shell.db.designIndex");
+    }
+
+    public static String indexDefinitionTip() {
+        return text("shell.db.indexDefinitionTip");
+    }
+
     public static String confirmDeleteForeignKey(Object name) {
         return text("shell.confirm.deleteForeignKey", name);
     }

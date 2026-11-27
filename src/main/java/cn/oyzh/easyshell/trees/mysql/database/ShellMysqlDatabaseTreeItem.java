@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.mysql.database;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.mysql.ShellMysqlEventUtil;
 import cn.oyzh.easyshell.mysql.ShellMysqlClient;
@@ -29,6 +30,9 @@ import cn.oyzh.easyshell.mysql.trigger.MysqlTrigger;
 import cn.oyzh.easyshell.mysql.view.MysqlAlertViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlCreateViewParam;
 import cn.oyzh.easyshell.mysql.view.MysqlView;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExecuteResult;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlExplainResult;
 import cn.oyzh.easyshell.trees.mysql.ShellMysqlTreeItem;
@@ -46,7 +50,7 @@ import cn.oyzh.easyshell.trees.mysql.terminal.ShellMysqlTerminalTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewTreeItem;
 import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlViewFactory;
-import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -69,7 +73,7 @@ import java.util.List;
  * @author oyzh
  * @since 2025-11-06
  */
-public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDatabaseTreeItemValue> {
+public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDatabaseTreeItemValue> implements ShellIndexTarget {
 
     /**
      * 当前值
@@ -209,6 +213,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
                         List<TreeItem<?>> typeItems = new ArrayList<>();
                         typeItems.add(new ShellMysqlTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellMysqlFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMysqlEventsTreeItem(this.getTreeView()));
@@ -255,6 +260,20 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
             }
         }
         return list;
+    }
+
+    /**
+     * 获取索引类型子节点
+     *
+     * @return 索引类型子节点
+     */
+    public ShellIndexesTreeItem getIndexTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 
     /**
@@ -886,6 +905,7 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      *
      * @return 数据库方言
      */
+    @Override
     public DBDialect dialect() {
         return this.client().dialect();
     }
@@ -1021,5 +1041,53 @@ public class ShellMysqlDatabaseTreeItem extends ShellMysqlTreeItem<ShellMysqlDat
      */
     public void cloneEvent(String eventName, String newEventName) {
         this.client().cloneEvent(this.dbName(), eventName, newEventName);
+    }
+
+    @Override
+    public String indexScope() {
+        return this.dbName();
+    }
+
+    @Override
+    public List<? extends DBIndex> selectIndexes() {
+        return this.client().selectSchemaIndexes(new ShellSelectIndexParam(this.dbName()));
+    }
+
+    @Override
+    public String selectIndexDefinition(String indexName) {
+        return this.client().selectIndexDefinition(this.dbName(), indexName);
+    }
+
+    @Override
+    public void executeIndexSql(List<String> sqlList) {
+        this.client().executeIndexSql(this.dbName(), sqlList);
+    }
+
+    @Override
+    public boolean existIndex(String indexName) {
+        return this.client().existIndex(this.dbName(), indexName);
+    }
+
+    @Override
+    public void dropIndex(String indexName, String tableName) {
+        this.client().dropIndex(this.dbName(), indexName, tableName);
+    }
+
+    @Override
+    public DBIndex newIndex() {
+        return new MysqlIndex();
+    }
+
+    @Override
+    public void reloadIndexes() {
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
     }
 }

@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.trees.oracle.schema;
 
 import cn.oyzh.common.thread.Task;
 import cn.oyzh.common.thread.TaskBuilder;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.oracle.ShellOracleClient;
 import cn.oyzh.easyshell.oracle.check.OracleCheck;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
@@ -10,8 +11,8 @@ import cn.oyzh.easyshell.oracle.column.OracleSelectColumnParam;
 import cn.oyzh.easyshell.oracle.foreignKey.OracleForeignKey;
 import cn.oyzh.easyshell.oracle.function.OracleAlertFunctionParam;
 import cn.oyzh.easyshell.oracle.function.OracleCreateFunctionParam;
-import cn.oyzh.easyshell.oracle.function.OracleFunction;
 import cn.oyzh.easyshell.oracle.index.OracleIndex;
+import cn.oyzh.easyshell.oracle.function.OracleFunction;
 import cn.oyzh.easyshell.oracle.procedure.OracleAlertProcedureParam;
 import cn.oyzh.easyshell.oracle.procedure.OracleCreateProcedureParam;
 import cn.oyzh.easyshell.oracle.procedure.OracleProcedure;
@@ -31,8 +32,11 @@ import cn.oyzh.easyshell.oracle.view.OracleCreateViewParam;
 import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.oracle.ShellOracleEventUtil;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
 import cn.oyzh.easyshell.query.oracle.OracleExecuteResult;
 import cn.oyzh.easyshell.query.oracle.OracleExplainResult;
+import cn.oyzh.easyshell.trees.index.ShellIndexTreeItem;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.trees.oracle.ShellOracleTreeItem;
 import cn.oyzh.easyshell.trees.oracle.function.ShellOracleFunctionTreeItem;
 import cn.oyzh.easyshell.trees.oracle.function.ShellOracleFunctionsTreeItem;
@@ -48,6 +52,7 @@ import cn.oyzh.easyshell.trees.oracle.view.ShellOracleViewTreeItem;
 import cn.oyzh.easyshell.trees.oracle.view.ShellOracleViewsTreeItem;
 import cn.oyzh.easyshell.util.oracle.ShellOracleViewFactory;
 import cn.oyzh.fx.db.DBDialect;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
@@ -70,7 +75,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSchemaTreeItemValue> {
+public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSchemaTreeItemValue> implements ShellIndexTarget {
 
     /**
      * 当前值
@@ -210,6 +215,7 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
                         List<TreeItem<?>> typeItems = new ArrayList<>();
                         typeItems.add(new ShellOracleTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleViewsTreeItem(this.getTreeView()));
+                        typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellOracleFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleSequencesTreeItem(this.getTreeView()));
@@ -359,6 +365,38 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
         return list;
     }
 
+    /**
+     * 获取索引类型子节点
+     *
+     * @return 索引类型子节点
+     */
+    public ShellIndexesTreeItem getIndexTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取索引节点列表
+     *
+     * @return 索引节点列表
+     */
+    public List<ShellIndexTreeItem> getIndexChild() {
+        List<ShellIndexTreeItem> list = new ArrayList<>();
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild != null) {
+            for (RichTreeItem<?> child : typeChild.richChildren()) {
+                if (child instanceof ShellIndexTreeItem treeItem) {
+                    list.add(treeItem);
+                }
+            }
+        }
+        return list;
+    }
+
     public ShellOracleSequencesTreeItem getSequenceTypeChild() {
         for (RichTreeItem<?> child : this.richChildren()) {
             if (child instanceof ShellOracleSequencesTreeItem treeItem) {
@@ -420,6 +458,7 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
      *
      * @return 连接名称
      */
+    @Override
     public String connectName() {
         return this.info().getName();
     }
@@ -817,6 +856,69 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
         return this.client().existView(this.schema(), viewName);
     }
 
+    /**
+     * 查询索引
+     *
+     * @param indexName 索引名称
+     * @return 索引
+     */
+    public OracleIndex selectIndex(String indexName) {
+        return this.client().selectIndex(this.schema(), indexName);
+    }
+
+    @Override
+    public String selectIndexDefinition(String indexName) {
+        return this.client().selectIndexDefinition(this.schema(), indexName);
+    }
+
+    @Override
+    public void executeIndexSql(List<String> sqlList) {
+        this.client().executeIndexSql(this.schema(), sqlList);
+    }
+
+    @Override
+    public boolean existIndex(String indexName) {
+        return this.client().existIndex(this.schema(), indexName);
+    }
+
+    @Override
+    public String indexScope() {
+        return this.schema();
+    }
+
+    @Override
+    public List<? extends DBIndex> selectIndexes() {
+        return this.client().selectSchemaIndexes(new ShellSelectIndexParam(this.schema()));
+    }
+
+    @Override
+    public void dropIndex(String indexName, String tableName) {
+        OracleIndex index = new OracleIndex();
+        index.setSchema(this.schema());
+        index.setName(indexName);
+        this.client().dropIndex(index);
+    }
+
+    @Override
+    public DBIndex newIndex() {
+        OracleIndex index = new OracleIndex();
+        index.setSchema(this.schema());
+        return index;
+    }
+
+    @Override
+    public void reloadIndexes() {
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
     @Override
     public boolean itemVisible() {
         return this.isVisible();
@@ -836,6 +938,7 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
      *
      * @return 数据库方言
      */
+    @Override
     public DBDialect dialect() {
         return this.client().dialect();
     }

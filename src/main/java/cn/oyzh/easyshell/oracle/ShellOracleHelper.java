@@ -1,9 +1,11 @@
 package cn.oyzh.easyshell.oracle;
 
+import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.IOUtil;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.oracle.column.OracleColumn;
 import cn.oyzh.easyshell.oracle.column.OracleColumns;
+import cn.oyzh.easyshell.oracle.index.OracleIndex;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.db.sql.DBOraclePagination;
@@ -38,6 +40,64 @@ public class ShellOracleHelper {
 
     private static final Pattern OBJECT_NOT_EXISTS_PATTERN = Pattern.compile(
             "ORA-(00942|02289|04043|04080)\\b", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * 创建索引语句匹配模式
+     */
+    private static final Pattern CREATE_INDEX_PATTERN = Pattern.compile(
+            "(?is)^\\s*CREATE\\s+(?:UNIQUE\\s+|BITMAP\\s+|CLUSTERED\\s+|NONCLUSTERED\\s+)*"
+                    + "INDEX\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?([^\\s(]+)");
+
+    /**
+     * 删除索引语句匹配模式
+     */
+    private static final Pattern DROP_INDEX_PATTERN = Pattern.compile(
+            "(?is)^\\s*DROP\\s+INDEX\\s+");
+
+    /**
+     * 是否创建索引语句
+     *
+     * @param sql SQL语句
+     * @return 是否创建索引语句
+     */
+    public static boolean isCreateIndexSql(String sql) {
+        return sql != null && CREATE_INDEX_PATTERN.matcher(sql).find();
+    }
+
+    /**
+     * 是否删除索引语句
+     *
+     * @param sql SQL语句
+     * @return 是否删除索引语句
+     */
+    public static boolean isDropIndexSql(String sql) {
+        return sql != null && DROP_INDEX_PATTERN.matcher(sql).find();
+    }
+
+    /**
+     * 解析创建索引语句中的索引名称
+     *
+     * @param sql SQL语句
+     * @return 索引名称，未解析到返回null
+     */
+    public static String parseIndexName(String sql) {
+        if (sql == null) {
+            return null;
+        }
+        Matcher matcher = CREATE_INDEX_PATTERN.matcher(sql);
+        if (!matcher.find()) {
+            return null;
+        }
+        String name = matcher.group(1).strip();
+        // 去掉模式前缀
+        int offset = name.lastIndexOf('.');
+        if (offset >= 0) {
+            name = name.substring(offset + 1);
+        }
+        // 去掉标识符的包裹符
+        return name.replace("\"", "").replace("`", "")
+                .replace("[", "").replace("]", "").strip();
+    }
 
     private static final Pattern TRIGGER_ALTER_SUFFIX_PATTERN = Pattern.compile(
             "(?is)\\s+ALTER\\s+TRIGGER\\s+.+?\\s+(?:ENABLE|DISABLE)\\s*;?\\s*$");
@@ -653,6 +713,115 @@ public class ShellOracleHelper {
         } catch (SQLException ex) {
             return buildRoutineDefinition(connection, schema, functionName, "FUNCTION");
         }
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param connection 连接
+     * @param schema     模式名称
+     * @param indexName  索引名称
+     * @return 索引定义
+     * @throws SQLException 异常
+     */
+    public static String getIndexDefinition(Connection connection, String schema, String indexName) throws SQLException {
+        try {
+            String definition = getMetadataDefinition(connection, schema, "INDEX", indexName);
+            if (StringUtil.isNotBlank(definition)) {
+                return stripDefinitionTerminator(definition);
+            }
+        } catch (SQLException ignored) {
+            // 权限不足等场景，降级为从数据字典构建
+        }
+        return buildIndexDefinition(connection, schema, indexName);
+    }
+
+    /**
+     * 根据数据字典构建索引定义
+     *
+     * @param connection 连接
+     * @param schema     模式名称
+     * @param indexName  索引名称
+     * @return 索引定义
+     * @throws SQLException 异常
+     */
+    private static String buildIndexDefinition(Connection connection, String schema, String indexName) throws SQLException {
+        OracleIndex index = new OracleIndex();
+        index.setSchema(schema);
+        index.setName(indexName);
+        String sql = """
+                SELECT I.TABLE_NAME,
+                       I.UNIQUENESS,
+                       I.INDEX_TYPE,
+                       C.COLUMN_NAME
+                FROM ALL_INDEXES I
+                JOIN ALL_IND_COLUMNS C
+                  ON I.OWNER = C.INDEX_OWNER
+                 AND I.INDEX_NAME = C.INDEX_NAME
+                WHERE I.OWNER = ?
+                AND I.INDEX_NAME = ?
+                ORDER BY C.COLUMN_POSITION
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    index.setTableName(resultSet.getString(1));
+                    index.type(resultSet.getString(3), "UNIQUE".equals(resultSet.getString(2)) ? 0 : 1);
+                    index.addColumn(resultSet.getString(4));
+                }
+            }
+        }
+        if (StringUtil.isBlank(index.getTableName()) || CollectionUtil.isEmpty(index.getColumns())) {
+            return "";
+        }
+        return buildCreateIndexSql(schema, index);
+    }
+
+    /**
+     * 按数据字典信息拼接创建索引语句
+     * <p>
+     * DBMS_METADATA不可用时（如权限不足）作为索引定义的兜底。
+     *
+     * @param schema 模式名称
+     * @param index  索引
+     * @return 创建索引语句
+     */
+    static String buildCreateIndexSql(String schema, OracleIndex index) {
+        StringBuilder definition = new StringBuilder("CREATE ");
+        if (index.isUnique()) {
+            definition.append("UNIQUE ");
+        } else if (StringUtil.equalsIgnoreCase(index.methodName(), "BITMAP")) {
+            definition.append("BITMAP ");
+        }
+        definition.append("INDEX ");
+        definition.append(DBUtil.wrap(schema, index.getName(), DBDialect.ORACLE));
+        definition.append(" ON ");
+        definition.append(DBUtil.wrap(schema, index.getTableName(), DBDialect.ORACLE));
+        definition.append(" (");
+        for (int i = 0; i < index.getColumns().size(); i++) {
+            if (i > 0) {
+                definition.append(",");
+            }
+            definition.append(DBUtil.wrap(index.getColumns().get(i).getColumnName(), DBDialect.ORACLE));
+        }
+        definition.append(")");
+        return definition.toString();
+    }
+
+    /**
+     * 移除定义末尾的语句结束符
+     *
+     * @param definition 定义
+     * @return 定义
+     */
+    private static String stripDefinitionTerminator(String definition) {
+        String result = definition == null ? "" : definition.strip();
+        while (result.endsWith(";")) {
+            result = result.substring(0, result.length() - 1).stripTrailing();
+        }
+        return result;
     }
 
     public static String getProcedureDefinition(Connection connection, String schema, String procedureName) throws SQLException {

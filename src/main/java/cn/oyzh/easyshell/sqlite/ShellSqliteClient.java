@@ -15,7 +15,6 @@ import cn.oyzh.easyshell.sqlite.check.SQLiteChecks;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumn;
 import cn.oyzh.easyshell.sqlite.column.SQLiteColumnDefinitionParser;
 import cn.oyzh.easyshell.sqlite.column.SQLiteSelectColumnParam;
-import cn.oyzh.easyshell.sqlite.condition.SQLiteConditionUtil;
 import cn.oyzh.easyshell.sqlite.database.SQLiteDatabase;
 import cn.oyzh.easyshell.sqlite.foreignKey.SQLiteForeignKey;
 import cn.oyzh.easyshell.sqlite.foreignKey.SQLiteForeignKeys;
@@ -31,6 +30,8 @@ import cn.oyzh.easyshell.sqlite.generator.table.SQLiteTableCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlite.generator.view.SQLiteViewAlertSqlGenerator;
 import cn.oyzh.easyshell.sqlite.generator.view.SQLiteViewCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlite.index.SQLiteIndex;
+import cn.oyzh.easyshell.db.index.ShellIndexHelper;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.sqlite.index.SQLiteIndexes;
 import cn.oyzh.easyshell.sqlite.record.SQLiteDeleteRecordParam;
 import cn.oyzh.easyshell.sqlite.record.SQLiteInsertRecordParam;
@@ -883,6 +884,83 @@ public class ShellSqliteClient implements ShellBaseClient, DBClient {
      */
     public List<SQLiteIndex> indexes(String dbName, String tableName) {
         return this.selectIndexes(dbName, tableName);
+    }
+
+    /**
+     * 查询索引列表（数据库级别，包含所属表名称）
+     *
+     * @param param 查询参数，包含数据库名称与索引名称
+     * @return 索引列表
+     */
+    public List<SQLiteIndex> selectSchemaIndexes(ShellSelectIndexParam param) {
+        // SQLite 为单文件数据库，直接在当前连接上查询
+        String indexName = param.getIndexName();
+        return this.selectSchemaObjects("index").stream()
+                .filter(item -> !this.isAutoIndex(item.getName()))
+                .filter(item -> StringUtil.isBlank(indexName)
+                        || StringUtil.equalsIgnoreCase(item.getName(), indexName))
+                .map(SQLiteIndex::of)
+                .sorted(Comparator.comparing(SQLiteIndex::getName, String.CASE_INSENSITIVE_ORDER))
+                .toList();
+    }
+
+    /**
+     * 是否自动创建的索引（由主键、唯一约束生成，不可单独删除）
+     *
+     * @param indexName 索引名称
+     * @return 是否自动索引
+     */
+    private boolean isAutoIndex(String indexName) {
+        return indexName != null && indexName.startsWith("sqlite_autoindex");
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param dbName    数据库名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    public String selectIndexDefinition(String dbName, String indexName) {
+        return ShellIndexHelper.stripTerminator(this.showCreate(indexName));
+    }
+
+    /**
+     * 判断索引是否存在
+     *
+     * @param dbName    数据库名称
+     * @param indexName 索引名称
+     * @return 是否存在
+     */
+    public boolean existIndex(String dbName, String indexName) {
+        return this.selectSchemaObjects("index").stream()
+                .anyMatch(item -> !this.isAutoIndex(item.getName())
+                        && StringUtil.equalsIgnoreCase(item.getName(), indexName));
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param dbName    数据库名称
+     * @param indexName 索引名称
+     * @param tableName 表名称
+     */
+    public void dropIndex(String dbName, String indexName, String tableName) {
+        String sql = "DROP INDEX " + DBUtil.wrap(indexName, DBDialect.SQLITE);
+        this.executeIndexSql(dbName, List.of(sql));
+    }
+
+    /**
+     * 执行索引相关SQL
+     *
+     * @param dbName  数据库名称
+     * @param sqlList SQL列表
+     */
+    public void executeIndexSql(String dbName, List<String> sqlList) {
+        if (sqlList == null || sqlList.isEmpty()) {
+            return;
+        }
+        this.executeSqlSimple(String.join(";\n", sqlList));
     }
 
     /**

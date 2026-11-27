@@ -9,6 +9,8 @@ import cn.oyzh.easyshell.trees.mariadb.query.ShellMariadbQueriesTreeItem;
 import cn.oyzh.easyshell.trees.mariadb.root.ShellMariadbRootTreeItem;
 import cn.oyzh.easyshell.trees.mariadb.table.ShellMariadbTablesTreeItem;
 import cn.oyzh.easyshell.trees.mariadb.view.ShellMariadbViewsTreeItem;
+import cn.oyzh.easyshell.trees.index.ShellIndexTreeItem;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -23,6 +25,15 @@ public class ShellMariadbTreeItemFilter extends RichTreeItemFilter {
 
     @Override
     public boolean test(RichTreeItem<?> item) {
+        // 公共索引节点
+        if (item instanceof ShellIndexesTreeItem) {
+            return true;
+        }
+        if (item instanceof ShellIndexTreeItem indexItem) {
+            String name = indexItem.getValue().name();
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+        }
         // 部分节点不参与过滤
         if (item instanceof ShellMariadbRootTreeItem
                 || item instanceof ShellMariadbViewsTreeItem

@@ -7,6 +7,7 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.event.ShellEventUtil;
 import cn.oyzh.easyshell.exception.ShellException;
 import cn.oyzh.easyshell.internal.ShellBaseClient;
@@ -3105,6 +3106,186 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             IOUtil.close(statement);
             return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引列表(模式级别，不包含主键、唯一约束、LOB、域索引以及函数索引)
+     *
+     * @param param 查询参数
+     * @return 索引列表
+     */
+    public List<OracleIndex> selectSchemaIndexes(ShellSelectIndexParam param) {
+        try {
+            String schema = param.getScope();
+            StringBuilder sql = new StringBuilder("""
+                    SELECT
+                        I.INDEX_NAME AS "Key_name",
+                        I.TABLE_NAME AS "Table_name",
+                        C.COLUMN_NAME AS "Column_name",
+                        C.COLUMN_POSITION AS "Seq_in_index",
+                        CASE WHEN I.UNIQUENESS = 'UNIQUE' THEN 0 ELSE 1 END AS "Non_unique",
+                        I.INDEX_TYPE AS "Index_type"
+                    FROM
+                        ALL_INDEXES I
+                    JOIN
+                        ALL_IND_COLUMNS C
+                    ON
+                        I.OWNER = C.INDEX_OWNER
+                    AND
+                        I.INDEX_NAME = C.INDEX_NAME
+                    WHERE
+                        I.TABLE_OWNER = ?
+                    AND
+                        I.INDEX_TYPE NOT IN ('LOB', 'DOMAIN')
+                    AND
+                        I.INDEX_TYPE NOT LIKE 'FUNCTION-BASED%'
+                    AND
+                        NOT EXISTS (
+                            SELECT 1
+                            FROM ALL_CONSTRAINTS P
+                            WHERE P.OWNER = I.OWNER
+                            AND P.INDEX_NAME = I.INDEX_NAME
+                            AND P.CONSTRAINT_TYPE IN ('P', 'U')
+                        )
+                    """);
+            if (StringUtil.isNotBlank(param.getIndexName())) {
+                sql.append(" AND I.INDEX_NAME = ?");
+            }
+            sql.append(" ORDER BY I.TABLE_NAME, I.INDEX_NAME, C.COLUMN_POSITION");
+            this.printSql(sql.toString());
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement statement = connection.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            statement.setString(paramIndex++, schema);
+            if (StringUtil.isNotBlank(param.getIndexName())) {
+                statement.setString(paramIndex++, param.getIndexName());
+            }
+            ResultSet resultSet = statement.executeQuery();
+            // 打印元数据
+            DBUtil.printMetaData(resultSet);
+            Map<String, OracleIndex> indexMap = new LinkedHashMap<>();
+            while (resultSet.next()) {
+                String indexName = resultSet.getString("Key_name");
+                OracleIndex index = indexMap.get(indexName);
+                if (index == null) {
+                    index = new OracleIndex();
+                    index.setSchema(schema);
+                    index.setName(indexName);
+                    index.setTableName(resultSet.getString("Table_name"));
+                    index.setSeqIndex(resultSet.getInt("Seq_in_index"));
+                    index.type(resultSet.getString("Index_type"), resultSet.getInt("Non_unique"));
+                    indexMap.put(indexName, index);
+                }
+                String columnName = resultSet.getString("Column_name");
+                if (StringUtil.isNotBlank(columnName)) {
+                    index.addColumn(columnName);
+                }
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return new ArrayList<>(indexMap.values());
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引信息
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 索引
+     */
+    public OracleIndex selectIndex(String schema, String indexName) {
+        List<OracleIndex> indexes = this.selectSchemaIndexes(new ShellSelectIndexParam(schema, indexName));
+        return indexes.isEmpty() ? null : indexes.getFirst();
+    }
+
+    /**
+     * 判断索引是否存在
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 是否存在
+     */
+    public boolean existIndex(String schema, String indexName) {
+        try {
+            String sql = "SELECT COUNT(1) FROM ALL_INDEXES WHERE OWNER = ? AND INDEX_NAME = ?";
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            boolean exist = false;
+            if (resultSet.next()) {
+                exist = resultSet.getInt(1) > 0;
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return exist;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    public String selectIndexDefinition(String schema, String indexName) {
+        try {
+            Connection connection = this.getConnManager().connection(schema);
+            return ShellOracleHelper.getIndexDefinition(connection, schema, indexName);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param index 索引
+     */
+    public void dropIndex(OracleIndex index) {
+        String sql = "DROP INDEX " + DBUtil.wrap(index.getSchema(), index.getName(), DBDialect.ORACLE);
+        this.executeIndexSql(index.getSchema(), Collections.singletonList(sql));
+    }
+
+    /**
+     * 执行索引相关SQL
+     *
+     * @param schema  模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeIndexSql(String schema, List<String> sqlList) {
+        if (CollectionUtil.isEmpty(sqlList)) {
+            return;
+        }
+        Connection connection = null;
+        try {
+            connection = this.getConnManager().connection(schema);
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (StringUtil.isBlank(sql)) {
+                    continue;
+                }
+                String executableSql = this.stripStatementTerminator(sql);
+                this.printSql(executableSql);
+                statement.executeUpdate(executableSql);
+            }
+            connection.commit();
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }

@@ -53,6 +53,8 @@ import cn.oyzh.easyshell.sqlserver.view.SqlServerCreateViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerSelectViewParam;
 import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.db.index.ShellIndexHelper;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -3626,6 +3628,249 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             IOUtil.close(statement);
             return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引列表（模式级别，包含所属表名称）
+     *
+     * @param param 查询参数，包含模式名称与索引名称
+     * @return 索引列表
+     */
+    public List<SqlServerIndex> selectSchemaIndexes(ShellSelectIndexParam param) {
+        String schema = param.getScope();
+        String indexName = param.getIndexName();
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT
+                        TB.NAME AS "Table_name",
+                        IX.NAME AS "Key_name",
+                        A.NAME AS "Column_name",
+                        K.KEY_ORDINAL AS "Seq_in_index",
+                        CASE WHEN IX.IS_UNIQUE = 1 THEN 0 ELSE 1 END AS "Non_unique",
+                        IX.TYPE_DESC AS "Index_type"
+                    FROM SYS.INDEXES IX
+                    JOIN SYS.TABLES TB ON TB.OBJECT_ID = IX.OBJECT_ID
+                    JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = TB.SCHEMA_ID
+                    JOIN SYS.INDEX_COLUMNS K ON K.OBJECT_ID = IX.OBJECT_ID AND K.INDEX_ID = IX.INDEX_ID
+                    JOIN SYS.COLUMNS A ON A.OBJECT_ID = K.OBJECT_ID AND A.COLUMN_ID = K.COLUMN_ID
+                    WHERE S.NAME = ?
+                    AND IX.IS_PRIMARY_KEY = 0 AND IX.IS_UNIQUE_CONSTRAINT = 0
+                    AND IX.IS_HYPOTHETICAL = 0
+                    """;
+            if (StringUtil.isNotBlank(indexName)) {
+                sql += " AND IX.NAME = ?";
+            }
+            sql += " ORDER BY TB.NAME, IX.NAME, K.KEY_ORDINAL";
+            this.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            if (StringUtil.isNotBlank(indexName)) {
+                statement.setString(2, indexName);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            Map<String, SqlServerIndex> indexMap = new HashMap<>();
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("Table_name");
+                String keyName = resultSet.getString("Key_name");
+                String columnName = resultSet.getString("Column_name");
+                String mapKey = tableName + "." + keyName;
+                SqlServerIndex index = indexMap.get(mapKey);
+                if (index == null) {
+                    int noneUnique = resultSet.getInt("Non_unique");
+                    int seqInIndex = resultSet.getInt("Seq_in_index");
+                    String indexType = resultSet.getString("Index_type");
+                    index = new SqlServerIndex();
+                    index.setName(keyName);
+                    index.setTableName(tableName);
+                    index.setSeqIndex(seqInIndex);
+                    index.setType(noneUnique == 0 ? "UNIQUE" : "NORMAL");
+                    index.setMethod(indexType == null ? null : indexType.toUpperCase());
+                    indexMap.put(mapKey, index);
+                }
+                if (StringUtil.isNotBlank(columnName)) {
+                    index.addColumn(columnName);
+                }
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return new ArrayList<>(indexMap.values());
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    public String selectIndexDefinition(String schema, String indexName) {
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT
+                        TB.NAME AS "Table_name",
+                        IX.NAME AS "Key_name",
+                        IX.TYPE_DESC AS "Index_type",
+                        IX.IS_UNIQUE AS "Is_unique",
+                        IX.FILTER_DEFINITION AS "Filter_definition",
+                        A.NAME AS "Column_name",
+                        K.KEY_ORDINAL AS "Key_ordinal",
+                        K.IS_INCLUDED_COLUMN AS "Is_included",
+                        K.IS_DESCENDING_KEY AS "Is_descending"
+                    FROM SYS.INDEXES IX
+                    JOIN SYS.TABLES TB ON TB.OBJECT_ID = IX.OBJECT_ID
+                    JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = TB.SCHEMA_ID
+                    JOIN SYS.INDEX_COLUMNS K ON K.OBJECT_ID = IX.OBJECT_ID AND K.INDEX_ID = IX.INDEX_ID
+                    JOIN SYS.COLUMNS A ON A.OBJECT_ID = K.OBJECT_ID AND A.COLUMN_ID = K.COLUMN_ID
+                    WHERE S.NAME = ? AND IX.NAME = ?
+                    AND IX.IS_HYPOTHETICAL = 0
+                    AND (K.KEY_ORDINAL > 0 OR K.IS_INCLUDED_COLUMN = 1)
+                    ORDER BY K.IS_INCLUDED_COLUMN, K.KEY_ORDINAL, K.INDEX_COLUMN_ID
+                    """;
+            this.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            String tableName = null;
+            String indexType = null;
+            boolean unique = false;
+            String filter = null;
+            StringBuilder columns = new StringBuilder();
+            StringBuilder includes = new StringBuilder();
+            while (resultSet.next()) {
+                tableName = resultSet.getString("Table_name");
+                indexType = resultSet.getString("Index_type");
+                unique = resultSet.getInt("Is_unique") == 1;
+                filter = resultSet.getString("Filter_definition");
+                String columnName = resultSet.getString("Column_name");
+                if (StringUtil.isBlank(columnName)) {
+                    continue;
+                }
+                boolean included = resultSet.getInt("Is_included") == 1;
+                boolean descending = resultSet.getInt("Is_descending") == 1;
+                if (included) {
+                    includes.append(DBUtil.wrap(columnName, DBDialect.SQLSERVER)).append(",");
+                } else {
+                    columns.append(DBUtil.wrap(columnName, DBDialect.SQLSERVER))
+                            .append(descending ? " DESC" : " ASC").append(",");
+                }
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            if (StringUtil.isBlank(tableName) || columns.length() == 0) {
+                return null;
+            }
+            StringBuilder builder = new StringBuilder("CREATE ");
+            if (unique) {
+                builder.append("UNIQUE ");
+            }
+            // 索引类型（CLUSTERED/NONCLUSTERED），列存储等类型不加前缀
+            if (StringUtil.equalsIgnoreCase(indexType, "CLUSTERED")
+                    || StringUtil.equalsIgnoreCase(indexType, "NONCLUSTERED")) {
+                builder.append(indexType.toUpperCase()).append(" ");
+            }
+            builder.append("INDEX ")
+                    .append(DBUtil.wrap(indexName, DBDialect.SQLSERVER))
+                    .append(" ON ")
+                    .append(DBUtil.wrap(schema, tableName, DBDialect.SQLSERVER))
+                    .append(" (");
+            StringUtil.deleteLast(columns, ",");
+            builder.append(columns).append(")");
+            if (includes.length() > 0) {
+                StringUtil.deleteLast(includes, ",");
+                builder.append(" INCLUDE (").append(includes).append(")");
+            }
+            if (StringUtil.isNotBlank(filter)) {
+                builder.append(" WHERE ").append(filter);
+            }
+            return builder.toString();
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 判断索引是否存在
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 是否存在
+     */
+    public boolean existIndex(String schema, String indexName) {
+        try {
+            String sql = """
+                    SELECT COUNT(1)
+                    FROM SYS.INDEXES IX
+                    JOIN SYS.TABLES TB ON TB.OBJECT_ID = IX.OBJECT_ID
+                    JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = TB.SCHEMA_ID
+                    WHERE S.NAME = ? AND IX.NAME = ?
+                    """;
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            boolean exist = false;
+            if (resultSet.next()) {
+                exist = resultSet.getInt(1) > 0;
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return exist;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @param tableName 表名称
+     */
+    public void dropIndex(String schema, String indexName, String tableName) {
+        String sql = "DROP INDEX " + DBUtil.wrap(indexName, DBDialect.SQLSERVER)
+                + " ON " + DBUtil.wrap(schema, tableName, DBDialect.SQLSERVER);
+        this.executeIndexSql(schema, List.of(sql));
+    }
+
+    /**
+     * 执行索引相关SQL
+     *
+     * @param schema  模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeIndexSql(String schema, List<String> sqlList) {
+        if (CollectionUtil.isEmpty(sqlList)) {
+            return;
+        }
+        Connection connection = null;
+        try {
+            connection = this.getConnManager().connection();
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (StringUtil.isBlank(sql)) {
+                    continue;
+                }
+                String execSql = ShellIndexHelper.stripTerminator(sql);
+                this.printSql(execSql);
+                statement.execute(execSql);
+            }
+            connection.commit();
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }

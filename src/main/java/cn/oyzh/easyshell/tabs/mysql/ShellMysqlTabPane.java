@@ -4,6 +4,9 @@ import cn.oyzh.easyshell.internal.ShellConnState;
 import cn.oyzh.common.thread.TaskManager;
 import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.event.db.index.ShellIndexDesignEvent;
+import cn.oyzh.easyshell.event.db.index.ShellIndexDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.event.ShellMysqlEventDesignEvent;
@@ -36,6 +39,7 @@ import cn.oyzh.easyshell.mysql.ShellMysqlClient;
 import cn.oyzh.easyshell.query.mysql.ShellMysqlQueryUtil;
 import cn.oyzh.easyshell.tabs.mysql.event.ShellMysqlEventDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.function.ShellMysqlFunctionDesignTab;
+import cn.oyzh.easyshell.tabs.db.index.ShellIndexDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.home.ShellMysqlHomeTab;
 import cn.oyzh.easyshell.tabs.mysql.procedure.ShellMysqlProcedureDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.query.ShellMysqlQueryMainTab;
@@ -46,6 +50,7 @@ import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewDesignTab;
 import cn.oyzh.easyshell.tabs.mysql.view.ShellMysqlViewRecordTab;
 import cn.oyzh.easyshell.trees.mysql.database.ShellMysqlDatabaseTreeItem;
 import cn.oyzh.event.EventSubscribe;
+import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.gui.tabs.RichTabPane;
 import cn.oyzh.fx.plus.event.FXEventListener;
 import cn.oyzh.fx.plus.information.MessageBox;
@@ -637,6 +642,70 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * 索引设计事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onIndexDesign(ShellIndexDesignEvent event) {
+        // 仅处理当前数据库类型的事件
+        if (event.dialect() != DBDialect.MYSQL) {
+            return;
+        }
+        try {
+            ShellIndexDesignTab tab = this.getIndexDesignTab(event.getTarget(), event.indexName());
+            if (tab == null) {
+                tab = new ShellIndexDesignTab();
+                tab.init(event.data(), event.getTarget());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取索引设计tab
+     *
+     * @param target    索引设计目标
+     * @param indexName 索引名称
+     * @return 结果
+     */
+    private ShellIndexDesignTab getIndexDesignTab(ShellIndexTarget target, String indexName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellIndexDesignTab tab1 && tab1.target() == target) {
+                // 新建索引的名称为空，单独识别新建中的tab
+                if (StringUtil.isBlank(indexName) ? tab1.isNew() : StringUtil.equals(indexName, tab1.indexName())) {
+                    return tab1;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 索引删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onIndexDropped(ShellIndexDroppedEvent event) {
+        if (event.dialect() != DBDialect.MYSQL) {
+            return;
+        }
+        try {
+            ShellIndexDesignTab tab = this.getIndexDesignTab(event.getTarget(), event.indexName());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        ShellMysqlQueryUtil.refreshIndex(this.getClient());
     }
 
     /**

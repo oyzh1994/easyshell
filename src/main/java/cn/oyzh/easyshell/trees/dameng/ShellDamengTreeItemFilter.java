@@ -8,6 +8,8 @@ import cn.oyzh.easyshell.trees.dameng.root.ShellDamengRootTreeItem;
 import cn.oyzh.easyshell.trees.dameng.schema.ShellDamengSchemaTreeItem;
 import cn.oyzh.easyshell.trees.dameng.table.ShellDamengTablesTreeItem;
 import cn.oyzh.easyshell.trees.dameng.view.ShellDamengViewsTreeItem;
+import cn.oyzh.easyshell.trees.index.ShellIndexTreeItem;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -22,6 +24,15 @@ public class ShellDamengTreeItemFilter extends RichTreeItemFilter {
 
     @Override
     public boolean test(RichTreeItem<?> item) {
+        // 公共索引节点
+        if (item instanceof ShellIndexesTreeItem) {
+            return true;
+        }
+        if (item instanceof ShellIndexTreeItem indexItem) {
+            String name = indexItem.getValue().name();
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+        }
         // 部分节点不参与过滤
         if (item instanceof ShellDamengRootTreeItem
                 || item instanceof ShellDamengViewsTreeItem

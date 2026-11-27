@@ -53,6 +53,8 @@ import cn.oyzh.easyshell.dameng.view.DamengCreateViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengSelectViewParam;
 import cn.oyzh.easyshell.dameng.view.DamengView;
 import cn.oyzh.easyshell.domain.ShellConnect;
+import cn.oyzh.easyshell.db.index.ShellIndexHelper;
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -2537,6 +2539,216 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             IOUtil.close(statement);
             return new ArrayList<>(indexMap.values());
         } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引列表（模式级别，包含所属表名称）
+     *
+     * @param param 查询参数，包含模式名称与索引名称
+     * @return 索引列表
+     */
+    public List<DamengIndex> selectSchemaIndexes(ShellSelectIndexParam param) {
+        String schema = param.getScope();
+        String indexName = param.getIndexName();
+        try {
+            Connection connection = this.getConnManager().connection(schema);
+            String sql = """
+                    SELECT
+                        I.TABLE_NAME AS "Table_name",
+                        I.INDEX_NAME AS "Key_name",
+                        C.COLUMN_NAME AS "Column_name",
+                        C.COLUMN_POSITION AS "Seq_in_index",
+                        CASE WHEN I.UNIQUENESS='UNIQUE' THEN 0 ELSE 1 END AS "Non_unique",
+                        CASE WHEN I.INDEX_TYPE='NORMAL' THEN 'BTREE' ELSE I.INDEX_TYPE END AS "Index_type"
+                    FROM
+                        ALL_INDEXES I
+                    JOIN
+                        ALL_IND_COLUMNS C
+                    ON
+                        I.INDEX_NAME = C.INDEX_NAME
+                    AND
+                        I.OWNER = C.INDEX_OWNER
+                    WHERE
+                        I.TABLE_OWNER = ?
+                    AND
+                        I.INDEX_TYPE != 'PRIMARY'
+                    """;
+            if (StringUtil.isNotBlank(indexName)) {
+                sql += " AND I.INDEX_NAME = ?";
+            }
+            sql += " ORDER BY I.TABLE_NAME, I.INDEX_NAME, C.COLUMN_POSITION";
+            this.printSql(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            if (StringUtil.isNotBlank(indexName)) {
+                statement.setString(2, indexName);
+            }
+            ResultSet resultSet = statement.executeQuery();
+            Map<String, DamengIndex> indexMap = new HashMap<>();
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("Table_name");
+                String keyName = resultSet.getString("Key_name");
+                String columnName = resultSet.getString("Column_name");
+                String mapKey = tableName + "." + keyName;
+                DamengIndex index = indexMap.get(mapKey);
+                if (index == null) {
+                    index = new DamengIndex();
+                    index.setName(keyName);
+                    index.setTableName(tableName);
+                    index.setSeqIndex(resultSet.getInt("Seq_in_index"));
+                    index.type(resultSet.getString("Index_type"), resultSet.getInt("Non_unique"));
+                    indexMap.put(mapKey, index);
+                }
+                if (StringUtil.isNotBlank(columnName)) {
+                    index.addColumn(columnName);
+                }
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return new ArrayList<>(indexMap.values());
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询索引定义
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    public String selectIndexDefinition(String schema, String indexName) {
+        // 优先使用数据字典获取原始定义
+        try {
+            String sql = "SELECT DBMS_METADATA.GET_DDL('INDEX', ?, ?) FROM DUAL";
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, indexName);
+            statement.setString(2, schema);
+            ResultSet resultSet = statement.executeQuery();
+            String definition = null;
+            if (resultSet.next()) {
+                definition = resultSet.getString(1);
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            if (StringUtil.isNotBlank(definition)) {
+                return ShellIndexHelper.stripTerminator(definition);
+            }
+        } catch (Exception ignored) {
+            // 权限不足等场景，降级为从数据字典构建
+        }
+        return this.buildIndexDefinition(schema, indexName);
+    }
+
+    /**
+     * 根据数据字典构建索引定义
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 索引定义
+     */
+    private String buildIndexDefinition(String schema, String indexName) {
+        List<DamengIndex> indexes = this.selectSchemaIndexes(new ShellSelectIndexParam(schema, indexName));
+        if (CollectionUtil.isEmpty(indexes)) {
+            return null;
+        }
+        DamengIndex index = indexes.getFirst();
+        // 字段无法解析的场景，不使用构建的定义
+        if (CollectionUtil.isEmpty(index.getColumns())) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder("CREATE ");
+        String typeName = index.typeName();
+        // 达梦不支持 FULLTEXT/SPATIAL
+        if (typeName != null && !"FULLTEXT".equalsIgnoreCase(typeName) && !"SPATIAL".equalsIgnoreCase(typeName)) {
+            builder.append(typeName).append(" ");
+        }
+        builder.append("INDEX ")
+                .append(DBUtil.wrap(index.getName(), DBDialect.DAMENG))
+                .append(" ON ")
+                .append(DBUtil.wrap(schema, index.getTableName(), DBDialect.DAMENG))
+                .append(" (");
+        for (DamengIndex.IndexColumn column : index.getColumns()) {
+            builder.append(DBUtil.wrap(column.getColumnName(), DBDialect.DAMENG)).append(",");
+        }
+        StringUtil.deleteLast(builder, ",");
+        builder.append(")");
+        return builder.toString();
+    }
+
+    /**
+     * 判断索引是否存在
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @return 是否存在
+     */
+    public boolean existIndex(String schema, String indexName) {
+        try {
+            String sql = "SELECT COUNT(1) FROM ALL_INDEXES WHERE OWNER = ? AND INDEX_NAME = ?";
+            this.printSql(sql);
+            Connection connection = this.getConnManager().connection(schema);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, schema);
+            statement.setString(2, indexName);
+            ResultSet resultSet = statement.executeQuery();
+            boolean exist = false;
+            if (resultSet.next()) {
+                exist = resultSet.getInt(1) > 0;
+            }
+            IOUtil.close(resultSet);
+            IOUtil.close(statement);
+            return exist;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param schema    模式名称
+     * @param indexName 索引名称
+     * @param tableName 表名称
+     */
+    public void dropIndex(String schema, String indexName, String tableName) {
+        String sql = "DROP INDEX " + DBUtil.wrap(schema, indexName, DBDialect.DAMENG);
+        this.executeIndexSql(schema, List.of(sql));
+    }
+
+    /**
+     * 执行索引相关SQL
+     *
+     * @param schema  模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeIndexSql(String schema, List<String> sqlList) {
+        if (CollectionUtil.isEmpty(sqlList)) {
+            return;
+        }
+        Connection connection = null;
+        try {
+            connection = this.getConnManager().connection(schema);
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            for (String sql : sqlList) {
+                if (StringUtil.isBlank(sql)) {
+                    continue;
+                }
+                String execSql = ShellIndexHelper.stripTerminator(sql);
+                this.printSql(execSql);
+                statement.execute(execSql);
+            }
+            connection.commit();
+            IOUtil.close(statement);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            DBUtil.rollback(connection);
             throw new ShellException(ex);
         }
     }

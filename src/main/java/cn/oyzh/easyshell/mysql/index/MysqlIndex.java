@@ -3,6 +3,7 @@ package cn.oyzh.easyshell.mysql.index;
 import cn.oyzh.common.object.ObjectCopier;
 import cn.oyzh.common.util.CollectionUtil;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObject;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @author oyzh
  * @since 2025-11-06
  */
-public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
+public class MysqlIndex extends DBObject implements DBIndex, ObjectCopier<MysqlIndex> {
 
     /**
      * 索引顺序
@@ -53,6 +54,11 @@ public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
      * 字段列表
      */
     private List<IndexColumn> columns;
+
+    /**
+     * 所属表名称
+     */
+    private String tableName;
 
     /**
      * 获取原始名称
@@ -188,6 +194,17 @@ public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
     }
 
     @Override
+    public String getTableName() {
+        return this.tableName;
+    }
+
+    @Override
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+        super.putOriginalData("tableName", tableName);
+    }
+
+    @Override
     public void copy(MysqlIndex t1) {
         if (t1 != null) {
             this.setName(t1.name);
@@ -196,6 +213,7 @@ public class MysqlIndex extends DBObject implements ObjectCopier<MysqlIndex> {
             this.setComment(t1.comment);
             this.setColumns(t1.columns);
             this.setSeqIndex(t1.seqIndex);
+            this.setTableName(t1.tableName);
         }
     }
 

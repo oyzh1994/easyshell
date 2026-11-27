@@ -1,10 +1,13 @@
 package cn.oyzh.easyshell.trees.sqlite.root;
 
+import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
-import cn.oyzh.easyshell.event.sqlite.ShellSqliteEventUtil;
 import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
+import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.sqlite.index.SQLiteIndex;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
+import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.sqlite.view.SQLiteView;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
 import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteTabPane;
@@ -16,7 +19,9 @@ import cn.oyzh.easyshell.trees.sqlite.table.ShellSqliteTablesTreeItem;
 import cn.oyzh.easyshell.trees.sqlite.terminal.ShellSqliteTerminalTreeItem;
 import cn.oyzh.easyshell.trees.sqlite.view.ShellSqliteViewsTreeItem;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
+import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
+import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.fx.db.query.DBQueryResults;
 import cn.oyzh.fx.plus.menu.FXMenuItem;
@@ -32,7 +37,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-11-02
  */
-public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRootTreeItemValue> {
+public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRootTreeItemValue> implements ShellIndexTarget {
 
     /**
      * 构造SQLite树根节点
@@ -95,6 +100,7 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
      *
      * @return 数据库类型
      */
+    @Override
     public DBDialect dialect() {
         return this.client().dialect();
     }
@@ -144,6 +150,7 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
         List<TreeItem<?>> items = new ArrayList<>();
         items.add(new ShellSqliteTablesTreeItem(this.getTreeView()));
         items.add(new ShellSqliteViewsTreeItem(this.getTreeView()));
+        items.add(new ShellIndexesTreeItem(this.getTreeView(), this));
         items.add(new ShellSqliteFunctionsTreeItem(this.getTreeView()));
         items.add(new ShellSqliteQueriesTreeItem(this.getTreeView()));
         items.add(new ShellSqliteTerminalTreeItem(this.getTreeView()));
@@ -297,5 +304,72 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
         FXMenuItem reloadDatabase = MenuItemHelper.reloadDatabase(this::reloadChild);
         items.add(reloadDatabase);
         return items;
+    }
+
+    @Override
+    public String connectName() {
+        return this.infoName();
+    }
+
+    @Override
+    public String indexScope() {
+        return this.dbName();
+    }
+
+    @Override
+    public List<? extends DBIndex> selectIndexes() {
+        return this.client().selectSchemaIndexes(new ShellSelectIndexParam(this.dbName()));
+    }
+
+    @Override
+    public String selectIndexDefinition(String indexName) {
+        return this.client().selectIndexDefinition(this.dbName(), indexName);
+    }
+
+    @Override
+    public void executeIndexSql(List<String> sqlList) {
+        this.client().executeIndexSql(this.dbName(), sqlList);
+    }
+
+    @Override
+    public boolean existIndex(String indexName) {
+        return this.client().existIndex(this.dbName(), indexName);
+    }
+
+    @Override
+    public void dropIndex(String indexName, String tableName) {
+        this.client().dropIndex(this.dbName(), indexName, tableName);
+    }
+
+    @Override
+    public DBIndex newIndex() {
+        return new SQLiteIndex();
+    }
+
+    @Override
+    public void reloadIndexes() {
+        ShellIndexesTreeItem typeChild = this.getIndexTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
+    /**
+     * 获取索引类型子节点
+     *
+     * @return 索引类型子节点
+     */
+    public ShellIndexesTreeItem getIndexTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 }
