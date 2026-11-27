@@ -14,6 +14,10 @@ import cn.oyzh.easyshell.postgresql.function.PostgresqlCreateFunctionParam;
 import cn.oyzh.easyshell.postgresql.function.PostgresqlFunction;
 import cn.oyzh.easyshell.postgresql.index.PostgresqlIndex;
 import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlAlertProcedureParam;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlCreateProcedureParam;
@@ -74,7 +78,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<ShellPostgresqlSchemaTreeItemValue> implements ShellIndexTarget {
+public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<ShellPostgresqlSchemaTreeItemValue> implements ShellIndexTarget, ShellTriggerTarget {
 
     /**
      * 当前值
@@ -215,6 +219,7 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
                         typeItems.add(new ShellPostgresqlTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
+                        typeItems.add(new ShellTriggersTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellPostgresqlFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlSequencesTreeItem(this.getTreeView()));
@@ -1059,5 +1064,67 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
         } else {
             typeChild.refresh();
         }
+    }
+
+    @Override
+    public String triggerScope() {
+        return this.indexScope();
+    }
+
+    @Override
+    public List<? extends DBTrigger> selectTriggers() {
+        return this.client().selectSchemaTriggers(new ShellSelectTriggerParam(this.schema()));
+    }
+
+    @Override
+    public String selectTriggerDefinition(String triggerName) {
+        return this.client().selectTriggerDefinition(this.schema(), triggerName);
+    }
+
+    @Override
+    public void executeTriggerSql(List<String> sqlList) {
+        this.client().executeTriggerSql(this.schema(), sqlList);
+    }
+
+    @Override
+    public boolean existTrigger(String triggerName) {
+        return this.client().existTrigger(this.schema(), triggerName);
+    }
+
+    @Override
+    public void dropTrigger(String triggerName, String tableName) {
+        this.client().dropTrigger(this.schema(), triggerName, tableName);
+    }
+
+    @Override
+    public DBTrigger newTrigger() {
+        return new PostgresqlTrigger();
+    }
+
+    @Override
+    public void reloadTriggers() {
+        ShellTriggersTreeItem typeChild = this.getTriggerTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
+    /**
+     * 获取触发器类型子节点
+     *
+     * @return 触发器类型子节点
+     */
+    public ShellTriggersTreeItem getTriggerTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellTriggersTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 }

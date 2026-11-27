@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.oracle.trigger;
 
 import cn.oyzh.common.object.ObjectCopier;
-import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.fx.db.DBObject;
 
 /**
  * Oracle触发器

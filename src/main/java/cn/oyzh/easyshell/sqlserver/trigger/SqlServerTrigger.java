@@ -1,8 +1,8 @@
 package cn.oyzh.easyshell.sqlserver.trigger;
 
 import cn.oyzh.common.object.ObjectCopier;
-import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.fx.db.DBObject;
 
 /**
  * SqlServer触发器

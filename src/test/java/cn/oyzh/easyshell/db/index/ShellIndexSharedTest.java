@@ -1,8 +1,5 @@
-package cn.oyzh.easyshell.index;
+package cn.oyzh.easyshell.db.index;
 
-import cn.oyzh.easyshell.db.index.ShellIndexHelper;
-import cn.oyzh.easyshell.db.index.ShellIndexTarget;
-import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.fx.ShellDataEditor;
 import cn.oyzh.easyshell.tabs.db.index.ShellIndexDesignTabController;
 import cn.oyzh.easyshell.trees.index.ShellIndexTreeItem;

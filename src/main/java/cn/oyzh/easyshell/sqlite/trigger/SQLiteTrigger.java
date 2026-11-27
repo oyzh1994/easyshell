@@ -5,8 +5,8 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.sqlite.generator.SQLiteGeneratorUtil;
 import cn.oyzh.easyshell.sqlite.generator.trigger.SQLiteTriggerCreateSqlGenerator;
 import cn.oyzh.easyshell.sqlite.schema.SQLiteSchemaObject;
-import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.util.DBUtil;
 
 import java.util.Locale;

@@ -55,6 +55,8 @@ import cn.oyzh.easyshell.sqlserver.view.SqlServerView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.db.index.ShellIndexHelper;
 import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
+import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.easyshell.db.trigger.ShellTriggerHelper;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
 import cn.oyzh.easyshell.event.ShellEventUtil;
@@ -3841,6 +3843,72 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
         String sql = "DROP INDEX " + DBUtil.wrap(indexName, DBDialect.SQLSERVER)
                 + " ON " + DBUtil.wrap(schema, tableName, DBDialect.SQLSERVER);
         this.executeIndexSql(schema, List.of(sql));
+    }
+
+    /**
+     * 查询触发器列表（模式/数据库级别，包含所属表名称）
+     *
+     * @param param 查询参数
+     * @return 触发器列表
+     */
+    public List<SqlServerTrigger> selectSchemaTriggers(ShellSelectTriggerParam param) {
+        SqlServerSelectTriggerParam selectParam = new SqlServerSelectTriggerParam();
+        selectParam.setSchema(param.getScope());
+        selectParam.setTriggerName(param.getTriggerName());
+        // 树节点仅需要名称与所属表，不查询完整定义
+        List<SqlServerTrigger> triggers = this.selectTriggers(selectParam);
+        String triggerName = param.getTriggerName();
+        if (StringUtil.isNotBlank(triggerName)) {
+            return triggers.stream()
+                    .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), triggerName))
+                    .toList();
+        }
+        return triggers;
+    }
+
+    /**
+     * 查询触发器定义
+     *
+     * @param scope       模式/数据库名称
+     * @param triggerName 触发器名称
+     * @return 触发器定义
+     */
+    public String selectTriggerDefinition(String scope, String triggerName) {
+        return ShellTriggerHelper.stripTerminator(this.showCreateTrigger(scope, triggerName));
+    }
+
+    /**
+     * 判断触发器是否存在
+     *
+     * @param scope       模式/数据库名称
+     * @param triggerName 触发器名称
+     * @return 是否存在
+     */
+    public boolean existTrigger(String scope, String triggerName) {
+        return !this.selectSchemaTriggers(new ShellSelectTriggerParam(scope, triggerName)).isEmpty();
+    }
+
+    /**
+     * 删除触发器
+     *
+     * @param scope       模式/数据库名称
+     * @param triggerName 触发器名称
+     * @param tableName   所属表名称
+     */
+    public void dropTrigger(String scope, String triggerName, String tableName) {
+        String sql = "DROP TRIGGER IF EXISTS " + DBUtil.wrap(scope, triggerName, DBDialect.SQLSERVER);
+        this.executeTriggerSql(scope, List.of(sql));
+    }
+
+    /**
+     * 执行触发器相关SQL
+     *
+     * @param scope   模式/数据库名称
+     * @param sqlList SQL列表
+     */
+    public void executeTriggerSql(String scope, List<String> sqlList) {
+        // 复用与索引一致的通用DDL执行逻辑
+        this.executeIndexSql(scope, sqlList);
     }
 
     /**

@@ -27,6 +27,7 @@ import cn.oyzh.easyshell.trees.mysql.view.ShellMysqlViewsTreeItem;
 import cn.oyzh.easyshell.trees.oracle.ShellOracleTreeView;
 import cn.oyzh.easyshell.trees.oracle.function.ShellOracleFunctionsTreeItem;
 import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.easyshell.trees.oracle.procedure.ShellOracleProceduresTreeItem;
 import cn.oyzh.easyshell.trees.oracle.sequence.ShellOracleSequencesTreeItem;
 import cn.oyzh.easyshell.trees.oracle.table.ShellOracleTablesTreeItem;
@@ -98,6 +99,7 @@ public class TreeLazyCountAllDatabaseTest {
         add(oracle, new ShellOracleProceduresTreeItem(oracle), "getProcedureSize");
         add(oracle, new ShellOracleSequencesTreeItem(oracle), "getSequenceSize");
         add(oracle, new ShellIndexesTreeItem(oracle, null), "getIndexSize");
+        add(oracle, new ShellTriggersTreeItem(oracle, null), "getTriggerSize");
 
         ShellMysqlTreeView mysql = new ShellMysqlTreeView();
         add(mysql, new ShellMysqlTablesTreeItem(mysql), "getTableSize");

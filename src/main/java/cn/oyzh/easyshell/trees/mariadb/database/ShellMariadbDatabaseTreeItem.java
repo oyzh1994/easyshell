@@ -31,6 +31,10 @@ import cn.oyzh.easyshell.mariadb.view.MariadbAlertViewParam;
 import cn.oyzh.easyshell.mariadb.view.MariadbCreateViewParam;
 import cn.oyzh.easyshell.mariadb.view.MariadbView;
 import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.fx.db.DBDialect;
 import cn.oyzh.easyshell.query.mariadb.ShellMariadbExecuteResult;
@@ -73,7 +77,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-10-09
  */
-public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMariadbDatabaseTreeItemValue> implements ShellIndexTarget {
+public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMariadbDatabaseTreeItemValue> implements ShellIndexTarget, ShellTriggerTarget {
 
     /**
      * 当前值
@@ -214,6 +218,7 @@ public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMari
                         typeItems.add(new ShellMariadbTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMariadbViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
+                        typeItems.add(new ShellTriggersTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellMariadbFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMariadbProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellMariadbEventsTreeItem(this.getTreeView()));
@@ -1089,5 +1094,67 @@ public class ShellMariadbDatabaseTreeItem extends ShellMariadbTreeItem<ShellMari
         } else {
             typeChild.refresh();
         }
+    }
+
+    @Override
+    public String triggerScope() {
+        return this.indexScope();
+    }
+
+    @Override
+    public List<? extends DBTrigger> selectTriggers() {
+        return this.client().selectSchemaTriggers(new ShellSelectTriggerParam(this.dbName()));
+    }
+
+    @Override
+    public String selectTriggerDefinition(String triggerName) {
+        return this.client().selectTriggerDefinition(this.dbName(), triggerName);
+    }
+
+    @Override
+    public void executeTriggerSql(List<String> sqlList) {
+        this.client().executeTriggerSql(this.dbName(), sqlList);
+    }
+
+    @Override
+    public boolean existTrigger(String triggerName) {
+        return this.client().existTrigger(this.dbName(), triggerName);
+    }
+
+    @Override
+    public void dropTrigger(String triggerName, String tableName) {
+        this.client().dropTrigger(this.dbName(), triggerName, tableName);
+    }
+
+    @Override
+    public DBTrigger newTrigger() {
+        return new MariadbTrigger();
+    }
+
+    @Override
+    public void reloadTriggers() {
+        ShellTriggersTreeItem typeChild = this.getTriggerTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
+    /**
+     * 获取触发器类型子节点
+     *
+     * @return 触发器类型子节点
+     */
+    public ShellTriggersTreeItem getTriggerTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellTriggersTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 }

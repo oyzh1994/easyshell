@@ -33,6 +33,10 @@ import cn.oyzh.easyshell.oracle.view.OracleView;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.event.oracle.ShellOracleEventUtil;
 import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.easyshell.query.oracle.OracleExecuteResult;
 import cn.oyzh.easyshell.query.oracle.OracleExplainResult;
 import cn.oyzh.easyshell.trees.index.ShellIndexTreeItem;
@@ -75,7 +79,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSchemaTreeItemValue> implements ShellIndexTarget {
+public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSchemaTreeItemValue> implements ShellIndexTarget, ShellTriggerTarget {
 
     /**
      * 当前值
@@ -216,6 +220,7 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
                         typeItems.add(new ShellOracleTablesTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
+                        typeItems.add(new ShellTriggersTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellOracleFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellOracleSequencesTreeItem(this.getTreeView()));
@@ -1094,5 +1099,67 @@ public class ShellOracleSchemaTreeItem extends ShellOracleTreeItem<ShellOracleSc
         param.setSequence(sequence);
         param.setSchema(this.schema());
         this.client().alertSequence(param);
+    }
+
+    @Override
+    public String triggerScope() {
+        return this.indexScope();
+    }
+
+    @Override
+    public List<? extends DBTrigger> selectTriggers() {
+        return this.client().selectSchemaTriggers(new ShellSelectTriggerParam(this.schema()));
+    }
+
+    @Override
+    public String selectTriggerDefinition(String triggerName) {
+        return this.client().selectTriggerDefinition(this.schema(), triggerName);
+    }
+
+    @Override
+    public void executeTriggerSql(List<String> sqlList) {
+        this.client().executeTriggerSql(this.schema(), sqlList);
+    }
+
+    @Override
+    public boolean existTrigger(String triggerName) {
+        return this.client().existTrigger(this.schema(), triggerName);
+    }
+
+    @Override
+    public void dropTrigger(String triggerName, String tableName) {
+        this.client().dropTrigger(this.schema(), triggerName, tableName);
+    }
+
+    @Override
+    public DBTrigger newTrigger() {
+        return new OracleTrigger();
+    }
+
+    @Override
+    public void reloadTriggers() {
+        ShellTriggersTreeItem typeChild = this.getTriggerTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
+    /**
+     * 获取触发器类型子节点
+     *
+     * @return 触发器类型子节点
+     */
+    public ShellTriggersTreeItem getTriggerTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellTriggersTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
     }
 }

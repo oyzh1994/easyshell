@@ -1,10 +1,15 @@
 package cn.oyzh.easyshell.trees.sqlite.root;
 
+import cn.oyzh.easyshell.sqlite.trigger.SQLiteTrigger;
 import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.query.sqlite.SQLiteExecuteResult;
 import cn.oyzh.easyshell.db.index.ShellIndexTarget;
+import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.fx.db.DBTrigger;
+import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.easyshell.sqlite.index.SQLiteIndex;
 import cn.oyzh.easyshell.sqlite.table.SQLiteTable;
 import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
@@ -37,7 +42,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-11-02
  */
-public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRootTreeItemValue> implements ShellIndexTarget {
+public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRootTreeItemValue> implements ShellIndexTarget, ShellTriggerTarget {
 
     /**
      * 构造SQLite树根节点
@@ -151,6 +156,7 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
         items.add(new ShellSqliteTablesTreeItem(this.getTreeView()));
         items.add(new ShellSqliteViewsTreeItem(this.getTreeView()));
         items.add(new ShellIndexesTreeItem(this.getTreeView(), this));
+        items.add(new ShellTriggersTreeItem(this.getTreeView(), this));
         items.add(new ShellSqliteFunctionsTreeItem(this.getTreeView()));
         items.add(new ShellSqliteQueriesTreeItem(this.getTreeView()));
         items.add(new ShellSqliteTerminalTreeItem(this.getTreeView()));
@@ -367,6 +373,68 @@ public class ShellSqliteRootTreeItem extends ShellSqliteTreeItem<ShellSqliteRoot
     public ShellIndexesTreeItem getIndexTypeChild() {
         for (RichTreeItem<?> child : this.richChildren()) {
             if (child instanceof ShellIndexesTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String triggerScope() {
+        return this.indexScope();
+    }
+
+    @Override
+    public List<? extends DBTrigger> selectTriggers() {
+        return this.client().selectSchemaTriggers(new ShellSelectTriggerParam(this.dbName()));
+    }
+
+    @Override
+    public String selectTriggerDefinition(String triggerName) {
+        return this.client().selectTriggerDefinition(this.dbName(), triggerName);
+    }
+
+    @Override
+    public void executeTriggerSql(List<String> sqlList) {
+        this.client().executeTriggerSql(this.dbName(), sqlList);
+    }
+
+    @Override
+    public boolean existTrigger(String triggerName) {
+        return this.client().existTrigger(this.dbName(), triggerName);
+    }
+
+    @Override
+    public void dropTrigger(String triggerName, String tableName) {
+        this.client().dropTrigger(this.dbName(), triggerName, tableName);
+    }
+
+    @Override
+    public DBTrigger newTrigger() {
+        return new SQLiteTrigger();
+    }
+
+    @Override
+    public void reloadTriggers() {
+        ShellTriggersTreeItem typeChild = this.getTriggerTypeChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
+    /**
+     * 获取触发器类型子节点
+     *
+     * @return 触发器类型子节点
+     */
+    public ShellTriggersTreeItem getTriggerTypeChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellTriggersTreeItem treeItem) {
                 return treeItem;
             }
         }

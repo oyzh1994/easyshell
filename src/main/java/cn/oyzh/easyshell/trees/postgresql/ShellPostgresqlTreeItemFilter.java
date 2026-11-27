@@ -10,6 +10,8 @@ import cn.oyzh.easyshell.trees.postgresql.table.ShellPostgresqlTablesTreeItem;
 import cn.oyzh.easyshell.trees.postgresql.view.ShellPostgresqlViewsTreeItem;
 import cn.oyzh.easyshell.trees.index.ShellIndexTreeItem;
 import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggerTreeItem;
+import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItem;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemFilter;
 import cn.oyzh.fx.gui.tree.view.RichTreeItemValue;
@@ -24,6 +26,15 @@ public class ShellPostgresqlTreeItemFilter extends RichTreeItemFilter {
 
     @Override
     public boolean test(RichTreeItem<?> item) {
+        // 公共触发器节点
+        if (item instanceof ShellTriggersTreeItem) {
+            return true;
+        }
+        if (item instanceof ShellTriggerTreeItem triggerItem) {
+            String name = triggerItem.getValue().name();
+            TextUtil.MatchText matchText = TextUtil.findText(name, this.getKw(), null, this.isMatchCase(), this.isWholeWord(), false);
+            return matchText != TextUtil.MatchText.NOT_FOUND;
+        }
         // 公共索引节点
         if (item instanceof ShellIndexesTreeItem) {
             return true;

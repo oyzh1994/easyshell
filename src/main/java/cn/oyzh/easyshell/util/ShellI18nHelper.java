@@ -715,6 +715,18 @@ public class ShellI18nHelper {
         return text("shell.db.indexDefinitionTip");
     }
 
+    public static String addTrigger() {
+        return text("shell.db.addTrigger");
+    }
+
+    public static String designTrigger() {
+        return text("shell.db.designTrigger");
+    }
+
+    public static String triggerDefinitionTip() {
+        return text("shell.db.triggerDefinitionTip");
+    }
+
     public static String confirmDeleteForeignKey(Object name) {
         return text("shell.confirm.deleteForeignKey", name);
     }

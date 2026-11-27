@@ -6,6 +6,10 @@ import cn.oyzh.common.util.StringUtil;
 import cn.oyzh.easyshell.domain.ShellQuery;
 import cn.oyzh.easyshell.db.index.ShellIndexTarget;
 import cn.oyzh.easyshell.event.db.index.ShellIndexDesignEvent;
+import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
+import cn.oyzh.easyshell.event.db.trigger.ShellTriggerDesignEvent;
+import cn.oyzh.easyshell.event.db.trigger.ShellTriggerDroppedEvent;
+import cn.oyzh.easyshell.tabs.db.trigger.ShellTriggerDesignTab;
 import cn.oyzh.easyshell.event.db.index.ShellIndexDroppedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseClosedEvent;
 import cn.oyzh.easyshell.event.mysql.database.ShellMysqlDatabaseDroppedEvent;
@@ -571,6 +575,8 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onDatabaseClosed(ShellMysqlDatabaseClosedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        this.removeTab(this.getIndexTabs(event.data()));
+        this.removeTab(this.getTriggerTabs(event.data()));
     }
 
     /**
@@ -581,6 +587,8 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
     @EventSubscribe
     private void onDatabaseDropped(ShellMysqlDatabaseDroppedEvent event) {
         this.removeTab(this.getBaseTabs(event.data()));
+        this.removeTab(this.getIndexTabs(event.data()));
+        this.removeTab(this.getTriggerTabs(event.data()));
         ShellMysqlQueryUtil.refreshIndex(this.getClient());
     }
 
@@ -649,6 +657,101 @@ public class ShellMysqlTabPane extends RichTabPane implements FXEventListener {
      *
      * @param event 事件
      */
+    /**
+     * 获取索引设计tab列表
+     *
+     * @param target 索引设计目标
+     * @return tab列表
+     */
+    private List<ShellIndexDesignTab> getIndexTabs(ShellIndexTarget target) {
+        List<ShellIndexDesignTab> list = new ArrayList<>();
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellIndexDesignTab tab1 && tab1.target() == target) {
+                list.add(tab1);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取触发器设计tab列表
+     *
+     * @param target 触发器设计目标
+     * @return tab列表
+     */
+    private List<ShellTriggerDesignTab> getTriggerTabs(ShellTriggerTarget target) {
+        List<ShellTriggerDesignTab> list = new ArrayList<>();
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellTriggerDesignTab tab1 && tab1.target() == target) {
+                list.add(tab1);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 触发器设计事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onTriggerDesign(ShellTriggerDesignEvent event) {
+        // 仅处理当前数据库类型的事件
+        if (event.dialect() != DBDialect.MYSQL) {
+            return;
+        }
+        try {
+            ShellTriggerDesignTab tab = this.getTriggerDesignTab(event.getTarget(), event.triggerName());
+            if (tab == null) {
+                tab = new ShellTriggerDesignTab();
+                tab.init(event.data(), event.getTarget());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取触发器设计tab
+     *
+     * @param target      触发器设计目标
+     * @param triggerName 触发器名称
+     * @return 结果
+     */
+    private ShellTriggerDesignTab getTriggerDesignTab(ShellTriggerTarget target, String triggerName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellTriggerDesignTab tab1 && tab1.target() == target) {
+                // 新建触发器的名称为空，单独识别新建中的tab
+                if (StringUtil.isBlank(triggerName) ? tab1.isNew() : StringUtil.equals(triggerName, tab1.triggerName())) {
+                    return tab1;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 触发器删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onTriggerDropped(ShellTriggerDroppedEvent event) {
+        if (event.dialect() != DBDialect.MYSQL) {
+            return;
+        }
+        try {
+            ShellTriggerDesignTab tab = this.getTriggerDesignTab(event.getTarget(), event.triggerName());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     @EventSubscribe
     private void onIndexDesign(ShellIndexDesignEvent event) {
         // 仅处理当前数据库类型的事件
