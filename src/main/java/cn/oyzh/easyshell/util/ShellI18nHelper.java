@@ -727,6 +727,30 @@ public class ShellI18nHelper {
         return text("shell.db.triggerDefinitionTip");
     }
 
+    public static String types() {
+        return text("shell.db.types");
+    }
+
+    public static String addType() {
+        return text("shell.db.addType");
+    }
+
+    public static String designType() {
+        return text("shell.db.designType");
+    }
+
+    public static String typeDefinitionTip() {
+        return text("shell.db.typeDefinitionTip");
+    }
+
+    public static String deleteType() {
+        return text("shell.db.deleteType");
+    }
+
+    public static String confirmDeleteType(Object name) {
+        return text("shell.confirm.deleteType", name);
+    }
+
     public static String confirmDeleteForeignKey(Object name) {
         return text("shell.confirm.deleteForeignKey", name);
     }

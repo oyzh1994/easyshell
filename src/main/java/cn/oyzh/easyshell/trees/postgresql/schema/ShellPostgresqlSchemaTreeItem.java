@@ -17,6 +17,11 @@ import cn.oyzh.easyshell.db.index.ShellIndexTarget;
 import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
 import cn.oyzh.fx.db.DBTrigger;
 import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
+import cn.oyzh.easyshell.db.type.ShellSelectTypeParam;
+import cn.oyzh.easyshell.db.type.ShellTypeTarget;
+import cn.oyzh.easyshell.trees.type.ShellTypesTreeItem;
+import cn.oyzh.fx.db.DBTypeDefinition;
+import cn.oyzh.easyshell.postgresql.type.PostgresqlTypeDefinition;
 import cn.oyzh.easyshell.trees.trigger.ShellTriggersTreeItem;
 import cn.oyzh.easyshell.trees.index.ShellIndexesTreeItem;
 import cn.oyzh.easyshell.postgresql.procedure.PostgresqlAlertProcedureParam;
@@ -78,7 +83,7 @@ import java.util.List;
  * @author oyzh
  * @since 2026-09-02
  */
-public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<ShellPostgresqlSchemaTreeItemValue> implements ShellIndexTarget, ShellTriggerTarget {
+public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<ShellPostgresqlSchemaTreeItemValue> implements ShellIndexTarget, ShellTriggerTarget, ShellTypeTarget {
 
     /**
      * 当前值
@@ -220,6 +225,7 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
                         typeItems.add(new ShellPostgresqlViewsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellIndexesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellTriggersTreeItem(this.getTreeView(), this));
+                        typeItems.add(new ShellTypesTreeItem(this.getTreeView(), this));
                         typeItems.add(new ShellPostgresqlFunctionsTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlProceduresTreeItem(this.getTreeView()));
                         typeItems.add(new ShellPostgresqlSequencesTreeItem(this.getTreeView()));
@@ -1122,6 +1128,68 @@ public class ShellPostgresqlSchemaTreeItem extends ShellPostgresqlTreeItem<Shell
     public ShellTriggersTreeItem getTriggerTypeChild() {
         for (RichTreeItem<?> child : this.richChildren()) {
             if (child instanceof ShellTriggersTreeItem treeItem) {
+                return treeItem;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String typeScope() {
+        return this.indexScope();
+    }
+
+    @Override
+    public List<? extends DBTypeDefinition> selectTypes() {
+        return this.client().selectSchemaTypes(new ShellSelectTypeParam(this.indexScope()));
+    }
+
+    @Override
+    public String selectTypeDefinition(String typeName) {
+        return this.client().selectTypeDefinition(this.indexScope(), typeName);
+    }
+
+    @Override
+    public void executeTypeSql(List<String> sqlList) {
+        this.client().executeTypeSql(this.indexScope(), sqlList);
+    }
+
+    @Override
+    public boolean existType(String typeName) {
+        return this.client().existType(this.indexScope(), typeName);
+    }
+
+    @Override
+    public void dropType(String typeName, String objectType) {
+        this.client().dropType(this.indexScope(), typeName, objectType);
+    }
+
+    @Override
+    public DBTypeDefinition newType() {
+        return new PostgresqlTypeDefinition();
+    }
+
+    @Override
+    public void reloadTypes() {
+        ShellTypesTreeItem typeChild = this.getTypeListChild();
+        if (typeChild == null) {
+            return;
+        }
+        if (typeChild.isLoaded()) {
+            typeChild.reloadChild();
+        } else {
+            typeChild.refresh();
+        }
+    }
+
+    /**
+     * 获取类型（自定义类型）类型子节点
+     *
+     * @return 类型子节点
+     */
+    public ShellTypesTreeItem getTypeListChild() {
+        for (RichTreeItem<?> child : this.richChildren()) {
+            if (child instanceof ShellTypesTreeItem treeItem) {
                 return treeItem;
             }
         }

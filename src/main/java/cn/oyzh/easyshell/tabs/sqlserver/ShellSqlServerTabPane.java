@@ -9,6 +9,10 @@ import cn.oyzh.easyshell.db.index.ShellIndexTarget;
 import cn.oyzh.easyshell.event.db.index.ShellIndexDesignEvent;
 import cn.oyzh.easyshell.db.trigger.ShellTriggerTarget;
 import cn.oyzh.easyshell.event.db.trigger.ShellTriggerDesignEvent;
+import cn.oyzh.easyshell.db.type.ShellTypeTarget;
+import cn.oyzh.easyshell.event.db.type.ShellTypeDesignEvent;
+import cn.oyzh.easyshell.event.db.type.ShellTypeDroppedEvent;
+import cn.oyzh.easyshell.tabs.db.type.ShellTypeDesignTab;
 import cn.oyzh.easyshell.event.db.trigger.ShellTriggerDroppedEvent;
 import cn.oyzh.easyshell.tabs.db.trigger.ShellTriggerDesignTab;
 import cn.oyzh.easyshell.event.db.index.ShellIndexDroppedEvent;
@@ -560,6 +564,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         this.removeTab(this.getBaseTabs(event.data()));
         this.removeTab(this.getIndexTabs(event.data()));
         this.removeTab(this.getTriggerTabs(event.data()));
+        this.removeTab(this.getTypeTabs(event.data()));
     }
 
     /**
@@ -572,6 +577,7 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
         this.removeTab(this.getBaseTabs(event.data()));
         this.removeTab(this.getIndexTabs(event.data()));
         this.removeTab(this.getTriggerTabs(event.data()));
+        this.removeTab(this.getTypeTabs(event.data()));
         ShellSqlServerQueryUtil.refreshIndex(this.getClient());
     }
 
@@ -650,6 +656,85 @@ public class ShellSqlServerTabPane extends RichTabPane implements FXEventListene
             }
         }
         return list;
+    }
+
+    /**
+     * 获取类型设计tab列表
+     *
+     * @param target 类型设计目标
+     * @return tab列表
+     */
+    private List<ShellTypeDesignTab> getTypeTabs(ShellTypeTarget target) {
+        List<ShellTypeDesignTab> list = new ArrayList<>();
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellTypeDesignTab tab1 && tab1.target() == target) {
+                list.add(tab1);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 类型设计事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onTypeDesign(ShellTypeDesignEvent event) {
+        // 仅处理当前数据库类型的事件
+        if (event.dialect() != DBDialect.SQLSERVER) {
+            return;
+        }
+        try {
+            ShellTypeDesignTab tab = this.getTypeDesignTab(event.getTarget(), event.typeName());
+            if (tab == null) {
+                tab = new ShellTypeDesignTab();
+                tab.init(event.data(), event.getTarget());
+                this.addTab(tab);
+            }
+            this.select(tab);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取类型设计tab
+     *
+     * @param target   类型设计目标
+     * @param typeName 类型名称
+     * @return 结果
+     */
+    private ShellTypeDesignTab getTypeDesignTab(ShellTypeTarget target, String typeName) {
+        for (Tab tab : this.getTabs()) {
+            if (tab instanceof ShellTypeDesignTab tab1 && tab1.target() == target) {
+                // 新建类型的名称为空，单独识别新建中的tab
+                if (StringUtil.isBlank(typeName) ? tab1.isNew() : StringUtil.equals(typeName, tab1.typeName())) {
+                    return tab1;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 类型删除事件
+     *
+     * @param event 事件
+     */
+    @EventSubscribe
+    private void onTypeDropped(ShellTypeDroppedEvent event) {
+        if (event.dialect() != DBDialect.SQLSERVER) {
+            return;
+        }
+        try {
+            ShellTypeDesignTab tab = this.getTypeDesignTab(event.getTarget(), event.typeName());
+            if (tab != null) {
+                tab.closeTab();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

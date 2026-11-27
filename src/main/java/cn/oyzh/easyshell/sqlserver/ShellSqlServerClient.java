@@ -56,6 +56,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.db.index.ShellIndexHelper;
 import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.easyshell.db.type.ShellSelectTypeParam;
+import cn.oyzh.easyshell.db.type.ShellTypeHelper;
 import cn.oyzh.easyshell.db.trigger.ShellTriggerHelper;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -3907,6 +3909,101 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
      * @param sqlList SQL列表
      */
     public void executeTriggerSql(String scope, List<String> sqlList) {
+        // 复用与索引一致的通用DDL执行逻辑
+        this.executeIndexSql(scope, sqlList);
+    }
+
+    /**
+     * 查询类型列表（模式级别，仅名称与对象类型，不查询完整定义）
+     *
+     * @param param 查询参数
+     * @return 类型列表
+     */
+    public List<SqlServerTypeDefinition> selectSchemaTypes(ShellSelectTypeParam param) {
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT T.NAME AS TYPE_NAME, T.IS_TABLE_TYPE
+                    FROM SYS.TYPES T
+                    JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = T.SCHEMA_ID
+                    WHERE S.NAME = ?
+                      AND T.IS_USER_DEFINED = 1
+                      AND T.IS_ASSEMBLY_TYPE = 0
+                    ORDER BY T.NAME
+                    """;
+            this.printSql(sql);
+            List<SqlServerTypeDefinition> types = new ArrayList<>();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, param.getScope());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        SqlServerTypeDefinition type = new SqlServerTypeDefinition();
+                        type.setName(resultSet.getString("TYPE_NAME"));
+                        boolean tableType = resultSet.getBoolean("IS_TABLE_TYPE");
+                        type.setObjectType(tableType ? SqlServerTypeDefinition.OBJECT_TYPE_TABLE : SqlServerTypeDefinition.OBJECT_TYPE_ALIAS);
+                        types.add(type);
+                    }
+                }
+            }
+            String typeName = param.getTypeName();
+            if (StringUtil.isNotBlank(typeName)) {
+                return types.stream()
+                        .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), typeName))
+                        .toList();
+            }
+            return types;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询类型定义
+     *
+     * @param scope    模式名称
+     * @param typeName 类型名称
+     * @return 类型定义
+     */
+    public String selectTypeDefinition(String scope, String typeName) {
+        // 复用已有的完整类型查询，避免重复拼装DDL
+        for (SqlServerTypeDefinition type : this.selectTypes(scope)) {
+            if (StringUtil.equalsIgnoreCase(type.getName(), typeName)) {
+                return ShellTypeHelper.stripTerminator(type.getCreateDefinition());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断类型是否存在
+     *
+     * @param scope    模式名称
+     * @param typeName 类型名称
+     * @return 是否存在
+     */
+    public boolean existType(String scope, String typeName) {
+        return !this.selectSchemaTypes(new ShellSelectTypeParam(scope, typeName)).isEmpty();
+    }
+
+    /**
+     * 删除类型
+     *
+     * @param scope      模式名称
+     * @param typeName   类型名称
+     * @param objectType 对象类型
+     */
+    public void dropType(String scope, String typeName, String objectType) {
+        String sql = "DROP TYPE " + DBUtil.wrap(scope, typeName, DBDialect.SQLSERVER);
+        this.executeTypeSql(scope, List.of(sql));
+    }
+
+    /**
+     * 执行类型相关SQL
+     *
+     * @param scope   模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeTypeSql(String scope, List<String> sqlList) {
         // 复用与索引一致的通用DDL执行逻辑
         this.executeIndexSql(scope, sqlList);
     }

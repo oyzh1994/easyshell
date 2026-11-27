@@ -56,6 +56,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.db.index.ShellIndexHelper;
 import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.easyshell.db.type.ShellSelectTypeParam;
+import cn.oyzh.easyshell.db.type.ShellTypeHelper;
 import cn.oyzh.easyshell.db.trigger.ShellTriggerHelper;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -2785,6 +2787,105 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @param sqlList SQL列表
      */
     public void executeTriggerSql(String scope, List<String> sqlList) {
+        // 复用与索引一致的通用DDL执行逻辑
+        this.executeIndexSql(scope, sqlList);
+    }
+
+    /**
+     * 查询类型列表（模式级别，仅名称与对象类型，不查询完整定义）
+     *
+     * @param param 查询参数
+     * @return 类型列表
+     */
+    public List<DamengTypeDefinition> selectSchemaTypes(ShellSelectTypeParam param) {
+        try {
+            Connection connection = this.getConnManager().connection(param.getScope());
+            String sql = """
+                    SELECT OBJECT_NAME, OBJECT_TYPE
+                    FROM ALL_OBJECTS
+                    WHERE OWNER = ?
+                      AND OBJECT_TYPE IN ('CLASS', 'TYPE')
+                    ORDER BY OBJECT_ID
+                    """;
+            this.printSql(sql);
+            List<DamengTypeDefinition> types = new ArrayList<>();
+            Set<String> names = new HashSet<>();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, param.getScope());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        String name = resultSet.getString("OBJECT_NAME");
+                        if (StringUtil.isBlank(name) || !names.add(name.toUpperCase())) {
+                            continue;
+                        }
+                        DamengTypeDefinition type = new DamengTypeDefinition();
+                        type.setName(name);
+                        type.setObjectType(resultSet.getString("OBJECT_TYPE"));
+                        types.add(type);
+                    }
+                }
+            }
+            String typeName = param.getTypeName();
+            if (StringUtil.isNotBlank(typeName)) {
+                return types.stream()
+                        .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), typeName))
+                        .toList();
+            }
+            return types;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询类型定义
+     *
+     * @param scope    模式名称
+     * @param typeName 类型名称
+     * @return 类型定义
+     */
+    public String selectTypeDefinition(String scope, String typeName) {
+        // 复用已有的完整类型查询，避免重复拼装DDL
+        for (DamengTypeDefinition type : this.selectTypes(scope)) {
+            if (StringUtil.equalsIgnoreCase(type.getName(), typeName)) {
+                return ShellTypeHelper.stripTerminator(type.getCreateDefinition());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断类型是否存在
+     *
+     * @param scope    模式名称
+     * @param typeName 类型名称
+     * @return 是否存在
+     */
+    public boolean existType(String scope, String typeName) {
+        return !this.selectSchemaTypes(new ShellSelectTypeParam(scope, typeName)).isEmpty();
+    }
+
+    /**
+     * 删除类型
+     *
+     * @param scope      模式名称
+     * @param typeName   类型名称
+     * @param objectType 对象类型
+     */
+    public void dropType(String scope, String typeName, String objectType) {
+        // 达梦的类（CLASS）与对象类型（TYPE）使用不同的删除关键字
+        String keyword = StringUtil.equalsIgnoreCase(objectType, "CLASS") ? "CLASS" : "TYPE";
+        String sql = "DROP " + keyword + " " + DBUtil.wrap(scope, typeName, DBDialect.DAMENG);
+        this.executeTypeSql(scope, List.of(sql));
+    }
+
+    /**
+     * 执行类型相关SQL
+     *
+     * @param scope   模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeTypeSql(String scope, List<String> sqlList) {
         // 复用与索引一致的通用DDL执行逻辑
         this.executeIndexSql(scope, sqlList);
     }

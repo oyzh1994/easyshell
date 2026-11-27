@@ -8,6 +8,8 @@ import cn.oyzh.easyshell.domain.ShellConnect;
 import cn.oyzh.easyshell.db.index.ShellIndexHelper;
 import cn.oyzh.easyshell.db.index.ShellSelectIndexParam;
 import cn.oyzh.easyshell.db.trigger.ShellSelectTriggerParam;
+import cn.oyzh.easyshell.db.type.ShellSelectTypeParam;
+import cn.oyzh.easyshell.db.type.ShellTypeHelper;
 import cn.oyzh.easyshell.db.trigger.ShellTriggerHelper;
 import cn.oyzh.easyshell.domain.ShellJumpConfig;
 import cn.oyzh.easyshell.domain.ShellProxyConfig;
@@ -3978,6 +3980,110 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      * @param sqlList SQL列表
      */
     public void executeTriggerSql(String scope, List<String> sqlList) {
+        // 复用与索引一致的通用DDL执行逻辑
+        this.executeIndexSql(scope, sqlList);
+    }
+
+    /**
+     * 查询类型列表（模式级别，仅名称与对象类型，不查询完整定义）
+     *
+     * @param param 查询参数
+     * @return 类型列表
+     */
+    public List<PostgresqlTypeDefinition> selectSchemaTypes(ShellSelectTypeParam param) {
+        try {
+            Connection connection = this.getConnManager().connection();
+            String sql = """
+                    SELECT T.TYPNAME AS "NAME", T.TYPTYPE AS "TYPE", C.RELKIND AS "RELKIND"
+                    FROM PG_CATALOG.PG_TYPE T
+                    JOIN PG_CATALOG.PG_NAMESPACE N ON N.OID = T.TYPNAMESPACE
+                    LEFT JOIN PG_CATALOG.PG_CLASS C ON C.OID = T.TYPRELID
+                    WHERE N.NSPNAME = ?
+                      AND (T.TYPTYPE IN ('e', 'd', 'r') OR (T.TYPTYPE = 'c' AND C.RELKIND = 'c'))
+                    ORDER BY T.TYPNAME
+                    """;
+            this.printSql(sql);
+            List<PostgresqlTypeDefinition> types = new ArrayList<>();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, param.getScope());
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        PostgresqlTypeDefinition type = new PostgresqlTypeDefinition();
+                        type.setName(resultSet.getString("NAME"));
+                        String typtype = resultSet.getString("TYPE");
+                        if (StringUtil.equalsIgnoreCase(typtype, "e")) {
+                            type.setObjectType(PostgresqlTypeDefinition.OBJECT_TYPE_ENUM);
+                        } else if (StringUtil.equalsIgnoreCase(typtype, "d")) {
+                            type.setObjectType(PostgresqlTypeDefinition.OBJECT_TYPE_DOMAIN);
+                        } else if (StringUtil.equalsIgnoreCase(typtype, "r")) {
+                            type.setObjectType(PostgresqlTypeDefinition.OBJECT_TYPE_RANGE);
+                        } else {
+                            type.setObjectType(PostgresqlTypeDefinition.OBJECT_TYPE_COMPOSITE);
+                        }
+                        types.add(type);
+                    }
+                }
+            }
+            String typeName = param.getTypeName();
+            if (StringUtil.isNotBlank(typeName)) {
+                return types.stream()
+                        .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), typeName))
+                        .toList();
+            }
+            return types;
+        } catch (Exception ex) {
+            throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 查询类型定义
+     *
+     * @param scope    模式名称
+     * @param typeName 类型名称
+     * @return 类型定义
+     */
+    public String selectTypeDefinition(String scope, String typeName) {
+        // 复用已有的完整类型查询，避免重复拼装DDL
+        for (PostgresqlTypeDefinition type : this.selectTypes(scope)) {
+            if (StringUtil.equalsIgnoreCase(type.getName(), typeName)) {
+                return ShellTypeHelper.stripTerminator(type.getCreateDefinition());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断类型是否存在
+     *
+     * @param scope    模式名称
+     * @param typeName 类型名称
+     * @return 是否存在
+     */
+    public boolean existType(String scope, String typeName) {
+        return !this.selectSchemaTypes(new ShellSelectTypeParam(scope, typeName)).isEmpty();
+    }
+
+    /**
+     * 删除类型
+     *
+     * @param scope      模式名称
+     * @param typeName   类型名称
+     * @param objectType 对象类型
+     */
+    public void dropType(String scope, String typeName, String objectType) {
+        String keyword = StringUtil.equalsIgnoreCase(objectType, PostgresqlTypeDefinition.OBJECT_TYPE_DOMAIN) ? "DOMAIN" : "TYPE";
+        String sql = "DROP " + keyword + " " + DBUtil.wrap(scope, typeName, DBDialect.POSTGRESQL);
+        this.executeTypeSql(scope, List.of(sql));
+    }
+
+    /**
+     * 执行类型相关SQL
+     *
+     * @param scope   模式名称
+     * @param sqlList SQL列表
+     */
+    public void executeTypeSql(String scope, List<String> sqlList) {
         // 复用与索引一致的通用DDL执行逻辑
         this.executeIndexSql(scope, sqlList);
     }
