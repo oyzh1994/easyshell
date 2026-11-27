@@ -1,0 +1,201 @@
+.connect-guide-root {
+    -fx-background-color: -color-bg-default;
+}
+
+.connect-guide-header {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: transparent transparent -color-border-muted transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.connect-guide-header .svg-glyph {
+    -fx-background-color: transparent;
+}
+
+.connect-guide-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-default;
+}
+
+.connect-guide-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: -color-fg-muted;
+}
+
+.connect-guide-body {
+    -fx-background-color: -color-bg-default;
+}
+
+.connect-guide-sidebar {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: transparent -color-border-muted transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.connect-guide-side-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-muted;
+    -fx-padding: 0 0 6 8;
+}
+
+/* 分类导航与协议卡片复用 FXRadioButton + FXToggleGroup，隐藏原生单选圆圈 */
+.connect-guide-category,
+.connect-type-card {
+    -fx-label-padding: 0;
+    -fx-graphic-text-gap: 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.connect-guide-category > .radio,
+.connect-type-card > .radio,
+.connect-guide-category > .radio > .dot,
+.connect-type-card > .radio > .dot {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+}
+
+.connect-guide-category {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: -color-fg-default;
+    -fx-padding: 9 12 9 12;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-max-width: Infinity;
+}
+
+.connect-guide-category:hover {
+    -fx-background-color: -color-bg-default;
+}
+
+.connect-guide-category:selected {
+    -fx-background-color: -color-accent-muted;
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-weight: bold;
+}
+
+.connect-guide-main {
+    -fx-background-color: -color-bg-default;
+}
+
+.connect-guide-search {
+    -fx-prompt-text-fill: -color-fg-subtle;
+}
+
+.connect-guide-result {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 12px;
+    -fx-min-width: 90;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.connect-guide-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.connect-guide-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.connect-guide-sections {
+    -fx-background-color: transparent;
+}
+
+.connect-guide-section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-muted;
+    -fx-padding: 0 0 0 2;
+}
+
+.connect-guide-tiles {
+    -fx-background-color: transparent;
+    -fx-alignment: TOP_LEFT;
+    -fx-column-halignment: LEFT;
+}
+
+.connect-type-card {
+    -fx-min-width: 170;
+    -fx-pref-width: 170;
+    -fx-max-width: 170;
+    -fx-min-height: 86;
+    -fx-pref-height: 86;
+    -fx-max-height: 86;
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: -color-fg-default;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+}
+
+.connect-type-card:hover {
+    -fx-background-color: -color-accent-subtle;
+    -fx-border-color: -color-accent-3;
+}
+
+.connect-type-card:selected {
+    -fx-background-color: -color-accent-subtle;
+    -fx-border-color: -color-accent-emphasis;
+    -fx-border-width: 1.5;
+}
+
+.connect-card-icon {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 9;
+    -fx-padding: 7;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-max-width: 38;
+    -fx-max-height: 38;
+}
+
+.connect-type-card:selected .connect-card-icon {
+    -fx-background-color: -color-accent-muted;
+}
+
+.connect-card-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-default;
+}
+
+.connect-card-category {
+    -fx-font-size: 11px;
+    -fx-text-fill: -color-fg-muted;
+}
+
+.connect-guide-empty {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 13px;
+    -fx-padding: 40 0 40 0;
+    -fx-alignment: CENTER;
+}
+
+.connect-guide-footer {
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: -color-border-muted transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12 0 12 0;
+}
+
+.connect-guide-selection {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 0 20;
+}

@@ -1,356 +1,533 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.os.LinuxSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.AlibabaCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.HuaweiCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.MinioSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.other.TencentCloudSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.FTPSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RDPSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.RLoginSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.S3SVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SerialPortSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SFTPSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SMBSVGGlyph?>
+<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SSHSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.TelnetSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.VNCSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.protocol.WebdavSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.protol.RshSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.redis.RedisSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.protol.ValkeySVGGlyph?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.SSHSVGGlyph?>
 <?import cn.oyzh.easyshell.fx.svg.glyph.zk.ZookeeperSVGGlyph?>
 <?import cn.oyzh.fx.gui.button.NextStepButton?>
-<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.ConnectionSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MariadbSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.database.PostgreSQLSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.database.SqlServerSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.OracleSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.PostgreSQLSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.SqlServerSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.protol.RshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.protol.ValkeySVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.TerminalSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
 <?import cn.oyzh.fx.plus.controls.box.FXHBox?>
 <?import cn.oyzh.fx.plus.controls.box.FXVBox?>
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
-<?import cn.oyzh.fx.plus.controls.text.FXText?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.pane.FXBorderPane?>
+<?import cn.oyzh.fx.plus.controls.pane.FXFlowPane?>
+<?import cn.oyzh.fx.plus.controls.pane.FXScrollPane?>
+<?import cn.oyzh.fx.plus.controls.pane.FXStackPane?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import cn.oyzh.easyshell.fx.svg.glyph.protocol.MoshSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.database.DamengSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
-<?import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph?>
 <FXVBox xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="cn.oyzh.easyshell.controller.connect.ShellAddConnectGuidController"
-        realWidth="800"
-        realHeight="600">
-    <FXHeaderBar/>
-    <FXHBox flexWidth="100%" realHeight="80">
-        <FXHBox flexHeight="100%" flexWidth="100%">
-            <LinuxSVGGlyph sizeStr="40,40" color="yellowgreen">
-                <HBox.margin>
-                    <Insets left="30" top="20"/>
-                </HBox.margin>
-            </LinuxSVGGlyph>
-            <FXText enableFont="false" realHeight="25" text="%base.addConnect" fontSize="15">
-                <HBox.margin>
-                    <Insets left="15" top="30"/>
-                </HBox.margin>
-            </FXText>
-        </FXHBox>
-    </FXHBox>
-    <InfoLabel text="%base.terminal">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
+        styleClass="connect-guide-root"
+        realWidth="960"
+        realHeight="640">
     <fx:define>
-        <FXToggleGroup fx:id="type"/>
+        <FXToggleGroup fx:id="categoryGroup"/>
+        <FXToggleGroup fx:id="cardGroup"/>
     </fx:define>
-    <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="SSH" selected="true" userData="ssh">
-            <graphic>
-                <SSHSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Telnet" userData="telnet">
-            <graphic>
-                <TelnetSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="%base.serialPort" userData="serial">
-            <graphic>
-                <SerialPortSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Mosh" userData="mosh">
-            <graphic>
-                <MoshSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Rlogin" userData="rlogin">
-            <graphic>
-                <RLoginSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Rsh" userData="rsh">
-            <graphic>
-                <RshSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="%base.localTerminal" userData="local">
-            <graphic>
-                <TerminalSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
+
+    <FXHeaderBar/>
+    <FXHBox styleClass="connect-guide-header" alignment="CENTER_LEFT" spacing="14">
+        <padding>
+            <Insets left="26" right="26" top="18" bottom="18"/>
+        </padding>
+        <ConnectionSVGGlyph sizeStr="34,34"/>
+        <FXVBox spacing="4">
+            <FXLabel text="%base.addConnect" styleClass="connect-guide-title"/>
+            <FXLabel fx:id="subtitleLabel" styleClass="connect-guide-subtitle"/>
+        </FXVBox>
     </FXHBox>
-    <InfoLabel text="%base.file">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="SFTP" userData="sftp">
-            <graphic>
-                <SFTPSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="FTP" userData="ftp">
-            <graphic>
-                <FTPSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="SMB" userData="smb">
-            <graphic>
-                <SMBSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Webdav" userData="webdav">
-            <graphic>
-                <WebdavSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-    </FXHBox>
-    <InfoLabel text="S3">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="S3" userData="s3">
-            <graphic>
-                <S3SVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Minio" userData="s3_minio">
-            <graphic>
-                <MinioSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="OSS" userData="s3_oss">
-            <graphic>
-                <AlibabaCloudSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="COS" userData="s3_cos">
-            <graphic>
-                <TencentCloudSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="OBS" userData="s3_obs">
-            <graphic>
-                <HuaweiCloudSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-    </FXHBox>
-    <InfoLabel text="%base.remote">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="VNC" userData="vnc">
-            <graphic>
-                <VNCSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="RDP" userData="rdp">
-            <graphic>
-                <RDPSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-    </FXHBox>
-    <InfoLabel text="%base.database">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="Mysql" userData="mysql">
-            <graphic>
-                <MysqlSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Dameng" userData="dameng">
-            <graphic>
-                <DamengSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Oracle" userData="oracle">
-            <graphic>
-                <OracleSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="PostgreSQL" userData="postgresql">
-            <graphic>
-                <PostgreSQLSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="MariaDB" userData="mariadb">
-            <graphic>
-                <MariadbSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="SQL Server" userData="sqlserver">
-            <graphic>
-                <SqlServerSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="MongoDB" userData="mongodb">
-            <graphic>
-                <MongodbSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="SQLite" userData="sqlite">
-            <graphic>
-                <SqliteSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-    </FXHBox>
-    <InfoLabel text="%base.other">
-        <VBox.margin>
-            <Insets left="30" top="10"/>
-        </VBox.margin>
-    </InfoLabel>
-    <FXHBox>
-        <FXRadioButton toggleGroup="$type" text="Redis" userData="redis">
-            <graphic>
-                <RedisSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="30" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Valkey" userData="valkey">
-            <graphic>
-                <ValkeySVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="Zookeeper" userData="zookeeper">
-            <graphic>
-                <ZookeeperSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-        <FXRadioButton toggleGroup="$type" text="HTTP" userData="http">
-            <graphic>
-                <HttpSVGGlyph/>
-            </graphic>
-            <HBox.margin>
-                <Insets left="10" top="5"/>
-            </HBox.margin>
-        </FXRadioButton>
-    </FXHBox>
-    <FXHBox>
-        <NextStepButton onAction="#toAdd" realHeight="30">
-            <HBox.margin>
-                <Insets left="30" top="15"/>
-            </HBox.margin>
-        </NextStepButton>
-    </FXHBox>
+
+    <FXBorderPane styleClass="connect-guide-body" VBox.vgrow="ALWAYS">
+        <left>
+            <FXVBox styleClass="connect-guide-sidebar" prefWidth="196" minWidth="196" spacing="6">
+                <padding>
+                    <Insets left="18" right="12" top="18" bottom="18"/>
+                </padding>
+                <FXLabel text="%base.type" styleClass="connect-guide-side-title"/>
+                <FXVBox spacing="4" VBox.vgrow="ALWAYS">
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="%base.all" userData="ALL" selected="true" onAction="#renderTypes"/>
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="%base.terminal" userData="TERMINAL" onAction="#renderTypes"/>
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="%base.file" userData="FILE" onAction="#renderTypes"/>
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="S3" userData="S3" onAction="#renderTypes"/>
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="%base.remote" userData="REMOTE" onAction="#renderTypes"/>
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="%base.database" userData="DATABASE" onAction="#renderTypes"/>
+                    <FXRadioButton styleClass="connect-guide-category" toggleGroup="$categoryGroup"
+                                   text="%base.other" userData="OTHER" onAction="#renderTypes"/>
+                </FXVBox>
+            </FXVBox>
+        </left>
+        <center>
+            <FXVBox styleClass="connect-guide-main" spacing="10">
+                <padding>
+                    <Insets left="18" right="20" top="18" bottom="14"/>
+                </padding>
+                <FXHBox alignment="CENTER_LEFT" spacing="10" styleClass="connect-guide-toolbar">
+                    <ClearableTextField fx:id="searchField" tipText="%base.search" styleClass="connect-guide-search"
+                                 HBox.hgrow="ALWAYS" minHeight="30" prefHeight="30" maxHeight="30"
+                                 onKeyPressed="#onSearchKeyPressed"/>
+                    <FXLabel fx:id="resultLabel" styleClass="connect-guide-result"/>
+                </FXHBox>
+                <!-- prefHeight/minHeight 归零：内容再多也不把父 VBox 拖入收缩模式，
+                     所有剩余空间由 vgrow=ALWAYS 统一分配，工具栏与底部栏保持固定高度 -->
+                <FXScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="connect-guide-scroll"
+                              minHeight="0" prefHeight="0" VBox.vgrow="ALWAYS">
+                    <FXVBox fx:id="sectionBox" spacing="16" styleClass="connect-guide-sections">
+                        <FXLabel fx:id="emptyLabel" styleClass="connect-guide-empty"
+                                 visible="false" managed="false"/>
+
+                        <!-- ==================== 终端 ==================== -->
+                        <FXVBox styleClass="connect-guide-section" spacing="10" userData="TERMINAL">
+                            <FXLabel text="%base.terminal" styleClass="connect-guide-section-title"/>
+                            <FXFlowPane styleClass="connect-guide-tiles" hgap="10" vgap="10"
+                                        prefWrapLength="720">
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="ssh" selected="true" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <SSHSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="SSH" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="telnet" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <TelnetSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Telnet" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="serial" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <SerialPortSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="%base.serialPort" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="mosh" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <MoshSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Mosh" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="rlogin" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <RLoginSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Rlogin" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="rsh" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <RshSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Rsh" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="local" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <TerminalSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="%base.localTerminal" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.terminal" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                            </FXFlowPane>
+                        </FXVBox>
+
+                        <!-- ==================== 文件 ==================== -->
+                        <FXVBox styleClass="connect-guide-section" spacing="10" userData="FILE">
+                            <FXLabel text="%base.file" styleClass="connect-guide-section-title"/>
+                            <FXFlowPane styleClass="connect-guide-tiles" hgap="10" vgap="10"
+                                        prefWrapLength="720">
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="sftp" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <SFTPSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="SFTP" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.file" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="ftp" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <FTPSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="FTP" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.file" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="smb" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <SMBSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="SMB" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.file" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="webdav" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <WebdavSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Webdav" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.file" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                            </FXFlowPane>
+                        </FXVBox>
+
+                        <!-- ==================== S3 对象存储 ==================== -->
+                        <FXVBox styleClass="connect-guide-section" spacing="10" userData="S3">
+                            <FXLabel text="S3" styleClass="connect-guide-section-title"/>
+                            <FXFlowPane styleClass="connect-guide-tiles" hgap="10" vgap="10"
+                                        prefWrapLength="720">
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="s3" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <S3SVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="S3" styleClass="connect-card-name"/>
+                                            <FXLabel text="S3" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="s3_minio" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <MinioSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Minio" styleClass="connect-card-name"/>
+                                            <FXLabel text="S3" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="s3_oss" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <AlibabaCloudSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="OSS" styleClass="connect-card-name"/>
+                                            <FXLabel text="S3" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="s3_cos" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <TencentCloudSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="COS" styleClass="connect-card-name"/>
+                                            <FXLabel text="S3" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="s3_obs" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <HuaweiCloudSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="OBS" styleClass="connect-card-name"/>
+                                            <FXLabel text="S3" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                            </FXFlowPane>
+                        </FXVBox>
+
+                        <!-- ==================== 远程桌面 ==================== -->
+                        <FXVBox styleClass="connect-guide-section" spacing="10" userData="REMOTE">
+                            <FXLabel text="%base.remote" styleClass="connect-guide-section-title"/>
+                            <FXFlowPane styleClass="connect-guide-tiles" hgap="10" vgap="10"
+                                        prefWrapLength="720">
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="vnc" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <VNCSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="VNC" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.remote" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="rdp" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <RDPSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="RDP" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.remote" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                            </FXFlowPane>
+                        </FXVBox>
+
+                        <!-- ==================== 数据库 ==================== -->
+                        <FXVBox styleClass="connect-guide-section" spacing="10" userData="DATABASE">
+                            <FXLabel text="%base.database" styleClass="connect-guide-section-title"/>
+                            <FXFlowPane styleClass="connect-guide-tiles" hgap="10" vgap="10"
+                                        prefWrapLength="720">
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="mysql" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <MysqlSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="MySQL" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="dameng" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <DamengSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Dameng" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="oracle" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <OracleSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Oracle" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="postgresql" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <PostgreSQLSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="PostgreSQL" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="mariadb" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <MariadbSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="MariaDB" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="sqlserver" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <SqlServerSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="SQL Server" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="mongodb" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <MongodbSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="MongoDB" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="sqlite" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <SqliteSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="SQLite" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                            </FXFlowPane>
+                        </FXVBox>
+
+                        <!-- ==================== 其他 ==================== -->
+                        <FXVBox styleClass="connect-guide-section" spacing="10" userData="OTHER">
+                            <FXLabel text="%base.other" styleClass="connect-guide-section-title"/>
+                            <FXFlowPane styleClass="connect-guide-tiles" hgap="10" vgap="10"
+                                        prefWrapLength="720">
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="redis" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <RedisSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Redis" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.other" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="valkey" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <ValkeySVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Valkey" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.other" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="zookeeper" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <ZookeeperSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="Zookeeper" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.other" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="http" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <HttpSVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="HTTP" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.other" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                            </FXFlowPane>
+                        </FXVBox>
+                    </FXVBox>
+                </FXScrollPane>
+
+                <FXHBox alignment="CENTER_LEFT" spacing="12" minHeight="30"
+                        styleClass="connect-guide-footer">
+                    <FXLabel fx:id="selectionLabel" maxWidth="Infinity" styleClass="connect-guide-selection"
+                             HBox.hgrow="ALWAYS"/>
+                    <NextStepButton fx:id="nextButton" onAction="#toAdd"/>
+                </FXHBox>
+            </FXVBox>
+        </center>
+    </FXBorderPane>
 </FXVBox>

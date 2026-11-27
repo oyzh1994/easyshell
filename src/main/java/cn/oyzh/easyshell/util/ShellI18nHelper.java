@@ -1441,4 +1441,22 @@ public class ShellI18nHelper {
         return text("shell.mongo.collectionInfo");
     }
 
+    // ==================== 新增连接引导页 ====================
+
+    public static String connectGuidSubtitle() {
+        return text("shell.connect.guid.subtitle");
+    }
+
+    public static String connectGuidResultCount(Object count) {
+        return text("shell.connect.guid.resultCount", count);
+    }
+
+    public static String connectGuidEmpty() {
+        return text("shell.connect.guid.empty");
+    }
+
+    public static String connectGuidSelected(Object name) {
+        return text("shell.connect.guid.selected", name);
+    }
+
 }
