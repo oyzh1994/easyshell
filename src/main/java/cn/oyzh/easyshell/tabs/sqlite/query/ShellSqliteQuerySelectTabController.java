@@ -194,7 +194,7 @@ public class ShellSqliteQuerySelectTabController extends RichTabController {
         DBStatusColumn<SQLiteRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (SQLiteColumn column : columns) {
-            ShellSqliteRecordColumn tableColumn = new ShellSqliteRecordColumn(column, false);
+            ShellSqliteRecordColumn tableColumn = new ShellSqliteRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

@@ -1,3 +1,18 @@
+/**
+ * 字段标签：背景均为浅色，统一使用深色文字，避免暗色主题下看不清
+ */
+.tag_nullable,
+.tag_primaryKey,
+.tag_autoIncrement,
+.tag_generated,
+.tag_unsigned,
+.tag_zeroFill,
+.tag_updateOnCurrentTimestamp {
+    -fx-text-fill: #1f2328;
+    -fx-padding: 1 6 1 6;
+    -fx-background-radius: 4;
+}
+
 .tag_nullable {
     -fx-background-color: #ffcc66;
 }

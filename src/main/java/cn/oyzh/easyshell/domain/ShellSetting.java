@@ -70,6 +70,18 @@ public class ShellSetting extends AppSetting {
     private Boolean showTabIndex;
 
     /**
+     * 显示字段类型
+     */
+    @Column
+    private Boolean showColumnType;
+
+    /**
+     * 显示字段注释
+     */
+    @Column
+    private Boolean showColumnComment;
+
+    /**
      * LLM思考强度
      */
     @Column
@@ -526,6 +538,34 @@ public class ShellSetting extends AppSetting {
     }
 
     /**
+     * 是否显示字段类型
+     */
+    public boolean isShowColumnType() {
+        return this.showColumnType == null || BooleanUtil.isTrue(this.showColumnType);
+    }
+
+    /**
+     * 设置是否显示字段类型
+     */
+    public void setShowColumnType(boolean showColumnType) {
+        this.showColumnType = showColumnType;
+    }
+
+    /**
+     * 是否显示字段注释
+     */
+    public boolean isShowColumnComment() {
+        return this.showColumnComment == null || BooleanUtil.isTrue(this.showColumnComment);
+    }
+
+    /**
+     * 设置是否显示字段注释
+     */
+    public void setShowColumnComment(boolean showColumnComment) {
+        this.showColumnComment = showColumnComment;
+    }
+
+    /**
      * 获取LLM思考强度
      *
      * @return 思考强度序号
@@ -860,6 +900,8 @@ public class ShellSetting extends AppSetting {
             this.layout = setting.layout;
             this.graphicMode = setting.graphicMode;
             this.showTabIndex = setting.showTabIndex;
+            this.showColumnType = setting.showColumnType;
+            this.showColumnComment = setting.showColumnComment;
             this.syncShortcut = setting.syncShortcut;
             this.connectShowType = setting.connectShowType;
 //            this.enableShortcutKey = setting.enableShortcutKey;

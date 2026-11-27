@@ -254,7 +254,7 @@ public class ShellMongoQuerySelectTabController extends RichTabController {
         DBStatusColumn<MongoRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MongoColumn column : columns) {
-            ShellMongoRecordColumn tableColumn = new ShellMongoRecordColumn(column, 2);
+            ShellMongoRecordColumn tableColumn = new ShellMongoRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

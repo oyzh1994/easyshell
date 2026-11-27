@@ -202,6 +202,11 @@ public class MongoColumn extends DBObject implements DBColumn, ObjectCopier<Mong
     }
 
     @Override
+    public boolean isPrimaryKey() {
+        return this.is_id();
+    }
+
+    @Override
     public DBDialect getDialect() {
         return DBDialect.MONGODB;
     }

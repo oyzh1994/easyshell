@@ -49,7 +49,7 @@ public class SQLiteResultTableView extends FXTableView<SQLiteRecord> {
         List<FXTableColumn<SQLiteRecord, Object>> columnList = new ArrayList<>();
         columnList.add(new DBStatusColumn<>());
         for (SQLiteColumn column : this.columns) {
-            ShellSqliteRecordColumn tableColumn = new ShellSqliteRecordColumn(column, false);
+            ShellSqliteRecordColumn tableColumn = new ShellSqliteRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import cn.oyzh.fx.gui.text.field.ReadOnlyTextField?>
+<?import cn.oyzh.fx.gui.label.SystemLabel?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.popups.mongo.ShellMongoFieldInfoPopupController" realWidth="380"
+        realHeight="125">
+    <FXHBox realHeight="30">
+        <SystemLabel text="%base.name" realWidth="85">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </SystemLabel>
+        <ReadOnlyTextField fx:id="name" flexWidth="100% - 110">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ReadOnlyTextField>
+    </FXHBox>
+    <FXHBox realHeight="30">
+        <SystemLabel text="%base.type" realWidth="85">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </SystemLabel>
+        <ReadOnlyTextField fx:id="type" flexWidth="100% - 110">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ReadOnlyTextField>
+    </FXHBox>
+    <FXHBox realHeight="30" fx:id="tagsBox" managed="false" visible="false">
+        <SystemLabel text="%base.tags" realWidth="85">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </SystemLabel>
+        <FXHBox fx:id="tagsContainer"/>
+    </FXHBox>
+    <FXHBox realHeight="30">
+        <SystemLabel text="%base.database" realWidth="85">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </SystemLabel>
+        <ReadOnlyTextField fx:id="database" flexWidth="100% - 110">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ReadOnlyTextField>
+    </FXHBox>
+    <FXHBox realHeight="30">
+        <SystemLabel text="%shell.mongo.collection" realWidth="85">
+            <HBox.margin>
+                <Insets left="5" top="5"/>
+            </HBox.margin>
+        </SystemLabel>
+        <ReadOnlyTextField fx:id="collection" flexWidth="100% - 110">
+            <HBox.margin>
+                <Insets left="10" top="5"/>
+            </HBox.margin>
+        </ReadOnlyTextField>
+    </FXHBox>
+</FXVBox>

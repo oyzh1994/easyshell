@@ -193,7 +193,7 @@ public class ShellMariadbQuerySelectTabController extends RichTabController {
         DBStatusColumn<MariadbRecord> statusColumn = new DBStatusColumn<>();
         columnList.add(statusColumn);
         for (MariadbColumn column : columns) {
-            ShellMariadbRecordColumn tableColumn = new ShellMariadbRecordColumn(column, false);
+            ShellMariadbRecordColumn tableColumn = new ShellMariadbRecordColumn(column);
             tableColumn.setPrefWidth(DBUtil.suitableColumnWidth(column));
             columnList.add(tableColumn);
         }

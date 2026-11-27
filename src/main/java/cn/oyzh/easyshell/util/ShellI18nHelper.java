@@ -1373,6 +1373,14 @@ public class ShellI18nHelper {
         return text("shell.http.binaryResponse", size, type);
     }
 
+    public static String mongoCollection() {
+        return text("shell.mongo.collection");
+    }
+
+    public static String mongoNestedField() {
+        return text("shell.mongo.nestedField");
+    }
+
     public static String mongoDesignCollection() {
         return text("shell.mongo.designCollection");
     }
@@ -1457,6 +1465,16 @@ public class ShellI18nHelper {
 
     public static String connectGuidSelected(Object name) {
         return text("shell.connect.guid.selected", name);
+    }
+
+    // ==================== 记录表格列头 ====================
+
+    public static String recordShowColumnType() {
+        return text("shell.record.showColumnType");
+    }
+
+    public static String recordShowColumnComment() {
+        return text("shell.record.showColumnComment");
     }
 
 }

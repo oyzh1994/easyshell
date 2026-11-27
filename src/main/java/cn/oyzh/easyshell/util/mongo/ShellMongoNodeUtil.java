@@ -1,8 +1,9 @@
 package cn.oyzh.easyshell.util.mongo;
 
 import cn.oyzh.common.util.StringUtil;
-import cn.oyzh.easyshell.mongo.column.MongoColumn;
 import cn.oyzh.easyshell.fx.mongo.ShellMongoCodeTextFiled;
+import cn.oyzh.easyshell.mongo.column.MongoColumn;
+import cn.oyzh.easyshell.util.ShellI18nHelper;
 import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
@@ -10,7 +11,9 @@ import cn.oyzh.fx.gui.text.field.BooleanTextFiled;
 import cn.oyzh.fx.gui.text.field.DateTimeTextField;
 import cn.oyzh.fx.gui.text.field.DecimalTextField;
 import cn.oyzh.fx.gui.text.field.NumberTextField;
+import cn.oyzh.fx.plus.controls.label.FXLabel;
 import cn.oyzh.fx.plus.controls.text.field.FXTextField;
+import cn.oyzh.i18n.I18nHelper;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import org.bson.types.Code;
@@ -20,6 +23,8 @@ import org.bson.types.MinKey;
 import org.bson.types.ObjectId;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * mongodb节点工具类
@@ -175,6 +180,29 @@ public class ShellMongoNodeUtil {
         }
         node.setId("value");
         return node;
+    }
+
+    /**
+     * 生成字段标签
+     *
+     * @param column 字段信息
+     * @return 标签
+     */
+    public static List<FXLabel> generateTags(MongoColumn column) {
+        List<FXLabel> labels = new ArrayList<>();
+        // 主键
+        if (column.is_id()) {
+            FXLabel label = new FXLabel(I18nHelper.primaryKey());
+            label.addClass("tag_primaryKey");
+            labels.add(label);
+        }
+        // 嵌套字段
+        if (column.getName() != null && column.getName().contains(".")) {
+            FXLabel label = new FXLabel(ShellI18nHelper.mongoNestedField());
+            label.addClass("tag_unsigned");
+            labels.add(label);
+        }
+        return labels;
     }
 
     // /**
