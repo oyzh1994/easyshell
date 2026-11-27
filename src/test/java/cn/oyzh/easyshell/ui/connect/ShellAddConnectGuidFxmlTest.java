@@ -17,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -130,12 +129,16 @@ public class ShellAddConnectGuidFxmlTest {
         Parent root = (Parent) result.getNode();
         Parent sectionBox = sectionBox(result);
 
-        @SuppressWarnings("unchecked")
-        Map<String, ?> factories = (Map<String, ?>) staticField("FACTORIES");
+        // 卡片协议 id 契约：新增/删除协议入口时同步维护这里
+        List<String> expectedIds = List.of("dameng", "ftp", "http", "local", "mariadb", "mongodb",
+                        "mosh", "mysql", "oracle", "postgresql", "rdp", "redis", "rlogin", "rsh",
+                        "s3", "s3_cos", "s3_minio", "s3_obs", "s3_oss", "serial", "sftp", "smb",
+                        "sqlite", "sqlserver", "ssh", "telnet", "valkey", "vnc", "webdav", "zookeeper")
+                .stream().sorted().toList();
         List<String> cardIds = allCards(sectionBox).stream()
                 .map(node -> (String) node.getUserData()).sorted().toList();
-        assertEquals(30, factories.size());
-        assertEquals(factories.keySet().stream().sorted().toList(), cardIds);
+        assertEquals(30, expectedIds.size());
+        assertEquals(expectedIds, cardIds);
 
         List<String> sectionCategories = sectionBox.lookupAll(".connect-guide-section").stream()
                 .map(node -> (String) node.getUserData()).sorted().toList();
@@ -246,12 +249,6 @@ public class ShellAddConnectGuidFxmlTest {
         java.lang.reflect.Field field = target.getClass().getDeclaredField(name);
         field.setAccessible(true);
         return field.get(target);
-    }
-
-    private static Object staticField(String name) throws Exception {
-        java.lang.reflect.Field field = ShellAddConnectGuidController.class.getDeclaredField(name);
-        field.setAccessible(true);
-        return field.get(null);
     }
 
     private static FXMLResult load() throws Throwable {

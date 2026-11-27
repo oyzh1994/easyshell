@@ -40,7 +40,7 @@ public class LLMSkillFxmlTest {
 
     @Test
     public void skillPagesLoadWithExpectedControllers() throws Throwable {
-        assertFxml("/fxml/llm/chat.fxml", ShellChatController.class, SkillSVGGlyph.class);
+        assertFxml("/fxml/llm/shellChat.fxml", ShellChatController.class, SkillSVGGlyph.class);
         assertFxml("/fxml/llm/shellLLMSkillList.fxml", ShellLLMSkillListController.class,
                 RefreshSVGGlyph.class);
         assertFxml("/fxml/llm/shellLLMAddSkill.fxml", ShellLLMAddSkillController.class, null);

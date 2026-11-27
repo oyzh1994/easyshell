@@ -38,7 +38,7 @@ public class LLMPromptFxmlTest {
 
     @Test
     public void promptPagesLoadWithExpectedControllers() throws Throwable {
-        assertFxml("/fxml/llm/chat.fxml", ShellChatController.class);
+        assertFxml("/fxml/llm/shellChat.fxml", ShellChatController.class);
         assertFxml("/fxml/llm/shellLLMPromptList.fxml", ShellLLMPromptListController.class);
         assertFxml("/fxml/llm/shellLLMAddPrompt.fxml", ShellLLMAddPromptController.class);
         assertFxml("/fxml/llm/shellLLMUpdatePrompt.fxml", ShellLLMUpdatePromptController.class);
@@ -50,7 +50,7 @@ public class LLMPromptFxmlTest {
         CountDownLatch done = new CountDownLatch(1);
         Platform.runLater(() -> {
             try {
-                FXMLResult chat = FXMLLoaderExt.loadFromUrl("/fxml/llm/chat.fxml");
+                FXMLResult chat = FXMLLoaderExt.loadFromUrl("/fxml/llm/shellChat.fxml");
                 assertNotNull(findNode((Parent) chat.getNode(), PromptSVGGlyph.class));
                 FXMLResult add = FXMLLoaderExt.loadFromUrl("/fxml/llm/shellLLMAddPrompt.fxml");
                 assertNotNull(findNode((Parent) add.getNode(), MarkdownEditor.class));
