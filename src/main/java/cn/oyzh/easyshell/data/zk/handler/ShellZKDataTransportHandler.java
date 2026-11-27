@@ -6,6 +6,7 @@ import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
 import cn.oyzh.fx.db.data.handler.DataTransportHandler;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Stat;
 
 import java.nio.charset.Charset;
@@ -30,6 +31,11 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
     protected ShellZKClient targetClient;
 
     /**
+     * 来源节点路径，默认根节点
+     */
+    private String nodePath = "/";
+
+    /**
      * 节点存在时处理策略
      * 0 跳过
      * 1 更新
@@ -49,7 +55,8 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
     @Override
     public void doTransport() throws Exception {
         this.message("Transport Starting");
-        this.doTransport("/");
+        String path = StringUtil.isBlank(this.nodePath) ? "/" : this.nodePath;
+        this.doTransport(path);
         this.message("Transport Finished");
     }
 
@@ -64,14 +71,26 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
         try {
             // 检查中断
             this.checkInterrupt();
-            // 获取节点
+            // 获取节点。checkExists 必须先于 getData：节点不存在时 getData 会抛出
+            // NoNodeException，若直接落到外层 catch 会被当成处理失败而递减计数。
             Stat stat = this.sourceClient.checkExists(path);
-            byte[] bytes = this.sourceClient.getData(path);
-
-            // 节点查询失败
-            if (stat == null || bytes == null) {
+            if (stat == null) {
                 this.message("node[" + decodePath + "] does not exist");
-                this.processedDecr();
+                this.processedSkip();
+                return;
+            }
+            byte[] bytes;
+            try {
+                bytes = this.sourceClient.getData(path);
+            } catch (KeeperException.NoNodeException ex) {
+                this.message("node[" + decodePath + "] does not exist");
+                this.processedSkip();
+                return;
+            }
+            // 数据为空，按跳过处理（此处尚未计入处理数）
+            if (bytes == null) {
+                this.message("node[" + decodePath + "] has no data");
+                this.processedSkip();
                 return;
             }
 
@@ -96,13 +115,13 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
                     this.message("node[" + decodePath + "] is exist, skip it");
                     this.processedSkip();
                 } else if (StringUtil.equals(this.existsPolicy, "1")) { // 更新
-                    bytes = TextUtil.changeCharset(bytes, this.sourceCharset, this.targetCharset);
+                    bytes = this.convert(bytes);
                     this.targetClient.setData(path, bytes);
                     this.message("node[" + decodePath + "] is exist, update it");
                     this.processedIncr();
                 }
             } else {// 创建
-                bytes = TextUtil.changeCharset(bytes, this.sourceCharset, this.targetCharset);
+                bytes = this.convert(bytes);
                 this.targetClient.createIncludeParents(path, bytes, CreateMode.PERSISTENT);
                 this.message("node[" + decodePath + "] not exist, create it");
                 this.processedIncr();
@@ -120,6 +139,39 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
             this.message("node[" + decodePath + "] transport fail, error[" + ex.getMessage() + "]");
             this.processedDecr();
         }
+    }
+
+    /**
+     * 按源/目标字符集转换节点数据。字符集相同时直接返回原字节，
+     * 避免 TextUtil 用引用比较判断相同字符集时，对二进制数据做有损的解码再编码。
+     *
+     * @param bytes 原始字节
+     * @return 转换后的字节
+     */
+    private byte[] convert(byte[] bytes) {
+        if (this.sourceCharset != null && this.targetCharset != null
+                && this.sourceCharset.name().equalsIgnoreCase(this.targetCharset.name())) {
+            return bytes;
+        }
+        return TextUtil.changeCharset(bytes, this.sourceCharset, this.targetCharset);
+    }
+
+    /**
+     * 获取来源节点路径
+     *
+     * @return 来源节点路径
+     */
+    public String getNodePath() {
+        return nodePath;
+    }
+
+    /**
+     * 设置来源节点路径
+     *
+     * @param nodePath 来源节点路径
+     */
+    public void setNodePath(String nodePath) {
+        this.nodePath = nodePath;
     }
 
     /**

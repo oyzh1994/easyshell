@@ -90,7 +90,7 @@
                 </VBox.margin>
             </InfoLabel>
             <FXHBox flexWidth="100%">
-                <FXButton onAction="#selectFile" text="%base.select">
+                <FXButton fx:id="selectFile" onAction="#selectFile" text="%base.select">
                     <HBox.margin>
                         <Insets left="30" top="5"/>
                     </HBox.margin>

@@ -15,6 +15,7 @@ import cn.oyzh.fx.plus.controller.StageController;
 import cn.oyzh.fx.plus.controls.box.FXVBox;
 import cn.oyzh.fx.plus.controls.button.FXButton;
 import cn.oyzh.fx.plus.controls.label.FXLabel;
+import cn.oyzh.fx.plus.controls.text.FXText;
 import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
@@ -121,6 +122,12 @@ public class ShellZKDataTransportController extends StageController {
     private FXLabel targetHost;
 
     /**
+     * 来源节点路径
+     */
+    @FXML
+    private FXText nodePath;
+
+    /**
      * 来源客户端
      */
     private ShellZKClient sourceClient;
@@ -211,6 +218,8 @@ public class ShellZKDataTransportController extends StageController {
         this.transportHandler.setTargetCharset(this.targetCharset.getCharset());
         // 节点存在时处理策略
         this.transportHandler.setExistsPolicy(this.existsPolicy.selectedUserData());
+        // 来源节点路径
+        this.transportHandler.setNodePath(this.nodePath.getText());
         // 适用过滤
         // if (this.applyFilter.isSelected()) {
         //     this.transportHandler.setFilters(this.filterStore.loadEnable(this.sourceClient.iid()));
@@ -235,7 +244,7 @@ public class ShellZKDataTransportController extends StageController {
                 //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.transportFinished());
                 // }
             } catch (Exception ex) {
-                if (ex.getClass().isAssignableFrom(InterruptedException.class)) {
+                if (ex instanceof InterruptedException || ex.getCause() instanceof InterruptedException) {
                     this.updateStatus(I18nHelper.operationCancel());
                 } else {
                     ex.printStackTrace();

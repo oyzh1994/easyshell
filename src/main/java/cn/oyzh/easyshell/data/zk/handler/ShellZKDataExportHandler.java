@@ -2,6 +2,8 @@ package cn.oyzh.easyshell.data.zk.handler;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.util.TextUtil;
+import cn.oyzh.common.xml.XMLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKACLUtil;
 import cn.oyzh.easyshell.util.zk.ShellZKNodeUtil;
 import cn.oyzh.easyshell.zk.ShellZKClient;
@@ -14,6 +16,7 @@ import cn.oyzh.store.file.FileRecord;
 import cn.oyzh.store.file.FileWriteConfig;
 import cn.oyzh.store.file.TypeFileWriter;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +82,9 @@ public class ShellZKDataExportHandler extends DataExportHandler {
             List<FileRecord> batchList = new ArrayList<>(this.batchSize);
             // 批量写入函数
             Runnable writeBatch = () -> {
+                if (batchList.isEmpty()) {
+                    return;
+                }
                 try {
                     writer.writeRecords(batchList);
                     for (FileRecord record : batchList) {
@@ -88,7 +94,7 @@ public class ShellZKDataExportHandler extends DataExportHandler {
                     batchList.clear();
                 } catch (Exception ex) {
                     this.message("write data failed");
-                    this.processedDecr();
+                    this.processedDecr(batchList.size());
                 }
             };
             try {
@@ -104,6 +110,9 @@ public class ShellZKDataExportHandler extends DataExportHandler {
                 //     return true;
                 // };
 
+                // 读取器/写入器均按 config.charset() 编解码文件，
+                // zk 节点数据同样按该字符集解码，保证字节级往返一致。
+                Charset charset = TextUtil.getCharset(this.config.charset());
                 // 获取节点成功
                 Consumer<ShellZKNode> success = (node) -> {
                     try {
@@ -111,12 +120,13 @@ public class ShellZKDataExportHandler extends DataExportHandler {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    // 记录
+                    // 记录。base-store 的 XmlTypeFileWriter 直接拼接字段值，不做 XML 转义，
+                    // 这里先转义，读取器（StAX）会自动还原，避免 & < > 等字符破坏 XML 文档。
                     FileRecord record = new FileRecord();
-                    record.put(0, node.nodePath());
-                    record.put(1, new String(node.getNodeData(), StandardCharsets.UTF_8));
+                    record.put(0, this.escaped(node.nodePath()));
+                    record.put(1, this.escaped(new String(node.getNodeData(), charset)));
                     if (this.includeACL) {
-                        record.put(2, ShellZKACLUtil.toAclStr(node.acl()));
+                        record.put(2, this.escaped(ShellZKACLUtil.toAclStr(node.acl())));
                     }
                     // 添加到集合
                     batchList.add(record);
@@ -126,17 +136,16 @@ public class ShellZKDataExportHandler extends DataExportHandler {
                         writeBatch.run();
                     }
                 };
-                // 获取节点失败
+                // 获取节点失败。中断必须向外传播，否则 loopNode 会继续遍历整棵树。
                 BiConsumer<String, Exception> error = (path, ex) -> {
-                    if (ex instanceof RuntimeException) {
-                        ex = (Exception) ex.getCause();
-                    } else {
-                        ex.printStackTrace();
+                    Throwable cause = ex;
+                    while (cause instanceof RuntimeException && cause.getCause() != null) {
+                        cause = cause.getCause();
                     }
-                    // 针对中断异常不处理
-                    if (ex instanceof InterruptedException) {
-                        return;
+                    if (cause instanceof InterruptedException) {
+                        throw new RuntimeException(cause);
                     }
+                    ex.printStackTrace();
                     this.message("export node[" + path + "] failed");
                     this.processedDecr();
                 };
@@ -153,6 +162,20 @@ public class ShellZKDataExportHandler extends DataExportHandler {
             JulLog.error("未找到可用的写入器，文件类型:{}", this.fileType);
         }
         this.message("Export Finished");
+    }
+
+    /**
+     * XML 格式需要对字段值转义，其它格式原样返回。
+     * 字段顺序：先转义 &，再转义 < >；回车用字符引用保留，避免 XML 解析时被规范化为换行。
+     *
+     * @param value 原始值
+     * @return 写入文件的值
+     */
+    private String escaped(String value) {
+        if (value == null || !"xml".equalsIgnoreCase(this.fileType)) {
+            return value;
+        }
+        return XMLUtil.escape(value);
     }
 
     /**

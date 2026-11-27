@@ -14,6 +14,7 @@
 <?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
 <?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
 <?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.text.FXText?>
 <?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.HBox?>
@@ -201,6 +202,16 @@
                     </HBox.margin>
                 </FXRadioButton>
             </FXHBox>
+            <InfoLabel text="%base.nodePath">
+                <VBox.margin>
+                    <Insets left="30" top="20"/>
+                </VBox.margin>
+            </InfoLabel>
+            <FXText fx:id="nodePath" text="/" flexWidth="100% - 80">
+                <VBox.margin>
+                    <Insets left="30" top="5"/>
+                </VBox.margin>
+            </FXText>
             <!-- <InfoLabel text="%base.options"> -->
             <!--     <VBox.margin> -->
             <!--         <Insets left="30" top="10"/> -->

@@ -239,7 +239,7 @@ public class ShellZKDataExportController extends StageController {
                 //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.exportFinished());
                 // }
             } catch (Exception e) {
-                if (e.getClass().isAssignableFrom(InterruptedException.class)) {
+                if (e instanceof InterruptedException || e.getCause() instanceof InterruptedException) {
                     this.updateStatus(I18nHelper.operationCancel());
                     MessageBox.warn(I18nHelper.operationCancel(), this.getWindow());
                 } else {

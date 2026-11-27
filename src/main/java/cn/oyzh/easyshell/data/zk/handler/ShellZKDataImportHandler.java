@@ -16,7 +16,10 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 
+import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -172,7 +175,9 @@ public class ShellZKDataImportHandler extends DataImportHandler {
         columns.addColumn("path", 0);
         columns.addColumn("data", 1);
         columns.addColumn("acl", 2);
-        // 获取写入器
+        // 读取器已按 config.charset() 解码文件，zk 数据同样按该字符集还原为字节，
+        // 从而保证「导出 -> 导入」在不同字符集下字节级往返一致。
+        Charset charset = TextUtil.getCharset(this.config.charset());
         TypeFileReader<FileRecord> reader = FileHelper.initReader(this.fileType, this.config, columns);
         if (reader != null) {
             try {
@@ -185,7 +190,7 @@ public class ShellZKDataImportHandler extends DataImportHandler {
                     for (FileRecord record : records) {
                         String path = "";
                         try {
-                            path = (String) record.get(0);
+                            path = this.recordValue(record, 0);
                             if (StringUtil.isBlank(path)) {
                                 this.message("node[" + path + "] is invalid");
                                 this.processedSkip();
@@ -199,25 +204,31 @@ public class ShellZKDataImportHandler extends DataImportHandler {
                                 this.processedSkip();
                                 continue;
                             }
-                            String data = (String) record.get(1);
-                            String dataStr = TextUtil.changeCharset(data, StandardCharsets.UTF_8.name(), this.config.charset());
+                            byte[] dataBytes = this.recordValue(record, 1).getBytes(charset);
+                            List<ACL> aclList = ZooDefs.Ids.OPEN_ACL_UNSAFE;
+                            if (this.includeACL) {
+                                String acl = this.recordValue(record, 2);
+                                if (StringUtil.isNotBlank(acl)) {
+                                    aclList = ShellZKACLUtil.parseAcl(acl);
+                                }
+                            }
                             // 更新
                             if (exists) {
-                                this.client.setData(path, dataStr);
+                                this.client.setData(path, dataBytes);
+                                if (this.includeACL) {
+                                    this.client.setACL(path, aclList);
+                                }
                                 this.message("update node[" + path + "] success");
                             } else {// 创建
-                                List<ACL> aclList = ZooDefs.Ids.OPEN_ACL_UNSAFE;
-                                if (this.includeACL) {
-                                    String acl = (String) record.get(2);
-                                    if (StringUtil.isNotBlank(acl)) {
-                                        aclList = ShellZKACLUtil.parseAcl(acl);
-                                    }
-                                }
-                                this.client.create(path, dataStr, aclList, CreateMode.PERSISTENT, true);
+                                this.client.create(path, dataBytes, aclList, null, CreateMode.PERSISTENT, true);
                                 this.message("create node[" + path + "] success");
                             }
                             this.processedIncr();
                         } catch (Exception ex) {
+                            // 中断异常需要向上传播，否则会遍历完整个文件
+                            if (ex instanceof InterruptedException) {
+                                throw ex;
+                            }
                             ex.printStackTrace();
                             this.processedDecr();
                             this.message("create node[" + path + "] failed");
@@ -232,6 +243,29 @@ public class ShellZKDataImportHandler extends DataImportHandler {
             JulLog.error("未找到可用的读取器，文件类型:{}", this.fileType);
         }
         this.message("Import Finished");
+    }
+
+    /**
+     * 读取记录中的字段值。Excel 数字/日期单元格返回的不是 String，
+     * 统一在此转换，避免 ClassCastException。
+     *
+     * @param record 记录
+     * @param index  字段索引
+     * @return 字段文本（null 按空串处理）
+     */
+    private String recordValue(FileRecord record, int index) {
+        Object value = record == null ? null : record.get(index);
+        if (value == null) {
+            return "";
+        }
+        if (value instanceof Double) {
+            // Excel 数字单元格读取为 Double，去掉无意义的小数尾部
+            return BigDecimal.valueOf((Double) value).stripTrailingZeros().toPlainString();
+        }
+        if (value instanceof Date) {
+            return String.valueOf(((Date) value).getTime());
+        }
+        return value.toString();
     }
 
     /**

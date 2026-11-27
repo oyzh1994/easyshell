@@ -24,6 +24,7 @@ import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup;
 import cn.oyzh.fx.plus.information.MessageBox;
 import cn.oyzh.fx.plus.node.NodeGroupUtil;
 import cn.oyzh.fx.plus.util.Counter;
+import cn.oyzh.fx.plus.validator.ValidatorUtil;
 import cn.oyzh.fx.plus.window.FXStageStyle;
 import cn.oyzh.fx.plus.window.StageAttribute;
 import cn.oyzh.easyshell.util.ShellI18nHelper;
@@ -119,11 +120,11 @@ public class ShellZKDataImportController extends StageController {
     @FXML
     private NumberTextField dataRowStarts;
 
-    //    /**
-    //     * 选择文件
-    //     */
-    //    @FXML
-    //    private FXButton selectFile;
+    /**
+     * 选择文件
+     */
+    @FXML
+    private FXButton selectFile;
 
     /**
      * 结束导入按钮
@@ -224,7 +225,7 @@ public class ShellZKDataImportController extends StageController {
                 //     TrayManager.displayInfoMessage(I18nHelper.tips(), I18nHelper.importFinished());
                 // }
             } catch (Exception e) {
-                if (e.getClass().isAssignableFrom(InterruptedException.class)) {
+                if (e instanceof InterruptedException || e.getCause() instanceof InterruptedException) {
                     this.updateStatus(I18nHelper.operationCancel());
                     MessageBox.warn(I18nHelper.operationCancel(), this.getWindow());
                 } else {
@@ -333,6 +334,11 @@ public class ShellZKDataImportController extends StageController {
      */
     @FXML
     private void showStep3() {
+        // 检查文件
+        if (this.importFile == null) {
+            ValidatorUtil.validFail(this.selectFile);
+            return;
+        }
         // 检查客户端
         if (this.doConnect()) {
             this.step1.disappear();
