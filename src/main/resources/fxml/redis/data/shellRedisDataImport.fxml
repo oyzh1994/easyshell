@@ -89,7 +89,7 @@
                 </FXButton>
                 <FXText fx:id="fileName">
                     <HBox.margin>
-                        <Insets left="10" top="15"/>
+                        <Insets left="10" top="10"/>
                     </HBox.margin>
                 </FXText>
             </FXHBox>

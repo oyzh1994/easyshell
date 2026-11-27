@@ -329,7 +329,7 @@ public class ShellRedisDataTransportController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.transportFinished());
             } catch (Exception ex) {
-                if (ex.getClass().isAssignableFrom(InterruptedException.class)) {
+                if (ex instanceof InterruptedException || ex.getCause() instanceof InterruptedException) {
                     this.updateStatus(I18nHelper.operationCancel());
                 } else {
                     ex.printStackTrace();

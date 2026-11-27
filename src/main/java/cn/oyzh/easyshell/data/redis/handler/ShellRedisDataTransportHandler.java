@@ -235,7 +235,7 @@ public class ShellRedisDataTransportHandler extends DataTransportHandler {
             // 获取键失败
             if (redisKey == null) {
                 this.message("key[ " + key + "] does not exist");
-                this.processedIncr();
+                this.processedSkip();
                 continue;
             }
             // 键被排除
@@ -277,10 +277,10 @@ public class ShellRedisDataTransportHandler extends DataTransportHandler {
             String key = redisKey.getKey();
             Long ttl = redisKey.getTtl();
             if (ttl != null && this.retainTTL) {
-                if (ttl >= 0) {
-                    this.targetClient.expire(targetDBIndex, key, ttl, null);
-                } else if (ttl == -1) {
+                if (ttl == -1) {
                     this.targetClient.persist(targetDBIndex, key);
+                } else if (ttl > 0) {
+                    this.targetClient.expire(targetDBIndex, key, ttl, null);
                 }
             }
         }

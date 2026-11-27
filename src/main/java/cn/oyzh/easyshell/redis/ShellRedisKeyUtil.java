@@ -27,6 +27,11 @@ import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 import redis.clients.jedis.resps.StreamEntry;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -86,6 +91,36 @@ public class ShellRedisKeyUtil {
     // }
 
     /**
+     * 判断字节序列能否安全地作为文本写入导出文件。
+     * 条件：合法 UTF-8，且不含 XML 1.0 禁止的控制字符（0x00-0x08/0x0B/0x0C/0x0E-0x1F，
+     * 以及代理项区、0xFFFE/0xFFFF）。不满足时改用 0x'hex' 表示，避免导出文件无法解析。
+     *
+     * @param bytes 字节序列
+     * @return 是否可安全作为文本
+     */
+    private static boolean isTextSafe(byte[] bytes) {
+        try {
+            CharBuffer chars = StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(bytes));
+            for (int i = 0; i < chars.length(); i++) {
+                char c = chars.charAt(i);
+                if (c == 0x9 || c == 0xA || c == 0xD) {
+                    // Tab / LF / CR 是 XML 合法字符
+                    continue;
+                }
+                if (c < 0x20 || (c >= 0xD800 && c <= 0xDFFF) || c == 0xFFFE || c == 0xFFFF) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (CharacterCodingException e) {
+            return false;
+        }
+    }
+
+    /**
      * 序列化键
      *
      * @param redisKey redis键
@@ -96,13 +131,14 @@ public class ShellRedisKeyUtil {
         // string
         if (redisKey.isStringKey()) {
             ShellRedisStringValue stringValue = redisKey.asStringValue();
-            if (redisKey.isRawEncoding()) {
-                return "0x'" + HexUtil.bytesToHex(stringValue.bytesValue()) + "'";
+            Object val = stringValue.getValue();
+            // 二进制值统一用 0x'hex' 表示，避免裸控制字符写入 XML/CSV 造成解析失败。
+            // 不再依赖 objectEncoding（短二进制是 embstr 而非 raw，原判断会漏掉）。
+            if (val instanceof byte[] bytes) {
+                return "0x'" + HexUtil.bytesToHex(bytes) + "'";
             }
-            if (stringValue.getValue() instanceof String s) {
+            if (val instanceof String s) {
                 result = s;
-            } else if (stringValue.getValue() instanceof byte[] bytes) {
-                result = new String(bytes);
             }
         } else if (redisKey.isJsonKey()) {
             ShellRedisJsonValue stringValue = redisKey.asJsonValue();
@@ -286,9 +322,10 @@ public class ShellRedisKeyUtil {
                     String fields = object.getString("value");
                     Map<String, String> fieldMap;
                     if (StringUtil.isNotBlank(fields)) {
-                        fieldMap = new HashMap<>();
-                    } else {
+                        // 有内容才解析字段 JSON；空白时用空 Map，避免 xadd 参数不足
                         fieldMap = JSONUtil.toBean(fields, HashMap.class);
+                    } else {
+                        fieldMap = new HashMap<>();
                     }
                     StreamEntry entry = new StreamEntry(id, fieldMap);
                     list.add(entry);
@@ -314,7 +351,13 @@ public class ShellRedisKeyUtil {
         String key = redisKey.getKey();
         // string
         if (redisKey.isStringKey()) {
-            client.set(dbIndex, key, (String) redisKey.asStringValue().getValue());
+            Object value = redisKey.asStringValue().getValue();
+            // 二进制字符串键必须走 byte[] 重载，强转 String 会 ClassCastException
+            if (value instanceof byte[] bytes) {
+                client.set(dbIndex, key.getBytes(StandardCharsets.UTF_8), bytes);
+            } else {
+                client.set(dbIndex, key, value == null ? "" : value.toString());
+            }
         } else if (redisKey.isJsonKey()) {
             client.jsonSet(dbIndex, key, redisKey.asJsonValue().getValue());
         } else if (redisKey.isListKey()) {// list
@@ -327,7 +370,8 @@ public class ShellRedisKeyUtil {
                 List<String> list = rows.parallelStream().map(ShellRedisListValue.RedisListRow::getValue).collect(Collectors.toList());
                 arr = ArrayUtil.toArray(list, String.class);
             }
-            client.lpush(dbIndex, key, arr);
+            // 列表按 LRANGE 顺序序列化，重建必须用 rpush 保持原顺序
+            client.rpush(dbIndex, key, arr);
         } else if (redisKey.isSetKey()) {// set
             ShellRedisSetValue value = redisKey.asSetValue();
             List<ShellRedisSetValue.RedisSetRow> rows = value.getValue();
@@ -387,8 +431,17 @@ public class ShellRedisKeyUtil {
     public static void keyValue(ShellRedisKey redisKey, Integer dbIndex, String key, ShellRedisClient client) {
         // string
         if (redisKey.isStringKey()) {
-            String value = client.get(dbIndex, key);
-            redisKey.valueOfString(value);
+            // 直接读取原始字节：Jedis.get(String) 用 UTF-8 解码会把非法字节替换成 U+FFFD 造成不可逆损坏。
+            // 若字节序列是合法且无 XML 控制字符的 UTF-8 文本，按字符串加载；否则保留字节，
+            // serializeNode 会以 0x'hex' 形式输出，导入端可字节级还原。
+            byte[] bytes = client.get(dbIndex, key.getBytes(StandardCharsets.UTF_8));
+            if (bytes == null) {
+                redisKey.valueOfString("");
+            } else if (isTextSafe(bytes)) {
+                redisKey.valueOfString(new String(bytes, StandardCharsets.UTF_8));
+            } else {
+                redisKey.valueOfString(bytes);
+            }
         } else if (redisKey.isJsonKey()) {
             String value = client.jsonGet(dbIndex, key);
             redisKey.valueOfJson(value);

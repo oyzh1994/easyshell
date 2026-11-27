@@ -199,7 +199,7 @@ public class ShellRedisDataImportController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.importFinished());
             } catch (Exception e) {
-                if (e.getClass().isAssignableFrom(InterruptedException.class)) {
+                if (e instanceof InterruptedException || e.getCause() instanceof InterruptedException) {
                     this.updateStatus(I18nHelper.operationCancel());
                     MessageBox.warn(I18nHelper.operationCancel(), this.getWindow());
                 } else {

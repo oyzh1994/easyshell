@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.data.redis.handler;
 
 import cn.oyzh.common.log.JulLog;
 import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.common.xml.XMLUtil;
 import cn.oyzh.easyshell.redis.ShellRedisClient;
 import cn.oyzh.easyshell.redis.ShellRedisKeyUtil;
 import cn.oyzh.easyshell.redis.key.ShellRedisKey;
@@ -254,7 +255,7 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
                     batchList.clear();
                 } catch (Exception ex) {
                     this.message("write data failed");
-                    this.processedDecr();
+                    this.processedDecr(batchList.size());
                 }
             };
             try {
@@ -264,7 +265,8 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
                 BiPredicate<String, ShellRedisKey> filter = (key, redisKey) -> {
                     if (redisKey == null) {
                         this.message("key[" + key + "] don't exist");
-                        this.processedDecr();
+                        // 此处尚未计入处理数，不能用 processedDecr，否则计数变负
+                        this.processedSkip();
                         return false;
                     }
                     if (ShellRedisUtil.isExclude(this.keyTypes, redisKey)) {
@@ -287,14 +289,15 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
                         throw new RuntimeException(e);
                     }
                     String key = redisKey.getKey();
-                    // 记录
+                    // 记录。base-store 的 XmlTypeFileWriter 不转义字段值，
+                    // 这里先转义，StAX 读取器会自动还原。
                     FileRecord record = new FileRecord();
                     // 序列化键值
                     String value = ShellRedisKeyUtil.serializeNode(redisKey);
-                    record.put(0, key);
-                    record.put(1, value);
+                    record.put(0, this.escaped(key));
+                    record.put(1, this.escaped(value));
                     record.put(2, redisKey.getDbIndex());
-                    record.put(3, redisKey.typeName());
+                    record.put(3, this.escaped(redisKey.typeName()));
                     if (redisKey.getTtl() != null) {
                         record.put(4, redisKey.getTtl());
                     }
@@ -308,15 +311,15 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
                 };
                 // 获取节点失败
                 BiConsumer<String, Exception> error = (key, ex) -> {
-                    if (ex instanceof RuntimeException) {
-                        ex = (Exception) ex.getCause();
-                    } else {
-                        ex.printStackTrace();
+                    Throwable cause = ex;
+                    while (cause instanceof RuntimeException && cause.getCause() != null) {
+                        cause = cause.getCause();
                     }
-                    // 针对中断异常不处理
-                    if (ex instanceof InterruptedException) {
-                        return;
+                    // 中断必须向外传播，否则会继续遍历剩余所有键
+                    if (cause instanceof InterruptedException) {
+                        throw new RuntimeException(cause);
                     }
+                    ex.printStackTrace();
                     this.message("export key[" + key + "] failed");
                     this.processedDecr();
                 };
@@ -372,6 +375,33 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
             Set<String> keys = this.client.allKeys(this.database, this.pattern);
             export.accept(this.database, keys);
         }
+    }
+
+    /**
+     * XML 格式需要对字段值转义，其它格式原样返回。
+     * 先转义 &，再转义 < >；回车用字符引用保留。
+     *
+     * @param value 原始值
+     * @return 写入文件的值
+     */
+    private String escaped(String value) {
+        if (value == null || !"xml".equalsIgnoreCase(this.fileType)) {
+            return value;
+        }
+        // 最后防线：XML 1.0 禁止 U+0000-U+0008/0x0B/0x0C/0x0E-0x1F 等控制字符，
+        // 连字符引用都不允许。正常二进制值已在序列化层转为 0x'hex'，这里只处理
+        // 其它路径可能带入的非法字符（如 key 名），剔除以保证文件可解析。
+        StringBuilder safe = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (c == 0x9 || c == 0xA || c == 0xD) {
+                safe.append(c);
+            } else if (c >= 0x20 && (c < 0xD800 || c > 0xDFFF) && c != 0xFFFE && c != 0xFFFF) {
+                safe.append(c);
+            }
+            // 其余非法字符丢弃，避免生成无法解析的 XML
+        }
+        return XMLUtil.escape(safe.toString());
     }
 
     /**

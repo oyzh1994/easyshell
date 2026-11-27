@@ -198,16 +198,19 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                     }
                     for (FileRecord record : records) {
                         String key = "";
+                        String backupKey = null;
+                        Integer dbIndex = null;
                         try {
-                            key = (String) record.get(0);
+                            // 每条记录都检查中断，避免一批内继续导入剩余记录
+                            this.checkInterrupt();
+                            key = this.recordValue(record, 0);
                             if (StringUtil.isBlank(key)) {
                                 this.message("key:" + key + " is invalid");
                                 this.processedSkip();
                                 continue;
                             }
-                            Integer dbIndex;
                             if (this.dbIndex == null) {
-                                dbIndex = (Integer) record.getValue(2, Integer.class);
+                                dbIndex = this.parseInt(this.recordValue(record, 2));
                             } else {
                                 dbIndex = this.dbIndex;
                             }
@@ -217,13 +220,18 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                                 continue;
                             }
                             // 获取数据
-                            String value = (String) record.get(1);
-                            String type = (String) record.get(3);
-                            Number ttl = (Number) record.getValue(4, Long.class);
+                            String value = this.recordValue(record, 1);
+                            String type = this.recordValue(record, 3);
+                            Long ttl = this.parseLong(this.recordValue(record, 4));
                             ShellRedisKeyType keyType = ShellRedisKeyType.valueOfType(type);
+                            if (keyType == null) {
+                                this.message("type of key[" + key + "] is invalid: " + type);
+                                this.processedSkip();
+                                continue;
+                            }
                             // 创建键
                             if (!this.client.exists(dbIndex, key)) {
-                                this.createKey(key, dbIndex, keyType, value, ttl != null ? ttl.longValue() : null);
+                                this.createKey(key, dbIndex, keyType, value, ttl);
                                 this.processedIncr();
                                 this.message("key[ " + key + "] is not exists, create it");
                                 continue;
@@ -234,13 +242,26 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                                 this.message("key[ " + key + "] is exists, skip it");
                                 continue;
                             }
-                            // 更新
-                            this.client.rename(dbIndex, key, key + "_backup");
-                            this.createKey(key, dbIndex, keyType, value, ttl != null ? ttl.longValue() : null);
-                            this.client.del(dbIndex, key + "_backup");
+                            // 更新：用唯一备份名，避免覆盖用户已有的 <key>_backup；
+                            // 重建失败时恢复原键，避免数据丢失。
+                            backupKey = key + ".easyshell-backup-" + java.util.UUID.randomUUID();
+                            this.client.rename(dbIndex, key, backupKey);
+                            this.createKey(key, dbIndex, keyType, value, ttl);
+                            this.client.del(dbIndex, backupKey);
+                            backupKey = null;
                             this.processedIncr();
                             this.message("key[ " + key + "] is exists, update it");
                         } catch (Exception ex) {
+                            // 中断需要向上传播，否则会遍历完整个文件
+                            if (ex instanceof InterruptedException) {
+                                if (backupKey != null) {
+                                    this.restoreBackup(key, backupKey, dbIndex);
+                                }
+                                throw ex;
+                            }
+                            if (backupKey != null) {
+                                this.restoreBackup(key, backupKey, dbIndex);
+                            }
                             ex.printStackTrace();
                             this.processedDecr();
                             this.message("create key[" + key + "] failed");
@@ -306,18 +327,19 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
      * @param value   值
      * @param ttl     到期时间
      */
-    private void createKey(String key, int dbIndex, ShellRedisKeyType type, String value, Long ttl) {
+    private void createKey(String key, int dbIndex, ShellRedisKeyType type, String value, Long ttl) throws Exception {
         ShellRedisKey redisKey = ShellRedisKeyUtil.deserializeNode(type, value);
         if (redisKey == null) {
-            JulLog.warn("redisKey is null");
-            return;
+            throw new IllegalStateException("无法反序列化 key[" + key + "] 的值");
         }
         if (redisKey.isStringKey()) {
             Object val = redisKey.asStringValue().getValue();
             if (val instanceof String s) {
                 this.client.set(dbIndex, key, s);
             } else if (val instanceof byte[] bytes) {
-                this.client.set(dbIndex, key.getBytes(), bytes);
+                this.client.set(dbIndex, key.getBytes(StandardCharsets.UTF_8), bytes);
+            } else {
+                throw new IllegalStateException("key[" + key + "] 的值类型不支持: " + val);
             }
         } else if (redisKey.isJsonKey()) {
             this.client.jsonSet(dbIndex, key, redisKey.asJsonValue().getValue());
@@ -330,7 +352,8 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                 List<String> strings = rows.parallelStream().map(ShellRedisListValue.RedisListRow::getValue).collect(Collectors.toList());
                 arr = ArrayUtil.toArray(strings, String.class);
             }
-            this.client.lpush(dbIndex, key, arr);
+            // 序列化列表是按 LRANGE 头到尾的顺序，重建必须用 rpush，lpush 会反转顺序
+            this.client.rpush(dbIndex, key, arr);
         } else if (redisKey.isSetKey()) {
             List<ShellRedisSetValue.RedisSetRow> rows = redisKey.asSetValue().getValue();
             String[] arr;
@@ -373,16 +396,82 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
                 }
             }
         } else {
-            JulLog.warn("redisKey:{} is not support", redisKey);
+            throw new IllegalStateException("不支持的键类型: " + type);
         }
-        // 处理ttl
+        // 处理ttl。-1 表示持久化，正数才设置过期；-2/-0 不处理，避免误删键。
         if (ttl != null && this.retainTTL) {
-            // 持久化
             if (ttl == -1) {
                 this.client.persist(dbIndex, key);
-            } else {// 设置ttl
+            } else if (ttl > 0) {
                 this.client.expire(dbIndex, key, ttl, null);
             }
+        }
+    }
+
+    /**
+     * 读取记录字段并统一转为字符串。Excel 数字/日期单元格返回的不是 String，
+     * 直接强转会 ClassCastException。
+     *
+     * @param record 记录
+     * @param index  字段索引
+     * @return 字段文本（null 按空串处理）
+     */
+    private String recordValue(FileRecord record, int index) {
+        Object value = record == null ? null : record.get(index);
+        if (value == null) {
+            return "";
+        }
+        if (value instanceof Double d) {
+            return java.math.BigDecimal.valueOf(d).stripTrailingZeros().toPlainString();
+        }
+        if (value instanceof java.util.Date date) {
+            return String.valueOf(date.getTime());
+        }
+        return value.toString();
+    }
+
+    /**
+     * 解析整数，空串或非法值返回 null。
+     */
+    private Integer parseInt(String value) {
+        if (StringUtil.isBlank(value)) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(value.trim());
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * 解析长整数，空串或非法值返回 null。
+     */
+    private Long parseLong(String value) {
+        if (StringUtil.isBlank(value)) {
+            return null;
+        }
+        try {
+            return Long.valueOf(value.trim());
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * 更新失败时把备份键恢复为原键。
+     */
+    private void restoreBackup(String key, String backupKey, Integer dbIndex) {
+        try {
+            int index = dbIndex == null ? 0 : dbIndex;
+            if (this.client.exists(index, backupKey)) {
+                if (this.client.exists(index, key)) {
+                    this.client.del(index, key);
+                }
+                this.client.rename(index, backupKey, key);
+            }
+        } catch (Exception ex) {
+            this.message("restore key[" + key + "] from backup failed: " + ex.getMessage());
         }
     }
 
