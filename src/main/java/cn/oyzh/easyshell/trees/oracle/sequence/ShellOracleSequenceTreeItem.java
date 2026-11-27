@@ -133,7 +133,7 @@ public class ShellOracleSequenceTreeItem extends ShellOracleTreeItem<ShellOracle
         try {
             this.dbItem().dropSequence(this.value);
             ShellOracleEventUtil.dropSequence(this);
-            this.parent().clearSequenceSize();
+//            this.parent().clearSequenceSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

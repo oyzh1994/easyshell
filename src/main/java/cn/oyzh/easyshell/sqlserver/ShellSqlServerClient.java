@@ -3879,11 +3879,54 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            this.initViewGeneratedColumns(connection, schema, viewName, columns);
             // 返回排序后的数据
             return new ArrayList<>(columns.sortOfPosition());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
+        }
+    }
+
+    /**
+     * 初始化视图计算列。SQL Server 视图列不会保留基表的 IS_COMPUTED 标记。
+     *
+     * @param connection 连接
+     * @param schema     模式名称
+     * @param viewName   视图名称
+     * @param columns    视图字段列表
+     */
+    private void initViewGeneratedColumns(Connection connection, String schema, String viewName,
+                                          SqlServerColumns columns) {
+        String sql = """
+                SELECT DISTINCT BC.NAME AS "COLUMN_NAME"
+                FROM SYS.SQL_EXPRESSION_DEPENDENCIES D
+                JOIN SYS.VIEWS V ON V.OBJECT_ID = D.REFERENCING_ID
+                JOIN SYS.SCHEMAS S ON S.SCHEMA_ID = V.SCHEMA_ID
+                JOIN SYS.TABLES T ON T.OBJECT_ID = D.REFERENCED_ID
+                JOIN SYS.COLUMNS BC ON BC.OBJECT_ID = T.OBJECT_ID
+                WHERE S.NAME = ?
+                  AND V.NAME = ?
+                  AND BC.IS_COMPUTED = 1
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String columnName = resultSet.getString("COLUMN_NAME");
+                    SqlServerColumn column = columns.stream()
+                            .filter(item -> StringUtil.equalsIgnoreCase(
+                                    item.getName(), columnName))
+                            .findFirst().orElse(null);
+                    if (column != null) {
+                        column.setGenerated(true);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            // 某些兼容级别不提供列级依赖，不影响视图基础字段读取。
+            ex.printStackTrace();
         }
     }
 
@@ -3898,6 +3941,23 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
      * @return 记录列表
      */
     public List<SqlServerRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<SqlServerRecordFilter> filters) {
+        return this.viewRecords(schema, viewName, start, limit, filters, null);
+    }
+
+    /**
+     * 查询视图记录列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    查询条数
+     * @param filters  过滤条件
+     * @param columns  视图字段元数据
+     * @return 记录列表
+     */
+    public List<SqlServerRecord> viewRecords(String schema, String viewName, Long start, Long limit,
+                                             List<SqlServerRecordFilter> filters,
+                                             List<SqlServerColumn> columns) {
         try {
             Connection connection = this.getConnManager().connection();
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -3913,30 +3973,27 @@ public class ShellSqlServerClient implements ShellBaseClient, DBClient {
             }
             String sql = builder.toString();
             this.printSql(sql);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            DBUtil.printMetaData(resultSet);
             List<SqlServerRecord> records = new ArrayList<>();
             boolean updatable = ShellSqlServerHelper.isViewUpdatable(connection, schema, viewName);
-            SqlServerColumns columns = ShellSqlServerHelper.parseColumns(resultSet);
-            for (SqlServerColumn column : columns) {
+            SqlServerColumns recordColumns = columns == null || columns.isEmpty()
+                    ? new SqlServerColumns(this.viewColumns(schema, viewName))
+                    : new SqlServerColumns(columns);
+            for (SqlServerColumn column : recordColumns) {
                 column.setTableName(viewName);
             }
-            while (resultSet.next()) {
-                SqlServerRecord record = new SqlServerRecord(columns, !updatable);
-                for (SqlServerColumn column : columns) {
-                    Object data = resultSet.getObject(column.getName());
-                    //                    // 获取几何值
-                    //                    if (column.supportGeometry()) {
-                    //                        data = SqlServerHelper.getGeometryString(connection, data);
-                    //                    }
-                    data = ShellSqlServerDataUtil.valueStandardization(data);
-                    record.putValue(column, data);
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                DBUtil.printMetaData(resultSet);
+                while (resultSet.next()) {
+                    SqlServerRecord record = new SqlServerRecord(recordColumns, !updatable);
+                    for (SqlServerColumn column : recordColumns) {
+                        Object data = resultSet.getObject(column.getName());
+                        data = ShellSqlServerDataUtil.valueStandardization(data);
+                        record.putValue(column, data);
+                    }
+                    records.add(record);
                 }
-                records.add(record);
             }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
             return records;
         } catch (Exception ex) {
             throw new ShellException(ex);

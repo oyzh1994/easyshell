@@ -372,7 +372,7 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
             this.clearColumns();
             this.refresh();
             this.parent().doSort();
-            this.parent().clearTableSize();
+//            this.parent().clearTableSize();
             ShellSqliteEventUtil.tableChanged(this.client(), oldName, name);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -387,7 +387,7 @@ public class ShellSqliteTableTreeItem extends ShellSqliteTreeItem<ShellSqliteTab
         }
         try {
             this.client().dropTable(this.tableName());
-            this.parent().clearTableSize();
+//            this.parent().clearTableSize();
             ShellSqliteEventUtil.tableChanged(this.client(), this.tableName(), null);
             this.remove();
         } catch (Exception ex) {

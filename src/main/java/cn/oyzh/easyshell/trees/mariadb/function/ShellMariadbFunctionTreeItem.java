@@ -124,7 +124,7 @@ public class ShellMariadbFunctionTreeItem extends ShellMariadbTreeItem<ShellMari
         try {
             this.dbItem().dropFunction(this.value);
             ShellMariadbEventUtil.dropFunction(this);
-            this.parent().clearFunctionSize();
+//            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

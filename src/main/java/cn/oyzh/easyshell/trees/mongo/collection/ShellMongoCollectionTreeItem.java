@@ -164,7 +164,7 @@ public class ShellMongoCollectionTreeItem extends ShellMongoTreeItem<ShellMongoC
             if (MessageBox.confirm(ShellI18nHelper.confirmDeleteCollection(this.collectionName()), this.getWindow())) {
                 this.dbItem().dropCollection(this.collectionName());
                 ShellMongoEventUtil.collectionDropped(this, this.dbItem());
-                this.parent().clearCollectionSize();
+//                this.parent().clearCollectionSize();
                 this.remove();
             } else {
                 MessageBox.warn(I18nHelper.operationFail(), this.getWindow());

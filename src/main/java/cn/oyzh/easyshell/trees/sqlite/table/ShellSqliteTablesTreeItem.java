@@ -26,10 +26,11 @@ import java.util.List;
  */
 public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTablesTreeItemValue> {
 
-    /**
-     * 表数量缓存
-     */
-    private Integer tableSize;
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 表数量缓存
+//     */
+//    private Integer tableSize;
 
     /**
      * 构造表类型节点
@@ -83,38 +84,56 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
         return this.parent().infoName();
     }
 
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取表数量
+//     *
+//     * @return 表数量
+//     */
+//    public int tableSize() {
+//        try {
+//            return this.client().tableSize(this.dbName());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
     /**
      * 获取表数量
+     * <p>
+     * 懒加载：仅在表列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 表数量
+     * @return 表数量，未加载时返回null表示暂无数量
      */
-    public int tableSize() {
-        try {
-            return this.client().tableSize(this.dbName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public Integer getTableSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return 0;
+        return this.unfilteredChildrenSize();
     }
 
-    /**
-     * 获取表数量（带缓存）
-     *
-     * @return 表数量
-     */
-    public synchronized int getTableSize() {
-        if (this.tableSize == null) {
-            this.tableSize = this.tableSize();
-        }
-        return this.tableSize;
-    }
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取表数量（带缓存）
+//     *
+//     * @return 表数量
+//     */
+//    public synchronized int getTableSize() {
+//        if (this.tableSize == null) {
+//            this.tableSize = this.tableSize();
+//        }
+//        return this.tableSize;
+//    }
 
-    /**
-     * 清空表数量缓存
-     */
-    public void clearTableSize() {
-        this.tableSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空表数量缓存
+//     */
+//    public void clearTableSize() {
+//        this.tableSize = null;
+//    }
 
     @Override
     public void loadChild() {
@@ -129,7 +148,7 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
                 items.add(new ShellSqliteTableTreeItem(table, this.getTreeView()));
             }
             this.setChild(items);
-        this.clearTableSize();
+//        this.clearTableSize();
             this.setLoaded(true);
             this.doFilter();
             this.doSort();
@@ -170,13 +189,13 @@ public class ShellSqliteTablesTreeItem extends ShellSqliteTreeItem<ShellSqliteTa
      * 刷新表数量
      */
     public void refreshCount() {
-        this.clearTableSize();
+//        this.clearTableSize();
         this.refresh();
     }
 
     @Override
     public void reloadChild() {
-        this.clearTableSize();
+//        this.clearTableSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();

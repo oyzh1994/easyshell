@@ -126,7 +126,7 @@ public class ShellSqlServerFunctionsTreeItem extends ShellSqlServerTreeItem<Shel
 
     @Override
     public void reloadChild() {
-        this.clearFunctionSize();
+//        this.clearFunctionSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -177,36 +177,54 @@ public class ShellSqlServerFunctionsTreeItem extends ShellSqlServerTreeItem<Shel
         }
     }
 
-    /**
-     * 获取函数数量
-     *
-     * @return 函数数量
-     */
-    public int functionSize() {
-        try {
-            return this.client().functionSize(this.schema());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取函数数量
+//     *
+//     * @return 函数数量
+//     */
+//    public int functionSize() {
+//        try {
+//            return this.client().functionSize(this.schema());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 函数数量
+//     */
+//    private Integer functionSize;
 
     /**
-     * 函数数量
-     */
-    private Integer functionSize;
-
-    /**
      * 获取函数数量
+     * <p>
+     * 懒加载：仅在函数列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 函数数量
+     * @return 函数数量，未加载时返回null表示暂无数量
      */
-    public synchronized Integer getFunctionSize() {
-        if (this.functionSize == null) {
-            this.functionSize = this.functionSize();
+    public Integer getFunctionSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return this.functionSize;
+        return this.unfilteredChildrenSize();
     }
+
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取函数数量
+//     *
+//     * @return 函数数量
+//     */
+//    public synchronized Integer getFunctionSize() {
+//        if (this.functionSize == null) {
+//            this.functionSize = this.functionSize();
+//        }
+//        return this.functionSize;
+//    }
 
     /**
      * 添加函数
@@ -216,13 +234,14 @@ public class ShellSqlServerFunctionsTreeItem extends ShellSqlServerTreeItem<Shel
     public void addFunction(SqlServerFunction function) {
         this.addChild(new ShellSqlServerFunctionTreeItem(function, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearFunctionSize();
+//        this.clearFunctionSize();
     }
 
-    /**
-     * 清空函数数量缓存
-     */
-    public void clearFunctionSize() {
-        this.functionSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空函数数量缓存
+//     */
+//    public void clearFunctionSize() {
+//        this.functionSize = null;
+//    }
 }

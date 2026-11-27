@@ -133,7 +133,7 @@ public class ShellDamengSequenceTreeItem extends ShellDamengTreeItem<ShellDameng
         try {
             this.dbItem().dropSequence(this.value);
             ShellDamengEventUtil.dropSequence(this);
-            this.parent().clearSequenceSize();
+//            this.parent().clearSequenceSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

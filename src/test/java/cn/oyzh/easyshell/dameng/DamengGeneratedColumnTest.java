@@ -99,6 +99,19 @@ public class DamengGeneratedColumnTest {
     }
 
     @Test
+    public void identityColumnIsReadonlyAndExcludedFromDml() {
+        DamengColumn id = column("ID", "BIGINT", 0);
+        id.setAutoIncrement(true);
+        id.setAutoIncrementType("IDENTITY");
+        DamengColumn value = column("VALUE", "INT", 0);
+        DamengRecord record = new DamengRecord(new DamengColumns(List.of(id, value)));
+        record.putValue("ID", null);
+        record.putValue("VALUE", 2);
+        assertTrue(record.getProperty("ID").isReadonly());
+        assertFalse(record.getRecordData().columns().contains("ID"));
+    }
+
+    @Test
     public void designUiContainsGeneratedColumnControls() throws Exception {
         String fxml = Files.readString(Path.of(
                 "src/main/resources/tabs/dameng/table/shellDamengTableColumnExtra.fxml"));

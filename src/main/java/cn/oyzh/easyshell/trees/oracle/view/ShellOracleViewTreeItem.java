@@ -172,7 +172,7 @@ public class ShellOracleViewTreeItem extends ShellOracleTreeItem<ShellOracleView
         try {
             this.dbItem().dropView(this.value);
             ShellOracleEventUtil.dropView(this);
-            this.parent().clearViewSize();
+//            this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
@@ -205,7 +205,8 @@ public class ShellOracleViewTreeItem extends ShellOracleTreeItem<ShellOracleView
         param.setStart(pageNo * limit);
         param.setSchema(this.schema());
         param.setTableName(this.viewName());
-        List<OracleRecord> records = this.client().viewRecords(this.schema(), this.viewName(), pageNo * limit, limit, filters);
+        List<OracleRecord> records = this.client().viewRecords(
+                this.schema(), this.viewName(), pageNo * limit, limit, filters, columns);
         long count = this.client().selectRecordCount(param);
         Paging<OracleRecord> paging = new Paging<>(records, limit, count);
         paging.currentPage(pageNo);

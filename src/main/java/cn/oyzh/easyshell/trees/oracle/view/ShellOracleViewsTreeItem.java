@@ -127,7 +127,7 @@ public class ShellOracleViewsTreeItem extends ShellOracleTreeItem<ShellOracleVie
 
     @Override
     public void reloadChild() {
-        this.clearViewSize();
+//        this.clearViewSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -151,36 +151,54 @@ public class ShellOracleViewsTreeItem extends ShellOracleTreeItem<ShellOracleVie
         return this.parent().client();
     }
 
-    /**
-     * 获取视图数量
-     *
-     * @return 视图数量
-     */
-    public int viewSize() {
-        try {
-            return this.parent().viewSize();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取视图数量
+//     *
+//     * @return 视图数量
+//     */
+//    public int viewSize() {
+//        try {
+//            return this.parent().viewSize();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 视图数量
+//     */
+//    private Integer viewSize;
 
     /**
-     * 视图数量
-     */
-    private Integer viewSize;
-
-    /**
      * 获取视图数量
+     * <p>
+     * 懒加载：仅在视图列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 视图数量
+     * @return 视图数量，未加载时返回null表示暂无数量
      */
-    public synchronized Integer getViewSize() {
-        if (this.viewSize == null) {
-            this.viewSize = this.viewSize();
+    public Integer getViewSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return this.viewSize;
+        return this.unfilteredChildrenSize();
     }
+
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取视图数量
+//     *
+//     * @return 视图数量
+//     */
+//    public synchronized Integer getViewSize() {
+//        if (this.viewSize == null) {
+//            this.viewSize = this.viewSize();
+//        }
+//        return this.viewSize;
+//    }
 
     /**
      * 获取连接信息
@@ -220,13 +238,14 @@ public class ShellOracleViewsTreeItem extends ShellOracleTreeItem<ShellOracleVie
         }
         this.addChild(new ShellOracleViewTreeItem(view, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearViewSize();
+//        this.clearViewSize();
     }
 
-    /**
-     * 清空视图数量缓存
-     */
-    public void clearViewSize() {
-        this.viewSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空视图数量缓存
+//     */
+//    public void clearViewSize() {
+//        this.viewSize = null;
+//    }
 }

@@ -133,7 +133,7 @@ public class ShellPostgresqlProcedureTreeItem extends ShellPostgresqlTreeItem<Sh
         try {
             this.dbItem().dropProcedure(this.value);
             ShellPostgresqlEventUtil.dropProcedure(this);
-            this.parent().clearProcedureSize();
+//            this.parent().clearProcedureSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

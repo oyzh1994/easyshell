@@ -133,7 +133,7 @@ public class ShellOracleProcedureTreeItem extends ShellOracleTreeItem<ShellOracl
         try {
             this.dbItem().dropProcedure(this.value);
             ShellOracleEventUtil.dropProcedure(this);
-            this.parent().clearProcedureSize();
+//            this.parent().clearProcedureSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

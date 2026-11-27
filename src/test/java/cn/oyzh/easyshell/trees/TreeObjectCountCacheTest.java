@@ -18,6 +18,16 @@ public class TreeObjectCountCacheTest {
             "public void add(Table|View|Function|Procedure|Event|Sequence)\\([^)]*\\)\\s*\\{(.*?)\\n\\s{4}\\}",
             Pattern.DOTALL);
 
+    /**
+     * 是否为懒加载数量模式：数量直接取自已加载的子节点，不再发起数量查询，因此无需失效缓存，也无需同步。
+     *
+     * @param source 源码
+     * @return 结果
+     */
+    private static boolean isLazyCount(String source) {
+        return source.contains("unfilteredChildrenSize()");
+    }
+
     @Test
     public void objectAddMethodsInvalidateCachedCounts() throws Exception {
         AtomicInteger methods = new AtomicInteger();
@@ -25,13 +35,17 @@ public class TreeObjectCountCacheTest {
             paths.filter(path -> path.getFileName().toString().matches("Shell.*sTreeItem\\.java"))
                     .forEach(path -> {
                         try {
-                            Matcher matcher = ADD_METHOD.matcher(Files.readString(path));
+                            String source = Files.readString(path);
+                            Matcher matcher = ADD_METHOD.matcher(source);
                             while (matcher.find()) {
                                 methods.incrementAndGet();
                                 String body = matcher.group(2);
-                                assertTrue(path + " does not invalidate count after add",
-                                        body.contains("clear" + matcher.group(1) + "Size();")
-                                                || body.contains("refreshCount();"));
+                                // 懒加载模式下数量随子节点自动变化，无需显式失效缓存
+                                if (!isLazyCount(source)) {
+                                    assertTrue(path + " does not invalidate count after add",
+                                            body.contains("clear" + matcher.group(1) + "Size();")
+                                                    || body.contains("refreshCount();"));
+                                }
                                 assertFalse(path + " increments count manually",
                                         body.contains("incrementCount("));
                             }
@@ -97,8 +111,11 @@ public class TreeObjectCountCacheTest {
                             Matcher matcher = getter.matcher(source);
                             while (matcher.find()) {
                                 getters.incrementAndGet();
-                                assertTrue(path + " count getter is not synchronized",
-                                        matcher.group().contains(" synchronized "));
+                                // 懒加载模式的数量取值不再访问数据库，无需同步保护
+                                if (!isLazyCount(source)) {
+                                    assertTrue(path + " count getter is not synchronized",
+                                            matcher.group().contains(" synchronized "));
+                                }
                             }
                         } catch (Exception ex) {
                             throw new RuntimeException(path.toString(), ex);

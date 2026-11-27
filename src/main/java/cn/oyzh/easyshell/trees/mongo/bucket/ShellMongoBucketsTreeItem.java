@@ -148,7 +148,7 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
 
     @Override
     public void reloadChild() {
-        this.clearBucketsSize();
+//        this.clearBucketsSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -213,39 +213,58 @@ public class ShellMongoBucketsTreeItem extends ShellMongoTreeItem<ShellMongoBuck
     public void addBucket(MongoBucket bucket) {
         this.addChild(new ShellMongoBucketTreeItem(bucket, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearBucketsSize();
+//        this.clearBucketsSize();
     }
 
-    /**
-     * 获取存储桶数量
-     *
-     * @return 存储桶数量
-     */
-    public long bucketsSize() {
-        return this.parent().listBucketNames().size();
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取存储桶数量
+//     *
+//     * @return 存储桶数量
+//     */
+//    public long bucketsSize() {
+//        return this.parent().listBucketNames().size();
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 存储桶数量缓存
+//     */
+//    private Integer bucketsSize;
 
     /**
-     * 存储桶数量缓存
-     */
-    private Integer bucketsSize;
-
-    /**
-     * 获取存储桶数量（带缓存）
+     * 获取桶数量
+     * <p>
+     * 懒加载：仅在桶列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 存储桶数量
+     * @return 桶数量，未加载时返回null表示暂无数量
      */
-    public synchronized Integer getBucketsSize() {
-        if (this.bucketsSize == null) {
-            this.bucketsSize = Math.toIntExact(this.bucketsSize());
+    public Integer getBucketsSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return this.bucketsSize;
+        return this.unfilteredChildrenSize();
     }
 
-    /**
-     * 清空存储桶数量缓存
-     */
-    public void clearBucketsSize() {
-        this.bucketsSize = null;
-    }
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取存储桶数量（带缓存）
+//     *
+//     * @return 存储桶数量
+//     */
+//    public synchronized Integer getBucketsSize() {
+//        if (this.bucketsSize == null) {
+//            this.bucketsSize = Math.toIntExact(this.bucketsSize());
+//        }
+//        return this.bucketsSize;
+//    }
+
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空存储桶数量缓存
+//     */
+//    public void clearBucketsSize() {
+//        this.bucketsSize = null;
+//    }
 }

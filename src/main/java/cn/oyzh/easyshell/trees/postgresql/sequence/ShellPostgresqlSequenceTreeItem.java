@@ -133,7 +133,7 @@ public class ShellPostgresqlSequenceTreeItem extends ShellPostgresqlTreeItem<She
         try {
             this.dbItem().dropSequence(this.value);
             ShellPostgresqlEventUtil.dropSequence(this);
-            this.parent().clearSequenceSize();
+//            this.parent().clearSequenceSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

@@ -124,7 +124,7 @@ public class ShellSqlServerFunctionTreeItem extends ShellSqlServerTreeItem<Shell
         try {
             this.dbItem().dropFunction(this.value);
             ShellSqlServerEventUtil.dropFunction(this);
-            this.parent().clearFunctionSize();
+//            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

@@ -225,7 +225,7 @@ public class ShellMariadbTableTreeItem extends ShellMariadbTreeItem<ShellMariadb
             if (MessageBox.confirm(ShellI18nHelper.confirmDeleteTable(this.tableName()), this.getWindow())) {
                 this.dbItem().dropTable(this.tableName());
                 ShellMariadbEventUtil.tableDropped(this, this.dbItem());
-                this.parent().clearTableSize();
+//                this.parent().clearTableSize();
                 this.remove();
             }
         } catch (Exception ex) {

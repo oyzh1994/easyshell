@@ -172,7 +172,7 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         try {
             this.dbItem().dropView(this.value);
             ShellMysqlEventUtil.dropView(this);
-            this.parent().clearViewSize();
+//            this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
@@ -205,7 +205,8 @@ public class ShellMysqlViewTreeItem extends ShellMysqlTreeItem<ShellMysqlViewTre
         param.setStart(pageNo * limit);
         param.setDbName(this.dbName());
         param.setTableName(this.viewName());
-        List<MysqlRecord> records = this.client().viewRecords(this.dbName(), this.viewName(), pageNo * limit, limit, filters);
+        List<MysqlRecord> records = this.client().viewRecords(
+                this.dbName(), this.viewName(), pageNo * limit, limit, filters, columns);
         long count = this.client().selectRecordCount(param);
         Paging<MysqlRecord> paging = new Paging<>(records, limit, count);
         paging.currentPage(pageNo);

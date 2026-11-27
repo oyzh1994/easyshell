@@ -89,9 +89,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * MySQL数据库客户端封装，提供数据库连接、表/视图/函数/过程/事件/触发器等对象的CRUD操作，
@@ -2609,7 +2612,129 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
         MysqlSelectColumnParam param = new MysqlSelectColumnParam();
         param.setDbName(dbName);
         param.setTableName(viewName);
-        return this.selectColumns(param);
+        List<MysqlColumn> columns = this.selectColumns(param);
+        this.initViewGeneratedColumns(dbName, viewName, columns);
+        return columns;
+    }
+
+    /**
+     * 初始化视图生成列。MySQL 视图自身不保留基表的生成列标记。
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @param columns  视图字段列表
+     */
+    private void initViewGeneratedColumns(String dbName, String viewName, List<MysqlColumn> columns) {
+        String sql = """
+                SELECT DISTINCT
+                    C.COLUMN_NAME,
+                    C.EXTRA,
+                    C.GENERATION_EXPRESSION
+                FROM INFORMATION_SCHEMA.VIEW_TABLE_USAGE V
+                JOIN INFORMATION_SCHEMA.COLUMNS C
+                  ON C.TABLE_SCHEMA = V.TABLE_SCHEMA
+                 AND C.TABLE_NAME = V.TABLE_NAME
+                WHERE V.VIEW_SCHEMA = ?
+                  AND V.VIEW_NAME = ?
+                  AND C.EXTRA LIKE '%GENERATED%'
+                """;
+        try (PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(sql)) {
+            statement.setString(1, dbName);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String columnName = resultSet.getString("COLUMN_NAME");
+                    MysqlColumn column = columns.stream()
+                            .filter(item -> StringUtil.equalsIgnoreCase(
+                                    item.getName(), columnName))
+                            .findFirst().orElse(null);
+                    if (column == null) {
+                        continue;
+                    }
+                    column.setGenerated(true);
+                    String extra = resultSet.getString("EXTRA");
+                    column.setGeneratedStorage(StringUtil.containsIgnoreCase(extra, "STORED")
+                            ? "STORED" : "VIRTUAL");
+                    column.setGeneratedExpression(resultSet.getString("GENERATION_EXPRESSION"));
+                }
+            }
+        } catch (Exception ex) {
+            this.initViewGeneratedColumnsFromDefinition(dbName, viewName, columns);
+        }
+    }
+
+    /**
+     * 从视图定义提取基表并识别生成列，兼容不提供 VIEW_TABLE_USAGE 的 MySQL 版本。
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @param columns  视图字段列表
+     */
+    private void initViewGeneratedColumnsFromDefinition(String dbName, String viewName,
+                                                        List<MysqlColumn> columns) {
+        try {
+            String definition;
+            try (PreparedStatement statement = this.getConnManager().connection(dbName).prepareStatement(
+                    "SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS "
+                            + "WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?")) {
+                statement.setString(1, dbName);
+                statement.setString(2, viewName);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    definition = resultSet.next() ? resultSet.getString(1) : null;
+                }
+            }
+            if (StringUtil.isBlank(definition)) {
+                return;
+            }
+            Matcher matcher = Pattern.compile(
+                    "(?is)\\b(?:FROM|JOIN)\\s+((?:`(?:``|[^`])+`|[A-Za-z0-9_$]+)"
+                            + "(?:\\s*\\.\\s*(?:`(?:``|[^`])+`|[A-Za-z0-9_$]+))?)")
+                    .matcher(definition);
+            Map<String, String> tableRefs = new LinkedHashMap<>();
+            while (matcher.find()) {
+                String[] parts = matcher.group(1).split("\\s*\\.\\s*");
+                String tableName = unquoteIdentifier(parts[parts.length - 1]);
+                String tableDb = parts.length > 1
+                        ? unquoteIdentifier(parts[parts.length - 2]) : dbName;
+                tableRefs.putIfAbsent(tableDb + "\0" + tableName, tableDb);
+            }
+            String columnSql = "SELECT COLUMN_NAME, EXTRA, GENERATION_EXPRESSION "
+                    + "FROM INFORMATION_SCHEMA.COLUMNS "
+                    + "WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND EXTRA LIKE '%GENERATED%'";
+            try (PreparedStatement columnStatement = this.getConnManager()
+                    .connection(dbName).prepareStatement(columnSql)) {
+                for (Map.Entry<String, String> entry : tableRefs.entrySet()) {
+                    String tableName = entry.getKey().substring(entry.getValue().length() + 1);
+                    columnStatement.setString(1, entry.getValue());
+                    columnStatement.setString(2, tableName);
+                    try (ResultSet resultSet = columnStatement.executeQuery()) {
+                        while (resultSet.next()) {
+                            String columnName = resultSet.getString("COLUMN_NAME");
+                            MysqlColumn column = columns.stream()
+                                    .filter(item -> StringUtil.equalsIgnoreCase(item.getName(), columnName))
+                                    .findFirst().orElse(null);
+                            if (column != null) {
+                                column.setGenerated(true);
+                                String extra = resultSet.getString("EXTRA");
+                                column.setGeneratedStorage(StringUtil.containsIgnoreCase(extra, "STORED")
+                                        ? "STORED" : "VIRTUAL");
+                                column.setGeneratedExpression(resultSet.getString("GENERATION_EXPRESSION"));
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static String unquoteIdentifier(String value) {
+        String result = value == null ? "" : value.trim();
+        if (result.length() >= 2 && result.startsWith("`") && result.endsWith("`")) {
+            result = result.substring(1, result.length() - 1);
+        }
+        return result.replace("``", "`");
     }
 
     /**
@@ -2623,6 +2748,22 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
      * @return 记录列表
      */
     public List<MysqlRecord> viewRecords(String dbName, String viewName, Long start, Long limit, List<MysqlRecordFilter> filters) {
+        return this.viewRecords(dbName, viewName, start, limit, filters, null);
+    }
+
+    /**
+     * 查询视图记录
+     *
+     * @param dbName   数据库名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    限制行数
+     * @param filters  过滤条件
+     * @param columns  视图字段元数据
+     * @return 记录列表
+     */
+    public List<MysqlRecord> viewRecords(String dbName, String viewName, Long start, Long limit,
+                                         List<MysqlRecordFilter> filters, List<MysqlColumn> columns) {
         try {
             Connection connection = this.getConnManager().connection(dbName);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -2636,16 +2777,29 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
             }
             String sql = builder.toString();
             this.printSql(sql);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            DBUtil.printMetaData(resultSet);
             List<MysqlRecord> records = new ArrayList<>();
             boolean updatable = ShellMysqlHelper.isViewUpdatable(connection, dbName, viewName);
-            MysqlColumns columns = ShellMysqlHelper.parseColumns(resultSet);
-            while (resultSet.next()) {
-                MysqlRecord record = new MysqlRecord(columns, !updatable);
-                for (MysqlColumn column : columns) {
-                    Object data = resultSet.getObject(column.getName());
+            MysqlColumns recordColumns = columns == null || columns.isEmpty()
+                    ? new MysqlColumns(this.viewColumns(dbName, viewName))
+                    : new MysqlColumns(columns);
+            List<Object[]> rows = new ArrayList<>();
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                DBUtil.printMetaData(resultSet);
+                while (resultSet.next()) {
+                    Object[] row = new Object[recordColumns.size()];
+                    int index = 0;
+                    for (MysqlColumn column : recordColumns) {
+                        row[index++] = resultSet.getObject(column.getName());
+                    }
+                    rows.add(row);
+                }
+            }
+            for (Object[] row : rows) {
+                MysqlRecord record = new MysqlRecord(recordColumns, !updatable);
+                int index = 0;
+                for (MysqlColumn column : recordColumns) {
+                    Object data = row[index++];
                     // 获取几何值
                     if (column.supportGeometry()) {
                         data = ShellMysqlHelper.getGeometryString(connection, data);
@@ -2655,8 +2809,6 @@ public class ShellMysqlClient implements ShellBaseClient, DBClient {
                 }
                 records.add(record);
             }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
             return records;
         } catch (Exception ex) {
             throw new ShellException(ex);

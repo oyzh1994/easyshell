@@ -133,7 +133,7 @@ public class ShellSqlServerProcedureTreeItem extends ShellSqlServerTreeItem<Shel
         try {
             this.dbItem().dropProcedure(this.value);
             ShellSqlServerEventUtil.dropProcedure(this);
-            this.parent().clearProcedureSize();
+//            this.parent().clearProcedureSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

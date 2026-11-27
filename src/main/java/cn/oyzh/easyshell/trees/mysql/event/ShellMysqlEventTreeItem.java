@@ -138,7 +138,7 @@ public class ShellMysqlEventTreeItem extends ShellMysqlTreeItem<ShellMysqlEventT
         try {
             this.dbItem().dropEvent(this.value);
             ShellMysqlEventUtil.dropEvent(this);
-            this.parent().clearEventSize();
+//            this.parent().clearEventSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

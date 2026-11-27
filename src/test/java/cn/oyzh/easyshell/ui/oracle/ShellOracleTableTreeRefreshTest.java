@@ -105,7 +105,6 @@ public class ShellOracleTableTreeRefreshTest {
                         + "\" (\"ID\" NUMBER(10) PRIMARY KEY)");
             }
 
-            tablesItem.tableSize();
             await(() -> tablesItem.unfilteredChildrenSize() == client.tableSize("DEMO"));
             assertTrue(tablesItem.unfilteredChildren().stream()
                     .anyMatch(item -> item instanceof ShellOracleTableTreeItem table

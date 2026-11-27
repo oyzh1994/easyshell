@@ -146,7 +146,7 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
 
     @Override
     public void reloadChild() {
-        this.clearTableSize();
+//        this.clearTableSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -170,36 +170,54 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
         return this.parent().client();
     }
 
-    /**
-     * 获取表数量
-     *
-     * @return 表数量
-     */
-    public int tableSize() {
-        try {
-            return this.parent().tableSize();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取表数量
+//     *
+//     * @return 表数量
+//     */
+//    public int tableSize() {
+//        try {
+//            return this.parent().tableSize();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 表数量
+//     */
+//    private Integer tableSize;
 
     /**
-     * 表数量
-     */
-    private Integer tableSize;
-
-    /**
      * 获取表数量
+     * <p>
+     * 懒加载：仅在表列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 表数量
+     * @return 表数量，未加载时返回null表示暂无数量
      */
-    public synchronized Integer getTableSize() {
-        if (this.tableSize == null) {
-            this.tableSize = this.tableSize();
+    public Integer getTableSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return this.tableSize;
+        return this.unfilteredChildrenSize();
     }
+
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取表数量
+//     *
+//     * @return 表数量
+//     */
+//    public synchronized Integer getTableSize() {
+//        if (this.tableSize == null) {
+//            this.tableSize = this.tableSize();
+//        }
+//        return this.tableSize;
+//    }
 
     /**
      * 获取连接信息
@@ -236,13 +254,14 @@ public class ShellDamengTablesTreeItem extends ShellDamengTreeItem<ShellDamengTa
     public void addTable(DamengTable table) {
         this.addChild(new ShellDamengTableTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearTableSize();
+//        this.clearTableSize();
     }
 
-    /**
-     * 清空表数量缓存
-     */
-    public void clearTableSize() {
-        this.tableSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空表数量缓存
+//     */
+//    public void clearTableSize() {
+//        this.tableSize = null;
+//    }
 }

@@ -118,7 +118,7 @@ public class ShellMongoBucketTreeItem extends ShellMongoTreeItem<ShellMongoBucke
             if (MessageBox.confirm(ShellI18nHelper.confirmDeleteBucket(this.bucketName()), this.getWindow())) {
                 this.dbItem().dropBucket(this.bucketName());
                 ShellMongoEventUtil.bucketDropped(this, this.dbItem());
-                this.parent().clearBucketsSize();
+//                this.parent().clearBucketsSize();
                 this.remove();
             }
         } catch (Exception ex) {

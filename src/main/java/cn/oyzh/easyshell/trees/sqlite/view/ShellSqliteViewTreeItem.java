@@ -362,7 +362,7 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
             this.value.setColumns(null);
             this.refresh();
             this.parent().doSort();
-            this.parent().clearViewSize();
+//            this.parent().clearViewSize();
             ShellSqliteEventUtil.viewChanged(this.client(), oldName, name);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -377,7 +377,7 @@ public class ShellSqliteViewTreeItem extends ShellSqliteTreeItem<ShellSqliteView
         }
         try {
             this.client().dropView(this.viewName());
-            this.parent().clearViewSize();
+//            this.parent().clearViewSize();
             ShellSqliteEventUtil.viewChanged(this.client(), this.viewName(), null);
             this.remove();
         } catch (Exception ex) {

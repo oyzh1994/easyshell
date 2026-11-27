@@ -242,6 +242,38 @@ public class SqlServerIntegrationTest {
     }
 
     @Test
+    public void viewUsesBaseComputedColumnMetadata() {
+        String table = "VIEW_COMPUTED_SOURCE";
+        String view = "VIEW_COMPUTED_RESULT";
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP VIEW IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + view + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "DROP TABLE IF EXISTS ["
+                + SOURCE_SCHEMA + "].[" + table + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, """
+                CREATE TABLE [EASYSHELL_SRC].[VIEW_COMPUTED_SOURCE] (
+                    [ID] INT NOT NULL PRIMARY KEY,
+                    [SOURCE] NVARCHAR(100),
+                    [CALCULATED] AS (LEN([SOURCE]))
+                )
+                """);
+        client.executeSqlSimple(SOURCE_SCHEMA, "CREATE VIEW [EASYSHELL_SRC].["
+                + view + "] AS SELECT * FROM [EASYSHELL_SRC].[" + table + "]");
+        client.executeSqlSimple(SOURCE_SCHEMA, "INSERT INTO [EASYSHELL_SRC].["
+                + table + "]([ID], [SOURCE]) VALUES(1, N'view-value')");
+
+        List<SqlServerColumn> viewColumns = client.viewColumns(SOURCE_SCHEMA, view);
+        SqlServerColumn calculated = viewColumns.stream()
+                .filter(column -> "CALCULATED".equals(column.getName()))
+                .findFirst().orElseThrow();
+        assertTrue(calculated.isGenerated());
+
+        SqlServerRecord record = client.viewRecords(
+                SOURCE_SCHEMA, view, 0L, 10L, null, viewColumns).getFirst();
+        assertTrue(record.getColumns().column("CALCULATED").isGenerated());
+        assertTrue(record.getProperty("CALCULATED").isReadonly());
+    }
+
+    @Test
     public void queryResultEditingUsesSourceTable() {
         String table = "QUERY_EDIT";
         client.executeSqlSimple(SOURCE_SCHEMA, "DROP TABLE IF EXISTS ["

@@ -172,7 +172,7 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         try {
             this.dbItem().dropView(this.value);
             ShellDamengEventUtil.dropView(this);
-            this.parent().clearViewSize();
+//            this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
@@ -205,7 +205,8 @@ public class ShellDamengViewTreeItem extends ShellDamengTreeItem<ShellDamengView
         param.setStart(pageNo * limit);
         param.setSchema(this.schema());
         param.setTableName(this.viewName());
-        List<DamengRecord> records = this.client().viewRecords(this.schema(), this.viewName(), pageNo * limit, limit, filters);
+        List<DamengRecord> records = this.client().viewRecords(
+                this.schema(), this.viewName(), pageNo * limit, limit, filters, columns);
         long count = this.client().selectRecordCount(param);
         Paging<DamengRecord> paging = new Paging<>(records, limit, count);
         paging.currentPage(pageNo);

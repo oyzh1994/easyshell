@@ -172,7 +172,7 @@ public class ShellMariadbViewTreeItem extends ShellMariadbTreeItem<ShellMariadbV
         try {
             this.dbItem().dropView(this.value);
             ShellMariadbEventUtil.dropView(this);
-            this.parent().clearViewSize();
+//            this.parent().clearViewSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
@@ -205,7 +205,8 @@ public class ShellMariadbViewTreeItem extends ShellMariadbTreeItem<ShellMariadbV
         param.setStart(pageNo * limit);
         param.setDbName(this.dbName());
         param.setTableName(this.viewName());
-        List<MariadbRecord> records = this.client().viewRecords(this.dbName(), this.viewName(), pageNo * limit, limit, filters);
+        List<MariadbRecord> records = this.client().viewRecords(
+                this.dbName(), this.viewName(), pageNo * limit, limit, filters, columns);
         long count = this.client().selectRecordCount(param);
         Paging<MariadbRecord> paging = new Paging<>(records, limit, count);
         paging.currentPage(pageNo);

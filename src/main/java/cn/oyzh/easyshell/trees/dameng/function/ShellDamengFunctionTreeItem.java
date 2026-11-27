@@ -124,7 +124,7 @@ public class ShellDamengFunctionTreeItem extends ShellDamengTreeItem<ShellDameng
         try {
             this.dbItem().dropFunction(this.value);
             ShellDamengEventUtil.dropFunction(this);
-            this.parent().clearFunctionSize();
+//            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

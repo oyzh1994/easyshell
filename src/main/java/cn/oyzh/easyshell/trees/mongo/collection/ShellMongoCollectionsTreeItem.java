@@ -150,7 +150,7 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
 
     @Override
     public void reloadChild() {
-        this.clearCollectionSize();
+//        this.clearCollectionSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -215,44 +215,63 @@ public class ShellMongoCollectionsTreeItem extends ShellMongoTreeItem<ShellMongo
     public void addCollection(MongoCollection table) {
         this.addChild(new ShellMongoCollectionTreeItem(table, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearCollectionSize();
+//        this.clearCollectionSize();
     }
+
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取集合数量
+//     *
+//     * @return 集合数量
+//     */
+//    public long collectionSize() {
+//        try {
+//            return this.client().listCollections(this.dbName()).size();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 集合数量缓存
+//     */
+//    private Integer collectionSize;
 
     /**
      * 获取集合数量
+     * <p>
+     * 懒加载：仅在集合列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 集合数量
+     * @return 集合数量，未加载时返回null表示暂无数量
      */
-    public long collectionSize() {
-        try {
-            return this.client().listCollections(this.dbName()).size();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public Integer getCollectionsSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return 0;
+        return this.unfilteredChildrenSize();
     }
 
-    /**
-     * 集合数量缓存
-     */
-    private Integer collectionSize;
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取集合数量（带缓存）
+//     *
+//     * @return 集合数量
+//     */
+//    public synchronized Integer getCollectionsSize() {
+//        if (this.collectionSize == null) {
+//            this.collectionSize = Math.toIntExact(this.collectionSize());
+//        }
+//        return this.collectionSize;
+//    }
 
-    /**
-     * 获取集合数量（带缓存）
-     *
-     * @return 集合数量
-     */
-    public synchronized Integer getCollectionsSize() {
-        if (this.collectionSize == null) {
-            this.collectionSize = Math.toIntExact(this.collectionSize());
-        }
-        return this.collectionSize;
-    }
-
-    /**
-     * 清空集合数量缓存
-     */
-    public void clearCollectionSize() {
-        this.collectionSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空集合数量缓存
+//     */
+//    public void clearCollectionSize() {
+//        this.collectionSize = null;
+//    }
 }

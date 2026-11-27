@@ -16,6 +16,7 @@ import cn.oyzh.easyshell.oracle.generator.table.OracleTableAlertSqlGenerator;
 import cn.oyzh.easyshell.oracle.record.OracleInsertRecordParam;
 import cn.oyzh.easyshell.oracle.record.OracleRecord;
 import cn.oyzh.easyshell.oracle.record.OracleRecordPrimaryKey;
+import cn.oyzh.easyshell.oracle.record.OracleRecordProperty;
 import cn.oyzh.easyshell.oracle.record.OracleSelectRecordParam;
 import cn.oyzh.easyshell.oracle.record.OracleUpdateRecordParam;
 import cn.oyzh.easyshell.oracle.sequence.OracleAlertSequenceParam;
@@ -35,6 +36,7 @@ import cn.oyzh.fx.db.DBObjects;
 import cn.oyzh.fx.db.data.dto.DBDataTransportObject;
 import cn.oyzh.fx.db.data.dto.DBDataImportConfig;
 import cn.oyzh.fx.db.data.file.DBDataCsvTypeFileReader;
+import cn.oyzh.fx.editor.incubator.control.XmlTextFiled;
 import cn.oyzh.fx.plus.ext.FXMLResult;
 import cn.oyzh.fx.plus.ext.FXMLLoaderExt;
 import javafx.application.Platform;
@@ -184,9 +186,37 @@ public class OracleComplexDataIntegrationTest {
     @Test
     public void editsComplexColumnsThroughClientEntry() {
         this.createComplexTable(this.sourceClient, this.sourceSchema, TABLE);
+        this.sourceClient.executeSqlSimple(this.sourceSchema,
+                "CREATE VIEW \"" + this.sourceSchema + "\".\"COMPLEX_TYPES_VIEW\" AS "
+                        + "SELECT * FROM \"" + this.sourceSchema + "\".\"" + TABLE + "\"");
+        OracleColumns viewColumns = new OracleColumns(
+                this.sourceClient.viewColumns(this.sourceSchema, "COMPLEX_TYPES_VIEW"));
+        assertTrue(viewColumns.column("C_JSON").supportJson());
+        assertTrue(viewColumns.column("C_VIRTUAL").isGenerated());
+        assertFalse(viewColumns.column("C_VIRTUAL").isDmlWritable());
+        OracleRecord viewDraft = new OracleRecord(viewColumns);
+        for (OracleColumn column : viewColumns) {
+            viewDraft.putValue(column, null);
+        }
+        assertTrue(viewDraft.getProperty("C_VIRTUAL").isReadonly());
+        Node xmlNode = ShellOracleRecordUtil.getNode(
+                (OracleRecordProperty) viewDraft.getProperty("C_XML"),
+                "<row/>", viewColumns.column("C_XML"));
+        assertTrue(xmlNode instanceof XmlTextFiled);
+
         OracleRecord inserted = this.insertComplexRecord(this.sourceClient, this.sourceSchema, TABLE, 1);
         this.assertComplexValues(this.seedValues(1), inserted);
         assertGeneratedValue(inserted);
+        OracleRecord viewRecord = this.sourceClient.viewRecords(
+                this.sourceSchema, "COMPLEX_TYPES_VIEW", 0L, 10L, null, viewColumns).getFirst();
+        assertTrue(viewRecord.getColumns().column("C_XML").isXmlType());
+        assertTrue(viewRecord.getColumns().column("C_VIRTUAL").isGenerated());
+        assertTrue(viewRecord.getProperty("C_VIRTUAL").isReadonly());
+        Node viewXmlNode = ShellOracleRecordUtil.getNode(
+                (OracleRecordProperty) viewRecord.getProperty("C_XML"),
+                viewRecord.getProperty("C_XML").get(),
+                viewRecord.getColumns().column("C_XML"));
+        assertTrue(viewXmlNode instanceof XmlTextFiled);
 
         OracleRecord editable = this.loadSingle(this.sourceClient, this.sourceSchema, TABLE, 1);
         Map<String, Object> updated = this.updatedValues(2);
@@ -319,6 +349,47 @@ public class OracleComplexDataIntegrationTest {
             assertUdtValues(imported.getFirst(), "Updated St", "Beijing",
                     List.of(4, 5, 6), List.of("tag3", "tag4"));
         }
+    }
+
+    @Test
+    public void loadsAndInsertsUserDefinedTypeColumnsFromViews() {
+        this.createUdtModel(this.sourceClient, this.sourceSchema, UDT_TABLE);
+        this.insertUdtRecord(this.sourceClient, this.sourceSchema, UDT_TABLE);
+        this.sourceClient.executeSqlSimple(this.sourceSchema,
+                "CREATE VIEW \"" + this.sourceSchema + "\".\"UDT_TYPES_VIEW\" AS "
+                        + "SELECT \"ID\", \"C_OBJECT\", \"C_VARRAY\", \"C_NESTED_TAB\" FROM \""
+                        + this.sourceSchema + "\".\"" + UDT_TABLE + "\"");
+
+        OracleColumns viewColumns = new OracleColumns(
+                this.sourceClient.viewColumns(this.sourceSchema, "UDT_TYPES_VIEW"));
+        List<OracleRecord> records = this.sourceClient.viewRecords(
+                this.sourceSchema, "UDT_TYPES_VIEW", 0L, 10L, null, viewColumns);
+        assertEquals(1, records.size());
+        assertUdtValues(records.getFirst(), "Main St", "Shanghai",
+                List.of(1, 2, 3), List.of("tag1", "tag2"));
+
+        assertTrue(viewColumns.column("C_OBJECT").isObjectType());
+        assertTrue(viewColumns.column("C_VARRAY").isCollectionType());
+        assertTrue(viewColumns.column("C_NESTED_TAB").isCollectionType());
+
+        OracleRecord inserted = new OracleRecord(viewColumns);
+        inserted.putValue("C_OBJECT", "{\"STREET\":\"View St\",\"CITY\":\"Hangzhou\"}");
+        inserted.putValue("C_VARRAY", "[4,5,6]");
+        inserted.putValue("C_NESTED_TAB", "[\"view-tag\",\"second\"]");
+        DBRecordData recordData = inserted.getRecordData();
+        recordData.put(viewColumns.column("ID"), 2);
+        OracleInsertRecordParam insertParam = new OracleInsertRecordParam();
+        insertParam.setSchema(this.sourceSchema);
+        insertParam.setTableName("UDT_TYPES_VIEW");
+        insertParam.setRecord(recordData);
+        assertEquals(1, this.sourceClient.insertRecord(insertParam));
+
+        OracleRecord insertedViewRecord = this.sourceClient.viewRecords(
+                        this.sourceSchema, "UDT_TYPES_VIEW", 0L, 10L, null, viewColumns).stream()
+                .filter(record -> number(record.getValue("ID")).intValue() == 2)
+                .findFirst().orElseThrow();
+        assertUdtValues(insertedViewRecord, "View St", "Hangzhou",
+                List.of(4, 5, 6), List.of("view-tag", "second"));
     }
 
     @Test

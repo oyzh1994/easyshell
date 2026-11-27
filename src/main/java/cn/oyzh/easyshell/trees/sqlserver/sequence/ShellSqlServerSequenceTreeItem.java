@@ -133,7 +133,7 @@ public class ShellSqlServerSequenceTreeItem extends ShellSqlServerTreeItem<Shell
         try {
             this.dbItem().dropSequence(this.value);
             ShellSqlServerEventUtil.dropSequence(this);
-            this.parent().clearSequenceSize();
+//            this.parent().clearSequenceSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

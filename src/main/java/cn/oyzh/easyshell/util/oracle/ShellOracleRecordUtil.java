@@ -7,6 +7,7 @@ import cn.oyzh.fx.db.util.DBNodeUtil;
 import cn.oyzh.fx.db.util.DBUtil;
 import cn.oyzh.fx.editor.incubator.control.JsonTextFiled;
 import cn.oyzh.fx.editor.incubator.control.LongTextFiled;
+import cn.oyzh.fx.editor.incubator.control.XmlTextFiled;
 import cn.oyzh.fx.gui.menu.MenuItemHelper;
 import cn.oyzh.fx.gui.text.field.BinaryTextFiled;
 import cn.oyzh.fx.gui.text.field.BitTextField;
@@ -37,7 +38,14 @@ public class ShellOracleRecordUtil {
 
     public static Node getNode(OracleRecordProperty property, Object object, OracleColumn column) {
         object = ShellOracleDataUtil.valueStandardization(object);
-        Node node = DBNodeUtil.getNode(object, column);
+        Node node;
+        if (column.isXmlType()) {
+            XmlTextFiled textField = new XmlTextFiled();
+            textField.setValue(object);
+            node = textField;
+        } else {
+            node = DBNodeUtil.getNode(object, column);
+        }
         //        if (column.supportJson()) {
         //            JsonTextFiled textField = new JsonTextFiled();
         //            textField.setValue(object);
@@ -123,6 +131,8 @@ public class ShellOracleRecordUtil {
             } else if (object != null) {
                 val = object.toString();
             }
+        } else if (column.isXmlType()) {
+            val = XmlTextFiled.format(object);
         } else if (column.supportJson()) {
             val = JsonTextFiled.format(object);
         } else if (column.supportBinary()) {

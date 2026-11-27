@@ -105,7 +105,7 @@ public class ShellMongoViewTreeItem extends ShellMongoTreeItem<ShellMongoViewTre
             if (MessageBox.confirm(ShellI18nHelper.confirmDeleteView(this.viewName()), this.getWindow())) {
                 this.client().dropView(this.dbName(), this.viewName());
                 ShellMongoEventUtil.viewDropped(this, this.dbItem());
-                this.parent().clearViewSize();
+//                this.parent().clearViewSize();
                 this.remove();
             }
         } catch (Exception ex) {

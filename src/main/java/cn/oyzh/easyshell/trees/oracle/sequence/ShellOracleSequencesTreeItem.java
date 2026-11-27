@@ -127,7 +127,7 @@ public class ShellOracleSequencesTreeItem extends ShellOracleTreeItem<ShellOracl
 
     @Override
     public void reloadChild() {
-        this.clearSequenceSize();
+//        this.clearSequenceSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -178,36 +178,54 @@ public class ShellOracleSequencesTreeItem extends ShellOracleTreeItem<ShellOracl
         }
     }
 
-    /**
-     * 获取序列数量
-     *
-     * @return 序列数量
-     */
-    public int sequenceSize() {
-        try {
-            return this.client().sequenceSize(this.schema());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取序列数量
+//     *
+//     * @return 序列数量
+//     */
+//    public int sequenceSize() {
+//        try {
+//            return this.client().sequenceSize(this.schema());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 序列数量
+//     */
+//    private Integer sequenceSize;
 
     /**
-     * 序列数量
-     */
-    private Integer sequenceSize;
-
-    /**
      * 获取序列数量
+     * <p>
+     * 懒加载：仅在序列列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 序列数量
+     * @return 序列数量，未加载时返回null表示暂无数量
      */
-    public synchronized Integer getSequenceSize() {
-        if (this.sequenceSize == null) {
-            this.sequenceSize = this.sequenceSize();
+    public Integer getSequenceSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return this.sequenceSize;
+        return this.unfilteredChildrenSize();
     }
+
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取序列数量
+//     *
+//     * @return 序列数量
+//     */
+//    public synchronized Integer getSequenceSize() {
+//        if (this.sequenceSize == null) {
+//            this.sequenceSize = this.sequenceSize();
+//        }
+//        return this.sequenceSize;
+//    }
 
     /**
      * 添加序列
@@ -217,13 +235,14 @@ public class ShellOracleSequencesTreeItem extends ShellOracleTreeItem<ShellOracl
     public void addSequence(OracleSequence Sequence) {
         this.addChild(new ShellOracleSequenceTreeItem(Sequence, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearSequenceSize();
+//        this.clearSequenceSize();
     }
 
-    /**
-     * 清空序列数量缓存
-     */
-    public void clearSequenceSize() {
-        this.sequenceSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空序列数量缓存
+//     */
+//    public void clearSequenceSize() {
+//        this.sequenceSize = null;
+//    }
 }

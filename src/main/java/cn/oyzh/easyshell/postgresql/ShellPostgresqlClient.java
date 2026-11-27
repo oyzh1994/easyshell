@@ -1719,6 +1719,50 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
     }
 
     /**
+     * 初始化视图生成列。
+     * PostgreSQL 视图列不会保留基表的 ATTGENERATED 标记，需要从视图列依赖中补充。
+     *
+     * @param connection 连接
+     * @param schema     模式
+     * @param viewName   视图名称
+     * @param columns    视图字段列表
+     * @throws SQLException 异常
+     */
+    private void initViewGeneratedColumns(Connection connection, String schema, String viewName,
+                                          PostgresqlColumns columns) throws SQLException {
+        String sql = """
+                SELECT DISTINCT
+                    U.COLUMN_NAME AS "COLUMN_NAME"
+                FROM
+                    INFORMATION_SCHEMA.VIEW_COLUMN_USAGE U
+                JOIN
+                    PG_CATALOG.PG_CLASS C ON C.RELNAME = U.TABLE_NAME
+                JOIN
+                    PG_CATALOG.PG_NAMESPACE N ON N.OID = C.RELNAMESPACE AND N.NSPNAME = U.TABLE_SCHEMA
+                JOIN
+                    PG_CATALOG.PG_ATTRIBUTE A ON A.ATTRELID = C.OID AND A.ATTNAME = U.COLUMN_NAME
+                WHERE
+                    U.VIEW_SCHEMA = ?
+                AND
+                    U.VIEW_NAME = ?
+                AND
+                    A.ATTGENERATED <> ''
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    PostgresqlColumn column = columns.column(resultSet.getString("COLUMN_NAME"));
+                    if (column != null) {
+                        column.setGenerated(true);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * 查询记录列表
      *
      * @param param 查询参数
@@ -3912,7 +3956,8 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                             AND I.INDISPRIMARY
                             AND A.ATTNUM = ANY(I.INDKEY::SMALLINT[])
                         ) THEN 'PRI' ELSE '' END AS "Key",
-                        A.ATTIDENTITY AS "IDENTITY"
+                        A.ATTIDENTITY AS "IDENTITY",
+                        A.ATTGENERATED AS "GENERATED"
                     FROM
                         PG_CATALOG.PG_ATTRIBUTE A
                     JOIN
@@ -3947,6 +3992,7 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 boolean notNull = resultSet.getBoolean("NotNull");
                 String comment = resultSet.getString("Comment");
                 String identity = resultSet.getString("IDENTITY");
+                String generated = resultSet.getString("GENERATED");
                 boolean nextValDefault = this.isNextValDefault(def == null ? null : def.toString());
                 boolean autoIncrement = StringUtil.isNotBlank(identity) || nextValDefault;
                 String serialType = StringUtil.isBlank(identity) && nextValDefault
@@ -3963,12 +4009,14 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
                 column.setTableName(viewName);
                 column.setNullable(!notNull);
                 column.setAutoIncrement(autoIncrement);
+                column.setGenerated(StringUtil.isNotBlank(generated));
                 if (serialType != null) {
                     column.setAutoIncrementType(serialType);
                 }
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            this.initViewGeneratedColumns(connection, schema, viewName, columns);
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, viewName, columns, true);
             // 返回排序后的数据
@@ -3990,6 +4038,23 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
      * @return 记录列表
      */
     public List<PostgresqlRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<PostgresqlRecordFilter> filters) {
+        return this.viewRecords(schema, viewName, start, limit, filters, null);
+    }
+
+    /**
+     * 查询视图记录列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    查询条数
+     * @param filters  过滤条件
+     * @param columns  视图字段元数据
+     * @return 记录列表
+     */
+    public List<PostgresqlRecord> viewRecords(String schema, String viewName, Long start, Long limit,
+                                              List<PostgresqlRecordFilter> filters,
+                                              List<PostgresqlColumn> columns) {
         try {
             Connection connection = this.getConnManager().connection();
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -4003,30 +4068,27 @@ public class ShellPostgresqlClient implements ShellBaseClient, DBClient {
             }
             String sql = builder.toString();
             this.printSql(sql);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            DBUtil.printMetaData(resultSet);
             List<PostgresqlRecord> records = new ArrayList<>();
             boolean updatable = ShellPostgresqlHelper.isViewUpdatable(connection, schema, viewName);
-            PostgresqlColumns columns = ShellPostgresqlHelper.parseColumns(resultSet);
-            for (PostgresqlColumn column : columns) {
+            PostgresqlColumns recordColumns = columns == null || columns.isEmpty()
+                    ? new PostgresqlColumns(this.viewColumns(schema, viewName))
+                    : new PostgresqlColumns(columns);
+            for (PostgresqlColumn column : recordColumns) {
                 column.setTableName(viewName);
             }
-            while (resultSet.next()) {
-                PostgresqlRecord record = new PostgresqlRecord(columns, !updatable);
-                for (PostgresqlColumn column : columns) {
-                    Object data = resultSet.getObject(column.getName());
-                    //                    // 获取几何值
-                    //                    if (column.supportGeometry()) {
-                    //                        data = PostgresqlHelper.getGeometryString(connection, data);
-                    //                    }
-                    data = ShellPostgresqlDataUtil.valueStandardization(data);
-                    record.putValue(column, data);
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                DBUtil.printMetaData(resultSet);
+                while (resultSet.next()) {
+                    PostgresqlRecord record = new PostgresqlRecord(recordColumns, !updatable);
+                    for (PostgresqlColumn column : recordColumns) {
+                        Object data = resultSet.getObject(column.getName());
+                        data = ShellPostgresqlDataUtil.valueStandardization(data);
+                        record.putValue(column, data);
+                    }
+                    records.add(record);
                 }
-                records.add(record);
             }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
             return records;
         } catch (Exception ex) {
             throw new ShellException(ex);

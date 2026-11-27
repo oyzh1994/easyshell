@@ -118,7 +118,8 @@ public class DamengRecord extends DBObject implements DBRecord, ObjectCopier<Dam
     public DamengRecordProperty putValue(DamengColumn column, Object value) {
         DamengRecordProperty property = (DamengRecordProperty) this.getProperty(column.getName());
         if (property == null) {
-            property = new DamengRecordProperty(this, column, value, this.readonly || column.isGenerated());
+            property = new DamengRecordProperty(this, column, value,
+                    this.readonly || column.isGenerated() || column.isAutoIncrement());
             property.changedProperty().addListener((observable, oldValue, newValue) -> this.updateStatus());
             this.properties.put(column.getName(), property);
         } else {

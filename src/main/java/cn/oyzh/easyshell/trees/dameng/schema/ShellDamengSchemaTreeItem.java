@@ -386,23 +386,25 @@ public class ShellDamengSchemaTreeItem extends ShellDamengTreeItem<ShellDamengSc
         return this.parent().connect();
     }
 
-    /**
-     * 获取表数量
-     *
-     * @return 表数量
-     */
-    public int tableSize() {
-        return this.client().tableSize(this.schema());
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取表数量
+//     *
+//     * @return 表数量
+//     */
+//    public int tableSize() {
+//        return this.client().tableSize(this.schema());
+//    }
 
-    /**
-     * 获取视图数量
-     *
-     * @return 视图数量
-     */
-    public int viewSize() {
-        return this.client().viewSize(this.schema());
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取视图数量
+//     *
+//     * @return 视图数量
+//     */
+//    public int viewSize() {
+//        return this.client().viewSize(this.schema());
+//    }
 
     /**
      * 获取连接名称

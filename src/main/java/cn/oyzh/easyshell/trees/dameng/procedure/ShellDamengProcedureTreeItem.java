@@ -133,7 +133,7 @@ public class ShellDamengProcedureTreeItem extends ShellDamengTreeItem<ShellDamen
         try {
             this.dbItem().dropProcedure(this.value);
             ShellDamengEventUtil.dropProcedure(this);
-            this.parent().clearProcedureSize();
+//            this.parent().clearProcedureSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

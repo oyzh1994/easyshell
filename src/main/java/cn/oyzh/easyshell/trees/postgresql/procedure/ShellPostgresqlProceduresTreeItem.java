@@ -127,7 +127,7 @@ public class ShellPostgresqlProceduresTreeItem extends ShellPostgresqlTreeItem<S
 
     @Override
     public void reloadChild() {
-        this.clearProcedureSize();
+//        this.clearProcedureSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -178,36 +178,54 @@ public class ShellPostgresqlProceduresTreeItem extends ShellPostgresqlTreeItem<S
         }
     }
 
-    /**
-     * 获取过程数量
-     *
-     * @return 过程数量
-     */
-    public int procedureSize() {
-        try {
-            return this.client().procedureSize(this.schema());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取过程数量
+//     *
+//     * @return 过程数量
+//     */
+//    public int procedureSize() {
+//        try {
+//            return this.client().procedureSize(this.schema());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 过程数量
+//     */
+//    private Integer procedureSize;
 
     /**
-     * 过程数量
-     */
-    private Integer procedureSize;
-
-    /**
      * 获取过程数量
+     * <p>
+     * 懒加载：仅在过程列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 过程数量
+     * @return 过程数量，未加载时返回null表示暂无数量
      */
-    public synchronized Integer getProcedureSize() {
-        if (this.procedureSize == null) {
-            this.procedureSize = this.procedureSize();
+    public Integer getProcedureSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return this.procedureSize;
+        return this.unfilteredChildrenSize();
     }
+
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取过程数量
+//     *
+//     * @return 过程数量
+//     */
+//    public synchronized Integer getProcedureSize() {
+//        if (this.procedureSize == null) {
+//            this.procedureSize = this.procedureSize();
+//        }
+//        return this.procedureSize;
+//    }
 
     /**
      * 添加过程
@@ -217,13 +235,14 @@ public class ShellPostgresqlProceduresTreeItem extends ShellPostgresqlTreeItem<S
     public void addProcedure(PostgresqlProcedure procedure) {
         this.addChild(new ShellPostgresqlProcedureTreeItem(procedure, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearProcedureSize();
+//        this.clearProcedureSize();
     }
 
-    /**
-     * 清空过程数量缓存
-     */
-    public void clearProcedureSize() {
-        this.procedureSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空过程数量缓存
+//     */
+//    public void clearProcedureSize() {
+//        this.procedureSize = null;
+//    }
 }

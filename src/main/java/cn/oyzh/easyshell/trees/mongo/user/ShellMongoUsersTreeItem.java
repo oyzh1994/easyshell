@@ -138,7 +138,7 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
 
     @Override
     public void reloadChild() {
-        this.clearUserSize();
+//        this.clearUserSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -203,44 +203,63 @@ public class ShellMongoUsersTreeItem extends ShellMongoTreeItem<ShellMongoUsersT
     public void addUser(MongoUser user) {
         this.addChild(new ShellMongoUserTreeItem(user, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearUserSize();
+//        this.clearUserSize();
     }
+
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取用户数量
+//     *
+//     * @return 用户数量
+//     */
+//    public long userSize() {
+//        try {
+//            return this.parent().userSize();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 用户数量缓存
+//     */
+//    private Integer userSize;
 
     /**
      * 获取用户数量
+     * <p>
+     * 懒加载：仅在用户列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 用户数量
+     * @return 用户数量，未加载时返回null表示暂无数量
      */
-    public long userSize() {
-        try {
-            return this.parent().userSize();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public Integer getUserSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return 0;
+        return this.unfilteredChildrenSize();
     }
 
-    /**
-     * 用户数量缓存
-     */
-    private Integer userSize;
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取用户数量（带缓存）
+//     *
+//     * @return 用户数量
+//     */
+//    public synchronized Integer getUserSize() {
+//        if (this.userSize == null) {
+//            this.userSize = Math.toIntExact(this.userSize());
+//        }
+//        return this.userSize;
+//    }
 
-    /**
-     * 获取用户数量（带缓存）
-     *
-     * @return 用户数量
-     */
-    public synchronized Integer getUserSize() {
-        if (this.userSize == null) {
-            this.userSize = Math.toIntExact(this.userSize());
-        }
-        return this.userSize;
-    }
-
-    /**
-     * 清空用户数量缓存
-     */
-    public void clearUserSize() {
-        this.userSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空用户数量缓存
+//     */
+//    public void clearUserSize() {
+//        this.userSize = null;
+//    }
 }

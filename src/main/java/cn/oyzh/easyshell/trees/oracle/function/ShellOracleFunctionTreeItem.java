@@ -124,7 +124,7 @@ public class ShellOracleFunctionTreeItem extends ShellOracleTreeItem<ShellOracle
         try {
             this.dbItem().dropFunction(this.value);
             ShellOracleEventUtil.dropFunction(this);
-            this.parent().clearFunctionSize();
+//            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

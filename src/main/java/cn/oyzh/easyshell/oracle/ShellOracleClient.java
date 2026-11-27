@@ -3321,6 +3321,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
             String sql = """
                     SELECT
                         C.DATA_TYPE AS "Type",
+                        C.DATA_TYPE_OWNER AS "TYPE_OWNER",
+                        T.TYPECODE AS "TYPE_CODE",
                         C.COLUMN_NAME AS "Field",
                         CC.COMMENTS AS "Comment",
                         C.COLUMN_ID AS "POSITION",
@@ -3330,10 +3332,11 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         C.DATA_LENGTH AS "DATA_LENGTH",
                         C.CHAR_LENGTH AS "CHAR_LENGTH",
                         C.CHAR_USED AS "CHAR_USED",
+                        C.VIRTUAL_COLUMN AS "VIRTUAL",
                         CASE WHEN C.NULLABLE = 'Y' THEN 'YES' ELSE 'NO' END AS "Null",
                         CASE WHEN CONS.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS "Key"
                     FROM
-                        ALL_TAB_COLUMNS C
+                        ALL_TAB_COLS C
                     LEFT JOIN
                         ALL_COL_COMMENTS CC
                     ON
@@ -3342,6 +3345,12 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         C.TABLE_NAME = CC.TABLE_NAME
                     AND
                         C.COLUMN_NAME = CC.COLUMN_NAME
+                    LEFT JOIN
+                        ALL_TYPES T
+                    ON
+                        T.OWNER = C.DATA_TYPE_OWNER
+                    AND
+                        T.TYPE_NAME = C.DATA_TYPE
                     LEFT JOIN
                         ALL_CONS_COLUMNS CONS
                     ON
@@ -3356,6 +3365,8 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         C.OWNER = ?
                     AND
                         C.TABLE_NAME = ?
+                    AND
+                        C.HIDDEN_COLUMN = 'NO'
                     """;
             Connection connection = this.getConnManager().connection(schema);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -3380,15 +3391,25 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                         resultSet.getInt("CHAR_LENGTH"), resultSet.getString("CHAR_USED")));
                 column.setDigits(dataScale);
                 column.setType(type);
+                column.setTypeOwner(resultSet.getString("TYPE_OWNER"));
+                column.setTypeCode(resultSet.getString("TYPE_CODE"));
                 column.setSchema(schema);
                 column.setComment(comment);
                 column.setDefaultValue(def);
                 column.setPosition(position);
                 column.setTableName(viewName);
                 column.setNullable("yes".equalsIgnoreCase(nullable));
+                column.setVirtual(StringUtil.equalsIgnoreCase("YES", resultSet.getString("VIRTUAL")));
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            for (OracleColumn column : columns) {
+                if (column.isObjectType() || column.isCollectionType()) {
+                    column.setTypeMeta(OracleComplexValueUtil.loadTypeMeta(
+                            connection, column.getTypeOwner(), column.getType()));
+                }
+            }
+            this.initViewGeneratedColumns(connection, schema, viewName, columns);
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, viewName, columns, true);
             this.initViewPrimaryKeys(connection, schema, viewName, columns);
@@ -3397,6 +3418,39 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new ShellException(ex);
+        }
+    }
+
+    private void initViewGeneratedColumns(Connection connection, String schema, String viewName,
+                                          OracleColumns columns) throws SQLException {
+        String sql = """
+                SELECT DISTINCT C.COLUMN_NAME
+                FROM ALL_DEPENDENCIES D
+                JOIN ALL_TAB_COLS C
+                  ON C.OWNER = D.REFERENCED_OWNER
+                 AND C.TABLE_NAME = D.REFERENCED_NAME
+                WHERE D.OWNER = ?
+                  AND D.NAME = ?
+                  AND D.REFERENCED_TYPE = 'TABLE'
+                  AND C.VIRTUAL_COLUMN = 'YES'
+                """;
+        Set<String> generatedColumns = new HashSet<>();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, schema);
+            statement.setString(2, viewName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    generatedColumns.add(resultSet.getString(1).toUpperCase(java.util.Locale.ROOT));
+                }
+            }
+        }
+        if (generatedColumns.isEmpty()) {
+            return;
+        }
+        for (OracleColumn column : columns) {
+            if (generatedColumns.contains(column.getName().toUpperCase(java.util.Locale.ROOT))) {
+                column.setVirtual(true);
+            }
         }
     }
 
@@ -3453,6 +3507,22 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
      * @return 记录列表
      */
     public List<OracleRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<OracleRecordFilter> filters) {
+        return this.viewRecords(schema, viewName, start, limit, filters, null);
+    }
+
+    /**
+     * 查询视图记录列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    查询条数
+     * @param filters  过滤条件
+     * @param columns  视图字段元数据
+     * @return 记录列表
+     */
+    public List<OracleRecord> viewRecords(String schema, String viewName, Long start, Long limit,
+                                          List<OracleRecordFilter> filters, List<OracleColumn> columns) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -3466,29 +3536,48 @@ public class ShellOracleClient implements ShellBaseClient, DBClient {
                 sql = DBOraclePagination.paginate(sql, start, limit, this.selectVersion());
             }
             this.printSql(sql);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            DBUtil.printMetaData(resultSet);
             List<OracleRecord> records = new ArrayList<>();
+            // Oracle的LONG字段依赖结果集流。可更新性检查会执行另一条语句，
+            // 必须放在主查询之前，否则同一连接上的结果集流会被关闭。
             boolean updatable = ShellOracleHelper.isViewUpdatable(connection, schema, viewName);
-            OracleColumns columns = ShellOracleHelper.parseColumns(resultSet);
-            for (OracleColumn column : columns) {
+            OracleColumns recordColumns = columns == null || columns.isEmpty()
+                    ? new OracleColumns(this.viewColumns(schema, viewName))
+                    : new OracleColumns(columns);
+            for (OracleColumn column : recordColumns) {
                 column.setTableName(viewName);
             }
-            while (resultSet.next()) {
-                OracleRecord record = new OracleRecord(columns, !updatable);
-                for (OracleColumn column : columns) {
-                    Object data = resultSet.getObject(column.getName());
-                    //                    // 获取几何值
-                    //                    if (column.supportGeometry()) {
-                    //                        data = OracleHelper.getGeometryString(connection, data);
-                    //                    }
+            List<Object[]> rows = new ArrayList<>();
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                DBUtil.printMetaData(resultSet);
+                while (resultSet.next()) {
+                    Object[] row = new Object[recordColumns.size()];
+                    int index = 0;
+                    for (OracleColumn column : recordColumns) {
+                        row[index++] = resultSet.getObject(column.getName());
+                    }
+                    rows.add(row);
+                }
+            }
+            // 对象和集合的转换会查询类型元数据，必须在结果集关闭后执行，
+            // 避免再次中断同一连接上尚未读取完的LONG字段流。
+            for (Object[] row : rows) {
+                OracleRecord record = new OracleRecord(recordColumns, !updatable);
+                int index = 0;
+                for (OracleColumn column : recordColumns) {
+                    Object data = row[index++];
+                    if (column.isObjectType() || column.isCollectionType()) {
+                        data = OracleComplexValueUtil.toJsonValue(connection, data);
+                    } else {
+                        data = ShellOracleDataUtil.valueStandardization(connection, data);
+                    }
+                    if (column.supportJson() && data instanceof CharSequence sequence) {
+                        data = DBDataUtil.normalizeJson(sequence.toString());
+                    }
                     record.putValue(column, data);
                 }
                 records.add(record);
             }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
             return records;
         } catch (Exception ex) {
             throw new ShellException(ex);

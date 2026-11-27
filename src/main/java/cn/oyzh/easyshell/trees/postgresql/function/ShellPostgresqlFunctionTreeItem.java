@@ -124,7 +124,7 @@ public class ShellPostgresqlFunctionTreeItem extends ShellPostgresqlTreeItem<She
         try {
             this.dbItem().dropFunction(this.value);
             ShellPostgresqlEventUtil.dropFunction(this);
-            this.parent().clearFunctionSize();
+//            this.parent().clearFunctionSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

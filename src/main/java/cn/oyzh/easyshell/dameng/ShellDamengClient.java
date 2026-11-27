@@ -94,10 +94,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -2810,6 +2812,7 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
                 columns.add(column);
             }
             IOUtil.close(resultSet);
+            this.initViewGeneratedColumns(connection, schema, viewName, columns);
             // 初始化自动递增
             this.initAutoIncrement(connection, schema, viewName, columns, true);
             // 返回排序后的数据
@@ -2818,6 +2821,118 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             ex.printStackTrace();
             throw new ShellException(ex);
         }
+    }
+
+    /**
+     * 初始化视图虚列。达梦视图列不会保留基表虚列标记，需要从依赖表 DDL 中补充。
+     *
+     * @param connection 连接
+     * @param schema     模式名称
+     * @param viewName   视图名称
+     * @param columns    视图字段列表
+     */
+    private void initViewGeneratedColumns(Connection connection, String schema, String viewName,
+                                          DamengColumns columns) {
+        if (connection == null || StringUtil.isBlank(schema) || StringUtil.isBlank(viewName)
+                || columns == null || columns.isEmpty()) {
+            return;
+        }
+        Set<String> baseTables = new LinkedHashSet<>();
+        String dependencySql = """
+                SELECT DISTINCT REFERENCED_OWNER, REFERENCED_NAME
+                FROM ALL_DEPENDENCIES
+                WHERE OWNER = ?
+                  AND NAME = ?
+                  AND REFERENCED_TYPE = 'TABLE'
+                """;
+        try (PreparedStatement dependencyStatement = connection.prepareStatement(dependencySql)) {
+            dependencyStatement.setString(1, schema);
+            dependencyStatement.setString(2, viewName);
+            try (ResultSet resultSet = dependencyStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String owner = resultSet.getString(1);
+                    String tableName = resultSet.getString(2);
+                    if (StringUtil.isNotBlank(owner) && StringUtil.isNotBlank(tableName)) {
+                        baseTables.add(owner + "\0" + tableName);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            // 部分版本不提供 ALL_DEPENDENCIES，继续使用视图定义解析。
+        }
+        if (baseTables.isEmpty()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "SELECT TEXT FROM ALL_VIEWS WHERE OWNER = ? AND VIEW_NAME = ?")) {
+                statement.setString(1, schema);
+                statement.setString(2, viewName);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    String definition = resultSet.next() ? resultSet.getString(1) : null;
+                    if (StringUtil.isNotBlank(definition)) {
+                        Matcher matcher = Pattern.compile(
+                                "(?is)\\b(?:FROM|JOIN)\\s+((?:\"(?:\"\"|[^\"])+\"|[A-Za-z0-9_$#]+)"
+                                        + "(?:\\s*\\.\\s*(?:\"(?:\"\"|[^\"])+\"|[A-Za-z0-9_$#]+))?)")
+                                .matcher(definition);
+                        while (matcher.find()) {
+                            String[] parts = matcher.group(1).split("\\s*\\.\\s*");
+                            String tableName = unquoteDamengIdentifier(parts[parts.length - 1]);
+                            String owner = parts.length > 1
+                                    ? unquoteDamengIdentifier(parts[parts.length - 2]) : schema;
+                            baseTables.add(owner + "\0" + tableName);
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        String ddlSql = "SELECT DBMS_METADATA.GET_DDL('TABLE', ?, ?) FROM DUAL";
+        try (PreparedStatement ddlStatement = connection.prepareStatement(ddlSql)) {
+            for (String baseTable : baseTables) {
+                String[] parts = baseTable.split("\0", -1);
+                String owner = parts[0];
+                String tableName = parts[1];
+                String createSql = null;
+                try {
+                    ddlStatement.setString(1, tableName);
+                    ddlStatement.setString(2, owner);
+                    try (ResultSet ddlResult = ddlStatement.executeQuery()) {
+                        createSql = ddlResult.next() ? ddlResult.getString(1) : null;
+                    }
+                } catch (Exception ignored) {
+                }
+                try (ResultSet baseColumns = connection.getMetaData()
+                        .getColumns(null, owner, tableName, null)) {
+                    while (baseColumns.next()) {
+                        if (!StringUtil.equalsIgnoreCase(
+                                baseColumns.getString("IS_AUTOINCREMENT"), "YES")) {
+                            continue;
+                        }
+                        DamengColumn column = columns.column(baseColumns.getString("COLUMN_NAME"));
+                        if (column != null) {
+                            column.setAutoIncrement(true);
+                            column.setAutoIncrementType("IDENTITY");
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+                if (StringUtil.isNotBlank(createSql)) {
+                    for (DamengColumn column : columns) {
+                        if (ShellDamengHelper.isGeneratedColumn(createSql, column.getName())) {
+                            column.setGenerated(true);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static String unquoteDamengIdentifier(String value) {
+        String result = value == null ? "" : value.trim();
+        if (result.length() >= 2 && result.startsWith("\"") && result.endsWith("\"")) {
+            result = result.substring(1, result.length() - 1);
+        }
+        return result.replace("\"\"", "\"");
     }
 
     /**
@@ -2831,6 +2946,23 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
      * @return 记录列表
      */
     public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit, List<DamengRecordFilter> filters) {
+        return this.viewRecords(schema, viewName, start, limit, filters, null);
+    }
+
+    /**
+     * 查询视图记录列表
+     *
+     * @param schema   模式名称
+     * @param viewName 视图名称
+     * @param start    起始位置
+     * @param limit    查询条数
+     * @param filters  过滤条件
+     * @param columns  视图字段元数据
+     * @return 记录列表
+     */
+    public List<DamengRecord> viewRecords(String schema, String viewName, Long start, Long limit,
+                                          List<DamengRecordFilter> filters,
+                                          List<DamengColumn> columns) {
         try {
             Connection connection = this.getConnManager().connection(schema);
             StringBuilder builder = new StringBuilder("SELECT * FROM ");
@@ -2844,30 +2976,27 @@ public class ShellDamengClient implements ShellBaseClient, DBClient {
             }
             String sql = builder.toString();
             this.printSql(sql);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            DBUtil.printMetaData(resultSet);
             List<DamengRecord> records = new ArrayList<>();
             boolean updatable = ShellDamengHelper.isViewUpdatable(connection, schema, viewName);
-            DamengColumns columns = ShellDamengHelper.parseColumns(resultSet);
-            for (DamengColumn column : columns) {
+            DamengColumns recordColumns = columns == null || columns.isEmpty()
+                    ? new DamengColumns(this.viewColumns(schema, viewName))
+                    : new DamengColumns(columns);
+            for (DamengColumn column : recordColumns) {
                 column.setTableName(viewName);
             }
-            while (resultSet.next()) {
-                DamengRecord record = new DamengRecord(columns, !updatable);
-                for (DamengColumn column : columns) {
-                    Object data = resultSet.getObject(column.getName());
-                    //                    // 获取几何值
-                    //                    if (column.supportGeometry()) {
-                    //                        data = DamengHelper.getGeometryString(connection, data);
-                    //                    }
-                    data = ShellDamengDataUtil.valueStandardization(column, data);
-                    record.putValue(column, data);
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(sql)) {
+                DBUtil.printMetaData(resultSet);
+                while (resultSet.next()) {
+                    DamengRecord record = new DamengRecord(recordColumns, !updatable);
+                    for (DamengColumn column : recordColumns) {
+                        Object data = resultSet.getObject(column.getName());
+                        data = ShellDamengDataUtil.valueStandardization(column, data);
+                        record.putValue(column, data);
+                    }
+                    records.add(record);
                 }
-                records.add(record);
             }
-            IOUtil.close(resultSet);
-            IOUtil.close(statement);
             return records;
         } catch (Exception ex) {
             throw new ShellException(ex);

@@ -118,6 +118,36 @@ public class MariadbGeneratedColumnIntegrationTest {
     }
 
     @Test
+    public void viewUsesBaseGeneratedColumnMetadata() {
+        String tableName = "view_generated_source";
+        String viewName = "view_generated_result";
+        client.executeSqlSimple(DATABASE, "DROP VIEW IF EXISTS `" + viewName + "`");
+        client.executeSqlSimple(DATABASE, "DROP TABLE IF EXISTS `" + tableName + "`");
+        client.executeSqlSimple(DATABASE, """
+                CREATE TABLE `view_generated_source` (
+                  `id` INT PRIMARY KEY,
+                  `source` VARCHAR(100),
+                  `calculated` INT GENERATED ALWAYS AS (CHAR_LENGTH(`source`)) VIRTUAL
+                )
+                """);
+        client.executeSqlSimple(DATABASE, "CREATE VIEW `" + viewName
+                + "` AS SELECT * FROM `" + tableName + "`");
+        client.executeSqlSimple(DATABASE, "INSERT INTO `" + tableName
+                + "`(`id`, `source`) VALUES(1, 'view-value')");
+
+        List<MariadbColumn> viewColumns = client.viewColumns(DATABASE, viewName);
+        MariadbColumn calculated = viewColumns.stream()
+                .filter(column -> "calculated".equals(column.getName()))
+                .findFirst().orElseThrow();
+        assertTrue(calculated.isGenerated());
+
+        MariadbRecord record = client.viewRecords(
+                DATABASE, viewName, 0L, 10L, null, viewColumns).getFirst();
+        assertTrue(record.getColumns().column("calculated").isGenerated());
+        assertTrue(record.getProperty("calculated").isReadonly());
+    }
+
+    @Test
     public void rebuildsColumnForGeneratedKindAndStorageChanges() {
         String tableName = "alter_generated";
         client.executeSqlSimple(DATABASE, """

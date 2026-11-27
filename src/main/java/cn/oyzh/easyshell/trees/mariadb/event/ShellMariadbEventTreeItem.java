@@ -138,7 +138,7 @@ public class ShellMariadbEventTreeItem extends ShellMariadbTreeItem<ShellMariadb
         try {
             this.dbItem().dropEvent(this.value);
             ShellMariadbEventUtil.dropEvent(this);
-            this.parent().clearEventSize();
+//            this.parent().clearEventSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());

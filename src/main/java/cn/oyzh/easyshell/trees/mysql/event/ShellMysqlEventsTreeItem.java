@@ -126,7 +126,7 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
 
     @Override
     public void reloadChild() {
-        this.clearEventSize();;
+//        this.clearEventSize();
         this.clearChild();
         this.setLoaded(false);
         this.loadChild();
@@ -177,36 +177,54 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
         }
     }
 
+    // [已停用] 旧的数量查询实现（保留备用）
+//    /**
+//     * 获取事件数量
+//     *
+//     * @return 事件数量
+//     */
+//    public int eventSize() {
+//        try {
+//            return this.client().eventSize(this.dbName());
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    // [已停用] 旧的数量缓存字段（保留备用）
+//    /**
+//     * 事件数量缓存
+//     */
+//    private Integer eventSize;
+
     /**
      * 获取事件数量
+     * <p>
+     * 懒加载：仅在事件列表加载完成后直接使用已加载的子节点数量，避免打开模式时执行数量查询导致卡顿。
      *
-     * @return 事件数量
+     * @return 事件数量，未加载时返回null表示暂无数量
      */
-    public int eventSize() {
-        try {
-            return this.client().eventSize(this.dbName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public Integer getEventSize() {
+        // 未加载或加载中不显示数量，数量取自已加载的子节点，不访问数据库
+        if (!this.isLoaded() || this.isLoading()) {
+            return null;
         }
-        return 0;
+        return this.unfilteredChildrenSize();
     }
 
-    /**
-     * 事件数量缓存
-     */
-    private Integer eventSize;
-
-    /**
-     * 获取事件数量（带缓存）
-     *
-     * @return 事件数量
-     */
-    public synchronized Integer getEventSize() {
-        if (this.eventSize == null) {
-            this.eventSize = this.eventSize();
-        }
-        return this.eventSize;
-    }
+    // [已停用] 旧的缓存数量实现（保留备用）
+//    /**
+//     * 获取事件数量（带缓存）
+//     *
+//     * @return 事件数量
+//     */
+//    public synchronized Integer getEventSize() {
+//        if (this.eventSize == null) {
+//            this.eventSize = this.eventSize();
+//        }
+//        return this.eventSize;
+//    }
 
     /**
      * 新增事件并刷新排序
@@ -216,13 +234,14 @@ public class ShellMysqlEventsTreeItem extends ShellMysqlTreeItem<ShellMysqlEvent
     public void addEvent(MysqlEvent event) {
         this.addChild(new ShellMysqlEventTreeItem(event, this.getTreeView()));
         this.sortChild(this.isSortAsc());
-        this.clearEventSize();
+//        this.clearEventSize();
     }
 
-    /**
-     * 清空事件数量缓存
-     */
-    public void clearEventSize() {
-        this.eventSize = null;
-    }
+    // [已停用] 旧的缓存清理实现（保留备用）
+//    /**
+//     * 清空事件数量缓存
+//     */
+//    public void clearEventSize() {
+//        this.eventSize = null;
+//    }
 }

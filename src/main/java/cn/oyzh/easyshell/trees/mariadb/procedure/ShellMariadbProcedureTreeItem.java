@@ -133,7 +133,7 @@ public class ShellMariadbProcedureTreeItem extends ShellMariadbTreeItem<ShellMar
         try {
             this.dbItem().dropProcedure(this.value);
             ShellMariadbEventUtil.dropProcedure(this);
-            this.parent().clearProcedureSize();
+//            this.parent().clearProcedureSize();
             super.remove();
         } catch (Exception ex) {
             MessageBox.exception(ex, this.getWindow());
