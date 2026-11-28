@@ -96,8 +96,14 @@ public class OracleIndex extends DBObject implements DBName, DBIndex, ObjectCopi
      *
      * @return 结果
      */
+    @Override
     public boolean isUnique() {
         return StringUtil.equalsIgnoreCase(this.getType(), "UNIQUE");
+    }
+
+    @Override
+    public void setUnique(boolean unique) {
+        this.setType(unique ? "UNIQUE" : "NORMAL");
     }
 
     /**

@@ -45,6 +45,7 @@ import cn.oyzh.easyshell.tabs.sftp.ShellSFTPTab;
 import cn.oyzh.easyshell.tabs.smb.ShellSMBTab;
 import cn.oyzh.easyshell.tabs.split.ShellSplitTab;
 import cn.oyzh.easyshell.tabs.sqlite.ShellSqliteTab;
+import cn.oyzh.easyshell.tabs.h2.ShellH2Tab;
 import cn.oyzh.easyshell.tabs.ssh.ShellSSHTab;
 import cn.oyzh.easyshell.tabs.telnet.ShellTelnetTab;
 import cn.oyzh.easyshell.tabs.terminal.ShellTerminalTab;
@@ -375,6 +376,8 @@ public class ShellTabPane extends RichTabPane implements FXEventListener {
                 tab = ShellMysqlTab.of(connect);
             } else if (connect.isSqliteType()) {
                 tab = ShellSqliteTab.of(connect);
+            } else if (connect.isH2Type()) {
+                tab = ShellH2Tab.of(connect);
             } else if (connect.isMariadbType()) {
                 tab = ShellMariadbTab.of(connect);
             } else if (connect.isMongoType()) {

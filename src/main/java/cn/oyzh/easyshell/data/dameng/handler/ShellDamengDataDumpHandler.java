@@ -52,7 +52,7 @@ public class ShellDamengDataDumpHandler extends DBDataDumpHandler {
     }
 
     @Override
-    public void doDump() throws Exception {
+    protected void doActionInternal() throws Exception {
         if (this.fileWriter == null || this.dumpType == null || this.dataType == null) {
             throw new RuntimeException("parameter invalid!");
         }

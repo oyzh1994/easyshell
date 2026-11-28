@@ -55,6 +55,8 @@ public class ShellIndexSharedTest {
 
         private String tableName;
 
+        private boolean unique;
+
         TestIndex(String name, String tableName) {
             this.name = name;
             this.tableName = tableName;
@@ -78,6 +80,16 @@ public class ShellIndexSharedTest {
         @Override
         public void setTableName(String tableName) {
             this.tableName = tableName;
+        }
+
+        @Override
+        public boolean isUnique() {
+            return this.unique;
+        }
+
+        @Override
+        public void setUnique(boolean unique) {
+            this.unique = unique;
         }
     }
 
@@ -197,6 +209,9 @@ public class ShellIndexSharedTest {
         assertEquals("IDX_D", ShellIndexHelper.parseIndexName("CREATE NONCLUSTERED INDEX [IDX_D] ON [t] ([c])"));
         assertEquals("IDX_E", ShellIndexHelper.parseIndexName("CREATE BITMAP INDEX IDX_E ON T_E (C1)"));
         assertEquals("IDX_F", ShellIndexHelper.parseIndexName("CREATE FULLTEXT INDEX IDX_F ON T_F (C1)"));
+        assertEquals("IDX_G", ShellIndexHelper.parseIndexName("CREATE HASH INDEX IDX_G ON T_G (C1)"));
+        assertEquals("IDX_H", ShellIndexHelper.parseIndexName(
+                "CREATE UNIQUE HASH INDEX \"DEMO\".\"IDX_H\" ON \"DEMO\".\"T_H\" (\"C1\")"));
         assertNull(ShellIndexHelper.parseIndexName("DROP INDEX IDX_A"));
         assertNull(ShellIndexHelper.parseIndexName(null));
     }
@@ -207,11 +222,26 @@ public class ShellIndexSharedTest {
         assertTrue(ShellIndexHelper.isCreateIndexSql("  create unique index IDX_A on T_A (C1)"));
         assertTrue(ShellIndexHelper.isCreateIndexSql("CREATE CLUSTERED INDEX IDX_A ON T_A (C1)"));
         assertTrue(ShellIndexHelper.isCreateIndexSql("CREATE SPATIAL INDEX IDX_A ON T_A (C1)"));
+        assertTrue(ShellIndexHelper.isCreateIndexSql("CREATE HASH INDEX IDX_A ON T_A (C1)"));
+        assertTrue(ShellIndexHelper.isCreateIndexSql("CREATE UNIQUE HASH INDEX IDX_A ON T_A (C1)"));
         assertTrue(!ShellIndexHelper.isCreateIndexSql("DROP INDEX IDX_A"));
         assertTrue(!ShellIndexHelper.isCreateIndexSql(null));
         assertTrue(ShellIndexHelper.isDropIndexSql("DROP INDEX IDX_A"));
         assertTrue(!ShellIndexHelper.isDropIndexSql("CREATE INDEX IDX_A ON T_A (C1)"));
         assertTrue(!ShellIndexHelper.isDropIndexSql(null));
+    }
+
+    @Test
+    public void renamedHashIndexDropsOriginalBeforeCreate() {
+        assertTrue(ShellIndexHelper.requiresDropBeforeCreate(List.of(
+                "CREATE HASH INDEX IDX_NEW ON T_A (C1)")));
+        assertTrue(ShellIndexHelper.requiresDropBeforeCreate(List.of(
+                "CREATE UNIQUE HASH INDEX IDX_NEW ON T_A (C1)")));
+        assertTrue(!ShellIndexHelper.requiresDropBeforeCreate(List.of(
+                "DROP INDEX IDX_OLD",
+                "CREATE HASH INDEX IDX_NEW ON T_A (C1)")));
+        assertTrue(!ShellIndexHelper.requiresDropBeforeCreate(List.of(
+                "DROP INDEX IDX_OLD")));
     }
 
     @Test

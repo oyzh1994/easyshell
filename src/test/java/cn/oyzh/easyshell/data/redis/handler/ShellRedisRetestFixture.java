@@ -169,7 +169,7 @@ public class ShellRedisRetestFixture {
         export.includeTitle(true);
         export.setBatchSize(3);
         export.filePath(file.getPath());
-        export.doExport();
+        export.doAction();
         System.out.println("exported " + fileType + " -> " + file.getAbsolutePath() + " (" + file.length() + " bytes)");
     }
 

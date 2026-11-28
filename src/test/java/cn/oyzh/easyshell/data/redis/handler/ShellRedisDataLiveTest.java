@@ -196,7 +196,7 @@ public class ShellRedisDataLiveTest {
         export.includeTitle(true);
         export.setBatchSize(3);
         export.filePath(file.getPath());
-        export.doExport();
+        export.doAction();
         assertTrue("导出文件应存在且非空: " + file, file.exists() && file.length() > 0);
 
         this.cleanKeys();
@@ -210,7 +210,7 @@ public class ShellRedisDataLiveTest {
             handler.dataRowStarts(2);
         }
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         for (Map.Entry<String, String> entry : before.entrySet()) {
             String key = this.k(entry.getKey());
@@ -241,7 +241,7 @@ public class ShellRedisDataLiveTest {
         export.charset(UTF8.name());
         export.includeTitle(true);
         export.filePath(file.getPath());
-        export.doExport();
+        export.doAction();
 
         // XML 文件不能含裸控制字符（除 tab/LF/CR）
         byte[] xml = Files.readAllBytes(file.toPath());
@@ -259,7 +259,7 @@ public class ShellRedisDataLiveTest {
         handler.setFileType("xml");
         handler.charset(UTF8.name());
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertArrayEquals("二进制值应字节级还原", raw, this.client.get(SRC_DB, key.getBytes(UTF8)));
     }
@@ -322,7 +322,7 @@ public class ShellRedisDataLiveTest {
         handler.charset(UTF8.name());
         handler.dataRowStarts(2);
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertTrue("数字 dbIndex 单元格应正确导入", this.client.exists(SRC_DB, key));
         assertEquals("数字导入", this.client.get(SRC_DB, key));
@@ -348,7 +348,7 @@ public class ShellRedisDataLiveTest {
         handler.setFileType("json");
         handler.charset(UTF8.name());
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertEquals("已存在键应更新", "new", this.client.get(SRC_DB, key));
         assertEquals("用户已有的 _backup 键不应被覆盖", "user-data", this.client.get(SRC_DB, userBackup));
@@ -376,7 +376,7 @@ public class ShellRedisDataLiveTest {
         handler.charset(UTF8.name());
         handler.setProcessedHandler(count -> processed[0] += count);
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertTrue("计数不应为负，实际=" + processed[0], processed[0] >= 0);
         assertFalse("空白 key 应跳过", this.client.exists(SRC_DB, ""));
@@ -405,7 +405,7 @@ public class ShellRedisDataLiveTest {
             }
         });
         try {
-            handler.doExport();
+            handler.doAction();
             fail("导出中断应抛出异常终止任务");
         } catch (RuntimeException ex) {
             Throwable cause = ex;
@@ -439,7 +439,7 @@ public class ShellRedisDataLiveTest {
         handler.setKeyTypes(Arrays.asList("string", "json", "list", "set", "zset", "hash", "stream"));
         handler.setExistsPolicy("0");
         handler.setRetainTTL(true);
-        handler.doTransport();
+        handler.doAction();
 
         for (Map.Entry<String, String> entry : before.entrySet()) {
             String key = this.k(entry.getKey());
@@ -463,7 +463,7 @@ public class ShellRedisDataLiveTest {
         skip.setPattern(this.prefix + "*");
         skip.setKeyTypes(Arrays.asList("string", "json", "list", "set", "zset", "hash", "stream"));
         skip.setExistsPolicy("0");
-        skip.doTransport();
+        skip.doAction();
         assertEquals("跳过策略不应覆盖目标键", "old", this.client.get(DST_DB, key));
 
         ShellRedisDataTransportHandler update = new ShellRedisDataTransportHandler();
@@ -474,7 +474,7 @@ public class ShellRedisDataLiveTest {
         update.setPattern(this.prefix + "*");
         update.setKeyTypes(Arrays.asList("string", "json", "list", "set", "zset", "hash", "stream"));
         update.setExistsPolicy("1");
-        update.doTransport();
+        update.doAction();
         assertEquals("更新策略应覆盖目标键", "new", this.client.get(DST_DB, key));
     }
 
@@ -491,7 +491,7 @@ public class ShellRedisDataLiveTest {
         handler.setPattern(this.prefix + "*");
         handler.setKeyTypes(Arrays.asList("string"));
         handler.setExistsPolicy("0");
-        handler.doTransport();
+        handler.doAction();
 
         assertTrue("string 键应传输", this.client.exists(DST_DB, this.k("only-string")));
         assertFalse("list 键应被类型过滤", this.client.exists(DST_DB, this.k("only-list")));

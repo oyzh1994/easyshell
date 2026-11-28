@@ -169,7 +169,7 @@ public class ShellZKDataImportHandler extends DataImportHandler {
     }
 
     @Override
-    public void doImport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Import Starting");
         FileColumns columns = new FileColumns();
         columns.addColumn("path", 0);

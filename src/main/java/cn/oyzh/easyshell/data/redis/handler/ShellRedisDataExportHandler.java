@@ -231,7 +231,7 @@ public class ShellRedisDataExportHandler extends DataExportHandler {
     private FileWriteConfig config = new FileWriteConfig();
 
     @Override
-    public void doExport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Export Starting");
         FileColumns columns = new FileColumns();
         columns.addColumn("key", I18nHelper.key());

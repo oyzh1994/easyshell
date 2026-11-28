@@ -39,7 +39,7 @@ public class ShellOracleDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
     }
 
     @Override
-    public void runFile() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Run Sql File Starting");
         try {
             String content = FileUtil.readUtf8String(this.file);

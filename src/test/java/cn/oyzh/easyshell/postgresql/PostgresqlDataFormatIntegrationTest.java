@@ -150,7 +150,7 @@ public class PostgresqlDataFormatIntegrationTest {
             ShellPostgresqlDataImportHandler handler = new ShellPostgresqlDataImportHandler(client, targetSchema);
             handler.setFiles(List.of(importFile));
             handler.setFileType(format);
-            handler.doImport();
+            handler.doAction();
 
             try (ResultSet resultSet = statement.executeQuery(
                     "SELECT COUNT(*), MAX(CASE WHEN \"id\" = 1 THEN \"c_jsonpath\"::text END), "

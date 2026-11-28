@@ -676,7 +676,7 @@ public class SqlServerIntegrationTest {
             handler.setFileType(type);
             handler.setTables(List.of(exportTable));
             handler.setContinueWithErrors(false);
-            handler.doExport();
+            handler.doAction();
             assertTrue(type + " export is empty", Files.size(file) > 0);
         }
 
@@ -695,7 +695,7 @@ public class SqlServerIntegrationTest {
             handler.importMode("2");
             handler.dateFormat("yyyy-MM-dd HH:mm:ss");
             handler.setContinueWithErrors(false);
-            handler.doImport();
+            handler.doAction();
             assertEquals(type + " import row count", 2,
                     client.selectRecordCount(selectParamFor(SOURCE_SCHEMA, target)));
             List<SqlServerRecord> importedRecords = client.selectRecords(
@@ -820,7 +820,7 @@ public class SqlServerIntegrationTest {
         exportHandler.setFileType("csv");
         exportHandler.setTables(List.of(exportTable));
         exportHandler.setContinueWithErrors(false);
-        exportHandler.doExport();
+        exportHandler.doAction();
 
         ShellSqlServerDataImportFile importFile = new ShellSqlServerDataImportFile();
         importFile.setSchema(TARGET_SCHEMA);
@@ -834,7 +834,7 @@ public class SqlServerIntegrationTest {
         importHandler.importMode("1");
         importHandler.dateFormat("yyyy-MM-dd HH:mm:ss");
         importHandler.setContinueWithErrors(false);
-        importHandler.doImport();
+        importHandler.doAction();
         assertEquals(3, client.selectRecordCount(selectParamFor(TARGET_SCHEMA, targetTable)));
 
         client.executeSqlSimple(TARGET_SCHEMA,
@@ -876,7 +876,7 @@ public class SqlServerIntegrationTest {
         dumpHandler.setDataType((byte) 0);
         dumpHandler.dumpFile(dumpFile.toFile());
         dumpHandler.setContinueWithErrors(false);
-        dumpHandler.doDump();
+        dumpHandler.doAction();
         String dump = Files.readString(dumpFile, StandardCharsets.UTF_8);
         assertTrue(dump.contains("Source Schema : " + SOURCE_SCHEMA));
         assertTrue(dump.contains("GO"));
@@ -886,7 +886,7 @@ public class SqlServerIntegrationTest {
                 new ShellSqlServerDataRunSqlFileHandler(client, TARGET_SCHEMA);
         runHandler.setContinueWithErrors(false);
         runHandler.file(dumpFile.toFile());
-        runHandler.runFile();
+        runHandler.doAction();
         assertEquals(1, client.selectRecordCount(selectParamFor(TARGET_SCHEMA, source)));
         assertTrue(client.selectColumns(new SqlServerSelectColumnParam(TARGET_SCHEMA, source)).stream()
                 .anyMatch(column -> "COMPUTED".equals(column.getName()) && column.isGenerated()));
@@ -977,7 +977,7 @@ public class SqlServerIntegrationTest {
         dumpHandler.setDataType((byte) 0);
         dumpHandler.dumpFile(dumpFile.toFile());
         dumpHandler.setContinueWithErrors(false);
-        dumpHandler.doDump();
+        dumpHandler.doAction();
         String dump = Files.readString(dumpFile, StandardCharsets.UTF_8);
         assertTrue(dump.contains("Function structure for " + function));
         assertTrue(dump.contains("Procedure structure for " + procedure));
@@ -988,7 +988,7 @@ public class SqlServerIntegrationTest {
                 new ShellSqlServerDataRunSqlFileHandler(client, DUMP_TARGET_SCHEMA);
         runHandler.setContinueWithErrors(false);
         runHandler.file(dumpFile.toFile());
-        runHandler.runFile();
+        runHandler.doAction();
 
         assertEquals(1, client.selectRecordCount(selectParamFor(DUMP_TARGET_SCHEMA, table)));
         assertEquals(1, client.selectRecordCount(selectParamFor(DUMP_TARGET_SCHEMA, child)));
@@ -1118,9 +1118,9 @@ public class SqlServerIntegrationTest {
         handler.setFunctions(List.of(transportObject(function)));
         handler.setProcedures(List.of(transportObject(procedure)));
         handler.setSequences(List.of(transportObject(sequence)));
-        handler.doTransport();
+        handler.doAction();
         // 再执行一次，验证目标库已有父子外键时也能按子表优先删除并重建
-        handler.doTransport();
+        handler.doAction();
 
         assertEquals(1, client.selectRecordCount(selectParamFor(TARGET_SCHEMA, parent)));
         assertEquals(1, client.selectRecordCount(selectParamFor(TARGET_SCHEMA, child)));
@@ -1426,7 +1426,7 @@ public class SqlServerIntegrationTest {
         dumpHandler.setDataType((byte) 0);
         dumpHandler.dumpFile(dumpFile.toFile());
         dumpHandler.setContinueWithErrors(false);
-        dumpHandler.doDump();
+        dumpHandler.doAction();
         String dump = Files.readString(dumpFile, StandardCharsets.UTF_8);
         String upperDump = dump.toUpperCase();
         assertTrue(dump, upperDump.contains(("CREATE TYPE [" + sourceSchema + "].["
@@ -1442,7 +1442,7 @@ public class SqlServerIntegrationTest {
                 new ShellSqlServerDataRunSqlFileHandler(client, targetSchema);
         runHandler.setContinueWithErrors(false);
         runHandler.file(dumpFile.toFile());
-        runHandler.runFile();
+        runHandler.doAction();
 
         assertEquals(1, client.selectRecordCount(selectParamFor(targetSchema, tableName)));
         assertTrue(client.selectColumns(new SqlServerSelectColumnParam(targetSchema, tableName))

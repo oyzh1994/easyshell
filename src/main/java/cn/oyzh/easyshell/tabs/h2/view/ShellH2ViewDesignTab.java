@@ -1,0 +1,108 @@
+package cn.oyzh.easyshell.tabs.h2.view;
+
+import cn.oyzh.common.util.StringUtil;
+import cn.oyzh.easyshell.h2.view.H2View;
+import cn.oyzh.easyshell.tabs.h2.ShellH2BaseTab;
+import cn.oyzh.easyshell.trees.h2.root.ShellH2RootTreeItem;
+import cn.oyzh.fx.gui.svg.glyph.database.ViewSVGGlyph;
+import cn.oyzh.fx.plus.FXConst;
+import cn.oyzh.fx.plus.controls.svg.SVGGlyph;
+import cn.oyzh.fx.plus.information.MessageBox;
+import cn.oyzh.fx.plus.window.StageManager;
+import cn.oyzh.i18n.I18nHelper;
+import javafx.event.Event;
+import javafx.scene.Cursor;
+
+/**
+ * H2 视图设计标签页
+ *
+ * @author oyzh
+ * @since 2026-11-02
+ */
+public class ShellH2ViewDesignTab extends ShellH2BaseTab {
+
+    @Override
+    protected String url() {
+        return FXConst.TAB_PATH + "h2/view/shellH2ViewDesignTab.fxml";
+    }
+
+    @Override
+    public void flushGraphic() {
+        SVGGlyph graphic = (SVGGlyph) this.getGraphic();
+        if (graphic == null) {
+            graphic = new ViewSVGGlyph();
+            graphic.setCursor(Cursor.DEFAULT);
+            this.setGraphic(graphic);
+        }
+    }
+
+    @Override
+    public void flushTitle() {
+        String name = this.viewName();
+        if (StringUtil.isBlank(name)) {
+            name = I18nHelper.unnamedView();
+        }
+        if (this.isUnsaved()) {
+            this.text("* " + name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        } else {
+            this.text(name + "@" + this.dbName() + "(" + this.connectName() + ")");
+        }
+    }
+
+    /**
+     * 获取视图名称
+     *
+     * @return 视图名称
+     */
+    public String viewName() {
+        return this.controller().viewName();
+    }
+
+    /**
+     * 获取视图所属模式。
+     *
+     * @return 模式名称
+     */
+    public String schema() {
+        return this.controller().schema();
+    }
+
+    @Override
+    public ShellH2RootTreeItem dbItem() {
+        return this.controller().getDbItem();
+    }
+
+    /**
+     * 初始化
+     *
+     * @param view   视图对象
+     * @param dbItem 数据库树节点
+     */
+    public void init(H2View view, ShellH2RootTreeItem dbItem) {
+        this.controller().init(view, dbItem);
+        this.flush();
+    }
+
+    @Override
+    public ShellH2ViewDesignTabController controller() {
+        return (ShellH2ViewDesignTabController) super.controller();
+    }
+
+    /**
+     * 是否未保存
+     *
+     * @return 是否未保存
+     */
+    public boolean isUnsaved() {
+        return this.controller().isUnsaved();
+    }
+
+    @Override
+    protected void onTabCloseRequest(Event event) {
+        if (this.isUnsaved() && !MessageBox.confirm(I18nHelper.unsavedAndContinue(), this.getWindow())) {
+            event.consume();
+        } else {
+            this.closeTab();
+        }
+    }
+}

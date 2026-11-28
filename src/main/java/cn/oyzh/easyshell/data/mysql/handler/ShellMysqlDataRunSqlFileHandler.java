@@ -35,7 +35,7 @@ public class ShellMysqlDataRunSqlFileHandler extends DBDataRunFileHandler<String
     }
 
     @Override
-    public void runFile() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Run Sql File Starting");
         // 文件读取
         try (BufferedReader reader = FileUtil.getReader(this.file, StandardCharsets.UTF_8)) {

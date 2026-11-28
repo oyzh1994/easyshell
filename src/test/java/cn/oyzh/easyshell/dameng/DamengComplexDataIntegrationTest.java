@@ -283,7 +283,7 @@ public class DamengComplexDataIntegrationTest {
         handler.setTables(List.of(table));
         handler.setSelectLimit(2);
         handler.setInsertLimit(2);
-        handler.doTransport();
+        handler.doAction();
 
         List<DamengRecord> imported = selectTargetRecords(UDT_TABLE);
         assertEquals(1, imported.size());
@@ -317,7 +317,7 @@ public class DamengComplexDataIntegrationTest {
         handler.dumpFile(file.toFile()).setDumpType((byte) 1);
         handler.setDataType((byte) 0);
         handler.setContinueWithErrors(false);
-        handler.doDump();
+        handler.doAction();
 
         String sql = Files.readString(file);
         int addressIndex = sql.indexOf("-- Type structure for ADDRESS_T");
@@ -339,7 +339,7 @@ public class DamengComplexDataIntegrationTest {
                 new ShellDamengDataRunSqlFileHandler(targetClient, TARGET_SCHEMA);
         runHandler.setContinueWithErrors(false);
         runHandler.setFile(file.toFile());
-        runHandler.runFile();
+        runHandler.doAction();
 
         List<DamengTypeDefinition> targetTypes = targetClient.selectTypes(TARGET_SCHEMA);
         assertEquals(2, targetTypes.size());
@@ -367,7 +367,7 @@ public class DamengComplexDataIntegrationTest {
         handler.setTables(List.of(table));
         handler.setSelectLimit(2);
         handler.setInsertLimit(2);
-        handler.doTransport();
+        handler.doAction();
 
         List<DamengRecord> records = selectTargetRecords(TABLE);
         assertEquals(1, records.size());
@@ -464,7 +464,7 @@ public class DamengComplexDataIntegrationTest {
         handler.setQueryLimit(2);
         handler.dateFormat("yyyy-MM-dd HH:mm:ss");
         handler.setTables(List.of(table));
-        handler.doExport();
+        handler.doAction();
     }
 
     private static void prepareUdtSource() {
@@ -525,7 +525,7 @@ public class DamengComplexDataIntegrationTest {
         handler.setBatchLimit(2);
         handler.setFiles(List.of(importFile));
         handler.importMode("2");
-        handler.doImport();
+        handler.doAction();
     }
 
     private static void createTargetTable(String tableName) {

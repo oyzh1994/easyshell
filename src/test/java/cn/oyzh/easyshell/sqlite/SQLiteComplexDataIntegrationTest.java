@@ -184,7 +184,7 @@ public class SQLiteComplexDataIntegrationTest {
                             new SQLiteDataRunSqlFileHandler(this.targetClient, "main");
                     runHandler.setContinueWithErrors(false);
                     runHandler.file(file.toFile());
-                    runHandler.runFile();
+                    runHandler.doAction();
                 } else {
                     importFile(format, file);
                 }
@@ -226,7 +226,7 @@ public class SQLiteComplexDataIntegrationTest {
         handler.dataRowStarts(2);
         // The CSV UI hides this option; semicolon is the configured default.
         handler.fieldSeparator(";");
-        handler.doImport();
+        handler.doAction();
 
         SQLiteSelectRecordParam param = new SQLiteSelectRecordParam();
         param.setTableName("legacy_csv");
@@ -256,7 +256,7 @@ public class SQLiteComplexDataIntegrationTest {
         handler.setTables(List.of(table));
         handler.setSelectLimit(1);
         handler.setInsertLimit(1);
-        handler.doTransport();
+        handler.doAction();
 
         List<SQLiteRecord> records = selectAll(this.targetClient);
         assertEquals(2, records.size());
@@ -335,7 +335,7 @@ public class SQLiteComplexDataIntegrationTest {
         handler.setQueryLimit(1);
         handler.dateFormat("yyyy-MM-dd HH:mm:ss");
         handler.setTables(List.of(table));
-        handler.doExport();
+        handler.doAction();
     }
 
     private void importFile(String format, Path file) throws Exception {
@@ -362,7 +362,7 @@ public class SQLiteComplexDataIntegrationTest {
         handler.dataRowStarts(2);
         handler.fieldSeparator(";");
         try {
-            handler.doImport();
+            handler.doAction();
         } catch (Exception ex) {
             if ("xls".equals(format) || "xlsx".equals(format)) {
                 DBDataImportConfig config = new DBDataImportConfig();

@@ -575,7 +575,7 @@ public class MongoComplexDataIntegrationTest {
         handler.setTables(List.of(transportObject(SOURCE)));
         handler.setDataType((byte) 0);
         handler.setSelectLimit(2);
-        handler.doTransport();
+        handler.doAction();
 
         MongoCollection<Document> target = rawClient.getDatabase(TARGET_DB).getCollection(SOURCE);
         assertEquals(4, target.countDocuments());
@@ -615,7 +615,7 @@ public class MongoComplexDataIntegrationTest {
                 new ShellMongoRunScriptFileHandler(client, TARGET_DB);
         handler.setContinueWithErrors(false);
         handler.setFile(file.toFile());
-        handler.runFile();
+        handler.doAction();
 
         MongoCollection<Document> target = rawClient.getDatabase(TARGET_DB).getCollection(SOURCE);
         assertEquals(4, target.countDocuments());
@@ -807,7 +807,7 @@ public class MongoComplexDataIntegrationTest {
         handler.setFileType(format);
         handler.setQueryLimit(2);
         handler.setTables(List.of(table));
-        handler.doExport();
+        handler.doAction();
     }
 
     private static void importFile(String format, Path file, String targetCollection) throws Exception {
@@ -819,7 +819,7 @@ public class MongoComplexDataIntegrationTest {
         handler.setFiles(List.of(importFile));
         handler.importMode("2");
         handler.setContinueWithErrors(false);
-        handler.doImport();
+        handler.doAction();
     }
 
     private static MongoSelectRecordParam selectParam(String collectionName) {

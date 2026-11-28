@@ -306,7 +306,7 @@ public class MysqlComplexDataIntegrationTest {
         handler.setTables(List.of(table));
         handler.setSelectLimit(2);
         handler.setInsertLimit(2);
-        handler.doTransport();
+        handler.doAction();
 
         List<MysqlRecord> records = targetClient.selectRecords(selectParam(TARGET_DB, TABLE));
         assertEquals(messages.toString(), 1, records.size());
@@ -326,7 +326,7 @@ public class MysqlComplexDataIntegrationTest {
         handler.setQueryLimit(2);
         handler.dateFormat("yyyy-MM-dd HH:mm:ss");
         handler.setTables(List.of(table));
-        handler.doExport();
+        handler.doAction();
     }
 
     private static void importFile(String database, String table, String format, Path file) throws Exception {
@@ -342,7 +342,7 @@ public class MysqlComplexDataIntegrationTest {
         handler.setBatchLimit(2);
         handler.setFiles(List.of(importFile));
         handler.getConfig().setImportMode("2");
-        handler.doImport();
+        handler.doAction();
     }
 
     private static MysqlRecord insertSeed(ShellMysqlClient client, String database, String tableName) {

@@ -6,7 +6,7 @@
 
 ## 功能特性
 
-- **多协议支持**：支持 SSH、FTP、SFTP、Redis、Valkey、ZooKeeper、HTTP、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mariadb、达梦、PostgreSQL、SQLite、Mosh、本地终端等多种连接方式。
+- **多协议支持**：支持 SSH、FTP、SFTP、Redis、Valkey、ZooKeeper、HTTP、串口、VNC、Telnet、RLogin、S3、RDP、SMB、Webdav、Mysql、Mongodb、Mariadb、达梦、PostgreSQL、SQLite、H2、Mosh、本地终端等多种连接方式。
 - **大模型管理**：支持对本地操作、各种协议的操作，包括Agent编排、Mcp服务、Skill等支持，供应商管理、模型管理、以及本地会话的能力。
 - **连接管理**：支持连接的添加、编辑、删除、导入、导出等操作。
 - **密钥管理**：支持密钥的生成、导入、导出、编辑、复制到主机等操作。
@@ -29,6 +29,7 @@
 - **Mysql 客户端**：支持 Mysql 协议的库、表、视图、函数、过程、事件管理、查询、导入、导出、传输、转储、终端等操作。
 - **Dameng 客户端**：支持 Dameng 协议的模式、表、视图、函数、过程、序列、用户管理、查询、导入、导出、传输、转储、终端等操作。
 - **SQLite 客户端**：支持 SQLite 协议的表、视图、函数、查询、导入、导出、传输、转储、终端等操作。
+- **H2 客户端**：支持 H2 协议（文件/内存/TCP 模式）的表、视图、索引、触发器、查询、导入、导出、传输、转储、终端等操作。
 - **Oracle 客户端**：支持 Oracle 协议的模式、表、视图、函数、过程、序列、查询、导入、导出、传输、转储、终端等操作。
 - **SqlServer 客户端**：支持 SqlServer 协议的模式、表、视图、函数、过程、序列、查询、导入、导出、传输、转储、终端等操作。
 - **PostgreSQL 客户端**：支持 PostgreSQL 协议的模式、表、视图、函数、过程、序列、查询、导入、导出、传输、转储、终端等操作。

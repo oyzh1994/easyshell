@@ -178,7 +178,7 @@ public class ShellRedisDataImportHandler extends DataImportHandler {
     private FileReadConfig config = new FileReadConfig();
 
     @Override
-    public void doImport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Import Starting");
         FileColumns columns = new FileColumns();
         columns.addColumn("key", 0);

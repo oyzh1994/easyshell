@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.db.trigger;
 
 import cn.oyzh.easyshell.db.index.ShellIndexHelper;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +22,7 @@ public class ShellTriggerHelper {
      */
     private static final Pattern CREATE_TRIGGER_PATTERN = Pattern.compile(
             "(?is)^\\s*(?:CREATE|ALTER)\\s+(?:OR\\s+REPLACE\\s+)?"
+                    + "(?:FORCE\\s+)?"
                     + "(?:EDITIONABLE\\s+|NONEDITIONABLE\\s+)?"
                     + "(?:DEFINER\\s*=\\s*\\S+\\s+)?"
                     + "(?:TEMP(?:ORARY)?\\s+)?"
@@ -68,6 +70,19 @@ public class ShellTriggerHelper {
      */
     public static boolean isReplaceTriggerSql(String sql) {
         return sql != null && REPLACE_TRIGGER_PATTERN.matcher(sql).find();
+    }
+
+    /**
+     * 修改已有触发器时是否需要先删除原触发器
+     *
+     * @param sqlList SQL列表
+     * @return 是否需要在执行创建语句前删除原触发器
+     */
+    public static boolean requiresDropBeforeCreate(Collection<String> sqlList) {
+        return sqlList != null
+                && sqlList.stream().anyMatch(ShellTriggerHelper::isCreateTriggerSql)
+                && sqlList.stream().noneMatch(ShellTriggerHelper::isDropTriggerSql)
+                && sqlList.stream().noneMatch(ShellTriggerHelper::isReplaceTriggerSql);
     }
 
     /**

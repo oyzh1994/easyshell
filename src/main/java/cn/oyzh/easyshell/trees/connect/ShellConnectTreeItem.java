@@ -15,6 +15,7 @@ import cn.oyzh.easyshell.util.oracle.ShellOracleViewFactory;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlViewFactory;
 import cn.oyzh.easyshell.util.redis.ShellRedisViewFactory;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteViewFactory;
+import cn.oyzh.easyshell.util.h2.ShellH2ViewFactory;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerViewFactory;
 import cn.oyzh.easyshell.util.valkey.ShellValkeyViewFactory;
 import cn.oyzh.easyshell.util.zk.ShellZKViewFactory;
@@ -179,6 +180,11 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
         } else if (this.isSqliteType()) {
             FXMenuItem transportData = MenuItemHelper.transportData(() -> {
                 ShellSqliteViewFactory.transportData(this.value);
+            });
+            items.add(transportData);
+        } else if (this.isH2Type()) {
+            FXMenuItem transportData = MenuItemHelper.transportData(() -> {
+                ShellH2ViewFactory.transportData(this.value);
             });
             items.add(transportData);
         }
@@ -402,6 +408,15 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
     }
 
     /**
+     * 是否H2类型
+     *
+     * @return 结果
+     */
+    public boolean isH2Type() {
+        return value.isH2Type();
+    }
+
+    /**
      * 是否MariaDB类型
      *
      * @return 结果
@@ -542,6 +557,8 @@ public class ShellConnectTreeItem extends RichTreeItem<ShellConnectTreeItemValue
             ShellViewFactory.updateMysqlConnect(this.value);
         } else if (this.isSqliteType()) {
             ShellViewFactory.updateSqliteConnect(this.value);
+        } else if (this.isH2Type()) {
+            ShellViewFactory.updateH2Connect(this.value);
         } else if (this.isMariadbType()) {
             ShellViewFactory.updateMariadbConnect(this.value);
         } else if (this.isDamengType()) {

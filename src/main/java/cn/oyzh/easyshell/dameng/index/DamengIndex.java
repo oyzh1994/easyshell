@@ -89,8 +89,14 @@ public class DamengIndex extends DBObject implements DBIndex, ObjectCopier<Damen
      *
      * @return 结果
      */
+    @Override
     public boolean isUnique() {
         return StringUtil.equalsIgnoreCase(this.getMethod(), "UNIQUE");
+    }
+
+    @Override
+    public void setUnique(boolean unique) {
+        this.setMethod(unique ? "UNIQUE" : "NORMAL");
     }
 
     /**

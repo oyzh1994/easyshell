@@ -217,7 +217,7 @@ public class ShellZKDataImportController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.importStarting());
                 // 执行导入
-                this.importHandler.doImport();
+                this.importHandler.doAction();
                 // 更新状态
                 this.updateStatus(I18nHelper.importFinished());
                 // // 发送消息到托盘

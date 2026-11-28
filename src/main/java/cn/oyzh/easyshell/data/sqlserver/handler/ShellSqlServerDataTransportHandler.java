@@ -81,7 +81,7 @@ public class ShellSqlServerDataTransportHandler extends DBDataTransportHandler<S
     }
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         try {
             // 类型和独立序列是表结构的依赖，必须先于表传输

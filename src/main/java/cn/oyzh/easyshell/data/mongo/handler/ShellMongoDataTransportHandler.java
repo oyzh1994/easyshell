@@ -50,7 +50,7 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
     }
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         try {
             if (CollectionUtil.isNotEmpty(this.tables)) {

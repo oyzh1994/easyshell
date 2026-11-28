@@ -39,7 +39,7 @@ public class SQLiteDataTransportHandler extends DBDataTransportHandler<String> {
     }
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         Path sourcePath = Path.of(this.sourceClient.getShellConnect().getHost())
                 .toAbsolutePath().normalize();

@@ -26,6 +26,7 @@
 <?import cn.oyzh.fx.gui.svg.glyph.database.OracleSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.PostgreSQLSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.database.H2SVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.database.SqlServerSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph?>
 <?import cn.oyzh.fx.gui.svg.glyph.protol.RshSVGGlyph?>
@@ -456,6 +457,18 @@
                                                 <SqliteSVGGlyph sizeStr="22,22"/>
                                             </FXStackPane>
                                             <FXLabel text="SQLite" styleClass="connect-card-name"/>
+                                            <FXLabel text="%base.database" styleClass="connect-card-category"/>
+                                        </FXVBox>
+                                    </graphic>
+                                </FXRadioButton>
+                                <FXRadioButton styleClass="connect-type-card" toggleGroup="$cardGroup"
+                                               userData="h2" onMouseClicked="#onCardClicked">
+                                    <graphic>
+                                        <FXVBox spacing="5" alignment="CENTER_LEFT">
+                                            <FXStackPane styleClass="connect-card-icon">
+                                                <H2SVGGlyph sizeStr="22,22"/>
+                                            </FXStackPane>
+                                            <FXLabel text="H2" styleClass="connect-card-name"/>
                                             <FXLabel text="%base.database" styleClass="connect-card-category"/>
                                         </FXVBox>
                                     </graphic>

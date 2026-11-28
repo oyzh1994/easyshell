@@ -271,7 +271,7 @@ public class OracleComplexDataIntegrationTest {
                             new ShellOracleDataRunSqlFileHandler(this.targetClient, this.targetSchema);
                     handler.setContinueWithErrors(false);
                     handler.file(file.toFile());
-                    handler.runFile();
+                    handler.doAction();
                 } else {
                     this.importComplexTable(format, file);
                 }
@@ -337,7 +337,7 @@ public class OracleComplexDataIntegrationTest {
                             new ShellOracleDataRunSqlFileHandler(this.targetClient, this.targetSchema);
                     handler.setContinueWithErrors(false);
                     handler.file(file.toFile());
-                    handler.runFile();
+                    handler.doAction();
                 } else {
                     this.importTable(this.targetClient, this.targetSchema, UDT_TABLE, format, file);
                 }
@@ -416,7 +416,7 @@ public class OracleComplexDataIntegrationTest {
         DBDataTransportObject udt = new DBDataTransportObject();
         udt.setName(UDT_TABLE);
         handler.setTables(List.of(complex, udt));
-        handler.doTransport();
+        handler.doAction();
         assertTrue(messages.toString(), messages.stream()
                 .noneMatch(message -> message != null && message.contains("ORA-")));
 
@@ -924,7 +924,7 @@ public class OracleComplexDataIntegrationTest {
         handler.recordSeparator("\n");
         handler.txtIdentifier("\"");
         handler.setTables(List.of(table));
-        handler.doExport();
+        handler.doAction();
     }
 
     private void importComplexTable(String format, Path file) throws Exception {
@@ -951,7 +951,7 @@ public class OracleComplexDataIntegrationTest {
         handler.setInsertLimit(1);
         handler.setBatchLimit(1);
         handler.setFiles(List.of(importFile));
-        handler.doImport();
+        handler.doAction();
     }
 
     private void resetTable(ShellOracleClient client, String schema, String tableName) {

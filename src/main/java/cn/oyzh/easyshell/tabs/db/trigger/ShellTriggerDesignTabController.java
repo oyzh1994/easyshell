@@ -255,12 +255,8 @@ public class ShellTriggerDesignTabController extends RichTabController {
      */
     private boolean needDropBeforeSave(List<String> sqlList) {
         // 触发器名称不存在，或者未提交创建语句，无需删除
-        if (StringUtil.isBlank(this.trigger.getName()) || sqlList.stream().noneMatch(ShellTriggerHelper::isCreateTriggerSql)) {
-            return false;
-        }
-        // 已经包含删除语句，或者使用了 OR REPLACE / ALTER 等原地修改语句，无需删除
-        if (sqlList.stream().anyMatch(ShellTriggerHelper::isDropTriggerSql)
-                || sqlList.stream().anyMatch(ShellTriggerHelper::isReplaceTriggerSql)) {
+        if (StringUtil.isBlank(this.trigger.getName())
+                || !ShellTriggerHelper.requiresDropBeforeCreate(sqlList)) {
             return false;
         }
         return this.target.existTrigger(this.trigger.getName());

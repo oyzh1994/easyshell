@@ -27,7 +27,7 @@ public class SQLiteDataDumpHandler extends DBDataDumpHandler {
     }
 
     @Override
-    public void doDump() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Dump Starting");
         try {
             this.writeHeader();

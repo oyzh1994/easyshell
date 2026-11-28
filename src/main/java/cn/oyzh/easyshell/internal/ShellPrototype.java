@@ -109,6 +109,11 @@ public class ShellPrototype {
     public static final String SQLITE = "Sqlite";
 
     /**
+     * H2 连接类型
+     */
+    public static final String H2 = "H2";
+
+    /**
      * 达梦连接类型
      */
     public static final String DAMENG = "Dameng";

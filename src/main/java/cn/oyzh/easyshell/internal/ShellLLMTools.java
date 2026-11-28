@@ -721,7 +721,7 @@ public class ShellLLMTools implements LLMTools {
     @Tool(name = "create_connection",
             value = "Create and persist a new EasyShell connection without connecting to it. Existing connections are never modified or deleted.")
     public String createConnection(
-            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, rsh, mosh, rdp, vnc, mysql, mariadb, dameng, oracle, sqlite, mongodb, redis, valkey, or zookeeper") String type,
+            @P(name = "type", value = "Connection type: ssh, sftp, ftp, s3, webdav, smb, local, telnet, serial, rlogin, rsh, mosh, rdp, vnc, mysql, mariadb, dameng, oracle, sqlite, h2, mongodb, redis, valkey, or zookeeper") String type,
             @P(name = "name", value = "Display name for the new connection") String name,
             @P(name = "host", value = "Host or address. For SQLite use the database file path. Ignored for Local and Serial.") String host,
             @P(name = "port", value = "Port, ignored when the host already contains a port or for Local, Serial, and SQLite", required = false) Integer port,
@@ -1692,6 +1692,7 @@ public class ShellLLMTools implements LLMTools {
             case "dm", "dameng" -> "dameng";
             case "oracle" -> "oracle";
             case "sqlite" -> "sqlite";
+            case "h2" -> "h2";
             case "mongo", "mongodb" -> "mongodb";
             case "redis" -> "redis";
             case "valkey" -> "valkey";
@@ -1701,7 +1702,7 @@ public class ShellLLMTools implements LLMTools {
     }
 
     private String buildConnectionHost(String host, Integer port, String type) {
-        if (type.equals("local") || type.equals("serial") || type.equals("sqlite")) {
+        if (type.equals("local") || type.equals("serial") || type.equals("sqlite") || type.equals("h2")) {
             return host;
         }
         if (port == null || port <= 0 || this.hasExplicitPort(host)) {

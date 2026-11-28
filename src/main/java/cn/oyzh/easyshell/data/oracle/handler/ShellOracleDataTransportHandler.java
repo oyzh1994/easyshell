@@ -77,7 +77,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
     }
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         try {
             if (!this.targetClient.existSchema(this.targetDatabase)) {

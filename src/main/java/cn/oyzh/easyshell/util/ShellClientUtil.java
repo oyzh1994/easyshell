@@ -23,6 +23,7 @@ import cn.oyzh.easyshell.sftp.ShellSFTPClient;
 import cn.oyzh.easyshell.smb.ShellSMBClient;
 import cn.oyzh.easyshell.ssh.ShellSSHClient;
 import cn.oyzh.easyshell.sqlite.ShellSqliteClient;
+import cn.oyzh.easyshell.h2.ShellH2Client;
 import cn.oyzh.easyshell.telnet.ShellTelnetClient;
 import cn.oyzh.easyshell.valkey.ShellValkeyClient;
 import cn.oyzh.easyshell.vnc1.ShellVNCClient;
@@ -101,6 +102,8 @@ public class ShellClientUtil {
             client = new ShellMysqlClient(connect);
         } else if (connect.isSqliteType()) {
             client = new ShellSqliteClient(connect);
+        } else if (connect.isH2Type()) {
+            client = new ShellH2Client(connect);
         } else if (connect.isMariadbType()) {
             client = new ShellMariadbClient(connect);
         } else if (connect.isMongoType()) {

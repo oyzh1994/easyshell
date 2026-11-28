@@ -32,7 +32,7 @@ public class SQLiteDataExportHandler extends DBDataExportHandler {
     }
 
     @Override
-    public void doExport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Export Starting");
         if (this.tables != null) {
             for (SQLiteDataExportTable table : this.tables) {

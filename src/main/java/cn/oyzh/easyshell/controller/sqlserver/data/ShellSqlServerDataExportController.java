@@ -280,7 +280,7 @@ public class ShellSqlServerDataExportController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.exportStarting());
                 // 执行导出
-                this.exportHandler.doExport();
+                this.exportHandler.doAction();
                 // 更新状态
                 this.updateStatus(I18nHelper.exportFinished());
             } catch (Exception e) {

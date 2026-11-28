@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cn.oyzh.easyshell.fx.ShellDataEditor?>
+<?import cn.oyzh.fx.gui.label.AccentLabel?>
+<?import cn.oyzh.fx.gui.svg.glyph.RefreshSVGGlyph?>
+<?import cn.oyzh.fx.gui.svg.glyph.SaveSVGGlyph?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.tabs.RichTabPane?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.tabs.h2.sequence.ShellH2SequenceDesignTabController"
+        flexWidth="100%" flexHeight="100%">
+    <FXHBox realHeight="25" flexWidth="100%">
+        <SaveSVGGlyph tipText="%shell.h2.save" onMousePrimaryClicked="#save">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </SaveSVGGlyph>
+        <RefreshSVGGlyph tipText="%base.refresh" onMousePrimaryClicked="#refresh">
+            <HBox.margin>
+                <Insets left="10" top="10"/>
+            </HBox.margin>
+        </RefreshSVGGlyph>
+    </FXHBox>
+    <RichTabPane flexWidth="100%" flexHeight="100% - 25">
+        <FixedTab text="%base.advanced">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="100" realHeight="25" text="%base.current">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ClearableTextField fx:id="startValue" realHeight="30" flexWidth="100% - 180">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="100" realHeight="25" text="%base.min">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ClearableTextField fx:id="minimumValue" realHeight="30" flexWidth="100% - 180">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="100" realHeight="25" text="%base.max">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ClearableTextField fx:id="maximumValue" realHeight="30" flexWidth="100% - 180">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="100" realHeight="25" text="%base.incrementBy">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ClearableTextField fx:id="increment" realHeight="30" flexWidth="100% - 180">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="100" realHeight="25" text="%base.cache">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <ClearableTextField fx:id="cacheSize" realHeight="30" flexWidth="100% - 180">
+                        <HBox.margin>
+                            <Insets left="10" top="10"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                </FXHBox>
+                <FXHBox realHeight="50" flexWidth="100%">
+                    <AccentLabel realWidth="100" realHeight="25" text="%base.options">
+                        <HBox.margin>
+                            <Insets left="30" top="10"/>
+                        </HBox.margin>
+                    </AccentLabel>
+                    <FXCheckBox fx:id="cycle" text="%base.cycle">
+                        <HBox.margin>
+                            <Insets left="10" top="12"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.preview">
+            <ShellDataEditor fx:id="preview" formatType="SQL" editable="false"
+                             flexWidth="100%" flexHeight="100%"/>
+        </FixedTab>
+    </RichTabPane>
+</FXVBox>

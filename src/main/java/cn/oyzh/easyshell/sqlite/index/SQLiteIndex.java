@@ -9,6 +9,8 @@ import cn.oyzh.fx.db.DBIndex;
 import cn.oyzh.fx.db.DBObject;
 import cn.oyzh.fx.db.util.DBUtil;
 
+import java.util.regex.Pattern;
+
 /**
  * SQLite 索引。
  *
@@ -16,6 +18,9 @@ import cn.oyzh.fx.db.util.DBUtil;
  * @since 2026-11-02
  */
 public class SQLiteIndex extends DBObject implements DBIndex, ObjectCopier<SQLiteIndex> {
+
+    private static final Pattern UNIQUE_INDEX = Pattern.compile(
+            "(?is)^\\s*CREATE\\s+UNIQUE\\s+INDEX\\b");
 
     private String name;
 
@@ -86,6 +91,31 @@ public class SQLiteIndex extends DBObject implements DBIndex, ObjectCopier<SQLit
 
     public void setCreateDefinition(String createDefinition) {
         this.createDefinition = createDefinition;
+    }
+
+    @Override
+    public boolean isUnique() {
+        return UNIQUE_INDEX.matcher(
+                StringUtil.blankToDefault(this.definition, "")).find();
+    }
+
+    @Override
+    public void setUnique(boolean unique) {
+        String sql = StringUtil.blankToDefault(this.definition, "").trim();
+        if (sql.isEmpty()) {
+            return;
+        }
+        if (unique) {
+            if (!this.isUnique()) {
+                int index = sql.toUpperCase().indexOf("INDEX");
+                if (index >= 0) {
+                    sql = sql.substring(0, index) + "UNIQUE " + sql.substring(index);
+                }
+            }
+        } else {
+            sql = sql.replaceFirst("(?is)^(\\s*CREATE\\s+)UNIQUE\\s+(INDEX\\b)", "$1$2");
+        }
+        this.setDefinition(sql);
     }
 
     public boolean isChangedDefinition() {

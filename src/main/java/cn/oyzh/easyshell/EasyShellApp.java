@@ -26,6 +26,7 @@ import cn.oyzh.easyshell.util.mongo.ShellMongoColumnUtil;
 import cn.oyzh.easyshell.util.mysql.ShellMysqlColumnUtil;
 import cn.oyzh.easyshell.util.postgresql.ShellPostgresqlColumnUtil;
 import cn.oyzh.easyshell.util.sqlite.ShellSqliteColumnUtil;
+import cn.oyzh.easyshell.util.h2.ShellH2ColumnUtil;
 import cn.oyzh.easyshell.util.sqlserver.ShellSqlServerColumnUtil;
 import cn.oyzh.easyshell.x11.ShellX11Manager;
 import cn.oyzh.event.EventFactory;
@@ -229,6 +230,7 @@ public class EasyShellApp extends FXApplication implements EventListener {
             DBColumnFieldManager.registerInitializer(DBDialect.MONGODB, ShellMongoColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.DAMENG, ShellDamengColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.SQLITE, ShellSqliteColumnUtil::init);
+            DBColumnFieldManager.registerInitializer(DBDialect.H2, ShellH2ColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.MARIADB, ShellMariadbColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.POSTGRESQL, ShellPostgresqlColumnUtil::init);
             DBColumnFieldManager.registerInitializer(DBDialect.ORACLE, ShellOracleColumnUtil::init);

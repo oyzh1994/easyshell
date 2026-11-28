@@ -625,7 +625,7 @@ public class SQLiteDesignAndDataTest {
             SQLiteDataExportHandler exportHandler = new SQLiteDataExportHandler(client, "main");
             exportHandler.setFileType("sql");
             exportHandler.setTables(List.of(exportTable));
-            exportHandler.doExport();
+            exportHandler.doAction();
             String sql = Files.readString(directory.resolve("generated.sql"));
             assertTrue(sql.contains("INSERT INTO"));
             assertFalse(sql.contains("amount"));
@@ -655,12 +655,12 @@ public class SQLiteDesignAndDataTest {
             SQLiteDataExportHandler exportHandler = new SQLiteDataExportHandler(client, "main");
             exportHandler.setFileType("sql");
             exportHandler.setTables(List.of(exportTable));
-            exportHandler.doExport();
+            exportHandler.doAction();
             assertTrue(Files.readString(directory.resolve("item.sql")).contains("INSERT INTO"));
 
             exportTable.setFilePath(directory.resolve("item.csv").toString());
             exportHandler.setFileType("csv");
-            exportHandler.doExport();
+            exportHandler.doAction();
             assertTrue(Files.readString(directory.resolve("item.csv")).contains("one"));
 
             SQLiteDataExportTable viewExportTable = new SQLiteDataExportTable();
@@ -670,7 +670,7 @@ public class SQLiteDesignAndDataTest {
             SQLiteDataExportHandler viewExportHandler = new SQLiteDataExportHandler(client, "main");
             viewExportHandler.setFileType("csv");
             viewExportHandler.setTables(List.of(viewExportTable));
-            viewExportHandler.doExport();
+            viewExportHandler.doAction();
             assertTrue(Files.readString(directory.resolve("item-view.csv")).contains("one"));
 
             client.executeSqlSimple("CREATE TABLE imported (id INTEGER PRIMARY KEY, name TEXT)");
@@ -687,13 +687,13 @@ public class SQLiteDesignAndDataTest {
             importHandler.columnIndex(0);
             importHandler.dataRowStarts(1);
             importHandler.fieldSeparator(",");
-            importHandler.doImport();
+            importHandler.doAction();
             assertEquals(1, client.selectRowCount("imported"));
 
             Path dump = directory.resolve("dump.sql");
             SQLiteDataDumpHandler dumpHandler = new SQLiteDataDumpHandler(client, "main");
             dumpHandler.dumpFile(dump.toFile()).setDumpType((byte) 1).setDataType((byte) 0);
-            dumpHandler.doDump();
+            dumpHandler.doAction();
             String dumpSql = Files.readString(dump);
             assertTrue(dumpSql.contains("CREATE TABLE"));
             assertEquals(1, occurrences(dumpSql, "CREATE INDEX idx_item_name"));
@@ -720,7 +720,7 @@ public class SQLiteDesignAndDataTest {
             List<String> messages = new ArrayList<>();
             runHandler.setMessageHandler(messages::add);
             runHandler.file(script.toFile());
-            runHandler.runFile();
+            runHandler.doAction();
             assertNotNull(client.selectTable("run_sql_table"));
             assertEquals(2, client.selectRowCount("run_sql_table"));
             assertTrue(client.selectRowCount("item") >= 2);
@@ -768,7 +768,7 @@ public class SQLiteDesignAndDataTest {
             view.setName("item_view");
             handler.setViews(List.of(view));
             handler.setDataType(0);
-            handler.doTransport();
+            handler.doAction();
             assertEquals(1, target.selectRowCount("item"));
             assertFalse(target.showCreate("item").toUpperCase().contains("AUTOINCREMENT"));
             assertTrue(target.showCreate("item").contains("CONSTRAINT name_not_empty"));

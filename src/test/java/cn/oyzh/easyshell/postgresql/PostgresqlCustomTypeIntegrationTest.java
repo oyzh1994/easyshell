@@ -110,13 +110,13 @@ public class PostgresqlCustomTypeIntegrationTest {
         dumpHandler.setDataType((byte) 0);
         dumpHandler.dumpFile(dumpFile.toFile());
         dumpHandler.setContinueWithErrors(false);
-        dumpHandler.doDump();
+        dumpHandler.doAction();
 
         ShellPostgresqlDataRunSqlFileHandler runHandler =
                 new ShellPostgresqlDataRunSqlFileHandler(client, TARGET_SCHEMA);
         runHandler.setContinueWithErrors(false);
         runHandler.setFile(dumpFile.toFile());
-        runHandler.runFile();
+        runHandler.doAction();
 
         String dump = Files.readString(dumpFile, StandardCharsets.UTF_8);
         assertTrue(dump, dump.contains("-- Custom types"));

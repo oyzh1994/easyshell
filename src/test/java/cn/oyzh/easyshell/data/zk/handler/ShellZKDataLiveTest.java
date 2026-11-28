@@ -185,7 +185,7 @@ public class ShellZKDataLiveTest {
         export.setIncludeACL(withAcl);
         export.setBatchSize(3);
         export.filePath(file.getPath());
-        export.doExport();
+        export.doAction();
         assertTrue("导出文件应存在且非空: " + file, file.exists() && file.length() > 0);
 
         // 清空命名空间后从文件重建，验证完整往返（根 ns 本身保留）
@@ -202,7 +202,7 @@ public class ShellZKDataLiveTest {
             handler.dataRowStarts(2);
         }
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         for (Map.Entry<String, byte[]> entry : data.entrySet()) {
             String path = ns + "/" + entry.getKey();
@@ -238,7 +238,7 @@ public class ShellZKDataLiveTest {
         handler.setFileType("json");
         handler.charset(UTF8.name());
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertTrue("正常行应导入", this.client.exists(ns + "/good"));
         assertEquals("正常数据", new String(this.client.getData(ns + "/good"), UTF8));
@@ -272,7 +272,7 @@ public class ShellZKDataLiveTest {
             }
         });
         try {
-            handler.doExport();
+            handler.doAction();
             fail("导出中断应抛出异常终止任务");
         } catch (RuntimeException ex) {
             Throwable cause = ex;
@@ -306,7 +306,7 @@ public class ShellZKDataLiveTest {
             handler.setExistsPolicy("0");
             handler.setSourceCharset(gbk);
             handler.setTargetCharset(UTF8);
-            handler.doTransport();
+            handler.doAction();
 
             String childPath = sourceRoot + "/中文-child";
             assertTrue("目标应创建子节点", target.exists(childPath));
@@ -334,7 +334,7 @@ public class ShellZKDataLiveTest {
             handler.setExistsPolicy("0");
             handler.setSourceCharset(UTF8);
             handler.setTargetCharset(UTF8);
-            handler.doTransport();
+            handler.doAction();
 
             String path = sourceRoot + "/binary";
             assertTrue("目标应创建二进制节点", target.exists(path));
@@ -360,7 +360,7 @@ public class ShellZKDataLiveTest {
             skip.setExistsPolicy("0");
             skip.setSourceCharset(UTF8);
             skip.setTargetCharset(UTF8);
-            skip.doTransport();
+            skip.doAction();
 
             assertEquals("跳过策略不应覆盖已有节点", "old",
                     new String(target.getData(sourceRoot + "/same"), UTF8));
@@ -374,7 +374,7 @@ public class ShellZKDataLiveTest {
             update.setExistsPolicy("1");
             update.setSourceCharset(UTF8);
             update.setTargetCharset(UTF8);
-            update.doTransport();
+            update.doAction();
 
             assertEquals("更新策略应覆盖已有节点", "updated",
                     new String(target.getData(sourceRoot + "/same"), UTF8));
@@ -395,7 +395,7 @@ public class ShellZKDataLiveTest {
             handler.setSourceCharset(UTF8);
             handler.setTargetCharset(UTF8);
             handler.setProcessedHandler(count -> processed[0] += count);
-            handler.doTransport();
+            handler.doAction();
             assertTrue("计数不应为负，实际=" + processed[0], processed[0] >= 0);
         }
     }

@@ -208,7 +208,7 @@ public class ShellOracleDataDumpController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.dumpStarting());
                 // 执行转储
-                this.dumpHandler.doDump();
+                this.dumpHandler.doAction();
                 // 更新状态
                 this.updateStatus(I18nHelper.dumpFinished());
             } catch (Exception e) {

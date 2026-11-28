@@ -118,7 +118,7 @@ public class ShellZKDataHandlerTest {
         export.setFileType("json");
         export.charset("GBK");
         export.filePath(file.getPath());
-        export.doExport();
+        export.doAction();
 
         MemoryZKClient target = new MemoryZKClient();
         ShellZKDataImportHandler importHandler = new ShellZKDataImportHandler();
@@ -126,7 +126,7 @@ public class ShellZKDataHandlerTest {
         importHandler.setFileType("json");
         importHandler.charset("GBK");
         importHandler.filePath(file.getPath());
-        importHandler.doImport();
+        importHandler.doAction();
 
         assertArrayEquals("中文内容".getBytes(gbk), target.get("/app/name"));
         assertArrayEquals(new byte[0], target.get("/app/empty"));
@@ -155,7 +155,7 @@ public class ShellZKDataHandlerTest {
         handler.charset(StandardCharsets.UTF_8.name());
         handler.dataRowStarts(1);
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertEquals("123", new String(target.get("/numeric"), StandardCharsets.UTF_8));
     }
@@ -187,7 +187,7 @@ public class ShellZKDataHandlerTest {
         handler.charset(utf8.name());
         handler.setIncludeACL(true);
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertEquals("new", new String(client.get("/app/exist"), utf8));
         assertEquals("world:anyone:wr", cn.oyzh.easyshell.util.zk.ShellZKACLUtil.toAclStr(client.getAcls("/app/exist")));
@@ -217,7 +217,7 @@ public class ShellZKDataHandlerTest {
         });
 
         try {
-            handler.doExport();
+            handler.doAction();
             fail("导出中断应抛出异常以终止任务");
         } catch (RuntimeException ex) {
             assertTrue("异常链中应包含 InterruptedException", hasInterruptedException(ex));
@@ -247,7 +247,7 @@ public class ShellZKDataHandlerTest {
         handler.setExistsPolicy("0");
         handler.setSourceCharset(StandardCharsets.UTF_8);
         handler.setTargetCharset(StandardCharsets.UTF_8);
-        handler.doTransport();
+        handler.doAction();
 
         assertEquals("old-a", new String(target.get("/app/a"), StandardCharsets.UTF_8));
         assertEquals("b", new String(target.get("/app/b"), StandardCharsets.UTF_8));
@@ -268,7 +268,7 @@ public class ShellZKDataHandlerTest {
         handler.setExistsPolicy("1");
         handler.setSourceCharset(StandardCharsets.UTF_8);
         handler.setTargetCharset(StandardCharsets.UTF_8);
-        handler.doTransport();
+        handler.doAction();
 
         assertEquals("new-a", new String(target.get("/app/a"), StandardCharsets.UTF_8));
     }
@@ -289,7 +289,7 @@ public class ShellZKDataHandlerTest {
         handler.setSourceCharset(StandardCharsets.UTF_8);
         handler.setTargetCharset(StandardCharsets.UTF_8);
         handler.setProcessedHandler(count -> processed[0] += count);
-        handler.doTransport();
+        handler.doAction();
 
         assertTrue("计数不应为负，实际=" + processed[0], processed[0] >= 0);
     }
@@ -315,7 +315,7 @@ public class ShellZKDataHandlerTest {
         export.charset(charsetName);
         export.includeTitle(true);
         export.filePath(file.getPath());
-        export.doExport();
+        export.doAction();
         assertTrue("导出文件应存在且非空", file.exists() && file.length() > 0);
 
         MemoryZKClient target = new MemoryZKClient();
@@ -327,7 +327,7 @@ public class ShellZKDataHandlerTest {
             importHandler.dataRowStarts(2);
         }
         importHandler.filePath(file.getPath());
-        importHandler.doImport();
+        importHandler.doAction();
 
         assertArrayEquals(values[0].getBytes(charset), target.get("/app/name"));
         assertArrayEquals(values[1].getBytes(charset), target.get("/app/desc"));

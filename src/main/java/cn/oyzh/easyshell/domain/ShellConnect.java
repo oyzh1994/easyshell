@@ -1295,6 +1295,16 @@ public class ShellConnect implements ObjectCopier<ShellConnect>, Comparable<Shel
     }
 
     /**
+     * 是否H2类型
+     *
+     * @return 结果
+     */
+    @JSONField(serialize = false, deserialize = false)
+    public boolean isH2Type() {
+        return StringUtil.equalsAnyIgnoreCase(this.type, ShellPrototype.H2);
+    }
+
+    /**
      * 是否达梦类型
      *
      * @return 结果

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import cn.oyzh.easyshell.fx.h2.H2DatabaseFileField?>
+<?import cn.oyzh.easyshell.fx.ShellOsTypeComboBox?>
+<?import cn.oyzh.fx.gui.button.CancelButton?>
+<?import cn.oyzh.fx.gui.button.SubmitButton?>
+<?import cn.oyzh.fx.gui.button.TestButton?>
+<?import cn.oyzh.fx.gui.label.InfoLabel?>
+<?import cn.oyzh.fx.gui.text.field.ClearableTextField?>
+<?import cn.oyzh.fx.gui.text.field.NumberTextField?>
+<?import cn.oyzh.fx.gui.text.field.PasswordTextField?>
+<?import cn.oyzh.fx.gui.text.field.PortTextField?>
+<?import cn.oyzh.fx.plus.controls.box.FXHBox?>
+<?import cn.oyzh.fx.plus.controls.box.FXVBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXCheckBox?>
+<?import cn.oyzh.fx.plus.controls.button.FXRadioButton?>
+<?import cn.oyzh.fx.plus.controls.FXHeaderBar?>
+<?import cn.oyzh.fx.plus.controls.label.FXLabel?>
+<?import cn.oyzh.fx.plus.controls.tab.FixedTab?>
+<?import cn.oyzh.fx.plus.controls.tab.FXTabPane?>
+<?import cn.oyzh.fx.plus.controls.text.area.FXTextArea?>
+<?import cn.oyzh.fx.plus.controls.toggle.FXToggleGroup?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<FXVBox xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="cn.oyzh.easyshell.controller.connect.h2.ShellUpdateH2ConnectController"
+        realWidth="680" realHeight="630">
+    <FXHeaderBar/>
+    <FXTabPane fx:id="tabPane" flexWidth="100%" flexHeight="100% - 90">
+        <FixedTab text="%base.base">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.name">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="name" tipText="%base.nameTip" maxLen="30" require="true"
+                                    realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%shell.h2.urlMode">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <fx:define>
+                        <FXToggleGroup fx:id="modeGroup"/>
+                    </fx:define>
+                    <FXRadioButton fx:id="modeFile" text="%shell.h2.urlModeFile" userData="file"
+                                   toggleGroup="$modeGroup" selected="true" onAction="#switchMode">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                    <FXRadioButton fx:id="modeTcp" text="%shell.h2.urlModeTcp" userData="tcp"
+                                   toggleGroup="$modeGroup" onAction="#switchMode">
+                        <HBox.margin>
+                            <Insets left="20" top="5"/>
+                        </HBox.margin>
+                    </FXRadioButton>
+                </FXHBox>
+                <FXVBox fx:id="filePane" flexWidth="100%">
+                    <InfoLabel text="%shell.h2.file">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <H2DatabaseFileField fx:id="filePath" tipText="%shell.h2.fileTip" require="true"
+                                         realHeight="30" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </H2DatabaseFileField>
+                </FXVBox>
+                <FXVBox fx:id="tcpPane" visible="false" managed="false" flexWidth="100%">
+                    <InfoLabel text="%base.host">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <FXHBox>
+                        <ClearableTextField fx:id="host" require="true"
+                                            realHeight="30" tipText="%base.hostTip" flexWidth="50% - 90">
+                            <HBox.margin>
+                                <Insets left="30" top="5"/>
+                            </HBox.margin>
+                        </ClearableTextField>
+                        <PortTextField fx:id="port" realHeight="30" flexWidth="50% - 95"
+                                       min="1" max="65535" value="9092">
+                            <HBox.margin>
+                                <Insets left="5" top="5"/>
+                            </HBox.margin>
+                        </PortTextField>
+                    </FXHBox>
+                    <InfoLabel text="%shell.h2.dbName">
+                        <VBox.margin>
+                            <Insets left="30" top="10"/>
+                        </VBox.margin>
+                    </InfoLabel>
+                    <ClearableTextField fx:id="database" require="true"
+                                        realHeight="30" text="db" tipText="%base.contentTip1" flexWidth="100% - 180">
+                        <VBox.margin>
+                            <Insets left="30" top="5"/>
+                        </VBox.margin>
+                    </ClearableTextField>
+                </FXVBox>
+                <InfoLabel text="%base.authInfo">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <ClearableTextField fx:id="user" tipText="%base.userName"
+                                        realHeight="30" flexWidth="50% - 90">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </ClearableTextField>
+                    <PasswordTextField fx:id="password" tipText="%base.password"
+                                       realHeight="30" flexWidth="50% - 95">
+                        <HBox.margin>
+                            <Insets left="5" top="5"/>
+                        </HBox.margin>
+                    </PasswordTextField>
+                </FXHBox>
+                <InfoLabel text="%shell.h2.schema">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ClearableTextField fx:id="schema" tipText="PUBLIC" realHeight="30" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ClearableTextField>
+                <InfoLabel text="%base.options">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <FXCheckBox fx:id="readOnly" text="%shell.h2.readOnly">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                    <FXCheckBox fx:id="createIfMissing" text="%shell.h2.createIfMissing">
+                        <HBox.margin>
+                            <Insets left="20" top="5"/>
+                        </HBox.margin>
+                    </FXCheckBox>
+                </FXHBox>
+            </FXVBox>
+        </FixedTab>
+        <FixedTab text="%base.extra">
+            <FXVBox flexWidth="100%" flexHeight="100%">
+                <InfoLabel text="%base.osType">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <ShellOsTypeComboBox fx:id="osType" prefWidth="220" prefHeight="30">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </ShellOsTypeComboBox>
+                <InfoLabel text="%base.connectTimeout">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXHBox>
+                    <NumberTextField fx:id="connectTimeOut" realHeight="30" flexWidth="100% - 180"
+                                     min="0" max="300" value="5" require="true">
+                        <HBox.margin>
+                            <Insets left="30" top="5"/>
+                        </HBox.margin>
+                    </NumberTextField>
+                    <FXLabel text="%base.second">
+                        <HBox.margin>
+                            <Insets left="10" top="9"/>
+                        </HBox.margin>
+                    </FXLabel>
+                </FXHBox>
+                <InfoLabel text="%base.env">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="env" promptText="urlMode=file" realHeight="130"
+                            flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
+                <InfoLabel text="%base.remark">
+                    <VBox.margin>
+                        <Insets left="30" top="10"/>
+                    </VBox.margin>
+                </InfoLabel>
+                <FXTextArea fx:id="remark" realHeight="80" flexWidth="100% - 180">
+                    <VBox.margin>
+                        <Insets left="30" top="5"/>
+                    </VBox.margin>
+                </FXTextArea>
+            </FXVBox>
+        </FixedTab>
+    </FXTabPane>
+    <FXHBox realHeight="50" flexWidth="100%">
+        <TestButton onAction="#testConnect">
+            <HBox.margin>
+                <Insets left="30" top="10"/>
+            </HBox.margin>
+        </TestButton>
+        <SubmitButton text="%base.submit" onAction="#update">
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </SubmitButton>
+        <CancelButton text="%base.cancel">
+            <HBox.margin>
+                <Insets left="15" top="10"/>
+            </HBox.margin>
+        </CancelButton>
+    </FXHBox>
+</FXVBox>

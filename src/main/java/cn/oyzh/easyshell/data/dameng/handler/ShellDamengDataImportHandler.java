@@ -61,7 +61,7 @@ public class ShellDamengDataImportHandler extends DBDataImportHandler<String> {
     }
 
     @Override
-    public void doImport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Import Starting");
         if (CollectionUtil.isNotEmpty(this.files)) {
             for (ShellDamengDataImportFile file : files) {

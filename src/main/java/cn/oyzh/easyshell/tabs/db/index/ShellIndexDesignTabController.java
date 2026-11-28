@@ -250,11 +250,8 @@ public class ShellIndexDesignTabController extends RichTabController {
      */
     private boolean needDropBeforeSave(List<String> sqlList) {
         // 索引名称不存在，或者未提交创建语句，无需删除
-        if (StringUtil.isBlank(this.index.getName()) || sqlList.stream().noneMatch(ShellIndexHelper::isCreateIndexSql)) {
-            return false;
-        }
-        // 已经包含删除语句，无需重复删除
-        if (sqlList.stream().anyMatch(ShellIndexHelper::isDropIndexSql)) {
+        if (StringUtil.isBlank(this.index.getName())
+                || !ShellIndexHelper.requiresDropBeforeCreate(sqlList)) {
             return false;
         }
         return this.target.existIndex(this.index.getName());

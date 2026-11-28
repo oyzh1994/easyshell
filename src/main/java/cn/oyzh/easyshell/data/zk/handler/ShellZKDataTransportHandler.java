@@ -53,7 +53,7 @@ public class ShellZKDataTransportHandler extends DataTransportHandler {
     private Charset targetCharset;
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         String path = StringUtil.isBlank(this.nodePath) ? "/" : this.nodePath;
         this.doTransport(path);

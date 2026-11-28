@@ -205,7 +205,7 @@ public class ShellValkeyDataTransportHandler extends DataTransportHandler {
     private String pattern = "*";
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         Set<String> allKeys = this.sourceClient.allKeys(this.sourceDatabase, this.pattern);
         this.doTransport(this.sourceDatabase, this.targetDatabase, allKeys);

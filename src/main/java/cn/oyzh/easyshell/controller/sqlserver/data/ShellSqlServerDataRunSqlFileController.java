@@ -169,7 +169,7 @@ public class ShellSqlServerDataRunSqlFileController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.execStarting());
                 // 执行sql
-                this.sqlFileHandler.runFile();
+                this.sqlFileHandler.doAction();
                 // 更新状态
                 this.updateStatus(I18nHelper.execFinished());
             } catch (Exception e) {

@@ -41,6 +41,7 @@ import cn.oyzh.fx.gui.svg.glyph.database.MongodbSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.MysqlSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.DatabaseSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SqliteSVGGlyph;
+import cn.oyzh.fx.gui.svg.glyph.database.H2SVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.database.SqlServerSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.protol.HttpSVGGlyph;
 import cn.oyzh.fx.gui.svg.glyph.protol.RshSVGGlyph;
@@ -91,6 +92,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
         this.addItem(ShellPrototype.MYSQL);
         this.addItem(ShellPrototype.MARIADB);
         this.addItem(ShellPrototype.SQLITE);
+        this.addItem(ShellPrototype.H2);
         this.addItem(ShellPrototype.MONGO);
         this.addItem(ShellPrototype.MOSH);
         this.addItem(ShellPrototype.DAMENG);
@@ -167,6 +169,8 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             super.select(ShellPrototype.MARIADB);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.SQLITE)) {
             super.select(ShellPrototype.SQLITE);
+        } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.H2)) {
+            super.select(ShellPrototype.H2);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MONGO)) {
             super.select(ShellPrototype.MONGO);
         } else if (StringUtil.equalsIgnoreCase(type, ShellPrototype.MOSH)) {
@@ -231,6 +235,7 @@ public class ShellOsTypeComboBox extends FXComboBox<String> {
             case "mysql" -> new MysqlSVGGlyph();
             case "mariadb" -> new MariadbSVGGlyph();
             case "sqlite" -> new SqliteSVGGlyph();
+            case "h2" -> new H2SVGGlyph();
             case "mongodb" -> new MongodbSVGGlyph();
             case "mosh" -> new MoshSVGGlyph();
             case "dameng" -> new DamengSVGGlyph();

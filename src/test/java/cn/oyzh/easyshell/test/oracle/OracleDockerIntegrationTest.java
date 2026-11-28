@@ -781,7 +781,7 @@ public class OracleDockerIntegrationTest {
             handler.setTables(List.of(table));
             List<String> messages = new ArrayList<>();
             handler.setMessageHandler(messages::add);
-            handler.doTransport();
+            handler.doAction();
 
             assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
             assertTrue(targetClient.existObject(targetSchema, "T_ADDR", "TYPE"));
@@ -1455,7 +1455,7 @@ public class OracleDockerIntegrationTest {
             handler.setTriggers(List.of(trigger));
             List<String> messages = new ArrayList<>();
             handler.setMessageHandler(messages::add);
-            handler.doTransport();
+            handler.doAction();
             assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
             assertTrue(client.selectTablesSimple(schema).stream()
                     .anyMatch(item -> tableName.equals(item.getName())));
@@ -1537,7 +1537,7 @@ public class OracleDockerIntegrationTest {
             dumpHandler.setDataType((byte) 0);
             dumpHandler.setTableName(tableName);
             dumpHandler.setContinueWithErrors(false);
-            dumpHandler.doDump();
+            dumpHandler.doAction();
 
             client.executeSqlSimple(schema, "DROP TABLE \"" + tableName + "\";");
 
@@ -1546,7 +1546,7 @@ public class OracleDockerIntegrationTest {
             runHandler.file(dumpFile.toFile());
             runHandler.setContinueWithErrors(false);
             runHandler.setMessageHandler(messages::add);
-            runHandler.runFile();
+            runHandler.doAction();
 
             assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
             assertTrue(client.existObject(schema, tableName, "TABLE"));
@@ -1579,7 +1579,7 @@ public class OracleDockerIntegrationTest {
             dumpHandler.setDumpType((byte) 1);
             dumpHandler.setDataType((byte) 0);
             dumpHandler.setContinueWithErrors(false);
-            dumpHandler.doDump();
+            dumpHandler.doAction();
 
             String content = Files.readString(dumpFile);
             if (mode.equals("23c")) {
@@ -1605,7 +1605,7 @@ public class OracleDockerIntegrationTest {
             runHandler.file(dumpFile.toFile());
             runHandler.setContinueWithErrors(false);
             runHandler.setMessageHandler(messages::add);
-            runHandler.runFile();
+            runHandler.doAction();
 
             assertTrue(messages.stream().noneMatch(message -> message != null && message.contains("ORA-")));
             if (mode.equals("23c")) {

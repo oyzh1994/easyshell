@@ -49,6 +49,8 @@ import cn.oyzh.easyshell.controller.connect.ssh.ShellAddSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.ssh.ShellUpdateSSHConnectController;
 import cn.oyzh.easyshell.controller.connect.sqlite.ShellAddSqliteConnectController;
 import cn.oyzh.easyshell.controller.connect.sqlite.ShellUpdateSqliteConnectController;
+import cn.oyzh.easyshell.controller.connect.h2.ShellAddH2ConnectController;
+import cn.oyzh.easyshell.controller.connect.h2.ShellUpdateH2ConnectController;
 import cn.oyzh.easyshell.controller.connect.telnet.ShellAddTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.telnet.ShellUpdateTelnetConnectController;
 import cn.oyzh.easyshell.controller.connect.vnc.ShellAddVNCConnectController;
@@ -473,6 +475,22 @@ public class ShellViewFactory {
     }
 
     /**
+     * 新增H2连接
+     *
+     * @param group 分组
+     */
+    public static void addH2Connect(ShellGroup group) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellAddH2ConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("group", group);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
      * 新增MariaDB连接
      *
      * @param group 分组
@@ -882,6 +900,22 @@ public class ShellViewFactory {
     public static void updateSqliteConnect(ShellConnect connect) {
         try {
             StageAdapter adapter = StageManager.parseStage(ShellUpdateSqliteConnectController.class, StageManager.getPrimaryStage());
+            adapter.setProp("shellConnect", connect);
+            adapter.display();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageBox.exception(ex, StageManager.getFrontWindow());
+        }
+    }
+
+    /**
+     * 修改H2连接
+     *
+     * @param connect 连接
+     */
+    public static void updateH2Connect(ShellConnect connect) {
+        try {
+            StageAdapter adapter = StageManager.parseStage(ShellUpdateH2ConnectController.class, StageManager.getPrimaryStage());
             adapter.setProp("shellConnect", connect);
             adapter.display();
         } catch (Exception ex) {

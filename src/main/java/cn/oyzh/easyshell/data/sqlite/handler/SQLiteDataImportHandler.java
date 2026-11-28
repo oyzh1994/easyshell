@@ -38,7 +38,7 @@ public class SQLiteDataImportHandler extends DBDataImportHandler<String> {
     }
 
     @Override
-    public void doImport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Import Starting");
         if (this.files != null) {
             for (SQLiteDataImportFile file : this.files) {

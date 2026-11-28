@@ -71,7 +71,7 @@ public class ShellMariadbDataTransportHandler extends DBDataTransportHandler<Str
     }
 
     @Override
-    public void doTransport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Transport Starting");
         try {
             this.targetClient.executeSqlSimple(this.targetDatabase, "SET FOREIGN_KEY_CHECKS = 0;");

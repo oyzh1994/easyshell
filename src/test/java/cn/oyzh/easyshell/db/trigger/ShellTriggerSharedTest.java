@@ -204,6 +204,8 @@ public class ShellTriggerSharedTest {
                 "ALTER TRIGGER [dbo].[TRG_F] ON [dbo].[T_F] AFTER INSERT AS BEGIN END"));
         assertEquals("TRG_G", ShellTriggerHelper.parseTriggerName(
                 "CREATE OR REPLACE EDITIONABLE TRIGGER TRG_G AFTER INSERT ON T_G BEGIN END;"));
+        assertEquals("TRG_H", ShellTriggerHelper.parseTriggerName(
+                "CREATE FORCE TRIGGER \"S\".\"TRG_H\" AFTER INSERT ON T_A AS 'code'"));
         assertNull(ShellTriggerHelper.parseTriggerName("DROP TRIGGER TRG_A"));
         assertNull(ShellTriggerHelper.parseTriggerName(null));
     }
@@ -213,6 +215,7 @@ public class ShellTriggerSharedTest {
         assertTrue(ShellTriggerHelper.isCreateTriggerSql("CREATE TRIGGER TRG_A AFTER INSERT ON T_A BEGIN END"));
         assertTrue(ShellTriggerHelper.isCreateTriggerSql("  create or replace trigger TRG_A after insert on T_A begin end"));
         assertTrue(ShellTriggerHelper.isCreateTriggerSql("ALTER TRIGGER TRG_A ON T_A AFTER INSERT AS BEGIN END"));
+        assertTrue(ShellTriggerHelper.isCreateTriggerSql("CREATE FORCE TRIGGER TRG_A AFTER INSERT ON T_A AS 'code'"));
         assertTrue(!ShellTriggerHelper.isCreateTriggerSql("DROP TRIGGER TRG_A"));
         assertTrue(!ShellTriggerHelper.isCreateTriggerSql(null));
         assertTrue(ShellTriggerHelper.isDropTriggerSql("DROP TRIGGER TRG_A"));
@@ -229,6 +232,19 @@ public class ShellTriggerSharedTest {
         assertTrue(!ShellTriggerHelper.isReplaceTriggerSql("CREATE TRIGGER TRG_A AFTER INSERT ON T_A BEGIN END"));
         assertTrue(!ShellTriggerHelper.isReplaceTriggerSql("DROP TRIGGER TRG_A"));
         assertTrue(!ShellTriggerHelper.isReplaceTriggerSql(null));
+    }
+
+    @Test
+    public void renamedForceTriggerDropsOriginalBeforeCreate() {
+        assertTrue(ShellTriggerHelper.requiresDropBeforeCreate(List.of(
+                "CREATE FORCE TRIGGER TRG_NEW AFTER INSERT ON T_A AS 'code'")));
+        assertTrue(!ShellTriggerHelper.requiresDropBeforeCreate(List.of(
+                "DROP TRIGGER IF EXISTS TRG_OLD",
+                "CREATE FORCE TRIGGER TRG_NEW AFTER INSERT ON T_A AS 'code'")));
+        assertTrue(!ShellTriggerHelper.requiresDropBeforeCreate(List.of(
+                "CREATE OR REPLACE TRIGGER TRG_NEW AFTER INSERT ON T_A BEGIN END")));
+        assertTrue(!ShellTriggerHelper.requiresDropBeforeCreate(List.of(
+                "ALTER TRIGGER TRG_NEW ON T_A AFTER INSERT AS BEGIN END")));
     }
 
     @Test

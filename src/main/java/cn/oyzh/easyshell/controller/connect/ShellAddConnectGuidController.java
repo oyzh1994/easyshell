@@ -323,6 +323,8 @@ public class ShellAddConnectGuidController extends StageController {
                 ShellViewFactory.addMariadbConnect(group);
             } else if (ShellPrototype.SQLITE.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addSqliteConnect(group);
+            } else if (ShellPrototype.H2.equalsIgnoreCase(userData)) {
+                ShellViewFactory.addH2Connect(group);
             } else if (ShellPrototype.DAMENG.equalsIgnoreCase(userData)) {
                 ShellViewFactory.addDamengConnect(group);
             } else if (ShellPrototype.POSTGRESQL.equalsIgnoreCase(userData)) {

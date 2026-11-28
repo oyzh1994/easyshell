@@ -139,6 +139,8 @@ public class ShellConnectTextField extends SelectTextFiled<ShellConnect> {
             this.connects = store.loadMariadbType();
         } else if (ShellPrototype.SQLITE.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadSqliteType();
+        } else if (ShellPrototype.H2.equalsIgnoreCase(this.filterMode)) {
+            this.connects = store.loadH2Type();
         } else if (ShellPrototype.MONGO.equalsIgnoreCase(this.filterMode)) {
             this.connects = store.loadMongoType();
         } else if (ShellPrototype.DAMENG.equalsIgnoreCase(this.filterMode)) {

@@ -161,6 +161,17 @@ public class ShellConnectStore extends JdbcStandardStore<ShellConnect> {
     }
 
     /**
+     * 加载H2类型
+     *
+     * @return H2类型连接
+     */
+    public List<ShellConnect> loadH2Type() {
+        SelectParam selectParam = new SelectParam();
+        List<ShellConnect> connects = super.selectList(selectParam);
+        return connects.stream().filter(ShellConnect::isH2Type).collect(Collectors.toList());
+    }
+
+    /**
      * 加载mongo类型
      *
      * @return mongo类型连接

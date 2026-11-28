@@ -2,6 +2,7 @@ package cn.oyzh.easyshell.db.index;
 
 import cn.oyzh.common.util.StringUtil;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,7 @@ public class ShellIndexHelper {
      * 创建索引语句匹配模式
      */
     private static final Pattern CREATE_INDEX_PATTERN = Pattern.compile(
-            "(?is)^\\s*CREATE\\s+(?:UNIQUE\\s+|BITMAP\\s+|CLUSTERED\\s+|NONCLUSTERED\\s+|FULLTEXT\\s+|SPATIAL\\s+)*"
+            "(?is)^\\s*CREATE\\s+(?:UNIQUE\\s+|BITMAP\\s+|CLUSTERED\\s+|NONCLUSTERED\\s+|FULLTEXT\\s+|SPATIAL\\s+|HASH\\s+)*"
                     + "INDEX\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?([^\\s(]+)");
 
     /**
@@ -46,6 +47,18 @@ public class ShellIndexHelper {
      */
     public static boolean isDropIndexSql(String sql) {
         return sql != null && DROP_INDEX_PATTERN.matcher(sql).find();
+    }
+
+    /**
+     * 修改已有索引时是否需要先删除原索引
+     *
+     * @param sqlList SQL列表
+     * @return 是否需要在执行创建语句前删除原索引
+     */
+    public static boolean requiresDropBeforeCreate(Collection<String> sqlList) {
+        return sqlList != null
+                && sqlList.stream().anyMatch(ShellIndexHelper::isCreateIndexSql)
+                && sqlList.stream().noneMatch(ShellIndexHelper::isDropIndexSql);
     }
 
     /**

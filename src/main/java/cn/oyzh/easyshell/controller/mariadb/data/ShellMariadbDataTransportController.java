@@ -349,7 +349,7 @@ public class ShellMariadbDataTransportController extends StageController {
                 // 更新状态
                 this.updateStatus(I18nHelper.transportStarting());
                 // 执行传输
-                this.transportHandler.doTransport();
+                this.transportHandler.doAction();
                 // 更新状态
                 this.updateStatus(I18nHelper.transportFinished());
             } catch (Exception e) {

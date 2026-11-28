@@ -44,6 +44,8 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
 
     private String originalName;
 
+    private String pendingName;
+
     private boolean unsaved;
 
     /**
@@ -56,6 +58,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
         this.dbItem = dbItem;
         this.client = dbItem.client();
         this.originalName = view == null ? null : view.getName();
+        this.pendingName = this.originalName;
         this.definition.text(view == null ? "" : StringUtil.blankToDefault(view.getDefinition(), ""));
         this.unsaved = view == null;
         if (view == null) {
@@ -75,7 +78,9 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
     }
 
     private void initPreview() {
-        String name = StringUtil.blankToDefault(this.originalName, I18nHelper.unnamedView());
+        String name = StringUtil.blankToDefault(
+                StringUtil.blankToDefault(this.originalName, this.pendingName),
+                I18nHelper.unnamedView());
         this.preview.text(SQLiteViewCreateSqlGenerator.createViewPreview(name, this.definition.getText()));
     }
 
@@ -86,9 +91,11 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
                 MessageBox.warn(I18nHelper.pleaseInputContent(), this.getWindow());
                 return;
             }
-            String targetName = this.originalName;
+            String targetName = StringUtil.blankToDefault(
+                    this.originalName, this.pendingName);
             if (StringUtil.isBlank(targetName)) {
-                targetName = MessageBox.prompt(I18nHelper.pleaseInputViewName(), this.getWindow());
+                targetName = MessageBox.prompt(I18nHelper.pleaseInputViewName(),
+                        this.pendingName, this.getWindow());
                 if (targetName == null) {
                     return;
                 }
@@ -97,11 +104,13 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
                     MessageBox.warn(I18nHelper.pleaseInputViewName(), this.getWindow());
                     return;
                 }
+                this.pendingName = targetName;
             }
             SQLiteView view = this.buildView(targetName);
             String previousName = this.originalName;
             new SQLiteSchemaManager(this.client).saveView(previousName, view);
             this.originalName = targetName;
+            this.pendingName = targetName;
             this.unsaved = false;
             NodeGroupUtil.display(this.getTab(), "action3");
             ShellSqliteEventUtil.viewChanged(this.client, previousName, targetName);
@@ -154,7 +163,7 @@ public class ShellSqliteViewDesignTabController extends RichTabController {
      * @return 视图名称
      */
     public String viewName() {
-        return this.originalName;
+        return StringUtil.blankToDefault(this.originalName, this.pendingName);
     }
 
     /**

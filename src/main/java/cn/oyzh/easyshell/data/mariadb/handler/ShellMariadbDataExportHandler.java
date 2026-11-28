@@ -61,7 +61,7 @@ public class ShellMariadbDataExportHandler extends DBDataExportHandler {
     }
 
     @Override
-    public void doExport() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Export Starting");
         if (CollectionUtil.isNotEmpty(this.tables)) {
             for (ShellMariadbDataExportTable table : this.tables) {

@@ -82,7 +82,7 @@ public class ShellRedisDataHandlerTest {
         handler.charset(StandardCharsets.UTF_8.name());
         handler.dataRowStarts(2);
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertEquals("值", client.get(3, "/redis/numeric"));
     }
@@ -107,7 +107,7 @@ public class ShellRedisDataHandlerTest {
         handler.charset(StandardCharsets.UTF_8.name());
         handler.setProcessedHandler(count -> processed[0] += count);
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertTrue("计数不应为负，实际=" + processed[0], processed[0] >= 0);
         assertFalse(client.exists(0, "/bad-type"));
@@ -142,7 +142,7 @@ public class ShellRedisDataHandlerTest {
             }
         });
         try {
-            handler.doImport();
+            handler.doAction();
             fail("导入中断应抛出异常终止任务");
         } catch (Exception ex) {
             Throwable cause = ex;
@@ -172,7 +172,7 @@ public class ShellRedisDataHandlerTest {
         handler.setFileType("json");
         handler.charset(StandardCharsets.UTF_8.name());
         handler.filePath(file.getPath());
-        handler.doImport();
+        handler.doAction();
 
         assertEquals("new", client.get(0, key));
         assertEquals("user-data", client.get(0, key + "_backup"));

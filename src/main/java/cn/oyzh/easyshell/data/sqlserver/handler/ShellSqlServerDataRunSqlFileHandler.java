@@ -41,7 +41,7 @@ public class ShellSqlServerDataRunSqlFileHandler extends DBDataRunFileHandler<St
     }
 
     @Override
-    public void runFile() throws Exception {
+    protected void doActionInternal() throws Exception {
         this.message("Run Sql File Starting");
         try {
             String content = Files.readString(this.file.toPath(), StandardCharsets.UTF_8);

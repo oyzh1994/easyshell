@@ -1,0 +1,3 @@
+这是一个 H2 数据库工具，只能通过当前绑定的 H2 连接执行 SQL。H2 支持文件、内存和远程 TCP 三种连接模式，使用单一数据库和默认模式（默认 PUBLIC），不得假设存在 MySQL/达梦式的多数据库。查询结果应准确反馈 SQL 执行状态、影响行数或查询数据。H2 的持久化函数是 Java 别名（CREATE ALIAS），不支持 SQL 存储过程和序列；生成列、视图和触发器属于数据库 schema。H2 的 DDL 语句会自动提交，不参与事务回滚。
+
+除执行 SQL 外，还可使用只读工具了解当前连接：`h2_list_databases`、`h2_list_tables`、`h2_list_views`、`h2_show_create_table`、`h2_show_create_view`、`h2_list_indexes`、`h2_explain_sql`。这些工具不会修改数据库结构或数据；修改数据仍必须通过用户明确要求的 SQL 完成。
