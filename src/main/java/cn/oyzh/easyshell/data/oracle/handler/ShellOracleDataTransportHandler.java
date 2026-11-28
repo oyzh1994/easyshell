@@ -142,7 +142,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                 }
             }
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Transport Finished");
         }
@@ -165,7 +165,7 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                     }
                 }
             } catch (Exception ex) {
-                this.exception(ex);
+                this.handleFailure(ex, true);
             }
         }
         return false;
@@ -265,21 +265,13 @@ public class ShellOracleDataTransportHandler extends DBDataTransportHandler<Stri
                             try {
                                 this.transportRecord(tableName, targetColumns, record);
                             } catch (Exception ex) {
-                                if (this.isContinueWithErrors()) {
-                                    this.exception(ex);
-                                } else {
-                                    throw ex;
-                                }
+                                this.handleFailure(ex, this.isContinueWithErrors());
                             }
                         }
                         start += this.selectLimit;
                     } catch (Exception ex) {
-                        if (this.isContinueWithErrors()) {
-                            this.exception(ex);
-                            break;
-                        } else {
-                            throw ex;
-                        }
+                        this.handleFailure(ex, this.isContinueWithErrors());
+                        break;
                     }
                 }
                 this.message("Transport Table " + tableName + " Finished");

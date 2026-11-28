@@ -64,7 +64,7 @@ public class ShellMongoDataTransportHandler extends DBDataTransportHandler<Mongo
                 }
             }
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Transport Finished");
         }

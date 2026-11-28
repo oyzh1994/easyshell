@@ -47,10 +47,7 @@ public class SQLiteDataImportHandler extends DBDataImportHandler<String> {
                     this.importFile(file);
                     this.processedIncr();
                 } catch (Exception ex) {
-                    if (!this.isContinueWithErrors()) {
-                        throw ex;
-                    }
-                    this.exception(ex);
+                    this.handleFailure(ex, this.isContinueWithErrors());
                 }
             }
         }
@@ -109,7 +106,7 @@ public class SQLiteDataImportHandler extends DBDataImportHandler<String> {
                     int count = this.client.insertBatch(this.name, List.of(sql), false);
                     this.processedIncr(count);
                 } catch (Exception ex) {
-                    this.exception(ex);
+                    this.handleFailure(ex, true);
                 }
             }
         } else {

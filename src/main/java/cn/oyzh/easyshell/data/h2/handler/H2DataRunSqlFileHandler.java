@@ -82,7 +82,7 @@ public class H2DataRunSqlFileHandler extends DBDataRunFileHandler<String> {
             // 收尾批量插入
             this.doBatchInsert();
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, false);
         } finally {
             this.message("Run SQL File Finished");
         }

@@ -128,7 +128,7 @@ public class ShellPostgresqlDataTransportHandler extends DBDataTransportHandler<
                 }
             }
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Transport Finished");
         }

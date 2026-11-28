@@ -58,7 +58,7 @@ public class SQLiteDataRunSqlFileHandler extends DBDataRunFileHandler<String> {
             // 收尾批量插入
             this.doBatchInsert();
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Run SQL File Finished");
         }

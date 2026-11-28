@@ -41,10 +41,7 @@ public class SQLiteDataExportHandler extends DBDataExportHandler {
                     this.exportTable(table);
                     this.processedIncr();
                 } catch (Exception ex) {
-                    if (!this.isContinueWithErrors()) {
-                        throw ex;
-                    }
-                    this.exception(ex);
+                    this.handleFailure(ex, this.isContinueWithErrors());
                 }
             }
         }
@@ -69,10 +66,7 @@ public class SQLiteDataExportHandler extends DBDataExportHandler {
                         writer.writeRecord(record);
                         this.processedIncr();
                     } catch (Exception ex) {
-                        if (!this.isContinueWithErrors()) {
-                            throw ex;
-                        }
-                        this.exception(ex);
+                        this.handleFailure(ex, this.isContinueWithErrors());
                     }
                 }
             } else {
@@ -89,10 +83,7 @@ public class SQLiteDataExportHandler extends DBDataExportHandler {
                             writer.writeRecord(record);
                             this.processedIncr();
                         } catch (Exception ex) {
-                            if (!this.isContinueWithErrors()) {
-                                throw ex;
-                            }
-                            this.exception(ex);
+                            this.handleFailure(ex, this.isContinueWithErrors());
                         }
                     }
                     offset += records.size();

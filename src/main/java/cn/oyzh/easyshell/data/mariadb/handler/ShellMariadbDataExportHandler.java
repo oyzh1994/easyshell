@@ -154,11 +154,7 @@ public class ShellMariadbDataExportHandler extends DBDataExportHandler {
                         start += this.queryLimit;
                         this.processed(records.size());
                     } catch (Exception ex) {
-                        if (this.config.isContinueWithError()) {
-                            this.exception(ex);
-                        } else {
-                            throw ex;
-                        }
+                        this.handleFailure(ex, this.config.isContinueWithError());
                     }
                 }
             }

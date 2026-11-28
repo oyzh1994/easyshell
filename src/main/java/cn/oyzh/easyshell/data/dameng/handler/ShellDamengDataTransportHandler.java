@@ -131,7 +131,7 @@ public class ShellDamengDataTransportHandler extends DBDataTransportHandler<Stri
                 }
             }
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Transport Finished");
         }

@@ -155,10 +155,7 @@ public class SQLiteDataTransportHandler extends DBDataTransportHandler<String> {
     }
 
     private void handleTransportError(Exception ex) throws Exception {
-        if (!this.isContinueWithErrors()) {
-            throw ex;
-        }
-        this.exception(ex);
+        this.handleFailure(ex, this.isContinueWithErrors());
     }
 
     @Override
@@ -170,12 +167,16 @@ public class SQLiteDataTransportHandler extends DBDataTransportHandler<String> {
                             this.targetDatabase, List.of(sql), false);
                     this.processedIncr(result);
                 } catch (Exception ex) {
-                    this.exception(ex);
+                    this.handleFailure(ex, true);
                 }
             }
         } else {
-            int result = this.targetClient.insertBatch(this.targetDatabase, list, false);
-            this.processedIncr(result);
+            try {
+                int result = this.targetClient.insertBatch(this.targetDatabase, list, false);
+                this.processedIncr(result);
+            } catch (Exception ex) {
+                this.handleFailure(ex, false);
+            }
         }
     }
 

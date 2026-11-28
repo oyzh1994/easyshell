@@ -132,7 +132,7 @@ public class ShellSqlServerDataTransportHandler extends DBDataTransportHandler<S
                 }
             }
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Transport Finished");
         }

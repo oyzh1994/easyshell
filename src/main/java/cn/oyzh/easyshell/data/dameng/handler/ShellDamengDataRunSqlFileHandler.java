@@ -179,7 +179,7 @@ public class ShellDamengDataRunSqlFileHandler extends DBDataRunFileHandler<Strin
             // 收尾批量插入
             this.doBatchInsert();
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Run Sql File Finished");
         }

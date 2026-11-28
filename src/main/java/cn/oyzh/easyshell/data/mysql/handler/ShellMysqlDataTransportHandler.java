@@ -107,7 +107,7 @@ public class ShellMysqlDataTransportHandler extends DBDataTransportHandler<Strin
             }
             this.targetClient.executeSqlSimple(this.targetDatabase, "SET FOREIGN_KEY_CHECKS = 1;");
         } catch (Exception ex) {
-            this.exception(ex);
+            this.handleFailure(ex, true);
         } finally {
             this.message("Transport Finished");
         }

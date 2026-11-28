@@ -47,10 +47,7 @@ public class H2DataImportHandler extends DBDataImportHandler<String> {
                     this.importFile(file);
                     this.processedIncr();
                 } catch (Exception ex) {
-                    if (!this.isContinueWithErrors()) {
-                        throw ex;
-                    }
-                    this.exception(ex);
+                    this.handleFailure(ex, this.isContinueWithErrors());
                 }
             }
         }
